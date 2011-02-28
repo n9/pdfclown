@@ -1,0 +1,32 @@
+PDF Clown - CREDITS
+
+NOTE: bracketed tags (e.g. "[HAa]") may be used within the source code to reference people herein mentioned.
+
+Developers
+- [SC] Stefano Chizzolini
+  role: lead developer (since 0.0.0)
+  contact: http://www.stefanochizzolini.it/
+
+Contributors
+- [JT] Joshua Tauberer
+  role: code developer (0.1.0)
+	contact: http://razor.occams.info
+- [3J] J. James Jack, Ph.D., Senior Consultant at Symyx Technologies UK Ltd.
+  role: code developer (0.0.8)
+  contact: james{dot}jack{at}symyx{dot}com
+- [JCT] Jean-Claude Truy
+  role: bug fixes (0.0.8)
+  contact: jctruy{at}gmail{dot}com
+- [AH] Andreas Hansson
+  role: bug fixes (0.0.6, 0.0.7)
+  contact: adron{at}users{dot}sourceforge{dot}net
+- [HAa] Haakan Aakerberg
+  role: bug fixes, suggestions (0.0.4, 0.0.5)
+  contact: http://www.ongoing.se/
+
+Anybody else
+  Many thanks to all the other guys that have sent their comments on my email box, on the public forums [1] or on the blog [2]: I really appreciate your interest in the project. Anyway, please apply your requests to the public forums whenever possible, so that others may benefit from knowing about them.
+
+------------
+[1] PDF Clown forums, http://sourceforge.net/projects/clown/forums
+[2] PDF Clown's Blog, http://pdfclown.wordpress.com

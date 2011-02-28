@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DBED0809-EE4C-45B0-92FA-E4789ECC2AEC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>org.pdfclown</RootNamespace>
+    <AssemblyName>PDFClown</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>build\package</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>build\package</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="src\org\pdfclown\bytes\filters\ASCII85Filter.cs" />
+    <Compile Include="src\org\pdfclown\bytes\filters\Filter.cs" />
+    <Compile Include="src\org\pdfclown\bytes\filters\FlateFilter.cs" />
+    <Compile Include="src\org\pdfclown\bytes\filters\namespace.cs" />
+    <Compile Include="src\org\pdfclown\bytes\Buffer.cs" />
+    <Compile Include="src\org\pdfclown\bytes\IBuffer.cs" />
+    <Compile Include="src\org\pdfclown\bytes\IInputStream.cs" />
+    <Compile Include="src\org\pdfclown\bytes\IOutputStream.cs" />
+    <Compile Include="src\org\pdfclown\bytes\IStream.cs" />
+    <Compile Include="src\org\pdfclown\bytes\namespace.cs" />
+    <Compile Include="src\org\pdfclown\bytes\Stream.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\CalGrayColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\CalRGBColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\CIEBasedColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\Color.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\ColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\DeviceCMYKColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\DeviceCMYKColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\DeviceColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\DeviceColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\DeviceGrayColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\DeviceGrayColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\DeviceRGBColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\DeviceRGBColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\ICCBasedColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\LabColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\composition\AlignmentXEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\composition\AlignmentYEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\composition\Length.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\composition\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\composition\TextFitter.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\entities\Barcode.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\entities\EAN13Barcode.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\entities\Entity.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\entities\Image.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\entities\JpegImage.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\entities\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\AfmParser.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\CMap.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\CMapParser.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\CompositeFont.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\Encoding.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\Font.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\FontFileFormatException.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\GlyphMapping.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\MacRomanEncoding.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\MMType1Font.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\OpenFontParser.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\PfbParser.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\SimpleFont.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\StandardEncoding.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\StandardType1Font.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\TrueTypeFont.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\Type0Font.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\Type1Font.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\Type2Font.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\Type3Font.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\WinAnsiEncoding.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\BeginInlineImage.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\BeginMarkedContent.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\BeginSubpath.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\BeginText.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\CloseSubpath.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\CompositeObject.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\ContainerObject.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\ContentObject.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\DrawCurve.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\DrawLine.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\DrawRectangle.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\EndInlineImage.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\EndMarkedContent.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\EndText.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\GenericOperation.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\GraphicsObject.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\InlineImage.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\InlineImageBody.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\InlineImageHeader.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\LocalGraphicsState.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\MarkedContent.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\ModifyClipPath.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\ModifyCTM.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\Operation.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\PaintPath.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\PaintShading.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\PaintXObject.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\Path.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\RestoreGraphicsState.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SaveGraphicsState.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetCharSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetExtGState.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetFillColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetFillColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetFont.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetLineCap.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetLineDash.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetLineJoin.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetLineWidth.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetMiterLimit.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetStrokeColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetStrokeColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetTextLead.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetTextMatrix.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetTextRenderMode.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetTextRise.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetTextScale.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetWordSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\Shading.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\ShowAdjustedText.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\ShowSimpleText.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\ShowText.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\ShowTextToNextLine.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\Text.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\TranslateTextRelative.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\TranslateTextToNextLine.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\XObject.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\tokens\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\tokens\Parser.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\xObjects\FormXObject.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\xObjects\ImageXObject.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\xObjects\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\xObjects\XObject.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\ColorSpaceResources.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\Contents.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\ContentScanner.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\ExtGState.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\ExtGStateResources.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\FontResources.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\IContentContext.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\IContentEntity.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\ITextString.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\LineCapEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\LineDash.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\LineJoinEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\Resources.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\TextChar.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\TextRenderModeEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\TextStyle.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\XObjectResources.cs" />
+    <Compile Include="src\org\pdfclown\documents\fileSpecs\EmbeddedFile.cs" />
+    <Compile Include="src\org\pdfclown\documents\fileSpecs\FileSpec.cs" />
+    <Compile Include="src\org\pdfclown\documents\fileSpecs\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\fileSpecs\RelatedFiles.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\Action.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\ChainedActions.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\DoTransition.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\GoTo3dView.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\GoToDestination.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\GoToEmbedded.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\GoToFirstPage.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\GoToLastPage.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\GoToLocal.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\GoToNextPage.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\GoToPreviousPage.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\GoToRemote.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\GoToThread.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\GoToURI.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\IGoToAction.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\ImportData.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\JavaScript.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\Launch.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\NamedAction.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\OptionsEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\PlayMovie.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\PlaySound.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\Rendition.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\ResetForm.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\SetOcgState.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\SubmitForm.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\ToggleVisibility.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Annotation.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\AnnotationActions.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Appearance.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\AppearanceCharacteristics.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\AppearanceStates.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Border.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\CalloutNote.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Caret.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\DualWidget.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Ellipse.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\FileAttachment.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Line.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Link.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Note.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Polygon.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Polyline.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Popup.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Rectangle.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\RubberStamp.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Scribble.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Shape.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\TextMarkup.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\VertexShape.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Widget.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\WidgetActions.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\styles\DefaultStyle.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\styles\FieldStyle.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\styles\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\ButtonField.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\CheckBox.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\ChoiceField.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\ChoiceItem.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\ChoiceItems.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\ComboBox.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\Field.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\FieldActions.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\Fields.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\FieldWidgets.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\Form.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\ListBox.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\PushButton.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\RadioButton.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\SignatureField.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\forms\TextField.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\navigation\document\Bookmark.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\navigation\document\Bookmarks.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\navigation\document\Destination.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\navigation\document\LocalDestination.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\navigation\document\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\navigation\document\RemoteDestination.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\navigation\page\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\navigation\page\Transition.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\navigation\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\viewer\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\viewer\ViewerPreferences.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\ILink.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\interchange\metadata\Information.cs" />
+    <Compile Include="src\org\pdfclown\documents\interchange\metadata\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\interchange\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\Movie.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\Sound.cs" />
+    <Compile Include="src\org\pdfclown\documents\Document.cs" />
+    <Compile Include="src\org\pdfclown\documents\DocumentActions.cs" />
+    <Compile Include="src\org\pdfclown\documents\NamedDestinations.cs" />
+    <Compile Include="src\org\pdfclown\documents\NamedEmbeddedFiles.cs" />
+    <Compile Include="src\org\pdfclown\documents\Names.cs" />
+    <Compile Include="src\org\pdfclown\documents\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\Page.cs" />
+    <Compile Include="src\org\pdfclown\documents\PageActions.cs" />
+    <Compile Include="src\org\pdfclown\documents\PageAnnotations.cs" />
+    <Compile Include="src\org\pdfclown\documents\PageFormat.cs" />
+    <Compile Include="src\org\pdfclown\documents\Pages.cs" />
+    <Compile Include="src\org\pdfclown\files\File.cs" />
+    <Compile Include="src\org\pdfclown\files\IndirectObjects.cs" />
+    <Compile Include="src\org\pdfclown\files\namespace.cs" />
+    <Compile Include="src\org\pdfclown\files\SerializationModeEnum.cs" />
+    <Compile Include="src\org\pdfclown\files\UpdateModeEnum.cs" />
+    <Compile Include="src\org\pdfclown\objects\IPdfAtomicObject.cs" />
+    <Compile Include="src\org\pdfclown\objects\IPdfIndirectObject.cs" />
+    <Compile Include="src\org\pdfclown\objects\IPdfNumber.cs" />
+    <Compile Include="src\org\pdfclown\objects\namespace.cs" />
+    <Compile Include="src\org\pdfclown\objects\NameTree.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfArray.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfAtomicObject.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfBoolean.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfDataObject.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfDate.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfDictionary.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfDirectObject.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfIndirectObject.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfInteger.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfName.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfNamedObjectWrapper.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfObject.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfObjectWrapper.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfReal.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfReference.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfStream.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfString.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfTextString.cs" />
+    <Compile Include="src\org\pdfclown\objects\Rectangle.cs" />
+    <Compile Include="src\org\pdfclown\tokens\FileFormatException.cs" />
+    <Compile Include="src\org\pdfclown\tokens\namespace.cs" />
+    <Compile Include="src\org\pdfclown\tokens\Parser.cs" />
+    <Compile Include="src\org\pdfclown\tokens\Reader.cs" />
+    <Compile Include="src\org\pdfclown\tokens\TokenTypeEnum.cs" />
+    <Compile Include="src\org\pdfclown\tokens\Writer.cs" />
+    <Compile Include="src\org\pdfclown\tokens\XRefEntry.cs" />
+    <Compile Include="src\org\pdfclown\tools\namespace.cs" />
+    <Compile Include="src\org\pdfclown\tools\PageManager.cs" />
+    <Compile Include="src\org\pdfclown\tools\PageStamper.cs" />
+    <Compile Include="src\org\pdfclown\tools\TextExtractor.cs" />
+    <Compile Include="src\org\pdfclown\util\collections\generic\IExtCollection.cs" />
+    <Compile Include="src\org\pdfclown\util\collections\generic\IExtList.cs" />
+    <Compile Include="src\org\pdfclown\util\io\BigEndianBinaryReader.cs" />
+    <Compile Include="src\org\pdfclown\util\io\ByteOrderEnum.cs" />
+    <Compile Include="src\org\pdfclown\util\math\OperationUtils.cs" />
+    <Compile Include="src\org\pdfclown\util\BiDictionary.cs" />
+    <Compile Include="src\org\pdfclown\util\ByteArray.cs" />
+    <Compile Include="src\org\pdfclown\util\ConvertUtils.cs" />
+    <Compile Include="src\org\pdfclown\Engine.cs" />
+    <Compile Include="src\org\pdfclown\namespace.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\GoToNonLocal.cs" />
+    <Compile Include="src\org\pdfclown\tokens\Encoding.cs" />
+    <Compile Include="src\org\pdfclown\util\IDataWrapper.cs" />
+    <Compile Include="src\org\pdfclown\PDF.cs" />
+    <Compile Include="src\org\pdfclown\Version.cs" />
+    <Compile Include="src\org\pdfclown\VersionEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\ResourceItems.cs" />
+    <Compile Include="src\org\pdfclown\tokens\Symbol.cs" />
+    <Compile Include="src\org\pdfclown\tokens\Chunk.cs" />
+    <Compile Include="src\org\pdfclown\tokens\Keyword.cs" />
+    <Compile Include="src\org\pdfclown\documents\NamedJavaScripts.cs" />
+    <Compile Include="src\org\pdfclown\documents\functions\namespace.cs" />
+    <Compile Include="src\org\pdfclown\tokens\XRefStream.cs" />
+    <Compile Include="src\org\pdfclown\tokens\ObjectStream.cs" />
+    <Compile Include="src\org\pdfclown\util\collections\generic\Extensions.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Movie.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Sound.cs" />
+    <Compile Include="src\org\pdfclown\tokens\PlainWriter.cs" />
+    <Compile Include="src\org\pdfclown\tokens\CompressedWriter.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\PropertyList.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\PropertyListResources.cs" />
+    <Compile Include="src\org\pdfclown\documents\functions\Function.cs" />
+    <Compile Include="src\org\pdfclown\util\math\Interval.cs" />
+    <Compile Include="src\org\pdfclown\documents\functions\Type4Function.cs" />
+    <Compile Include="src\org\pdfclown\documents\functions\Type3Function.cs" />
+    <Compile Include="src\org\pdfclown\documents\functions\Type2Function.cs" />
+    <Compile Include="src\org\pdfclown\documents\functions\Type0Function.cs" />
+    <Compile Include="src\org\pdfclown\documents\functions\Functions.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\CalColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\SpecialColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\IndexedColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\PatternColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\SpecialDeviceColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\DeviceNColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\SeparationColorSpace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\IndexedColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\LeveledColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\CalGrayColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\CalRGBColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\DeviceNColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\LabColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\SeparationColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\Pattern.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\ShadingPattern.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\TilingPattern.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\Shading.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\ShadingResources.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\PatternResources.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\composition\BlockComposer.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\composition\PrimitiveComposer.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\RotationEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\ContentMarker.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\WindModeEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\MarkedContentPoint.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetDeviceCMYKFillColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetDeviceCMYKStrokeColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetDeviceGrayFillColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetDeviceGrayStrokeColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetDeviceRGBFillColor.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\SetDeviceRGBStrokeColor.cs" />
+    <Compile Include="src\org\pdfclown\tools\Renderer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\AGL20.scsv">
+      <Link>res\fonts\AGL20.scsv</Link>
+      <LogicalName>fonts.AGL20</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\afm\Courier.afm">
+      <Link>res\fonts\afm\Courier.afm</Link>
+      <LogicalName>fonts.afm.Courier</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\afm\Courier-Bold.afm">
+      <Link>res\fonts\afm\Courier-Bold.afm</Link>
+      <LogicalName>fonts.afm.Courier-Bold</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\afm\Courier-BoldOblique.afm">
+      <Link>res\fonts\afm\Courier-BoldOblique.afm</Link>
+      <LogicalName>fonts.afm.Courier-BoldOblique</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\afm\Courier-Oblique.afm">
+      <Link>res\fonts\afm\Courier-Oblique.afm</Link>
+      <LogicalName>fonts.afm.Courier-Oblique</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\afm\Helvetica.afm">
+      <Link>res\fonts\afm\Helvetica.afm</Link>
+      <LogicalName>fonts.afm.Helvetica</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\afm\Helvetica-Bold.afm">
+      <Link>res\fonts\afm\Helvetica-Bold.afm</Link>
+      <LogicalName>fonts.afm.Helvetica-Bold</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\afm\Helvetica-BoldOblique.afm">
+      <Link>res\fonts\afm\Helvetica-BoldOblique.afm</Link>
+      <LogicalName>fonts.afm.Helvetica-BoldOblique</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\afm\Helvetica-Oblique.afm">
+      <Link>res\fonts\afm\Helvetica-Oblique.afm</Link>
+      <LogicalName>fonts.afm.Helvetica-Oblique</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\afm\Symbol.afm">
+      <Link>res\fonts\afm\Symbol.afm</Link>
+      <LogicalName>fonts.afm.Symbol</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\afm\Times-Bold.afm">
+      <Link>res\fonts\afm\Times-Bold.afm</Link>
+      <LogicalName>fonts.afm.Times-Bold</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\afm\Times-BoldItalic.afm">
+      <Link>res\fonts\afm\Times-BoldItalic.afm</Link>
+      <LogicalName>fonts.afm.Times-BoldItalic</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\afm\Times-Italic.afm">
+      <Link>res\fonts\afm\Times-Italic.afm</Link>
+      <LogicalName>fonts.afm.Times-Italic</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\afm\Times-Roman.afm">
+      <Link>res\fonts\afm\Times-Roman.afm</Link>
+      <LogicalName>fonts.afm.Times-Roman</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\afm\ZapfDingbats.afm">
+      <Link>res\fonts\afm\ZapfDingbats.afm</Link>
+      <LogicalName>fonts.afm.ZapfDingbats</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\cmap\Identity-H">
+      <Link>res\fonts\cmap\Identity-H</Link>
+      <LogicalName>fonts.cmap.Identity-H</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\cmap\Identity-V">
+      <Link>res\fonts\cmap\Identity-V</Link>
+      <LogicalName>fonts.cmap.Identity-V</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\org\pdfclown\documents\functions\" />
+  </ItemGroup>
+</Project>

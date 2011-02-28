@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BDBDC0A1-6937-4BB6-964D-DDC62CE2832F}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>org.pdfclown.samples.cli</RootNamespace>
+    <StartupObject>org.pdfclown.samples.cli.SampleLoader</StartupObject>
+    <AssemblyName>PDFClownCLISamples</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>build\package</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>build\package</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="src\org\pdfclown\samples\cli\AcroFormCreationSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\AcroFormParsingSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\ActionSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\AdvancedPlainTextExtractionSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\AdvancedTextExtractionSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\AnnotationSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\BarcodeSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\BasicTextExtractionSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\BookmarksParsingSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\ComplexTypesettingSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\ContentRemovalSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\ContentScanningSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\ContentTweakingSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\GraphicsSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\HelloWorldSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\ImageExtractionSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\ImageSubstitutionSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\IndirectObjectEditingSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\InlineObjectSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\LinkCreationSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\LinkParsingSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\NamedDestinationSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\namespace.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\NamesParsingSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\PageCoordinatesSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\PageFormatSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\PageManagementSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\PageNumberingSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\PageToFormSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\PageTransitionSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\ParsingSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\Sample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\SampleLoader.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\StandardFontSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\TextFrameSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\TextInfoExtractionSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\TransformationSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\TypesettingSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\Utils.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\WatermarkSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\UnicodeSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\PrimitiveObjectSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\PrintingSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\RenderingSample.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PDFClownCLISamples.exe.config">
+      <Gettext-ScanForTranslations>false</Gettext-ScanForTranslations>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Core" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="src\org\pdfclown\samples\cli\" />
+    <Folder Include="src\org\pdfclown\samples\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\pdfclown.lib\pdfclown.lib.csproj">
+      <Project>{DBED0809-EE4C-45B0-92FA-E4789ECC2AEC}</Project>
+      <Name>pdfclown.lib</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

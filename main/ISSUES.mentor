@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<issueList name="issues" version="0.1.0" xml:lang="en"
+  xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.1"
+  xmlns:db="http://docbook.org/ns/docbook" db:version="5.0"
+  xmlns:xl="http://www.w3.org/1999/xlink"
+  >
+  <meta>
+    <date>2011-02-24</date>
+    <!--
+      'revision' is the current revision of this metadocumentation.
+      Its value should be an incremental counter anchored to the project version,
+      i.e. it should be reset to zero everytime a new project version is created.
+    -->
+    <revision>0</revision>
+    <author>
+      <name>
+        <first>Stefano</first>
+        <last>Chizzolini</last>
+      </name>
+      <contact type="url">http://www.stefanochizzolini.it</contact>
+    </author>
+  </meta>
+  <title>PDF Clown Project</title>
+  <description>
+    <db:para>This is a list of known issues affecting PDF Clown's current release.</db:para>
+  </description>
+  <tip>Known issues</tip>
+  <keywords>PDF, PDF Clown, library, project, issues</keywords>
+  <entries>
+    <limitation>Content rendering and printing: currently at pre-alpha stage (no assumption to work at production level -- implementation is still incomplete).</limitation>
+    <limitation>Text extraction: column layouts and table layouts haven't been supported yet (text is always grouped by row).</limitation>
+    <limitation>Text extraction: embedded CFF font file format hasn't been supported yet.</limitation>
+    <limitation>Text composition: only left-to-right writing systems are currently supported.</limitation>
+    <limitation>Font subsetting: currently not supported (font descriptions are fully embedded).</limitation>
+  </entries>
+</issueList>

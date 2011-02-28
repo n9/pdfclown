@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="PDFClown" version="0.1.0" xml:lang="en"
+  xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.1"
+  xmlns:db="http://docbook.org/ns/docbook" db:version="5.0"
+  xmlns:xl="http://www.w3.org/1999/xlink"
+  >
+  <meta>
+    <date>2011-02-24</date>
+    <!--
+      'revision' is the current revision of this metadocumentation.
+      Its value should be an incremental counter anchored to the project version,
+      i.e. it should be reset to zero everytime a new project version is created.
+    -->
+    <revision>0</revision>
+    <author>
+      <name>
+        <first>Stefano</first>
+        <last>Chizzolini</last>
+      </name>
+      <contact type="url">http://www.stefanochizzolini.it</contact>
+    </author>
+  </meta>
+  <title>PDF Clown Project</title>
+  <description>
+    <db:para>This is the source-code distribution of <db:emphasis role="strong">PDF Clown</db:emphasis>, an abstract library for the manipulation of PDF files implemented in multiple platforms (currently: <db:link xl:href="../java/README.html">Java</db:link> and <db:link xl:href="../dotNET/README.html">.NET</db:link>).</db:para>
+  </description>
+  <keywords>PDF, PDF Clown, library, Java, C#, .NET</keywords>
+  <resources>
+    <resource name="licenses" href="licenses/README.mentor"/>
+    <resource name="doc" href="doc/README.mentor"/>
+    <resource name="PDFClownJava" href="../java/README.mentor"/>
+    <resource name="PDFClownDotNET" href="../dotNET/README.mentor"/>
+    <resource name="res" href="res/README.mentor"/>
+    <resource name="whatsNew" href="WHATSNEW.mentor"/>
+    <resource name="changes" href="CHANGELOG.mentor"/>
+    <resource name="issues" href="ISSUES.mentor"/>
+    <resource name="todo" href="TODO.mentor"/>
+    <resource name="home" href="http://www.pdfclown.org">
+      <title>PDF Clown home page</title>
+      <tip>Project home page</tip>
+    </resource>
+  </resources>
+  <comment>
+    <db:section>
+      <db:title>Community</db:title>
+      <db:para>The <db:link xl:href="http://www.pdfclown.org/community.html">Community page</db:link> guides you through the resources that you can use to ask questions, request new features, report bugs, discuss and submit code contributions and keep yourself up-to-date about the project's development.</db:para>
+    </db:section>
+  </comment>
+  <copyright>
+    <year>2006-2011</year>
+    <holder>
+      <name>
+        <first>Stefano</first>
+        <last>Chizzolini</last>
+      </name>
+      <contact type="url">http://www.stefanochizzolini.it</contact>
+    </holder>
+  </copyright>
+  <license>
+    <inherits>
+      <base name="LGPL" version="3">
+        <title>GNU Lesser General Public License</title>
+        <src type="url">licenses/gnu.org/lgpl.html</src>
+        <src type="url">http://www.gnu.org/licenses/lgpl.html</src>
+        <src type="mail">
+          <name>Free Software Foundation, Inc.</name>
+          <place>51 Franklin St - Fifth Floor</place>
+          <city>Boston</city>
+          <subCountry>MA</subCountry>
+          <country>USA</country>
+          <postalCode>02110-1301</postalCode>
+        </src>
+      </base>
+      <extensions/>
+      <restrictions/>
+    </inherits>
+    <description>
+      <db:para>This program is <db:link xl:href="http://en.wikipedia.org/wiki/Free_software">free software</db:link>; you can redistribute it and/or modify it under the terms of version 3 of the GNU Lesser General Public License as published by the Free Software Foundation.</db:para>
+    </description>
+    <disclaimer><db:para>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.</db:para>
+    <db:para>IN NO EVENT SHALL THE COPYRIGHT HOLDER AND CONTRIBUTORS BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE, EVEN IF THE COPYRIGHT HOLDER AND CONTRIBUTORS HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</db:para>
+    <db:para>THE SOFTWARE PROVIDED HEREIN IS ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER AND CONTRIBUTORS HAVE NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS. THE COPYRIGHT HOLDER AND CONTRIBUTORS MAKE NO REPRESENTATIONS AND EXTEND NO WARRANTIES OF ANY KIND, EITHER IMPLIED OR EXPRESS, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE, OR THAT THE USE OF THE SOFTWARE WILL NOT INFRINGE ANY PATENT, TRADEMARK OR OTHER RIGHTS.</db:para></disclaimer>
+  </license>
+</project>

@@ -1,0 +1,943 @@
+PDF Clown Project - CHANGELOG
+
+Stefano Chizzolini <>
+
+Project version: 0.1.0 -- CHANGELOG revision: 0 (2011-02-24)
+
+---------------
+Introduction
+---------------
+This is a coarsely-grained record of major changes occurred to the PDF Clown Project, from a systematic point of view.
+
+For a more concise list of changes, please see the WHATSNEW [WHATSNEW.html].
+
+
+---------------
+Version 0.1.0
+---------------
+Release date: 2011-02-24
+Backward compatibility: false
+
+This release introduces support to cross-reference-stream-based PDF files (as defined since PDF 1.5 spec) along with page rendering and printing [http://pdfclown.wordpress.com/2010/09/23/waiting-for-pdf-clown-0-1-release/]: a specialized tool provides a convenient way to convert PDF pages into images (aka rasterization).
+
+Lots of minor improvements have been applied too.
+
+ * Main (org.pdfclown)
+  * [add] annotation PDF
+  * [add] class Version
+  * [add] enum VersionEnum
+ * File Serialization (org.pdfclown.tokens)
+  * [add] class CompressedWriter: xref-stream-based serialization.
+  * [add] class Encoding: file encoding.
+  * [add] class ObjectStream
+  * [add] class PlainWriter: plain-xref-table-based serialization.
+  * [add] class XRefStream
+  * [change] class Parser: support to ObjectStream and XRefStream; support to hex PdfTextString.
+  * [change] class Reader: support to xref-stream-based files.
+  * [change] class Writer: generalization to support xref-stream-based serialization.
+  * [change] class XRefEntry: support to xref-stream-based files.
+ * Byte Streaming (org.pdfclown.bytes)
+  * [change] class filters.FlateFilter:
+   * [add] private decodePredictor(byte[],PdfDictionary): supports filter predictors.
+ * Primitive Objects (org.pdfclown.objects)
+  * [add] class PdfNumber
+  * [change] class PdfIndirectObject:
+   * [add] compress(PdfIndirectObject objectStreamIndirectObject), uncompress(): support to object streams.
+  * [change] class PdfInteger: PdfNumber derivation.
+  * [change] class PdfObjectWrapper:
+   * [add] checkCompatibility(Object feature): version compatibility check.
+  * [change] class PdfReal: PdfNumber derivation.
+  * [change] class PdfTextString: hex serialization mode support.
+  * [change] class Rectangle: coordinate revision.
+ * File Structure (org.pdfclown.files)
+  * [change] class File:
+   * [add] save(...): renamed from writeTo(...).
+   * [remove] writeTo(...): renamed to save(...).
+ * Document Structure (org.pdfclown.documents)
+  * [add] class NamedJavaScripts
+  * [add] class functions.Function
+  * [add] class functions.Functions
+  * [add] class functions.Type0Function
+  * [add] class functions.Type2Function
+  * [add] class functions.Type3Function
+  * [add] class functions.Type4Function
+  * [change] class Document:
+   * [add] class Configuration
+   * [add] enum PageLayoutEnum: consolidated from PageLayoutEnum
+   * [add] enum PageModeEnum: consolidated from PageModeEnum
+   * [add] support for printing
+   * [change] getVersion: Version return type.
+  * [change] class Names:
+   * [add] get/setJavaScripts(NamedJavaScripts value)
+  * [change] class Page:
+   * [add] print(Graphics graphics, PageFormat pageFormat, int pageIndex): support for printing.
+   * [add] render(Graphics2D context, Dimension2D size): support for rendering.
+  * [remove] enum PageLayoutEnum: consolidated into Document
+  * [remove] enum PageModeEnum: consolidated into Document
+ * Interaction (org.pdfclown.documents.interaction)
+  * [add] class annotations.Movie: renamed from annotations.MovieAnnotation
+  * [add] class annotations.Sound: renamed from annotations.SoundAnnotation
+  * [change] class navigation.document.Bookmark:
+   * [add] enum FlagsEnum
+   * [add] get/setColor(DeviceRGBColor value)
+   * [add] get/setFlags(EnumSet value)
+  * [remove] class annotations.MovieAnnotation: renamed to annotations.Movie
+  * [remove] class annotations.SoundAnnotation: renamed to annotations.Sound
+ * Content Streaming (org.pdfclown.documents.contents)
+  * [add] class PatternResources
+  * [add] class PropertyList
+  * [add] class PropertyListResources
+  * [add] class ResourceItems
+  * [add] class RotationEnum
+  * [add] class ShadingResources
+  * [add] class WindModeEnum
+  * [add] class colorSpaces.CalColorSpace
+  * [add] class colorSpaces.CalGrayColor
+  * [add] class colorSpaces.CalRGBColor
+  * [add] class colorSpaces.DeviceNColor
+  * [add] class colorSpaces.DeviceNColorSpace
+  * [add] class colorSpaces.IndexedColor
+  * [add] class colorSpaces.IndexedColorSpace
+  * [add] class colorSpaces.LabColor
+  * [add] class colorSpaces.LeveledColor
+  * [add] class colorSpaces.Pattern
+  * [add] class colorSpaces.PatternColorSpace
+  * [add] class colorSpaces.SeparationColor
+  * [add] class colorSpaces.SeparationColorSpace
+  * [add] class colorSpaces.Shading
+  * [add] class colorSpaces.ShadingPattern
+  * [add] class colorSpaces.SpecialColorSpace
+  * [add] class colorSpaces.SpecialDeviceColorSpace
+  * [add] class colorSpaces.TilingPattern
+  * [add] class composition.BlockComposer: renamed from composition.BlockFilter
+  * [add] class composition.PrimitiveComposer: renamed from composition.PrimitiveFilter
+  * [add] class objects.ContentMarker
+  * [add] class objects.MarkedContentPoint
+  * [add] class objects.SetDeviceCMYKFillColor
+  * [add] class objects.SetDeviceCMYKStrokeColor
+  * [add] class objects.SetDeviceGrayFillColor
+  * [add] class objects.SetDeviceGrayStrokeColor
+  * [add] class objects.SetDeviceRGBFillColor
+  * [add] class objects.SetDeviceRGBStrokeColor
+  * [change] class ColorSpaceResources: ResourceItems derivation
+  * [change] class ContentScanner:
+   * [add] getCanvasSize()
+   * [add] getRenderContext()
+   * [add] getRenderObject()
+   * [add] render(Graphics2D, Dimension2D)
+   * [add] render(Graphics2D, Dimension2D, Shape)
+  * [change] class ExtGState
+  * [change] class ExtGStateResources: ResourceItems derivation.
+  * [change] class FontResources: ResourceItems derivation.
+  * [change] interface IContentContext:
+   * [add] getRotation()
+   * [add] render(Graphics2D context, Dimension2D size)
+  * [change] class Resources:
+   * [add] get/setPatterns(PatternResources value)
+   * [add] get/setPropertyLists(PropertyListResources value)
+   * [add] get/setShadings(ShadingResources value)
+  * [change] class XObjectResources: ResourceItems derivation.
+  * [change] class colorSpaces.CalGrayColorSpace
+  * [change] class colorSpaces.CalRGBColorSpace
+  * [change] class colorSpaces.CIEBasedColorSpace
+  * [change] class colorSpaces.Color
+  * [change] class colorSpaces.ColorSpace
+  * [change] class colorSpaces.DeviceCMYKColor
+  * [change] class colorSpaces.DeviceCMYKColorSpace
+  * [change] class colorSpaces.DeviceColor
+  * [change] class colorSpaces.DeviceColorSpace
+  * [change] class colorSpaces.DeviceGrayColor
+  * [change] class colorSpaces.DeviceGrayColorSpace
+  * [change] class colorSpaces.DeviceRGBColor
+  * [change] class colorSpaces.DeviceRGBColorSpace
+  * [change] class colorSpaces.ICCBasedColorSpace
+  * [change] class colorSpaces.LabColorSpace
+  * [change] class objects.BeginMarkedContent: ContentMarker derivation.
+  * [change] class objects.BeginSubpath: support to rendering.
+  * [change] class objects.CloseSubpath: support to rendering.
+  * [change] class objects.CompositeObject: support to rendering.
+  * [change] class objects.ContentObject:
+   * [add] scan(ContentScanner.GraphicsState state)
+   * [remove] applyTo(ContentScanner.GraphicsState state)
+  * [change] class objects.DrawCurve: support to rendering.
+  * [change] class objects.DrawLine: support to rendering.
+  * [change] class objects.DrawRectangle: support to rendering.
+  * [change] class objects.LocalGraphicsState: support to rendering.
+  * [change] class objects.ModifyClipPath: support to rendering.
+  * [change] class objects.ModifyCTM: support to rendering.
+  * [change] class objects.PaintPath: paint-path-related operations consolidation; support to rendering.
+  * [change] class objects.PaintShading:
+   * [add] get/setName(PdfName value)
+   * [add] getShading(IContentContext context)
+  * [change] class objects.PaintXObject:
+   * [add] getXObject(IContentContext context)
+  * [change] class objects.Path: support to rendering.
+  * [change] class objects.SetCharSpace: support to rendering.
+  * [change] class objects.SetExtGState:
+   * [add] getExtGState(IContentContext context)
+  * [change] class objects.SetFillColor: support to rendering.
+  * [change] class objects.SetFillColorSpace: support to rendering.
+  * [change] class objects.SetFont: support to rendering.
+  * [change] class objects.SetLineCap: support to rendering.
+  * [change] class objects.SetLineDash: support to rendering.
+  * [change] class objects.SetLineJoin: support to rendering.
+  * [change] class objects.SetLineWidth: support to rendering.
+  * [change] class objects.SetMiterLimit: support to rendering.
+  * [change] class objects.SetStrokeColor: support to rendering.
+  * [change] class objects.SetStrokeColorSpace: support to rendering.
+  * [change] class objects.SetTextLead: support to rendering.
+  * [change] class objects.SetTextMatrix: support to rendering.
+  * [change] class objects.SetTextRenderMode: support to rendering.
+  * [change] class objects.SetTextRise: support to rendering.
+  * [change] class objects.SetTextScale: support to rendering.
+  * [change] class objects.SetWordSpace: support to rendering.
+  * [change] class objects.Shading:
+   * [add] getName()
+   * [add] getResource(IContentContext context)
+  * [change] class objects.ShowText: support to rendering.
+  * [change] class objects.TranslateTextRelative: support to rendering.
+  * [change] class objects.TranslateTextToNextLine: support to rendering.
+  * [change] class objects.XObject:
+   * [add] getResource(IContentContext context)
+  * [change] class xObjects.FormXObject: support to rendering.
+  * [remove] class composition.BlockFilter: renamed to composition.BlockComposer
+  * [remove] class composition.PrimitiveFilter: renamed to composition.PrimitiveComposer
+  * [remove] class objects.CloseFillStroke: consolidated into objects.PaintPath
+  * [remove] class objects.CloseFillStrokeEvenOdd: consolidated into objects.PaintPath
+  * [remove] class objects.CloseStroke: consolidated into objects.PaintPath
+  * [remove] class objects.EndPathNoOp: consolidated into objects.PaintPath
+  * [remove] class objects.Fill: consolidated into objects.PaintPath
+  * [remove] class objects.FillEvenOdd: consolidated into objects.PaintPath
+  * [remove] class objects.FillStroke: consolidated into objects.PaintPath
+  * [remove] class objects.FillStrokeEvenOdd: consolidated into objects.PaintPath
+  * [remove] class objects.ModifyClipPathEvenOdd: consolidated into objects.PaintPath
+  * [remove] class objects.Stroke: consolidated into objects.PaintPath
+ * Tools (org.pdfclown.tools)
+  * [add] class Renderer: document renderer and printer.
+  * [change] class PageManager:
+   * [add] getSize(Page page), getSize(Page page, Set visitedReferences): page size calculation.
+   * [add] split(int... indexes): splits the document into multiple subdocuments delimited by the specified page indexes.
+   * [add] split(long maxDataSize): splits the document into multiple subdocuments on maximum file size.
+
+---------------
+Version 0.0.8
+---------------
+Release date: 2010-08-21
+Backward compatibility: false
+
+This release is focused on text extraction [http://pdfclown.wordpress.com/2010/01/02/upcoming-0-0-8-whats-going-to-be-new/] support: a specialized tool provides, along with plain-text extraction, advanced functionalities such as full graphic state of extracted text (font, font size, text color, text rendering mode, text position...), text filtering by area, text grouping and sorting.
+
+Lots of minor improvements have been applied too.
+
+ * Byte Streaming (it.stefanochizzolini.clown.bytes)
+  * [add] class filters.ASCII85Filter
+ * File Structure (it.stefanochizzolini.clown.files)
+  * [change] class File:
+   * [add] save(),save(SerializationModeEnum): saves the PDF file overwriting the existing file-system file.
+ * Primitive Objects (it.stefanochizzolini.clown.objects)
+  * [add] class PdfNamedObjectWrapper: named object base class.
+  * [add] class Rectangle: as a derivative structure (like NameTree), it inherits from PdfObjectWrapper.
+  * [change] class NameTree: B-tree algorithm support added.
+  * [change] class PdfArray:
+   * [add] resolve(int): provides direct reference resolution of the requested array item.
+  * [change] class PdfDictionary:
+   * [add] resolve(PdfName): provides direct reference resolution of the requested dictionary item.
+  * [change] class PdfDirectObject:
+   * [add] Comparable implementation.
+  * [remove] class PdfRectangle: substituted by Rectangle, in order to harmonize with other derivative structures like NameTree.
+ * Document Structure (it.stefanochizzolini.clown.documents)
+  * [add] class interaction.actions.GoToDestination: base go-to destination model.
+  * [add] class interaction.actions.GoToNonLocal: base go-to-nonlocal destination model.
+  * [add] interface interaction.actions.IGoToAction: marker interface for go-to-like actions.
+  * [add] interface interaction.ILink: generic link interface.
+  * [change] class Names:
+   * [add] resolve(PdfString)
+  * [change] class filespecs.FileSpec:
+   * [add] get/setFilename(),get/setMacFilename(),get/setUnixFilename(),get/setWinFilename(): renamed from get/setName(),get/setMacName(),get/setUnixName(),get/setWinName().
+   * [change] NamedObjectWrapper derivation.
+   * [remove] get/setName(),get/setMacName(),get/setUnixName(),get/setWinName(): renamed to get/setFilename(),get/setMacFilename(),get/setUnixFilename(),get/setWinFilename().
+  * [change] class interaction.actions.GoTo3dView:
+   * [add] IGoToAction implementation.
+  * [change] class interaction.actions.GoToEmbedded:
+   * [change] GoToNonLocal derivation.
+  * [change] class interaction.actions.GoToFirstPage:
+   * [add] IGoToAction implementation.
+  * [change] class interaction.actions.GoToLastPage:
+   * [add] IGoToAction implementation.
+  * [change] class interaction.actions.GoToLocal:
+   * [change] GoToDestination derivation.
+  * [change] class interaction.actions.GoToNextPage:
+   * [add] IGoToAction implementation.
+  * [change] class interaction.actions.GoToPreviousPage:
+   * [add] IGoToAction implementation.
+  * [change] class interaction.actions.GoToRemote:
+   * [change] GoToNonLocal derivation.
+  * [change] class interaction.actions.GoToThread:
+   * [add] IGoToAction implementation.
+  * [change] class interaction.actions.GoToURI:
+   * [add] IGoToAction implementation.
+  * [change] class interaction.annotations.AnnotationActions:
+   * [add] Map implementation.
+  * [change] class interaction.annotations.Link:
+   * [add] ILink implementation.
+  * [change] class interaction.navigation.document.Bookmark:
+   * [add] ILink implementation.
+   * [remove] get/setPreviousSibling(),get/setNextSibling(): interface normalization.
+  * [change] class interaction.navigation.document.Destination:
+   * [change] NamedObjectWrapper derivation.
+ * Content Streaming (it.stefanochizzolini.clown.documents.contents)
+  * [add] class ExtGState
+  * [add] class ExtGStateResources
+  * [add] interface ITextString
+  * [add] class TextChar
+  * [add] class TextStyle
+  * [add] class fonts.CompositeFont
+  * [add] class fonts.SimpleFont
+  * [add] class fonts.TrueTypeFont
+  * [add] class fonts.Type0Font
+  * [add] class fonts.Type2Font
+  * [add] class objects.PaintShading
+  * [add] class objects.SetExtGState
+  * [add] class objects.Shading
+  * [add] class objects.ShowAdjustedText
+  * [add] class objects.ShowSimpleText
+  * [add] class objects.ShowTextToNextLine
+  * [change] class ContentScanner:
+   * [add] getCurrentWrapper(): gets high-level information (text, image...) about the current content object.
+   * [add] move(int): allows moving the cursor to an arbitrary position.
+   * [add] moveEnd(): allows moving the cursor after the last content object.
+   * [add] moveStart(): allows moving the cursor before the first content object.
+   * [remove] getLeaf(),getLeafLevel(): discarded.
+  * [change] class Resources:
+   * [add] get/setExtGStates(ExtGStateResources): graphics state parameter dictionaries.
+  * [change] class objects.ContentObject:
+   * [add] applyTo(ContentScanner.GraphicsState): applies the object's state to the specified graphics state.
+  * [change] class objects.InlineImage:
+   * [add] getSize(): image size.
+  * [change] class objects.InlineImageHeader:
+   * [add] Map implementation.
+  * [change] class objects.ModifyCTM:
+   * [add] applyTo(ContentScanner.GraphicsState)
+   * [add] getValue()
+   * [remove] applyTo(double[]): substituted by applyTo(ContentScanner.GraphicsState).
+   * [remove] getMatrix(): substituted by getValue().
+  * [change] class objects.SetTextMatrix:
+   * [add] getValue()
+   * [remove] getMatrix(): substituted by getValue().
+  * [change] class objects.ShowText: abstract (text operation model has been expanded and refined).
+  * [remove] class fonts.OpenTypeFont: substituted by Type2Font and TrueTypeFont.
+  * [remove] class objects.PaintShadingObject: substituted by PaintShading.
+  * [remove] class objects.ShadingObject: substituted by Shading.
+
+---------------
+Version 0.0.7
+---------------
+Release date: 2009-01-02
+Backward compatibility: false
+
+This release expands the support to interactive features: actions, annotations, acroforms, page-level navigation (transitions), improved document-level navigation (destinations), file specifications...
+
+Path drawing model has been implemented, along with enhanced content scanning.
+
+ * Serialization (it.stefanochizzolini.clown.tokens)
+  * [change] class XRefEntry:
+   * [add] class UsageEnum
+  * [remove] class XRefEntryUsageEnum: substituted by XRefEntry.UsageEnum.
+ * File Structure (it.stefanochizzolini.clown.files)
+  * [change] class File:
+   * [fix:0.0.6:1:SC] file lock is now appropriately released on object disposal. Symptom: after a file-system file was opened it kept being locked undefinitely. Cause: lack of explicit disposal.
+  * [remove] class XRefEntryUsageEnum: substituted by XRefEntry.UsageEnum.
+ * Primitive Objects (it.stefanochizzolini.clown.objects)
+  * [add] class NameTree
+  * [change] class IPdfIndirectObject:
+   * [add] setDataObject(PdfDataObject): the data object associated to an indirect object can now be replaced.
+  * [remove] class PdfNameTree: substituted by NameTree.
+  * [remove] class PdfNull
+ * Document Structure (it.stefanochizzolini.clown.documents)
+  * [add] class DocumentActions
+  * [add] class NamedDestinations
+  * [add] class NamedEmbeddedFiles
+  * [add] class PageActions
+  * [add] class PageAnnotations
+  * [add] class fileSpecs.EmbeddedFile
+  * [add] class fileSpecs.FileSpec
+  * [add] class fileSpecs.RelatedFiles
+  * [add] class multimedia.Movie
+  * [add] class multimedia.Sound
+  * [change] class Document:
+   * [add] get/setActions(): document actions.
+   * [add] get/setForm(): acroform.
+   * [add] get/setVersion()
+  * [change] class Page:
+   * [add] get/setActions(): page actions.
+   * [add] get/setAnnotations(): page annotations.
+   * [add] get/setDuration()
+   * [add] get/setTabOrder()
+   * [add] get/setTransition()
+   * [remove] getNext(): redundant (see Pages collection).
+   * [remove] getPage(int): redundant (see Pages collection).
+   * [remove] getPrevious(): redundant (see Pages collection).
+ * Content Streaming (it.stefanochizzolini.clown.documents.contents)
+  * [add] class ColorSpaceResources
+  * [add] class FontResources
+  * [add] class XObjectResources
+  * [add] class objects.BeginMarkedContent
+  * [add] class objects.BeginSubpath
+  * [add] class objects.CloseFillStroke
+  * [add] class objects.CloseFillStrokeEvenOdd
+  * [add] class objects.CloseStroke
+  * [add] class objects.CloseSubpath
+  * [add] class objects.DrawCurve
+  * [add] class objects.DrawLine
+  * [add] class objects.EndMarkedContent
+  * [add] class objects.EndPathNoOp
+  * [add] class objects.FillEvenOdd
+  * [add] class objects.FillStrokeEvenOdd
+  * [add] class objects.MarkedContent
+  * [add] class objects.ModifyClipPath
+  * [add] class objects.ModifyClipPathEvenOdd
+  * [add] class objects.PaintPath
+  * [add] class objects.Path
+  * [change] class ContentScanner:
+   * [change] getCurrent(),moveFirst(),moveLast(),moveNext(),remove(),setCurrent(): revised implementation.
+   * [remove] moveInnerNext(): consolidated into moveNext().
+  * [change] class composition.PrimitiveFilter:
+   * [add] beginMarkedContent(PdfName): marked content insertion.
+   * [add] clip(): area clipping.
+   * [add] closePath(): path closing.
+   * [add] drawArc(...): arc drawing.
+   * [add] drawCurve(...): Bezier curve drawing.
+   * [add] drawEllipse(RectangularShape): ellipse drawing.
+   * [add] drawLine(...): line drawing.
+   * [add] drawPolygon(Point2D[]): polygon drawing.
+   * [add] drawPolyline(Point2D[]): multiple line drawing.
+   * [add] drawRectangle(RectangularShape,double): rounded rectangle drawing.
+   * [add] drawSpiral(Point2D,double,double,double,double): spiral drawing.
+   * [add] rotate(double,Point2D): translated rotation.
+   * [add] showText(...,Action): link drawing.
+   * [change] showText(...): returns text bounding box vertices. Furthermore, showText(String) text location has been harmonized to the top-left coordinate system origin (it used the bottom-left native PDF origin).
+  * [fix:1909704] Namespace collision resolved (see ColorSpaceResources, FontResources, XObjectResources). Symptom: case-insensitive programming languages experienced namespace collision. Cause: some classes (ColorSpaces, Fonts, XObjects) had names equivalent to subnamespaces (colorSpaces, fonts, xObjects).
+  * [remove] class ColorSpaces: substituted by ColorSpaceResources.
+  * [remove] class Fonts: substituted by FontResources.
+  * [remove] class XObjects: substituted by XObjectResources.
+ * Interaction (it.stefanochizzolini.clown.documents.interaction)
+  * [add] class actions.Action
+  * [add] class actions.ChainedActions
+  * [add] class actions.DoTransition
+  * [add] class actions.GoTo3dView
+  * [add] class actions.GoToEmbedded
+  * [add] class actions.GoToFirstPage
+  * [add] class actions.GoToLastPage
+  * [add] class actions.GoToLocal
+  * [add] class actions.GoToNextPage
+  * [add] class actions.GoToPreviousPage
+  * [add] class actions.GoToRemote
+  * [add] class actions.GoToThread
+  * [add] class actions.GoToURI
+  * [add] class actions.ImportData
+  * [add] class actions.JavaScript
+  * [add] class actions.Launch
+  * [add] class actions.NamedAction
+  * [add] class actions.PlayMovie
+  * [add] class actions.PlaySound
+  * [add] class actions.Rendition
+  * [add] class actions.ResetForm
+  * [add] class actions.SetOCGState
+  * [add] class actions.SubmitForm
+  * [add] class actions.ToggleVisibility
+  * [add] class annotations.Annotation
+  * [add] class annotations.AnnotationActions
+  * [add] class annotations.Appearance
+  * [add] class annotations.AppearanceCharacteristics
+  * [add] class annotations.AppearanceStates
+  * [add] class annotations.Border
+  * [add] class annotations.CalloutNote
+  * [add] class annotations.Caret
+  * [add] class annotations.DualWidget
+  * [add] class annotations.Ellipse
+  * [add] class annotations.FileAttachment
+  * [add] class annotations.Line
+  * [add] class annotations.Link
+  * [add] class annotations.MovieAnnotation
+  * [add] class annotations.Note
+  * [add] class annotations.Polygon
+  * [add] class annotations.Polyline
+  * [add] class annotations.Popup
+  * [add] class annotations.Rectangle
+  * [add] class annotations.RubberStamp
+  * [add] class annotations.Scribble
+  * [add] class annotations.Shape
+  * [add] class annotations.SoundAnnotation
+  * [add] class annotations.TextMarkup
+  * [add] class annotations.VertexShape
+  * [add] class annotations.WidgetActions
+  * [add] class annotations.Widget
+  * [add] class forms.ButtonField
+  * [add] class forms.CheckBox
+  * [add] class forms.ChoiceField
+  * [add] class forms.ChoiceItem
+  * [add] class forms.ChoiceItems
+  * [add] class forms.ComboBox
+  * [add] class forms.Field
+  * [add] class forms.FieldActions
+  * [add] class forms.Fields
+  * [add] class forms.FieldWidgets
+  * [add] class forms.Form
+  * [add] class forms.ListBox
+  * [add] class forms.PushButton
+  * [add] class forms.RadioButton
+  * [add] class forms.SignatureField
+  * [add] class forms.TextField
+  * [add] class forms.styles.DefaultStyle
+  * [add] class forms.styles.FieldStyle
+  * [add] class navigation.document.Destination
+  * [add] class navigation.document.LocalDestination
+  * [add] class navigation.document.RemoteDestination
+  * [add] class navigation.page.Transition
+  * [add] class viewer.ViewerPreferences
+  * [remove] class Destination: substituted by navigation.document.Destination
+  * [remove] class Destinations: substituted by it.stefanochizzolini.clown.documents.NamedDestinations
+  * [remove] class DestinationModeEnum: substituted by navigation.document.Destination.ModeEnum
+  * [remove] class ViewerPreferences: substituted by viewer.ViewerPreferences
+
+---------------
+Version 0.0.6
+---------------
+Release date: 2008-05-01
+Backward compatibility: false
+
+This release is focused upon Unicode support, at both content-stream level (i.e. page text) and document level (i.e. metadata text); it particularly implies the explicit encoding support by font objects and the reimplementation of the string object model to ensure a robust treatment of encoding matters.
+
+Other relevant enhancements involve content composition (enriched by the introduction of barcode support, paragraph-level horizontal alignment, etc.) and page management (facilitated by the introduction of a specialized tool).
+
+ * Primitive Objects (it.stefanochizzolini.clown.objects)
+  * [add] class PdfString: base string object, both literal and hexadecimal.
+  * [add] class PdfTextString: specialized string (derived from PdfString) for metadata text, both ASCII and Unicode.
+  * [change] class PdfAtomicObject<T>:
+   * [add] get/setRawValue(T): low-level representation of the data.
+   * [add] get/setValue(Object): high-level representation of the data.
+   * [remove] get/setValue(T): substituted by get/setValue(Object).
+  * [change] class PdfDate: extends PdfString
+  * [change] class PdfDirectObject:
+   * [remove] toPdf(): converged to writeTo(IOutputStream).
+  * [change] class PdfStream
+   * [fix:1909707:AH] writeTo(IOutputStream): end-of-line markers are now correct. Symptom: validation failure. Cause: invalid end-of-line marker for stream objects.
+   * [fix:0.0.5:1:SC] getBody(boolean): stream filter chains are now treated correctly. Symptom: stream objects encoded with multiple filters fail to be accessed. Cause: failure dealing with filter chains.
+  * [remove] interface IPdfString: substituted by PdfString as base string object.
+  * [remove] class PdfHex: substituted by PdfString (hexadecimal mode).
+  * [remove] class PdfLiteral: substituted by PdfString (content stream text in literal mode) and PdfTextString (metadata text).
+ * Content Streaming (it.stefanochizzolini.clown.documents.contents)
+  * [add] class entities.Barcode: base barcode object.
+  * [add] class entities.EAN13Barcode: EAN13 barcode object.
+  * [change] class ContentScanner
+   * [remove] class TextState: incorporated within GraphicsState
+  * [change] interface IContentEntity
+   * [add] toInlineObject(PrimitiveFilter): renders and shows the entity into the given inline context.
+   * [remove] toInlineObject(IContentContext): substituted by toInlineObject(PrimitiveFilter).
+  * [change] class composition.BlockFilter
+   * [add] showBreak(AlignmentXEnum), showBreak(Dimension2D,AlignmentXEnum): horizontal alignment at paragraph level.
+  * [change] class composition.PrimitiveFilter
+   * [change] showText(...): explicit text encoding support added.
+  * [change] class fonts.Font
+   * [add] encode(String)/decode(byte[]): text encoding/decoding.
+  * [change] class fonts.OpenTypeFont: Type0/Unicode support added.
+ * Tools (it.stefanochizzolini.clown.tools)
+  * [add] class PageManager: exposes common page operations (insertion, removal, movement...).
+
+---------------
+Version 0.0.5
+---------------
+Release date: 2007-12-12
+Backward compatibility: false
+
+This release is focused upon consolidating and simplifying the functionalities introduced in the previous release. Particularly, content reuse and composition have been further improved -- for example: page conversion into reusable forms, automation of boiler-plate activities such as resources management, a new ready-to-use tool for easy content stamping and watermarking...
+
+ * Serialization (it.stefanochizzolini.clown.tokens)
+  * [change] class Parser
+   * [fix:0.0.4:1] retrieveXRefOffset(long): the smallest PDF files are now supported. Symptom: the smallest PDF files fail to be loaded. Cause: less-than-1024-byte-long PDF files caused the pointer to fall outside the available data range.
+   * [fix:0.0.4:4] moveNext(): hexadecimal strings are now parsed correctly. Symptom: the hexadecimal content lacks its first character. Cause: the parsing algorithm skipped after the first character, inadvertently overlooking it.
+  * [change] class Writer
+   * [fix:0.0.4:5] writeStandard(): files with original multiple-section cross-reference tables are now handled correctly. Symptom: opening the modified file with a viewer such as Adobe Reader, a "Repair" dialog box is shown to notify the malformation. Cause: existing "Prev" entry inside the trailer dictionary was not handled for deletion despite the xref table had been consolidated into a single section.
+ * Document Structure (it.stefanochizzolini.clown.documents)
+  * [change] class Page: implements IContentEntity
+ * Content Streaming (it.stefanochizzolini.clown.documents.contents)
+  * [add] interface IContentEntity: grants convertion of a generic content source to PDF content. This abstraction greatly improves the versatility of content manipulation, allowing seamless transformation and reuse of contents.
+  * [change] class ContentScanner
+   * [add] moveFirst(),moveLast()
+  * [change] interface IContentContext: extends IContentEntity.
+  * [change] class composition.PrimitiveFilter
+   * [add] add(ContentObject): substitutes add(Operation) for generalization purposes.
+   * [change] showText(...): signature change.
+   * [change] showXObject(...): signature change and reimplementation.
+   * [remove] add(Operation): redefined as add(ContentObject).
+  * [change] class entities.Entity: implements IContentEntity.
+  * [change] class objects.InlineImage
+   * [fix:0.0.4:3] writeTo(IBuffer): serialization is now valid. Symptom: inline image objects were corrupted. Cause: serialization syntax was corrupted by a missing new-line symbol.
+  * [change] class objects.InlineImageHeader
+   * [fix:0.0.4:2] constructor(List<PdfDirectObject>): instantiation is now successful. Symptom: inline image objects failed to instantiate properly. Cause: operation operator was erroneously set to null.
+  * [change] class xObjects.FormXObject: implements IContentEntity.
+  * [change] class xObjects.XObject
+   * [add] getMatrix(): support to coordinate transformation from object space to user space.
+ * Tools (it.stefanochizzolini.clown.tools)
+  * [add] class PageStamper: greatly simplifies content insertion on the background and foreground of existing pages.
+
+---------------
+Version 0.0.4
+---------------
+Release date: 2007-09-15
+Backward compatibility: false
+
+This release implements the 2nd (and final) level of the content stream stack (graphics object level [PDF:1.6:4.1], i.e. operations aggregation within corresponding compound objects like text, path, shading etc.).
+
+Although this portion is architecturally complete, the content stream model is still partial as it implements only the main content objects (over 40 new classes, distributed among operations and composite objects like Text, InlineImage and so on): remaining content objects will be progressively implemented in the next releases.
+
+NOTE: the 1st level of the content stream stack (operation level [PDF:1.6:3.7.1], i.e. operands aggregation within corresponding atomic objects known as operations) is available since version 0.0.2.
+
+ * Primitive Objects (it.stefanochizzolini.clown.objects)
+  * [add] class PdfNameTree [PDF:1.6:3.8.5]
+ * File Structure (it.stefanochizzolini.clown.files)
+  * [change] class File
+   * [add] File(String): shortcut for opening an existing file with a specified file-system path instead of bothering about streams.
+   * [add] register(PdfDataObject): shortcut for registering internal data objects into the indirect objects collection.
+   * [add] writeTo(string,SerializationModeEnum): shortcut for saving the file to a specified file-system path instead of bothering about streams.
+ * Document Structure (it.stefanochizzolini.clown.documents)
+  * [add] class Names [PDF:1.6:3.6.3]
+  * [change] class Document
+   * [add] getNames(),setNames(Names): support to the name dictionary [PDF:1.6:3.6.3].
+   * [add] getPageSize(),setPageSize(Dimension2D): default page size.
+   * [add] getSize(): document overall size.
+   * [remove] getPageWidth(),setPageWidth(double),getPageHeight(),setPageHeight(double): redundant (see getPageSize()).
+  * [change] class Page
+   * [add] getInheritableAttribute(PdfName): support to inheritable attributes.
+   * [add] getSize(),setSize(Dimension2D): page size.
+   * [change] constructors: enhanced initialization.
+   * [remove] getWidth(),setWidth(double),getHeight(),setHeight(double): redundant (see getSize()).
+  * [change] class PageFormat
+   * [add] ANSI series [ANSI/ASME Y14.1]
+   * [add] Architectural series
+ * Interaction (it.stefanochizzolini.clown.documents.interaction)
+  * [add] class Destinations [PDF:1.6:8.2.1]
+  * [change] class navigation.document.Bookmark
+   * [change] getDestination(): support to named destinations [PDF:1.6:8.2.1].
+ * Content Streaming (it.stefanochizzolini.clown.documents.contents)
+  * [add] class Contents: content stream representation as a list of content objects.
+  * [add] class ContentScanner: graphics state scanner of a list of content objects (see Contents class).
+  * [add] interface IContentContext: former IContentStreamContext.
+  * [add] class LineDash
+  * [add] class composition.PrimitiveFilter
+  * [add] class objects.BeginInlineImage
+  * [add] class objects.BeginText
+  * [add] class objects.CompositeObject
+  * [add] class objects.ContainerObject
+  * [add] class objects.ContentObject: root object from which both operations and graphics objects derive.
+  * [add] class objects.DrawRectangle
+  * [add] class objects.EndInlineImage
+  * [add] class objects.EndText
+  * [add] class objects.Fill
+  * [add] class objects.GraphicsObject
+  * [add] class objects.InlineImage
+  * [add] class objects.InlineImageBody
+  * [add] class objects.InlineImageHeader
+  * [add] class objects.LocalGraphicsState
+  * [add] class objects.ModifyCTM
+  * [add] class objects.PaintShadingObject
+  * [add] class objects.PaintXObject
+  * [add] class objects.RestoreGraphicsState
+  * [add] class objects.SaveGraphicsState
+  * [add] class objects.SetCharSpace
+  * [add] class objects.SetFillColor
+  * [add] class objects.SetFillColorSpace
+  * [add] class objects.SetFont
+  * [add] class objects.SetLineCap
+  * [add] class objects.SetLineDash
+  * [add] class objects.SetLineJoin
+  * [add] class objects.SetLineWidth
+  * [add] class objects.SetMiterLimit
+  * [add] class objects.SetStrokeColor
+  * [add] class objects.SetStrokeColorSpace
+  * [add] class objects.SetTextLead
+  * [add] class objects.SetTextMatrix
+  * [add] class objects.SetTextRenderMode
+  * [add] class objects.SetTextRise
+  * [add] class objects.SetTextScale
+  * [add] class objects.SetWordSpace
+  * [add] class objects.ShadingObject
+  * [add] class objects.ShowText
+  * [add] class objects.Stroke
+  * [add] class objects.Text
+  * [add] class objects.TranslateTextRelative
+  * [add] class objects.TranslateTextToNextLine
+  * [add] class objects.XObject
+  * [change] class colorSpaces.Color
+   * [add] getColorSpace()
+   * [add] getComponents()
+  * [change] class colorSpaces.ColorSpace
+   * [add] getColor(PdfDirectObject[])
+   * [add] getDefaultColor()
+  * [change] class composition.BlockFilter
+   * [change] showText(String): line break character management implemented.
+  * [change] class entities.Entity
+   * [add] createInlineObject(): substitutes showInline(ContentBuilder).
+   * [remove] showInline(ContentBuilder): substituted by createInlineObject().
+  * [change] class entities.Image
+   * [add] get(String): shortcut for getting an image from a specified file-system path instead of bothering about streams.
+  * [change] class fonts.OpenTypeFont
+   * [add] OpenTypeFont(Document,String): shortcut for getting an OpenType font from a specified file-system path instead of bothering about streams.
+  * [change] class objects.Operation
+   * [add] get(String,List<PdfDirectObject>): factory method for operations.
+   * [change] extends objects.ContentObject.
+  * [change] class tokens.Parser
+   * [add] parseContentObject(),parseContentObjects(): 2nd level parsing (operations aggregation into graphics objects)
+  * [change] class xObjects.FormXObject
+   * [add] getSize(),setSize(Dimension2D): form size.
+   * [remove] getWidth(),setWidth(double),getHeight(),setHeight(double): substituted by getSize(),setSize(Dimension2D).
+  * [remove] class ContentStream,ContentStreams: substituted by Contents.
+  * [remove] interface IContentStreamContext: substituted by IContentContext.
+  * [remove] class composition.ContentBuilder: substituted by composition.PrimitiveFilter.
+
+---------------
+Version 0.0.3
+---------------
+Release date: 2007-05-05
+Backward compatibility: false
+
+This release introduces comprehensive font management (OpenType/TrueType and Standard Type 1 font collection) and positional typesetting facilities.
+
+ * General
+  * [change] Project subnamespaces have been reorganized to harmonize with the abstract design.
+ * Byte Streaming (it.stefanochizzolini.clown.bytes)
+  * [change] interface IInputStream
+   * [add] readLine()
+   * [add] readShort()
+   * [add] readUnsignedByte()
+   * [add] readUnsignedShort()
+ * Primitive Objects (it.stefanochizzolini.clown.objects)
+  * [change] class PdfLiteral
+   * [add] static String toPdf(String): escape characters management.
+  * [change] class PdfName
+   * [add] void setValue(String): escape characters management.
+   * [add] String toString(): escape characters management.
+  * [change] class PdfStream
+   * [add] IBuffer getBody(boolean): decoding option.
+ * Content Streaming (it.stefanochizzolini.clown.documents.contents)
+  * [add] class PageFormat
+  * [add] class composition.BlockFilter
+  * [add] class fonts.OpenTypeFont
+  * [add] class fonts.Type1Font
+  * [change] class composition.ContentBuilder
+   * [add] graphics state stack management.
+   * [add] public void showText(...): text alignment management.
+   * [fix] drawRectangle(RectangularShape): vertical origin is adjusted to canvas orientation. Symptom: rectangles aren't shown at the intended vertical location. Cause: vertical origin was interpreted as raw position (i.e. without adjustment).
+   * [fix] translateTextRelative(double,double): vertical offset is adjusted to canvas orientation. Symptom: text vertical translation is opposite to the intended. Cause: vertical offset was interpreted as raw translation (i.e. without adjustment).
+  * [change] class entities.Entity
+   * [change] showInline(ContentBuilder): was showInline(ContentStream)
+  * [change] class entities.Image
+   * [add] static Image get(IInputStream)
+  * [change] class fonts.Font
+   * [add] enum FlagsEnum
+   * [add] static double getScalingFactor(double)
+   * [add] double getAscent(double), double getDescent(double)
+   * [add] EnumSet getFlags()
+   * [add] double getKernedWidth(String,double)
+   * [add] abstract int getKerning(char,char), abstract int getKerning(String), double getKerning(String,double)
+   * [add] double getLineHeight(double)
+   * [add] abstract int getWidth(char), abstract int getWidth(String), double getWidth(String,double)
+   * [change] static Font wrap(PdfReference): refined font instantiation
+  * [change] class fonts.StandardType1Font: extends fonts.Type1Font (was fonts.Font)
+   * [change] enum FamilyNameEnum
+    * [add] Symbol
+    * [add] ZapfDingbats
+  * [remove] class PageFormatEnum: it was too limiting (replaced with PageFormat class)
+
+---------------
+Version 0.0.2
+---------------
+Release date: 2006-12-19
+Backward compatibility: false
+
+The main objective of this release is to enable serialization and deserialization of PdfStream objects and consequently to allow parsing and editing of content streams. In order to reach this result it introduces stream filters (encoding/decoding), optimized byte streaming interfaces, enhanced indirect object management and minor bug fixes, along with the usual pervasive revision of the entire codebase.
+
+ * Byte Streaming (it.stefanochizzolini.clown.byteStreaming)
+  * [change] Buffer
+   * [add] Buffer(byte[] data)
+   * [change] delete(), get*(), replace()
+   * [remove] hashCode(): default inherited implementation suffices
+  * [change] IBuffer
+   * [add] void decode(Filter filter): support to stream decoding
+   * [add] byte[] encode(Filter filter): support to stream encoding
+   * [add] void insert(int index,IInputStream data)
+   * [add] void replace(int index,IInputStream data)
+   * [change] inherits from IInputStream: was ISequence
+   * [change] void append(IInputStream data): was void append(ISequence data)
+   * [change] int getByte(int): was byte getByte(int)
+   * [remove] append(char)
+   * [remove] getByteArray(int)
+  * [change] IInputStream
+   * [add] ISequence members
+   * [remove] readChar()
+   * [remove] readLine()
+  * [change] IOutputStream
+   * [add] write(IInputStream)
+  * [remove] ISequence
+ * Serialization (it.stefanochizzolini.clown.serialization)
+  * [add] Filters (serialization.filters namespace)
+   * [add] Filter abstract class
+   * [add] FlateFilter class
+  * [change] Parser
+   * [add] getStream()
+   * [change] retrieveXRefOffset(): chunkSize = 1024 (it was 256).
+   * [fix] moveNext(): PdfName hexadecimally-coded characters are now left unchanged for consistency reasons (unescaped string can be retrieved using PdfName.toString() method). Symptom: corrupted serialization of PDF files containing "#20" (or whatever else) escaped character in PdfName objects. Cause: during deserialization parsing, PdfName objects were unescaped, without escaping them back on the following serialization (corrupted PdfName objects).
+   * [fix] parsePdfObject(): current pointer position is saved anytime the method calls external objects. Symptom: PdfStream corrupted body. Cause: File.resolve(dictionary.get(PdfName.Length) caused parsing stream to unexpectedly shift its current position to an undefined location.
+   * [fix] parsePdfObject(): now only the PdfReference object is instantiated instead of its PdfIndirectObject counterpart. Symptom: phantom PdfIndirectObject state modifications. Cause: in case of late update, PdfIndirectObject objects didn't work consistently because in the meantime they could be instantiated multiple times, forking the same indirect object into independent, redundant states.
+   * [remove] read*(): they were redundant and out-of-context (too low-level)
+  * [change] Reader
+   * [change] readTrailer()
+  * [change] TokenTypeEnum.Unknown: renamed to Keyword (more informative)
+  * [change] Writer
+   * [add] writeStandard(): arbitrary binary characters (code >= 128) for ensuring proper behavior of file transfer applications.
+   * [change] writeIncremental(): free xref entries optimization
+ * Primitive Objects (it.stefanochizzolini.clown.objects)
+  * [change] PdfDirectObject
+   * [add] toPdf()
+  * [change] PdfAtomicObject
+   * [remove] toPdf(): transferred to an ancestor (PdfDirectObject) for generalization
+  * [change] PdfNull: unique static object
+  * [change] PdfStream
+   * [change] getBody(), writeTo(stream): transparent filtering introduced
+   * [remove] setBody(), setHeader(): might violate object integrity
+  * [change] PdfReference: reimplementation (extensive refactoring)
+  * [change] PdfIndirectObject: reimplementation (extensive refactoring)
+  * [change] IPdfIndirectObject
+   * [add] delete(), clone(file)
+  * [change] PdfObjectWrapper
+   * [add] delete()
+   * [change] getDocument(), getFile(): simplification
+ * File Structure (it.stefanochizzolini.clown.fileStructure)
+  * [change] IndirectObjects: reimplementation (extensive refactoring)
+   * [add] update(object)
+   * [add] wokenObjects: for original indirect objects not yet updated (avoids duplications on parsing)
+   * [change] add(index,object), addAll(index,collection), clear(): UnsupportedOperationException
+   * [change] get(index)
+   * [change] set(index,object): UnsupportedOperationException (updates must be managed directly by PdfIndirectObject.update())
+   * [impl] remove(index)
+   * [remove] getDataObject(): transferred to PdfIndirectObject
+ * Document Structure (it.stefanochizzolini.clown.documentStructure)
+  * [change] Document
+   * [add] contextualize(), contextualize(collection): contextualization helper methods
+   * [add] decontextualize(), decontextualize(collection): decontextualization helper methods
+  * [change] Pages
+   * [impl] add(index,page), addAll(index,pages), addAll(pages)
+   * [impl] remove(index), remove(page), removeAll(pages)
+ * Content Streaming (it.stefanochizzolini.clown.contentStreaming)
+  * [add] contentStreaming.operations.Operation: encapsulate content stream instructions
+  * [add] contentStreaming.serialization.Parser: parses content streams
+  * [add] ContentBuilder: encapsulates most of ContentStream members (those related to content stream building)
+  * [change] ContentStream
+   * [add] getParser(): see contentStreaming.serialization.Parser
+   * [remove] members related to content stream building are transferred to ContentBuilder
+  * [change] JpegImage
+   * [change] createXObject(): see ImageXObject
+  * [change] XObject, ImageXObject
+   * [add] constructor(Document context,PdfStream baseDataObject)
+   * [change] constructor(Document context)
+
+---------------
+Version 0.0.1
+---------------
+Release date: 2006-11-21
+Backward compatibility: false
+
+ * Byte Streaming (it.stefanochizzolini.clown.byteStreaming)
+  * [add] Interfaces:
+   * [add] basic sequencing (ISequence)
+   * [add] buffering (IBuffer : ISequence)
+   * [add] streaming:
+    * [add] input streaming (IInputStream : ISequence)
+    * [add] output streaming (IOutputStream)
+  * [add] Concrete classes:
+   * [add] buffering (Buffer : IBuffer)
+   * [add] streaming (Stream : IInputStream, IOutputStream)
+ * Primitive Objects (it.stefanochizzolini.clown.objects)
+  * [add] null object (PdfNull)
+  * [add] long integer object (PdfLong)
+  * [add] indirect object interface (IPdfIndirectObject)
+  * [change] real object (PdfReal): from float- to double-typed value
+  * [change] wrapper object (PdfObjectWrapper): containment simplification and minor enhancements
+ * Content Streaming (it.stefanochizzolini.clown.contentStreaming)
+  * [add] Partial support to device-independent color spaces (colorSpaces.CIEBasedColorSpace and descendants, colorSpaces.ICCBasedColorSpace)
+  * [add] factory methods (Wrap())
+  * [change] Color spaces reimplementation (colorSpaces.DeviceColorSpace and descendants)
+  * [change] Content stream interface improvements
+ * General
+  * [add] Integrity enforcements
+  * [change] float-typed values to double-typed
+
+---------------
+Version 0.0.0
+---------------
+Release date: 2006-09-17
+Backward compatibility: true
+
+ * Serialization (it.stefanochizzolini.clown.serialization)
+  * [add] Input management (Reader):
+   * [add] Token parsing (Parser)
+   * [add] PDF object parsing (Parser)
+   * [add] File structure retrieval (Reader):
+    * [add] File version
+    * [add] Trailer dictionary
+    * [add] Cross-reference table
+  * [add] Output management (Writer):
+   * [add] Compact (standard) serialization
+   * [add] Incremental update
+ * Primitive Objects (it.stefanochizzolini.clown.objects)
+  * [add] Abstract types:
+   * [add] object-level ancestors:
+    * [add] root type (PdfObject)
+    * [add] data type (PdfDataObject)
+    * [add] direct data type (PdfDirectObject)
+    * [add] atomic type (PdfAtomicObject)
+   * [add] file-level ancestors:
+    * [add] indirect type (PdfIndirectObject)
+   * [add] document-level ancestors:
+    * [add] universal object wrapper (PdfObjectWrapper)
+  * [add] Interfaces (IPdfAtomicObject, IPdfNumber, IPdfString).
+  * [add] Concrete types:
+   * [add] atomic types (implementing IPdfAtomicObject):
+    * [add] boolean values (PdfBoolean)
+    * [add] numbers (implementing IPdfNumber):
+     * [add] integer numbers (PdfInteger)
+     * [add] real numbers (PdfReal)
+    * [add] strings (implementing IPdfString):
+     * [add] hexadecimal strings (PdfHex)
+     * [add] literal strings (PdfLiteral)
+     * [add] dates (PdfDate)
+    * [add] names (PdfName)
+   * [add] composite types:
+    * [add] arrays (PdfArray)
+    * [add] dictionaries (PdfDictionary)
+    * [add] streams (PdfStream)
+    * [add] indirect references (PdfReference)
+   * [add] helper types (semantic extensions):
+    * [add] rectangles (PdfRectangle)
+ * File Structure (it.stefanochizzolini.clown.fileStructure)
+  * [add] File object (File)
+  * [add] Indirect objects collection (IndirectObjects)
+ * Document Structure (it.stefanochizzolini.clown.documentStructure)
+  * [add] Document object (Document)
+  * [add] Page object (Page)
+  * [add] Page objects collection (Pages)
+ * Interchange (it.stefanochizzolini.clown.interchange)
+  * [add] Metadata dictionary (metadata.Information)
+ * Interaction (it.stefanochizzolini.clown.interaction)
+  * [add] Bookmarks (Destination, navigation.documentLevel.Bookmark, navigation.documentLevel.Bookmarks)
+  * [add] Viewer preferences (ViewerPreferences)
+ * Content Streaming (it.stefanochizzolini.clown.contentStreaming)
+  * [add] Content stream object (ContentStream)
+  * [add] Content stream objects collection (ContentStreams)
+  * [add] Resources object (Resources)
+  * [add] XObject object (xObjects.XObject) and descendants
+  * [add] XObject objects collection (XObjects)
+  * [add] Font object (fonts.Font) and descendants
+  * [add] Font objects collection (Fonts)
+  * [add] Device color space object (colorSpaces.DeviceColor) and descendants
+  * [add] Entity object (entities.Entity) and descendants

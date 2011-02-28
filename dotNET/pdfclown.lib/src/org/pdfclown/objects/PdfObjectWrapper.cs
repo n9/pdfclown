@@ -1,0 +1,313 @@
+/*
+  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+
+  Contributors:
+    * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
+
+  This file should be part of the source code distribution of "PDF Clown library" (the
+  Program): see the accompanying README files for more info.
+
+  This Program is free software; you can redistribute it and/or modify it under the terms
+  of the GNU Lesser General Public License as published by the Free Software Foundation;
+  either version 3 of the License, or (at your option) any later version.
+
+  This Program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY,
+  either expressed or implied; without even the implied warranty of MERCHANTABILITY or
+  FITNESS FOR A PARTICULAR PURPOSE. See the License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License along with this
+  Program (see README files); if not, go to the GNU website (http://www.gnu.org/licenses/).
+
+  Redistribution and use, with or without modification, are permitted provided that such
+  redistributions retain the above copyright notice, license and disclaimer, along with
+  this list of conditions.
+*/
+
+using org.pdfclown.documents;
+using org.pdfclown.files;
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+
+namespace org.pdfclown.objects
+{
+  /**
+    <summary>Base high-level representation of a weakly-typed PDF object.</summary>
+  */
+  public abstract class PdfObjectWrapper
+  {
+    #region dynamic
+    #region fields
+    private PdfDirectObject baseObject;
+    private PdfIndirectObject container;
+    #endregion
+
+    #region constructors
+    /**
+      <param name="baseObject">Base PDF object. MUST be a <see cref="PdfReference"/>
+      everytime available.</param>
+      <param name="container">Indirect object containing the base object.</param>
+    */
+    protected PdfObjectWrapper(
+      PdfDirectObject baseObject,
+      PdfIndirectObject container
+      )
+    {
+      BaseObject = baseObject;
+      Container = container;
+    }
+    #endregion
+
+    #region interface
+    #region public
+    /**
+      <summary>Gets the underlying reference object, if available;
+      otherwise, behaves like <see cref="BaseDataObject">BaseDataObject</see>.</summary>
+    */
+    public virtual PdfDirectObject BaseObject
+    {
+      get
+      {return baseObject;}
+      protected set
+      {baseObject = value;}
+    }
+
+    /**
+      <summary>Gets a clone of the object, registered inside the given document context.</summary>
+      <param name="context">Which document the clone has to be registered in.</param>
+    */
+    public abstract object Clone(
+      Document context
+      );
+
+    /**
+      <summary>Gets the indirect object containing the base object.</summary>
+      <remarks>It's used for update purposes.</remarks>
+    */
+    public PdfIndirectObject Container
+    {
+      get
+      {return container;}
+      internal set
+      {
+        if(baseObject is PdfReference) // Base object is indirect (self-contained).
+          container = ((PdfReference)baseObject).IndirectObject;
+        else // Base object is direct (contained).
+          container = value;
+      }
+    }
+
+    /**
+      <summary>Removes the object from its document context.</summary>
+      <remarks>
+        <para>The object is no more usable after this method returns.</para>
+      </remarks>
+      <returns>Whether the object was actually decontextualized (only indirect objects can be
+      decontextualize).</returns>
+    */
+    public bool Delete(
+      )
+    {
+      // Is the object indirect?
+      if(baseObject is PdfReference) // Indirect object.
+      {
+        ((PdfReference)baseObject).Delete();
+        return true;
+      }
+      else // Direct object.
+      {return false;}
+    }
+
+    /**
+      <summary>Gets the document context.</summary>
+    */
+    public Document Document
+    {get{return container.File.Document;}}
+
+    /**
+      <summary>Gets the file context.</summary>
+    */
+    public File File
+    {get{return container.File;}}
+
+    /**
+      <summary>Manually update the underlying indirect object.</summary>
+    */
+    public void Update(
+      )
+    {container.Update();}
+    #endregion
+
+    #region protected
+    /**
+      <summary>Checks whether the specified feature is compatible with the
+        <see cref="Document.Version">document's conformance version</see>.</summary>
+      <param name="feature">Entity whose compatibility has to be checked. Supported types:
+        <list type="bullet">
+          <item><see cref="VersionEnum"/></item>
+          <item><see cref="string">Property name</see> resolvable to an <see cref="MemberInfo">annotated getter method</see></item>
+          <item><see cref="MemberInfo"/></item>
+        </list>
+        <para>In case of <code>null</code>, this method tries to retrieve the caller method's compatibility version.</para>
+      </param>
+    */
+    protected void CheckCompatibility(
+      object feature
+      )
+    {
+      /*
+        TODO: Caching!
+      */
+      Document.Config.CompatibilityModeEnum compatibilityMode = Document.Configuration.CompatibilityMode;
+      if(compatibilityMode == Document.Config.CompatibilityModeEnum.Passthrough) // No check required.
+        return;
+
+      if(feature is Enum)
+      {
+        Type enumType = feature.GetType();
+        if(enumType.GetCustomAttributes(typeof(FlagsAttribute),true).Length > 0)
+        {
+          int featureEnumValues = Convert.ToInt32(feature);
+          List<Enum> featureEnumItems = new List<Enum>();
+          foreach (int enumValue in Enum.GetValues(enumType))
+          {
+            if((featureEnumValues & enumValue) == enumValue)
+            {featureEnumItems.Add((Enum)Enum.ToObject(enumType, enumValue));}
+          }
+          if(featureEnumItems.Count > 1)
+          {feature = featureEnumItems;}
+        }
+      }
+      if(feature is ICollection)
+      {
+        foreach(Object featureItem in (ICollection)feature)
+        {CheckCompatibility(featureItem);}
+        return;
+      }
+
+      Version featureVersion;
+      if(feature is VersionEnum) // Explicit version.
+      {featureVersion = ((VersionEnum)feature).GetVersion();}
+      else // Implicit version (element annotation).
+      {
+        PDF annotation;
+        {
+          if(feature is string) // Property name.
+          {feature = GetType().GetProperty((string)feature);}
+          else if(feature is Enum) // Enum constant.
+          {feature = feature.GetType().GetField(feature.ToString());}
+          if(!(feature is MemberInfo))
+            throw new ArgumentException("Feature type '" + feature.GetType().Name + "' not supported.");
+
+          while(true)
+          {
+            object[] annotations = ((MemberInfo)feature).GetCustomAttributes(typeof(PDF),true);
+            if(annotations.Length > 0)
+            {
+              annotation = (PDF)annotations[0];
+              break;
+            }
+
+            feature = ((MemberInfo)feature).DeclaringType;
+            if(feature == null) // Element hierarchy walk complete.
+              return; // NOTE: As no annotation is available, we assume the feature has no specific compatibility requirements.
+          }
+        }
+        featureVersion = annotation.Value.GetVersion();
+      }
+      // Is the feature version compatible?
+      if(Document.Version.CompareTo(featureVersion) >= 0)
+        return;
+
+      // The feature version is NOT compatible: how to solve the conflict?
+      switch(compatibilityMode)
+      {
+        case Document.Config.CompatibilityModeEnum.Loose: // Accepts the feature version.
+          // Synchronize the document version!
+          Document.Version = featureVersion;
+          break;
+        case  Document.Config.CompatibilityModeEnum.Strict: // Refuses the feature version.
+          // Throw a violation to the document version!
+          throw new Exception("Incompatible feature (version " + featureVersion + " was required against document version " + Document.Version);
+        default:
+          throw new NotImplementedException("Unhandled compatibility mode: " + compatibilityMode);
+      }
+    }
+    #endregion
+    #endregion
+    #endregion
+  }
+
+  /**
+    <summary>High-level representation of a strongly-typed PDF object.</summary>
+    <remarks>
+      <para>Specialized objects don't inherit directly from their low-level counterparts (e.g.
+      <see cref="org.pdfclown.documents.contents.Contents">Contents</see> extends <see cref="org.pdfclown.objects.PdfStream">PdfStream</see>,
+      <see cref="org.pdfclown.documents.Pages">Pages</see> extends <see cref="org.pdfclown.objects.PdfArray">PdfArray</see> and so on) because
+      there's no plain one-to-one mapping between primitive PDF types and specialized instances: the <code>Content</code> entry of <code>Page</code>
+      dictionaries may be a simple reference to a <code>PdfStream</code> or a <code>PdfArray</code> of references to <code>PdfStream</code>-s,
+      <code>Pages</code> collections may be spread across a B-tree instead of a flat <code>PdfArray</code> and so on.</para>
+      <para>So, in order to hide all these annoying inner workings, I chose to adopt a composition pattern instead of the apparently-reasonable
+      (but actually awkward!) inheritance pattern. Nonetheless, users can navigate through the low-level structure accessing the
+      <see cref="BaseDataObject">BaseDataObject</see> property.</para>
+    </remarks>
+  */
+  public abstract class PdfObjectWrapper<TDataObject>
+    : PdfObjectWrapper
+    where TDataObject : PdfDataObject
+  {
+    #region dynamic
+    #region fields
+    private TDataObject baseDataObject;
+    #endregion
+
+    #region constructors
+    protected PdfObjectWrapper(
+      File context,
+      TDataObject baseDataObject
+      ) : this(
+        context.Register(baseDataObject),
+        null
+        )
+    {}
+
+    /**
+      <param name="baseObject">Base PDF object. MUST be a <see cref="PdfReference"/>
+      everytime available.</param>
+      <param name="container">Indirect object containing the base object.</param>
+    */
+    protected PdfObjectWrapper(
+      PdfDirectObject baseObject,
+      PdfIndirectObject container
+      ) : base(
+        baseObject,
+        container
+        )
+    {}
+    #endregion
+
+    #region interface
+    #region public
+    /**
+      <summary>Gets the underlying data object.</summary>
+    */
+    public TDataObject BaseDataObject
+    {get{return baseDataObject;}}
+
+    public override PdfDirectObject BaseObject
+    {
+      get
+      {return base.BaseObject;}
+      protected set
+      {
+        base.BaseObject = value;
+        baseDataObject = (TDataObject)File.Resolve(value);
+      }
+    }
+    #endregion
+    #endregion
+    #endregion
+  }
+}

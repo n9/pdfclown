@@ -1,0 +1,32 @@
+PDF Clown for Java - CHANGELOG
+
+Stefano Chizzolini <>
+
+Project version: 0.1.0 -- CHANGELOG revision: 0 (2011-02-24)
+
+---------------
+Introduction
+---------------
+This is a coarsely-grained record of major changes occurred specifically to the Java implementation of PDF Clown.
+
+For common changes to the PDF Clown Project, please see the PDF Clown Project CHANGELOG [../main/CHANGELOG.html].
+
+
+---------------
+Version 0.0.8
+---------------
+Release date: 2010-08-21
+Backward compatibility: false
+
+Migrated to Java 6 platform [http://java.sun.com].
+
+
+---------------
+Version 0.0.3
+---------------
+Release date: 2007-05-05
+Backward compatibility: false
+
+ * Content Streaming (it.stefanochizzolini.clown.documents.contents)
+  * [change] class composition.ContentBuilder
+   * [fix] showXObject(PdfName,RectangularShape,double): context height is now referred to the context box. Symptom: wrong external graphics positioning on a template when no pages are present in the document yet. Cause: showXObject wrongly referred to the generic page height of the document, ignoring current stream context.
