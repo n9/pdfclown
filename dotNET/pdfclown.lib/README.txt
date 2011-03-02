@@ -21,6 +21,6 @@ Resources
  * log [log/]: Compilation logs (automatically generated)
  * lib [lib/]: Library dependencies
  * res [res/]: Library resources
- * PDF Clown Project home page [http://clown.stefanochizzolini.it]: Project home page
+ * PDF Clown Project home page [http://www.pdfclown.org]: Project home page
  * Navigation:
   * Current directory [.]: browse current section contents
