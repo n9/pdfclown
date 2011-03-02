@@ -39,7 +39,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
   @version 0.1.0
 */
 public abstract class Color<TDataObject extends PdfDataObject>
-	extends PdfObjectWrapper<TDataObject>
+  extends PdfObjectWrapper<TDataObject>
 {
   // <class>
   // <static>
@@ -64,7 +64,7 @@ public abstract class Color<TDataObject extends PdfDataObject>
     else if(value > 1)
       return 1;
     else
-    	return value;
+      return value;
   }
   // </protected>
   // </interface>
@@ -79,18 +79,18 @@ public abstract class Color<TDataObject extends PdfDataObject>
   //TODO:verify whether to remove the colorSpace argument (should be agnostic?)!
   protected Color(
     ColorSpace<?> colorSpace,
-		PdfDirectObject baseObject
+    PdfDirectObject baseObject
     )
   {
-  	/*
-  		TODO: container is defined:
-  	  == null: color within content stream operations;
-  	  != null: color within external structures (such as for describing acroform widget styles)
-  	*/
-  	super(baseObject, null);
-  	this.colorSpace = colorSpace;
-	}
-  
+    /*
+      TODO: container is defined:
+      == null: color within content stream operations;
+      != null: color within external structures (such as for describing acroform widget styles)
+    */
+    super(baseObject, null);
+    this.colorSpace = colorSpace;
+  }
+
   protected Color(
     PdfDirectObject baseObject,
     PdfIndirectObject container
@@ -106,10 +106,10 @@ public abstract class Color<TDataObject extends PdfDataObject>
   {return colorSpace;}
 
   /**
-  	Gets the components defining this color value.
+    Gets the components defining this color value.
   */
   public abstract List<PdfDirectObject> getComponents(
-  	);
+    );
   // </public>
   // </interface>
   // </dynamic>

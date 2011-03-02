@@ -37,37 +37,37 @@ import org.pdfclown.objects.PdfReal;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	Separation color value [PDF:1.6:4.5.5].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@version 0.1.0
+  Separation color value [PDF:1.6:4.5.5].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF12)
 public final class SeparationColor
-	extends LeveledColor
+  extends LeveledColor
 {
   // <class>
   // <static>
   // <fields>
   public static final SeparationColor Default = new SeparationColor(1);
   // </fields>
-  
+
   // <interface>
   // <public>
   /**
-  	Gets the color corresponding to the specified components.
-  	
-  	@param components Color components to convert.
-  	@since 0.1.0
+    Gets the color corresponding to the specified components.
+
+    @param components Color components to convert.
+    @since 0.1.0
    */
   public static SeparationColor get(
-  	PdfArray components
-  	)
+    PdfArray components
+    )
   {
-  	return (components != null
-	  	? new SeparationColor(components)
-  		: Default
-  		);
+    return (components != null
+      ? new SeparationColor(components)
+      : Default
+      );
   }
   // </public>
   // </interface>
@@ -79,31 +79,31 @@ public final class SeparationColor
     float intensity
     )
   {
-  	this(
-  		Arrays.asList(
-    		new PdfReal(intensity) //TODO:normalize value (see devicecolor)!
-  			)
-  		);
+    this(
+      Arrays.asList(
+        new PdfReal(intensity) //TODO:normalize value (see devicecolor)!
+        )
+      );
   }
-  
+
   SeparationColor(
-  	List<? extends PdfDirectObject> components
+    List<? extends PdfDirectObject> components
     )
   {
     super(
-    	null, //TODO:consider color space reference!
-    	new PdfArray(components)
-    	);
+      null, //TODO:consider color space reference!
+      new PdfArray(components)
+      );
   }
   // </constructors>
 
   // <interface>
   // <public>
-	@Override
-	public Object clone(
-		Document context
-		)
-	{throw new NotImplementedException();}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {throw new NotImplementedException();}
 
   /**
     Gets the color intensity.
@@ -113,7 +113,7 @@ public final class SeparationColor
   {return getComponentValue(0);}
 
   /**
-  	@see #getIntensity()
+    @see #getIntensity()
   */
   public void setIntensity(
     float value

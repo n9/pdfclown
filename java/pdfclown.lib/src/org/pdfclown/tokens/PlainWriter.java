@@ -47,15 +47,15 @@ import org.pdfclown.util.NotImplementedException;
   @version 0.1.0
 */
 final class PlainWriter
-	extends Writer
+  extends Writer
 {
   // <class>
   // <static>
   // <fields>
-	private static final byte[] TrailerChunk = Encoding.encode(Keyword.Trailer + Symbol.LineFeed);
-	private static final String XRefChunk = Keyword.XRef + Symbol.LineFeed;
-	private static final String XRefEOLChunk = "" + Symbol.CarriageReturn + Symbol.LineFeed;
-	
+  private static final byte[] TrailerChunk = Encoding.encode(Keyword.Trailer + Symbol.LineFeed);
+  private static final String XRefChunk = Keyword.XRef + Symbol.LineFeed;
+  private static final String XRefEOLChunk = "" + Symbol.CarriageReturn + Symbol.LineFeed;
+
   private static final DecimalFormat XRefGenerationFormatter = new DecimalFormat("00000");
   private static final DecimalFormat XRefOffsetFormatter = new DecimalFormat("0000000000");
   // </fields>
@@ -108,12 +108,12 @@ final class PlainWriter
         else // Current subsection terminates.
         {
           // End current subsection!
-        	appendXRefSubsection(
-        		xrefBuilder,
-        		prevKey - xrefSubCount + 1,
-        		xrefSubCount,
-        		xrefSubBuilder
-        		);
+          appendXRefSubsection(
+            xrefBuilder,
+            prevKey - xrefSubCount + 1,
+            xrefSubCount,
+            xrefSubBuilder
+            );
 
           // Begin next subsection!
           xrefSubBuilder.setLength(0);
@@ -126,10 +126,10 @@ final class PlainWriter
         if(indirectObjectEntry.getValue().isInUse()) // In-use entry.
         {
           // Add in-use entry!
-        	appendXRefEntry(
-        		xrefSubBuilder,
-        		indirectObjectEntry.getValue().getReference(),
-        		stream.getLength()
+          appendXRefEntry(
+            xrefSubBuilder,
+            indirectObjectEntry.getValue().getReference(),
+            stream.getLength()
             );
           // Add in-use entry content!
           indirectObjectEntry.getValue().writeTo(stream);
@@ -142,20 +142,20 @@ final class PlainWriter
             so that this entry links directly back to object number 0, having a generation number of 65535
             (not reusable) [PDF:1.6:3.4.3].
           */
-        	appendXRefEntry(
-        		xrefSubBuilder,
-        		indirectObjectEntry.getValue().getReference(),
-        		0
+          appendXRefEntry(
+            xrefSubBuilder,
+            indirectObjectEntry.getValue().getReference(),
+            0
             );
         }
       }
       // End last subsection!
       appendXRefSubsection(
-      	xrefBuilder,
-      	prevKey - xrefSubCount + 1,
-      	xrefSubCount,
-      	xrefSubBuilder
-      	);
+        xrefBuilder,
+        prevKey - xrefSubCount + 1,
+        xrefSubCount,
+        xrefSubBuilder
+        );
     }
 
     // 3. XRef-table last section.
@@ -163,14 +163,14 @@ final class PlainWriter
     stream.write(xrefBuilder.toString());
 
     // 4. Trailer.
-		writeTrailer(startxref, xrefSize, parser);
+    writeTrailer(startxref, xrefSize, parser);
   }
 
-	@Override
-	protected void writeLinearized(
-		)
-	{throw new NotImplementedException();}
-	
+  @Override
+  protected void writeLinearized(
+    )
+  {throw new NotImplementedException();}
+
   @Override
   protected void writeStandard(
     )
@@ -183,12 +183,12 @@ final class PlainWriter
     StringBuilder xrefBuilder = new StringBuilder(XRefChunk);
     {
       /*
-	      NOTE: A standard xref table comprises just one section composed by just one subsection.
-	      NOTE: As xref-table free entries MUST be arrayed as a linked list,
-	      it's needed to cache intermingled in-use entries in order to properly render
-	      the object number of the next free entry inside the previous one.
-	    */
-			appendXRefSubsectionIndexer(xrefBuilder, 0, xrefSize);
+        NOTE: A standard xref table comprises just one section composed by just one subsection.
+        NOTE: As xref-table free entries MUST be arrayed as a linked list,
+        it's needed to cache intermingled in-use entries in order to properly render
+        the object number of the next free entry inside the previous one.
+      */
+      appendXRefSubsectionIndexer(xrefBuilder, 0, xrefSize);
 
       StringBuilder xrefInUseBlockBuilder = new StringBuilder();
       IndirectObjects indirectObjects = file.getIndirectObjects();
@@ -204,9 +204,9 @@ final class PlainWriter
         if(indirectObject.isInUse()) // In-use entry.
         {
           // Add in-use entry!
-        	appendXRefEntry(
-        		xrefInUseBlockBuilder,
-        		indirectObject.getReference(),
+          appendXRefEntry(
+            xrefInUseBlockBuilder,
+            indirectObject.getReference(),
             stream.getLength()
             );
           // Add in-use entry content!
@@ -214,13 +214,13 @@ final class PlainWriter
         }
         else // Free entry.
         {
-        	// Add free entry!
-        	appendXRefEntry(
-        		xrefBuilder,
-        		freeReference,
-        		index
-        		);
-          
+          // Add free entry!
+          appendXRefEntry(
+            xrefBuilder,
+            freeReference,
+            index
+            );
+
           // End current block!
           xrefBuilder.append(xrefInUseBlockBuilder);
 
@@ -229,13 +229,13 @@ final class PlainWriter
           freeReference = indirectObject.getReference();
         }
       }
-    	// Add last free entry!
+      // Add last free entry!
       appendXRefEntry(
-      	xrefBuilder,
-      	freeReference,
-      	0
-      	);
-      
+        xrefBuilder,
+        freeReference,
+        0
+        );
+
       // End last block!
       xrefBuilder.append(xrefInUseBlockBuilder);
     }
@@ -245,78 +245,78 @@ final class PlainWriter
     stream.write(xrefBuilder.toString());
 
     // 4. Trailer [PDF:1.6:3.4.4].
-		writeTrailer(startxref, xrefSize, null);
+    writeTrailer(startxref, xrefSize, null);
   }
   // </protected>
-  
+
   // <private>
   private StringBuilder appendXRefEntry(
-  	StringBuilder xrefBuilder,
-  	PdfReference reference,
+    StringBuilder xrefBuilder,
+    PdfReference reference,
     long offset
     )
   {
-  	String usage;
+    String usage;
     switch(reference.getIndirectObject().getXrefEntry().getUsage())
     {
       case Free:
-      	usage = Keyword.FreeXrefEntry;
-      	break;
+        usage = Keyword.FreeXrefEntry;
+        break;
       case InUse:
-      	usage = Keyword.InUseXrefEntry;
+        usage = Keyword.InUseXrefEntry;
         break;
       default: // Should NEVER happen.
         throw new UnsupportedOperationException();
     }
     return xrefBuilder.append(XRefOffsetFormatter.format(offset)).append(Symbol.Space)
-    	.append(XRefGenerationFormatter.format(reference.getGenerationNumber())).append(Symbol.Space)
-    	.append(usage).append(XRefEOLChunk);
+      .append(XRefGenerationFormatter.format(reference.getGenerationNumber())).append(Symbol.Space)
+      .append(usage).append(XRefEOLChunk);
   }
 
   /**
-		Appends the cross-reference subsection to the specified builder.
-		
-		@param xrefBuilder Target builder.
-		@param firstObjectNumber Object number of the first object in the subsection.
-		@param entryCount Number of entries in the subsection.
-		@param xrefSubBuilder Cross-reference subsection entries.
-	*/
+    Appends the cross-reference subsection to the specified builder.
+
+    @param xrefBuilder Target builder.
+    @param firstObjectNumber Object number of the first object in the subsection.
+    @param entryCount Number of entries in the subsection.
+    @param xrefSubBuilder Cross-reference subsection entries.
+  */
   private StringBuilder appendXRefSubsection(
-  	StringBuilder xrefBuilder,
-  	int firstObjectNumber,
-  	int entryCount,
-  	StringBuilder xrefSubBuilder
-  	)
+    StringBuilder xrefBuilder,
+    int firstObjectNumber,
+    int entryCount,
+    StringBuilder xrefSubBuilder
+    )
   {return appendXRefSubsectionIndexer(xrefBuilder, firstObjectNumber, entryCount).append(xrefSubBuilder);}
 
   /**
-  	Appends the cross-reference subsection indexer to the specified builder.
-  	
-  	@param xrefBuilder Target builder.
-  	@param firstObjectNumber Object number of the first object in the subsection.
-  	@param entryCount Number of entries in the subsection.
+    Appends the cross-reference subsection indexer to the specified builder.
+
+    @param xrefBuilder Target builder.
+    @param firstObjectNumber Object number of the first object in the subsection.
+    @param entryCount Number of entries in the subsection.
   */
   private StringBuilder appendXRefSubsectionIndexer(
-  	StringBuilder xrefBuilder,
-  	int firstObjectNumber,
-  	int entryCount
-  	)
+    StringBuilder xrefBuilder,
+    int firstObjectNumber,
+    int entryCount
+    )
   {return xrefBuilder.append(firstObjectNumber).append(Symbol.Space).append(entryCount).append(Symbol.LineFeed);}
 
   /**
-		Serializes the file trailer [PDF:1.6:3.4.4].
-		
-  	@param startxref Byte offset from the beginning of the file to the beginning
-  		of the last cross-reference section.
-		@param xrefSize Total number of entries in the file's cross-reference table,
-			as defined by the combination of the original section and all update sections.
-		@param parser File parser.
-	*/
+    Serializes the file trailer [PDF:1.6:3.4.4].
+
+    @param startxref Byte offset from the beginning of the file to the beginning
+      of the last cross-reference section.
+    @param xrefSize Total number of entries in the file's cross-reference table,
+      as defined by the combination of the original section and all update sections.
+    @param parser File parser.
+  */
   private void writeTrailer(
-  	long startxref,
-  	int xrefSize,
-  	Parser parser
-  	)
+    long startxref,
+    int xrefSize,
+    Parser parser
+    )
   {
     try
     {

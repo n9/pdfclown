@@ -100,28 +100,28 @@ public enum LineJoinEnum
   public int getCode(
     )
   {return code;}
-  
+
   /**
-  	Converts this constant into its equivalent AWT code.
-  	
-  	@see BasicStroke.JOIN_BEVEL
-  	@see BasicStroke.JOIN_MITER
-  	@see BasicStroke.JOIN_ROUND
+    Converts this constant into its equivalent AWT code.
+
+    @see BasicStroke.JOIN_BEVEL
+    @see BasicStroke.JOIN_MITER
+    @see BasicStroke.JOIN_ROUND
   */
   public int toAwt(
-  	)
+    )
   {
-  	switch(this)
-		{
-			case Bevel:
-	  		return BasicStroke.JOIN_BEVEL;
-			case Miter:
-	  		return BasicStroke.JOIN_MITER;
-  		case Round:
-	  		return BasicStroke.JOIN_ROUND;
-	  	default:
-	  		throw new UnsupportedOperationException(name() + " convertion not supported.");
-		}
+    switch(this)
+    {
+      case Bevel:
+        return BasicStroke.JOIN_BEVEL;
+      case Miter:
+        return BasicStroke.JOIN_MITER;
+      case Round:
+        return BasicStroke.JOIN_ROUND;
+      default:
+        throw new UnsupportedOperationException(name() + " convertion not supported.");
+    }
   }
   // </public>
   // </interface>

@@ -43,26 +43,26 @@ import org.pdfclown.util.IDataWrapper;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	Indexed color space [PDF:1.6:4.5.5].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@version 0.1.0
+  Indexed color space [PDF:1.6:4.5.5].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF11)
 public final class IndexedColorSpace
-	extends SpecialColorSpace<PdfArray>
+  extends SpecialColorSpace<PdfArray>
 {
   // <class>
   // <dynamic>
   // <fields>
-	private Map<Integer,Color<?>> baseColors = new HashMap<Integer,Color<?>>();
-	private byte[] baseComponentValues;
-	private ColorSpace<?> baseSpace;
+  private Map<Integer,Color<?>> baseColors = new HashMap<Integer,Color<?>>();
+  private byte[] baseComponentValues;
+  private ColorSpace<?> baseSpace;
   // </fields>
 
   // <constructors>
-	//TODO:IMPL new element constructor!
-	
+  //TODO:IMPL new element constructor!
+
   IndexedColorSpace(
     PdfDirectObject baseObject,
     PdfIndirectObject container
@@ -72,102 +72,102 @@ public final class IndexedColorSpace
 
   // <interface>
   // <public>
-	@Override
-	public Object clone(
-		Document context
-		)
-	{throw new NotImplementedException();}
-	
-  /**
-		Gets the color corresponding to the specified table index resolved according to
-		the {@link #getBaseSpace() base space}.
-	*/
-	public Color<?> getBaseColor(
-		IndexedColor color
-		)
-	{
-		int colorIndex = color.getIndex();
-		Color<?> baseColor = baseColors.get(colorIndex);
-		if(baseColor == null)
-		{
-			ColorSpace<?> baseSpace = getBaseSpace();
-			List<PdfDirectObject> components = new ArrayList<PdfDirectObject>();
-			{
-				int componentCount = baseSpace.getComponentCount();
-				int componentValueIndex = colorIndex * componentCount;
-				byte[] baseComponentValues = getBaseComponentValues();
-				for(
-					int componentIndex = 0;
-					componentIndex < componentCount;
-					componentIndex++
-					)
-				{
-					components.add(
-						new PdfReal(((int)baseComponentValues[componentValueIndex++] & 0xff) / 255f)
-						);
-				}
-			}
-			baseColor = baseSpace.getColor(components, null);
-		}
-		return baseColor;
-	}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {throw new NotImplementedException();}
 
   /**
-  	Gets the base color space in which the values in the color table
-  	are to be interpreted.
+    Gets the color corresponding to the specified table index resolved according to
+    the {@link #getBaseSpace() base space}.
   */
-	public ColorSpace<?> getBaseSpace(
-		)
-	{
-		if(baseSpace == null)
-		{
-			baseSpace = ColorSpace.wrap(
-				getBaseDataObject().get(1), 
-				getContainer()
-				);
-		}
-		return baseSpace; 
-	}
-	
-	@Override
-	public IndexedColor getColor(
-  	List<PdfDirectObject> components,
-  	IContentContext context
-		)
-	{return new IndexedColor(components);}
+  public Color<?> getBaseColor(
+    IndexedColor color
+    )
+  {
+    int colorIndex = color.getIndex();
+    Color<?> baseColor = baseColors.get(colorIndex);
+    if(baseColor == null)
+    {
+      ColorSpace<?> baseSpace = getBaseSpace();
+      List<PdfDirectObject> components = new ArrayList<PdfDirectObject>();
+      {
+        int componentCount = baseSpace.getComponentCount();
+        int componentValueIndex = colorIndex * componentCount;
+        byte[] baseComponentValues = getBaseComponentValues();
+        for(
+          int componentIndex = 0;
+          componentIndex < componentCount;
+          componentIndex++
+          )
+        {
+          components.add(
+            new PdfReal((baseComponentValues[componentValueIndex++] & 0xff) / 255f)
+            );
+        }
+      }
+      baseColor = baseSpace.getColor(components, null);
+    }
+    return baseColor;
+  }
 
-	@Override
-	public int getComponentCount(
-		)
-	{return 1;}
+  /**
+    Gets the base color space in which the values in the color table
+    are to be interpreted.
+  */
+  public ColorSpace<?> getBaseSpace(
+    )
+  {
+    if(baseSpace == null)
+    {
+      baseSpace = ColorSpace.wrap(
+        getBaseDataObject().get(1),
+        getContainer()
+        );
+    }
+    return baseSpace;
+  }
 
-	@Override
-	public Color<?> getDefaultColor(
-		)
-	{return IndexedColor.Default;}
+  @Override
+  public IndexedColor getColor(
+    List<PdfDirectObject> components,
+    IContentContext context
+    )
+  {return new IndexedColor(components);}
 
-	@Override
-	public Paint getPaint(
-		Color<?> color
-		)
-	{
-		return getBaseSpace().getPaint(
-			getBaseColor((IndexedColor)color)
-			);
-	}
+  @Override
+  public int getComponentCount(
+    )
+  {return 1;}
+
+  @Override
+  public Color<?> getDefaultColor(
+    )
+  {return IndexedColor.Default;}
+
+  @Override
+  public Paint getPaint(
+    Color<?> color
+    )
+  {
+    return getBaseSpace().getPaint(
+      getBaseColor((IndexedColor)color)
+      );
+  }
   // </public>
-	
+
   // <private>
-	/**
-		Gets the color table.
-	*/
-	private byte[] getBaseComponentValues(
-		)
-	{
-		if(baseComponentValues == null)
-		{baseComponentValues = ((IDataWrapper)getBaseDataObject().resolve(3)).toByteArray();}
-		return baseComponentValues;
-	}
+  /**
+    Gets the color table.
+  */
+  private byte[] getBaseComponentValues(
+    )
+  {
+    if(baseComponentValues == null)
+    {baseComponentValues = ((IDataWrapper)getBaseDataObject().resolve(3)).toByteArray();}
+    return baseComponentValues;
+  }
   // </private>
   // </interface>
   // </dynamic>

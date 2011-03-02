@@ -37,14 +37,14 @@ import org.pdfclown.objects.PdfDirectObject;
 /**
   'Set the color to use for nonstroking operations in device gray color space'
   operation [PDF:1.6:4.5.7].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF10)
 public final class SetDeviceGrayFillColor
-	extends SetFillColor
+  extends SetFillColor
 {
   // <class>
   // <static>
@@ -56,7 +56,7 @@ public final class SetDeviceGrayFillColor
   // <dynamic>
   // <constructors>
   public SetDeviceGrayFillColor(
-  	DeviceGrayColor value
+    DeviceGrayColor value
     )
   {super(Operator, value);}
 
@@ -73,8 +73,8 @@ public final class SetDeviceGrayFillColor
     GraphicsState state
     )
   {
-  	state.setFillColorSpace(DeviceGrayColorSpace.Default);
-  	super.scan(state);
+    state.setFillColorSpace(DeviceGrayColorSpace.Default);
+    super.scan(state);
   }
   // </public>
   // </interface>

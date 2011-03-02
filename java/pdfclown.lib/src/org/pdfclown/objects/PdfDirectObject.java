@@ -42,7 +42,7 @@ public abstract class PdfDirectObject
   // <class>
   // <static>
   // <fields>
-	private static final byte[] NullChunk = Encoding.encode(Keyword.Null);
+  private static final byte[] NullChunk = Encoding.encode(Keyword.Null);
   // </fields>
 
   // <interface>
@@ -84,6 +84,7 @@ public abstract class PdfDirectObject
   // <interface>
   // <public>
   // <Comparable>
+  @Override
   public abstract int compareTo(PdfDirectObject obj);
   // </Comparable>
   // </public>

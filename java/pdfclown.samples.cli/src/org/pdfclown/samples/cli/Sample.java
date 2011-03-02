@@ -1,12 +1,5 @@
 package org.pdfclown.samples.cli;
 
-import org.pdfclown.documents.Document;
-import org.pdfclown.documents.Page;
-import org.pdfclown.documents.interaction.viewer.ViewerPreferences;
-import org.pdfclown.documents.interchange.metadata.Information;
-import org.pdfclown.files.File;
-import org.pdfclown.files.SerializationModeEnum;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,9 +10,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.pdfclown.documents.Document;
+import org.pdfclown.documents.Page;
+import org.pdfclown.documents.interaction.viewer.ViewerPreferences;
+import org.pdfclown.documents.interchange.metadata.Information;
+import org.pdfclown.files.File;
+import org.pdfclown.files.SerializationModeEnum;
+
 /**
   Abstract sample.
-  
+
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
   @version 0.1.0
@@ -110,6 +110,7 @@ public abstract class Sample
       optionEntries,
       new Comparator<Map.Entry<String,String>>()
       {
+        @Override
         public int compare(Map.Entry<String,String> o1, Map.Entry<String,String> o2)
         {return o1.getKey().compareTo(o2.getKey());};
       }
@@ -128,7 +129,7 @@ public abstract class Sample
     catch(Exception e)
     {return null;}
   }
-  
+
   protected String promptFileChoice(
     String fileExtension,
     String listDescription,
@@ -154,13 +155,13 @@ public abstract class Sample
     catch(Exception e)
     {return inputPath + java.io.File.separator + "pdf" + java.io.File.separator + filePaths.get(0);}
   }
-  
-  /**
-  	Prompts the user for advancing to the next page.
 
-  	@param page Next page.
-  	@param skip Whether the prompt has to be skipped.
-  	@return Whether to advance.
+  /**
+    Prompts the user for advancing to the next page.
+
+    @param page Next page.
+    @param skip Whether the prompt has to be skipped.
+    @return Whether to advance.
   */
   protected boolean promptNextPage(
     Page page,
@@ -176,31 +177,31 @@ public abstract class Sample
       if(!promptChoice(options).equals(""))
         return false;
     }
-    
-    System.out.println("\nScanning page " + (pageIndex+1) + "...\n");    
+
+    System.out.println("\nScanning page " + (pageIndex+1) + "...\n");
     return true;
   }
 
   /**
-		Prompts the user for a page index to select.
-	
-		@param inputDescription Message prompted to the user.
-		@param pageCount Page count.
-		@return Selected page index. 
-	*/
+    Prompts the user for a page index to select.
+
+    @param inputDescription Message prompted to the user.
+    @param pageCount Page count.
+    @return Selected page index.
+  */
   protected int promptPageChoice(
     String inputDescription,
     int pageCount
     )
-	{return promptPageChoice(inputDescription, 0, pageCount);}
+  {return promptPageChoice(inputDescription, 0, pageCount);}
 
   /**
-  	Prompts the user for a page index to select.
+    Prompts the user for a page index to select.
 
-  	@param inputDescription Message prompted to the user.
-  	@param startIndex First page index, inclusive.
-  	@param endIndex Last page index, exclusive.
-  	@return Selected page index. 
+    @param inputDescription Message prompted to the user.
+    @param startIndex First page index, inclusive.
+    @param endIndex Last page index, exclusive.
+    @return Selected page index.
   */
   protected int promptPageChoice(
     String inputDescription,
@@ -210,7 +211,7 @@ public abstract class Sample
   {
     int pageIndex;
     try
-		{pageIndex = Integer.parseInt(promptChoice(inputDescription + " [" + (startIndex + 1) + "-" + endIndex + "]: ")) - 1;}
+    {pageIndex = Integer.parseInt(promptChoice(inputDescription + " [" + (startIndex + 1) + "-" + endIndex + "]: ")) - 1;}
     catch(Exception e)
     {pageIndex = startIndex;}
     if(pageIndex < startIndex)
@@ -225,14 +226,14 @@ public abstract class Sample
     String inputDescription
     )
   {return promptFileChoice("pdf", "Available PDF files", inputDescription);}
-  
+
   /**
     Gets the source path used to load input PDF files.
   */
   protected String getInputPath(
     )
   {return inputPath;}
-  
+
   /**
     Gets the target path used to serialize output PDF files.
   */
@@ -242,7 +243,7 @@ public abstract class Sample
 
   /**
     Serializes the given PDF Clown file object.
-    
+
     @param file File to serialize.
   */
   protected void serialize(
@@ -252,7 +253,7 @@ public abstract class Sample
 
   /**
     Serializes the given PDF Clown file object.
-    
+
     @param file File to serialize.
     @param chooseMode Whether to allow user choice of serialization mode.
   */
@@ -264,7 +265,7 @@ public abstract class Sample
 
   /**
     Serializes the given PDF Clown file object.
-    
+
     @param file File to serialize.
     @param fileName Output file name.
     @param chooseMode Whether to allow user choice of serialization mode.
@@ -302,9 +303,9 @@ public abstract class Sample
     }
     catch(Exception e)
     {
-    	System.out.println("File writing failed: " + e.getMessage());
-    	e.printStackTrace();
-  	}
+      System.out.println("File writing failed: " + e.getMessage());
+      e.printStackTrace();
+    }
 
 // Alternatively, defining an appropriate target stream:
 /*
@@ -337,7 +338,7 @@ public abstract class Sample
     System.out.println("\nOutput: " + outputFile.getPath());
   }
   // </protected>
-  
+
   // <internal>
   final void initialize(
     String inputPath,

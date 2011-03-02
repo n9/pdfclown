@@ -41,85 +41,85 @@ import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.Interval;
 
 /**
-	<b>Stitching function</b> producing a single new 1-input function from the combination
-	of the subdomains of {@link #getFunctions() several 1-input functions} [PDF:1.6:3.9.3].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  <b>Stitching function</b> producing a single new 1-input function from the combination
+  of the subdomains of {@link #getFunctions() several 1-input functions} [PDF:1.6:3.9.3].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF13)
 public final class Type3Function
-	extends Function<PdfDictionary>
+  extends Function<PdfDictionary>
 {
   // <class>
-	// <dynamic>
-	// <constructors>
-	//TODO:implement function creation!
+  // <dynamic>
+  // <constructors>
+  //TODO:implement function creation!
 
-	Type3Function(
-		PdfDirectObject baseObject,
-		PdfIndirectObject container
-		)
-	{super(baseObject, container);}
-	// </constructors>
+  Type3Function(
+    PdfDirectObject baseObject,
+    PdfIndirectObject container
+    )
+  {super(baseObject, container);}
+  // </constructors>
 
   // <interface>
   // <public>
-	@Override
-	public float[] calculate(
-		float[] inputs
-		)
-	{
-		// FIXME: Auto-generated method stub
-		return null;
-	}
+  @Override
+  public float[] calculate(
+    float[] inputs
+    )
+  {
+    // FIXME: Auto-generated method stub
+    return null;
+  }
 
-	@Override
-	public Object clone(
-		Document context
-		)
-	{return new NotImplementedException();}
-
-	/**
-		Gets the <b>{@link Function#getDomains() domain} partition bounds</b> whose resulting intervals are respectively applied
-		to each {@link #getFunctions() function}.
-	*/
-	public List<Float> getDomainBounds(
-		)
-	{
-		List<Float> domainBounds = new ArrayList<Float>();
-		{
-			PdfArray domainBoundsObject = (PdfArray)getDictionary().resolve(PdfName.Bounds);
-			for(PdfDirectObject domainBoundObject : domainBoundsObject)
-			{domainBounds.add(((PdfNumber<?>)domainBoundObject).getNumberValue());}
-		}
-		return domainBounds;
-	}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {return new NotImplementedException();}
 
   /**
-		Gets the mapping of each {@link #getDomainBounds() subdomain} into the domain of the corresponding
-		{@link #getFunctions() function}.
-	*/
-	public List<Interval<Float>> getDomainEncodes(
-		)
-	{return getIntervals(PdfName.Encode, null);}
+    Gets the <b>{@link Function#getDomains() domain} partition bounds</b> whose resulting intervals are respectively applied
+    to each {@link #getFunctions() function}.
+  */
+  public List<Float> getDomainBounds(
+    )
+  {
+    List<Float> domainBounds = new ArrayList<Float>();
+    {
+      PdfArray domainBoundsObject = (PdfArray)getDictionary().resolve(PdfName.Bounds);
+      for(PdfDirectObject domainBoundObject : domainBoundsObject)
+      {domainBounds.add(((PdfNumber<?>)domainBoundObject).getNumberValue());}
+    }
+    return domainBounds;
+  }
 
-	/**
-		Gets the <b>1-input functions</b> making up this stitching function.
-		<p>The output dimensionality of all functions must be the same.</p>
-	*/
-	public Functions getFunctions(
-		)
-	{
-		return new Functions(
-			getDictionary().get(PdfName.Functions),
-			getContainer(),
-			this
-			);
-	}
+  /**
+    Gets the mapping of each {@link #getDomainBounds() subdomain} into the domain of the corresponding
+    {@link #getFunctions() function}.
+  */
+  public List<Interval<Float>> getDomainEncodes(
+    )
+  {return getIntervals(PdfName.Encode, null);}
+
+  /**
+    Gets the <b>1-input functions</b> making up this stitching function.
+    <p>The output dimensionality of all functions must be the same.</p>
+  */
+  public Functions getFunctions(
+    )
+  {
+    return new Functions(
+      getDictionary().get(PdfName.Functions),
+      getContainer(),
+      this
+      );
+  }
   // </public>
   // </interface>
-	// </dynamic>
+  // </dynamic>
   // </class>
 }

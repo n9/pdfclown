@@ -118,15 +118,15 @@ public final class BeginSubpath
 
   @Override
   public void scan(
-  	GraphicsState state
-  	)
+    GraphicsState state
+    )
   {
-  	Path2D pathObject = (Path2D)state.getScanner().getRenderObject();
-  	if(pathObject != null)
-  	{
-  		Point2D point = getPoint();
-  		pathObject.moveTo(point.getX(),point.getY());
-  	}
+    Path2D pathObject = (Path2D)state.getScanner().getRenderObject();
+    if(pathObject != null)
+    {
+      Point2D point = getPoint();
+      pathObject.moveTo(point.getX(),point.getY());
+    }
   }
 
   /**

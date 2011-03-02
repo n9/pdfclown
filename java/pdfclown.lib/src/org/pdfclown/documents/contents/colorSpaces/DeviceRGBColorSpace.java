@@ -87,28 +87,28 @@ public final class DeviceRGBColorSpace
     )
   {return new DeviceRGBColor(components);}
 
-	@Override
-	public int getComponentCount(
-		)
-	{return 3;}
+  @Override
+  public int getComponentCount(
+    )
+  {return 3;}
 
   @Override
   public DeviceRGBColor getDefaultColor(
     )
   {return DeviceRGBColor.Default;}
 
-	@Override
-	public Paint getPaint(
-		Color<?> color
-		)
-	{
-		DeviceRGBColor spaceColor = (DeviceRGBColor)color;
-		return new java.awt.Color(
-			spaceColor.getR(),
-			spaceColor.getG(),
-			spaceColor.getB()
-			);
-	}
+  @Override
+  public Paint getPaint(
+    Color<?> color
+    )
+  {
+    DeviceRGBColor spaceColor = (DeviceRGBColor)color;
+    return new java.awt.Color(
+      spaceColor.getR(),
+      spaceColor.getG(),
+      spaceColor.getB()
+      );
+  }
   // </public>
   // </interface>
   // </dynamic>

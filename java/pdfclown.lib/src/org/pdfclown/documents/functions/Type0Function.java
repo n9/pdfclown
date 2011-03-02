@@ -42,147 +42,148 @@ import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.Interval;
 
 /**
-	<b>Sampled function</b> using a <i>sequence of sample values to provide an approximation
-	for functions whose domains and ranges are bounded</i> [PDF:1.6:3.9.1].
-	<p>The samples are organized as an m-dimensional table in which each entry has n components.</p>
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  <b>Sampled function</b> using a <i>sequence of sample values to provide an approximation
+  for functions whose domains and ranges are bounded</i> [PDF:1.6:3.9.1].
+  <p>The samples are organized as an m-dimensional table in which each entry has n components.</p>
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF12)
 public final class Type0Function
-	extends Function<PdfStream>
+  extends Function<PdfStream>
 {
   // <class>
   // <classes>
-	public enum InterpolationOrderEnum
-	{
-		/**
-			Linear spline interpolation.
-		*/
-		Linear(1),
-		/**
-			Cubic spline interpolation.
-		*/
-		Cubic(3);
-		
-		private static final Map<Integer,InterpolationOrderEnum> values = new HashMap<Integer,InterpolationOrderEnum>();
-		static
-		{
-			for(InterpolationOrderEnum value : InterpolationOrderEnum.values())
-			{values.put(value.getCode(), value);}
-		}
-		
-		public static InterpolationOrderEnum get(
-			int code
-			)
-		{return values.get(code);}
-		
-		private int code;
-		
-		private InterpolationOrderEnum(
-			int code
-			)
-		{this.code = code;}
-		
-		public int getCode(
-			)
-		{return code;}
-	}
+  public enum InterpolationOrderEnum
+  {
+    /**
+      Linear spline interpolation.
+    */
+    Linear(1),
+    /**
+      Cubic spline interpolation.
+    */
+    Cubic(3);
+
+    private static final Map<Integer,InterpolationOrderEnum> values = new HashMap<Integer,InterpolationOrderEnum>();
+    static
+    {
+      for(InterpolationOrderEnum value : InterpolationOrderEnum.values())
+      {values.put(value.getCode(), value);}
+    }
+
+    public static InterpolationOrderEnum get(
+      int code
+      )
+    {return values.get(code);}
+
+    private int code;
+
+    private InterpolationOrderEnum(
+      int code
+      )
+    {this.code = code;}
+
+    public int getCode(
+      )
+    {return code;}
+  }
   // </classes>
 
-	// <dynamic>
-	// <constructors>
-	//TODO:implement function creation and sample table management!
+  // <dynamic>
+  // <constructors>
+  //TODO:implement function creation and sample table management!
 
-	Type0Function(
-		PdfDirectObject baseObject
-	)
-	{super(baseObject, null);} // NOTE: PdfStream is self-contained.
-	// </constructors>
+  Type0Function(
+    PdfDirectObject baseObject
+  )
+  {super(baseObject, null);} // NOTE: PdfStream is self-contained.
+  // </constructors>
 
   // <interface>
   // <public>
-	@Override
-	public float[] calculate(
-		float[] inputs
-		)
-	{
-		// FIXME: Auto-generated method stub
-		return null;
-	}
+  @Override
+  public float[] calculate(
+    float[] inputs
+    )
+  {
+    // FIXME: Auto-generated method stub
+    return null;
+  }
 
-	@Override
-	public Object clone(
-		Document context
-		)
-	{return new NotImplementedException();}
-
-  /**
-		Gets the linear mapping of input values into the domain of the function's sample table.
-	*/
-	public List<Interval<Integer>> getDomainEncodes(
-		)
-	{
-		return getIntervals(
-			PdfName.Encode,
-			new IDefaultIntervalsCallback<Integer>()
-			{
-				public List<Interval<Integer>> invoke(
-					List<Interval<Integer>> intervals
-					)
-				{
-		  		for(Integer sampleCount : getSampleCounts())
-		  		{intervals.add(new Interval<Integer>(0, sampleCount-1));}
-		  		return intervals;
-				}
-			}
-			);
-	}
-
-	/**
-		Gets the order of interpolation between samples.
-	*/
-	public InterpolationOrderEnum getOrder(
-		)
-	{
-		PdfInteger interpolationOrderObject = (PdfInteger)getDictionary().get(PdfName.Order);
-		return (interpolationOrderObject == null
-			? InterpolationOrderEnum.Linear
-			: InterpolationOrderEnum.get(interpolationOrderObject.getRawValue()));
-	}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {return new NotImplementedException();}
 
   /**
-		Gets the linear mapping of sample values into the ranges of the function's output values.
-	*/
-	public List<Interval<Float>> getRangeDecodes(
-		)
-	{return getIntervals(PdfName.Decode, null);}
-	
-	/**
-		Gets the number of bits used to represent each sample.
-	*/
-	public int getSampleBitsCount(
-		)
-	{return ((PdfInteger)getDictionary().get(PdfName.BitsPerSample)).getRawValue();}
-	
-	/**
-		Gets the number of samples in each input dimension of the sample table.
-	*/
-	public List<Integer> getSampleCounts(
-		)
-	{
-		ArrayList<Integer> sampleCounts = new ArrayList<Integer>();
-		{
-			PdfArray sampleCountsObject = (PdfArray)getDictionary().get(PdfName.Size);
-			for(PdfDirectObject sampleCountObject : sampleCountsObject)
-			{sampleCounts.add(((PdfInteger)sampleCountObject).getRawValue());}
-		}
-		return sampleCounts;
-	}
+    Gets the linear mapping of input values into the domain of the function's sample table.
+  */
+  public List<Interval<Integer>> getDomainEncodes(
+    )
+  {
+    return getIntervals(
+      PdfName.Encode,
+      new IDefaultIntervalsCallback<Integer>()
+      {
+        @Override
+        public List<Interval<Integer>> invoke(
+          List<Interval<Integer>> intervals
+          )
+        {
+          for(Integer sampleCount : getSampleCounts())
+          {intervals.add(new Interval<Integer>(0, sampleCount-1));}
+          return intervals;
+        }
+      }
+      );
+  }
+
+  /**
+    Gets the order of interpolation between samples.
+  */
+  public InterpolationOrderEnum getOrder(
+    )
+  {
+    PdfInteger interpolationOrderObject = (PdfInteger)getDictionary().get(PdfName.Order);
+    return (interpolationOrderObject == null
+      ? InterpolationOrderEnum.Linear
+      : InterpolationOrderEnum.get(interpolationOrderObject.getRawValue()));
+  }
+
+  /**
+    Gets the linear mapping of sample values into the ranges of the function's output values.
+  */
+  public List<Interval<Float>> getRangeDecodes(
+    )
+  {return getIntervals(PdfName.Decode, null);}
+
+  /**
+    Gets the number of bits used to represent each sample.
+  */
+  public int getSampleBitsCount(
+    )
+  {return ((PdfInteger)getDictionary().get(PdfName.BitsPerSample)).getRawValue();}
+
+  /**
+    Gets the number of samples in each input dimension of the sample table.
+  */
+  public List<Integer> getSampleCounts(
+    )
+  {
+    ArrayList<Integer> sampleCounts = new ArrayList<Integer>();
+    {
+      PdfArray sampleCountsObject = (PdfArray)getDictionary().get(PdfName.Size);
+      for(PdfDirectObject sampleCountObject : sampleCountsObject)
+      {sampleCounts.add(((PdfInteger)sampleCountObject).getRawValue());}
+    }
+    return sampleCounts;
+  }
   // </public>
   // </interface>
-	// </dynamic>
+  // </dynamic>
   // </class>
 }

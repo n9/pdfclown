@@ -48,7 +48,7 @@ import org.pdfclown.objects.PdfReference;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	Document pages collection [PDF:1.6:3.6.2].
+  Document pages collection [PDF:1.6:3.6.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @version 0.1.0
@@ -420,10 +420,12 @@ public final class Pages
       // <interface>
       // <public>
       // <Iterator>
+      @Override
       public boolean hasNext(
         )
       {return (index < size);}
 
+      @Override
       public Page next(
         )
       {
@@ -433,6 +435,7 @@ public final class Pages
         return getNext();
       }
 
+      @Override
       public void remove(
         )
       {throw new UnsupportedOperationException();}

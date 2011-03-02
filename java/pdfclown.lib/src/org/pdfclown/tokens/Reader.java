@@ -25,17 +25,17 @@
 
 package org.pdfclown.tokens;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import org.pdfclown.Version;
 import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
-
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 /**
   PDF file reader.
@@ -47,38 +47,38 @@ public final class Reader
   implements Closeable
 {
   // <class>
-	// <classes>
-	public static final class FileInfo
-	{
-		private PdfDictionary trailer;
-		private Version version;
-		private SortedMap<Integer,XRefEntry> xrefEntries;
-		
-		FileInfo(
-			Version version,
-			PdfDictionary trailer,
-			SortedMap<Integer,XRefEntry> xrefEntries
-			)
-		{
-			this.version = version;
-			this.trailer = trailer;
-			this.xrefEntries = xrefEntries;
+  // <classes>
+  public static final class FileInfo
+  {
+    private PdfDictionary trailer;
+    private Version version;
+    private SortedMap<Integer,XRefEntry> xrefEntries;
+
+    FileInfo(
+      Version version,
+      PdfDictionary trailer,
+      SortedMap<Integer,XRefEntry> xrefEntries
+      )
+    {
+      this.version = version;
+      this.trailer = trailer;
+      this.xrefEntries = xrefEntries;
     }
-		
-		public PdfDictionary getTrailer(
-			)
-		{return trailer;}
-		
-		public Version getVersion(
-			)
-		{return version;}
-		
-		public SortedMap<Integer,XRefEntry> getXrefEntries(
-			)
-		{return xrefEntries;}
-	}
-	// </classes>
-	
+
+    public PdfDictionary getTrailer(
+      )
+    {return trailer;}
+
+    public Version getVersion(
+      )
+    {return version;}
+
+    public SortedMap<Integer,XRefEntry> getXrefEntries(
+      )
+    {return xrefEntries;}
+  }
+  // </classes>
+
   // <dynamic>
   // <fields>
   private Parser parser;
@@ -97,6 +97,7 @@ public final class Reader
 
   // <interface>
   // <public>
+  @Override
   public int hashCode(
     )
   {return parser.hashCode();}
@@ -112,115 +113,116 @@ public final class Reader
     ) throws FileFormatException
   {
 //TODO:hybrid xref table/stream
-  	Version version = Version.get(parser.retrieveVersion());
-  	PdfDictionary trailer = null;
-  	SortedMap<Integer,XRefEntry> xrefEntries = new TreeMap<Integer,XRefEntry>();
-  	{
-	    long sectionOffset = parser.retrieveXRefOffset();
-	  	while(sectionOffset > -1)
-	  	{
-	  		// Move to the start of the xref section!
-	  		parser.seek(sectionOffset);
-	  		
-	  		PdfDictionary sectionTrailer;
-		    if(parser.getToken(1).equals(Keyword.XRef)) // XRef-table section.
-		    {
-			    // Looping sequentially across the subsections inside the current xref-table section...
-			    while(true)
-			    {
-			      /*
-			        NOTE: Each iteration of this block represents the scanning of one subsection.
-			        We get its bounds (first and last object numbers within its range) and then collect 
-			        its entries.
-			      */
-			      // 1. First object number.
-			      parser.moveNext();
-			      if((parser.getTokenType() == TokenTypeEnum.Keyword)
-			          && parser.getToken().equals(Keyword.Trailer)) // XRef-table section ended.
-			        break;
-			      else if(parser.getTokenType() != TokenTypeEnum.Integer) 
-			        throw new FileFormatException("Neither object number of the first object in this xref subsection nor end of xref section found.",parser.getPosition());
-			
-			      // Get the object number of the first object in this xref-table subsection!
-			      int startObjectNumber = (Integer)parser.getToken();
-			
-			      // 2. Last object number.
-			      parser.moveNext();
-			      if(parser.getTokenType() != TokenTypeEnum.Integer)
-			        throw new FileFormatException("Number of entries in this xref subsection not found.",parser.getPosition());
-			
-			      // Get the object number of the last object in this xref-table subsection!
-			      int endObjectNumber = (Integer)parser.getToken() + startObjectNumber;
-			
-			      // 3. XRef-table subsection entries.
-			      for(
-			        int index = startObjectNumber;
-			        index < endObjectNumber;
-			        index++
-			        )
-			      {
-			        if(xrefEntries.containsKey(index)) // Already-defined entry.
-			        {
-			          // Skip to the next entry!
-			          parser.moveNext(3);
-			        }
-			        else // Undefined entry.
-			        {
-			          // Get the indirect object offset!
-			          int offset = (Integer)parser.getToken(1);
-			          // Get the object generation number!
-			          int generation = (Integer)parser.getToken(1);
-			          // Get the usage tag!
-			          XRefEntry.UsageEnum usage;
-			          {
-				          String usageToken = (String)parser.getToken(1);
-				          if(usageToken.equals(Keyword.InUseXrefEntry))
-				            usage = XRefEntry.UsageEnum.InUse;
-				          else if(usageToken.equals(Keyword.FreeXrefEntry))
-				            usage = XRefEntry.UsageEnum.Free;
-				          else
-				            throw new FileFormatException("Invalid xref entry.",parser.getPosition());
-			          }
-			
-			          // Entry initialization.
-			          xrefEntries.put(
-		          		index,
-		          		new XRefEntry(
-				            index,
-				            generation,
-				            offset,
-				            usage
-				            )
-			            );
-			        }
-			      }
-			    }
+    Version version = Version.get(parser.retrieveVersion());
+    PdfDictionary trailer = null;
+    SortedMap<Integer,XRefEntry> xrefEntries = new TreeMap<Integer,XRefEntry>();
+    {
+      long sectionOffset = parser.retrieveXRefOffset();
+      while(sectionOffset > -1)
+      {
+        // Move to the start of the xref section!
+        parser.seek(sectionOffset);
 
-		      // Get the previous trailer!
-			    sectionTrailer = (PdfDictionary)parser.parsePdfObject(1);
-		    }
-		    else // XRef-stream section.
-		    {
-		    	XRefStream stream = (XRefStream)parser.parsePdfObject(3); // Gets the xref stream skipping the indirect-object header.
-		    	// Add the xref entries from the current xref stream!
-		    	xrefEntries.putAll(stream);
+        PdfDictionary sectionTrailer;
+        if(parser.getToken(1).equals(Keyword.XRef)) // XRef-table section.
+        {
+          // Looping sequentially across the subsections inside the current xref-table section...
+          while(true)
+          {
+            /*
+              NOTE: Each iteration of this block represents the scanning of one subsection.
+              We get its bounds (first and last object numbers within its range) and then collect
+              its entries.
+            */
+            // 1. First object number.
+            parser.moveNext();
+            if((parser.getTokenType() == TokenTypeEnum.Keyword)
+                && parser.getToken().equals(Keyword.Trailer)) // XRef-table section ended.
+              break;
+            else if(parser.getTokenType() != TokenTypeEnum.Integer)
+              throw new FileFormatException("Neither object number of the first object in this xref subsection nor end of xref section found.",parser.getPosition());
 
-		      // Get the previous trailer!
-		    	sectionTrailer = stream.getHeader();
-		    }
+            // Get the object number of the first object in this xref-table subsection!
+            int startObjectNumber = (Integer)parser.getToken();
 
-		    if(trailer == null)
-		    {trailer = sectionTrailer;}
-		    
-	      // Get the previous xref-table section's offset!
-	      PdfInteger prevXRefOffset = (PdfInteger)sectionTrailer.get(PdfName.Prev);
-	      sectionOffset = (prevXRefOffset != null ? prevXRefOffset.getValue() : -1);
-	  	}
-  	}
+            // 2. Last object number.
+            parser.moveNext();
+            if(parser.getTokenType() != TokenTypeEnum.Integer)
+              throw new FileFormatException("Number of entries in this xref subsection not found.",parser.getPosition());
+
+            // Get the object number of the last object in this xref-table subsection!
+            int endObjectNumber = (Integer)parser.getToken() + startObjectNumber;
+
+            // 3. XRef-table subsection entries.
+            for(
+              int index = startObjectNumber;
+              index < endObjectNumber;
+              index++
+              )
+            {
+              if(xrefEntries.containsKey(index)) // Already-defined entry.
+              {
+                // Skip to the next entry!
+                parser.moveNext(3);
+              }
+              else // Undefined entry.
+              {
+                // Get the indirect object offset!
+                int offset = (Integer)parser.getToken(1);
+                // Get the object generation number!
+                int generation = (Integer)parser.getToken(1);
+                // Get the usage tag!
+                XRefEntry.UsageEnum usage;
+                {
+                  String usageToken = (String)parser.getToken(1);
+                  if(usageToken.equals(Keyword.InUseXrefEntry))
+                    usage = XRefEntry.UsageEnum.InUse;
+                  else if(usageToken.equals(Keyword.FreeXrefEntry))
+                    usage = XRefEntry.UsageEnum.Free;
+                  else
+                    throw new FileFormatException("Invalid xref entry.",parser.getPosition());
+                }
+
+                // Entry initialization.
+                xrefEntries.put(
+                  index,
+                  new XRefEntry(
+                    index,
+                    generation,
+                    offset,
+                    usage
+                    )
+                  );
+              }
+            }
+          }
+
+          // Get the previous trailer!
+          sectionTrailer = (PdfDictionary)parser.parsePdfObject(1);
+        }
+        else // XRef-stream section.
+        {
+          XRefStream stream = (XRefStream)parser.parsePdfObject(3); // Gets the xref stream skipping the indirect-object header.
+          // Add the xref entries from the current xref stream!
+          xrefEntries.putAll(stream);
+
+          // Get the previous trailer!
+          sectionTrailer = stream.getHeader();
+        }
+
+        if(trailer == null)
+        {trailer = sectionTrailer;}
+
+        // Get the previous xref-table section's offset!
+        PdfInteger prevXRefOffset = (PdfInteger)sectionTrailer.get(PdfName.Prev);
+        sectionOffset = (prevXRefOffset != null ? prevXRefOffset.getValue() : -1);
+      }
+    }
     return new FileInfo(version, trailer, xrefEntries);
   }
 
   // <Closeable>
+  @Override
   public void close(
     ) throws IOException
   {

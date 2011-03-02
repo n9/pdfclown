@@ -82,30 +82,30 @@ public final class DeviceGrayColorSpace
 
   @Override
   public DeviceGrayColor getColor(
-  	List<PdfDirectObject> components,
-  	IContentContext context
+    List<PdfDirectObject> components,
+    IContentContext context
     )
   {return new DeviceGrayColor(components);}
 
-	@Override
-	public int getComponentCount(
-		)
-	{return 1;}
+  @Override
+  public int getComponentCount(
+    )
+  {return 1;}
 
   @Override
   public DeviceGrayColor getDefaultColor(
     )
   {return DeviceGrayColor.Default;}
 
-	@Override
-	public Paint getPaint(
-		Color<?> color
-		)
-	{
-		DeviceGrayColor spaceColor = (DeviceGrayColor)color;
-		float g = spaceColor.getG();
-		return new java.awt.Color(g, g, g);
-	}
+  @Override
+  public Paint getPaint(
+    Color<?> color
+    )
+  {
+    DeviceGrayColor spaceColor = (DeviceGrayColor)color;
+    float g = spaceColor.getG();
+    return new java.awt.Color(g, g, g);
+  }
   // </public>
   // </interface>
   // </dynamic>

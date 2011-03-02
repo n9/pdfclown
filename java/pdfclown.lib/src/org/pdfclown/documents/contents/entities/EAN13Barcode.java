@@ -25,6 +25,12 @@
 
 package org.pdfclown.documents.contents.entities;
 
+import java.awt.Dimension;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.fonts.Font;
@@ -32,12 +38,6 @@ import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.contents.objects.ContentObject;
 import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.documents.contents.xObjects.XObject;
-
-import java.awt.Dimension;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.Arrays;
 
 /**
   <a href="http://en.wikipedia.org/wiki/EAN13">EAN-13 Bar Code</a> object [GS1:7.1:5.1.1.3.1].
@@ -229,7 +229,7 @@ public final class EAN13Barcode
         false,
         false
         );
-      float fontSize = (float)(DigitGlyphWidth / font.getWidth(code.substring(0,1), 1));
+      float fontSize = (DigitGlyphWidth / font.getWidth(code.substring(0,1), 1));
 
       // 1. Bars.
       {
@@ -275,7 +275,7 @@ public final class EAN13Barcode
       // 2. Digits.
       {
         composer.setFont(font,fontSize);
-        float digitY = BarHeight + (DigitHeight - ((float)font.getAscent(fontSize))) / 2;
+        float digitY = BarHeight + (DigitHeight - (font.getAscent(fontSize))) / 2;
         // Showing the digits...
         for(
           int digitIndex = 0;
@@ -285,7 +285,7 @@ public final class EAN13Barcode
         {
           String digit = code.substring(digitIndex, digitIndex+1);
           float pX = DigitGlyphXs[digitIndex] // Digit position.
-            - (float)font.getWidth(digit,fontSize) / 2; // Centering.
+            - font.getWidth(digit,fontSize) / 2; // Centering.
           // Show the current digit!
           composer.showText(
             digit,
@@ -305,10 +305,10 @@ public final class EAN13Barcode
   {
     FormXObject xObject = new FormXObject(context);
     {
-	    xObject.setSize(getSize());
-	    PrimitiveComposer composer = new PrimitiveComposer(xObject);
-	    toInlineObject(composer);
-	    composer.flush();
+      xObject.setSize(getSize());
+      PrimitiveComposer composer = new PrimitiveComposer(xObject);
+      toInlineObject(composer);
+      composer.flush();
     }
     return xObject;
   }

@@ -45,18 +45,18 @@ public final class ExtGStateResources
   // <class>
   // <static>
   // <interface>
-	static ExtGStateResources wrap(
-		PdfDirectObject baseObject,
-		PdfIndirectObject container
-		)
-	{
+  static ExtGStateResources wrap(
+    PdfDirectObject baseObject,
+    PdfIndirectObject container
+    )
+  {
     return baseObject == null
-	  	? null
-			: new ExtGStateResources(baseObject, container);
-	}
+      ? null
+      : new ExtGStateResources(baseObject, container);
+  }
   // </interface>
   // </static>
-	
+
   // <dynamic>
   // <constructors>
   public ExtGStateResources(
@@ -73,11 +73,11 @@ public final class ExtGStateResources
 
   // <interface>
   // <protected>
-	@Override
-	protected ExtGState wrap(
-		PdfDirectObject baseObject
-		)
-	{return ExtGState.wrap(baseObject, getContainer());}
+  @Override
+  protected ExtGState wrap(
+    PdfDirectObject baseObject
+    )
+  {return ExtGState.wrap(baseObject, getContainer());}
   // </protected>
   // </interface>
   // </dynamic>

@@ -50,16 +50,16 @@ public class SetFillColor
   // <class>
   // <static>
   // <fields>
-	/**
-		'Set the color to use for nonstroking operations in any color space' operator.
-	*/
-	@PDF(VersionEnum.PDF12)
+  /**
+    'Set the color to use for nonstroking operations in any color space' operator.
+  */
+  @PDF(VersionEnum.PDF12)
   public static final String ExtendedOperator = "scn";
-	/**
-		'Set the color to use for nonstroking operations in a device, CIE-based (other than ICCBased),
-		or Indexed color space' operator.
-	*/
-	@PDF(VersionEnum.PDF11)
+  /**
+    'Set the color to use for nonstroking operations in a device, CIE-based (other than ICCBased),
+    or Indexed color space' operator.
+  */
+  @PDF(VersionEnum.PDF11)
   public static final String Operator = "sc";
   // </fields>
   // </static>
@@ -77,35 +77,35 @@ public class SetFillColor
   {this(ExtendedOperator, operands);}
 
   public SetFillColor(
-  	String operator,
+    String operator,
     List<PdfDirectObject> operands
     )
   {super(operator, operands);}
-  
+
   protected SetFillColor(
-  	String operator,
+    String operator,
     Color<?> value
     )
   {super(operator, new ArrayList<PdfDirectObject>(value.getComponents()));}
-  
-  /**
-		@param operator Graphics operator.
-		@param name Name of the color resource entry (see {@link Pattern}).
-	 */
-	protected SetFillColor(
-		String operator,
-		PdfName name
-	  )
-	{this(operator, name, null);}
 
   /**
-  	@param operator Graphics operator.
-  	@param name Name of the color resource entry (see {@link Pattern}).
-  	@param underlyingColor Color used to colorize the pattern. 
+    @param operator Graphics operator.
+    @param name Name of the color resource entry (see {@link Pattern}).
    */
   protected SetFillColor(
-  	String operator,
-  	PdfName name,
+    String operator,
+    PdfName name
+    )
+  {this(operator, name, null);}
+
+  /**
+    @param operator Graphics operator.
+    @param name Name of the color resource entry (see {@link Pattern}).
+    @param underlyingColor Color used to colorize the pattern.
+   */
+  protected SetFillColor(
+    String operator,
+    PdfName name,
     Color<?> underlyingColor
     )
   {
@@ -119,19 +119,19 @@ public class SetFillColor
   // <interface>
   // <public>
   public List<PdfDirectObject> getComponents(
-		)
-	{return operands;}
+    )
+  {return operands;}
 
-	@Override
+  @Override
   public void scan(
     GraphicsState state
     )
   {
     state.setFillColor(
-    	state.getFillColorSpace().getColor(
-    		operands,
-    		state.getScanner().getContentContext()
-    		)
+      state.getFillColorSpace().getColor(
+        operands,
+        state.getScanner().getContentContext()
+        )
       );
   }
   // </public>

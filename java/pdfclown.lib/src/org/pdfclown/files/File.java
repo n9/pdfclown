@@ -48,8 +48,8 @@ import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.tokens.FileFormatException;
 import org.pdfclown.tokens.Reader;
-import org.pdfclown.tokens.Writer;
 import org.pdfclown.tokens.Reader.FileInfo;
+import org.pdfclown.tokens.Writer;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -160,7 +160,7 @@ public final class File
   {
     version = VersionEnum.PDF14.getVersion();
     trailer = new PdfDictionary();
-		indirectObjects = new IndirectObjects(this, null);
+    indirectObjects = new IndirectObjects(this, null);
     document = new Document(this);
   }
 
@@ -181,7 +181,7 @@ public final class File
     IInputStream stream
     ) throws FileFormatException
   {
-		reader = new Reader(stream, this);
+    reader = new Reader(stream, this);
 
     FileInfo info = reader.readInfo();
     version = info.getVersion();
@@ -189,7 +189,7 @@ public final class File
     if(trailer.containsKey(PdfName.Encrypt)) // Encrypted file.
       throw new NotImplementedException("Encrypted files are currently not supported.");
 
-		indirectObjects = new IndirectObjects(this, info.getXrefEntries());
+    indirectObjects = new IndirectObjects(this, info.getXrefEntries());
     document = new Document(trailer.get(PdfName.Root));
     document.getConfiguration().setXrefMode(PdfName.XRef.equals(trailer.get(PdfName.Type)) ? XRefModeEnum.Compressed : XRefModeEnum.Plain);
   }
@@ -198,30 +198,30 @@ public final class File
   // <interface>
   // <public>
   /**
-  	Gets the high-level representation of the file content.
+    Gets the high-level representation of the file content.
   */
   public Document getDocument(
     )
   {return document;}
 
   /**
-  	Gets the indirect objects collection.
+    Gets the indirect objects collection.
   */
   public IndirectObjects getIndirectObjects(
     )
   {return indirectObjects;}
 
   /**
-  	Gets the data reader backing this file.
-  	
-		@return <code>null</code> in case of newly-created file.
+    Gets the data reader backing this file.
+
+    @return <code>null</code> in case of newly-created file.
   */
   public Reader getReader(
     )
   {return reader;}
 
   /**
-  	Gets the file trailer.
+    Gets the file trailer.
   */
   public PdfDictionary getTrailer(
     )
@@ -236,6 +236,7 @@ public final class File
     )
   {return version;}
 
+  @Override
   public int hashCode(
     )
   {return hashCode;}
@@ -275,7 +276,7 @@ public final class File
       its update is therefore delayed to its disposal,
       when the temporary file will overwrite it (see close() method).
     */
-		save(getTempPath(), mode);
+    save(getTempPath(), mode);
   }
 
   /**
@@ -343,7 +344,7 @@ public final class File
     SerializationModeEnum mode
     )
   {
-		Writer writer = Writer.get(this, stream);
+    Writer writer = Writer.get(this, stream);
     writer.write(mode);
   }
 
@@ -358,6 +359,7 @@ public final class File
   {indirectObjects.remove(reference.getObjectNumber());}
 
   // <Closeable>
+  @Override
   public void close(
     ) throws IOException
   {

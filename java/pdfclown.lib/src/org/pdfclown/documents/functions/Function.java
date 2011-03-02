@@ -48,31 +48,31 @@ import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.math.Interval;
 
 /**
-	Function [PDF:1.6:3.9].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  Function [PDF:1.6:3.9].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Function<TDataObject extends PdfDataObject>
-	extends PdfObjectWrapper<TDataObject>
+  extends PdfObjectWrapper<TDataObject>
 {
   // <class>
   // <classes>
-	/**
-	  Default intervals callback.
-	*/
+  /**
+    Default intervals callback.
+  */
   protected interface IDefaultIntervalsCallback<T extends Comparable<T>>
   {List<Interval<T>> invoke(List<Interval<T>> intervals);}
   // </classes>
-	
+
   // <static>
   // <fields>
-	private static final int FunctionType0 = 0;
-	private static final int FunctionType2 = 2;
-	private static final int FunctionType3 = 3;
-	private static final int FunctionType4 = 4;
+  private static final int FunctionType0 = 0;
+  private static final int FunctionType2 = 2;
+  private static final int FunctionType3 = 3;
+  private static final int FunctionType4 = 4;
   // </fields>
 
   // <interface>
@@ -83,205 +83,205 @@ public abstract class Function<TDataObject extends PdfDataObject>
     @param reference Reference to a function object.
     @return Function object associated to the reference.
   */
-	public static final Function<?> wrap(
+  public static final Function<?> wrap(
     PdfReference reference
   )
   {return wrap(reference,null);}
 
   /**
-	  Wraps a function base object into a function object.
-	
-	  @param baseObject Function base object.
-	  @param container Function base object container.
-	  @return Function object associated to the base object.
-	*/
-	public static final Function<?> wrap(
-	  PdfDirectObject baseObject,
-	  PdfIndirectObject container
-	  )
-	{
-	  if(baseObject == null)
-	    return null;
-	
-	  PdfDataObject dataObject = File.resolve(baseObject);
-	  PdfDictionary dictionary = getDictionary(dataObject);
-	  int functionType = ((PdfInteger)dictionary.get(PdfName.FunctionType)).getRawValue();
-	  switch(functionType)
-		{
-			case FunctionType0:
-				return new Type0Function(baseObject);
-			case FunctionType2:
-				return new Type2Function(baseObject, container);
-			case FunctionType3:
-				return new Type3Function(baseObject, container);
-			case FunctionType4:
-				return new Type4Function(baseObject);
-			default:
-				throw new UnsupportedOperationException("Function type " + functionType + " unknown.");
-		}
-	}
+    Wraps a function base object into a function object.
+
+    @param baseObject Function base object.
+    @param container Function base object container.
+    @return Function object associated to the base object.
+  */
+  public static final Function<?> wrap(
+    PdfDirectObject baseObject,
+    PdfIndirectObject container
+    )
+  {
+    if(baseObject == null)
+      return null;
+
+    PdfDataObject dataObject = File.resolve(baseObject);
+    PdfDictionary dictionary = getDictionary(dataObject);
+    int functionType = ((PdfInteger)dictionary.get(PdfName.FunctionType)).getRawValue();
+    switch(functionType)
+    {
+      case FunctionType0:
+        return new Type0Function(baseObject);
+      case FunctionType2:
+        return new Type2Function(baseObject, container);
+      case FunctionType3:
+        return new Type3Function(baseObject, container);
+      case FunctionType4:
+        return new Type4Function(baseObject);
+      default:
+        throw new UnsupportedOperationException("Function type " + functionType + " unknown.");
+    }
+  }
   // </public>
 
   // <private>
   /**
-		Gets a function's dictionary.
-		
-		@param functionDataObject Function data object.
-	*/
-	private static final PdfDictionary getDictionary(
-		PdfDataObject functionDataObject
-		)
-	{
-		if(functionDataObject instanceof PdfDictionary)
-			return (PdfDictionary)functionDataObject;
-		else // MUST be PdfStream.
-			return ((PdfStream)functionDataObject).getHeader();
-	}
+    Gets a function's dictionary.
+
+    @param functionDataObject Function data object.
+  */
+  private static final PdfDictionary getDictionary(
+    PdfDataObject functionDataObject
+    )
+  {
+    if(functionDataObject instanceof PdfDictionary)
+      return (PdfDictionary)functionDataObject;
+    else // MUST be PdfStream.
+      return ((PdfStream)functionDataObject).getHeader();
+  }
   // </private>
   // </interface>
   // </static>
 
-	// <dynamic>
-	// <constructors>
-	protected Function(
-		Document context,
-		TDataObject baseDataObject
-		)
-	{super(context.getFile(), baseDataObject);}
+  // <dynamic>
+  // <constructors>
+  protected Function(
+    Document context,
+    TDataObject baseDataObject
+    )
+  {super(context.getFile(), baseDataObject);}
 
   protected Function(
     PdfDirectObject baseObject,
     PdfIndirectObject container
     )
   {super(baseObject,container);}
-	// </constructors>
+  // </constructors>
 
   // <interface>
   // <public>
   /**
-  	Gets the result of the calculation applied by this function
-  	to the specified input values.
-  	
-  	@param inputs Input values.
+    Gets the result of the calculation applied by this function
+    to the specified input values.
+
+    @param inputs Input values.
    */
   public abstract float[] calculate(
-  	float[] inputs
+    float[] inputs
     );
 
   /**
-  	Gets the result of the calculation applied by this function
-  	to the specified input values.
-  	
-  	@param inputs Input values.
+    Gets the result of the calculation applied by this function
+    to the specified input values.
+
+    @param inputs Input values.
    */
   public final List<PdfDirectObject> calculate(
-  	List<PdfDirectObject> inputs
+    List<PdfDirectObject> inputs
     )
   {
-  	List<PdfDirectObject> outputs = new ArrayList<PdfDirectObject>();
-  	{
-    	float[] inputValues = new float[inputs.size()];
-    	for(
-    		int index = 0,
-    			length = inputValues.length;
-    		index < length;
-    		index++
-    		)
-    	{inputValues[index] = ((PdfNumber<?>)inputs.get(index)).getNumberValue();}
-  		float[] outputValues = calculate(inputValues);
-    	for(
-    		int index = 0,
-    			length = outputValues.length;
-    		index < length;
-    		index++
-    		)
-    	{outputs.add(new PdfReal(outputValues[index]));}
-  	}
-  	return outputs;
+    List<PdfDirectObject> outputs = new ArrayList<PdfDirectObject>();
+    {
+      float[] inputValues = new float[inputs.size()];
+      for(
+        int index = 0,
+          length = inputValues.length;
+        index < length;
+        index++
+        )
+      {inputValues[index] = ((PdfNumber<?>)inputs.get(index)).getNumberValue();}
+      float[] outputValues = calculate(inputValues);
+      for(
+        int index = 0,
+          length = outputValues.length;
+        index < length;
+        index++
+        )
+      {outputs.add(new PdfReal(outputValues[index]));}
+    }
+    return outputs;
   }
 
   /**
-  	Gets the (inclusive) domains of the input values.
-  	<p>Input values outside the declared domains are clipped to the nearest boundary value.</p>
+    Gets the (inclusive) domains of the input values.
+    <p>Input values outside the declared domains are clipped to the nearest boundary value.</p>
   */
   public List<Interval<Float>> getDomains(
-  	)
-	{return getIntervals(PdfName.Domain, null);}
+    )
+  {return getIntervals(PdfName.Domain, null);}
 
   /**
-  	Gets the number of input values (parameters) of this function.
+    Gets the number of input values (parameters) of this function.
   */
   public int getInputCount(
-  	)
+    )
   {return ((PdfArray)getDictionary().get(PdfName.Domain)).size() / 2;}
 
   /**
-		Gets the number of output values (results) of this function.
-	*/
-	public int getOutputCount(
-		)
-	{
-		PdfArray rangesObject = (PdfArray)getDictionary().get(PdfName.Range);
-		return rangesObject == null ? 1 : rangesObject.size() / 2;
-	}
+    Gets the number of output values (results) of this function.
+  */
+  public int getOutputCount(
+    )
+  {
+    PdfArray rangesObject = (PdfArray)getDictionary().get(PdfName.Range);
+    return rangesObject == null ? 1 : rangesObject.size() / 2;
+  }
 
   /**
-		Gets the (inclusive) ranges of the output values.
-		<p>Output values outside the declared ranges are clipped to the nearest boundary value;
-		if this entry is absent, no clipping is done.</p>
-		
-		@return <code>null</code> in case of unbounded ranges.
-	*/
-	public List<Interval<Float>> getRanges(
-		)
-	{return getIntervals(PdfName.Range, null);}
+    Gets the (inclusive) ranges of the output values.
+    <p>Output values outside the declared ranges are clipped to the nearest boundary value;
+    if this entry is absent, no clipping is done.</p>
+
+    @return <code>null</code> in case of unbounded ranges.
+  */
+  public List<Interval<Float>> getRanges(
+    )
+  {return getIntervals(PdfName.Range, null);}
   // </public>
 
   // <protected>
   /**
-  	Gets this function's dictionary.
+    Gets this function's dictionary.
   */
   protected final PdfDictionary getDictionary(
-  	)
+    )
   {return getDictionary(getBaseDataObject());}
-  
+
   /**
-	  Gets the intervals corresponding to the specified key.
-	*/
+    Gets the intervals corresponding to the specified key.
+  */
   @SuppressWarnings("unchecked")
-	protected final <T extends Comparable<T>> List<Interval<T>> getIntervals(
-  	PdfName key,
-  	IDefaultIntervalsCallback<T> defaultIntervalsCallback
-  	)
-	{
-		List<Interval<T>> intervals;
-		{
-	  	PdfArray intervalsObject = (PdfArray)getDictionary().get(key);
-	  	if(intervalsObject == null)
+  protected final <T extends Comparable<T>> List<Interval<T>> getIntervals(
+    PdfName key,
+    IDefaultIntervalsCallback<T> defaultIntervalsCallback
+    )
+  {
+    List<Interval<T>> intervals;
+    {
+      PdfArray intervalsObject = (PdfArray)getDictionary().get(key);
+      if(intervalsObject == null)
       {
         intervals = (defaultIntervalsCallback == null
           ? null
           : defaultIntervalsCallback.invoke(new ArrayList<Interval<T>>()));
       }
-	  	else
-	  	{
-	  		intervals = new ArrayList<Interval<T>>();
-		  	Iterator<PdfDirectObject> intervalsObjectIterator = intervalsObject.iterator();
-		  	while(intervalsObjectIterator.hasNext())
-		  	{
-		  		intervals.add(
-		  			new Interval<T>(
-		  				(T)((PdfNumber<?>)intervalsObjectIterator.next()).getValue(),
-		  				(T)((PdfNumber<?>)intervalsObjectIterator.next()).getValue()
-		  				)
-						);
-		  	}
-	  	}
-		}
-		return intervals;
-	}
+      else
+      {
+        intervals = new ArrayList<Interval<T>>();
+        Iterator<PdfDirectObject> intervalsObjectIterator = intervalsObject.iterator();
+        while(intervalsObjectIterator.hasNext())
+        {
+          intervals.add(
+            new Interval<T>(
+              (T)((PdfNumber<?>)intervalsObjectIterator.next()).getValue(),
+              (T)((PdfNumber<?>)intervalsObjectIterator.next()).getValue()
+              )
+            );
+        }
+      }
+    }
+    return intervals;
+  }
   // </protected>
   // </interface>
-	// </dynamic>
+  // </dynamic>
   // </class>
 }

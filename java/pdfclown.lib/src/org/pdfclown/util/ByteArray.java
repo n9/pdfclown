@@ -50,7 +50,7 @@ public final class ByteArray
     )
   {
     return object instanceof ByteArray
-    	&& Arrays.equals(data,((ByteArray)object).data);
+      && Arrays.equals(data,((ByteArray)object).data);
   }
 
   @Override

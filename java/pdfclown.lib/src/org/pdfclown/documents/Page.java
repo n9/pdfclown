@@ -74,7 +74,7 @@ import org.pdfclown.util.math.geom.Dimension;
 public final class Page
   extends PdfObjectWrapper<PdfDictionary>
   implements IContentContext,
-  	Printable
+    Printable
 {
   /*
     NOTE: Inheritable attributes are NOT early-collected, as they are NOT part
@@ -86,7 +86,7 @@ public final class Page
   /**
     Annotations tab order [PDF:1.6:3.6.2].
   */
-	@PDF(VersionEnum.PDF15)
+  @PDF(VersionEnum.PDF15)
   public enum TabOrderEnum
   {
     // <class>
@@ -154,7 +154,7 @@ public final class Page
   // <interface>
   // <public>
   public static Page wrap(
-  	PdfDirectObject baseObject
+    PdfDirectObject baseObject
     )
   {return baseObject == null ? null : new Page(baseObject);}
   // </public>
@@ -259,7 +259,7 @@ public final class Page
         (PdfDirectObject)entry.getValue().clone(contextFile)
         );
     }
-		return new Page(contextFile.getIndirectObjects().add(clone).getReference());
+    return new Page(contextFile.getIndirectObjects().add(clone).getReference());
   }
 
   /**
@@ -270,7 +270,7 @@ public final class Page
     )
   {
     PdfDirectObject actionsObject = getBaseDataObject().get(PdfName.AA);
-		return actionsObject != null ? new PageActions(actionsObject, getContainer()) : null;
+    return actionsObject != null ? new PageActions(actionsObject, getContainer()) : null;
   }
 
   /**
@@ -280,7 +280,7 @@ public final class Page
     )
   {
     PdfDirectObject annotationsObject = getBaseDataObject().get(PdfName.Annots);
-		return annotationsObject != null ? new PageAnnotations(annotationsObject, getContainer(), this) : null;
+    return annotationsObject != null ? new PageAnnotations(annotationsObject, getContainer(), this) : null;
   }
 
   /**
@@ -357,8 +357,8 @@ public final class Page
   public Dimension2D getSize(
     )
   {
-  	Rectangle2D box = getBox();  	
-  	return new Dimension(box.getWidth(), box.getHeight());
+    Rectangle2D box = getBox();
+    return new Dimension(box.getWidth(), box.getHeight());
   }
 
   /**
@@ -377,7 +377,7 @@ public final class Page
     )
   {
     PdfDirectObject transitionObject = getBaseDataObject().get(PdfName.Trans);
-		return transitionObject != null ? new Transition(transitionObject, getContainer()) : null;
+    return transitionObject != null ? new Transition(transitionObject, getContainer()) : null;
   }
 
   /**
@@ -397,12 +397,12 @@ public final class Page
   {getBaseDataObject().put(PdfName.Annots, value.getBaseObject());}
 
   /**
-	  @see #getBox()
-	*/
+    @see #getBox()
+  */
   public void setBox(
-  	Rectangle2D value
-	  )
-	{getBaseDataObject().put(PdfName.MediaBox, new Rectangle(value).getBaseDataObject());}
+    Rectangle2D value
+    )
+  {getBaseDataObject().put(PdfName.MediaBox, new Rectangle(value).getBaseDataObject());}
 
   /**
     @see #getDuration()
@@ -413,12 +413,12 @@ public final class Page
   {getBaseDataObject().put(PdfName.Dur,new PdfReal(value));}
 
   /**
-	  @see #getRotation()
-	*/
-	public void setRotation(
-	  RotationEnum value
-	  )
-	{getBaseDataObject().put(PdfName.Rotate,value.getCode());}
+    @see #getRotation()
+  */
+  public void setRotation(
+    RotationEnum value
+    )
+  {getBaseDataObject().put(PdfName.Rotate,value.getCode());}
 
   /**
     @see #getSize()
@@ -427,9 +427,9 @@ public final class Page
     Dimension2D value
     )
   {
-  	Rectangle2D box = getBox();
-  	box.setRect(box.getX(), box.getY(), value.getWidth(), value.getHeight());
-  	setBox(box);
+    Rectangle2D box = getBox();
+    box.setRect(box.getX(), box.getY(), value.getWidth(), value.getHeight());
+    setBox(box);
   }
 
   /**
@@ -449,49 +449,49 @@ public final class Page
   {getBaseDataObject().put(PdfName.Trans, value.getBaseObject());}
 
   // <IContentContext>
-	@Override
+  @Override
   public Rectangle2D getBox(
     )
-	{return new Rectangle(getInheritableAttribute(PdfName.MediaBox)).toRectangle2D();}
+  {return new Rectangle(getInheritableAttribute(PdfName.MediaBox)).toRectangle2D();}
 
-	@Override
+  @Override
   public Contents getContents(
     )
   {return new Contents(getBaseDataObject().get(PdfName.Contents), getContainer(), this);}
 
-	@Override
+  @Override
   public Resources getResources(
     )
   {return Resources.wrap(getInheritableAttribute(PdfName.Resources), getContainer());}
 
-	@Override
-	public RotationEnum getRotation(
-		)
-	{
-		PdfInteger rotationObject = (PdfInteger)getInheritableAttribute(PdfName.Rotate);
-  	return (rotationObject == null 
-  		? RotationEnum.Downward 
-			: RotationEnum.get(rotationObject));
-	}
+  @Override
+  public RotationEnum getRotation(
+    )
+  {
+    PdfInteger rotationObject = (PdfInteger)getInheritableAttribute(PdfName.Rotate);
+    return (rotationObject == null
+      ? RotationEnum.Downward
+      : RotationEnum.get(rotationObject));
+  }
 
-	@Override
-	public void render(
-		Graphics2D context,
-		Dimension2D size
-		)
-	{
-		ContentScanner scanner = new ContentScanner(getContents());
-		scanner.render(context,size);
-	}
-  
+  @Override
+  public void render(
+    Graphics2D context,
+    Dimension2D size
+    )
+  {
+    ContentScanner scanner = new ContentScanner(getContents());
+    scanner.render(context,size);
+  }
+
   // <IContentEntity>
-	@Override
+  @Override
   public ContentObject toInlineObject(
     PrimitiveComposer composer
     )
   {throw new NotImplementedException();}
 
-	@Override
+  @Override
   public XObject toXObject(
     Document context
     )
@@ -540,26 +540,26 @@ public final class Page
   }
   // </IContentEntity>
   // </IContentContext>
-  
-  // <Printable>
-	@Override
-	public int print(
-		Graphics graphics,
-		PageFormat pageFormat,
-		int pageIndex
-		) throws PrinterException
-	{
-		//TODO:verify pageIndex correspondence!
-		render(
-			(Graphics2D)graphics,
-			new Dimension(//TODO:verify page resolution!
-				pageFormat.getWidth(),
-				pageFormat.getHeight()
-				)
-			);
 
-		return Printable.PAGE_EXISTS;
-	}
+  // <Printable>
+  @Override
+  public int print(
+    Graphics graphics,
+    PageFormat pageFormat,
+    int pageIndex
+    ) throws PrinterException
+  {
+    //TODO:verify pageIndex correspondence!
+    render(
+      (Graphics2D)graphics,
+      new Dimension(//TODO:verify page resolution!
+        pageFormat.getWidth(),
+        pageFormat.getHeight()
+        )
+      );
+
+    return Printable.PAGE_EXISTS;
+  }
   // </Printable>
   // </public>
 

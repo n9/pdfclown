@@ -48,14 +48,14 @@ public final class PdfName
   // <static>
   // <fields>
   /*
-	  NOTE: Name lexical conventions prescribe that the following reserved characters
-	  are to be escaped when placed inside names' character sequences:
-	    - delimiters;
-	    - whitespaces;
-	    - '#' (number sign character).
-	*/
-	private static final Pattern EscapedPattern = java.util.regex.Pattern.compile("#([\\da-fA-F]{2})");
-	private static final Pattern UnescapedPattern = java.util.regex.Pattern.compile("[\\s\\(\\)<>\\[\\]{}/%#]");
+    NOTE: Name lexical conventions prescribe that the following reserved characters
+    are to be escaped when placed inside names' character sequences:
+      - delimiters;
+      - whitespaces;
+      - '#' (number sign character).
+  */
+  private static final Pattern EscapedPattern = java.util.regex.Pattern.compile("#([\\da-fA-F]{2})");
+  private static final Pattern UnescapedPattern = java.util.regex.Pattern.compile("[\\s\\(\\)<>\\[\\]{}/%#]");
 
   public static final PdfName A = new PdfName("A");
   public static final PdfName A85 = new PdfName("A85");
@@ -435,8 +435,8 @@ public final class PdfName
   public static final PdfName XYZ = new PdfName("XYZ");
   public static final PdfName Yes = new PdfName("Yes");
   public static final PdfName YStep = new PdfName("YStep");
-  
-	private static final byte[] NamePrefixChunk = org.pdfclown.tokens.Encoding.encode(Keyword.NamePrefix);
+
+  private static final byte[] NamePrefixChunk = org.pdfclown.tokens.Encoding.encode(Keyword.NamePrefix);
   // </fields>
   // </static>
 
@@ -492,24 +492,24 @@ public final class PdfName
     StringBuilder buffer = new StringBuilder();
     {
       String stringValue = (String)value;
-	    int index = 0;
-	    Matcher unescapedMatcher = UnescapedPattern.matcher(stringValue);
-	    while(unescapedMatcher.find())
-	    {
-	      int start = unescapedMatcher.start();
-	      if(start > index)
-	      {buffer.append(stringValue.substring(index,start));}
-	
-	      buffer.append(
-	        '#' + Integer.toHexString(
-	          (int)unescapedMatcher.group(0).charAt(0)
-	          )
-	        );
-	
-	      index = unescapedMatcher.end();
-	    }
-	    if(index < stringValue.length())
-	    {buffer.append(stringValue.substring(index));}
+      int index = 0;
+      Matcher unescapedMatcher = UnescapedPattern.matcher(stringValue);
+      while(unescapedMatcher.find())
+      {
+        int start = unescapedMatcher.start();
+        if(start > index)
+        {buffer.append(stringValue.substring(index,start));}
+
+        buffer.append(
+          '#' + Integer.toHexString(
+            unescapedMatcher.group(0).charAt(0)
+            )
+          );
+
+        index = unescapedMatcher.end();
+      }
+      if(index < stringValue.length())
+      {buffer.append(stringValue.substring(index));}
     }
     setRawValue(buffer.toString());
   }

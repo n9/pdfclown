@@ -26,14 +26,14 @@
 package org.pdfclown.tokens;
 
 /**
-	Common data chunks for serialization purposes.
-	
+  Common data chunks for serialization purposes.
+
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
   @version 0.1.0
 */
 public final class Chunk
 {
-	public static final byte[] Space = Encoding.encode(Symbol.Space);
-	public static final byte[] LineFeed = Encoding.encode(Symbol.LineFeed);
+  public static final byte[] Space = Encoding.encode(Symbol.Space);
+  public static final byte[] LineFeed = Encoding.encode(Symbol.LineFeed);
 }

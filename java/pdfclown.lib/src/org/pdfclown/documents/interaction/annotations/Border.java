@@ -227,10 +227,10 @@ public final class Border
     /*
       NOTE: 'W' entry may be undefined.
     */
-    PdfNumber<?> widthObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.W);    
+    PdfNumber<?> widthObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.W);
     return widthObject == null
-    	? DefaultWidth
-  		: widthObject.getNumberValue();
+      ? DefaultWidth
+      : widthObject.getNumberValue();
   }
 
   /**

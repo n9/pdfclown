@@ -53,16 +53,16 @@ public final class Path
     };
   public static final String[] EndOperators = new String[]
     {
-  		PaintPath.CloseFillStrokeEvenOddOperator,
-			PaintPath.CloseFillStrokeOperator,
-  		PaintPath.CloseStrokeOperator,
-  		PaintPath.EndPathNoOpOperator,
-  		PaintPath.FillEvenOddOperator,
-  		PaintPath.FillObsoleteOperator,
-  		PaintPath.FillOperator,
-  		PaintPath.FillStrokeEvenOddOperator,
-  		PaintPath.FillStrokeOperator,
-  		PaintPath.StrokeOperator
+      PaintPath.CloseFillStrokeEvenOddOperator,
+      PaintPath.CloseFillStrokeOperator,
+      PaintPath.CloseStrokeOperator,
+      PaintPath.EndPathNoOpOperator,
+      PaintPath.FillEvenOddOperator,
+      PaintPath.FillObsoleteOperator,
+      PaintPath.FillOperator,
+      PaintPath.FillStrokeEvenOddOperator,
+      PaintPath.FillStrokeOperator,
+      PaintPath.StrokeOperator
     };
   // </fields>
   // </static>
@@ -78,12 +78,12 @@ public final class Path
     )
   {super(operations);}
   // </constructors>
-  
+
   // <interface>
   // <protected>
   @Override
   protected Shape createRenderObject(
-  	)
+    )
   {return new Path2D.Double();}
   // </protected>
   // </interface>

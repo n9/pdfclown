@@ -26,15 +26,15 @@
 package org.pdfclown.tokens;
 
 /**
-	Character set.
-	
+  Character set.
+
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
   @version 0.1.0
 */
 public final class CharsetName
 {
-	public static final String ISO88591 = "ISO-8859-1";
-	public static final String UTF16 = "UTF-16";
+  public static final String ISO88591 = "ISO-8859-1";
+  public static final String UTF16 = "UTF-16";
   public static final String UTF16BE = "UTF-16BE";
 }

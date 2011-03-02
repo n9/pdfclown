@@ -150,6 +150,7 @@ public final class Buffer
   // <interface>
   // <public>
   // <IBuffer>
+  @Override
   public IBuffer append(
     byte data
     )
@@ -158,24 +159,26 @@ public final class Buffer
     {
       try
       {
-      	this.data[this.length] = data;
-      	break;
-    	}
+        this.data[this.length] = data;
+        break;
+      }
       catch(Exception e)
       {
         if(!ensureCapacity(1)) // Additional data did NOT exceed buffer capacity.
           throw new RuntimeException(e);
       }
     }
-    this.length++; // Buffer size update.    
+    this.length++; // Buffer size update.
     return this;
   }
 
+  @Override
   public IBuffer append(
     byte[] data
     )
   {return append(data, 0, data.length);}
 
+  @Override
   public IBuffer append(
     byte[] data,
     int offset,
@@ -186,7 +189,7 @@ public final class Buffer
     {
       try
       {
-				System.arraycopy(data, offset, this.data, this.length, length);
+        System.arraycopy(data, offset, this.data, this.length, length);
         break;
       }
       catch(Exception e)
@@ -199,16 +202,19 @@ public final class Buffer
     return this;
   }
 
+  @Override
   public IBuffer append(
     String data
     )
   {return append(Encoding.encode(data));}
 
+  @Override
   public IBuffer append(
     IInputStream data
     )
   {return append(data.toByteArray(), 0, (int)data.getLength());}
 
+  @Override
   public Buffer clone(
     )
   {
@@ -217,6 +223,7 @@ public final class Buffer
     return clone;
   }
 
+  @Override
   public void decode(
     Filter filter,
     PdfDictionary parameters
@@ -226,6 +233,7 @@ public final class Buffer
     length = data.length;
   }
 
+  @Override
   public void delete(
     int index,
     int length
@@ -234,50 +242,57 @@ public final class Buffer
     try
     {
       // Shift left the trailing data block to override the deleted data!
-			System.arraycopy(this.data, index + length, this.data, index, this.length - (index + length));
+      System.arraycopy(this.data, index + length, this.data, index, this.length - (index + length));
     }
     catch(Exception e)
     {throw new RuntimeException(e);}
     this.length -= length; // Buffer size update.
   }
 
+  @Override
   public byte[] encode(
     Filter filter,
     PdfDictionary parameters
     )
   {return filter.encode(data, 0, length, parameters);}
 
+  @Override
   public int getByte(
     int index
     )
   {return data[index];}
 
+  @Override
   public byte[] getByteArray(
     int index,
     int length
     )
   {
     byte[] data = new byte[length];
-		System.arraycopy(this.data, index, data, 0, length);
+    System.arraycopy(this.data, index, data, 0, length);
     return data;
   }
 
+  @Override
   public String getString(
     int index,
     int length
     )
   {return Encoding.decode(data, index, length);}
 
+  @Override
   public int getCapacity(
     )
   {return data.length;}
 
+  @Override
   public void insert(
     int index,
     byte[] data
     )
   {insert(index, data, 0, data.length);}
 
+  @Override
   public void insert(
     int index,
     byte[] data,
@@ -290,7 +305,7 @@ public final class Buffer
       try
       {
         // Shift right the existing data block to make room for new data!
-				System.arraycopy(this.data, index, this.data, index + length, this.length - index);
+        System.arraycopy(this.data, index, this.data, index + length, this.length - index);
         break;
       }
       catch(Exception e)
@@ -300,28 +315,32 @@ public final class Buffer
       }
     }
     // Insert additional data!
-		System.arraycopy(data, offset, this.data, index, length);
+    System.arraycopy(data, offset, this.data, index, length);
     this.length += length; // Buffer size update.
   }
 
+  @Override
   public void insert(
     int index,
     String data
     )
   {insert(index, Encoding.encode(data));}
 
+  @Override
   public void insert(
     int index,
     IInputStream data
     )
   {insert(index, data.toByteArray());}
 
+  @Override
   public void replace(
     int index,
     byte[] data
     )
   {System.arraycopy(data, 0, this.data, index, data.length);}
 
+  @Override
   public void replace(
     int index,
     byte[] data,
@@ -330,44 +349,52 @@ public final class Buffer
     )
   {System.arraycopy(data, offset, this.data, index, data.length);}
 
+  @Override
   public void replace(
     int index,
     String data
     )
   {replace(index, Encoding.encode(data));}
 
+  @Override
   public void replace(
     int index,
     IInputStream data
     )
   {replace(index, data.toByteArray());}
 
+  @Override
   public void setLength(
     int value
     )
   {length = value;}
 
+  @Override
   public void writeTo(
     IOutputStream stream
     )
   {stream.write(data, 0, length);}
 
   // <IInputStream>
+  @Override
   public ByteOrder getByteOrder(
     )
   {return byteOrder;}
 
+  @Override
   public long getPosition(
     )
   {return position;}
 
   /* int hashCode() uses inherited implementation. */
 
+  @Override
   public void read(
     byte[] data
     )
   {read(data, 0, data.length);}
 
+  @Override
   public void read(
     byte[] data,
     int offset,
@@ -376,13 +403,14 @@ public final class Buffer
   {
     try
     {
-			System.arraycopy(this.data, position, data, offset, length);
+      System.arraycopy(this.data, position, data, offset, length);
       position += length;
     }
     catch(Exception e)
     {throw new RuntimeException(e);}
   }
 
+  @Override
   public byte readByte(
     ) throws EOFException
   {
@@ -392,24 +420,26 @@ public final class Buffer
     {throw new EOFException();}
   }
 
+  @Override
   public int readInt(
     ) throws EOFException
   {
-		int value = ConvertUtils.byteArrayToInt(data, position, byteOrder);
+    int value = ConvertUtils.byteArrayToInt(data, position, byteOrder);
     position +=4;
     return value;
   }
 
-	@Override
+  @Override
   public int readInt(
-		int length
-		) throws EOFException
-	{
-		int value = ConvertUtils.byteArrayToNumber(data, position, length, byteOrder);
+    int length
+    ) throws EOFException
+  {
+    int value = ConvertUtils.byteArrayToNumber(data, position, length, byteOrder);
     position += length;
     return value;
   }
 
+  @Override
   public String readLine(
     ) throws EOFException
   {
@@ -431,23 +461,26 @@ public final class Buffer
     return buffer.toString();
   }
 
+  @Override
   public short readShort(
     ) throws EOFException
   {
-		short value = (short)ConvertUtils.byteArrayToNumber(data, position, 2, byteOrder);
+    short value = (short)ConvertUtils.byteArrayToNumber(data, position, 2, byteOrder);
     position += 2;
     return value;
   }
 
+  @Override
   public String readString(
     int length
     )
   {
-		String data = Encoding.decode(this.data, position, length);
+    String data = Encoding.decode(this.data, position, length);
     position += length;
     return data;
   }
 
+  @Override
   public int readUnsignedByte(
     ) throws EOFException
   {
@@ -457,6 +490,7 @@ public final class Buffer
     {throw new EOFException();}
   }
 
+  @Override
   public int readUnsignedShort(
     ) throws EOFException
   {
@@ -472,42 +506,49 @@ public final class Buffer
     {throw new EOFException();}
   }
 
+  @Override
   public void seek(
     long position
     )
   {this.position = (int)position;}
 
+  @Override
   public void setByteOrder(
     ByteOrder value
     )
   {byteOrder = value;}
 
+  @Override
   public void setPosition(
     long value
     )
   {position = (int)value;}
 
+  @Override
   public void skip(
     long offset
     )
   {position += (int)offset;}
 
   // <IDataWrapper>
+  @Override
   public byte[] toByteArray(
     )
   {
     byte[] data = new byte[this.length];
-		System.arraycopy(this.data, 0, data, 0, this.length);
+    System.arraycopy(this.data, 0, data, 0, this.length);
     return data;
   }
   // </IDataWrapper>
 
   // <IStream>
+  @Override
   public long getLength(
     )
   {return length;}
 
   // <Closeable>
+  @Override
   public void close(
     ) throws IOException
   {}
@@ -517,11 +558,13 @@ public final class Buffer
   // </IBuffer>
 
   // <IOutputStream>
+  @Override
   public void write(
     byte[] data
     )
   {append(data);}
 
+  @Override
   public void write(
     byte[] data,
     int offset,
@@ -529,11 +572,13 @@ public final class Buffer
     )
   {append(data, offset, length);}
 
+  @Override
   public void write(
     String data
     )
   {append(data);}
 
+  @Override
   public void write(
     IInputStream data
     )
@@ -562,7 +607,7 @@ public final class Buffer
         minCapacity // Minimum capacity required.
         )
       ];
-		System.arraycopy(this.data, 0, data, 0, this.length);
+    System.arraycopy(this.data, 0, data, 0, this.length);
     this.data = data;
     return true; // Reallocation happened.
   }

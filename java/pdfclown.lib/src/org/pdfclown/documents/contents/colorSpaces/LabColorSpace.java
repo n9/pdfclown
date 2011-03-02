@@ -56,8 +56,8 @@ public final class LabColorSpace
   // <class>
   // <dynamic>
   // <constructors>
-	//TODO:IMPL new element constructor!
-	
+  //TODO:IMPL new element constructor!
+
   LabColorSpace(
     PdfDirectObject baseObject,
     PdfIndirectObject container
@@ -75,83 +75,83 @@ public final class LabColorSpace
 
   @Override
   public LabColor getColor(
-  	List<PdfDirectObject> components,
-  	IContentContext context
+    List<PdfDirectObject> components,
+    IContentContext context
     )
   {return new LabColor(components);}
 
-	@Override
-	public int getComponentCount(
-		)
-	{return 3;}
+  @Override
+  public int getComponentCount(
+    )
+  {return 3;}
 
   @Override
   public LabColor getDefaultColor(
     )
   {
-  	List<Interval<Float>> ranges = getRanges();
-  	
-  	return new LabColor(
-  		ranges.get(0).getLow(),
-  		ranges.get(1).getLow(),
-  		ranges.get(2).getLow()
-  		);
-	}
-  
+    List<Interval<Float>> ranges = getRanges();
+
+    return new LabColor(
+      ranges.get(0).getLow(),
+      ranges.get(1).getLow(),
+      ranges.get(2).getLow()
+      );
+  }
+
   /**
-		Gets the (inclusive) ranges of the color components.
-		<p>Component values falling outside the specified range are adjusted
-		to the nearest valid value.</p>
-	*/
+    Gets the (inclusive) ranges of the color components.
+    <p>Component values falling outside the specified range are adjusted
+    to the nearest valid value.</p>
+  */
   //TODO:generalize to all the color spaces!
-	public List<Interval<Float>> getRanges(
-		)
-	{
-		ArrayList<Interval<Float>> ranges = new ArrayList<Interval<Float>>();
-		{
-			// 1. L* component.
-  		ranges.add(
-  			new Interval<Float>(0f, 100f)
-				);
+  public List<Interval<Float>> getRanges(
+    )
+  {
+    ArrayList<Interval<Float>> ranges = new ArrayList<Interval<Float>>();
+    {
+      // 1. L* component.
+      ranges.add(
+        new Interval<Float>(0f, 100f)
+        );
 
-	  	PdfArray rangesObject = (PdfArray)getDictionary().get(PdfName.Range);
-	  	if(rangesObject == null)
-	  	{
-				// 2. a* component.
-	  		ranges.add(
-	  			new Interval<Float>(-100f, 100f)
-					);
-				// 3. b* component.
-	  		ranges.add(
-	  			new Interval<Float>(-100f, 100f)
-					);
-  		}
-	  	else
-	  	{
-				// 2/3. a*/b* components.
-		  	Iterator<PdfDirectObject> rangesObjectIterator = rangesObject.iterator();
-		  	while(rangesObjectIterator.hasNext())
-		  	{
-		  		ranges.add(
-		  			new Interval<Float>(
-		  				((PdfNumber<?>)rangesObjectIterator.next()).getNumberValue(),
-		  				((PdfNumber<?>)rangesObjectIterator.next()).getNumberValue()
-		  				)
-						);
-		  	}
-	  	}
-		}
-		return ranges;
-	}
+      PdfArray rangesObject = (PdfArray)getDictionary().get(PdfName.Range);
+      if(rangesObject == null)
+      {
+        // 2. a* component.
+        ranges.add(
+          new Interval<Float>(-100f, 100f)
+          );
+        // 3. b* component.
+        ranges.add(
+          new Interval<Float>(-100f, 100f)
+          );
+      }
+      else
+      {
+        // 2/3. a*/b* components.
+        Iterator<PdfDirectObject> rangesObjectIterator = rangesObject.iterator();
+        while(rangesObjectIterator.hasNext())
+        {
+          ranges.add(
+            new Interval<Float>(
+              ((PdfNumber<?>)rangesObjectIterator.next()).getNumberValue(),
+              ((PdfNumber<?>)rangesObjectIterator.next()).getNumberValue()
+              )
+            );
+        }
+      }
+    }
+    return ranges;
+  }
 
-	@Override
-	public Paint getPaint(
-		Color<?> color
-		)
-	{
-		// FIXME: temporary hack
-		return new java.awt.Color(0,0,0);
-	}
+  @Override
+  public Paint getPaint(
+    Color<?> color
+    )
+  {
+    // FIXME: temporary hack
+    return new java.awt.Color(0,0,0);
+  }
   // </public>
   // </interface>
   // </dynamic>

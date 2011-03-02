@@ -38,31 +38,31 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 
 /**
-	Special device color space [PDF:1.6:4.5.5].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@version 0.1.0
+  Special device color space [PDF:1.6:4.5.5].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF12)
 public abstract class SpecialDeviceColorSpace
-	extends SpecialColorSpace<PdfArray>
+  extends SpecialColorSpace<PdfArray>
 {
   // <class>
   // <static>
   // <fields>
-	/**
-		Special component name <i>never producing any visible output</i>.
-		<p>When a color space with this component name is the current color space, <i>painting operators
-		have no effect</i>.</p>
-	*/
-	public static final String NoneComponentName = (String)PdfName.None.getValue();
+  /**
+    Special component name <i>never producing any visible output</i>.
+    <p>When a color space with this component name is the current color space, <i>painting operators
+    have no effect</i>.</p>
+  */
+  public static final String NoneComponentName = (String)PdfName.None.getValue();
   // </fields>
   // </static>
 
   // <dynamic>
   // <constructors>
-	//TODO:IMPL new element constructor!
-	
+  //TODO:IMPL new element constructor!
+
   protected SpecialDeviceColorSpace(
     PdfDirectObject baseObject,
     PdfIndirectObject container
@@ -72,65 +72,65 @@ public abstract class SpecialDeviceColorSpace
 
   // <interface>
   // <public>
-	/**
-		Gets the <b>alternate color space</b> used in case any of the {@link #getComponentNames() component names}
-		in the color space do not correspond to a component available on the device.
-	*/
-	public ColorSpace<?> getAlternateSpace(
-		)
-	{
-		return ColorSpace.wrap(
-			getBaseDataObject().get(2),
-			getContainer()
-			);
-	}
+  /**
+    Gets the <b>alternate color space</b> used in case any of the {@link #getComponentNames() component names}
+    in the color space do not correspond to a component available on the device.
+  */
+  public ColorSpace<?> getAlternateSpace(
+    )
+  {
+    return ColorSpace.wrap(
+      getBaseDataObject().get(2),
+      getContainer()
+      );
+  }
 
-	/**
-		Gets the <b>names of the color components</b>.
-	 */
-	public abstract List<String> getComponentNames(
-		);
+  /**
+    Gets the <b>names of the color components</b>.
+   */
+  public abstract List<String> getComponentNames(
+    );
 
-	@Override
-	public Paint getPaint(
-		Color<?> color
-		)
-	{
-		//TODO:enable!!!
-//		List<PdfDirectObject> alternateColorComponents = getTintFunction().calculate(color.getComponents());
-//		ColorSpace<?> alternateSpace = getAlternateSpace();
+  @Override
+  public Paint getPaint(
+    Color<?> color
+    )
+  {
+    //TODO:enable!!!
+//    List<PdfDirectObject> alternateColorComponents = getTintFunction().calculate(color.getComponents());
+//    ColorSpace<?> alternateSpace = getAlternateSpace();
 //
-//		return alternateSpace.getPaint(
-//			alternateSpace.getColor(
-//				alternateColorComponents,
-//				null
-//				)
-//			);
-		
-		//TODO: remove (temporary hack)!
-		float[] c = new float[3];
-		for(int i=0,l=color.getComponents().size();i<l;i++)
-		{
-			c[i]=((PdfNumber<?>)color.getComponents().get(i)).getNumberValue();
-			if(c[i] > 1){c[i]=1;}
-		}
-		if(c.length==1)
-		{c[2]=c[1]=c[0];}
-    return new java.awt.Color(0,0,0);
-	}
+//    return alternateSpace.getPaint(
+//      alternateSpace.getColor(
+//        alternateColorComponents,
+//        null
+//        )
+//      );
 
-	/**
-		Gets the <i><b>function</b> to transform a tint value into color component values</i>
-		in the {@link #getAlternateSpace() alternate color space}.
-	*/
-	public Function<?> getTintFunction(
-		)
-	{
-		return Function.wrap(
-			getBaseDataObject().get(3),
-			getContainer()
-			);
-	}
+    //TODO: remove (temporary hack)!
+    float[] c = new float[3];
+    for(int i=0,l=color.getComponents().size();i<l;i++)
+    {
+      c[i]=((PdfNumber<?>)color.getComponents().get(i)).getNumberValue();
+      if(c[i] > 1){c[i]=1;}
+    }
+    if(c.length==1)
+    {c[2]=c[1]=c[0];}
+    return new java.awt.Color(0,0,0);
+  }
+
+  /**
+    Gets the <i><b>function</b> to transform a tint value into color component values</i>
+    in the {@link #getAlternateSpace() alternate color space}.
+  */
+  public Function<?> getTintFunction(
+    )
+  {
+    return Function.wrap(
+      getBaseDataObject().get(3),
+      getContainer()
+      );
+  }
   // </public>
   // </interface>
   // </dynamic>

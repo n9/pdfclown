@@ -31,20 +31,20 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfIndirectObject;
 
 /**
-	Special color space [PDF:1.6:4.5.5].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@version 0.1.0
+  Special color space [PDF:1.6:4.5.5].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF11)
 public abstract class SpecialColorSpace<TDataObject extends PdfDirectObject>
-	extends ColorSpace<TDataObject>
+  extends ColorSpace<TDataObject>
 {
   // <class>
   // <dynamic>
   // <constructors>
-	//TODO:IMPL new element constructor!
-	
+  //TODO:IMPL new element constructor!
+
   protected SpecialColorSpace(
     PdfDirectObject baseObject,
     PdfIndirectObject container

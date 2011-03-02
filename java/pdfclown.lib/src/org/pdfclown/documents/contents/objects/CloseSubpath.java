@@ -48,7 +48,7 @@ public final class CloseSubpath
   // <static>
   // <fields>
   public static final String Operator = "h";
-  
+
   public static final CloseSubpath Value = new CloseSubpath();
   // </fields>
   // </static>
@@ -64,12 +64,12 @@ public final class CloseSubpath
   // <public>
   @Override
   public void scan(
-  	GraphicsState state
-  	)
+    GraphicsState state
+    )
   {
-  	Path2D pathObject = (Path2D)state.getScanner().getRenderObject();
-  	if(pathObject != null)
-  	{pathObject.closePath();}
+    Path2D pathObject = (Path2D)state.getScanner().getRenderObject();
+    if(pathObject != null)
+    {pathObject.closePath();}
   }
   // </public>
   // </interface>

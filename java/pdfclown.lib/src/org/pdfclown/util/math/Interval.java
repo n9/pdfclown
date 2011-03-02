@@ -26,103 +26,103 @@
 package org.pdfclown.util.math;
 
 /**
-	An interval of comparable objects.
+  An interval of comparable objects.
 
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 public final class Interval<T extends Comparable<T>>
 {
-	/**
-		Containment mode.
-	*/
-	public enum ContainModeEnum
-	{
-		Inclusive,
-		Exclusive
-	}
-	
-	private ContainModeEnum containMode;
-	private T low = null;
-	private T high = null;
+  /**
+    Containment mode.
+  */
+  public enum ContainModeEnum
+  {
+    Inclusive,
+    Exclusive
+  }
 
-	public Interval(
-		T low,
-		T high
-		)
-	{this(low, high, ContainModeEnum.Inclusive);}
+  private ContainModeEnum containMode;
+  private T low = null;
+  private T high = null;
 
-	public Interval(
-		T low,
-		T high,
-		ContainModeEnum containMode
-		)
-	{
-		this.low = low;
-		this.high = high;
-		this.containMode = containMode;
-	}
+  public Interval(
+    T low,
+    T high
+    )
+  {this(low, high, ContainModeEnum.Inclusive);}
 
-	/**
-		Gets whether the specified value is contained within this interval.
-		
-		@param value Value to check for containment.
-	*/
-	public boolean contains(
-		T value
-		)
-	{
-		int lowCompare = low.compareTo(value);
-		int highCompare = high.compareTo(value);
-		return (lowCompare < 0
-				|| (lowCompare == 0 && containMode == ContainModeEnum.Inclusive))
-			&& (highCompare > 0
-				|| (highCompare == 0 && containMode == ContainModeEnum.Inclusive));
-	}
+  public Interval(
+    T low,
+    T high,
+    ContainModeEnum containMode
+    )
+  {
+    this.low = low;
+    this.high = high;
+    this.containMode = containMode;
+  }
 
-	/**
-		Gets the way a value must be compared for containment against this interval's endpoints.
-	*/
-	public ContainModeEnum getContainMode(
-		)
-	{return containMode;}
+  /**
+    Gets whether the specified value is contained within this interval.
 
-	/**
-		Gets the higher interval endpoint.
-	*/
-	public T getHigh(
-		)
-	{return high;}
+    @param value Value to check for containment.
+  */
+  public boolean contains(
+    T value
+    )
+  {
+    int lowCompare = low.compareTo(value);
+    int highCompare = high.compareTo(value);
+    return (lowCompare < 0
+        || (lowCompare == 0 && containMode == ContainModeEnum.Inclusive))
+      && (highCompare > 0
+        || (highCompare == 0 && containMode == ContainModeEnum.Inclusive));
+  }
 
-	/**
-		Gets the lower interval endpoint.
-	*/
-	public T getLow(
-		)
-	{return low;}
+  /**
+    Gets the way a value must be compared for containment against this interval's endpoints.
+  */
+  public ContainModeEnum getContainMode(
+    )
+  {return containMode;}
 
-	/**
-		@see #getContainMode()
-	*/
-	public void setContainMode(
-		ContainModeEnum value
-		)
-	{containMode = value;}
+  /**
+    Gets the higher interval endpoint.
+  */
+  public T getHigh(
+    )
+  {return high;}
 
-	/**
-		@see #getHigh()
-	*/
-	public void setHigh(
-		T value
-		)
-	{high = value;}
+  /**
+    Gets the lower interval endpoint.
+  */
+  public T getLow(
+    )
+  {return low;}
 
-	/**
-		@see #getLow()
-	*/
-	public void setLow(
-		T value
-		)
-	{low = value;}
+  /**
+    @see #getContainMode()
+  */
+  public void setContainMode(
+    ContainModeEnum value
+    )
+  {containMode = value;}
+
+  /**
+    @see #getHigh()
+  */
+  public void setHigh(
+    T value
+    )
+  {high = value;}
+
+  /**
+    @see #getLow()
+  */
+  public void setLow(
+    T value
+    )
+  {low = value;}
 }

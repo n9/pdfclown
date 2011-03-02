@@ -74,33 +74,33 @@ public final class SetExtGState
     ContentScanner.GraphicsState state
     )
   {
-  	ExtGState extGState = state.getScanner().getContentContext().getResources().getExtGStates().get(getName());
-  	extGState.applyTo(state);
-	}
+    ExtGState extGState = state.getScanner().getContentContext().getResources().getExtGStates().get(getName());
+    extGState.applyTo(state);
+  }
 
   /**
-		Gets the name of the {@link ExtGState graphics state parameters} resource to be set.
-		
-		@see #getExtGState(IContentContext)
-		@see ExtGStateResources
-	*/
+    Gets the name of the {@link ExtGState graphics state parameters} resource to be set.
+
+    @see #getExtGState(IContentContext)
+    @see ExtGStateResources
+  */
   public PdfName getName(
     )
   {return (PdfName)operands.get(0);}
-  
+
   /**
-  	Gets the {@link ExtGState graphics state parameters} resource to be set.
-	  
-	  @param context Content context.
+    Gets the {@link ExtGState graphics state parameters} resource to be set.
+
+    @param context Content context.
   */
   public ExtGState getExtGState(
-  	IContentContext context
-  	)
+    IContentContext context
+    )
   {return context.getResources().getExtGStates().get(getName());}
 
   /**
-	  @see #getName()
-	*/
+    @see #getName()
+  */
   public void setName(
     PdfName value
     )

@@ -54,23 +54,23 @@ public final class DeviceRGBColor
 
   public static final DeviceRGBColor Default = Black;
   // </fields>
-  
+
   // <interface>
   // <public>
   /**
-  	Gets the color corresponding to the specified components.
-  	
-  	@param components Color components to convert.
-  	@since 0.1.0
+    Gets the color corresponding to the specified components.
+
+    @param components Color components to convert.
+    @since 0.1.0
    */
   public static DeviceRGBColor get(
-  	PdfArray components
-  	)
+    PdfArray components
+    )
   {
-	  return (components != null
-	  	? new DeviceRGBColor(components)
-	  	: Default
-	  	);
+    return (components != null
+      ? new DeviceRGBColor(components)
+      : Default
+      );
   }
   // </public>
   // </interface>
@@ -84,33 +84,33 @@ public final class DeviceRGBColor
     float b
     )
   {
-  	this(
-  		Arrays.asList(
-    		new PdfReal(normalizeComponent(r)),
-    		new PdfReal(normalizeComponent(g)),
-    		new PdfReal(normalizeComponent(b))
-  			)
-  		);
+    this(
+      Arrays.asList(
+        new PdfReal(normalizeComponent(r)),
+        new PdfReal(normalizeComponent(g)),
+        new PdfReal(normalizeComponent(b))
+        )
+      );
   }
-  
+
   DeviceRGBColor(
-  	List<? extends PdfDirectObject> components
+    List<? extends PdfDirectObject> components
     )
   {
     super(
-    	DeviceRGBColorSpace.Default,
-    	new PdfArray(components)
-    	);
+      DeviceRGBColorSpace.Default,
+      new PdfArray(components)
+      );
   }
   // </constructors>
 
   // <interface>
   // <public>
-	@Override
-	public Object clone(
-		Document context
-		)
-	{throw new NotImplementedException();}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {throw new NotImplementedException();}
 
   /**
     Gets the blue component.
@@ -134,7 +134,7 @@ public final class DeviceRGBColor
   {return getComponentValue(0);}
 
   /**
-  	@see #getB()
+    @see #getB()
   */
   public void setB(
     float value
@@ -142,7 +142,7 @@ public final class DeviceRGBColor
   {setComponentValue(2, value);}
 
   /**
-  	@see #getG()
+    @see #getG()
   */
   public void setG(
     float value
@@ -150,7 +150,7 @@ public final class DeviceRGBColor
   {setComponentValue(1, value);}
 
   /**
-  	@see #getR()
+    @see #getR()
   */
   public void setR(
     float value

@@ -13,21 +13,21 @@ import org.pdfclown.files.File;
 import org.pdfclown.tools.Renderer;
 
 /**
-	This sample demonstrates <b>how to render a PDF page as a raster image</b>.
-	<p>Note: rendering is currently in pre-alpha stage; therefore this sample is
-	nothing but an initial stub (no assumption to work!).</p>
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  This sample demonstrates <b>how to render a PDF page as a raster image</b>.
+  <p>Note: rendering is currently in pre-alpha stage; therefore this sample is
+  nothing but an initial stub (no assumption to work!).</p>
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 public class RenderingSample
-	extends Sample
+  extends Sample
 {
-	@Override
-	public boolean run(
-		)
-	{
+  @Override
+  public boolean run(
+    )
+  {
     String filePath = promptPdfFileChoice("Please select a PDF file");
 
     // 1. Open the PDF file!
@@ -40,19 +40,19 @@ public class RenderingSample
     Document document = file.getDocument();
     Pages pages = document.getPages();
 
-		// 2. Page rasterization.
-		int pageIndex = promptPageChoice("Select the page to render", pages.size());
+    // 2. Page rasterization.
+    int pageIndex = promptPageChoice("Select the page to render", pages.size());
     Page page = pages.get(pageIndex);
     Dimension2D imageSize = page.getSize();
     Renderer renderer = new Renderer();
-		BufferedImage image = renderer.render(page, imageSize);
+    BufferedImage image = renderer.render(page, imageSize);
 
-		// 3. Save the page image!
+    // 3. Save the page image!
     try
-		{ImageIO.write(image,"jpg",new java.io.File(getOutputPath() + java.io.File.separator + "ContentRenderingSample.jpg"));}
-		catch(IOException e)
-		{e.printStackTrace();}
-    
+    {ImageIO.write(image,"jpg",new java.io.File(getOutputPath() + java.io.File.separator + "ContentRenderingSample.jpg"));}
+    catch(IOException e)
+    {e.printStackTrace();}
+
     return true;
-	}
+  }
 }

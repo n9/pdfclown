@@ -31,21 +31,21 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfIndirectObject;
 
 /**
-	CIE-based calibrated color value [PDF:1.6:4.5.4].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  CIE-based calibrated color value [PDF:1.6:4.5.4].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF11)
 public abstract class CalColorSpace
-	extends CIEBasedColorSpace
+  extends CIEBasedColorSpace
 {
   // <class>
   // <dynamic>
   // <constructors>
-	//TODO:IMPL new element constructor!
-	
+  //TODO:IMPL new element constructor!
+
   protected CalColorSpace(
     PdfDirectObject baseObject,
     PdfIndirectObject container
@@ -56,10 +56,10 @@ public abstract class CalColorSpace
   // <interface>
   // <public>
   /**
-  	Gets the gamma of this color space.
+    Gets the gamma of this color space.
   */
   public abstract float[] getGamma(
-		);
+    );
   // </public>
   // </interface>
   // </dynamic>

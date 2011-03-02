@@ -38,16 +38,16 @@ public final class Dimension
   extends Dimension2D
 {
   // <class>
-	// <static>
-	// <interface>
+  // <static>
+  // <interface>
   // <public>
-	public static Dimension get(
-		Rectangle2D rectangle
-		)
-	{return new Dimension(rectangle.getWidth(), rectangle.getHeight());}
+  public static Dimension get(
+    Rectangle2D rectangle
+    )
+  {return new Dimension(rectangle.getWidth(), rectangle.getHeight());}
   // </public>
-	// </interface>
-	// </static>
+  // </interface>
+  // </static>
 
   // <dynamic>
   // <fields>

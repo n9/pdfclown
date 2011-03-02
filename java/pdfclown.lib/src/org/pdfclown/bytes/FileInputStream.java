@@ -58,10 +58,12 @@ public final class FileInputStream
   // <interface>
   // <public>
   // <IInputStream>
+  @Override
   public ByteOrder getByteOrder(
     )
   {return ByteOrder.BIG_ENDIAN;}
 
+  @Override
   public long getPosition(
     )
   {
@@ -71,10 +73,12 @@ public final class FileInputStream
     {throw new RuntimeException(e);}
   }
 
+  @Override
   public int hashCode(
     )
   {return file.hashCode();}
 
+  @Override
   public void read(
     byte[] data
     ) throws EOFException
@@ -87,6 +91,7 @@ public final class FileInputStream
     {throw new RuntimeException(e);}
   }
 
+  @Override
   public void read(
     byte[] data,
     int offset,
@@ -101,6 +106,7 @@ public final class FileInputStream
     {throw new RuntimeException(e);}
   }
 
+  @Override
   public byte readByte(
     ) throws EOFException
   {
@@ -112,6 +118,7 @@ public final class FileInputStream
     {throw new RuntimeException(e);}
   }
 
+  @Override
   public int readInt(
     ) throws EOFException
   {
@@ -123,11 +130,12 @@ public final class FileInputStream
     {throw new RuntimeException(e);}
   }
 
+  @Override
   public int readInt(
-		int length
-		) throws EOFException
-	{
-  	byte[] data = new byte[length];
+    int length
+    ) throws EOFException
+  {
+    byte[] data = new byte[length];
     try
     {file.readFully(data,0,length);}
     catch(EOFException e)
@@ -137,6 +145,7 @@ public final class FileInputStream
     return ConvertUtils.byteArrayToNumber(data,0,length,getByteOrder());
   }
 
+  @Override
   public String readLine(
     ) throws EOFException
   {
@@ -148,6 +157,7 @@ public final class FileInputStream
     {throw new RuntimeException(e);}
   }
 
+  @Override
   public short readShort(
     ) throws EOFException
   {
@@ -159,6 +169,7 @@ public final class FileInputStream
     {throw new RuntimeException(e);}
   }
 
+  @Override
   public String readString(
     int length
     ) throws EOFException
@@ -175,6 +186,7 @@ public final class FileInputStream
     {throw new RuntimeException(e);}
   }
 
+  @Override
   public int readUnsignedByte(
     ) throws EOFException
   {
@@ -186,6 +198,7 @@ public final class FileInputStream
     {throw new RuntimeException(e);}
   }
 
+  @Override
   public int readUnsignedShort(
     ) throws EOFException
   {
@@ -197,6 +210,7 @@ public final class FileInputStream
     {throw new RuntimeException(e);}
   }
 
+  @Override
   public void seek(
     long offset
     )
@@ -207,11 +221,13 @@ public final class FileInputStream
     {throw new RuntimeException(e);}
   }
 
+  @Override
   public void setByteOrder(
     ByteOrder value
     )
   {/* TODO */}
 
+  @Override
   public void setPosition(
     long value
     )
@@ -222,6 +238,7 @@ public final class FileInputStream
     {throw new RuntimeException(e);}
   }
 
+  @Override
   public void skip(
     long offset
     )
@@ -233,6 +250,7 @@ public final class FileInputStream
   }
 
   // <IDataWrapper>
+  @Override
   public byte[] toByteArray(
     )
   {
@@ -250,6 +268,7 @@ public final class FileInputStream
   // </IDataWrapper>
 
   // <IStream>
+  @Override
   public long getLength(
     )
   {
@@ -260,6 +279,7 @@ public final class FileInputStream
   }
 
   // <Closeable>
+  @Override
   public void close(
     ) throws IOException
   {

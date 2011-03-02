@@ -69,6 +69,9 @@ namespace org.pdfclown.samples.cli
       string outputPath
       )
     {
+      if(!Directory.Exists(outputPath))
+      {Directory.CreateDirectory(outputPath);}
+
       while(true)
       {
         // Get the current assembly!

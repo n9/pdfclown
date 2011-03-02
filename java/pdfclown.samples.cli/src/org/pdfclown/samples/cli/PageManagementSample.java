@@ -15,7 +15,7 @@ import org.pdfclown.tools.PageManager;
 
 /**
   This sample demonstrates <b>how to manipulate the pages collection</b> within a PDF document,
-  to perform page data size calculations, additions, movements, removals, extractions and 
+  to perform page data size calculations, additions, movements, removals, extractions and
   splits of groups of pages.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
@@ -24,32 +24,32 @@ import org.pdfclown.tools.PageManager;
 public class PageManagementSample
   extends Sample
 {
-	private enum ActionEnum
-	{
-		PageDataSizeCalculation,
-		PageAddition,
-		PageMovement,
-		PageRemoval,
-		PageExtraction,
-		DocumentMerge,
-		DocumentBurst,
-		DocumentSplitByPageIndex,
-		DocumentSplitOnMaximumFileSize;
+  private enum ActionEnum
+  {
+    PageDataSizeCalculation,
+    PageAddition,
+    PageMovement,
+    PageRemoval,
+    PageExtraction,
+    DocumentMerge,
+    DocumentBurst,
+    DocumentSplitByPageIndex,
+    DocumentSplitOnMaximumFileSize;
 
-	  public String getDescription(
-	  	)
-	  {
-	  	StringBuilder builder = new StringBuilder();
-	  	for(char c : name().toCharArray())
-	  	{
-	  		if(Character.isUpperCase(c) && builder.length() > 0)
-	  		{builder.append(" ");}
-	  		
-	  		builder.append(c);
-	  	}
-	  	return builder.toString();
-	  }
-	}
+    public String getDescription(
+      )
+    {
+      StringBuilder builder = new StringBuilder();
+      for(char c : name().toCharArray())
+      {
+        if(Character.isUpperCase(c) && builder.length() > 0)
+        {builder.append(" ");}
+
+        builder.append(c);
+      }
+      return builder.toString();
+    }
+  }
 
   @Override
   public boolean run(
@@ -71,34 +71,34 @@ public class PageManagementSample
     final ActionEnum action = promptAction();
     switch(action)
     {
-    	case PageDataSizeCalculation:
-    	{
-    		System.out.println("\nThis algorithm calculates the data size (expressed in bytes) of the selected document's pages.");
-    		System.out.println("Legend:");
-    		System.out.println(" * full: page data size encompassing all its dependencies (like shared resources) -- this is the size of the page when extracted as a single-page document;");
-    		System.out.println(" * differential: additional page data size -- this is the extra-content that's not shared with previous pages;");
-    		System.out.println(" * incremental: data size of the page sublist encompassing all the previous pages and the current one.\n");
+      case PageDataSizeCalculation:
+      {
+        System.out.println("\nThis algorithm calculates the data size (expressed in bytes) of the selected document's pages.");
+        System.out.println("Legend:");
+        System.out.println(" * full: page data size encompassing all its dependencies (like shared resources) -- this is the size of the page when extracted as a single-page document;");
+        System.out.println(" * differential: additional page data size -- this is the extra-content that's not shared with previous pages;");
+        System.out.println(" * incremental: data size of the page sublist encompassing all the previous pages and the current one.\n");
 
         // Calculating the page data sizes...
         Set<PdfReference> visitedReferences = new HashSet<PdfReference>();
         long incrementalDataSize = 0;
         for(Page page : mainPages)
         {
-					long pageFullDataSize = PageManager.getSize(page);
-					long pageDifferentialDataSize = PageManager.getSize(page, visitedReferences);
-					incrementalDataSize += pageDifferentialDataSize;
+          long pageFullDataSize = PageManager.getSize(page);
+          long pageDifferentialDataSize = PageManager.getSize(page, visitedReferences);
+          incrementalDataSize += pageDifferentialDataSize;
 
           System.out.println(
-          	"Page " + (page.getIndex()+1) + ": "
-          		+ pageFullDataSize + " (full); "
-          		+ pageDifferentialDataSize + " (differential); "
-          		+ incrementalDataSize + " (incremental)"
-        		);
+            "Page " + (page.getIndex()+1) + ": "
+              + pageFullDataSize + " (full); "
+              + pageDifferentialDataSize + " (differential); "
+              + incrementalDataSize + " (incremental)"
+            );
         }
-    	} break;
+      } break;
       case PageAddition:
       {
-      	// Source file.
+        // Source file.
         File sourceFile;
         {
           String sourceFilePath = promptPdfFileChoice("Select the source PDF file");
@@ -112,12 +112,12 @@ public class PageManagementSample
         // Source page count.
         int sourcePagesCount = sourcePages.size();
 
-				// First page to add.
-				int fromSourcePageIndex = promptPageChoice("Select the start source page to add", sourcePagesCount);
-				// Last page to add.
-				int toSourcePageIndex = promptPageChoice("Select the end source page to add", fromSourcePageIndex + 1, sourcePagesCount) + 1;
-				// Target position.
-				int targetPageIndex = promptPageChoice("Select the position where to insert the source pages", mainPagesCount + 1);
+        // First page to add.
+        int fromSourcePageIndex = promptPageChoice("Select the start source page to add", sourcePagesCount);
+        // Last page to add.
+        int toSourcePageIndex = promptPageChoice("Select the end source page to add", fromSourcePageIndex + 1, sourcePagesCount) + 1;
+        // Target position.
+        int targetPageIndex = promptPageChoice("Select the position where to insert the source pages", mainPagesCount + 1);
 
         // Add the chosen page range to the main document!
         new PageManager(mainDocument).add(
@@ -133,12 +133,12 @@ public class PageManagementSample
       } break;
       case PageMovement:
       {
-				// First page to move.
-				int fromSourcePageIndex = promptPageChoice("Select the start page to move", mainPagesCount);
-				// Last page to move.
-				int toSourcePageIndex = promptPageChoice("Select the end page to move", fromSourcePageIndex + 1, mainPagesCount) + 1;
-				// Target position.
-				int targetPageIndex = promptPageChoice("Select the position where to insert the pages", mainPagesCount + 1);
+        // First page to move.
+        int fromSourcePageIndex = promptPageChoice("Select the start page to move", mainPagesCount);
+        // Last page to move.
+        int toSourcePageIndex = promptPageChoice("Select the end page to move", fromSourcePageIndex + 1, mainPagesCount) + 1;
+        // Target position.
+        int targetPageIndex = promptPageChoice("Select the position where to insert the pages", mainPagesCount + 1);
 
         // Move the chosen page range!
         new PageManager(mainDocument).move(
@@ -152,10 +152,10 @@ public class PageManagementSample
       } break;
       case PageRemoval:
       {
-				// First page to remove.
-				int fromPageIndex = promptPageChoice("Select the start page to remove", mainPagesCount);
-				// Last page to remove.
-				int toPageIndex = promptPageChoice("Select the end page to remove", fromPageIndex + 1, mainPagesCount) + 1;
+        // First page to remove.
+        int fromPageIndex = promptPageChoice("Select the start page to remove", mainPagesCount);
+        // Last page to remove.
+        int toPageIndex = promptPageChoice("Select the end page to remove", fromPageIndex + 1, mainPagesCount) + 1;
 
         // Remove the chosen page range!
         new PageManager(mainDocument).remove(
@@ -168,10 +168,10 @@ public class PageManagementSample
       } break;
       case PageExtraction:
       {
-				// First page to extract.
-				int fromPageIndex = promptPageChoice("Select the start page", mainPagesCount);
-				// Last page to extract.
-				int toPageIndex = promptPageChoice("Select the end page", fromPageIndex + 1, mainPagesCount) + 1;
+        // First page to extract.
+        int fromPageIndex = promptPageChoice("Select the start page", mainPagesCount);
+        // Last page to extract.
+        int toPageIndex = promptPageChoice("Select the end page", fromPageIndex + 1, mainPagesCount) + 1;
 
         // Extract the chosen page range!
         Document targetDocument = new PageManager(mainDocument).extract(
@@ -184,7 +184,7 @@ public class PageManagementSample
       } break;
       case DocumentMerge:
       {
-      	// Source file.
+        // Source file.
         File sourceFile;
         {
           String sourceFilePath = promptPdfFileChoice("Select the source PDF file");
@@ -208,7 +208,7 @@ public class PageManagementSample
         // Serialize the split files!
         int index = 0;
         for(Document splitDocument : splitDocuments)
-				{serialize(splitDocument.getFile(), action, ++index, false);}
+        {serialize(splitDocument.getFile(), action, ++index, false);}
       } break;
       case DocumentSplitByPageIndex:
       {
@@ -218,17 +218,17 @@ public class PageManagementSample
         {splitCount = Integer.parseInt(promptChoice("Number of split positions: "));}
         catch(Exception e)
         {splitCount = 0;}
-        
+
         // Split positions within the source document.
         int[] splitIndexes = new int[splitCount];
         {
           int prevSplitIndex = 0;
-					for(int index = 0; index < splitCount; index++)
-					{
-						int splitIndex = promptPageChoice("Position " + (index + 1) + " of " + splitCount, prevSplitIndex + 1, mainPagesCount);
-						splitIndexes[index] = splitIndex;
-						prevSplitIndex = splitIndex;
-					}
+          for(int index = 0; index < splitCount; index++)
+          {
+            int splitIndex = promptPageChoice("Position " + (index + 1) + " of " + splitCount, prevSplitIndex + 1, mainPagesCount);
+            splitIndexes[index] = splitIndex;
+            prevSplitIndex = splitIndex;
+          }
         }
 
         // Split the document at the chosen positions!
@@ -237,85 +237,85 @@ public class PageManagementSample
         // Serialize the split files!
         int index = 0;
         for(Document splitDocument : splitDocuments)
-				{serialize(splitDocument.getFile(), action, ++index, false);}
+        {serialize(splitDocument.getFile(), action, ++index, false);}
       } break;
       case DocumentSplitOnMaximumFileSize:
       {
         // Maximum file size.
         long maxDataSize;
         {
-	        long mainFileSize = new java.io.File(mainFilePath).length();
-	        int kbMaxDataSize;
-	        do
-	        {
-	    	    try
-	    	    {kbMaxDataSize = Integer.parseInt(promptChoice("Max file size (KB): "));}
-	    	    catch(Exception e)
-	    	    {kbMaxDataSize = 0;}
-	    		} while(kbMaxDataSize == 0);
-	        maxDataSize = kbMaxDataSize << 10;
-	        if(maxDataSize > mainFileSize)
-	        {maxDataSize = mainFileSize;}
+          long mainFileSize = new java.io.File(mainFilePath).length();
+          int kbMaxDataSize;
+          do
+          {
+            try
+            {kbMaxDataSize = Integer.parseInt(promptChoice("Max file size (KB): "));}
+            catch(Exception e)
+            {kbMaxDataSize = 0;}
+          } while(kbMaxDataSize == 0);
+          maxDataSize = kbMaxDataSize << 10;
+          if(maxDataSize > mainFileSize)
+          {maxDataSize = mainFileSize;}
         }
-        
+
         // Split the document on maximum file size!
         List<Document> splitDocuments = new PageManager(mainDocument).split(maxDataSize);
 
         // Serialize the split files!
         int index = 0;
         for(Document splitDocument : splitDocuments)
-				{serialize(splitDocument.getFile(), action, ++index, false);}
+        {serialize(splitDocument.getFile(), action, ++index, false);}
       } break;
     }
-    
+
     return true;
   }
 
   private ActionEnum promptAction(
     )
   {
-		ActionEnum[] actions = ActionEnum.values();
-		Map<String,String> options = new HashMap<String,String>();
-		for(ActionEnum action : actions)
-		{options.put(Integer.toString(action.ordinal()), action.getDescription());}
+    ActionEnum[] actions = ActionEnum.values();
+    Map<String,String> options = new HashMap<String,String>();
+    for(ActionEnum action : actions)
+    {options.put(Integer.toString(action.ordinal()), action.getDescription());}
 
-		try
-		{return actions[Integer.parseInt(promptChoice(options))];}
-		catch(Exception e)
-		{return actions[0];}
+    try
+    {return actions[Integer.parseInt(promptChoice(options))];}
+    catch(Exception e)
+    {return actions[0];}
   }
-  
+
   /**
-	  Serializes the specified PDF file.
-	  
-	  @param file File to serialize.
-	  @param action Generator.
-	*/
+    Serializes the specified PDF file.
+
+    @param file File to serialize.
+    @param action Generator.
+  */
   private void serialize(
-  	File file,
-  	ActionEnum action
-  	)
+    File file,
+    ActionEnum action
+    )
   {serialize(file, action, null, true);}
 
   /**
-	  Serializes the specified PDF file.
-	  
-	  @param file File to serialize.
-	  @param action Generator.
-	  @param index File index.
-	  @param chooseMode Whether to allow user choice of serialization mode.
-	*/
+    Serializes the specified PDF file.
+
+    @param file File to serialize.
+    @param action Generator.
+    @param index File index.
+    @param chooseMode Whether to allow user choice of serialization mode.
+  */
   private void serialize(
-  	File file,
-  	ActionEnum action,
-  	Integer index,
-  	boolean chooseMode
-  	)
+    File file,
+    ActionEnum action,
+    Integer index,
+    boolean chooseMode
+    )
   {
-  	serialize(
-  		file,
-  		getClass().getSimpleName() + "_" + action.name() + (index != null ? "." + index : ""),
-  		chooseMode
-  		);
+    serialize(
+      file,
+      getClass().getSimpleName() + "_" + action.name() + (index != null ? "." + index : ""),
+      chooseMode
+      );
   }
 }

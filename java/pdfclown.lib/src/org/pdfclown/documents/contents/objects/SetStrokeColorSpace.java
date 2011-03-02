@@ -30,8 +30,8 @@ import java.util.List;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.contents.ColorSpaceResources;
-import org.pdfclown.documents.contents.IContentContext;
 import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
+import org.pdfclown.documents.contents.IContentContext;
 import org.pdfclown.documents.contents.colorSpaces.ColorSpace;
 import org.pdfclown.documents.contents.colorSpaces.DeviceCMYKColorSpace;
 import org.pdfclown.documents.contents.colorSpaces.DeviceGrayColorSpace;
@@ -74,38 +74,38 @@ public final class SetStrokeColorSpace
   // <interface>
   // <public>
   /**
-		Gets the {@link ColorSpace color space} resource to be set.
-	  
-	  @param context Content context.
-	*/
-	public ColorSpace<?> getColorSpace(
-		IContentContext context
-		)
-	{
+    Gets the {@link ColorSpace color space} resource to be set.
+
+    @param context Content context.
+  */
+  public ColorSpace<?> getColorSpace(
+    IContentContext context
+    )
+  {
     /*
-	    NOTE: The names DeviceGray, DeviceRGB, DeviceCMYK, and Pattern always identify
-	    the corresponding color spaces directly; they never refer to resources in the
-	    ColorSpace subdictionary [PDF:1.6:4.5.7].
-	  */
-	  PdfName name = getName();
-	  if(name.equals(PdfName.DeviceGray))
-	  	return DeviceGrayColorSpace.Default;
-	  else if(name.equals(PdfName.DeviceRGB))
-	  	return DeviceRGBColorSpace.Default;
-	  else if(name.equals(PdfName.DeviceCMYK))
-	  	return DeviceCMYKColorSpace.Default;
-	  else if(name.equals(PdfName.Pattern))
-	  	return PatternColorSpace.Default;
-	  else
-			return context.getResources().getColorSpaces().get(name);
-	}
-	
-	/**
-		Gets the name of the {@link ColorSpace color space} resource to be set.
-		
-		@see #getColorSpace(IContentContext)
-		@see ColorSpaceResources
-	*/
+      NOTE: The names DeviceGray, DeviceRGB, DeviceCMYK, and Pattern always identify
+      the corresponding color spaces directly; they never refer to resources in the
+      ColorSpace subdictionary [PDF:1.6:4.5.7].
+    */
+    PdfName name = getName();
+    if(name.equals(PdfName.DeviceGray))
+      return DeviceGrayColorSpace.Default;
+    else if(name.equals(PdfName.DeviceRGB))
+      return DeviceRGBColorSpace.Default;
+    else if(name.equals(PdfName.DeviceCMYK))
+      return DeviceCMYKColorSpace.Default;
+    else if(name.equals(PdfName.Pattern))
+      return PatternColorSpace.Default;
+    else
+      return context.getResources().getColorSpaces().get(name);
+  }
+
+  /**
+    Gets the name of the {@link ColorSpace color space} resource to be set.
+
+    @see #getColorSpace(IContentContext)
+    @see ColorSpaceResources
+  */
   public PdfName getName(
     )
   {return (PdfName)operands.get(0);}
@@ -115,20 +115,20 @@ public final class SetStrokeColorSpace
     GraphicsState state
     )
   {
-  	// 1. Color space.
+    // 1. Color space.
     state.setStrokeColorSpace(getColorSpace(state.getScanner().getContentContext()));
 
     // 2. Initial color.
-		/*
-		  NOTE: The operation also sets the current stroking color
-		  to its initial value, which depends on the color space [PDF:1.6:4.5.7].
-		*/
-		state.setStrokeColor(state.getStrokeColorSpace().getDefaultColor());
+    /*
+      NOTE: The operation also sets the current stroking color
+      to its initial value, which depends on the color space [PDF:1.6:4.5.7].
+    */
+    state.setStrokeColor(state.getStrokeColorSpace().getDefaultColor());
   }
 
   /**
-	  @see #getName()
-	*/
+    @see #getName()
+  */
   public void setName(
     PdfName value
     )

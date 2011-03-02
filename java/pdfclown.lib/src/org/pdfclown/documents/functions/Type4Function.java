@@ -33,46 +33,46 @@ import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	<b>PostScript calculator function</b> represented as a stream containing <i>code
-	written in a small subset of the PostScript language</i> [PDF:1.6:3.9.4].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  <b>PostScript calculator function</b> represented as a stream containing <i>code
+  written in a small subset of the PostScript language</i> [PDF:1.6:3.9.4].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF13)
 public final class Type4Function
-	extends Function<PdfStream>
+  extends Function<PdfStream>
 {
   // <class>
-	// <dynamic>
-	// <constructors>
-	//TODO:implement function creation!
+  // <dynamic>
+  // <constructors>
+  //TODO:implement function creation!
 
-	Type4Function(
-		PdfDirectObject baseObject
-		)
-	{super(baseObject, null);} // NOTE: PdfStream is self-contained.
-	// </constructors>
+  Type4Function(
+    PdfDirectObject baseObject
+    )
+  {super(baseObject, null);} // NOTE: PdfStream is self-contained.
+  // </constructors>
 
   // <interface>
   // <public>
-	@Override
-	public float[] calculate(
-		float[] inputs
-		)
-	{
-		// FIXME: Auto-generated method stub
-		return null;
-	}
+  @Override
+  public float[] calculate(
+    float[] inputs
+    )
+  {
+    // FIXME: Auto-generated method stub
+    return null;
+  }
 
-	@Override
-	public Object clone(
-		Document context
-		)
-	{return new NotImplementedException();}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {return new NotImplementedException();}
   // </public>
   // </interface>
-	// </dynamic>
+  // </dynamic>
   // </class>
 }

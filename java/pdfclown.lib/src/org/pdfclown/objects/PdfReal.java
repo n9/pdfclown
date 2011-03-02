@@ -73,7 +73,7 @@ public final class PdfReal
     float value
     )
   {setRawValue(value);}
-  
+
   public PdfReal(
     double value
     )
@@ -84,13 +84,13 @@ public final class PdfReal
   // <public>
   @Override
   public Float getValue(
-  	)
+    )
   {return super.getValue().floatValue();}
-  
+
   @Override
   public void setValue(
-  	Object value
-  	)
+    Object value
+    )
   {super.setValue(((Number)value).floatValue());}
 
   @Override

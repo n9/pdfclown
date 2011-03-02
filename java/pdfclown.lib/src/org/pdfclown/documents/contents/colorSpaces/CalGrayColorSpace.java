@@ -52,8 +52,8 @@ public final class CalGrayColorSpace
   // <class>
   // <dynamic>
   // <constructors>
-	// TODO:IMPL new element constructor!
-	
+  // TODO:IMPL new element constructor!
+
   CalGrayColorSpace(
     PdfDirectObject baseObject,
     PdfIndirectObject container
@@ -71,15 +71,15 @@ public final class CalGrayColorSpace
 
   @Override
   public CalGrayColor getColor(
-  	List<PdfDirectObject> components,
-  	IContentContext context
+    List<PdfDirectObject> components,
+    IContentContext context
     )
   {return new CalGrayColor(components);}
 
-	@Override
-	public int getComponentCount(
-		)
-	{return 1;}
+  @Override
+  public int getComponentCount(
+    )
+  {return 1;}
 
   @Override
   public CalGrayColor getDefaultColor(
@@ -88,26 +88,26 @@ public final class CalGrayColorSpace
 
   @Override
   public float[] getGamma(
-		)
-	{
-		PdfNumber<?> gammaObject = (PdfNumber<?>)getDictionary().get(PdfName.Gamma);
-		
-		return (gammaObject == null
-			? new float[]
-				{1}
-			: new float[]
-		  	{gammaObject.getNumberValue()}
-			);
-	}
+    )
+  {
+    PdfNumber<?> gammaObject = (PdfNumber<?>)getDictionary().get(PdfName.Gamma);
 
-	@Override
-	public Paint getPaint(
-		Color<?> color
-		)
-	{
-		// FIXME: temporary hack
-		return new java.awt.Color(0,0,0);
-	}
+    return (gammaObject == null
+      ? new float[]
+        {1}
+      : new float[]
+        {gammaObject.getNumberValue()}
+      );
+  }
+
+  @Override
+  public Paint getPaint(
+    Color<?> color
+    )
+  {
+    // FIXME: temporary hack
+    return new java.awt.Color(0,0,0);
+  }
   // </public>
   // </interface>
   // </dynamic>

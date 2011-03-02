@@ -35,16 +35,16 @@ import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColorSpace;
 import org.pdfclown.objects.PdfDirectObject;
 
 /**
-	'Set the color to use for nonstroking operations in device RGB color space'
-	operation [PDF:1.6:4.5.7].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  'Set the color to use for nonstroking operations in device RGB color space'
+  operation [PDF:1.6:4.5.7].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF10)
 public final class SetDeviceRGBFillColor
-	extends SetFillColor
+  extends SetFillColor
 {
   // <class>
   // <static>
@@ -56,7 +56,7 @@ public final class SetDeviceRGBFillColor
   // <dynamic>
   // <constructors>
   public SetDeviceRGBFillColor(
-  	DeviceRGBColor value
+    DeviceRGBColor value
     )
   {super(Operator, value);}
 
@@ -73,8 +73,8 @@ public final class SetDeviceRGBFillColor
     GraphicsState state
     )
   {
-  	state.setFillColorSpace(DeviceRGBColorSpace.Default);
-  	super.scan(state);
+    state.setFillColorSpace(DeviceRGBColorSpace.Default);
+    super.scan(state);
   }
   // </public>
   // </interface>

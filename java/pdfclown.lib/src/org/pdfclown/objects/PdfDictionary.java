@@ -25,17 +25,17 @@
 
 package org.pdfclown.objects;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.files.File;
 import org.pdfclown.tokens.Chunk;
 import org.pdfclown.tokens.Encoding;
 import org.pdfclown.tokens.Keyword;
 import org.pdfclown.util.NotImplementedException;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
   PDF dictionary object [PDF:1.6:3.2.6].
@@ -49,12 +49,12 @@ public final class PdfDictionary
   implements Map<PdfName,PdfDirectObject>
 {
   // <class>
-	// <static>
-	// <fields>
-	private static final byte[] BeginDictionaryChunk = Encoding.encode(Keyword.BeginDictionary);
-	private static final byte[] EndDictionaryChunk = Encoding.encode(Keyword.EndDictionary);
-	// </fields>
-	// </static>
+  // <static>
+  // <fields>
+  private static final byte[] BeginDictionaryChunk = Encoding.encode(Keyword.BeginDictionary);
+  private static final byte[] EndDictionaryChunk = Encoding.encode(Keyword.EndDictionary);
+  // </fields>
+  // </static>
 
   // <dynamic>
   // <fields>
@@ -99,18 +99,18 @@ public final class PdfDictionary
     File context
     )
   {
-  	PdfDictionary clone = (PdfDictionary)super.clone();
-  	{
-  		// Deep cloning...
-	  	clone.entries = new HashMap<PdfName,PdfDirectObject>(entries.size());
-	    for(Map.Entry<PdfName,PdfDirectObject> entry : entries.entrySet())
-	    {
-	      clone.put(
-	        entry.getKey(),
-	        (PdfDirectObject)PdfObject.clone(entry.getValue(), context)
-	        );
-	    }
-  	}
+    PdfDictionary clone = (PdfDictionary)super.clone();
+    {
+      // Deep cloning...
+      clone.entries = new HashMap<PdfName,PdfDirectObject>(entries.size());
+      for(Map.Entry<PdfName,PdfDirectObject> entry : entries.entrySet())
+      {
+        clone.put(
+          entry.getKey(),
+          (PdfDirectObject)PdfObject.clone(entry.getValue(), context)
+          );
+      }
+    }
     return clone;
   }
 
@@ -168,19 +168,19 @@ public final class PdfDictionary
   {
     StringBuilder buffer = new StringBuilder();
     {
-	    // Begin.
-	    buffer.append("<< ");
-	    // Entries.
-	    for(Map.Entry<PdfName,PdfDirectObject> entry : entries.entrySet())
-	    {
-	      // Entry...
-	      // ...key.
-	      buffer.append(entry.getKey().toString()).append(" ");
-	      // ...value.
-	      buffer.append(PdfDirectObject.toString(entry.getValue())).append(" ");
-	    }
-	    // End.
-	    buffer.append(">>");
+      // Begin.
+      buffer.append("<< ");
+      // Entries.
+      for(Map.Entry<PdfName,PdfDirectObject> entry : entries.entrySet())
+      {
+        // Entry...
+        // ...key.
+        buffer.append(entry.getKey().toString()).append(" ");
+        // ...value.
+        buffer.append(PdfDirectObject.toString(entry.getValue())).append(" ");
+      }
+      // End.
+      buffer.append(">>");
     }
     return buffer.toString();
   }
@@ -234,7 +234,7 @@ public final class PdfDictionary
     )
   {
     return object != null
-    	&& object.getClass().equals(getClass())
+      && object.getClass().equals(getClass())
       && ((PdfDictionary)object).entries.equals(entries);
   }
 

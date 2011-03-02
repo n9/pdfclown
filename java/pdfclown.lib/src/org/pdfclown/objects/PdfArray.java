@@ -50,12 +50,12 @@ public final class PdfArray
   implements List<PdfDirectObject>
 {
   // <class>
-	// <static>
-	// <fields>
-	private static final byte[] BeginArrayChunk = Encoding.encode(Keyword.BeginArray);
-	private static final byte[] EndArrayChunk = Encoding.encode(Keyword.EndArray);
-	// </fields>
-	// </static>
+  // <static>
+  // <fields>
+  private static final byte[] BeginArrayChunk = Encoding.encode(Keyword.BeginArray);
+  private static final byte[] EndArrayChunk = Encoding.encode(Keyword.EndArray);
+  // </fields>
+  // </static>
 
   // <dynamic>
   // <fields>
@@ -80,7 +80,7 @@ public final class PdfArray
     for(PdfDirectObject item : items)
     {this.items.add(item);}
   }
-  
+
   public PdfArray(
     List<? extends PdfDirectObject> items
     )
@@ -99,10 +99,10 @@ public final class PdfArray
   {
     PdfArray clone = (PdfArray)super.clone();
     {
-    	// Deep cloning...
-  		clone.items = new ArrayList<PdfDirectObject>(items.size());
-	    for(PdfDirectObject item : items)
-	    {clone.add((PdfDirectObject)PdfObject.clone(item, context));}
+      // Deep cloning...
+      clone.items = new ArrayList<PdfDirectObject>(items.size());
+      for(PdfDirectObject item : items)
+      {clone.add((PdfDirectObject)PdfObject.clone(item, context));}
     }
     return clone;
   }
@@ -133,13 +133,13 @@ public final class PdfArray
   {
     StringBuilder buffer = new StringBuilder();
     {
-	    // Begin.
-	    buffer.append("[ ");
-	    // Elements.
-	    for(PdfDirectObject item : items)
-	    {buffer.append(PdfDirectObject.toString(item)).append(" ");}
-	    // End.
-	    buffer.append("]");
+      // Begin.
+      buffer.append("[ ");
+      // Elements.
+      for(PdfDirectObject item : items)
+      {buffer.append(PdfDirectObject.toString(item)).append(" ");}
+      // End.
+      buffer.append("]");
     }
     return buffer.toString();
   }
@@ -254,13 +254,13 @@ public final class PdfArray
 
   @Override
   public boolean equals(
-  	Object object
+    Object object
     )
   {
     return object != null
-	  	&& object.getClass().equals(getClass())
-	    && ((PdfArray)object).items.equals(items);
-	}
+      && object.getClass().equals(getClass())
+      && ((PdfArray)object).items.equals(items);
+  }
 
   @Override
   public int hashCode(

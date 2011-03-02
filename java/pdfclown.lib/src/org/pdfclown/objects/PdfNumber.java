@@ -26,52 +26,52 @@
 package org.pdfclown.objects;
 
 /**
-	PDF number object [PDF:1.6:3.2.2].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@version 0.1.0
+  PDF number object [PDF:1.6:3.2.2].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @version 0.1.0
 */
 public abstract class PdfNumber<TValue extends Number>
-	extends PdfAtomicObject<TValue>
+  extends PdfAtomicObject<TValue>
 {
   // <class>
   // <dynamic>
   // <interface>
   // <public>
-	@Override
-	public final int compareTo(
-		PdfDirectObject obj
-		)
-	{return ((Float)getNumberValue()).compareTo(((PdfNumber<?>)obj).getNumberValue());}
-	
+  @Override
+  public final int compareTo(
+    PdfDirectObject obj
+    )
+  {return ((Float)getNumberValue()).compareTo(((PdfNumber<?>)obj).getNumberValue());}
+
   @Override
   public final boolean equals(
     Object object
     )
   {
     return object != null
-			&& (object instanceof PdfNumber<?>) // NOTE: This condition allows equality across numeric subtypes.
-			&& ((PdfNumber<?>)object).getRawValue().equals(getRawValue());
+      && (object instanceof PdfNumber<?>) // NOTE: This condition allows equality across numeric subtypes.
+      && ((PdfNumber<?>)object).getRawValue().equals(getRawValue());
   }
 
-	public final float getNumberValue(
-		)
-	{return getValue().floatValue();}
+  public final float getNumberValue(
+    )
+  {return getValue().floatValue();}
 
-	@Override
-	public Number getValue(
-		)
-	{return (Number)super.getValue();}
-	
-	@Override
-	public int hashCode(
-		)
-	{
+  @Override
+  public Number getValue(
+    )
+  {return (Number)super.getValue();}
+
+  @Override
+  public int hashCode(
+    )
+  {
     Number value = getValue();
     int intValue = value.intValue();
 
     return value.floatValue() == intValue ? intValue : value.hashCode();
-	}
+  }
   // </public>
   // </interface>
   // </dynamic>

@@ -66,142 +66,142 @@ import org.pdfclown.util.NotImplementedException;
 @PDF(VersionEnum.PDF10)
 public final class Document
   extends PdfObjectWrapper<PdfDictionary>
-	implements Pageable
+  implements Pageable
 {
   // <class>
   // <classes>
-	/**
-		Document configuration.
-		
-		@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-		@since 0.1.0
-	*/
-	public static final class Configuration
-	{
-		/**
-			Version compatibility mode.
-		*/
-		public enum CompatibilityModeEnum
-		{
-			/**
-				Document's conformance version is ignored;
-				any feature is accepted without checking its compatibility.
-			*/
-			Passthrough,
-			/**
-				Document's conformance version is automatically updated
-				to support used features.
-			*/
-			Loose,
-			/**
-				Document's conformance version is mandatory;
-				any unsupported feature is forbidden and causes an exception
-				to be thrown in case of attempted use.
-			*/
-			Strict
-		}
-	
-		/**
-			Cross-reference mode [PDF:1.6:3.4].
-		*/
-		public enum XRefModeEnum
-		{
-			/**
-				Cross-reference table [PDF:1.6:3.4.3].
-			*/
-			@PDF(VersionEnum.PDF10)
-			Plain,
-			/**
-				Cross-reference stream [PDF:1.6:3.4.7].
-			*/
-			@PDF(VersionEnum.PDF15)
-			Compressed
-		}
-		
-		private CompatibilityModeEnum compatibilityMode = CompatibilityModeEnum.Loose;
-		private XRefModeEnum xrefMode = XRefModeEnum.Plain;
-		
-		private Document document;
-	
-		Configuration(
-			Document document
-			)
-		{this.document = document;}
-	
-		/**
-			Gets the document's version compatibility mode.
-		*/
-		public CompatibilityModeEnum getCompatibilityMode(
-			)
-		{return compatibilityMode;}
-	
-		/**
-			Gets the document associated with this configuration.
-		*/
-		public Document getDocument(
-			)
-		{return document;}
-	
-		/**
-			Gets the document's cross-reference mode.
-		*/
-		public XRefModeEnum getXrefMode(
-			)
-		{return xrefMode;}
-	
-	  /**
-		  @see #getCompatibilityMode()
-		*/
-		public void setCompatibilityMode(
-			CompatibilityModeEnum value
-			)
-		{compatibilityMode = value;}
-	
-	  /**
-		  @see #getXrefMode()
-		*/
-		public void setXrefMode(
-			XRefModeEnum value
-			)
-		{document.checkCompatibility(xrefMode = value);}
-	}
-	
-	public enum PageLayoutEnum
-	{
-	  SinglePage,
-	  OneColumn,
-	  TwoColumns
-	}
+  /**
+    Document configuration.
 
-	public enum PageModeEnum
-	{
+    @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+    @since 0.1.0
+  */
+  public static final class Configuration
+  {
     /**
-	    Neither document outline nor thumbnail images visible.
-	  */
-	  Simple,
-	  /**
-	    Document outline visible.
-	  */
-	  Bookmarks,
-	  /**
-	    Thumbnail images visible.
-	  */
-	  Thumbnails,
-	  /**
-	    Full-screen mode, with no menu bar, window controls, or any other window visible.
-	  */
-	  FullScreen,
-	  /**
-	    Optional content group panel visible.
-	  */
-	  @PDF(VersionEnum.PDF15)
-	  OCG,
-	  /**
-	    Attachments panel visible.
-	  */
-	  @PDF(VersionEnum.PDF16)
-	  Attachments
-	}
+      Version compatibility mode.
+    */
+    public enum CompatibilityModeEnum
+    {
+      /**
+        Document's conformance version is ignored;
+        any feature is accepted without checking its compatibility.
+      */
+      Passthrough,
+      /**
+        Document's conformance version is automatically updated
+        to support used features.
+      */
+      Loose,
+      /**
+        Document's conformance version is mandatory;
+        any unsupported feature is forbidden and causes an exception
+        to be thrown in case of attempted use.
+      */
+      Strict
+    }
+
+    /**
+      Cross-reference mode [PDF:1.6:3.4].
+    */
+    public enum XRefModeEnum
+    {
+      /**
+        Cross-reference table [PDF:1.6:3.4.3].
+      */
+      @PDF(VersionEnum.PDF10)
+      Plain,
+      /**
+        Cross-reference stream [PDF:1.6:3.4.7].
+      */
+      @PDF(VersionEnum.PDF15)
+      Compressed
+    }
+
+    private CompatibilityModeEnum compatibilityMode = CompatibilityModeEnum.Loose;
+    private XRefModeEnum xrefMode = XRefModeEnum.Plain;
+
+    private Document document;
+
+    Configuration(
+      Document document
+      )
+    {this.document = document;}
+
+    /**
+      Gets the document's version compatibility mode.
+    */
+    public CompatibilityModeEnum getCompatibilityMode(
+      )
+    {return compatibilityMode;}
+
+    /**
+      Gets the document associated with this configuration.
+    */
+    public Document getDocument(
+      )
+    {return document;}
+
+    /**
+      Gets the document's cross-reference mode.
+    */
+    public XRefModeEnum getXrefMode(
+      )
+    {return xrefMode;}
+
+    /**
+      @see #getCompatibilityMode()
+    */
+    public void setCompatibilityMode(
+      CompatibilityModeEnum value
+      )
+    {compatibilityMode = value;}
+
+    /**
+      @see #getXrefMode()
+    */
+    public void setXrefMode(
+      XRefModeEnum value
+      )
+    {document.checkCompatibility(xrefMode = value);}
+  }
+
+  public enum PageLayoutEnum
+  {
+    SinglePage,
+    OneColumn,
+    TwoColumns
+  }
+
+  public enum PageModeEnum
+  {
+    /**
+      Neither document outline nor thumbnail images visible.
+    */
+    Simple,
+    /**
+      Document outline visible.
+    */
+    Bookmarks,
+    /**
+      Thumbnail images visible.
+    */
+    Thumbnails,
+    /**
+      Full-screen mode, with no menu bar, window controls, or any other window visible.
+    */
+    FullScreen,
+    /**
+      Optional content group panel visible.
+    */
+    @PDF(VersionEnum.PDF15)
+    OCG,
+    /**
+      Attachments panel visible.
+    */
+    @PDF(VersionEnum.PDF16)
+    Attachments
+  }
   // </classes>
 
   // <static>
@@ -217,7 +217,7 @@ public final class Document
     if(Destination.class.isAssignableFrom(type))
       return (T)Destination.wrap(baseObject,container,null);
     else
-    	throw new UnsupportedOperationException("Type '" + type.getName() + "' wrapping is not supported.");
+      throw new UnsupportedOperationException("Type '" + type.getName() + "' wrapping is not supported.");
   }
 
   /**
@@ -245,7 +245,7 @@ public final class Document
     For internal use only.
   */
   public java.util.Hashtable<PdfReference,Object> cache = new java.util.Hashtable<PdfReference,Object>();
-  
+
   private Configuration configuration = new Configuration(this);
   // </fields>
 
@@ -368,7 +368,7 @@ public final class Document
     if(actionsObject == null)
       return null;
 
-		return new DocumentActions(actionsObject, getContainer());
+    return new DocumentActions(actionsObject, getContainer());
   }
 
   /**
@@ -385,10 +385,10 @@ public final class Document
   }
 
   /**
-  	Gets the configuration of this document.
+    Gets the configuration of this document.
   */
   public final Configuration getConfiguration(
-		)
+    )
   {return configuration;}
 
   /**
@@ -404,7 +404,7 @@ public final class Document
     if(formObject == null)
       return null;
 
-		return new Form(formObject, getContainer());
+    return new Form(formObject, getContainer());
   }
 
   /**
@@ -431,7 +431,7 @@ public final class Document
     if(namesObject == null)
       return null;
 
-		return new Names(namesObject, getContainer());
+    return new Names(namesObject, getContainer());
   }
 
   /**
@@ -511,9 +511,9 @@ public final class Document
   {
     PdfReference pagesReference = (PdfReference)getBaseDataObject().get(PdfName.Pages);
     return Resources.wrap(
-    	((PdfDictionary)File.resolve(pagesReference)).get(PdfName.Resources),
-    	pagesReference.getIndirectObject()
-    	);
+      ((PdfDictionary)File.resolve(pagesReference)).get(PdfName.Resources),
+      pagesReference.getIndirectObject()
+      );
   }
 
   /**
@@ -567,7 +567,7 @@ public final class Document
     if(viewerPreferencesObject == null)
       return null;
 
-		return new ViewerPreferences(viewerPreferencesObject, getContainer());
+    return new ViewerPreferences(viewerPreferencesObject, getContainer());
   }
 
   /**
@@ -591,8 +591,8 @@ public final class Document
     @since 0.1.0
   */
   public void setConfiguration(
-  	Configuration value
-  	)
+    Configuration value
+    )
   {configuration = value;}
 
   /**
@@ -711,7 +711,7 @@ public final class Document
     )
   {
     PdfReference pages = (PdfReference)getBaseDataObject().get(PdfName.Pages);
-		((PdfDictionary)File.resolve(pages)).put(PdfName.Resources, value.getBaseObject());
+    ((PdfDictionary)File.resolve(pages)).put(PdfName.Resources, value.getBaseObject());
   }
 
   /**
@@ -721,14 +721,14 @@ public final class Document
     Version value
     )
   {
-  	if(value == null)
-  	{getBaseDataObject().remove(PdfName.Version);}
-  	else
-  	{
-  		checkCompatibility("version");
-  		getBaseDataObject().put(PdfName.Version, new PdfName(value.toString()));
-  	}
-	}
+    if(value == null)
+    {getBaseDataObject().remove(PdfName.Version);}
+    else
+    {
+      checkCompatibility("version");
+      getBaseDataObject().put(PdfName.Version, new PdfName(value.toString()));
+    }
+  }
 
   /**
     @see #getViewerPreferences()
@@ -739,34 +739,34 @@ public final class Document
   {getBaseDataObject().put(PdfName.ViewerPreferences, value.getBaseObject());}
 
   // <Pageable>
-	@Override
-	public int getNumberOfPages(
-		)
-	{return getPages().size();}
+  @Override
+  public int getNumberOfPages(
+    )
+  {return getPages().size();}
 
-	@Override
-	public java.awt.print.PageFormat getPageFormat(
-		int pageIndex
-		) throws IndexOutOfBoundsException
-	{
-		java.awt.print.PageFormat pageFormat = new java.awt.print.PageFormat();
-		{
-			Page page = getPages().get(pageIndex);
-	    Paper paper = new Paper();
-	    {
-	    	Rectangle2D pageBox = page.getBox();
-	    	paper.setSize(pageBox.getWidth(),pageBox.getHeight());
-    	}
-	    pageFormat.setPaper(paper);
-		}
-		return pageFormat;
-	}
+  @Override
+  public java.awt.print.PageFormat getPageFormat(
+    int pageIndex
+    ) throws IndexOutOfBoundsException
+  {
+    java.awt.print.PageFormat pageFormat = new java.awt.print.PageFormat();
+    {
+      Page page = getPages().get(pageIndex);
+      Paper paper = new Paper();
+      {
+        Rectangle2D pageBox = page.getBox();
+        paper.setSize(pageBox.getWidth(),pageBox.getHeight());
+      }
+      pageFormat.setPaper(paper);
+    }
+    return pageFormat;
+  }
 
-	@Override
-	public Printable getPrintable(
-		int pageIndex
-		) throws IndexOutOfBoundsException
-	{return getPages().get(pageIndex);}
+  @Override
+  public Printable getPrintable(
+    int pageIndex
+    ) throws IndexOutOfBoundsException
+  {return getPages().get(pageIndex);}
   // </Pageable>
   // </public>
 

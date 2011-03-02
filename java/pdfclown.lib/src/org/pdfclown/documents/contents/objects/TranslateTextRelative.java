@@ -111,8 +111,8 @@ public final class TranslateTextRelative
     GraphicsState state
     )
   {
-  	state.getTlm().translate(getOffsetX(),getOffsetY());
-  	state.setTm((AffineTransform)state.getTlm().clone());
+    state.getTlm().translate(getOffsetX(),getOffsetY());
+    state.setTm((AffineTransform)state.getTlm().clone());
     if(isLeadSet())
     {state.setLead(getOffsetY());}
   }
@@ -126,12 +126,12 @@ public final class TranslateTextRelative
   {operator = (value ? LeadOperator : SimpleOperator);}
 
   public void setOffsetX(
-  	float value
+    float value
     )
   {((PdfNumber<?>)operands.get(0)).setValue(value);}
 
   public void setOffsetY(
-  	float value
+    float value
     )
   {((PdfNumber<?>)operands.get(1)).setValue(value);}
   // </public>

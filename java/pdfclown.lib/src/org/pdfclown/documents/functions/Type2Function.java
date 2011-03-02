@@ -42,90 +42,90 @@ import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	<b>Exponential interpolation</b> of one input value and <code>n</code> output values [PDF:1.6:3.9.2].
-	<p>Each input value <code>x</code> will return <code>n</code> values, given by <code>y[j] = C0[j] + x^N × (C1[j] − C0[j])</code>,
-	for <code>0 ≤ j < n</code>, where <code>C0</code> and <code>C1</code> are the {@link #getBoundOutputValues() function results} when,
-	respectively, <code>x = 0</code> and <code>x = 1</code>, and <code>N</code> is the {@link #getExponent() interpolation exponent}.</p>
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  <b>Exponential interpolation</b> of one input value and <code>n</code> output values [PDF:1.6:3.9.2].
+  <p>Each input value <code>x</code> will return <code>n</code> values, given by <code>y[j] = C0[j] + x^N × (C1[j] − C0[j])</code>,
+  for <code>0 ≤ j < n</code>, where <code>C0</code> and <code>C1</code> are the {@link #getBoundOutputValues() function results} when,
+  respectively, <code>x = 0</code> and <code>x = 1</code>, and <code>N</code> is the {@link #getExponent() interpolation exponent}.</p>
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF13)
 public final class Type2Function
-	extends Function<PdfDictionary>
+  extends Function<PdfDictionary>
 {
   // <class>
-	// <dynamic>
-	// <constructors>
-	//TODO:implement function creation!
+  // <dynamic>
+  // <constructors>
+  //TODO:implement function creation!
 
-	Type2Function(
-		PdfDirectObject baseObject,
-		PdfIndirectObject container
-		)
-	{super(baseObject, container);}
-	// </constructors>
+  Type2Function(
+    PdfDirectObject baseObject,
+    PdfIndirectObject container
+    )
+  {super(baseObject, container);}
+  // </constructors>
 
   // <interface>
   // <public>
-	@Override
-	public float[] calculate(
-		float[] inputs
-		)
-	{
-		// FIXME: Auto-generated method stub
-		return null;
-	}
+  @Override
+  public float[] calculate(
+    float[] inputs
+    )
+  {
+    // FIXME: Auto-generated method stub
+    return null;
+  }
 
-	@Override
-	public Object clone(
-		Document context
-		)
-	{return new NotImplementedException();}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {return new NotImplementedException();}
 
-	/**
-		Gets the output value pairs <code>(C0,C1)</code> for lower (<code>0.0</code>)
-		and higher (<code>1.0</code>) input values.
-	*/
-	public List<float[]> getBoundOutputValues(
-		)
-	{
-		List<float[]> outputBounds;
-		{
-			PdfArray lowOutputBoundsObject = (PdfArray)getDictionary().get(PdfName.C0);
-			PdfArray highOutputBoundsObject = (PdfArray)getDictionary().get(PdfName.C1);
-			if(lowOutputBoundsObject == null)
-			{outputBounds = Arrays.asList(new float[]{0,1});}
-			else
-			{
-				outputBounds = new ArrayList<float[]>();
-				Iterator<PdfDirectObject> lowOutputBoundsObjectIterator = lowOutputBoundsObject.iterator();
-				Iterator<PdfDirectObject> highOutputBoundsObjectIterator = highOutputBoundsObject.iterator();
-				while(lowOutputBoundsObjectIterator.hasNext()
-					&& highOutputBoundsObjectIterator.hasNext())
-				{
-					outputBounds.add(
-						new float[]
-	          {
-		  				((PdfNumber<?>)lowOutputBoundsObjectIterator.next()).getNumberValue(),
-		  				((PdfNumber<?>)highOutputBoundsObjectIterator.next()).getNumberValue()
-	          }
-						);
-				}
-			}
-		}
-		return outputBounds;
-	}
+  /**
+    Gets the output value pairs <code>(C0,C1)</code> for lower (<code>0.0</code>)
+    and higher (<code>1.0</code>) input values.
+  */
+  public List<float[]> getBoundOutputValues(
+    )
+  {
+    List<float[]> outputBounds;
+    {
+      PdfArray lowOutputBoundsObject = (PdfArray)getDictionary().get(PdfName.C0);
+      PdfArray highOutputBoundsObject = (PdfArray)getDictionary().get(PdfName.C1);
+      if(lowOutputBoundsObject == null)
+      {outputBounds = Arrays.asList(new float[]{0,1});}
+      else
+      {
+        outputBounds = new ArrayList<float[]>();
+        Iterator<PdfDirectObject> lowOutputBoundsObjectIterator = lowOutputBoundsObject.iterator();
+        Iterator<PdfDirectObject> highOutputBoundsObjectIterator = highOutputBoundsObject.iterator();
+        while(lowOutputBoundsObjectIterator.hasNext()
+          && highOutputBoundsObjectIterator.hasNext())
+        {
+          outputBounds.add(
+            new float[]
+            {
+              ((PdfNumber<?>)lowOutputBoundsObjectIterator.next()).getNumberValue(),
+              ((PdfNumber<?>)highOutputBoundsObjectIterator.next()).getNumberValue()
+            }
+            );
+        }
+      }
+    }
+    return outputBounds;
+  }
 
-	/**
-		Gets the interpolation exponent.
-	*/
-	public float getExponent(
-		)
-	{return ((PdfNumber<?>)getDictionary().get(PdfName.N)).getNumberValue();}
+  /**
+    Gets the interpolation exponent.
+  */
+  public float getExponent(
+    )
+  {return ((PdfNumber<?>)getDictionary().get(PdfName.N)).getNumberValue();}
   // </public>
   // </interface>
-	// </dynamic>
+  // </dynamic>
   // </class>
 }

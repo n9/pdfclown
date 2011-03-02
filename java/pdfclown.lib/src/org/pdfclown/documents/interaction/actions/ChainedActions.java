@@ -25,6 +25,12 @@
 
 package org.pdfclown.documents.interaction.actions;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -36,12 +42,6 @@ import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.util.NotImplementedException;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
 
 /**
   Chained actions [PDF:1.6:8.5.1].
@@ -134,7 +134,7 @@ public final class ChainedActions
       return Action.wrap(getBaseObject(),getContainer());
     }
     else // Multiple actions.
-    	return Action.wrap(((PdfArray)baseDataObject).get(index),getContainer());
+      return Action.wrap(((PdfArray)baseDataObject).get(index),getContainer());
   }
 
   @Override
@@ -147,9 +147,9 @@ public final class ChainedActions
 
     PdfDataObject baseDataObject = getBaseDataObject();
     if(baseDataObject instanceof PdfDictionary) // Single action.
-    	return (((Action)value).getBaseObject().equals(getBaseObject()) ? 0 : -1);
+      return (((Action)value).getBaseObject().equals(getBaseObject()) ? 0 : -1);
     else // Multiple actions.
-    	return ((PdfArray)baseDataObject).indexOf(((Action)value).getBaseObject());
+      return ((PdfArray)baseDataObject).indexOf(((Action)value).getBaseObject());
   }
 
   @Override
@@ -175,9 +175,9 @@ public final class ChainedActions
     )
   {
     return Action.wrap(
-    	ensureArray().remove(index),
-    	getContainer()
-    	);
+      ensureArray().remove(index),
+      getContainer()
+      );
   }
 
   @Override
@@ -234,7 +234,7 @@ public final class ChainedActions
     if(baseDataObject instanceof PdfDictionary) // Single action.
       return ((Action)value).getBaseObject().equals(getBaseObject());
     else // Multiple actions.
-    	return ((PdfArray)baseDataObject).contains(((Action)value).getBaseObject());
+      return ((PdfArray)baseDataObject).contains(((Action)value).getBaseObject());
   }
 
   @Override
@@ -262,7 +262,7 @@ public final class ChainedActions
     if(baseDataObject instanceof PdfDictionary) // Single action.
       return false;
     else // Multiple actions.
-    	return ((PdfArray)baseDataObject).isEmpty();
+      return ((PdfArray)baseDataObject).isEmpty();
   }
 
   @Override
@@ -296,7 +296,7 @@ public final class ChainedActions
     if(baseDataObject instanceof PdfDictionary) // Single action.
       return 1;
     else // Multiple actions.
-    	return ((PdfArray)baseDataObject).size();
+      return ((PdfArray)baseDataObject).size();
   }
 
   @Override
@@ -348,10 +348,12 @@ public final class ChainedActions
       /** Collection size. */
       private int size = size();
 
+      @Override
       public boolean hasNext(
         )
       {return (index < size);}
 
+      @Override
       public Action next(
         )
       {
@@ -361,6 +363,7 @@ public final class ChainedActions
         return get(index++);
       }
 
+      @Override
       public void remove(
         )
       {throw new UnsupportedOperationException();}

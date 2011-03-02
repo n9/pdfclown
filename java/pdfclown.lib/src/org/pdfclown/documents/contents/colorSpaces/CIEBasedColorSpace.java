@@ -47,8 +47,8 @@ public abstract class CIEBasedColorSpace
   // <class>
   // <dynamic>
   // <constructors>
-	//TODO:IMPL new element constructor!
-	
+  //TODO:IMPL new element constructor!
+
   protected CIEBasedColorSpace(
     PdfDirectObject baseObject,
     PdfIndirectObject container
@@ -59,50 +59,50 @@ public abstract class CIEBasedColorSpace
   // <interface>
   // <public>
   /**
-  	Gets the tristimulus value, in the CIE 1931 XYZ space, of the diffuse black point.
+    Gets the tristimulus value, in the CIE 1931 XYZ space, of the diffuse black point.
   */
   public float[] getBlackPoint(
-		)
-	{
-		PdfArray blackPointObject = (PdfArray)getDictionary().get(PdfName.BlackPoint);
-		return (blackPointObject == null
-			? new float[]
-				{
-					0,
-					0,
-					0
-				}
-			: new float[]
-		  	{
-					((PdfNumber<?>)blackPointObject.get(0)).getNumberValue(),
-					((PdfNumber<?>)blackPointObject.get(1)).getNumberValue(),
-					((PdfNumber<?>)blackPointObject.get(2)).getNumberValue()
-		  	});
-	}
-  
-  /**
-		Gets the tristimulus value, in the CIE 1931 XYZ space, of the diffuse white point.
-	*/
-  public float[] getWhitePoint(
-  	)
+    )
   {
-  	PdfArray whitePointObject = (PdfArray)getDictionary().get(PdfName.WhitePoint);  	
-  	return new float[]
-    	{
-  			((PdfNumber<?>)whitePointObject.get(0)).getNumberValue(),
-  			((PdfNumber<?>)whitePointObject.get(1)).getNumberValue(),
-  			((PdfNumber<?>)whitePointObject.get(2)).getNumberValue()
-    	};
+    PdfArray blackPointObject = (PdfArray)getDictionary().get(PdfName.BlackPoint);
+    return (blackPointObject == null
+      ? new float[]
+        {
+          0,
+          0,
+          0
+        }
+      : new float[]
+        {
+          ((PdfNumber<?>)blackPointObject.get(0)).getNumberValue(),
+          ((PdfNumber<?>)blackPointObject.get(1)).getNumberValue(),
+          ((PdfNumber<?>)blackPointObject.get(2)).getNumberValue()
+        });
+  }
+
+  /**
+    Gets the tristimulus value, in the CIE 1931 XYZ space, of the diffuse white point.
+  */
+  public float[] getWhitePoint(
+    )
+  {
+    PdfArray whitePointObject = (PdfArray)getDictionary().get(PdfName.WhitePoint);
+    return new float[]
+      {
+        ((PdfNumber<?>)whitePointObject.get(0)).getNumberValue(),
+        ((PdfNumber<?>)whitePointObject.get(1)).getNumberValue(),
+        ((PdfNumber<?>)whitePointObject.get(2)).getNumberValue()
+      };
   }
   // </public>
-  
+
   // <protected>
   /**
-		Gets this color space's dictionary.
-	*/
-	protected final PdfDictionary getDictionary(
-		)
-	{return (PdfDictionary)getBaseDataObject().get(1);}
+    Gets this color space's dictionary.
+  */
+  protected final PdfDictionary getDictionary(
+    )
+  {return (PdfDictionary)getBaseDataObject().get(1);}
   // </protected>
   // </interface>
   // </dynamic>

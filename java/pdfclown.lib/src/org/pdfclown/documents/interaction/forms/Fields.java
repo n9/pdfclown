@@ -25,6 +25,14 @@
 
 package org.pdfclown.documents.interaction.forms;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -32,20 +40,12 @@ import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfIndirectObject;
+import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.NotImplementedException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.List;
-import java.util.Set;
 
 /**
   Interactive form fields [PDF:1.6:8.6.1].
@@ -120,42 +120,42 @@ public final class Fields
     Object key
     )
   {
-  	/*
-			TODO: It is possible for different field dictionaries to have the SAME fully qualified field
-			name if they are descendants of a common ancestor with that name and have no
-			partial field names (T entries) of their own. Such field dictionaries are different
-			representations of the same underlying field; they should differ only in properties
-			that specify their visual appearance. In particular, field dictionaries with the same
-			fully qualified field name must have the same field type (FT), value (V), and default
-			value (DV).
-  	 */
-  	PdfReference valueFieldReference = null;
-  	{
-	  	Iterator<String> partialNamesIterator = Arrays.asList(((String)key).split("\\.")).iterator();
-	  	Iterator<PdfDirectObject> fieldObjectsIterator = getBaseDataObject().iterator();
-	  	while(partialNamesIterator.hasNext())
-	  	{
-	  		String partialName = partialNamesIterator.next();
-	  		valueFieldReference = null;
-		  	while(fieldObjectsIterator != null && fieldObjectsIterator.hasNext())
-		  	{
-		  		PdfReference fieldReference = (PdfReference)fieldObjectsIterator.next();
-		  		PdfDictionary fieldDictionary = (PdfDictionary)fieldReference.getDataObject();
-		  		PdfTextString fieldName = (PdfTextString)fieldDictionary.get(PdfName.T);
-		  		if(fieldName != null && fieldName.getValue().equals(partialName))
-		  		{
-		  			valueFieldReference = fieldReference;
-		  			PdfArray kidFieldObjects = (PdfArray)fieldDictionary.resolve(PdfName.Kids);
-		  			fieldObjectsIterator = (kidFieldObjects == null ? null : kidFieldObjects.iterator());
-		  			break;
-		  		}
-		  	}
-		  	if(valueFieldReference == null)
-		  		break;
-	  	}
-  	}
-  	return Field.wrap(valueFieldReference);
-	}
+    /*
+      TODO: It is possible for different field dictionaries to have the SAME fully qualified field
+      name if they are descendants of a common ancestor with that name and have no
+      partial field names (T entries) of their own. Such field dictionaries are different
+      representations of the same underlying field; they should differ only in properties
+      that specify their visual appearance. In particular, field dictionaries with the same
+      fully qualified field name must have the same field type (FT), value (V), and default
+      value (DV).
+     */
+    PdfReference valueFieldReference = null;
+    {
+      Iterator<String> partialNamesIterator = Arrays.asList(((String)key).split("\\.")).iterator();
+      Iterator<PdfDirectObject> fieldObjectsIterator = getBaseDataObject().iterator();
+      while(partialNamesIterator.hasNext())
+      {
+        String partialName = partialNamesIterator.next();
+        valueFieldReference = null;
+        while(fieldObjectsIterator != null && fieldObjectsIterator.hasNext())
+        {
+          PdfReference fieldReference = (PdfReference)fieldObjectsIterator.next();
+          PdfDictionary fieldDictionary = (PdfDictionary)fieldReference.getDataObject();
+          PdfTextString fieldName = (PdfTextString)fieldDictionary.get(PdfName.T);
+          if(fieldName != null && fieldName.getValue().equals(partialName))
+          {
+            valueFieldReference = fieldReference;
+            PdfArray kidFieldObjects = (PdfArray)fieldDictionary.resolve(PdfName.Kids);
+            fieldObjectsIterator = (kidFieldObjects == null ? null : kidFieldObjects.iterator());
+            break;
+          }
+        }
+        if(valueFieldReference == null)
+          break;
+      }
+    }
+    return Field.wrap(valueFieldReference);
+  }
 
   @Override
   public boolean isEmpty(
@@ -192,19 +192,19 @@ TODO:put the field into the correct position, based on the full name (key)!!!
     Object key
     )
   {
-  	Field field = get(key);
-  	if(field == null)
-  		return null;
+    Field field = get(key);
+    if(field == null)
+      return null;
 
-  	PdfArray fieldObjects;
-  	{
-	  	PdfReference fieldParentReference = (PdfReference)field.getBaseDataObject().get(PdfName.Parent);
-	  	if(fieldParentReference == null)
-	  	{fieldObjects = getBaseDataObject();}
-	  	else
-	  	{fieldObjects = (PdfArray)((PdfDictionary)fieldParentReference.getDataObject()).resolve(PdfName.Kids);}
-  	}
-  	return (fieldObjects.remove(field.getBaseObject()) ? field : null);
+    PdfArray fieldObjects;
+    {
+      PdfReference fieldParentReference = (PdfReference)field.getBaseDataObject().get(PdfName.Parent);
+      if(fieldParentReference == null)
+      {fieldObjects = getBaseDataObject();}
+      else
+      {fieldObjects = (PdfArray)((PdfDictionary)fieldParentReference.getDataObject()).resolve(PdfName.Kids);}
+    }
+    return (fieldObjects.remove(field.getBaseObject()) ? field : null);
   }
 
   @Override

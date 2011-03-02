@@ -31,89 +31,89 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
-	Generic PDF version number [PDF:1.6:H.1].
+  Generic PDF version number [PDF:1.6:H.1].
 
-	@see VersionEnum
+  @see VersionEnum
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  @since 0.1.0
+  @version 0.1.0
 */
 public final class Version
-	implements Comparable<Version>
+  implements Comparable<Version>
 {
   // <class>
   // <static>
   // <fields>
-	private static final Pattern versionPattern = Pattern.compile("^(\\d+)\\.(\\d+)$");
-	private static final Map<String,Version> versions = new HashMap<String,Version>();
+  private static final Pattern versionPattern = Pattern.compile("^(\\d+)\\.(\\d+)$");
+  private static final Map<String,Version> versions = new HashMap<String,Version>();
   // </fields>
-	
+
   // <interface>
   // <public>
-	public static Version get(
-		String version
-		)
-	{
-		if(!versions.containsKey(version))
-		{
-			Matcher versionMatcher = versionPattern.matcher(version);
-			if(!versionMatcher.find())
-				throw new RuntimeException("Invalid PDF version format: '" + versionPattern + "' pattern expected.");
-			
-			Version versionObject = new Version(Integer.valueOf(versionMatcher.group(1)),Integer.valueOf(versionMatcher.group(2)));
-			versions.put(version,versionObject);
-		}
-		return versions.get(version);
-	}
+  public static Version get(
+    String version
+    )
+  {
+    if(!versions.containsKey(version))
+    {
+      Matcher versionMatcher = versionPattern.matcher(version);
+      if(!versionMatcher.find())
+        throw new RuntimeException("Invalid PDF version format: '" + versionPattern + "' pattern expected.");
+
+      Version versionObject = new Version(Integer.valueOf(versionMatcher.group(1)),Integer.valueOf(versionMatcher.group(2)));
+      versions.put(version,versionObject);
+    }
+    return versions.get(version);
+  }
   // </public>
   // </interface>
   // </static>
-	
+
   // <dynamic>
   // <fields>
-	private final int major;
-	private final int minor;
+  private final int major;
+  private final int minor;
   // </fields>
-	
+
   // <constructors>
-	private Version(
-		int major, 
-		int minor
-		)
-	{
-		this.major = major;
-		this.minor = minor;
-	}
+  private Version(
+    int major,
+    int minor
+    )
+  {
+    this.major = major;
+    this.minor = minor;
+  }
   // </constructors>
 
   // <interface>
   // <public>
-	public int getMajor(
-		)
-	{return major;}
-	
-	public int getMinor(
-		)
-	{return minor;}
+  public int getMajor(
+    )
+  {return major;}
 
-	@Override
-	public String toString(
-		)
-	{return major + "." + minor;}
+  public int getMinor(
+    )
+  {return minor;}
 
-	// <Comparable>
-	@Override
-	public int compareTo(
-		Version value
-		)
-	{
-		int comparison = major-value.major;
-		if(comparison == 0)
-		{comparison = minor-value.minor;}
-		
-		return (int)Math.signum(comparison);
-	}
-	// </Comparable>
+  @Override
+  public String toString(
+    )
+  {return major + "." + minor;}
+
+  // <Comparable>
+  @Override
+  public int compareTo(
+    Version value
+    )
+  {
+    int comparison = major-value.major;
+    if(comparison == 0)
+    {comparison = minor-value.minor;}
+
+    return (int)Math.signum(comparison);
+  }
+  // </Comparable>
   // </public>
   // </interface>
   // </dynamic>

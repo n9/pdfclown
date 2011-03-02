@@ -25,6 +25,12 @@
 
 package org.pdfclown.documents.contents.composition;
 
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.documents.contents.ContentScanner;
 import org.pdfclown.documents.contents.composition.Length.UnitModeEnum;
@@ -35,12 +41,6 @@ import org.pdfclown.documents.contents.objects.LocalGraphicsState;
 import org.pdfclown.documents.contents.objects.ModifyCTM;
 import org.pdfclown.documents.contents.objects.Operation;
 import org.pdfclown.documents.contents.objects.SetWordSpace;
-
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
   Content block composer.
@@ -272,9 +272,9 @@ public final class BlockComposer
   public Rectangle2D getFrame(
     )
   {return frame;}
-  
+
   /**
-  	Gets the text interline spacing.
+    Gets the text interline spacing.
   */
   public Length getLineSpace(
     )
@@ -571,7 +571,7 @@ trailParsing:
     switch(alignmentX)
     {
       case Left:
-      	break;
+        break;
       case Right:
         rowXOffset = (float)frame.getWidth() - currentRow.width;
         break;

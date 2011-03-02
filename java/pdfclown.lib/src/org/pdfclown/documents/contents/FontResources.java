@@ -46,18 +46,18 @@ public final class FontResources
   // <class>
   // <static>
   // <interface>
-	static FontResources wrap(
-		PdfDirectObject baseObject,
-		PdfIndirectObject container
-		)
-	{
+  static FontResources wrap(
+    PdfDirectObject baseObject,
+    PdfIndirectObject container
+    )
+  {
     return baseObject == null
-	  	? null
-			: new FontResources(baseObject, container);
-	}
+      ? null
+      : new FontResources(baseObject, container);
+  }
   // </interface>
   // </static>
-	
+
   // <dynamic>
   // <constructors>
   public FontResources(
@@ -74,11 +74,11 @@ public final class FontResources
 
   // <interface>
   // <protected>
-	@Override
-	protected Font wrap(
-		PdfDirectObject baseObject
-		)
-	{return Font.wrap((PdfReference)baseObject);}
+  @Override
+  protected Font wrap(
+    PdfDirectObject baseObject
+    )
+  {return Font.wrap((PdfReference)baseObject);}
   // </protected>
   // </interface>
   // </dynamic>

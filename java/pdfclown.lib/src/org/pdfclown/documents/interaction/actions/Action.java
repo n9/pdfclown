@@ -65,15 +65,15 @@ public class Action
   public static final Action wrap(
     PdfReference reference
     )
-	{return wrap(reference, null);}
+  {return wrap(reference, null);}
 
   /**
-	  Wraps an action base object into an action object.
-	
-	  @param baseObject Action base object.
-	  @param container Action base object container.
-	  @return Action object associated to the base object.
-	*/
+    Wraps an action base object into an action object.
+
+    @param baseObject Action base object.
+    @param container Action base object container.
+    @return Action object associated to the base object.
+  */
   public static final Action wrap(
     PdfDirectObject baseObject,
     PdfIndirectObject container
@@ -210,7 +210,7 @@ public class Action
     )
   {
     PdfDirectObject nextObject = getBaseDataObject().get(PdfName.Next);
-		return nextObject == null ? null : new ChainedActions(nextObject, getContainer(), this);
+    return nextObject == null ? null : new ChainedActions(nextObject, getContainer(), this);
   }
 
   /**

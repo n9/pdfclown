@@ -62,22 +62,22 @@ public final class Shading
   // <public>
   /**
     Gets the {@link org.pdfclown.documents.contents.colorSpaces.Shading shading} resource name.
-    
+
     @see #getResource(IContentContext)
     @see ShadingResources
   */
   public PdfName getName(
     )
   {return ((PaintShading)getObjects().get(0)).getName();}
-  
+
   /**
     Gets the {@link org.pdfclown.documents.contents.colorSpaces.Shading shading} resource.
-	  
-	  @param context Content context.
+
+    @param context Content context.
   */
   public org.pdfclown.documents.contents.colorSpaces.Shading<?> getResource(
-  	IContentContext context
-  	)
+    IContentContext context
+    )
   {return ((PaintShading)getObjects().get(0)).getShading(context);}
   // </public>
   // </interface>

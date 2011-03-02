@@ -99,12 +99,12 @@ public final class ShowTextToNextLine
     String operator,
     List<PdfDirectObject> operands
     )
-	{
-		super(
-			operator,
-			operands
-			);
-	}
+  {
+    super(
+      operator,
+      operands
+      );
+  }
   // </constructors>
 
   // <interface>
@@ -118,7 +118,7 @@ public final class ShowTextToNextLine
     if(operator.equals(SimpleOperator))
       return null;
     else
-    	return ((PdfNumber<?>)operands.get(1)).getNumberValue();
+      return ((PdfNumber<?>)operands.get(1)).getNumberValue();
   }
 
   @Override
@@ -139,7 +139,7 @@ public final class ShowTextToNextLine
     if(operator.equals(SimpleOperator))
       return null;
     else
-    	return ((PdfNumber<?>)operands.get(0)).getNumberValue();
+      return ((PdfNumber<?>)operands.get(0)).getNumberValue();
   }
 
   /**

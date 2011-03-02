@@ -25,8 +25,8 @@
 
 package org.pdfclown.documents.contents;
 
-import org.pdfclown.VersionEnum;
 import org.pdfclown.PDF;
+import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.colorSpaces.ColorSpace;
 import org.pdfclown.objects.PdfDirectObject;
@@ -45,18 +45,18 @@ public final class ColorSpaceResources
   // <class>
   // <static>
   // <interface>
-	static ColorSpaceResources wrap(
-		PdfDirectObject baseObject,
-		PdfIndirectObject container
-		)
-	{
+  static ColorSpaceResources wrap(
+    PdfDirectObject baseObject,
+    PdfIndirectObject container
+    )
+  {
     return baseObject == null
-	  	? null
-			: new ColorSpaceResources(baseObject, container);
-	}
+      ? null
+      : new ColorSpaceResources(baseObject, container);
+  }
   // </interface>
   // </static>
-	
+
   // <dynamic>
   // <constructors>
   public ColorSpaceResources(
@@ -73,11 +73,11 @@ public final class ColorSpaceResources
 
   // <interface>
   // <protected>
-	@Override
-	protected ColorSpace<?> wrap(
-		PdfDirectObject baseObject
-		)
-	{return ColorSpace.wrap(baseObject, getContainer());}
+  @Override
+  protected ColorSpace<?> wrap(
+    PdfDirectObject baseObject
+    )
+  {return ColorSpace.wrap(baseObject, getContainer());}
   // </protected>
   // </interface>
   // </dynamic>

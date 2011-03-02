@@ -48,7 +48,7 @@ public abstract class PdfAtomicObject<TValue>
   {}
   // </constructors>
 
-	// <interface>
+  // <interface>
   // <public>
   @Override
   @SuppressWarnings("unchecked")
@@ -63,8 +63,8 @@ public abstract class PdfAtomicObject<TValue>
     )
   {
     return object != null
-			&& object.getClass().equals(getClass()) 
-			&& ((PdfAtomicObject<?>)object).getRawValue().equals(getRawValue());
+      && object.getClass().equals(getClass())
+      && ((PdfAtomicObject<?>)object).getRawValue().equals(getRawValue());
   }
 
   /**

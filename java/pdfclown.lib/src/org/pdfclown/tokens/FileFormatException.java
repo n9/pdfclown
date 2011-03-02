@@ -27,7 +27,7 @@ package org.pdfclown.tokens;
 
 /**
   Exception thrown in case of bad file format detection.
-	
+
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
   @version 0.1.0
@@ -41,7 +41,7 @@ public class FileFormatException
   private static final long serialVersionUID = 1L;
   // </fields>
   // </static>
-  
+
   // <dynamic>
   // <fields>
   private long position;

@@ -64,13 +64,13 @@ public final class PdfTextString
     String value
     )
   {super(value);}
-  
+
   public PdfTextString(
-  	byte[] value,
+    byte[] value,
     SerializationModeEnum serializationMode
     )
   {super(value, serializationMode);}
-  
+
   public PdfTextString(
     String value,
     SerializationModeEnum serializationMode
@@ -96,11 +96,11 @@ public final class PdfTextString
       {
         // Excluding UTF marker...
         buffer = new byte[valueBytes.length - 2];
-				System.arraycopy(valueBytes, 2, buffer, 0, buffer.length);
+        System.arraycopy(valueBytes, 2, buffer, 0, buffer.length);
       }
       else
       {buffer = valueBytes;}
-			return new String(buffer, encoding);
+      return new String(buffer, encoding);
     }
     catch(Exception e)
     {throw new RuntimeException(e); /* (should NEVER happen). */}
@@ -127,25 +127,25 @@ public final class PdfTextString
   {
     switch(getSerializationMode())
     {
-    	case Literal:
-    	{
-      	byte[] buffer;
+      case Literal:
+      {
+        byte[] buffer;
         try
         {
-  	      // Prepending UTF marker...
-  	      byte[] valueBytes = ((String)value).getBytes(CharsetName.UTF16BE);
-  	      buffer = new byte[valueBytes.length + 2];
-  	      buffer[0] = (byte)254; buffer[1] = (byte)255;
-  				System.arraycopy(valueBytes, 0, buffer, 2, valueBytes.length);
-      	}
+          // Prepending UTF marker...
+          byte[] valueBytes = ((String)value).getBytes(CharsetName.UTF16BE);
+          buffer = new byte[valueBytes.length + 2];
+          buffer[0] = (byte)254; buffer[1] = (byte)255;
+          System.arraycopy(valueBytes, 0, buffer, 2, valueBytes.length);
+        }
         catch(Exception e)
         {throw new RuntimeException(e);}
         setRawValue(buffer);
-    	}
-    		break;
+      }
+        break;
       case Hex:
-      	super.setValue(value);
-      	break;
+        super.setValue(value);
+        break;
     }
   }
   // </public>

@@ -47,9 +47,9 @@ import org.pdfclown.util.NotImplementedException;
   <p>Specialized objects don't inherit directly from their low-level counterparts
   (e.g. {@link org.pdfclown.documents.contents.Contents Contents} extends {@link org.pdfclown.objects.PdfStream PdfStream},
   {@link org.pdfclown.documents.Pages Pages} extends {@link org.pdfclown.objects.PdfArray PdfArray}
-  and so on) because there's no plain one-to-one mapping between primitive PDF types and specialized instances: 
+  and so on) because there's no plain one-to-one mapping between primitive PDF types and specialized instances:
   the <code>Content</code> entry of <code>Page</code> dictionaries may be a simple reference to a <code>PdfStream</code>
-  or a <code>PdfArray</code> of references to <code>PdfStream</code>-s, <code>Pages</code> collections may be spread 
+  or a <code>PdfArray</code> of references to <code>PdfStream</code>-s, <code>Pages</code> collections may be spread
   across a B-tree instead of a flat <code>PdfArray</code> and so on.</p>
   <p>So, <i>in order to hide all these annoying inner workings, I chose to adopt a composition pattern instead of
   the apparently-reasonable (but actually awkward!) inheritance pattern</i>.
@@ -176,143 +176,143 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   // <protected>
 //TODO:remove?
 //  /**
-//		Checks whether the caller context is compatible with the {@link Document#getVersion() document's conformance version}.
-//		<p>For performance reasons, the relevant feature should be passed as argument to {@link #checkCompatibility(Object)} whenever possible.</p>
-//		
-//		@throws RuntimeException In case of version conflict (see {@link org.pdfclown.documents.Document.Configuration.CompatibilityModeEnum#Strict Strict compatibility mode}).
-//		@see #checkCompatibility(Object)
-//		@since 0.1.0
+//    Checks whether the caller context is compatible with the {@link Document#getVersion() document's conformance version}.
+//    <p>For performance reasons, the relevant feature should be passed as argument to {@link #checkCompatibility(Object)} whenever possible.</p>
+//
+//    @throws RuntimeException In case of version conflict (see {@link org.pdfclown.documents.Document.Configuration.CompatibilityModeEnum#Strict Strict compatibility mode}).
+//    @see #checkCompatibility(Object)
+//    @since 0.1.0
 //  */
-//	protected void checkCompatibility(
-//		)
-//	{checkCompatibility(null);}
+//  protected void checkCompatibility(
+//    )
+//  {checkCompatibility(null);}
 
   /**
-  	Checks whether the specified feature is compatible with the {@link Document#getVersion() document's conformance version}.
-  	
-  	@param feature Entity whose compatibility has to be checked. Supported types:
-  		<ul>
-  			<li>{@link VersionEnum}</li>
-  			<li>{@link String Property name} resolvable to an {@link AnnotatedElement annotated getter method}</li>
-  			<li>{@link AnnotatedElement}</li>
-			</ul>
-			In case of <code>null</code>, this method tries to retrieve the caller method's compatibility version.
-		@throws RuntimeException In case of version conflict (see {@link org.pdfclown.documents.Document.Configuration.CompatibilityModeEnum#Strict Strict compatibility mode}).
-  	@since 0.1.0
-  */
-	protected void checkCompatibility(
-		Object feature
-		)
-	{
-		/*
-			TODO: Caching!
-		*/
-		CompatibilityModeEnum compatibilityMode = getDocument().getConfiguration().getCompatibilityMode();
-		if(compatibilityMode == CompatibilityModeEnum.Passthrough) // No check required.
-			return;
-		
-		if(feature instanceof Collection<?>)
-		{
-			for(Object featureItem : (Collection<?>)feature)
-			{checkCompatibility(featureItem);}
-			return;
-		}
+    Checks whether the specified feature is compatible with the {@link Document#getVersion() document's conformance version}.
 
-		Version featureVersion;
-		if(feature instanceof VersionEnum) // Explicit version.
-		{featureVersion = ((VersionEnum)feature).getVersion();}
-		else // Implicit version (element annotation).
-		{
-			PDF annotation;
-			{
-				if(feature instanceof String) // Property name.
-				{
-					BeanInfo classInfo;
-					try
-					{classInfo = Introspector.getBeanInfo(getClass());}
-					catch(IntrospectionException e)
-					{throw new RuntimeException(e);}
-					for(PropertyDescriptor property : classInfo.getPropertyDescriptors())
-					{
-						if(feature.equals(property.getName()))
-						{
-							feature = property.getReadMethod();
-							break;
-		        }
-					}
-				}
-				else if(feature instanceof Enum<?>) // Enum constant.
-				{
-					try
-					{feature = feature.getClass().getField(((Enum<?>)feature).name());}
-					catch(Exception e)
-					{throw new RuntimeException(e);}
-				}
+    @param feature Entity whose compatibility has to be checked. Supported types:
+      <ul>
+        <li>{@link VersionEnum}</li>
+        <li>{@link String Property name} resolvable to an {@link AnnotatedElement annotated getter method}</li>
+        <li>{@link AnnotatedElement}</li>
+      </ul>
+      In case of <code>null</code>, this method tries to retrieve the caller method's compatibility version.
+    @throws RuntimeException In case of version conflict (see {@link org.pdfclown.documents.Document.Configuration.CompatibilityModeEnum#Strict Strict compatibility mode}).
+    @since 0.1.0
+  */
+  protected void checkCompatibility(
+    Object feature
+    )
+  {
+    /*
+      TODO: Caching!
+    */
+    CompatibilityModeEnum compatibilityMode = getDocument().getConfiguration().getCompatibilityMode();
+    if(compatibilityMode == CompatibilityModeEnum.Passthrough) // No check required.
+      return;
+
+    if(feature instanceof Collection<?>)
+    {
+      for(Object featureItem : (Collection<?>)feature)
+      {checkCompatibility(featureItem);}
+      return;
+    }
+
+    Version featureVersion;
+    if(feature instanceof VersionEnum) // Explicit version.
+    {featureVersion = ((VersionEnum)feature).getVersion();}
+    else // Implicit version (element annotation).
+    {
+      PDF annotation;
+      {
+        if(feature instanceof String) // Property name.
+        {
+          BeanInfo classInfo;
+          try
+          {classInfo = Introspector.getBeanInfo(getClass());}
+          catch(IntrospectionException e)
+          {throw new RuntimeException(e);}
+          for(PropertyDescriptor property : classInfo.getPropertyDescriptors())
+          {
+            if(feature.equals(property.getName()))
+            {
+              feature = property.getReadMethod();
+              break;
+            }
+          }
+        }
+        else if(feature instanceof Enum<?>) // Enum constant.
+        {
+          try
+          {feature = feature.getClass().getField(((Enum<?>)feature).name());}
+          catch(Exception e)
+          {throw new RuntimeException(e);}
+        }
 //TODO:remove?
-//				else if(feature == null) // Implicit feature.
-//				{
-//					try
-//					{
-//						/*
-//							NOTE: I know this is a somewhat weird (considering both OO design and performance) technique,
-//							but at the moment I couldn't figure out a better solution for dynamically retrieving
-//							the caller context's annotations in case of no arguments.
-//						 */
-//						StackTraceElement callerStackElement = (StackTraceElement)Thread.currentThread().getStackTrace()[2];
-//						Class<?> callerClass = Class.forName(callerStackElement.getClassName());
-//						String callerMethodName = callerStackElement.getMethodName();
-//						for(Method method : callerClass.getMethods())
-//						{
-//							if(method.getName().equals(callerMethodName))
-//							{
-//								feature = method; // NOTE: I assume that any overload of the same method conforms to the same version.
-//								break;
-//							}
-//						}
-//					}
-//					catch(Exception e)
-//					{throw new RuntimeException(e);}
-//				}
-				if(!(feature instanceof AnnotatedElement))
-					throw new IllegalArgumentException("Feature type '" + feature.getClass().getName() + "' not supported.");
-				
-				while(true)
-				{
-					 annotation = ((AnnotatedElement)feature).getAnnotation(PDF.class);
-					 if(annotation != null)
-						 break;
-						 
-					 if(feature instanceof Member)
-					 {feature = ((Member)feature).getDeclaringClass();}
-					 else if(feature instanceof Class<?>)
-					 {
-						 Class<?> containerClass = ((Class<?>)feature).getDeclaringClass();
-						 feature = (containerClass != null ? containerClass : ((Class<?>)feature).getPackage());
-					 }
-					 else // Element hierarchy walk complete.
-						 return; // NOTE: As no annotation is available, we assume the feature has no specific compatibility requirements.
-				}
-			}
-			featureVersion = annotation.value().getVersion();
-		}
-		// Is the feature version compatible?
-		if(getDocument().getVersion().compareTo(featureVersion) >= 0)
-			return;
-		
-		// The feature version is NOT compatible: how to solve the conflict?
-		switch(compatibilityMode)
-		{
-			case Loose: // Accepts the feature version.
-				// Synchronize the document version!
-				getDocument().setVersion(featureVersion);
-				break;
-			case Strict: // Refuses the feature version.
-				// Throw a violation to the document version!
-				throw new RuntimeException("Incompatible feature (version " + featureVersion + " was required against document version " + getDocument().getVersion());
-			default:
-				throw new NotImplementedException("Unhandled compatibility mode: " + compatibilityMode.name());
-		}
-	}
+//        else if(feature == null) // Implicit feature.
+//        {
+//          try
+//          {
+//            /*
+//              NOTE: I know this is a somewhat weird (considering both OO design and performance) technique,
+//              but at the moment I couldn't figure out a better solution for dynamically retrieving
+//              the caller context's annotations in case of no arguments.
+//             */
+//            StackTraceElement callerStackElement = (StackTraceElement)Thread.currentThread().getStackTrace()[2];
+//            Class<?> callerClass = Class.forName(callerStackElement.getClassName());
+//            String callerMethodName = callerStackElement.getMethodName();
+//            for(Method method : callerClass.getMethods())
+//            {
+//              if(method.getName().equals(callerMethodName))
+//              {
+//                feature = method; // NOTE: I assume that any overload of the same method conforms to the same version.
+//                break;
+//              }
+//            }
+//          }
+//          catch(Exception e)
+//          {throw new RuntimeException(e);}
+//        }
+        if(!(feature instanceof AnnotatedElement))
+          throw new IllegalArgumentException("Feature type '" + feature.getClass().getName() + "' not supported.");
+
+        while(true)
+        {
+           annotation = ((AnnotatedElement)feature).getAnnotation(PDF.class);
+           if(annotation != null)
+             break;
+
+           if(feature instanceof Member)
+           {feature = ((Member)feature).getDeclaringClass();}
+           else if(feature instanceof Class<?>)
+           {
+             Class<?> containerClass = ((Class<?>)feature).getDeclaringClass();
+             feature = (containerClass != null ? containerClass : ((Class<?>)feature).getPackage());
+           }
+           else // Element hierarchy walk complete.
+             return; // NOTE: As no annotation is available, we assume the feature has no specific compatibility requirements.
+        }
+      }
+      featureVersion = annotation.value().getVersion();
+    }
+    // Is the feature version compatible?
+    if(getDocument().getVersion().compareTo(featureVersion) >= 0)
+      return;
+
+    // The feature version is NOT compatible: how to solve the conflict?
+    switch(compatibilityMode)
+    {
+      case Loose: // Accepts the feature version.
+        // Synchronize the document version!
+        getDocument().setVersion(featureVersion);
+        break;
+      case Strict: // Refuses the feature version.
+        // Throw a violation to the document version!
+        throw new RuntimeException("Incompatible feature (version " + featureVersion + " was required against document version " + getDocument().getVersion());
+      default:
+        throw new NotImplementedException("Unhandled compatibility mode: " + compatibilityMode.name());
+    }
+  }
 
   @SuppressWarnings("unchecked")
   protected void setBaseObject(

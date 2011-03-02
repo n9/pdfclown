@@ -37,37 +37,37 @@ import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	Indexed color value [PDF:1.6:4.5.5].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@version 0.1.0
+  Indexed color value [PDF:1.6:4.5.5].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF11)
 public final class IndexedColor
-	extends Color<PdfArray>
+  extends Color<PdfArray>
 {
   // <class>
   // <static>
   // <fields>
   public static final IndexedColor Default = new IndexedColor(0);
   // </fields>
-  
+
   // <interface>
   // <public>
   /**
-  	Gets the color corresponding to the specified components.
-  	
-  	@param components Color components to convert.
-  	@since 0.1.0
+    Gets the color corresponding to the specified components.
+
+    @param components Color components to convert.
+    @since 0.1.0
    */
   public static IndexedColor get(
-  	PdfArray components
-  	)
+    PdfArray components
+    )
   {
-  	return (components != null
-	  	? new IndexedColor(components)
-  		: Default
-  		);
+    return (components != null
+      ? new IndexedColor(components)
+      : Default
+      );
   }
   // </public>
   // </interface>
@@ -79,36 +79,36 @@ public final class IndexedColor
     int index
     )
   {
-  	this(
-  		Arrays.asList(
-    		new PdfInteger(index)
-  			)
-  		);
+    this(
+      Arrays.asList(
+        new PdfInteger(index)
+        )
+      );
   }
-  
+
   IndexedColor(
-  	List<? extends PdfDirectObject> components
+    List<? extends PdfDirectObject> components
     )
   {
     super(
-    	null, //TODO:consider color space reference!
-    	new PdfArray(components)
-    	);
+      null, //TODO:consider color space reference!
+      new PdfArray(components)
+      );
   }
   // </constructors>
 
   // <interface>
   // <public>
-	@Override
-	public Object clone(
-		Document context
-		)
-	{throw new NotImplementedException();}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {throw new NotImplementedException();}
 
-	@Override
-	public List<PdfDirectObject> getComponents(
-		)
-	{return getBaseDataObject();}
+  @Override
+  public List<PdfDirectObject> getComponents(
+    )
+  {return getBaseDataObject();}
 
   /**
     Gets the color index.
@@ -118,7 +118,7 @@ public final class IndexedColor
   {return ((PdfInteger)getBaseDataObject().get(0)).getValue().intValue();}
 
   /**
-  	@see #getIndex()
+    @see #getIndex()
   */
   public void setIndex(
     int value

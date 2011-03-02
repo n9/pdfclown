@@ -25,6 +25,8 @@
 
 package org.pdfclown.documents.interaction.annotations;
 
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -33,8 +35,6 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.NotImplementedException;
-
-import java.awt.geom.Rectangle2D;
 
 /**
   Movie annotation [PDF:1.6:8.4.5].
@@ -99,7 +99,7 @@ public final class Movie
     @see #getContent()
   */
   public void setContent(
-  	org.pdfclown.documents.multimedia.Movie value
+    org.pdfclown.documents.multimedia.Movie value
     )
   {
     if(value == null)

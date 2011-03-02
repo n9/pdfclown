@@ -25,16 +25,16 @@
 
 package org.pdfclown.objects;
 
+import java.util.Iterator;
+
 import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.IBuffer;
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.bytes.filters.Filter;
 import org.pdfclown.files.File;
 import org.pdfclown.tokens.Encoding;
-import org.pdfclown.tokens.Symbol;
 import org.pdfclown.tokens.Keyword;
-
-import java.util.Iterator;
+import org.pdfclown.tokens.Symbol;
 
 /**
   PDF stream object [PDF:1.6:3.2.7].
@@ -46,12 +46,12 @@ public class PdfStream
   extends PdfDataObject
 {
   // <class>
-	// <static>
-	// <fields>
-	private static final byte[] BeginStreamBodyChunk = Encoding.encode(Symbol.LineFeed + Keyword.BeginStream + Symbol.LineFeed);
-	private static final byte[] EndStreamBodyChunk = Encoding.encode(Symbol.LineFeed + Keyword.EndStream);
-	// </fields>
-	// </static>
+  // <static>
+  // <fields>
+  private static final byte[] BeginStreamBodyChunk = Encoding.encode(Symbol.LineFeed + Keyword.BeginStream + Symbol.LineFeed);
+  private static final byte[] EndStreamBodyChunk = Encoding.encode(Symbol.LineFeed + Keyword.EndStream);
+  // </fields>
+  // </static>
 
   // <dynamic>
   // <fields>
@@ -108,9 +108,9 @@ public class PdfStream
   {
     PdfStream clone = (PdfStream)super.clone();
     {
-  		// Deep cloning...
-	    clone.header = header.clone(context);
-	    clone.body = body.clone();
+      // Deep cloning...
+      clone.header = header.clone(context);
+      clone.body = body.clone();
     }
     return clone;
   }
@@ -154,18 +154,18 @@ public class PdfStream
         PdfDataObject decodeParms = header.resolve(PdfName.DecodeParms);
         if(filterDataObj instanceof PdfName) // PdfName.
         {
-        	PdfDictionary filterDecodeParms = (PdfDictionary)decodeParms;
-					body.decode(Filter.get((PdfName)filterDataObj), filterDecodeParms);
-      	}
+          PdfDictionary filterDecodeParms = (PdfDictionary)decodeParms;
+          body.decode(Filter.get((PdfName)filterDataObj), filterDecodeParms);
+        }
         else // MUST be PdfArray.
         {
           Iterator<PdfDirectObject> filterObjIterator = ((PdfArray)filterDataObj).iterator();
           Iterator<PdfDirectObject> decodeParmsIterator = (decodeParms != null ? ((PdfArray)decodeParms).iterator() : null);
           while(filterObjIterator.hasNext())
           {
-          	PdfDictionary filterDecodeParms = (PdfDictionary)(decodeParmsIterator != null ? File.resolve(decodeParmsIterator.next()) : null);
-						body.decode(Filter.get((PdfName)File.resolve(filterObjIterator.next())), filterDecodeParms);
-        	}
+            PdfDictionary filterDecodeParms = (PdfDictionary)(decodeParmsIterator != null ? File.resolve(decodeParmsIterator.next()) : null);
+            body.decode(Filter.get((PdfName)File.resolve(filterObjIterator.next())), filterDecodeParms);
+          }
         }
         // Update 'Filter' entry!
         header.put(PdfName.Filter,null); // The stream is free from encodings.
@@ -175,7 +175,7 @@ public class PdfStream
   }
 
   /**
-  	Gets the stream header.
+    Gets the stream header.
   */
   public PdfDictionary getHeader(
     )
@@ -208,15 +208,15 @@ public class PdfStream
         (instrumental to the current serialization process).
       */
       unencodedBody = true;
-    
+
       // Set the filter to apply!
       filterObj = PdfName.FlateDecode; // zlib/deflate filter.
       // Get encoded body data applying the filter to the stream!
-			bodyData = body.encode(Filter.get((PdfName)filterObj), null);
+      bodyData = body.encode(Filter.get((PdfName)filterObj), null);
       // Set encoded length!
       bodyLength = bodyData.length;
       // Update 'Filter' entry!
-			header.put(PdfName.Filter, filterObj);
+      header.put(PdfName.Filter, filterObj);
     }
     else // Encoded body.
     {
@@ -228,7 +228,7 @@ public class PdfStream
       bodyLength = (int)body.getLength();
     }
     // Set encoded length!
-		header.put(PdfName.Length, new PdfInteger(bodyLength));
+    header.put(PdfName.Length, new PdfInteger(bodyLength));
 
     header.writeTo(stream);
 
@@ -237,7 +237,7 @@ public class PdfStream
     {
       // Restore actual header entries!
       ((PdfInteger)header.get(PdfName.Length)).setValue((int)body.getLength());
-			header.put(PdfName.Filter, null);
+      header.put(PdfName.Filter, null);
     }
 
     // 2. Body.

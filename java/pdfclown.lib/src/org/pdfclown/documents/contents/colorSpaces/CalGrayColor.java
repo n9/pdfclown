@@ -37,15 +37,15 @@ import org.pdfclown.objects.PdfReal;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	Single-component CIE-based color value [PDF:1.6:4.5.4].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  Single-component CIE-based color value [PDF:1.6:4.5.4].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF11)
 public final class CalGrayColor
-	extends LeveledColor
+  extends LeveledColor
 {
   // <class>
   // <static>
@@ -64,40 +64,40 @@ public final class CalGrayColor
     )
   {
     this(
-  		Arrays.asList(
-    		new PdfReal(normalizeComponent(g))
-    		)
-  		);
+      Arrays.asList(
+        new PdfReal(normalizeComponent(g))
+        )
+      );
   }
-  
+
   CalGrayColor(
-  	List<? extends PdfDirectObject> components
+    List<? extends PdfDirectObject> components
     )
   {
     super(
-    	null,//TODO:colorspace?
-    	new PdfArray(components)
-    	);
+      null,//TODO:colorspace?
+      new PdfArray(components)
+      );
   }
   // </constructors>
 
   // <interface>
   // <public>
-	@Override
-	public Object clone(
-		Document context
-		)
-	{throw new NotImplementedException();}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {throw new NotImplementedException();}
 
   /**
     Gets the gray component.
-  */ 
+  */
   public float getG(
     )
   {return getComponentValue(0);}
 
   /**
-  	@see #getG()
+    @see #getG()
   */
   public void setG(
     float value

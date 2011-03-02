@@ -2,6 +2,7 @@ package org.pdfclown.samples.cli;
 
 import it.stefanochizzolini.reflex.Package;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 /**
-	Command-line sample loader.
+  Command-line sample loader.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.1
@@ -28,7 +29,7 @@ public class SampleLoader
 
   private static final String Properties_InputPath = ClassName + ".inputPath";
   private static final String Properties_OutputPath = ClassName + ".outputPath";
-  
+
   private static final String QuitChoiceSymbol = "Q";
   // </fields>
 
@@ -50,7 +51,7 @@ public class SampleLoader
 
     Properties properties = new Properties();
     try
-		{properties.load(new FileInputStream(PropertiesFilePath));}
+    {properties.load(new FileInputStream(PropertiesFilePath));}
     catch(Exception e)
     {throw new RuntimeException("An exception occurred while loading the properties file (\"" + PropertiesFilePath + "\").",e);}
 
@@ -69,6 +70,10 @@ public class SampleLoader
     String outputPath
     )
   {
+    File outputDir = new File(outputPath);
+    if(!outputDir.exists())
+    {outputDir.mkdirs();}
+
     Scanner in = new Scanner(System.in);
     String samplePackageName = SampleLoader.class.getPackage().getName();
     while(true)
@@ -79,13 +84,13 @@ public class SampleLoader
         new String[]{it.stefanochizzolini.reflex.Class.getLocation(ClassName)} // Locations: current deployment unit only.
         );
       Collections.sort(
-  	    samplePackageClasses, 
-  	    new Comparator<Class<?>>()
-  	    {
-  	      @Override
-  	      public int compare(Class<?> arg0, Class<?> arg1)
-  	      {return arg0.getSimpleName().compareTo(arg1.getSimpleName());}
-		    }
+        samplePackageClasses,
+        new Comparator<Class<?>>()
+        {
+          @Override
+          public int compare(Class<?> arg0, Class<?> arg1)
+          {return arg0.getSimpleName().compareTo(arg1.getSimpleName());}
+        }
         );
 
       // Picking available samples...
@@ -106,17 +111,17 @@ public class SampleLoader
       Class<?> sampleClass = null;
       do
       {
-	      System.out.print("Please select a sample: ");
-	      try
-	      {
-	        String choice = in.nextLine();
-	        if(choice.toUpperCase().equals(QuitChoiceSymbol)) // Quit.
-	          return;
-	
-	        sampleClass = sampleClasses.get(Integer.parseInt(choice));
-	      }
-	      catch(Exception e)
-	      {/* NOOP */}
+        System.out.print("Please select a sample: ");
+        try
+        {
+          String choice = in.nextLine();
+          if(choice.toUpperCase().equals(QuitChoiceSymbol)) // Quit.
+            return;
+
+          sampleClass = sampleClasses.get(Integer.parseInt(choice));
+        }
+        catch(Exception e)
+        {/* NOOP */}
       } while(sampleClass == null);
 
       // Instantiate the sample!

@@ -58,12 +58,12 @@ public class AcroFormParsingSample
         int widgetIndex = 0;
         for(Widget widget : field.getWidgets())
         {
-        	System.out.println("    Widget " + (++widgetIndex) + ":");
-	        Page widgetPage = widget.getPage();
-	        System.out.println("      Page: " + (widgetPage == null ? "undefined" : (widgetPage.getIndex() + 1) + " (" + widgetPage.getBaseObject() + ")"));
-	  
-	        Rectangle2D widgetBox = widget.getBox();
-	        System.out.println("      Coordinates: {x:" + Math.round(widgetBox.getX()) + "; y:" + Math.round(widgetBox.getY()) + "; width:" + Math.round(widgetBox.getWidth()) + "; height:" + Math.round(widgetBox.getHeight()) + "}");
+          System.out.println("    Widget " + (++widgetIndex) + ":");
+          Page widgetPage = widget.getPage();
+          System.out.println("      Page: " + (widgetPage == null ? "undefined" : (widgetPage.getIndex() + 1) + " (" + widgetPage.getBaseObject() + ")"));
+    
+          Rectangle2D widgetBox = widget.getBox();
+          System.out.println("      Coordinates: {x:" + Math.round(widgetBox.getX()) + "; y:" + Math.round(widgetBox.getY()) + "; width:" + Math.round(widgetBox.getWidth()) + "; height:" + Math.round(widgetBox.getHeight()) + "}");
         }
 
         objCounters.put(typeName, (objCounters.containsKey(typeName) ? objCounters.get(typeName) : 0) + 1);

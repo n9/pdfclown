@@ -27,8 +27,8 @@ package org.pdfclown.objects;
 
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.files.File;
-import org.pdfclown.tokens.Symbol;
 import org.pdfclown.tokens.Parser;
+import org.pdfclown.tokens.Symbol;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -95,35 +95,35 @@ public final class PdfReference
     )
   {
     return object != null
-    	&& object.getClass().equals(getClass())
-    	&& ((PdfReference)object).getId().equals(getId());
+      && object.getClass().equals(getClass())
+      && ((PdfReference)object).getId().equals(getId());
   }
 
   /**
-  	Gets the generation number.
+    Gets the generation number.
   */
   public int getGenerationNumber(
     )
   {return generationNumber;}
 
   /**
-  	Gets the object identifier.
-  	<p>This corresponds to the serialized representation of an object identifier within a PDF file.</p>
+    Gets the object identifier.
+    <p>This corresponds to the serialized representation of an object identifier within a PDF file.</p>
   */
   public String getId(
     )
   {return ("" + objectNumber + Symbol.Space + generationNumber);}
 
   /**
-  	Gets the object reference.
-  	<p>This corresponds to the serialized representation of a reference within a PDF file.</p>
+    Gets the object reference.
+    <p>This corresponds to the serialized representation of a reference within a PDF file.</p>
   */
   public String getIndirectReference(
     )
   {return (getId() + Symbol.Space + Symbol.CapitalR);}
 
   /**
-  	Gets the object number.
+    Gets the object number.
   */
   public int getObjectNumber(
     )
@@ -152,14 +152,17 @@ public final class PdfReference
     )
   {return getIndirectObject().clone(context).getReference();}
 
+  @Override
   public void delete(
     )
   {getIndirectObject().delete();}
 
+  @Override
   public PdfDataObject getDataObject(
     )
   {return getIndirectObject().getDataObject();}
 
+  @Override
   public PdfIndirectObject getIndirectObject(
     )
   {
@@ -169,10 +172,12 @@ public final class PdfReference
     return indirectObject;
   }
 
+  @Override
   public PdfReference getReference(
     )
   {return this;}
 
+  @Override
   public void setDataObject(
     PdfDataObject value
     )

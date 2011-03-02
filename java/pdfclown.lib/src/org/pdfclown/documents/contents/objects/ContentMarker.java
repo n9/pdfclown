@@ -54,21 +54,21 @@ public abstract class ContentMarker
     PdfName tag
     )
   {
-  	super(null, tag);
-  	operator = getSimpleOperator();
-	}
+    super(null, tag);
+    operator = getSimpleOperator();
+  }
 
   protected ContentMarker(
     PdfName tag,
     PdfDirectObject properties
     )
   {
-  	super(null, tag, properties);
-  	operator = getPropertyListOperator();
-	}
+    super(null, tag, properties);
+    operator = getPropertyListOperator();
+  }
 
   protected ContentMarker(
-  	String operator,
+    String operator,
     List<PdfDirectObject> operands
     )
   {super(operator, operands);}
@@ -80,38 +80,38 @@ public abstract class ContentMarker
     Gets the private information meaningful to the program (application or plugin extension)
     creating the marked content. It can be either an inline {@link PropertyList}
     or the {@link PdfName name} of an external PropertyList resource.
-    
+
     @see PropertyListResources
     @see #getProperties(IContentContext)
   */
   public Object getProperties(
     )
   {
-  	PdfDirectObject propertiesObject = operands.get(1);
-  	if(propertiesObject == null)
-  		return null;
-  	else if(propertiesObject instanceof PdfName)
-  		return propertiesObject;
-  	else if(propertiesObject instanceof PdfDictionary)
-  		return PropertyList.wrap(propertiesObject, null);
-  	else
-			throw new UnsupportedOperationException("Property list type unknown: " + propertiesObject.getClass().getName());
-	}
-  
+    PdfDirectObject propertiesObject = operands.get(1);
+    if(propertiesObject == null)
+      return null;
+    else if(propertiesObject instanceof PdfName)
+      return propertiesObject;
+    else if(propertiesObject instanceof PdfDictionary)
+      return PropertyList.wrap(propertiesObject, null);
+    else
+      throw new UnsupportedOperationException("Property list type unknown: " + propertiesObject.getClass().getName());
+  }
+
   /**
-	  Gets the private information meaningful to the program (application or plugin extension)
-	  creating the marked content.
-	  
-	  @param context Content context.
-	*/
+    Gets the private information meaningful to the program (application or plugin extension)
+    creating the marked content.
+
+    @param context Content context.
+  */
   public PropertyList getProperties(
-  	IContentContext context
-  	)
+    IContentContext context
+    )
   {
-  	Object properties = getProperties();
-  	return properties instanceof PdfName
-  		? context.getResources().getPropertyLists().get((PdfName)properties) // Resource resolution.
-			: (PropertyList)properties;
+    Object properties = getProperties();
+    return properties instanceof PdfName
+      ? context.getResources().getPropertyLists().get(properties) // Resource resolution.
+      : (PropertyList)properties;
   }
 
   /**
@@ -122,7 +122,7 @@ public abstract class ContentMarker
   {return (PdfName)operands.get(0);}
 
   /**
-  	@see #getProperties()
+    @see #getProperties()
   */
   public void setProperties(
     Object value
@@ -136,14 +136,14 @@ public abstract class ContentMarker
     }
     else
     {
-    	PdfDirectObject operand;
-    	if(value instanceof PdfName)
-    	{operand = (PdfName)value;}
-    	else if(value instanceof PropertyList)
-    	{operand = ((PropertyList)value).getBaseDataObject();}
-    	else
-    		throw new IllegalArgumentException("value MUST be a PdfName or a PropertyList.");
-    	
+      PdfDirectObject operand;
+      if(value instanceof PdfName)
+      {operand = (PdfName)value;}
+      else if(value instanceof PropertyList)
+      {operand = ((PropertyList)value).getBaseDataObject();}
+      else
+        throw new IllegalArgumentException("value MUST be a PdfName or a PropertyList.");
+
       operator = getPropertyListOperator();
       if(operands.size() > 1)
       {operands.set(1, operand);}
@@ -153,20 +153,20 @@ public abstract class ContentMarker
   }
 
   /**
-  	@see #getTag()
+    @see #getTag()
   */
   public void setTag(
     PdfName value
     )
   {operands.set(0,value);}
   // </public>
-  
+
   // <protected>
-	protected abstract String getPropertyListOperator(
-		);
+  protected abstract String getPropertyListOperator(
+    );
 
   protected abstract String getSimpleOperator(
-  	);
+    );
   // </protected>
   // </interface>
   // </dynamic>

@@ -37,44 +37,44 @@ import org.pdfclown.objects.PdfReal;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	DeviceN color value [PDF:1.6:4.5.5].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@version 0.1.0
+  DeviceN color value [PDF:1.6:4.5.5].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF13)
 public final class DeviceNColor
-	extends LeveledColor
+  extends LeveledColor
 {
   // <class>
   // <static>
   // <interface>
   // <public>
   /**
-  	Gets the color corresponding to the specified components.
-  	
-  	@param components Color components to convert.
+    Gets the color corresponding to the specified components.
+
+    @param components Color components to convert.
   */
   public static DeviceNColor get(
-  	PdfArray components
-  	)
+    PdfArray components
+    )
   {
-  	return (components != null
-	  	? new DeviceNColor(components)
-  		: null
-  		);
+    return (components != null
+      ? new DeviceNColor(components)
+      : null
+      );
   }
   // </public>
-  
+
   // <private>
   private static List<? extends PdfDirectObject> getComponentValues(
-  	float... components
-  	)
+    float... components
+    )
   {// TODO:normalize parameters!
-  	List<PdfDirectObject> componentValues = new ArrayList<PdfDirectObject>();
-  	for(float component : components)
-  	{componentValues.add(new PdfReal((component)));}
-  	return componentValues;
+    List<PdfDirectObject> componentValues = new ArrayList<PdfDirectObject>();
+    for(float component : components)
+    {componentValues.add(new PdfReal((component)));}
+    return componentValues;
   }
   // </private>
   // </interface>
@@ -86,25 +86,25 @@ public final class DeviceNColor
     float... components
     )
   {this(getComponentValues(components));}
-  
+
   DeviceNColor(
-  	List<? extends PdfDirectObject> components
+    List<? extends PdfDirectObject> components
     )
   {
     super(
-    	null, //TODO:colorspace?
-    	new PdfArray(components)
-    	);
+      null, //TODO:colorspace?
+      new PdfArray(components)
+      );
   }
   // </constructors>
 
   // <interface>
   // <public>
-	@Override
-	public Object clone(
-		Document context
-		)
-	{throw new NotImplementedException();}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {throw new NotImplementedException();}
   // </public>
   // </interface>
   // </dynamic>

@@ -35,16 +35,16 @@ import org.pdfclown.documents.contents.colorSpaces.DeviceCMYKColorSpace;
 import org.pdfclown.objects.PdfDirectObject;
 
 /**
-	'Set the color to use for nonstroking operations in device CMYK color space'
-	operation [PDF:1.6:4.5.7].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  'Set the color to use for nonstroking operations in device CMYK color space'
+  operation [PDF:1.6:4.5.7].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF10)
 public final class SetDeviceCMYKFillColor
-	extends SetFillColor
+  extends SetFillColor
 {
   // <class>
   // <static>
@@ -56,7 +56,7 @@ public final class SetDeviceCMYKFillColor
   // <dynamic>
   // <constructors>
   public SetDeviceCMYKFillColor(
-  	DeviceCMYKColor value
+    DeviceCMYKColor value
     )
   {super(Operator, value);}
 
@@ -73,8 +73,8 @@ public final class SetDeviceCMYKFillColor
     GraphicsState state
     )
   {
-  	state.setFillColorSpace(DeviceCMYKColorSpace.Default);
-  	super.scan(state);
+    state.setFillColorSpace(DeviceCMYKColorSpace.Default);
+    super.scan(state);
   }
   // </public>
   // </interface>

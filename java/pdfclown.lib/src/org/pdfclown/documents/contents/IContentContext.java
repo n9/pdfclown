@@ -47,9 +47,9 @@ public interface IContentContext
     );
 
   /**
-    Gets the <b>contents collection</b> representing the content stream associated 
+    Gets the <b>contents collection</b> representing the content stream associated
     with this content context.
-    
+
     @since 0.0.5
   */
   Contents getContents(
@@ -57,7 +57,7 @@ public interface IContentContext
 
   /**
     Gets the <b>resources</b> associated with this content context either explicitly (directly
-    associated to the object) or (if not explicitly available) implicitly (inherited from a 
+    associated to the object) or (if not explicitly available) implicitly (inherited from a
     higher-level object).
     <p>The implementing class MUST ensure that the returned object isn't <code>null</code>.</p>
   */
@@ -65,22 +65,22 @@ public interface IContentContext
     );
 
   /**
-  	Gets the <b>rendering rotation</b> of this content context.
-  	
-  	@since 0.1.0
+    Gets the <b>rendering rotation</b> of this content context.
+
+    @since 0.1.0
   */
   RotationEnum getRotation(
-  	);
+    );
 
   /**
-		Renders this content context into the specified rendering context.
-  	
-  	@param context Rendering context.
-  	@param size Rendering canvas size.
-  	@since 0.1.0
+    Renders this content context into the specified rendering context.
+
+    @param context Rendering context.
+    @param size Rendering canvas size.
+    @since 0.1.0
   */
   void render(
-		Graphics2D context,
-		Dimension2D size
-  	);
+    Graphics2D context,
+    Dimension2D size
+    );
 }

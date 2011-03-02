@@ -35,16 +35,16 @@ import org.pdfclown.documents.contents.colorSpaces.DeviceGrayColorSpace;
 import org.pdfclown.objects.PdfDirectObject;
 
 /**
-	'Set the color to use for stroking operations in device gray color space'
-	operation [PDF:1.6:4.5.7].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  'Set the color to use for stroking operations in device gray color space'
+  operation [PDF:1.6:4.5.7].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF10)
 public final class SetDeviceGrayStrokeColor
-	extends SetStrokeColor
+  extends SetStrokeColor
 {
   // <class>
   // <static>
@@ -56,7 +56,7 @@ public final class SetDeviceGrayStrokeColor
   // <dynamic>
   // <constructors>
   public SetDeviceGrayStrokeColor(
-  	DeviceGrayColor value
+    DeviceGrayColor value
     )
   {super(Operator, value);}
 
@@ -73,8 +73,8 @@ public final class SetDeviceGrayStrokeColor
     GraphicsState state
     )
   {
-  	state.setStrokeColorSpace(DeviceGrayColorSpace.Default);
-  	super.scan(state);
+    state.setStrokeColorSpace(DeviceGrayColorSpace.Default);
+    super.scan(state);
   }
   // </public>
   // </interface>

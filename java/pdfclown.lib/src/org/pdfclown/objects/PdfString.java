@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 */
 public class PdfString
   extends PdfAtomicObject<byte[]>
-	implements IDataWrapper
+  implements IDataWrapper
 {
   /*
     NOTE: String objects are internally represented as unescaped sequences of bytes.
@@ -189,10 +189,10 @@ public class PdfString
     }
   }
 
-	@Override
-	public byte[] toByteArray(
-		)
-	{return getRawValue().clone();}
+  @Override
+  public byte[] toByteArray(
+    )
+  {return getRawValue().clone();}
 
   @Override
   public void writeTo(
@@ -202,62 +202,62 @@ public class PdfString
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     {
       byte[] rawValue = getRawValue();
-	    switch(serializationMode)
-	    {
-	      case Literal:
-	        buffer.write(LiteralLeftDelimiterCode);
-	        /*
-	          NOTE: Literal lexical conventions prescribe that the following reserved characters
-	          are to be escaped when placed inside string character sequences:
-	            - \n Line feed (LF)
-	            - \r Carriage return (CR)
-	            - \t Horizontal tab (HT)
-	            - \b Backspace (BS)
-	            - \f Form feed (FF)
-	            - \( Left parenthesis
-	            - \) Right parenthesis
-	            - \\ Backslash
-	        */
-	        for(
-	          int index = 0;
-	          index < rawValue.length;
-	          index++
-	          )
-	        {
-	          byte valueByte = rawValue[index];
-	          switch(valueByte)
-	          {
-	            case LineFeedCode:
-	              buffer.write(LiteralEscapeCode); valueByte = 110; break;
-	            case CarriageReturnCode:
-	              buffer.write(LiteralEscapeCode); valueByte = 114; break;
-	            case HorizontalTabCode:
-	              buffer.write(LiteralEscapeCode); valueByte = 116; break;
-	            case BackspaceCode:
-	              buffer.write(LiteralEscapeCode); valueByte = 98; break;
-	            case FormFeedCode:
-	              buffer.write(LiteralEscapeCode); valueByte = 102; break;
-	            case LiteralLeftDelimiterCode:
-	            case LiteralRightDelimiterCode:
-	            case LiteralEscapeCode:
-	              buffer.write(LiteralEscapeCode); break;
-	          }
-	          buffer.write(valueByte);
-	        }
-	        buffer.write(LiteralRightDelimiterCode);
-	        break;
-	      case Hex:
-	        buffer.write(HexLeftDelimiterCode);
+      switch(serializationMode)
+      {
+        case Literal:
+          buffer.write(LiteralLeftDelimiterCode);
+          /*
+            NOTE: Literal lexical conventions prescribe that the following reserved characters
+            are to be escaped when placed inside string character sequences:
+              - \n Line feed (LF)
+              - \r Carriage return (CR)
+              - \t Horizontal tab (HT)
+              - \b Backspace (BS)
+              - \f Form feed (FF)
+              - \( Left parenthesis
+              - \) Right parenthesis
+              - \\ Backslash
+          */
+          for(
+            int index = 0;
+            index < rawValue.length;
+            index++
+            )
+          {
+            byte valueByte = rawValue[index];
+            switch(valueByte)
+            {
+              case LineFeedCode:
+                buffer.write(LiteralEscapeCode); valueByte = 110; break;
+              case CarriageReturnCode:
+                buffer.write(LiteralEscapeCode); valueByte = 114; break;
+              case HorizontalTabCode:
+                buffer.write(LiteralEscapeCode); valueByte = 116; break;
+              case BackspaceCode:
+                buffer.write(LiteralEscapeCode); valueByte = 98; break;
+              case FormFeedCode:
+                buffer.write(LiteralEscapeCode); valueByte = 102; break;
+              case LiteralLeftDelimiterCode:
+              case LiteralRightDelimiterCode:
+              case LiteralEscapeCode:
+                buffer.write(LiteralEscapeCode); break;
+            }
+            buffer.write(valueByte);
+          }
+          buffer.write(LiteralRightDelimiterCode);
+          break;
+        case Hex:
+          buffer.write(HexLeftDelimiterCode);
           byte[] value = Encoding.encode(ConvertUtils.byteArrayToHex(rawValue));
           buffer.write(value,0,value.length);
-	        buffer.write(HexRightDelimiterCode);
-	        break;
-	      default:
-	        throw new NotImplementedException();
-	    }
+          buffer.write(HexRightDelimiterCode);
+          break;
+        default:
+          throw new NotImplementedException();
+      }
     }
-  	stream.write(buffer.toByteArray());
-	}
+    stream.write(buffer.toByteArray());
+  }
   // </public>
   // </interface>
   // </dynamic>

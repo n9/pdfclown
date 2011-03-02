@@ -113,22 +113,22 @@ public final class DrawRectangle
 
   @Override
   public void scan(
-  	GraphicsState state
-  	)
+    GraphicsState state
+    )
   {
-  	Path2D pathObject = (Path2D)state.getScanner().getRenderObject();
-  	if(pathObject != null)
-  	{
-  		float x = getX(),
-  			y = getY(),
-  			width = getWidth(),
-  			height = getHeight();
-  		pathObject.moveTo(x,y);
-	    pathObject.lineTo(x + width, y);
-	    pathObject.lineTo(x + width, y + height);
-	    pathObject.lineTo(x, y + height);
-	    pathObject.closePath();
-  	}
+    Path2D pathObject = (Path2D)state.getScanner().getRenderObject();
+    if(pathObject != null)
+    {
+      float x = getX(),
+        y = getY(),
+        width = getWidth(),
+        height = getHeight();
+      pathObject.moveTo(x,y);
+      pathObject.lineTo(x + width, y);
+      pathObject.lineTo(x + width, y + height);
+      pathObject.lineTo(x, y + height);
+      pathObject.closePath();
+    }
   }
 
   public void setHeight(

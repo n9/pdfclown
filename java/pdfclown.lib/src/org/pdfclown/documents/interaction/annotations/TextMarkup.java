@@ -67,7 +67,7 @@ public final class TextMarkup
     /**
       Highlight.
     */
-  	@PDF(VersionEnum.PDF13)
+    @PDF(VersionEnum.PDF13)
     Highlight(PdfName.Highlight),
     /**
       Squiggly.

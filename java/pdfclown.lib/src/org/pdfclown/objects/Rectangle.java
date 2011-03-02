@@ -25,13 +25,13 @@
 
 package org.pdfclown.objects;
 
-import org.pdfclown.documents.Document;
-import org.pdfclown.files.File;
-import org.pdfclown.util.NotImplementedException;
-
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RectangularShape;
+
+import org.pdfclown.documents.Document;
+import org.pdfclown.files.File;
+import org.pdfclown.util.NotImplementedException;
 
 /**
   <b>PDF rectangle object</b> [PDF:1.6:3.8.4].
@@ -112,10 +112,10 @@ public final class Rectangle
       new PdfArray(
         new PdfDirectObject[]
         {
-        	new PdfReal(left), // Left (X).
-					new PdfReal(top - height), // Bottom (Y).
-					new PdfReal(left + width), // Right.
-					new PdfReal(top) // Top.
+          new PdfReal(left), // Left (X).
+          new PdfReal(top - height), // Bottom (Y).
+          new PdfReal(left + width), // Right.
+          new PdfReal(top) // Top.
         }
         )
       );
@@ -206,9 +206,9 @@ public final class Rectangle
     float value
     )
   {setBottom(value);}
-  
+
   public Rectangle2D toRectangle2D(
-  	)
+    )
   {return new Rectangle2D.Double(getX(), getY(), getWidth(), getHeight());}
   // </public>
   // </interface>

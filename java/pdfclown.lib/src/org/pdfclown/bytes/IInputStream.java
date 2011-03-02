@@ -39,7 +39,7 @@ import org.pdfclown.util.IDataWrapper;
 */
 public interface IInputStream
   extends IStream,
-  	IDataWrapper
+    IDataWrapper
 {
   /**
     Gets the byte order.
@@ -56,6 +56,7 @@ public interface IInputStream
   /**
     Gets the hash representation of the sequence.
   */
+  @Override
   int hashCode(
     );
 
@@ -100,11 +101,11 @@ public interface IInputStream
   /**
     Reads a variable-length integer.
     <p>This operation causes the stream pointer to advance after the read data.</p>
-    
+
     @param length Number of bytes to read.
   */
   int readInt(
-		int length
+    int length
     ) throws EOFException;
 
   /**

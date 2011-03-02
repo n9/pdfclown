@@ -30,18 +30,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
-	Indicates the PDF compatibility level of the annotated element. 
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  Indicates the PDF compatibility level of the annotated element.
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PDF
 {
-	/**
-		Compatible version (minimum PDF version supporting the annotated element).
-	*/
-	public VersionEnum value();
+  /**
+    Compatible version (minimum PDF version supporting the annotated element).
+  */
+  public VersionEnum value();
 }

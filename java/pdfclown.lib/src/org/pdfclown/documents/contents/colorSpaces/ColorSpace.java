@@ -83,12 +83,12 @@ public abstract class ColorSpace<TDataObject extends PdfDirectObject>
     /*
       NOTE: A color space is defined by an array object whose first element
       is a name object identifying the color space family [PDF:1.6:4.5.2].
-      For families that do not require parameters, the color space CAN be 
+      For families that do not require parameters, the color space CAN be
       specified simply by the family name itself instead of an array.
     */
     PdfName name = (PdfName)(baseDataObject instanceof PdfArray
-    	? ((PdfArray)baseDataObject).get(0)
-  		: baseDataObject);
+      ? ((PdfArray)baseDataObject).get(0)
+      : baseDataObject);
     if(name.equals(PdfName.DeviceRGB))
       return new DeviceRGBColorSpace(baseObject,container);
     else if(name.equals(PdfName.DeviceCMYK))
@@ -104,13 +104,13 @@ public abstract class ColorSpace<TDataObject extends PdfDirectObject>
     else if(name.equals(PdfName.Lab))
       return new LabColorSpace(baseObject,container);
     else if(name.equals(PdfName.DeviceN))
-    	return new DeviceNColorSpace(baseObject,container);
+      return new DeviceNColorSpace(baseObject,container);
     else if(name.equals(PdfName.Indexed))
-    	return new IndexedColorSpace(baseObject,container);
+      return new IndexedColorSpace(baseObject,container);
     else if(name.equals(PdfName.Pattern))
-    	return new PatternColorSpace(baseObject,container);
+      return new PatternColorSpace(baseObject,container);
     else if(name.equals(PdfName.Separation))
-    	return new SeparationColorSpace(baseObject,container);
+      return new SeparationColorSpace(baseObject,container);
     else
       throw new UnsupportedOperationException("Color space " + name + " unknown.");
   }
@@ -136,38 +136,38 @@ public abstract class ColorSpace<TDataObject extends PdfDirectObject>
   // <interface>
   // <public>
   /**
-  	Gets the <b>color value</b> corresponding to the specified components
-  	interpreted according to this color space [PDF:1.6:4.5.1].
-  	
-  	@param components Color components.
-  	@param context Content context.
-  	@since 0.1.0
+    Gets the <b>color value</b> corresponding to the specified components
+    interpreted according to this color space [PDF:1.6:4.5.1].
+
+    @param components Color components.
+    @param context Content context.
+    @since 0.1.0
   */
   public abstract Color<?> getColor(
-  	List<PdfDirectObject> components,
-  	IContentContext context
+    List<PdfDirectObject> components,
+    IContentContext context
     );
 
   /**
-  	Gets the number of components used to represent a color value.
+    Gets the number of components used to represent a color value.
   */
   public abstract int getComponentCount(
-  	);
+    );
 
   /**
-  	Gets the <b>initial color value</b> within this color space.
+    Gets the <b>initial color value</b> within this color space.
   */
   public abstract Color<?> getDefaultColor(
     );
-  
+
   /**
-  	Gets the rendering representation of the specified color value.
-  	
-  	@param color Color value to convert into an equivalent rendering representation.
+    Gets the rendering representation of the specified color value.
+
+    @param color Color value to convert into an equivalent rendering representation.
   */
   public abstract Paint getPaint(
-  	Color<?> color
-  	);
+    Color<?> color
+    );
   // </public>
   // </interface>
   // </dynamic>

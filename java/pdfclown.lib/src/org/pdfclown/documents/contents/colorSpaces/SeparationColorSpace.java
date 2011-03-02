@@ -38,38 +38,38 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	Special color space that provides a means for specifying the use of additional colorants
-	or for isolating the control of individual color components of a device color space for
-	a subtractive device [PDF:1.6:4.5.5].
-	<p>When such a space is the current color	space, the current color is a single-component value,
-	called a <b>tint</b>, that controls the application of the given colorant or color components only.</p>
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  Special color space that provides a means for specifying the use of additional colorants
+  or for isolating the control of individual color components of a device color space for
+  a subtractive device [PDF:1.6:4.5.5].
+  <p>When such a space is the current color  space, the current color is a single-component value,
+  called a <b>tint</b>, that controls the application of the given colorant or color components only.</p>
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF12)
 public final class SeparationColorSpace
-	extends SpecialDeviceColorSpace
+  extends SpecialDeviceColorSpace
 {
   // <class>
   // <static>
   // <fields>
-	/**
-		Special component name <i>referring collectively to all components available on an output device</i>,
-		including those for the standard process components.
-		<p>When a separation space with this component name is the current color space, <i>painting operators 
-		apply tint values to all available components at once</i>.</p>
-	*/
-	public static final String AllComponentName = (String)PdfName.All.getValue();
+  /**
+    Special component name <i>referring collectively to all components available on an output device</i>,
+    including those for the standard process components.
+    <p>When a separation space with this component name is the current color space, <i>painting operators
+    apply tint values to all available components at once</i>.</p>
+  */
+  public static final String AllComponentName = (String)PdfName.All.getValue();
   // </fields>
   // </static>
 
   // <dynamic>
   // <constructors>
-	//TODO:IMPL new element constructor!
-	
-	SeparationColorSpace(
+  //TODO:IMPL new element constructor!
+
+  SeparationColorSpace(
     PdfDirectObject baseObject,
     PdfIndirectObject container
     )
@@ -86,29 +86,29 @@ public final class SeparationColorSpace
 
   @Override
   public SeparationColor getColor(
-  	List<PdfDirectObject> components,
-  	IContentContext context
+    List<PdfDirectObject> components,
+    IContentContext context
     )
   {return new SeparationColor(components);}
 
-	@Override
-	public int getComponentCount(
-		)
-	{return 1;}
+  @Override
+  public int getComponentCount(
+    )
+  {return 1;}
 
-	/**
-		Gets the name of the colorant that this separation color space is intended 
-		to represent.
-		<p>Special names:</p>
-		<ul>
-			<li>{@link #AllColorantName All}</li>
-			<li>{@link #NoneColorantName None}</li>
-		</ul>
-	*/
+  /**
+    Gets the name of the colorant that this separation color space is intended
+    to represent.
+    <p>Special names:</p>
+    <ul>
+      <li>{@link #AllColorantName All}</li>
+      <li>{@link #NoneColorantName None}</li>
+    </ul>
+  */
   @Override
   public List<String> getComponentNames(
-  	)
-	{return Arrays.asList((String)((PdfName)getBaseDataObject().get(1)).getValue());}
+    )
+  {return Arrays.asList((String)((PdfName)getBaseDataObject().get(1)).getValue());}
 
   @Override
   public SeparationColor getDefaultColor(

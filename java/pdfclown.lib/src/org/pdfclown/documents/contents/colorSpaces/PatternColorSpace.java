@@ -39,31 +39,31 @@ import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	Pattern color space [PDF:1.6:4.5.5].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@version 0.1.0
+  Pattern color space [PDF:1.6:4.5.5].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF12)
 public final class PatternColorSpace
-	extends SpecialColorSpace<PdfDirectObject>
+  extends SpecialColorSpace<PdfDirectObject>
 {
   // <class>
   // <static>
   // <fields>
   /*
-	  NOTE: In case of no parameters, it may be specified directly (i.e. without being defined 
-	  in the ColorSpace subdictionary of the contextual resource dictionary) [PDF:1.6:4.5.7].
-	*/
-	//TODO:verify parameters!!!
-	public static final PatternColorSpace Default = new PatternColorSpace((PdfDirectObject)null,null);
+    NOTE: In case of no parameters, it may be specified directly (i.e. without being defined
+    in the ColorSpace subdictionary of the contextual resource dictionary) [PDF:1.6:4.5.7].
+  */
+  //TODO:verify parameters!!!
+  public static final PatternColorSpace Default = new PatternColorSpace((PdfDirectObject)null,null);
   // </fields>
   // </static>
 
   // <dynamic>
   // <constructors>
-	//TODO:IMPL new element constructor!
-	
+  //TODO:IMPL new element constructor!
+
   PatternColorSpace(
     PdfDirectObject baseObject,
     PdfIndirectObject container
@@ -73,72 +73,72 @@ public final class PatternColorSpace
 
   // <interface>
   // <public>
-	@Override
-	public Object clone(
-		Document context
-		)
-	{throw new NotImplementedException();}
-  
+  @Override
+  public Object clone(
+    Document context
+    )
+  {throw new NotImplementedException();}
+
   @Override
   public Color<?> getColor(
-  	List<PdfDirectObject> components,
-  	IContentContext context
-  	)
+    List<PdfDirectObject> components,
+    IContentContext context
+    )
   {
-  	Pattern<?> pattern = context.getResources().getPatterns().get(components.get(components.size()-1));
-  	if(pattern instanceof TilingPattern)
-  	{
-  		TilingPattern tilingPattern = (TilingPattern)pattern;
-  		if(tilingPattern.getPaintType() == PaintTypeEnum.Uncolored)
-  		{
-  			ColorSpace<?> underlyingColorSpace = getUnderlyingColorSpace();
-  			if(underlyingColorSpace == null)
-  				throw new IllegalArgumentException("Uncolored tiling patterns not supported by this color space because no underlying color space has been defined.");
+    Pattern<?> pattern = context.getResources().getPatterns().get(components.get(components.size()-1));
+    if(pattern instanceof TilingPattern)
+    {
+      TilingPattern tilingPattern = (TilingPattern)pattern;
+      if(tilingPattern.getPaintType() == PaintTypeEnum.Uncolored)
+      {
+        ColorSpace<?> underlyingColorSpace = getUnderlyingColorSpace();
+        if(underlyingColorSpace == null)
+          throw new IllegalArgumentException("Uncolored tiling patterns not supported by this color space because no underlying color space has been defined.");
 
-  			// Get the color to be used for colorizing the uncolored tiling pattern! 
-  			Color<?> color = underlyingColorSpace.getColor(components, context);
-  			// Colorize the uncolored tiling pattern!
-  			pattern = tilingPattern.colorize(color);
-  		}
-  	}
-  	return pattern;
+        // Get the color to be used for colorizing the uncolored tiling pattern!
+        Color<?> color = underlyingColorSpace.getColor(components, context);
+        // Colorize the uncolored tiling pattern!
+        pattern = tilingPattern.colorize(color);
+      }
+    }
+    return pattern;
   }
 
-	@Override
-	public int getComponentCount(
-		)
-	{return 0;}
+  @Override
+  public int getComponentCount(
+    )
+  {return 0;}
 
-	@Override
-	public Pattern<?> getDefaultColor(
-		)
-	{return Pattern.Default;}
+  @Override
+  public Pattern<?> getDefaultColor(
+    )
+  {return Pattern.Default;}
 
-	@Override
-	public Paint getPaint(
-		Color<?> color
-		)
-	{
-		// FIXME: Auto-generated method stub
-		return null;
-	}
-  
+  @Override
+  public Paint getPaint(
+    Color<?> color
+    )
+  {
+    // FIXME: Auto-generated method stub
+    return null;
+  }
+
   /**
-  	Gets the color space in which the actual color of the {@link Pattern pattern} is to be specified.
-  	<p>This feature is <i>applicable to {@link TilingPattern uncolored tiling patterns} only</i>.</p>
+    Gets the color space in which the actual color of the {@link Pattern pattern} is to be specified.
+    <p>This feature is <i>applicable to {@link TilingPattern uncolored tiling patterns} only</i>.</p>
   */
   public ColorSpace<?> getUnderlyingColorSpace(
-  	)
-	{
-  	PdfDirectObject baseDataObject = getBaseDataObject();
-  	if(baseDataObject instanceof PdfArray)
-  	{
-  		PdfArray baseArrayObject = (PdfArray)baseDataObject;
-  		if(baseArrayObject.size() > 1)
-  			return ColorSpace.wrap(baseArrayObject.get(1), getContainer());
-  	}
-  	return null;
-	}
+    )
+  {
+    PdfDirectObject baseDataObject = getBaseDataObject();
+    if(baseDataObject instanceof PdfArray)
+    {
+      PdfArray baseArrayObject = (PdfArray)baseDataObject;
+      if(baseArrayObject.size() > 1)
+        return ColorSpace.wrap(baseArrayObject.get(1), getContainer());
+    }
+    return null;
+  }
   // </public>
   // </interface>
   // </dynamic>

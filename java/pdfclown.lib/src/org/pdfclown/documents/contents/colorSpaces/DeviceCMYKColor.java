@@ -55,23 +55,23 @@ public final class DeviceCMYKColor
 
   public static final DeviceCMYKColor Default = Black;
   // </fields>
-  
+
   // <interface>
   // <public>
   /**
-  	Gets the color corresponding to the specified components.
-  	
-  	@param components Color components to convert.
-  	@since 0.1.0
+    Gets the color corresponding to the specified components.
+
+    @param components Color components to convert.
+    @since 0.1.0
    */
   public static DeviceCMYKColor get(
-  	PdfArray components
-  	)
+    PdfArray components
+    )
   {
-  	return (components != null
-	  	? new DeviceCMYKColor(components)
-  		: Default
-  		);
+    return (components != null
+      ? new DeviceCMYKColor(components)
+      : Default
+      );
   }
   // </public>
   // </interface>
@@ -86,34 +86,34 @@ public final class DeviceCMYKColor
     float k
     )
   {
-  	this(
-  		Arrays.asList(
-    		new PdfReal(normalizeComponent(c)),
-    		new PdfReal(normalizeComponent(m)),
-    		new PdfReal(normalizeComponent(y)),
-    		new PdfReal(normalizeComponent(k))
-  			)
-  		);
+    this(
+      Arrays.asList(
+        new PdfReal(normalizeComponent(c)),
+        new PdfReal(normalizeComponent(m)),
+        new PdfReal(normalizeComponent(y)),
+        new PdfReal(normalizeComponent(k))
+        )
+      );
   }
-  
+
   DeviceCMYKColor(
-  	List<? extends PdfDirectObject> components
+    List<? extends PdfDirectObject> components
     )
   {
     super(
-    	DeviceCMYKColorSpace.Default,
-    	new PdfArray(components)
-    	);
+      DeviceCMYKColorSpace.Default,
+      new PdfArray(components)
+      );
   }
   // </constructors>
 
   // <interface>
   // <public>
-	@Override
-	public Object clone(
-		Document context
-		)
-	{throw new NotImplementedException();}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {throw new NotImplementedException();}
 
   /**
     Gets the cyan component.
@@ -144,7 +144,7 @@ public final class DeviceCMYKColor
   {return getComponentValue(2);}
 
   /**
-  	@see #getC()
+    @see #getC()
   */
   public void setC(
     float value
@@ -152,7 +152,7 @@ public final class DeviceCMYKColor
   {setComponentValue(0, value);}
 
   /**
-  	@see #getK()
+    @see #getK()
   */
   public void setK(
     float value
@@ -160,7 +160,7 @@ public final class DeviceCMYKColor
   {setComponentValue(3, value);}
 
   /**
-  	@see #getM()
+    @see #getM()
   */
   public void setM(
     float value

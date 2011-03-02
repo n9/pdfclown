@@ -41,16 +41,16 @@ import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	List of 1-input functions combined in a {@link #getParent() stitching function} [PDF:1.6:3.9.3].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  List of 1-input functions combined in a {@link #getParent() stitching function} [PDF:1.6:3.9.3].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF13)
 public final class Functions
-	extends PdfObjectWrapper<PdfArray>
-	implements List<Function<?>>
+  extends PdfObjectWrapper<PdfArray>
+  implements List<Function<?>>
 {
   // <class>
   // <dynamic>
@@ -68,7 +68,7 @@ public final class Functions
     Type3Function parent
     )
   {
-		super(baseObject, container);
+    super(baseObject, container);
     this.parent = parent;
   }
   // </constructors>
@@ -82,28 +82,28 @@ public final class Functions
   {throw new NotImplementedException();}
 
   /**
-	  Gets the parent stitching function.
-	*/
-	public Type3Function getParent(
-	  )
-	{return parent;}
+    Gets the parent stitching function.
+  */
+  public Type3Function getParent(
+    )
+  {return parent;}
 
   // <List>
-	@Override
-	public void add(
-		int index,
-		Function<?> value
-		)
-	{
-		validate(value);
-		getBaseDataObject().add(index, value.getBaseObject());
-	}
+  @Override
+  public void add(
+    int index,
+    Function<?> value
+    )
+  {
+    validate(value);
+    getBaseDataObject().add(index, value.getBaseObject());
+  }
 
-	@Override
-	public boolean addAll(
-		int index,
-		Collection<? extends Function<?>> values
-		)
+  @Override
+  public boolean addAll(
+    int index,
+    Collection<? extends Function<?>> values
+    )
   {
     for(Function<?> value : values)
     {add(index++,value);}
@@ -111,21 +111,21 @@ public final class Functions
     return true;
   }
 
-	@Override
-	public Function<?> get(
-		int index
-		)
-	{
-		return Function.wrap(
-			getBaseDataObject().get(index),
-			getContainer()
-			);
-	}
+  @Override
+  public Function<?> get(
+    int index
+    )
+  {
+    return Function.wrap(
+      getBaseDataObject().get(index),
+      getContainer()
+      );
+  }
 
-	@Override
-	public int indexOf(
-		Object value
-		)
+  @Override
+  public int indexOf(
+    Object value
+    )
   {
     if(!(value instanceof Function<?>))
       return -1;
@@ -133,68 +133,68 @@ public final class Functions
     return getBaseDataObject().indexOf(((Function<?>)value).getBaseObject());
   }
 
-	@Override
-	public int lastIndexOf(
-		Object value
-		)
-	{return indexOf(value); /* NOTE: Functions are expected not to be duplicated. */}
+  @Override
+  public int lastIndexOf(
+    Object value
+    )
+  {return indexOf(value); /* NOTE: Functions are expected not to be duplicated. */}
 
-	@Override
-	public ListIterator<Function<?>> listIterator(
-		)
+  @Override
+  public ListIterator<Function<?>> listIterator(
+    )
   {throw new NotImplementedException();}
 
-	@Override
-	public ListIterator<Function<?>> listIterator(
-		int index
-		)
+  @Override
+  public ListIterator<Function<?>> listIterator(
+    int index
+    )
   {throw new NotImplementedException();}
 
-	@Override
-	public Function<?> remove(
-		int index
-		)
-	{
-		return Function.wrap(
-			getBaseDataObject().remove(index),
-			getContainer()
-			);
-	}
+  @Override
+  public Function<?> remove(
+    int index
+    )
+  {
+    return Function.wrap(
+      getBaseDataObject().remove(index),
+      getContainer()
+      );
+  }
 
-	@Override
-	public Function<?> set(
-		int index,
-		Function<?> value
-		)
-	{
-		validate(value);
-		return Function.wrap(
-			getBaseDataObject().set(index,value.getBaseObject()),
-			getContainer()
-			);
-	}
+  @Override
+  public Function<?> set(
+    int index,
+    Function<?> value
+    )
+  {
+    validate(value);
+    return Function.wrap(
+      getBaseDataObject().set(index,value.getBaseObject()),
+      getContainer()
+      );
+  }
 
-	@Override
-	public List<Function<?>> subList(
-		int fromIndex,
-		int toIndex
-		)
+  @Override
+  public List<Function<?>> subList(
+    int fromIndex,
+    int toIndex
+    )
   {throw new NotImplementedException();}
 
   // <Collection>
-	@Override
-	public boolean add(
-		Function<?> value
-		)
-	{
-		validate(value);
-		return getBaseDataObject().add(value.getBaseObject());
-	}
+  @Override
+  public boolean add(
+    Function<?> value
+    )
+  {
+    validate(value);
+    return getBaseDataObject().add(value.getBaseObject());
+  }
 
-	@Override
-	public boolean addAll(
-		Collection<? extends Function<?>> values
-		)
+  @Override
+  public boolean addAll(
+    Collection<? extends Function<?>> values
+    )
   {
     for(Function<?> value : values)
     {add(value);}
@@ -202,83 +202,83 @@ public final class Functions
     return true;
   }
 
-	@Override
-	public void clear(
-		)
-	{getBaseDataObject().clear();}
+  @Override
+  public void clear(
+    )
+  {getBaseDataObject().clear();}
 
-	@Override
-	public boolean contains(
-		Object value
-		)
-	{
-		if(!(value instanceof Function<?>))
-			return false;
-		
-		return getBaseDataObject().contains(((Function<?>)value).getBaseObject());
-	}
+  @Override
+  public boolean contains(
+    Object value
+    )
+  {
+    if(!(value instanceof Function<?>))
+      return false;
 
-	@Override
-	public boolean containsAll(
-		Collection<?> values
-		)
+    return getBaseDataObject().contains(((Function<?>)value).getBaseObject());
+  }
+
+  @Override
+  public boolean containsAll(
+    Collection<?> values
+    )
   {throw new NotImplementedException();}
 
-	@Override
-	public boolean equals(
-		Object value
-		)
+  @Override
+  public boolean equals(
+    Object value
+    )
   {throw new NotImplementedException();}
 
-	@Override
-	public int hashCode(
-		)
+  @Override
+  public int hashCode(
+    )
   {throw new NotImplementedException();}
 
-	@Override
-	public boolean isEmpty(
-		)
-	{return getBaseDataObject().isEmpty();}
+  @Override
+  public boolean isEmpty(
+    )
+  {return getBaseDataObject().isEmpty();}
 
-	@Override
-	public boolean remove(
-		Object value
-		)
-	{
-		if(!(value instanceof Function<?>))
-			return false;
-		
-		return getBaseDataObject().remove(((Function<?>)value).getBaseObject());
-	}
+  @Override
+  public boolean remove(
+    Object value
+    )
+  {
+    if(!(value instanceof Function<?>))
+      return false;
 
-	@Override
-	public boolean removeAll(
-		Collection<?> values
-		)
+    return getBaseDataObject().remove(((Function<?>)value).getBaseObject());
+  }
+
+  @Override
+  public boolean removeAll(
+    Collection<?> values
+    )
   {throw new NotImplementedException();}
 
-	@Override
-	public boolean retainAll(
-		Collection<?> values
-		)
+  @Override
+  public boolean retainAll(
+    Collection<?> values
+    )
   {throw new NotImplementedException();}
 
-	@Override
-	public int size(
-		)
-	{return getBaseDataObject().size();}
+  @Override
+  public int size(
+    )
+  {return getBaseDataObject().size();}
 
-	@Override
-	public Object[] toArray(
-		)
+  @Override
+  public Object[] toArray(
+    )
   {return toArray(new Function<?>[0]);}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T[] toArray(
-		T[] values
-		)
-	{
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T> T[] toArray(
+    T[] values
+    )
+  {
     PdfArray functionObjects = getBaseDataObject();
     if(values.length < functionObjects.size())
     {values = (T[])new Object[functionObjects.size()];}
@@ -293,73 +293,76 @@ public final class Functions
     {values[index] = (T)Function.wrap(functionObjects.get(index),container);}
 
     return values;
-	}
+  }
 
   // <Iterable>
-	@Override
-	public Iterator<Function<?>> iterator(
-		)
+  @Override
+  public Iterator<Function<?>> iterator(
+    )
   {
     return new Iterator<Function<?>>()
-	    {
-	      // <class>
-	      // <dynamic>
-	      // <fields>
-	      /**
-	        Index of the next item.
-	      */
-	      private int index = 0;
-	      /**
-	        Collection size.
-	      */
-	      private int size = size();
-	      // </fields>
-	
-	      // <interface>
-	      // <public>
-	      // <Iterator>
-	      public boolean hasNext(
-	        )
-	      {return (index < size);}
-	
-	      public Function<?> next(
-	        )
-	      {
-	        if(!hasNext())
-	          throw new NoSuchElementException();
-	
-	        return get(index++);
-	      }
-	
-	      public void remove(
-	        )
-	      {throw new UnsupportedOperationException();}
-	      // </Iterator>
-	      // </public>
-	      // </interface>
-	      // </dynamic>
-	      // </class>
-	    };
-	}
+      {
+        // <class>
+        // <dynamic>
+        // <fields>
+        /**
+          Index of the next item.
+        */
+        private int index = 0;
+        /**
+          Collection size.
+        */
+        private int size = size();
+        // </fields>
+
+        // <interface>
+        // <public>
+        // <Iterator>
+        @Override
+        public boolean hasNext(
+          )
+        {return (index < size);}
+
+        @Override
+        public Function<?> next(
+          )
+        {
+          if(!hasNext())
+            throw new NoSuchElementException();
+
+          return get(index++);
+        }
+
+        @Override
+        public void remove(
+          )
+        {throw new UnsupportedOperationException();}
+        // </Iterator>
+        // </public>
+        // </interface>
+        // </dynamic>
+        // </class>
+      };
+  }
   // </Iterable>
   // </Collection>
   // </List>
   // </public>
-	
-  // <private>
-	/**
-		Checks whether the specified function is valid for insertion.
 
-		@param value Function to validate.
-		@throws IllegalArgumentException
-	*/
-	private void validate(
-		Function<?> value
-		)
-	{
-		if(value.getInputCount() != 1)
-			throw new IllegalArgumentException("value parameter MUST be 1-input function.");
-	}
+  // <private>
+  /**
+    Checks whether the specified function is valid for insertion.
+
+    @param value Function to validate.
+    @throws IllegalArgumentException
+  */
+  private void validate(
+    Function<?> value
+    )
+  {
+    if(value.getInputCount() != 1)
+      throw new IllegalArgumentException("value parameter MUST be 1-input function.");
+  }
   // </private>
   // </interface>
   // </dynamic>

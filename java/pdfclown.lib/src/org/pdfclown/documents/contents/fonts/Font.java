@@ -428,7 +428,7 @@ public abstract class Font
     )
   {
     return object != null
-    	&& object.getClass().equals(getClass())
+      && object.getClass().equals(getClass())
       && ((Font)object).getName().equals(getName());
   }
 
@@ -685,10 +685,10 @@ public abstract class Font
     float size
     )
   {return getWidth(text) * getScalingFactor(size);}
-  
+
   @Override
   public int hashCode(
-  	)
+    )
   {return getName().hashCode();}
 
   /**

@@ -25,6 +25,11 @@
 
 package org.pdfclown.documents.interaction.annotations;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -38,11 +43,6 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.NotImplementedException;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
   Appearance states [PDF:1.6:8.4.4].
@@ -82,14 +82,17 @@ public final class AppearanceStates
     // <interface>
     // <public>
     // <Map.Entry>
+    @Override
     public PdfName getKey(
       )
     {return key;}
 
+    @Override
     public FormXObject getValue(
       )
     {return value;}
 
+    @Override
     public FormXObject setValue(
       FormXObject value
       )
@@ -167,7 +170,7 @@ public final class AppearanceStates
     else if(baseDataObject instanceof PdfStream) // Single state.
       return (key == null);
     else // Multiple state.
-    	return ((PdfDictionary)baseDataObject).containsKey(key);
+      return ((PdfDictionary)baseDataObject).containsKey(key);
   }
 
   @Override
@@ -184,9 +187,9 @@ public final class AppearanceStates
     else if(baseDataObject instanceof PdfStream) // Single state.
       return ((FormXObject)value).getBaseObject().equals(getBaseObject());
     else // Multiple state.
-    	return ((PdfDictionary)baseDataObject).containsValue(
-	      ((FormXObject)value).getBaseObject()
-	      );
+      return ((PdfDictionary)baseDataObject).containsValue(
+        ((FormXObject)value).getBaseObject()
+        );
   }
 
   @Override
@@ -195,30 +198,30 @@ public final class AppearanceStates
   {
     HashSet<Map.Entry<PdfName,FormXObject>> entrySet = new HashSet<Map.Entry<PdfName,FormXObject>>();
     {
-	    PdfDataObject baseDataObject = getBaseDataObject();
-	    if(baseDataObject == null) // No state.
-	    { /* NOOP. */ }
-	    else if(baseDataObject instanceof PdfStream) // Single state.
-	    {
-	      entrySet.add(
-	        new Entry(
-	          null,
-	          new FormXObject(getBaseObject())
-	          )
-	        );
-	    }
-	    else // Multiple state.
-	    {
-	      for(Map.Entry<PdfName,PdfDirectObject> entry : ((PdfDictionary)baseDataObject).entrySet())
-	      {
-	        entrySet.add(
-	          new Entry(
-	            entry.getKey(),
-	            new FormXObject(entry.getValue())
-	            )
-	          );
-	      }
-	    }
+      PdfDataObject baseDataObject = getBaseDataObject();
+      if(baseDataObject == null) // No state.
+      { /* NOOP. */ }
+      else if(baseDataObject instanceof PdfStream) // Single state.
+      {
+        entrySet.add(
+          new Entry(
+            null,
+            new FormXObject(getBaseObject())
+            )
+          );
+      }
+      else // Multiple state.
+      {
+        for(Map.Entry<PdfName,PdfDirectObject> entry : ((PdfDictionary)baseDataObject).entrySet())
+        {
+          entrySet.add(
+            new Entry(
+              entry.getKey(),
+              new FormXObject(entry.getValue())
+              )
+            );
+        }
+      }
     }
     return entrySet;
   }
@@ -242,10 +245,10 @@ public final class AppearanceStates
       if(baseDataObject instanceof PdfStream) // Single state.
         return new FormXObject(getBaseObject());
       else // Multiple state, but invalid key.
-      	return null;
+        return null;
     }
     else // Multiple state.
-    	return new FormXObject(((PdfDictionary)baseDataObject).get(key));
+      return new FormXObject(((PdfDictionary)baseDataObject).get(key));
   }
 
   @Override
@@ -263,7 +266,7 @@ public final class AppearanceStates
     else if(baseDataObject instanceof PdfStream) // Single state.
       return false;
     else // Multiple state.
-    	return ((PdfDictionary)baseDataObject).isEmpty();
+      return ((PdfDictionary)baseDataObject).isEmpty();
   }
 
   @Override
@@ -289,7 +292,7 @@ public final class AppearanceStates
     if(File.resolve(previousValue) instanceof PdfStream)
       return new FormXObject(previousValue);
     else
-    	return null;
+      return null;
   }
 
   @Override
@@ -308,24 +311,24 @@ public final class AppearanceStates
       return null;
     else
     {
-	    PdfDirectObject previousValue;
-	    if(baseDataObject instanceof PdfStream) // Single state.
-	    {
-	      if(key == null)
-	      {
-	        setBaseObject(null);
-	        previousValue = appearance.getBaseDataObject().remove(statesKey);
-	      }
-	      else // Invalid key.
-	      {previousValue = null;}
-	    }
-	    else // Multiple state.
-	    {previousValue = ((PdfDictionary)baseDataObject).remove(key);}
+      PdfDirectObject previousValue;
+      if(baseDataObject instanceof PdfStream) // Single state.
+      {
+        if(key == null)
+        {
+          setBaseObject(null);
+          previousValue = appearance.getBaseDataObject().remove(statesKey);
+        }
+        else // Invalid key.
+        {previousValue = null;}
+      }
+      else // Multiple state.
+      {previousValue = ((PdfDictionary)baseDataObject).remove(key);}
 
-	    if(File.resolve(previousValue) instanceof PdfStream)
-	      return new FormXObject(previousValue);
-	    else
-	    	return null;
+      if(File.resolve(previousValue) instanceof PdfStream)
+        return new FormXObject(previousValue);
+      else
+        return null;
     }
   }
 
@@ -339,7 +342,7 @@ public final class AppearanceStates
     else if(baseDataObject instanceof PdfStream) // Single state.
       return 1;
     else // Multiple state.
-    	return ((PdfDictionary)baseDataObject).size();
+      return ((PdfDictionary)baseDataObject).size();
   }
 
   @Override

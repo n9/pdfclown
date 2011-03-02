@@ -120,8 +120,8 @@ public final class DrawCurve
   }
 
   /**
-	  Creates a fully-explicit curve.
-	*/
+    Creates a fully-explicit curve.
+  */
   public DrawCurve(
     double pointX,
     double pointY,
@@ -181,10 +181,10 @@ public final class DrawCurve
     if(operator.equals(FinalOperator))
       return null;
     else
-	    return new Point2D.Double(
-	      ((PdfNumber<?>)operands.get(0)).getNumberValue(),
-	      ((PdfNumber<?>)operands.get(1)).getNumberValue()
-	      );
+      return new Point2D.Double(
+        ((PdfNumber<?>)operands.get(0)).getNumberValue(),
+        ((PdfNumber<?>)operands.get(1)).getNumberValue()
+        );
   }
 
   /**
@@ -199,10 +199,10 @@ public final class DrawCurve
         ((PdfNumber<?>)operands.get(1)).getNumberValue()
         );
     else
-	    return new Point2D.Double(
-	      ((PdfNumber<?>)operands.get(2)).getNumberValue(),
-	      ((PdfNumber<?>)operands.get(3)).getNumberValue()
-	      );
+      return new Point2D.Double(
+        ((PdfNumber<?>)operands.get(2)).getNumberValue(),
+        ((PdfNumber<?>)operands.get(3)).getNumberValue()
+        );
   }
 
   /**
@@ -217,36 +217,36 @@ public final class DrawCurve
         ((PdfNumber<?>)operands.get(5)).getNumberValue()
         );
     else
-	    return new Point2D.Double(
-	      ((PdfNumber<?>)operands.get(2)).getNumberValue(),
-	      ((PdfNumber<?>)operands.get(3)).getNumberValue()
-	      );
+      return new Point2D.Double(
+        ((PdfNumber<?>)operands.get(2)).getNumberValue(),
+        ((PdfNumber<?>)operands.get(3)).getNumberValue()
+        );
   }
 
   @Override
   public void scan(
-  	GraphicsState state
-  	)
+    GraphicsState state
+    )
   {
-  	Path2D pathObject = (Path2D)state.getScanner().getRenderObject();
-  	if(pathObject != null)
-  	{
-  		Point2D controlPoint1 = getControl1();
-  		if(controlPoint1 == null)
-  		{controlPoint1 = pathObject.getCurrentPoint();}
-  		Point2D finalPoint = getPoint();
-  		Point2D controlPoint2 = getControl2();
-  		if(controlPoint2 == null)
-  		{controlPoint2 = finalPoint;}
-  		pathObject.curveTo(
-  			controlPoint1.getX(),
-  			controlPoint1.getY(),
-  			controlPoint2.getX(),
-  			controlPoint2.getY(),
-  			finalPoint.getX(),
-  			finalPoint.getY()
-  			);
-		}
+    Path2D pathObject = (Path2D)state.getScanner().getRenderObject();
+    if(pathObject != null)
+    {
+      Point2D controlPoint1 = getControl1();
+      if(controlPoint1 == null)
+      {controlPoint1 = pathObject.getCurrentPoint();}
+      Point2D finalPoint = getPoint();
+      Point2D controlPoint2 = getControl2();
+      if(controlPoint2 == null)
+      {controlPoint2 = finalPoint;}
+      pathObject.curveTo(
+        controlPoint1.getX(),
+        controlPoint1.getY(),
+        controlPoint2.getX(),
+        controlPoint2.getY(),
+        finalPoint.getX(),
+        finalPoint.getY()
+        );
+    }
   }
 
   /**
@@ -258,14 +258,14 @@ public final class DrawCurve
   {
     if(operator.equals(FinalOperator))
     {
-    	operator = FullOperator;
-    	operands.add(0,new PdfReal(value.getX()));
-    	operands.add(1,new PdfReal(value.getY()));
-  	}
+      operator = FullOperator;
+      operands.add(0,new PdfReal(value.getX()));
+      operands.add(1,new PdfReal(value.getY()));
+    }
     else
     {
-	    ((PdfNumber<?>)operands.get(0)).setValue(value.getX());
-	    ((PdfNumber<?>)operands.get(1)).setValue(value.getY());
+      ((PdfNumber<?>)operands.get(0)).setValue(value.getX());
+      ((PdfNumber<?>)operands.get(1)).setValue(value.getY());
     }
   }
 
@@ -297,13 +297,13 @@ public final class DrawCurve
   {
     if(operator.equals(FullOperator))
     {
-	    ((PdfNumber<?>)operands.get(4)).setValue(value.getX());
-	    ((PdfNumber<?>)operands.get(5)).setValue(value.getY());
+      ((PdfNumber<?>)operands.get(4)).setValue(value.getX());
+      ((PdfNumber<?>)operands.get(5)).setValue(value.getY());
     }
     else
     {
-	    ((PdfNumber<?>)operands.get(2)).setValue(value.getX());
-	    ((PdfNumber<?>)operands.get(3)).setValue(value.getY());
+      ((PdfNumber<?>)operands.get(2)).setValue(value.getX());
+      ((PdfNumber<?>)operands.get(3)).setValue(value.getY());
     }
   }
   // </public>

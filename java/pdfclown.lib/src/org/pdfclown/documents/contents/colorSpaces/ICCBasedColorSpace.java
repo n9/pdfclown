@@ -52,8 +52,8 @@ public final class ICCBasedColorSpace
   // <class>
   // <dynamic>
   // <constructors>
-	//TODO:IMPL new element constructor!
-	
+  //TODO:IMPL new element constructor!
+
   ICCBasedColorSpace(
     PdfDirectObject baseObject,
     PdfIndirectObject container
@@ -71,33 +71,33 @@ public final class ICCBasedColorSpace
 
   @Override
   public Color<?> getColor(
-  	List<PdfDirectObject> components,
-  	IContentContext context
+    List<PdfDirectObject> components,
+    IContentContext context
     )
   {
     return new DeviceRGBColor(components); // FIXME:temporary hack...
-	} 
+  }
 
-	@Override
-	public int getComponentCount()
-	{
-		// FIXME: Auto-generated method stub
-		return 0;
-	}
+  @Override
+  public int getComponentCount()
+  {
+    // FIXME: Auto-generated method stub
+    return 0;
+  }
 
   @Override
   public Color<?> getDefaultColor(
     )
   {return DeviceGrayColor.Default;} // FIXME:temporary hack...
 
-	@Override
-	public Paint getPaint(
-		Color<?> color
-		)
-	{
-		// FIXME: temporary hack
-		return new java.awt.Color(0,0,0);
-	}
+  @Override
+  public Paint getPaint(
+    Color<?> color
+    )
+  {
+    // FIXME: temporary hack
+    return new java.awt.Color(0,0,0);
+  }
 
   public PdfStream getProfile(
     )

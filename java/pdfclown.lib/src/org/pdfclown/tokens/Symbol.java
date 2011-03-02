@@ -26,24 +26,24 @@
 package org.pdfclown.tokens;
 
 /**
-	PDF symbols.
-	
+  PDF symbols.
+
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
   @version 0.1.0
 */
 public final class Symbol
 {
-	public static final char CapitalR = 'R';
-	public static final char CarriageReturn = '\r';
-	public static final char CloseAngleBracket = '>';
-	public static final char CloseRoundBracket = ')';
-	public static final char CloseSquareBracket = ']';
-	public static final char LineFeed = '\n';
-	public static final char OpenAngleBracket = '<';
-	public static final char OpenRoundBracket = '(';
-	public static final char OpenSquareBracket = '[';
-	public static final char Percent = '%';
-	public static final char Slash = '/';
-	public static final char Space = ' ';
+  public static final char CapitalR = 'R';
+  public static final char CarriageReturn = '\r';
+  public static final char CloseAngleBracket = '>';
+  public static final char CloseRoundBracket = ')';
+  public static final char CloseSquareBracket = ']';
+  public static final char LineFeed = '\n';
+  public static final char OpenAngleBracket = '<';
+  public static final char OpenRoundBracket = '(';
+  public static final char OpenSquareBracket = '[';
+  public static final char Percent = '%';
+  public static final char Slash = '/';
+  public static final char Space = ' ';
 }

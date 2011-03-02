@@ -10,9 +10,9 @@ import java.util.Date;
 import java.util.EnumSet;
 
 import org.pdfclown.documents.Document;
+import org.pdfclown.documents.Document.PageModeEnum;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.PageFormat;
-import org.pdfclown.documents.Document.PageModeEnum;
 import org.pdfclown.documents.Pages;
 import org.pdfclown.documents.contents.TextRenderModeEnum;
 import org.pdfclown.documents.contents.colorSpaces.Color;
@@ -27,10 +27,10 @@ import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.documents.interaction.actions.GoToURI;
 import org.pdfclown.documents.interaction.navigation.document.Bookmark;
+import org.pdfclown.documents.interaction.navigation.document.Bookmark.FlagsEnum;
 import org.pdfclown.documents.interaction.navigation.document.Bookmarks;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.documents.interaction.navigation.document.LocalDestination;
-import org.pdfclown.documents.interaction.navigation.document.Bookmark.FlagsEnum;
 import org.pdfclown.files.File;
 
 /**
@@ -86,7 +86,7 @@ public class ComplexTypesettingSample
 
     // 3. Serialization.
     serialize(file,false);
-    
+
     return true;
   }
 
@@ -94,7 +94,7 @@ public class ComplexTypesettingSample
     Document document
     )
   {
-  	Pages pages = document.getPages();
+    Pages pages = document.getPages();
 
     // Bookmarks.
     Bookmarks bookmarks = new Bookmarks(document);
@@ -149,7 +149,7 @@ public class ComplexTypesettingSample
     try
     {
       bookmarks.add(
-      	bookmark = new Bookmark(
+        bookmark = new Bookmark(
           document,
           "PDF Clown Home Page",
           new GoToURI(document, new URI("http://www.pdfclown.org"))

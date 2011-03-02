@@ -46,18 +46,18 @@ public final class XObjectResources
   // <class>
   // <static>
   // <interface>
-	static XObjectResources wrap(
-		PdfDirectObject baseObject,
-		PdfIndirectObject container
-		)
-	{
+  static XObjectResources wrap(
+    PdfDirectObject baseObject,
+    PdfIndirectObject container
+    )
+  {
     return baseObject == null
-	  	? null
-			: new XObjectResources(baseObject, container);
-	}
+      ? null
+      : new XObjectResources(baseObject, container);
+  }
   // </interface>
   // </static>
-	
+
   // <dynamic>
   // <constructors>
   public XObjectResources(
@@ -74,11 +74,11 @@ public final class XObjectResources
 
   // <interface>
   // <protected>
-	@Override
-	protected XObject wrap(
-		PdfDirectObject baseObject
-		)
-	{return XObject.wrap((PdfReference)baseObject);}
+  @Override
+  protected XObject wrap(
+    PdfDirectObject baseObject
+    )
+  {return XObject.wrap((PdfReference)baseObject);}
   // </protected>
   // </interface>
   // </dynamic>

@@ -27,15 +27,14 @@ package org.pdfclown.documents;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
-import org.pdfclown.documents.Document;
 import org.pdfclown.documents.fileSpecs.FileSpec;
 import org.pdfclown.documents.interaction.actions.JavaScript;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfIndirectObject;
-import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.util.NotImplementedException;
 
@@ -106,13 +105,13 @@ public final class Names
       getContainer()
       );
   }
-  
+
   /**
-	  Gets the named JavaScript actions.
-	*/
+    Gets the named JavaScript actions.
+  */
   @PDF(VersionEnum.PDF13)
   public NamedJavaScripts getJavaScripts(
-  	)
+    )
   {
     PdfDirectObject javaScriptsObject = getBaseDataObject().get(PdfName.JavaScript);
     if(javaScriptsObject == null)
@@ -137,11 +136,11 @@ public final class Names
     else if(JavaScript.class.isAssignableFrom(type))
       return (T)getJavaScripts().get(name);
     else
-    	throw new UnsupportedOperationException("Named type '" + type.getName() + "' is not supported.");
+      throw new UnsupportedOperationException("Named type '" + type.getName() + "' is not supported.");
   }
 
   /**
-  	@see #getDestinations()
+    @see #getDestinations()
   */
   public void setDestinations(
     NamedDestinations value
@@ -157,7 +156,7 @@ public final class Names
   {getBaseDataObject().put(PdfName.EmbeddedFiles,value.getBaseObject());}
 
   /**
-  	@see #getJavaScripts()
+    @see #getJavaScripts()
   */
   public void setJavaScripts(
     NamedJavaScripts value

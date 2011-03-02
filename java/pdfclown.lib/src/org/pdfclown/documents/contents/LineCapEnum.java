@@ -100,28 +100,28 @@ public enum LineCapEnum
   public int getCode(
     )
   {return code;}
-  
+
   /**
-  	Converts this constant into its equivalent AWT code.
-  	
-  	@see BasicStroke.CAP_BUTT
-  	@see BasicStroke.CAP_ROUND
-  	@see BasicStroke.CAP_SQUARE
+    Converts this constant into its equivalent AWT code.
+
+    @see BasicStroke.CAP_BUTT
+    @see BasicStroke.CAP_ROUND
+    @see BasicStroke.CAP_SQUARE
   */
   public int toAwt(
-  	)
+    )
   {
-  	switch(this)
-		{
-			case Butt:
-				return BasicStroke.CAP_BUTT;
-			case Round:
-				return BasicStroke.CAP_ROUND;
-			case Square:
-				return BasicStroke.CAP_SQUARE;
-			default:
-	  		throw new UnsupportedOperationException(name() + " convertion not supported.");
-		}
+    switch(this)
+    {
+      case Butt:
+        return BasicStroke.CAP_BUTT;
+      case Round:
+        return BasicStroke.CAP_ROUND;
+      case Square:
+        return BasicStroke.CAP_SQUARE;
+      default:
+        throw new UnsupportedOperationException(name() + " convertion not supported.");
+    }
   }
   // </public>
   // </interface>

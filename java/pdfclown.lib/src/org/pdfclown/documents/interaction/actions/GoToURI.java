@@ -25,6 +25,8 @@
 
 package org.pdfclown.documents.interaction.actions;
 
+import java.net.URI;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -33,8 +35,6 @@ import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.util.NotImplementedException;
-
-import java.net.URI;
 
 /**
   'Cause a URI (Uniform Resource Identifier) to be resolved' action [PDF:1.6:8.5.3].
@@ -59,7 +59,7 @@ public final class GoToURI
     URI uri
     )
   {
-		super(context, PdfName.URI);
+    super(context, PdfName.URI);
     setURI(uri);
   }
 

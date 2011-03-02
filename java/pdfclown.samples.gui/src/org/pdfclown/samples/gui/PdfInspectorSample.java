@@ -59,49 +59,49 @@ public class PdfInspectorSample
   // <class>
   // <classes>
   private static class CellRenderer
-		extends JTextArea
-		implements TableCellRenderer
-	{
-		private static final long serialVersionUID = 1L;
-	
-		@Override
-		public Component getTableCellRendererComponent(
-			JTable table,
-			Object value,
-			boolean isSelected,
-			boolean hasFocus,
-			int row,
-			int column
-			)
-		{
-			setWrapStyleWord(false);
-			setLineWrap(true);
-			setText((String)value);
-			return this;
-		}
-	}
+    extends JTextArea
+    implements TableCellRenderer
+  {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public Component getTableCellRendererComponent(
+      JTable table,
+      Object value,
+      boolean isSelected,
+      boolean hasFocus,
+      int row,
+      int column
+      )
+    {
+      setWrapStyleWord(false);
+      setLineWrap(true);
+      setText((String)value);
+      return this;
+    }
+  }
 
   private static class ContentNodeValue
-  	extends NodeValue
+    extends NodeValue
   {
     private ContentObject content;
-    
+
     private static String getName(
-    	ContentObject content
-    	)
+      ContentObject content
+      )
     {
-    	if(content instanceof GenericOperation)
-    		return ((GenericOperation)content).getOperator();
-    	else
-    		return content.getClass().getSimpleName();
+      if(content instanceof GenericOperation)
+        return ((GenericOperation)content).getOperator();
+      else
+        return content.getClass().getSimpleName();
     }
 
     public ContentNodeValue(
       ContentObject content
       )
     {
-    	super(getName(content));
-    	
+      super(getName(content));
+
       this.content = content;
     }
 
@@ -115,7 +115,7 @@ public class PdfInspectorSample
     private String name;
 
     public NodeValue(
-    	String name
+      String name
       )
     {this.name = name;}
 
@@ -124,25 +124,25 @@ public class PdfInspectorSample
       )
     {return name;}
   }
-  
+
   private static class PageNodeValue
-  	extends NodeValue
+    extends NodeValue
   {
     private Page page;
 
     public PageNodeValue(
-    	Page page
+      Page page
       )
     {
-			super("Page " + (page.getIndex() + 1));
-			
-			this.page = page;
+      super("Page " + (page.getIndex() + 1));
+
+      this.page = page;
     }
 
     public Page getPage(
       )
     {return page;}
-  }  
+  }
   // </classes>
 
   // <fields>
@@ -160,108 +160,116 @@ public class PdfInspectorSample
 
     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     {
-	    Dimension minimumSize = new Dimension(200, 100);
+      Dimension minimumSize = new Dimension(200, 100);
 
-	    JScrollPane treeScrollPane;
-	    {
-		    tree = new JTree();
-		    {
-			    tree.setModel(new DefaultTreeModel(null));
-			    tree.getSelectionModel().setSelectionMode(
-			      TreeSelectionModel.SINGLE_TREE_SELECTION
-			      );
-			    tree.addTreeSelectionListener(
-			    	new TreeSelectionListener()
-						{
-			    		public void valueChanged(TreeSelectionEvent event)
-			    	  {
-			    	  	// Clear the attributes table!
-			    	    DefaultTableModel model = (DefaultTableModel)table.getModel();
-			    	    model.setRowCount(0);
+      JScrollPane treeScrollPane;
+      {
+        tree = new JTree();
+        {
+          tree.setModel(new DefaultTreeModel(null));
+          tree.getSelectionModel().setSelectionMode(
+            TreeSelectionModel.SINGLE_TREE_SELECTION
+            );
+          tree.addTreeSelectionListener(
+            new TreeSelectionListener()
+            {
+              @Override
+              public void valueChanged(TreeSelectionEvent event)
+              {
+                // Clear the attributes table!
+                DefaultTableModel model = (DefaultTableModel)table.getModel();
+                model.setRowCount(0);
 
-			    	    DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-			    	    if(node == null)
-			    	      return;
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+                if(node == null)
+                  return;
 
-			    	    // Show the current node attributes into the table!
-			    	    Object nodeValue = node.getUserObject();
-			    	    if(nodeValue instanceof ContentNodeValue)
-			    	    {showContentAttributes(((ContentNodeValue)nodeValue).getContent(), model);}
-			    	    else if(nodeValue instanceof PageNodeValue)
-			    	    {showPageAttributes(((PageNodeValue)nodeValue).getPage().getContents(), model);}
-			    	    
-			    	    pack(table);
-			    	  }
-						}
-			    	);
-			    tree.addTreeWillExpandListener(
-			    	new TreeWillExpandListener()
-						{
-			    		public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException
-			    		{/* NOOP */}
-			    		public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException
-			    		{
-			    	    DefaultMutableTreeNode node = (DefaultMutableTreeNode)event.getPath().getLastPathComponent();
-			    	    Object nodeValue = node.getUserObject();
-			    	    if(nodeValue instanceof PageNodeValue)
-			    	    {
-			    	    	// Content placeholder?
-			    	    	if(((DefaultMutableTreeNode)node.getFirstChild()).getUserObject() == null)
-			    	    	{
-			    	    		// Remove the content placeholder!
-			    	    		node.removeAllChildren();
-			    	    		
-			    	    		// Create the page content nodes!
-			    	        createContentNodes(
-			    	        	((PageNodeValue)nodeValue).getPage().getContents(),
-			    	          node
-			    	          );
-			    	    	}
-			    	    }
-			    		}
-						}
-			    	);
-		    }
-		    treeScrollPane = new JScrollPane(tree);
-		    treeScrollPane.setMinimumSize(minimumSize);
-	    }
-	    splitPane.setLeftComponent(treeScrollPane);
-	
-	    JScrollPane tableScrollPane;
-	    {
-		    table = new JTable(new DefaultTableModel(null, new String[]{"Attribute","Value"}));
-		    {
-		    	table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-		    	TableColumn column0 = table.getColumnModel().getColumn(0);
-		    	{
-		    		column0.setCellRenderer(new CellRenderer());
-			    	column0.setMinWidth(200);
-			    	column0.setMaxWidth(200);
-		    	}
-					TableColumn column1 = table.getColumnModel().getColumn(1);
-					{
-						column1.setCellRenderer(new CellRenderer());
-					}
-					table.getColumnModel().addColumnModelListener(
-						new TableColumnModelListener()
-						{
-							public void columnAdded(TableColumnModelEvent event)
-							{/* NOOP */}
-							public void columnMarginChanged(ChangeEvent event)
-							{pack(table);}
-							public void columnMoved(TableColumnModelEvent event)
-							{/* NOOP */}
-							public void columnRemoved(TableColumnModelEvent event)
-							{/* NOOP */}
-							public void columnSelectionChanged(ListSelectionEvent event)
-							{/* NOOP */}
-						}
-						);
-		    }
-		    tableScrollPane = new JScrollPane(table);
-		    tableScrollPane.setMinimumSize(minimumSize);
-	    }
-	    splitPane.setRightComponent(tableScrollPane);
+                // Show the current node attributes into the table!
+                Object nodeValue = node.getUserObject();
+                if(nodeValue instanceof ContentNodeValue)
+                {showContentAttributes(((ContentNodeValue)nodeValue).getContent(), model);}
+                else if(nodeValue instanceof PageNodeValue)
+                {showPageAttributes(((PageNodeValue)nodeValue).getPage().getContents(), model);}
+
+                pack(table);
+              }
+            }
+            );
+          tree.addTreeWillExpandListener(
+            new TreeWillExpandListener()
+            {
+              @Override
+              public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException
+              {/* NOOP */}
+              @Override
+              public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException
+              {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode)event.getPath().getLastPathComponent();
+                Object nodeValue = node.getUserObject();
+                if(nodeValue instanceof PageNodeValue)
+                {
+                  // Content placeholder?
+                  if(((DefaultMutableTreeNode)node.getFirstChild()).getUserObject() == null)
+                  {
+                    // Remove the content placeholder!
+                    node.removeAllChildren();
+
+                    // Create the page content nodes!
+                    createContentNodes(
+                      ((PageNodeValue)nodeValue).getPage().getContents(),
+                      node
+                      );
+                  }
+                }
+              }
+            }
+            );
+        }
+        treeScrollPane = new JScrollPane(tree);
+        treeScrollPane.setMinimumSize(minimumSize);
+      }
+      splitPane.setLeftComponent(treeScrollPane);
+
+      JScrollPane tableScrollPane;
+      {
+        table = new JTable(new DefaultTableModel(null, new String[]{"Attribute","Value"}));
+        {
+          table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+          TableColumn column0 = table.getColumnModel().getColumn(0);
+          {
+            column0.setCellRenderer(new CellRenderer());
+            column0.setMinWidth(200);
+            column0.setMaxWidth(200);
+          }
+          TableColumn column1 = table.getColumnModel().getColumn(1);
+          {
+            column1.setCellRenderer(new CellRenderer());
+          }
+          table.getColumnModel().addColumnModelListener(
+            new TableColumnModelListener()
+            {
+              @Override
+              public void columnAdded(TableColumnModelEvent event)
+              {/* NOOP */}
+              @Override
+              public void columnMarginChanged(ChangeEvent event)
+              {pack(table);}
+              @Override
+              public void columnMoved(TableColumnModelEvent event)
+              {/* NOOP */}
+              @Override
+              public void columnRemoved(TableColumnModelEvent event)
+              {/* NOOP */}
+              @Override
+              public void columnSelectionChanged(ListSelectionEvent event)
+              {/* NOOP */}
+            }
+            );
+        }
+        tableScrollPane = new JScrollPane(table);
+        tableScrollPane.setMinimumSize(minimumSize);
+      }
+      splitPane.setRightComponent(tableScrollPane);
     }
     add(splitPane);
   }
@@ -308,9 +316,9 @@ public class PdfInspectorSample
 
       if(content instanceof CompositeObject)
       {
-      	// Create inner content nodes!
+        // Create inner content nodes!
         createContentNodes(
-          (List<ContentObject>)((CompositeObject)content).getObjects(),
+          ((CompositeObject)content).getObjects(),
           contentNode
           );
       }
@@ -324,7 +332,7 @@ public class PdfInspectorSample
     for(Page page : file.getDocument().getPages())
     {
       DefaultMutableTreeNode pageNode = new DefaultMutableTreeNode(
-      	new PageNodeValue(page)
+        new PageNodeValue(page)
         );
       fileNode.add(pageNode);
 
@@ -333,62 +341,62 @@ public class PdfInspectorSample
       pageNode.add(contentPlaceholderNode);
     }
   }
-  
-	private void pack(
-		JTable table
-		)
-	{
-		for(
-			int rowIndex = 0,
-				rowCount = table.getRowCount();
-			rowIndex < rowCount;
-			rowIndex++
-			)
-		{
-			int height = 0;
-			for(
-				int columnIndex = 0,
-					columnCount = table.getColumnCount();
-				columnIndex < columnCount;
-				columnIndex++
-				)
-			{
-				height = Math.max(
-					height,
-					table.prepareRenderer(
-						table.getCellRenderer(rowIndex, columnIndex),
-						rowIndex,
-						columnIndex
-						).getPreferredSize().height
-					);
-			}
-			if(table.getRowHeight(rowIndex) < height)
-			{table.setRowHeight(rowIndex, height);}
-		}
-	}
+
+  private void pack(
+    JTable table
+    )
+  {
+    for(
+      int rowIndex = 0,
+        rowCount = table.getRowCount();
+      rowIndex < rowCount;
+      rowIndex++
+      )
+    {
+      int height = 0;
+      for(
+        int columnIndex = 0,
+          columnCount = table.getColumnCount();
+        columnIndex < columnCount;
+        columnIndex++
+        )
+      {
+        height = Math.max(
+          height,
+          table.prepareRenderer(
+            table.getCellRenderer(rowIndex, columnIndex),
+            rowIndex,
+            columnIndex
+            ).getPreferredSize().height
+          );
+      }
+      if(table.getRowHeight(rowIndex) < height)
+      {table.setRowHeight(rowIndex, height);}
+    }
+  }
 
   private void showContentAttributes(
-  	ContentObject content,
-  	DefaultTableModel model
-  	)
+    ContentObject content,
+    DefaultTableModel model
+    )
   {
-  	Operation operation;
+    Operation operation;
     if(content instanceof Operation)
     {operation = (Operation)content;}
     else if(content instanceof CompositeObject)
     {operation = ((CompositeObject)content).getHeader();}
     else
     {operation = null;}
-  	if(operation == null)
-  		return;
+    if(operation == null)
+      return;
 
-		model.addRow(
-			new Object[]
-    	{
-				"(operator)",
-				operation.getOperator()
-			}
-			);
+    model.addRow(
+      new Object[]
+      {
+        "(operator)",
+        operation.getOperator()
+      }
+      );
 
     List<PdfDirectObject> operands = operation.getOperands();
     if(operands != null)
@@ -403,12 +411,12 @@ public class PdfInspectorSample
           for(PdfDirectObject operandElement : operandElements)
           {
             model.addRow(
-            	new Object[]
-  	        	{
-            		"(operand " + index + "." + (++operandElementIndex) + ")",
-            		operandElement.toString()
-          		}
-            	);
+              new Object[]
+              {
+                "(operand " + index + "." + (++operandElementIndex) + ")",
+                operandElement.toString()
+              }
+              );
           }
         }
         else if(operand instanceof PdfDictionary)
@@ -417,55 +425,55 @@ public class PdfInspectorSample
           int operandEntryIndex = -1;
           for(Map.Entry<PdfName,PdfDirectObject> operandEntry : operandEntries.entrySet())
           {
-						model.addRow(
-							new Object[]
-	          	{
-								"(operand " + index + "." + (++operandEntryIndex) + ") " + operandEntry.getKey().toString(),
-								operandEntry.getValue().toString()
-							}
-							);
+            model.addRow(
+              new Object[]
+              {
+                "(operand " + index + "." + (++operandEntryIndex) + ") " + operandEntry.getKey().toString(),
+                operandEntry.getValue().toString()
+              }
+              );
           }
         }
         else
-				{
-					model.addRow(
-						new Object[]
-	          {
-							"(operand " + index + ")",
-							operand.toString()
-						}
-						);
-				}
+        {
+          model.addRow(
+            new Object[]
+            {
+              "(operand " + index + ")",
+              operand.toString()
+            }
+            );
+        }
       }
     }
   }
 
   @SuppressWarnings("unchecked")
-	private void showPageAttributes(
-  	Contents contents,
-  	DefaultTableModel model
-  	)
+  private void showPageAttributes(
+    Contents contents,
+    DefaultTableModel model
+    )
   {
-  	List<PdfDataObject> streamObjects = new ArrayList<PdfDataObject>();
-  	PdfDataObject contentsDataObject = contents.getBaseDataObject();
-  	if(contentsDataObject instanceof PdfArray)
-  	{streamObjects.addAll((List<PdfDirectObject>)contentsDataObject);}
-  	else
-  	{streamObjects.add(contentsDataObject);}
-  	
-  	int streamIndex = -1;
-  	for(PdfDataObject streamObject : streamObjects)
-  	{
-  		PdfStream stream = (PdfStream)File.resolve(streamObject);
-  		IBuffer streamBody = stream.getBody();
-			model.addRow(
-				new Object[]
-	    	{
-					"(stream " + (++streamIndex) + ")",
-					streamBody.getString(0, (int)streamBody.getLength())
-				}
-				);
-  	}
+    List<PdfDataObject> streamObjects = new ArrayList<PdfDataObject>();
+    PdfDataObject contentsDataObject = contents.getBaseDataObject();
+    if(contentsDataObject instanceof PdfArray)
+    {streamObjects.addAll((List<PdfDirectObject>)contentsDataObject);}
+    else
+    {streamObjects.add(contentsDataObject);}
+
+    int streamIndex = -1;
+    for(PdfDataObject streamObject : streamObjects)
+    {
+      PdfStream stream = (PdfStream)File.resolve(streamObject);
+      IBuffer streamBody = stream.getBody();
+      model.addRow(
+        new Object[]
+        {
+          "(stream " + (++streamIndex) + ")",
+          streamBody.getString(0, (int)streamBody.getLength())
+        }
+        );
+    }
   }
   // </private>
   // </interface>

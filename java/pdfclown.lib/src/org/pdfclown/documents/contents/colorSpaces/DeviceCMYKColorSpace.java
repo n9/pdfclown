@@ -82,37 +82,37 @@ public final class DeviceCMYKColorSpace
 
   @Override
   public DeviceCMYKColor getColor(
-  	List<PdfDirectObject> components,
-  	IContentContext context
+    List<PdfDirectObject> components,
+    IContentContext context
     )
   {return new DeviceCMYKColor(components);}
 
-	@Override
-	public int getComponentCount(
-		)
-	{return 4;}
+  @Override
+  public int getComponentCount(
+    )
+  {return 4;}
 
   @Override
   public DeviceCMYKColor getDefaultColor(
     )
   {return DeviceCMYKColor.Default;}
 
-	@Override
-	public Paint getPaint(
-		Color<?> color
-		)
-	{
-		DeviceCMYKColor spaceColor = (DeviceCMYKColor)color;
-		/*
-			NOTE: This convertion algorithm was from Apache FOP.
-		*/
-		//FIXME: verify whether this algorithm is effective (limit checking seems quite ugly to me!).
-		float keyCorrection = spaceColor.getK() / 2.5f;
-		float r = 1 - spaceColor.getC() + keyCorrection; if(r > 1){r=1;} else if(r < 0){r=0;}
-		float g = 1 - spaceColor.getM() + keyCorrection; if(g > 1){g=1;} else if(g < 0){g=0;}
-		float b = 1 - spaceColor.getY() + keyCorrection; if(b > 1){b=1;} else if(b < 0){b=0;}
-		return new java.awt.Color(r, g, b);
-	}
+  @Override
+  public Paint getPaint(
+    Color<?> color
+    )
+  {
+    DeviceCMYKColor spaceColor = (DeviceCMYKColor)color;
+    /*
+      NOTE: This convertion algorithm was from Apache FOP.
+    */
+    //FIXME: verify whether this algorithm is effective (limit checking seems quite ugly to me!).
+    float keyCorrection = spaceColor.getK() / 2.5f;
+    float r = 1 - spaceColor.getC() + keyCorrection; if(r > 1){r=1;} else if(r < 0){r=0;}
+    float g = 1 - spaceColor.getM() + keyCorrection; if(g > 1){g=1;} else if(g < 0){g=0;}
+    float b = 1 - spaceColor.getY() + keyCorrection; if(b > 1){b=1;} else if(b < 0){b=0;}
+    return new java.awt.Color(r, g, b);
+  }
   // </public>
   // </interface>
   // </dynamic>

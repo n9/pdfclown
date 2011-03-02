@@ -29,9 +29,9 @@ import java.util.List;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
+import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
 import org.pdfclown.documents.contents.FontResources;
 import org.pdfclown.documents.contents.IContentContext;
-import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
 import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -73,27 +73,27 @@ public final class SetFont
   // <interface>
   // <public>
   /**
-  	Gets the name of the {@link Font font} resource to be set.
-  	
-  	@see #getFont(IContentContext)
-  	@see FontResources
+    Gets the name of the {@link Font font} resource to be set.
+
+    @see #getFont(IContentContext)
+    @see FontResources
   */
   public PdfName getName(
     )
   {return (PdfName)operands.get(0);}
-  
+
   /**
-  	Gets the {@link Font font} resource to be set.
-	  
-	  @param context Content context.
+    Gets the {@link Font font} resource to be set.
+
+    @param context Content context.
   */
   public Font getFont(
-  	IContentContext context
-  	)
+    IContentContext context
+    )
   {return context.getResources().getFonts().get(getName());}
 
   /**
-  	Gets the font size to be set.
+    Gets the font size to be set.
   */
   public float getSize(
     )
@@ -109,7 +109,7 @@ public final class SetFont
   }
 
   /**
-  	@see #getName()
+    @see #getName()
   */
   public void setName(
     PdfName value
@@ -117,7 +117,7 @@ public final class SetFont
   {operands.set(0,value);}
 
   /**
-  	@see #getSize()
+    @see #getSize()
   */
   public void setSize(
     float value

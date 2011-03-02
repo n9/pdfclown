@@ -37,7 +37,7 @@ public class HelloWorldSample
 
     // 4. Serialize the PDF file!
     serialize(file,false);
-    
+
     return true;
   }
 
@@ -68,9 +68,9 @@ public class HelloWorldSample
       );
     // Show the text onto the page!
     /*
-    	NOTE: PrimitiveComposer's showText() method is the most basic way
-    	to add text to a page -- see BlockComposer for more advanced uses
-    	(horizontal and vertical alignment, hyphenation, etc.).
+      NOTE: PrimitiveComposer's showText() method is the most basic way
+      to add text to a page -- see BlockComposer for more advanced uses
+      (horizontal and vertical alignment, hyphenation, etc.).
     */
     composer.showText(
       "Hello World!",

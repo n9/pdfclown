@@ -45,18 +45,18 @@ public final class PropertyListResources
   // <class>
   // <static>
   // <interface>
-	static PropertyListResources wrap(
-		PdfDirectObject baseObject,
-		PdfIndirectObject container
-		)
-	{
+  static PropertyListResources wrap(
+    PdfDirectObject baseObject,
+    PdfIndirectObject container
+    )
+  {
     return baseObject == null
-	  	? null
-			: new PropertyListResources(baseObject, container);
-	}
+      ? null
+      : new PropertyListResources(baseObject, container);
+  }
   // </interface>
   // </static>
-	
+
   // <dynamic>
   // <constructors>
   public PropertyListResources(
@@ -73,11 +73,11 @@ public final class PropertyListResources
 
   // <interface>
   // <protected>
-	@Override
-	protected PropertyList wrap(
-		PdfDirectObject baseObject
-		)
-	{return PropertyList.wrap(baseObject, getContainer());}
+  @Override
+  protected PropertyList wrap(
+    PdfDirectObject baseObject
+    )
+  {return PropertyList.wrap(baseObject, getContainer());}
   // </protected>
   // </interface>
   // </dynamic>

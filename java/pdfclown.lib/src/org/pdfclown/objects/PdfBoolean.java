@@ -48,11 +48,11 @@ public final class PdfBoolean
   // <interface>
   // <public>
   /**
-	  Gets the object equivalent to the given value.
-	*/
+    Gets the object equivalent to the given value.
+  */
   public static PdfBoolean get(
-  	Boolean value
-  	)
+    Boolean value
+    )
   {return value == null ? null : (value ? True : False);}
   // </public>
   // </interface>
@@ -61,7 +61,7 @@ public final class PdfBoolean
   // <dynamic>
   // <constructors>
   public PdfBoolean(
-  	)
+    )
   {}
 
   private PdfBoolean(

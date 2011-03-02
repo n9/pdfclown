@@ -50,16 +50,16 @@ public class SetStrokeColor
   // <class>
   // <static>
   // <fields>
-	/**
-		'Set the color to use for stroking operations in any color space' operator.
-	*/
-	@PDF(VersionEnum.PDF12)
+  /**
+    'Set the color to use for stroking operations in any color space' operator.
+  */
+  @PDF(VersionEnum.PDF12)
   public static final String ExtendedOperator = "SCN";
-	/**
-		'Set the color to use for stroking operations in a device, CIE-based (other than ICCBased),
-		or Indexed color space' operator.
-	*/
-	@PDF(VersionEnum.PDF11)
+  /**
+    'Set the color to use for stroking operations in a device, CIE-based (other than ICCBased),
+    or Indexed color space' operator.
+  */
+  @PDF(VersionEnum.PDF11)
   public static final String Operator = "SC";
   // </fields>
   // </static>
@@ -77,35 +77,35 @@ public class SetStrokeColor
   {this(ExtendedOperator, operands);}
 
   public SetStrokeColor(
-  	String operator,
+    String operator,
     List<PdfDirectObject> operands
     )
   {super(operator, operands);}
 
   protected SetStrokeColor(
-  	String operator,
+    String operator,
     Color<?> value
     )
   {super(operator, new ArrayList<PdfDirectObject>(value.getComponents()));}
-  
-  /**
-		@param operator Graphics operator.
-		@param name Name of the color resource entry (see {@link Pattern}).
-	 */
-	protected SetStrokeColor(
-		String operator,
-		PdfName name
-	  )
-	{this(operator, name, null);}
 
   /**
-  	@param operator Graphics operator.
-  	@param name Name of the color resource entry (see {@link Pattern}).
-  	@param underlyingColor Color used to colorize the pattern. 
+    @param operator Graphics operator.
+    @param name Name of the color resource entry (see {@link Pattern}).
    */
   protected SetStrokeColor(
-  	String operator,
-  	PdfName name,
+    String operator,
+    PdfName name
+    )
+  {this(operator, name, null);}
+
+  /**
+    @param operator Graphics operator.
+    @param name Name of the color resource entry (see {@link Pattern}).
+    @param underlyingColor Color used to colorize the pattern.
+   */
+  protected SetStrokeColor(
+    String operator,
+    PdfName name,
     Color<?> underlyingColor
     )
   {
@@ -119,19 +119,19 @@ public class SetStrokeColor
   // <interface>
   // <public>
   public List<PdfDirectObject> getComponents(
-  	)
+    )
   {return operands;}
 
-	@Override
+  @Override
   public void scan(
     GraphicsState state
     )
   {
     state.setStrokeColor(
-    	state.getStrokeColorSpace().getColor(
-    		operands,
-    		state.getScanner().getContentContext()
-    		)
+      state.getStrokeColorSpace().getColor(
+        operands,
+        state.getScanner().getContentContext()
+        )
       );
   }
   // </public>

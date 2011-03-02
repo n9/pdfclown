@@ -65,7 +65,7 @@ public final class BeginMarkedContent
   {super(tag, properties);}
 
   BeginMarkedContent(
-  	String operator,
+    String operator,
     List<PdfDirectObject> operands
     )
   {super(operator, operands);}
@@ -75,12 +75,12 @@ public final class BeginMarkedContent
   // <protected>
   @Override
   protected String getPropertyListOperator(
-  	)
+    )
   {return PropertyListOperator;}
-  
+
   @Override
   protected String getSimpleOperator(
-  	)
+    )
   {return SimpleOperator;}
   // </protected>
   // </interface>

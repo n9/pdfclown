@@ -3,10 +3,10 @@
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it):
-    	- porting and adaptation (extension to any bit depth other than 8) of [JT]
-    		predictor-decoding implementation.
+      - porting and adaptation (extension to any bit depth other than 8) of [JT]
+        predictor-decoding implementation.
     * Joshua Tauberer (code contributor, http://razor.occams.info):
-    	- predictor-decoding contributor on .NET implementation.
+      - predictor-decoding contributor on .NET implementation.
 
   This file should be part of the source code distribution of "PDF Clown library"
   (the Program): see the accompanying README files for more info.
@@ -29,20 +29,20 @@
 
 package org.pdfclown.bytes.filters;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.InflaterInputStream;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.InflaterInputStream;
 
 /**
   zlib/deflate [RFC:1950,1951] filter [PDF:1.6:3.3.3].
@@ -110,113 +110,113 @@ public final class FlateFilter
 
   // <private>
   private byte[] decodePredictor(
-		byte[] data,
-		PdfDictionary parameters
-		) throws IOException
+    byte[] data,
+    PdfDictionary parameters
+    ) throws IOException
   {
-  	if(parameters == null)
-  		return data;
-  	
-  	int predictor = (parameters.containsKey(PdfName.Predictor) ? ((PdfInteger)parameters.get(PdfName.Predictor)).getRawValue() : 1);
-  	if(predictor == 1) // No predictor was applied during data encoding.
-  		return data;
-  	
-  	int sampleComponentBitsCount = (parameters.containsKey(PdfName.BitsPerComponent) ? ((PdfInteger)parameters.get(PdfName.BitsPerComponent)).getRawValue() : 8);
-  	int sampleComponentsCount = (parameters.containsKey(PdfName.Colors) ? ((PdfInteger)parameters.get(PdfName.Colors)).getRawValue() : 1);
-  	int rowSamplesCount = (parameters.containsKey(PdfName.Columns) ? ((PdfInteger)parameters.get(PdfName.Columns)).getRawValue() : 1);
+    if(parameters == null)
+      return data;
 
-		InputStream input = new ByteArrayInputStream(data);
-  	ByteArrayOutputStream output = new ByteArrayOutputStream();
-  	switch (predictor)
-  	{
+    int predictor = (parameters.containsKey(PdfName.Predictor) ? ((PdfInteger)parameters.get(PdfName.Predictor)).getRawValue() : 1);
+    if(predictor == 1) // No predictor was applied during data encoding.
+      return data;
+
+    int sampleComponentBitsCount = (parameters.containsKey(PdfName.BitsPerComponent) ? ((PdfInteger)parameters.get(PdfName.BitsPerComponent)).getRawValue() : 8);
+    int sampleComponentsCount = (parameters.containsKey(PdfName.Colors) ? ((PdfInteger)parameters.get(PdfName.Colors)).getRawValue() : 1);
+    int rowSamplesCount = (parameters.containsKey(PdfName.Columns) ? ((PdfInteger)parameters.get(PdfName.Columns)).getRawValue() : 1);
+
+    InputStream input = new ByteArrayInputStream(data);
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    switch (predictor)
+    {
       case 2: // TIFF Predictor 2 (component-based).
-	  	{
-		  	int[] sampleComponentPredictions = new int[sampleComponentsCount];
-		  	int sampleComponentDelta = 0;
-		  	int sampleComponentIndex = 0;
-		  	while((sampleComponentDelta = input.read()) != -1)
-		  	{
-			  	int sampleComponent = sampleComponentDelta + sampleComponentPredictions[sampleComponentIndex];
-			  	output.write(sampleComponent);
-			  	
-			  	sampleComponentPredictions[sampleComponentIndex] = sampleComponent;
-			  	
-			  	sampleComponentIndex = ++sampleComponentIndex % sampleComponentsCount;
-		  	}
+      {
+        int[] sampleComponentPredictions = new int[sampleComponentsCount];
+        int sampleComponentDelta = 0;
+        int sampleComponentIndex = 0;
+        while((sampleComponentDelta = input.read()) != -1)
+        {
+          int sampleComponent = sampleComponentDelta + sampleComponentPredictions[sampleComponentIndex];
+          output.write(sampleComponent);
+
+          sampleComponentPredictions[sampleComponentIndex] = sampleComponent;
+
+          sampleComponentIndex = ++sampleComponentIndex % sampleComponentsCount;
+        }
         break;
-	  	}
+      }
       default: // PNG Predictors [RFC 2083] (byte-based).
-	  	{
-	  		int sampleBytesCount = (int)Math.ceil(sampleComponentBitsCount * sampleComponentsCount / 8); // Number of bytes per pixel (bpp).
-	  		int rowSampleBytesCount = (int)Math.ceil(sampleComponentBitsCount * sampleComponentsCount * rowSamplesCount / 8) + sampleBytesCount; // Number of bytes per row (comprising a leading upper-left sample (see Paeth method)).
-		  	int[] previousRowBytePredictions = new int[rowSampleBytesCount];
-		  	int[] currentRowBytePredictions = new int[rowSampleBytesCount];
-		  	int[] leftBytePredictions = new int[sampleBytesCount];
-		  	int predictionMethod;
-		  	while((predictionMethod = input.read()) != -1)
-		  	{
-					System.arraycopy(currentRowBytePredictions, 0, previousRowBytePredictions, 0, currentRowBytePredictions.length);
-		  		Arrays.fill(leftBytePredictions, 0, leftBytePredictions.length, 0);
-			  	for(
-			  		int rowSampleByteIndex = sampleBytesCount; // Starts after the leading upper-left sample (see Paeth method).
-			  		rowSampleByteIndex < rowSampleBytesCount;
-			  		rowSampleByteIndex++
-			  		)
-			  	{
-				  	int byteDelta = input.read();
-				  	
-				  	int sampleByteIndex = rowSampleByteIndex % sampleBytesCount;
-			
-				  	int sampleByte;
-				  	switch(predictionMethod)
-				  	{
-					  	case 0: // None (no prediction).
-					  		sampleByte = byteDelta;
-					  		break;
-					  	case 1: // Sub (predicts the same as the sample to the left).
-					  		sampleByte = byteDelta + leftBytePredictions[sampleByteIndex];
-					  		break;
-					  	case 2: // Up (predicts the same as the sample above).
-					  		sampleByte = byteDelta + previousRowBytePredictions[rowSampleByteIndex];
-					  		break;
-					  	case 3: // Average (predicts the average of the sample to the left and the sample above).
-					  		sampleByte = byteDelta + (int)Math.floor(((leftBytePredictions[sampleByteIndex] + previousRowBytePredictions[rowSampleByteIndex])) / 2);
-					  		break;
-					  	case 4: // Paeth (a nonlinear function of the sample above, the sample to the left, and the sample to the upper left).
-					  	{
-					  		int paethPrediction;
-					  		{
-						  		int leftBytePrediction = leftBytePredictions[sampleByteIndex];
-						  		int topBytePrediction = previousRowBytePredictions[rowSampleByteIndex];
-						  		int topLeftBytePrediction = previousRowBytePredictions[rowSampleByteIndex - sampleBytesCount];
-						  		int initialPrediction = leftBytePrediction + topBytePrediction - topLeftBytePrediction;
-						  		int leftPrediction = Math.abs(initialPrediction - leftBytePrediction);
-						  		int topPrediction = Math.abs(initialPrediction - topBytePrediction);
-						  		int topLeftPrediction = Math.abs(initialPrediction - topLeftBytePrediction);
-						  		if(leftPrediction <= topPrediction
-					  				&& leftPrediction <= topLeftPrediction)
-						  		{paethPrediction = leftBytePrediction;}
-						  		else if(topPrediction <= topLeftPrediction)
-						  		{paethPrediction = topBytePrediction;}
-						  		else
-						  		{paethPrediction = topLeftBytePrediction;}
-					  		}
-					  		sampleByte = byteDelta + paethPrediction;
-					  		break;
-					  	}
-					  	default:
-					  		throw new UnsupportedOperationException("Prediction method " + predictionMethod + " unknown.");
-				  	}
-				  	output.write(sampleByte);
-			
-				  	leftBytePredictions[sampleByteIndex] = currentRowBytePredictions[rowSampleByteIndex] = sampleByte;
-			  	}
-		  	}
-    		break;
-	  	}
+      {
+        int sampleBytesCount = (int)Math.ceil(sampleComponentBitsCount * sampleComponentsCount / 8); // Number of bytes per pixel (bpp).
+        int rowSampleBytesCount = (int)Math.ceil(sampleComponentBitsCount * sampleComponentsCount * rowSamplesCount / 8) + sampleBytesCount; // Number of bytes per row (comprising a leading upper-left sample (see Paeth method)).
+        int[] previousRowBytePredictions = new int[rowSampleBytesCount];
+        int[] currentRowBytePredictions = new int[rowSampleBytesCount];
+        int[] leftBytePredictions = new int[sampleBytesCount];
+        int predictionMethod;
+        while((predictionMethod = input.read()) != -1)
+        {
+          System.arraycopy(currentRowBytePredictions, 0, previousRowBytePredictions, 0, currentRowBytePredictions.length);
+          Arrays.fill(leftBytePredictions, 0, leftBytePredictions.length, 0);
+          for(
+            int rowSampleByteIndex = sampleBytesCount; // Starts after the leading upper-left sample (see Paeth method).
+            rowSampleByteIndex < rowSampleBytesCount;
+            rowSampleByteIndex++
+            )
+          {
+            int byteDelta = input.read();
+
+            int sampleByteIndex = rowSampleByteIndex % sampleBytesCount;
+
+            int sampleByte;
+            switch(predictionMethod)
+            {
+              case 0: // None (no prediction).
+                sampleByte = byteDelta;
+                break;
+              case 1: // Sub (predicts the same as the sample to the left).
+                sampleByte = byteDelta + leftBytePredictions[sampleByteIndex];
+                break;
+              case 2: // Up (predicts the same as the sample above).
+                sampleByte = byteDelta + previousRowBytePredictions[rowSampleByteIndex];
+                break;
+              case 3: // Average (predicts the average of the sample to the left and the sample above).
+                sampleByte = byteDelta + (int)Math.floor(((leftBytePredictions[sampleByteIndex] + previousRowBytePredictions[rowSampleByteIndex])) / 2);
+                break;
+              case 4: // Paeth (a nonlinear function of the sample above, the sample to the left, and the sample to the upper left).
+              {
+                int paethPrediction;
+                {
+                  int leftBytePrediction = leftBytePredictions[sampleByteIndex];
+                  int topBytePrediction = previousRowBytePredictions[rowSampleByteIndex];
+                  int topLeftBytePrediction = previousRowBytePredictions[rowSampleByteIndex - sampleBytesCount];
+                  int initialPrediction = leftBytePrediction + topBytePrediction - topLeftBytePrediction;
+                  int leftPrediction = Math.abs(initialPrediction - leftBytePrediction);
+                  int topPrediction = Math.abs(initialPrediction - topBytePrediction);
+                  int topLeftPrediction = Math.abs(initialPrediction - topLeftBytePrediction);
+                  if(leftPrediction <= topPrediction
+                    && leftPrediction <= topLeftPrediction)
+                  {paethPrediction = leftBytePrediction;}
+                  else if(topPrediction <= topLeftPrediction)
+                  {paethPrediction = topBytePrediction;}
+                  else
+                  {paethPrediction = topLeftBytePrediction;}
+                }
+                sampleByte = byteDelta + paethPrediction;
+                break;
+              }
+              default:
+                throw new UnsupportedOperationException("Prediction method " + predictionMethod + " unknown.");
+            }
+            output.write(sampleByte);
+
+            leftBytePredictions[sampleByteIndex] = currentRowBytePredictions[rowSampleByteIndex] = sampleByte;
+          }
+        }
+        break;
+      }
     }
-  	return output.toByteArray();
-	}
+    return output.toByteArray();
+  }
 
   private void transform(
     InputStream input,

@@ -52,21 +52,21 @@ public final class ConvertUtils
     byte[] data
     )
   {
-  	char[] result;
-  	{
-	    int dataLength = data.length;
-	    result = new char[dataLength * 2];
-	    for(
-	      int dataIndex = 0,
-	        resultIndex = 0;
-	      dataIndex < dataLength;
-	      dataIndex++
-	      )
-	    {
-	      result[resultIndex++] = HexDigits[(0xF0 & data[dataIndex]) >>> 4];
-	      result[resultIndex++] = HexDigits[0x0F & data[dataIndex]];
-	    }
-  	}
+    char[] result;
+    {
+      int dataLength = data.length;
+      result = new char[dataLength * 2];
+      for(
+        int dataIndex = 0,
+          resultIndex = 0;
+        dataIndex < dataLength;
+        dataIndex++
+        )
+      {
+        result[resultIndex++] = HexDigits[(0xF0 & data[dataIndex]) >>> 4];
+        result[resultIndex++] = HexDigits[0x0F & data[dataIndex]];
+      }
+    }
     return new String(result);
   }
 
@@ -91,15 +91,15 @@ public final class ConvertUtils
   {
     int value;
     {
-			length = Math.min(length, data.length - index);
-	    value = 0;
-	    for(
-	      int i = index,
-	        endIndex = index + length;
-	      i < endIndex;
-	      i++
-	      )
-	    {value |= (data[i] & 0xff) << 8 * (byteOrder == ByteOrder.LITTLE_ENDIAN ? i-index : endIndex-i-1);}
+      length = Math.min(length, data.length - index);
+      value = 0;
+      for(
+        int i = index,
+          endIndex = index + length;
+        i < endIndex;
+        i++
+        )
+      {value |= (data[i] & 0xff) << 8 * (byteOrder == ByteOrder.LITTLE_ENDIAN ? i-index : endIndex-i-1);}
     }
     return value;
   }
@@ -108,27 +108,27 @@ public final class ConvertUtils
     String data
     )
   {
-  	byte[] result;
-  	{
-	    char[] dataChars = data.toCharArray();
-	    int dataLength = dataChars.length;
-	    if((dataLength % 2) != 0)
-	      throw new RuntimeException("Odd number of characters.");
-	
-	    result = new byte[dataLength / 2];
-	    for(
-	      int resultIndex = 0,
-	        dataIndex = 0;
-	      dataIndex < dataLength;
-	      resultIndex++
-	      )
-	    {
-	      result[resultIndex] = (byte)((
-	        toHexDigit(dataChars[dataIndex++]) << 4
-	          | toHexDigit(dataChars[dataIndex++])
-	          ) & 0xFF);
-	    }
-  	}
+    byte[] result;
+    {
+      char[] dataChars = data.toCharArray();
+      int dataLength = dataChars.length;
+      if((dataLength % 2) != 0)
+        throw new RuntimeException("Odd number of characters.");
+
+      result = new byte[dataLength / 2];
+      for(
+        int resultIndex = 0,
+          dataIndex = 0;
+        dataIndex < dataLength;
+        resultIndex++
+        )
+      {
+        result[resultIndex] = (byte)((
+          toHexDigit(dataChars[dataIndex++]) << 4
+            | toHexDigit(dataChars[dataIndex++])
+            ) & 0xFF);
+      }
+    }
     return result;
   }
 
@@ -143,14 +143,14 @@ public final class ConvertUtils
     ByteOrder byteOrder
     )
   {
-  	byte[] result = new byte[length];
-  	for(
-  		int index = 0;
-  		index < length;
-  		index++
-  		)
-  	{result[index] = (byte)(data >> 8 * (byteOrder == ByteOrder.LITTLE_ENDIAN ? index : length-index-1));}
-  	return result;
+    byte[] result = new byte[length];
+    for(
+      int index = 0;
+      index < length;
+      index++
+      )
+    {result[index] = (byte)(data >> 8 * (byteOrder == ByteOrder.LITTLE_ENDIAN ? index : length-index-1));}
+    return result;
   }
   // </public>
 

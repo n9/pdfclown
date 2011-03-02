@@ -29,8 +29,8 @@ import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.files.File;
 import org.pdfclown.tokens.Encoding;
 import org.pdfclown.tokens.Keyword;
-import org.pdfclown.tokens.Parser;
 import org.pdfclown.tokens.ObjectStream;
+import org.pdfclown.tokens.Parser;
 import org.pdfclown.tokens.Symbol;
 import org.pdfclown.tokens.XRefEntry;
 import org.pdfclown.tokens.XRefEntry.UsageEnum;
@@ -46,12 +46,12 @@ public final class PdfIndirectObject
   implements IPdfIndirectObject
 {
   // <class>
-	// <static>
-	// <fields>
-	private static final byte[] BeginIndirectObjectChunk = Encoding.encode(Symbol.Space + Keyword.BeginIndirectObject + Symbol.LineFeed);
-	private static final byte[] EndIndirectObjectChunk = Encoding.encode(Symbol.LineFeed + Keyword.EndIndirectObject + Symbol.LineFeed);
-	// </fields>
-	// </static>
+  // <static>
+  // <fields>
+  private static final byte[] BeginIndirectObjectChunk = Encoding.encode(Symbol.Space + Keyword.BeginIndirectObject + Symbol.LineFeed);
+  private static final byte[] EndIndirectObjectChunk = Encoding.encode(Symbol.LineFeed + Keyword.EndIndirectObject + Symbol.LineFeed);
+  // </fields>
+  // </static>
 
   // <dynamic>
   // <fields>
@@ -96,42 +96,42 @@ public final class PdfIndirectObject
   // <interface>
   // <public>
   /**
-  	Adds the {@link #getDataObject() data object} to the specified object stream [PDF:1.6:3.4.6].
+    Adds the {@link #getDataObject() data object} to the specified object stream [PDF:1.6:3.4.6].
 
-  	@param objectStreamIndirectObject Target object stream.
+    @param objectStreamIndirectObject Target object stream.
    */
   public void compress(
-  	PdfIndirectObject objectStreamIndirectObject
-  	)
+    PdfIndirectObject objectStreamIndirectObject
+    )
   {
-  	if(objectStreamIndirectObject == null)
-  	{uncompress();}
-  	else
-  	{
-	  	PdfDataObject objectStreamDataObject = objectStreamIndirectObject.getDataObject();
-	  	if(!(objectStreamDataObject instanceof ObjectStream))
-	  		throw new IllegalArgumentException("'objectStreamIndirectObject' argument MUST contain an ObjectStream instance.");
-	  	
-	  	// Ensure removal from previous object stream! 
-	  	uncompress();
-	  	
-	  	// Add to the object stream!
-	  	ObjectStream objectStream = (ObjectStream)objectStreamDataObject;
-	  	objectStream.put(xrefEntry.getNumber(),getDataObject());
-			// Update its xref entry!
-	  	xrefEntry.setUsage(UsageEnum.InUseCompressed);
-	  	xrefEntry.setStreamNumber(objectStreamIndirectObject.getReference().getObjectNumber());
-			xrefEntry.setOffset(-1); // Internal object index unknown (to set on object stream serialization -- see ObjectStream).
-  	}
+    if(objectStreamIndirectObject == null)
+    {uncompress();}
+    else
+    {
+      PdfDataObject objectStreamDataObject = objectStreamIndirectObject.getDataObject();
+      if(!(objectStreamDataObject instanceof ObjectStream))
+        throw new IllegalArgumentException("'objectStreamIndirectObject' argument MUST contain an ObjectStream instance.");
+
+      // Ensure removal from previous object stream!
+      uncompress();
+
+      // Add to the object stream!
+      ObjectStream objectStream = (ObjectStream)objectStreamDataObject;
+      objectStream.put(xrefEntry.getNumber(),getDataObject());
+      // Update its xref entry!
+      xrefEntry.setUsage(UsageEnum.InUseCompressed);
+      xrefEntry.setStreamNumber(objectStreamIndirectObject.getReference().getObjectNumber());
+      xrefEntry.setOffset(-1); // Internal object index unknown (to set on object stream serialization -- see ObjectStream).
+    }
   }
 
   public File getFile(
     )
   {return file;}
-  
+
   public XRefEntry getXrefEntry(
-  	)
-	{return xrefEntry;}
+    )
+  {return xrefEntry;}
 
   @Override
   public int hashCode(
@@ -147,42 +147,42 @@ public final class PdfIndirectObject
   }
 
   /**
-  	Gets whether it's compressed within an object stream [PDF:1.6:3.4.6].
+    Gets whether it's compressed within an object stream [PDF:1.6:3.4.6].
   */
   public boolean isCompressed(
-  	)
+    )
   {return xrefEntry.getUsage() == UsageEnum.InUseCompressed;}
 
   /**
-  	Gets whether it contains a data object.
+    Gets whether it contains a data object.
   */
   public boolean isInUse(
     )
   {return xrefEntry.getUsage() != UsageEnum.Free;}
 
   /**
-  	Gets whether it hasn't been modified.
+    Gets whether it hasn't been modified.
   */
   public boolean isOriginal(
     )
   {return original;}
 
   /**
-  	Removes the {@link #getDataObject() data object} from its object stream [PDF:1.6:3.4.6].
+    Removes the {@link #getDataObject() data object} from its object stream [PDF:1.6:3.4.6].
   */
   public void uncompress(
-  	)
+    )
   {
-		if(!isCompressed())
-			return;
+    if(!isCompressed())
+      return;
 
-		// Remove from its object stream!
-		ObjectStream oldObjectStream = (ObjectStream)file.getIndirectObjects().get(xrefEntry.getStreamNumber()).getDataObject();
-		oldObjectStream.remove(xrefEntry.getNumber());
-		// Update its xref entry!
-		xrefEntry.setUsage(UsageEnum.InUse);
-		xrefEntry.setStreamNumber(-1); // No object stream.
-		xrefEntry.setOffset(-1); // Offset unknown (to set on file serialization -- see CompressedWriter).
+    // Remove from its object stream!
+    ObjectStream oldObjectStream = (ObjectStream)file.getIndirectObjects().get(xrefEntry.getStreamNumber()).getDataObject();
+    oldObjectStream.remove(xrefEntry.getNumber());
+    // Update its xref entry!
+    xrefEntry.setUsage(UsageEnum.InUse);
+    xrefEntry.setStreamNumber(-1); // No object stream.
+    xrefEntry.setOffset(-1); // Offset unknown (to set on file serialization -- see CompressedWriter).
   }
 
   public void update(
@@ -219,11 +219,12 @@ public final class PdfIndirectObject
     )
   {return context.getIndirectObjects().addExternal(this);}
 
+  @Override
   public void delete(
     )
   {
     if(file == null)
-    	return;
+      return;
 
     /*
       NOTE: It's expected that dropFile() is invoked by IndirectObjects remove() method;
@@ -233,6 +234,7 @@ public final class PdfIndirectObject
     file.getIndirectObjects().remove(xrefEntry.getNumber());
   }
 
+  @Override
   public PdfDataObject getDataObject(
     )
   {
@@ -240,29 +242,29 @@ public final class PdfIndirectObject
     {
       try
       {
-      	switch (xrefEntry.getUsage())
-      	{
-      		// Free entry (no data object at all).
-      		case Free:
-      			break; 
-      		// In-use entry (late-bound data object).
-	        case InUse:
-	        {
-	          Parser parser = file.getReader().getParser();
-	          // Retrieve the associated data object among the original objects!
-	          parser.seek(xrefEntry.getOffset());
-	          // Get the indirect data object!
-	          dataObject = parser.parsePdfObject(4); // NOTE: Skips the indirect-object header.
-		        break;
-	        }
-	        case InUseCompressed:
-	        {
-	        	// Get the object stream where its data object is stored!
-	        	ObjectStream objectStream = (ObjectStream)file.getIndirectObjects().get(xrefEntry.getStreamNumber()).getDataObject();
-	          // Get the indirect data object!
-	        	dataObject = objectStream.get(xrefEntry.getNumber());
-		        break;
-	        }
+        switch (xrefEntry.getUsage())
+        {
+          // Free entry (no data object at all).
+          case Free:
+            break;
+          // In-use entry (late-bound data object).
+          case InUse:
+          {
+            Parser parser = file.getReader().getParser();
+            // Retrieve the associated data object among the original objects!
+            parser.seek(xrefEntry.getOffset());
+            // Get the indirect data object!
+            dataObject = parser.parsePdfObject(4); // NOTE: Skips the indirect-object header.
+            break;
+          }
+          case InUseCompressed:
+          {
+            // Get the object stream where its data object is stored!
+            ObjectStream objectStream = (ObjectStream)file.getIndirectObjects().get(xrefEntry.getStreamNumber()).getDataObject();
+            // Get the indirect data object!
+            dataObject = objectStream.get(xrefEntry.getNumber());
+            break;
+          }
         }
       }
       catch(Exception e)
@@ -271,14 +273,17 @@ public final class PdfIndirectObject
     return dataObject;
   }
 
+  @Override
   public PdfIndirectObject getIndirectObject(
     )
   {return this;}
 
+  @Override
   public PdfReference getReference(
     )
   {return reference;}
 
+  @Override
   public void setDataObject(
     PdfDataObject value
     )
@@ -300,9 +305,9 @@ public final class PdfIndirectObject
   public void dropFile(
     )
   {
-  	uncompress();
-  	file = null;
-	}
+    uncompress();
+    file = null;
+  }
 
   /**
     For internal use only.

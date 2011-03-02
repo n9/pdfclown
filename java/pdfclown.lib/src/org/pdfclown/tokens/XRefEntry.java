@@ -32,7 +32,7 @@ package org.pdfclown.tokens;
   @version 0.1.0
 */
 public final class XRefEntry
-	implements Cloneable
+  implements Cloneable
 {
   // <class>
   // <classes>
@@ -42,15 +42,15 @@ public final class XRefEntry
   public enum UsageEnum
   {
     /**
-    	Free entry.
+      Free entry.
     */
     Free,
     /**
-    	Ordinary (uncompressed) object entry.
+      Ordinary (uncompressed) object entry.
     */
     InUse,
     /**
-    	Compressed object entry [PDF:1.6:3.4.6].
+      Compressed object entry [PDF:1.6:3.4.6].
     */
     InUseCompressed
   }
@@ -76,13 +76,13 @@ public final class XRefEntry
 
   // <constructors>
   /**
-		Instantiates an ordinary (uncompressed) object entry.
-  	
-  	@param number Object number.
-  	@param generation Generation number.
-  	@param offset Indirect-object byte offset within the serialized file (in-use entry),
-  		or the next free-object object number (free entry).
-  	@param usage Usage state.
+    Instantiates an ordinary (uncompressed) object entry.
+
+    @param number Object number.
+    @param generation Generation number.
+    @param offset Indirect-object byte offset within the serialized file (in-use entry),
+      or the next free-object object number (free entry).
+    @param usage Usage state.
   */
   public XRefEntry(
     int number,
@@ -93,11 +93,11 @@ public final class XRefEntry
   {this(number,generation,offset,usage,-1);}
 
   /**
-  	Instantiates a compressed object entry.
-  	
-  	@param number Object number.
-  	@param offset Object index within its object stream.
-  	@param streamNumber Object number of the object stream in which this object is stored.
+    Instantiates a compressed object entry.
+
+    @param number Object number.
+    @param offset Object index within its object stream.
+    @param streamNumber Object number of the object stream in which this object is stored.
   */
   public XRefEntry(
     int number,
@@ -140,21 +140,21 @@ public final class XRefEntry
 
   /**
     Gets its indirect-object byte offset within the serialized file (in-use entry),
-		the next free-object object number (free entry) or the object index within its object stream (compressed entry).
+    the next free-object object number (free entry) or the object index within its object stream (compressed entry).
   */
   public int getOffset(
     )
   {return offset;}
 
   /**
-		Gets the object number of the object stream in which this object is stored [PDF:1.6:3.4.7],
-		in case it is a {@link UsageEnum#InUseCompressed compressed} one.
-		
-		@return <code>-1</code> in case this is {@link UsageEnum#InUse not a compressed}-object entry.
+    Gets the object number of the object stream in which this object is stored [PDF:1.6:3.4.7],
+    in case it is a {@link UsageEnum#InUseCompressed compressed} one.
+
+    @return <code>-1</code> in case this is {@link UsageEnum#InUse not a compressed}-object entry.
   */
-	public int getStreamNumber(
-		)
-	{return streamNumber;}
+  public int getStreamNumber(
+    )
+  {return streamNumber;}
 
   /**
     Gets the usage state.
@@ -167,11 +167,11 @@ public final class XRefEntry
     int value
     )
   {offset = value;}
-  
+
   public void setStreamNumber(
-  	int value
-  	)
-	{streamNumber = value;}
+    int value
+    )
+  {streamNumber = value;}
 
   /**
     @see #getUsage()
@@ -181,11 +181,11 @@ public final class XRefEntry
     )
   {usage = value;}
   // </public>
-  
+
   // <protected>
   @Override
   protected XRefEntry clone(
-  	) throws CloneNotSupportedException
+    ) throws CloneNotSupportedException
   {return (XRefEntry)super.clone();}
   // </protected>
 

@@ -48,7 +48,7 @@ public final class PropertyList
   extends PdfObjectWrapper<PdfDictionary>
 {
   // <class>
-	// <static>
+  // <static>
   // <interface>
   // <public>
   /**
@@ -73,14 +73,14 @@ public final class PropertyList
     PdfDirectObject baseObject,
     PdfIndirectObject container
     )
-	{
-  	return baseObject == null
-			? null
-			: new PropertyList(baseObject, container);
-	}
+  {
+    return baseObject == null
+      ? null
+      : new PropertyList(baseObject, container);
+  }
   // </public>
   // </interface>
-	// </static>
+  // </static>
 
   // <dynamic>
   // <constructors>

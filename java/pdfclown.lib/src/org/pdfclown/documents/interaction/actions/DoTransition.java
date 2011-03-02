@@ -56,7 +56,7 @@ public final class DoTransition
     Transition transition
     )
   {
-		super(context, PdfName.Trans);
+    super(context, PdfName.Trans);
     setTransition(transition);
   }
 

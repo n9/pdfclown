@@ -25,36 +25,35 @@
 
 package org.pdfclown.documents.contents.colorSpaces;
 
-import org.pdfclown.VersionEnum;
 import org.pdfclown.PDF;
+import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfObjectWrapper;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.pdfclown.util.NotImplementedException;
 
 /**
-	Shading object [PDF:1.6:4.6.3].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@version 0.1.0
+  Shading object [PDF:1.6:4.6.3].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF13)
 public class Shading<TDataObject extends PdfDataObject>
-	extends PdfObjectWrapper<TDataObject>
+  extends PdfObjectWrapper<TDataObject>
 {
-	//TODO:shading types!
+  //TODO:shading types!
   // <class>
   // <static>
   // <interface>
   // <public>
-	public static Shading<? extends PdfDataObject> wrap(
-		PdfDirectObject baseObject,
-		PdfIndirectObject container
-		)
-	{return null;} //TODO:shading types!
+  public static Shading<? extends PdfDataObject> wrap(
+    PdfDirectObject baseObject,
+    PdfIndirectObject container
+    )
+  {return null;} //TODO:shading types!
   // </public>
   // </interface>
   // </static>
@@ -63,20 +62,20 @@ public class Shading<TDataObject extends PdfDataObject>
   // <constructors>
   //TODO:IMPL new element constructor!
 
-	Shading(
-		PdfDirectObject baseObject,
-		PdfIndirectObject container
-		)
-	{super(baseObject, container);}
+  Shading(
+    PdfDirectObject baseObject,
+    PdfIndirectObject container
+    )
+  {super(baseObject, container);}
   // </constructors>
 
   // <interface>
   // <public>
-	@Override
-	public Object clone(
-		Document context
-		)
-	{throw new NotImplementedException();}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {throw new NotImplementedException();}
   // </public>
   // </interface>
   // </dynamic>

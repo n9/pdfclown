@@ -453,8 +453,8 @@ public final class Transition
   {
     PdfAtomicObject<?> directionObject = (PdfAtomicObject<?>)getBaseDataObject().get(PdfName.Di);
     return directionObject == null
-    	? DirectionEnum.LeftToRight
-  		: DirectionEnum.get(directionObject);
+      ? DirectionEnum.LeftToRight
+      : DirectionEnum.get(directionObject);
   }
 
   /**
@@ -465,8 +465,8 @@ public final class Transition
   {
     PdfNumber<?> durationObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.D);
     return durationObject == null
-    	? 1
-    	: durationObject.getNumberValue();
+      ? 1
+      : durationObject.getNumberValue();
   }
 
   /**
@@ -477,8 +477,8 @@ public final class Transition
   {
     PdfName orientationObject = (PdfName)getBaseDataObject().get(PdfName.Dm);
     return orientationObject == null
-    	? OrientationEnum.Horizontal
-  		: OrientationEnum.get(orientationObject);
+      ? OrientationEnum.Horizontal
+      : OrientationEnum.get(orientationObject);
   }
 
   /**
@@ -489,8 +489,8 @@ public final class Transition
   {
     PdfName pageDirectionObject = (PdfName)getBaseDataObject().get(PdfName.M);
     return pageDirectionObject == null
-    	? PageDirectionEnum.Inward
-  		: PageDirectionEnum.get(pageDirectionObject);
+      ? PageDirectionEnum.Inward
+      : PageDirectionEnum.get(pageDirectionObject);
   }
 
   /**
@@ -502,8 +502,8 @@ public final class Transition
   {
     PdfNumber<?> scaleObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.SS);
     return scaleObject == null
-    	? 1
-  		: scaleObject.getNumberValue();
+      ? 1
+      : scaleObject.getNumberValue();
   }
 
   /**
@@ -514,8 +514,8 @@ public final class Transition
   {
     PdfName styleObject = (PdfName)getBaseDataObject().get(PdfName.S);
     return styleObject == null
-    	? StyleEnum.Replace
-  		: StyleEnum.get(styleObject);
+      ? StyleEnum.Replace
+      : StyleEnum.get(styleObject);
   }
 
   /**

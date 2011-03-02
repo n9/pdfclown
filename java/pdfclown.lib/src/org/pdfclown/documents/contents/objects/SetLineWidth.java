@@ -68,8 +68,8 @@ public final class SetLineWidth
   // <interface>
   // <public>
   public float getValue(
-	  )
-	{return ((PdfNumber<?>)operands.get(0)).getNumberValue();}
+    )
+  {return ((PdfNumber<?>)operands.get(0)).getNumberValue();}
 
   @Override
   public void scan(

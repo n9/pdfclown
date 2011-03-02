@@ -40,35 +40,35 @@ public abstract class Writer
   // <class>
   // <static>
   // <fields>
-	private static final byte[] BOFChunk = Encoding.encode(Keyword.BOF);
-	private static final byte[] EOFChunk = Encoding.encode(Symbol.LineFeed + Keyword.EOF);
+  private static final byte[] BOFChunk = Encoding.encode(Keyword.BOF);
+  private static final byte[] EOFChunk = Encoding.encode(Symbol.LineFeed + Keyword.EOF);
   private static final byte[] HeaderBinaryHintChunk = new byte[]{(byte)Symbol.LineFeed,(byte)Symbol.Percent,(byte)0x80,(byte)0x80,(byte)0x80,(byte)0x80,(byte)Symbol.LineFeed}; // NOTE: Arbitrary binary characters (code >= 128) for ensuring proper behavior of file transfer applications [PDF:1.6:3.4.1].
-	private static final byte[] StartXRefChunk = Encoding.encode(Keyword.StartXRef + Symbol.LineFeed);	
+  private static final byte[] StartXRefChunk = Encoding.encode(Keyword.StartXRef + Symbol.LineFeed);
   // </fields>
-  
+
   // <interface>
   // <public>
   /**
-  	Gets a new writer instance for the specified file.
-  	
-  	@param file File to serialize.
-  	@param stream Target stream.
+    Gets a new writer instance for the specified file.
+
+    @param file File to serialize.
+    @param stream Target stream.
   */
   public static Writer get(
     File file,
     IOutputStream stream
-  	)
+    )
   {
-  	// Which cross-reference table mode?
-  	switch(file.getDocument().getConfiguration().getXrefMode())
-		{
-			case Plain:
-				return new PlainWriter(file, stream);
-			case Compressed:
-				return new CompressedWriter(file, stream);
-			default:
-				throw new UnsupportedOperationException();
-		}
+    // Which cross-reference table mode?
+    switch(file.getDocument().getConfiguration().getXrefMode())
+    {
+      case Plain:
+        return new PlainWriter(file, stream);
+      case Compressed:
+        return new CompressedWriter(file, stream);
+      default:
+        throw new UnsupportedOperationException();
+    }
   }
   // </public>
   // </interface>
@@ -94,27 +94,27 @@ public abstract class Writer
   // <interface>
   // <public>
   /**
-  	Gets the file to serialize.
+    Gets the file to serialize.
   */
   public File getFile(
-  	)
-	{return file;}
+    )
+  {return file;}
 
   /**
-  	Gets the target stream.
+    Gets the target stream.
   */
   public IOutputStream getStream(
     )
   {return stream;}
 
   /**
-  	Serializes the {@link #getFile() file} to the {@link #getStream() target stream}.
+    Serializes the {@link #getFile() file} to the {@link #getStream() target stream}.
 
     @param mode Serialization mode.
    */
   public void write(
     SerializationModeEnum mode
-  	)
+    )
   {
     switch(mode)
     {
@@ -129,18 +129,18 @@ public abstract class Writer
         writeStandard();
         break;
       case Linearized:
-      	writeLinearized();
-      	break;
+        writeLinearized();
+        break;
     }
   }
   // </public>
 
   // <protected>
   /**
-  	Serializes the beginning of the file [PDF:1.6:3.4.1].
+    Serializes the beginning of the file [PDF:1.6:3.4.1].
   */
   protected final void writeHeader(
-  	)
+    )
   {
     stream.write(BOFChunk);
     stream.write(file.getDocument().getVersion().toString()); // NOTE: Document version represents the actual (possibly-overridden) file version.
@@ -154,26 +154,26 @@ public abstract class Writer
     );
 
   /**
-	  Serializes the PDF file linearized [PDF:1.6:F].
-	*/
-	protected abstract void writeLinearized(
-	  );
-  
+    Serializes the PDF file linearized [PDF:1.6:F].
+  */
+  protected abstract void writeLinearized(
+    );
+
   /**
     Serializes the PDF file compactly [PDF:1.6:3.4].
   */
   protected abstract void writeStandard(
     );
-  
+
   /**
-  	Serializes the end of the file [PDF:3.4.4].
-  	
-  	@param startxref Byte offset from the beginning of the file to the beginning
-  		of the last cross-reference section.
+    Serializes the end of the file [PDF:3.4.4].
+
+    @param startxref Byte offset from the beginning of the file to the beginning
+      of the last cross-reference section.
   */
   protected final void writeTail(
-  	long startxref
-  	)
+    long startxref
+    )
   {
     stream.write(StartXRefChunk);
     stream.write(Long.toString(startxref));

@@ -25,11 +25,6 @@
 
 package org.pdfclown.files;
 
-import org.pdfclown.objects.PdfDataObject;
-import org.pdfclown.objects.PdfIndirectObject;
-import org.pdfclown.tokens.XRefEntry;
-import org.pdfclown.util.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -39,6 +34,11 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import org.pdfclown.objects.PdfDataObject;
+import org.pdfclown.objects.PdfIndirectObject;
+import org.pdfclown.tokens.XRefEntry;
+import org.pdfclown.util.NotImplementedException;
 
 /**
   Collection of the <b>alive indirect objects</b> available inside the file.
@@ -215,7 +215,7 @@ public final class IndirectObjects
   {
     ArrayList<PdfIndirectObject> addedObjects = new ArrayList<PdfIndirectObject>(objects.size());
     for(PdfIndirectObject object : objects)
-    {addedObjects.add((PdfIndirectObject)addExternal(object));}
+    {addedObjects.add(addExternal(object));}
 
     return addedObjects;
   }
@@ -251,35 +251,35 @@ public final class IndirectObjects
       object = wokenObjects.get(index);
       if(object == null)
       {
-				XRefEntry xrefEntry = xrefEntries.get(index);
-				if(xrefEntry == null)
-				{
-					if(index > lastObjectNumber)
-						return null;
-				
-					/*
-						NOTE: The cross-reference table (comprising the original cross-reference section and all update sections)
-						MUST contain one entry for each object number from 0 to the maximum object number used in the file, even 
-						if one or more of the object numbers in this range do not actually occur in the file.
-						However, for resilience purposes missing entries are treated as free ones.
-					*/
-					xrefEntries.put(
-						index,
-						xrefEntry = new XRefEntry(
-				      index,
-				      XRefEntry.GenerationUnreusable,
-				      0,
-				      XRefEntry.UsageEnum.Free
-				      )
-						);
-				}
+        XRefEntry xrefEntry = xrefEntries.get(index);
+        if(xrefEntry == null)
+        {
+          if(index > lastObjectNumber)
+            return null;
+
+          /*
+            NOTE: The cross-reference table (comprising the original cross-reference section and all update sections)
+            MUST contain one entry for each object number from 0 to the maximum object number used in the file, even
+            if one or more of the object numbers in this range do not actually occur in the file.
+            However, for resilience purposes missing entries are treated as free ones.
+          */
+          xrefEntries.put(
+            index,
+            xrefEntry = new XRefEntry(
+              index,
+              XRefEntry.GenerationUnreusable,
+              0,
+              XRefEntry.UsageEnum.Free
+              )
+            );
+        }
 
         // Awake the object!
         /*
-	        NOTE: This operation allows to keep a consistent state across the whole session,
-	        avoiding multiple incoherent instantiations of the same original indirect object.
+          NOTE: This operation allows to keep a consistent state across the whole session,
+          avoiding multiple incoherent instantiations of the same original indirect object.
         */
-				wokenObjects.put(index, object = new PdfIndirectObject(file, null, xrefEntry));
+        wokenObjects.put(index, object = new PdfIndirectObject(file, null, xrefEntry));
 
         // Early registration?
         if(updateMode == UpdateModeEnum.Automatic)
@@ -543,10 +543,12 @@ public final class IndirectObjects
       // <interface>
       // <public>
       // <Iterator>
+      @Override
       public boolean hasNext(
         )
       {return (index < size());}
 
+      @Override
       public PdfIndirectObject next(
         )
       {
@@ -556,6 +558,7 @@ public final class IndirectObjects
         return get(index++);
       }
 
+      @Override
       public void remove(
         )
       {throw new UnsupportedOperationException();}

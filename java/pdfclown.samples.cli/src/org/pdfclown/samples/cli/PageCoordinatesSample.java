@@ -1,5 +1,11 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.Dimension;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.PageFormat;
@@ -19,12 +25,6 @@ import org.pdfclown.documents.contents.objects.ModifyCTM;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfName;
 
-import java.awt.Dimension;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 /**
   This sample shows the <b>effects of the manipulation of the CTM</b> (Current Transformation Matrix),
   that is the logical device which affects the PDF page coordinate system used to place graphics contents
@@ -37,15 +37,15 @@ public class PageCoordinatesSample
   extends Sample
 {
   private static final PdfName ResourceName_DefaultFont = new PdfName("default");
-  
+
   private static double max(
-  	double... values
-  	)
+    double... values
+    )
   {
-  	double maxValue = values[0];
-  	for(double value : values)
-  	{maxValue = Math.max(maxValue, value);}
-  	return maxValue;
+    double maxValue = values[0];
+    for(double value : values)
+    {maxValue = Math.max(maxValue, value);}
+    return maxValue;
   }
 
   @Override
@@ -67,7 +67,7 @@ public class PageCoordinatesSample
 
     // 4. Serialize the PDF file!
     serialize(file,false);
-    
+
     return true;
   }
 
@@ -86,9 +86,9 @@ public class PageCoordinatesSample
     Color<?>[] colors = new Color<?>[5];
     Dimension2D pageSize = page.getSize();
 
-		buildSteps(composer, steps, colors, pageSize);
+    buildSteps(composer, steps, colors, pageSize);
 
-		buildLegend(composer, steps, colors, pageSize);
+    buildLegend(composer, steps, colors, pageSize);
 
     composer.flush();
   }
@@ -111,26 +111,26 @@ public class PageCoordinatesSample
     Dimension2D pageSize
     )
   {
-  	double maxCtmInversionApproximation;
-  	{
-  		double[] ctmInversionApproximations = new double[6];
-  		{
-		  	double[] initialCtmValues, finalCtmValues;
-		  	{
-		  		GraphicsState state = composer.getScanner().getState();
-			  	state.getInitialCtm().getMatrix(initialCtmValues = new double[6]);
-			    state.getCtm().getMatrix(finalCtmValues = new double[6]);
-		  	}
-		    for(
-		    	int index = 0,
-		    		length = finalCtmValues.length;
-		    	index < length;
-		    	index++
-		    	)
-		    {ctmInversionApproximations[index] = Math.abs(finalCtmValues[index]) - initialCtmValues[index];}
-  		}
-	    maxCtmInversionApproximation = max(ctmInversionApproximations);
-  	}
+    double maxCtmInversionApproximation;
+    {
+      double[] ctmInversionApproximations = new double[6];
+      {
+        double[] initialCtmValues, finalCtmValues;
+        {
+          GraphicsState state = composer.getScanner().getState();
+          state.getInitialCtm().getMatrix(initialCtmValues = new double[6]);
+          state.getCtm().getMatrix(finalCtmValues = new double[6]);
+        }
+        for(
+          int index = 0,
+            length = finalCtmValues.length;
+          index < length;
+          index++
+          )
+        {ctmInversionApproximations[index] = Math.abs(finalCtmValues[index]) - initialCtmValues[index];}
+      }
+      maxCtmInversionApproximation = max(ctmInversionApproximations);
+    }
 
     final BlockComposer blockComposer = new BlockComposer(composer);
     blockComposer.setLineSpace(new Length(.25f, UnitModeEnum.Relative));
@@ -140,7 +140,7 @@ public class PageCoordinatesSample
       new DeviceRGBColor(115f/255,164f/255,232f/255)
       );
     final Rectangle2D frame = new Rectangle2D.Double(
-    	18,
+      18,
       18,
       pageSize.getWidth() * .5,
       pageSize.getHeight() * .5
@@ -152,15 +152,15 @@ public class PageCoordinatesSample
     blockComposer.showBreak(breakSize);
     composer.setFont(ResourceName_DefaultFont,8);
     blockComposer.showText(
-			"This sample shows the effects of the manipulation of the CTM (Current Transformation Matrix), "
-    		+ "that is the mathematical device which affects the page coordinate system used to place "
-    		+ "graphic contents onto the canvas."
-  		);
+      "This sample shows the effects of the manipulation of the CTM (Current Transformation Matrix), "
+        + "that is the mathematical device which affects the page coordinate system used to place "
+        + "graphic contents onto the canvas."
+      );
     blockComposer.showBreak(breakSize);
     blockComposer.showText(
-    	"The following steps represent the operations applied to this page's CTM in order to alter it. "
-    		+ "Each step writes the word \"Step\" at the lower-left corner of the current page frame:"
-  		);
+      "The following steps represent the operations applied to this page's CTM in order to alter it. "
+        + "Each step writes the word \"Step\" at the lower-left corner of the current page frame:"
+      );
     blockComposer.showBreak(breakSize);
     for(int i = 0; i < steps.length; i++)
     {

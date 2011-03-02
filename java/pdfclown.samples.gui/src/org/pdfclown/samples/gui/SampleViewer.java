@@ -24,6 +24,7 @@ public class SampleViewer
   private class PdfFileFilter
     extends FileFilter
   {
+    @Override
     public boolean accept(
       File file
       )
@@ -34,6 +35,7 @@ public class SampleViewer
       return file.getName().endsWith(".pdf");
     }
 
+    @Override
     public String getDescription(
       )
     {return "PDF files";}
@@ -82,7 +84,7 @@ public class SampleViewer
     this.inputPath = new java.io.File(inputPath).getAbsolutePath();
 
     initialize();
-    
+
     showOpenFileDialog();
   }
 
@@ -132,6 +134,7 @@ public class SampleViewer
         openMenuItem.addMouseListener(
           new MouseAdapter()
           {
+            @Override
             public void mousePressed(
               MouseEvent e
               )
@@ -145,6 +148,7 @@ public class SampleViewer
         exitMenuItem.addMouseListener(
           new MouseAdapter()
           {
+            @Override
             public void mousePressed(
               MouseEvent e
               )
@@ -167,9 +171,9 @@ public class SampleViewer
         );
     }
   }
-  
+
   private void showOpenFileDialog(
-  	)
+    )
   {
     JFileChooser fileChooser = new JFileChooser(
       inputPath + java.io.File.separator + "pdf"

@@ -45,11 +45,11 @@ public enum WindModeEnum
   /**
     Even-odd winding rule.
   */
-	EvenOdd,
+  EvenOdd,
   /**
     Non-zero winding rule.
   */
-	NonZero;
+  NonZero;
   // </fields>
   // </static>
 
@@ -57,23 +57,23 @@ public enum WindModeEnum
   // <interface>
   // <public>
   /**
-  	Converts this constant into its equivalent AWT code.
-		
-		@see Path2D#WIND_EVEN_ODD
-		@see Path2D#WIND_NON_ZERO
+    Converts this constant into its equivalent AWT code.
+
+    @see Path2D#WIND_EVEN_ODD
+    @see Path2D#WIND_NON_ZERO
   */
   public int toAwt(
-  	)
+    )
   {
-  	switch(this)
-		{
-			case EvenOdd:
-				return Path2D.WIND_EVEN_ODD;
-			case NonZero:
-				return Path2D.WIND_NON_ZERO;
-			default:
-				throw new UnsupportedOperationException(name() + " convertion not supported.");
-		}
+    switch(this)
+    {
+      case EvenOdd:
+        return Path2D.WIND_EVEN_ODD;
+      case NonZero:
+        return Path2D.WIND_NON_ZERO;
+      default:
+        throw new UnsupportedOperationException(name() + " convertion not supported.");
+    }
   }
   // </public>
   // </interface>

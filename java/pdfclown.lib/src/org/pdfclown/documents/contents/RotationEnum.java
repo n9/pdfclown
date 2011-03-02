@@ -31,87 +31,87 @@ import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.util.math.geom.Dimension;
 
 /**
-	Rotation (clockwise) [PDF:1.6:3.6.2].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  Rotation (clockwise) [PDF:1.6:3.6.2].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 public enum RotationEnum
 {
-	// <class>
-	// <static>
-	// <fields>
-	/**
-	  Downward (0° clockwise).
-	*/
-	Downward(new PdfInteger(0)),
-	/**
-	  Leftward (90° clockwise).
-	*/
-	Leftward(new PdfInteger(90)),
-	/**
-	  Upward (180° clockwise).
-	*/
-	Upward(new PdfInteger(180)),
-	/**
-	  Rightward (270° clockwise).
-	*/
-	Rightward(new PdfInteger(270));
-	// </fields>
-	
-	// <interface>
-	// <public>
-	/**
-	  Gets the direction corresponding to the given value.
-	*/
-	public static RotationEnum get(
-	  PdfInteger value
-	  )
-	{
-		int normalizedValue = (Math.round(value.getRawValue() / 90) % 4) * 90;
-		if(normalizedValue < 0)
-		{normalizedValue += 360 * Math.ceil(-normalizedValue / 360d);}
-	  for(RotationEnum rotation : RotationEnum.values())
-	  {
-	    if(rotation.getCode().getRawValue().equals(normalizedValue))
-	      return rotation;
-	  }
-	  return null;
-	}
-	// </public>
-	// </interface>
-	// </static>
-	
-	// <dynamic>
-	// <fields>
-	private final PdfInteger code;
-	// </fields>
-	
-	// <constructors>
-	private RotationEnum(
-	  PdfInteger code
-	  )
-	{this.code = code;}
-	// </constructors>
-	
-	// <interface>
-	// <public>
-	public PdfInteger getCode(
-	  )
-	{return code;}
-	
-	public Dimension2D transform(
-		Dimension2D size
-		)
-	{
-		if(getCode().getRawValue() % 180 == 0)
-			return new Dimension(size.getWidth(), size.getHeight());
-		else
-			return new Dimension(size.getHeight(), size.getWidth());
-	}
-	// </public>
-	// </interface>
-	// </dynamic>
-	// </class>
+  // <class>
+  // <static>
+  // <fields>
+  /**
+    Downward (0° clockwise).
+  */
+  Downward(new PdfInteger(0)),
+  /**
+    Leftward (90° clockwise).
+  */
+  Leftward(new PdfInteger(90)),
+  /**
+    Upward (180° clockwise).
+  */
+  Upward(new PdfInteger(180)),
+  /**
+    Rightward (270° clockwise).
+  */
+  Rightward(new PdfInteger(270));
+  // </fields>
+
+  // <interface>
+  // <public>
+  /**
+    Gets the direction corresponding to the given value.
+  */
+  public static RotationEnum get(
+    PdfInteger value
+    )
+  {
+    int normalizedValue = (Math.round(value.getRawValue() / 90) % 4) * 90;
+    if(normalizedValue < 0)
+    {normalizedValue += 360 * Math.ceil(-normalizedValue / 360d);}
+    for(RotationEnum rotation : RotationEnum.values())
+    {
+      if(rotation.getCode().getRawValue().equals(normalizedValue))
+        return rotation;
+    }
+    return null;
+  }
+  // </public>
+  // </interface>
+  // </static>
+
+  // <dynamic>
+  // <fields>
+  private final PdfInteger code;
+  // </fields>
+
+  // <constructors>
+  private RotationEnum(
+    PdfInteger code
+    )
+  {this.code = code;}
+  // </constructors>
+
+  // <interface>
+  // <public>
+  public PdfInteger getCode(
+    )
+  {return code;}
+
+  public Dimension2D transform(
+    Dimension2D size
+    )
+  {
+    if(getCode().getRawValue() % 180 == 0)
+      return new Dimension(size.getWidth(), size.getHeight());
+    else
+      return new Dimension(size.getHeight(), size.getWidth());
+  }
+  // </public>
+  // </interface>
+  // </dynamic>
+  // </class>
 }

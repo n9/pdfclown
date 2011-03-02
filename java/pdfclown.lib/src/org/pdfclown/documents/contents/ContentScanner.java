@@ -100,7 +100,7 @@ public final class ContentScanner
     private AffineTransform tlm;
     private AffineTransform tm;
     private float wordSpace;
-    
+
     private ContentScanner scanner;
     // </fields>
 
@@ -125,25 +125,25 @@ public final class ContentScanner
     {
       GraphicsState clone;
       {
-	      // Shallow copy.
-	      try
-	      {clone = (GraphicsState)super.clone();}
-	      catch(CloneNotSupportedException e)
-	      {throw new RuntimeException(e); /* NOTE: It should never happen. */}
-	
-	      // Deep copy.
-	      /* NOTE: Mutable objects are to be cloned. */
-	      clone.ctm = (AffineTransform)ctm.clone();
-	      clone.tlm = (AffineTransform)tlm.clone();
-	      clone.tm = (AffineTransform)tm.clone();
+        // Shallow copy.
+        try
+        {clone = (GraphicsState)super.clone();}
+        catch(CloneNotSupportedException e)
+        {throw new RuntimeException(e); /* NOTE: It should never happen. */}
+
+        // Deep copy.
+        /* NOTE: Mutable objects are to be cloned. */
+        clone.ctm = (AffineTransform)ctm.clone();
+        clone.tlm = (AffineTransform)tlm.clone();
+        clone.tm = (AffineTransform)tm.clone();
       }
       return clone;
     }
 
     /**
-    	Copies this graphics state into the specified one.
+      Copies this graphics state into the specified one.
 
-    	@param state Target graphics state object.
+      @param state Target graphics state object.
     */
     public void copyTo(
       GraphicsState state
@@ -181,161 +181,161 @@ public final class ContentScanner
     }
 
     /**
-	    Gets the current character spacing [PDF:1.6:5.2.1].
-	  */
+      Gets the current character spacing [PDF:1.6:5.2.1].
+    */
     public float getCharSpace(
-    	)
-		{return charSpace;}
+      )
+    {return charSpace;}
 
     /**
-	    Gets the current transformation matrix.
-	  */
+      Gets the current transformation matrix.
+    */
     public AffineTransform getCtm(
-    	)
-		{return ctm;}
+      )
+    {return ctm;}
 
     /**
-	    Gets the current color for nonstroking operations [PDF:1.6:4.5.1].
-	  */
+      Gets the current color for nonstroking operations [PDF:1.6:4.5.1].
+    */
     public Color<?> getFillColor(
-    	)
-		{return fillColor;}
+      )
+    {return fillColor;}
 
     /**
-	    Gets the current color space for nonstroking operations [PDF:1.6:4.5.1].
-	  */
+      Gets the current color space for nonstroking operations [PDF:1.6:4.5.1].
+    */
     public ColorSpace<?> getFillColorSpace(
-    	)
-		{return fillColorSpace;}
+      )
+    {return fillColorSpace;}
 
     /**
-	    Gets the current font [PDF:1.6:5.2].
-	  */
+      Gets the current font [PDF:1.6:5.2].
+    */
     public Font getFont(
-    	)
-		{return font;}
+      )
+    {return font;}
 
     /**
-	    Gets the current font size [PDF:1.6:5.2].
-	  */
+      Gets the current font size [PDF:1.6:5.2].
+    */
     public float getFontSize(
-    	)
-		{return fontSize;}
-    
+      )
+    {return fontSize;}
+
     /**
-    	Gets the initial current transformation matrix.
-    	
-    	@since 0.1.0
+      Gets the initial current transformation matrix.
+
+      @since 0.1.0
     */
     public AffineTransform getInitialCtm(
-    	)
+      )
     {
-    	AffineTransform initialCtm;
-  		if(getScanner().getRenderContext() == null) // Device-independent.
-  		{
-  			initialCtm = new AffineTransform(); // Identity.
-			}
-  		else // Device-dependent.
-    	{
-				IContentContext contentContext = getScanner().getContentContext();
-				Dimension2D canvasSize = getScanner().getCanvasSize();
+      AffineTransform initialCtm;
+      if(getScanner().getRenderContext() == null) // Device-independent.
+      {
+        initialCtm = new AffineTransform(); // Identity.
+      }
+      else // Device-dependent.
+      {
+        IContentContext contentContext = getScanner().getContentContext();
+        Dimension2D canvasSize = getScanner().getCanvasSize();
 
-				// Axes orientation.
-				RotationEnum rotation = contentContext.getRotation();
-				switch(rotation)
-				{
-					case Downward:
-						initialCtm = new AffineTransform(1, 0, 0, -1, 0, canvasSize.getHeight());
-						break;
-					case Leftward:
-						initialCtm = new AffineTransform(0, 1, 1, 0, 0, 0);
-						break;
-					case Upward:
-						initialCtm = new AffineTransform(-1, 0, 0, 1, canvasSize.getWidth(), 0);
-						break;
-					case Rightward:
-						initialCtm = new AffineTransform(0, -1, -1, 0, canvasSize.getWidth(), canvasSize.getHeight());
-						break;
-					default:
-						throw new NotImplementedException();
-				}
-	
-				// Scaling.
-				Rectangle2D contentBox = contentContext.getBox();
-				Dimension2D rotatedCanvasSize = rotation.transform(canvasSize);
-				initialCtm.scale(
-					rotatedCanvasSize.getWidth() / contentBox.getWidth(),
-					rotatedCanvasSize.getHeight() / contentBox.getHeight()
-					);
-	
-				// Origin alignment.
-				initialCtm.translate(-contentBox.getMinX(), -contentBox.getMinY());
-    	}
-    	return initialCtm;
+        // Axes orientation.
+        RotationEnum rotation = contentContext.getRotation();
+        switch(rotation)
+        {
+          case Downward:
+            initialCtm = new AffineTransform(1, 0, 0, -1, 0, canvasSize.getHeight());
+            break;
+          case Leftward:
+            initialCtm = new AffineTransform(0, 1, 1, 0, 0, 0);
+            break;
+          case Upward:
+            initialCtm = new AffineTransform(-1, 0, 0, 1, canvasSize.getWidth(), 0);
+            break;
+          case Rightward:
+            initialCtm = new AffineTransform(0, -1, -1, 0, canvasSize.getWidth(), canvasSize.getHeight());
+            break;
+          default:
+            throw new NotImplementedException();
+        }
+
+        // Scaling.
+        Rectangle2D contentBox = contentContext.getBox();
+        Dimension2D rotatedCanvasSize = rotation.transform(canvasSize);
+        initialCtm.scale(
+          rotatedCanvasSize.getWidth() / contentBox.getWidth(),
+          rotatedCanvasSize.getHeight() / contentBox.getHeight()
+          );
+
+        // Origin alignment.
+        initialCtm.translate(-contentBox.getMinX(), -contentBox.getMinY());
+      }
+      return initialCtm;
     }
 
     /**
-	    Gets the current leading [PDF:1.6:5.2.4].
-	  */
-		public float getLead(
-			)
-		{return lead;}
+      Gets the current leading [PDF:1.6:5.2.4].
+    */
+    public float getLead(
+      )
+    {return lead;}
 
     /**
-	    Gets the current line cap style [PDF:1.6:4.3.2].
-	  */
-		public LineCapEnum getLineCap(
-			)
-		{return lineCap;}
+      Gets the current line cap style [PDF:1.6:4.3.2].
+    */
+    public LineCapEnum getLineCap(
+      )
+    {return lineCap;}
 
     /**
-	    Gets the current line dash pattern [PDF:1.6:4.3.2].
-	  */
-		public LineDash getLineDash(
-			)
-		{return lineDash;}
+      Gets the current line dash pattern [PDF:1.6:4.3.2].
+    */
+    public LineDash getLineDash(
+      )
+    {return lineDash;}
 
     /**
-	    Gets the current line join style [PDF:1.6:4.3.2].
-	  */
-		public LineJoinEnum getLineJoin(
-			)
-		{return lineJoin;}
+      Gets the current line join style [PDF:1.6:4.3.2].
+    */
+    public LineJoinEnum getLineJoin(
+      )
+    {return lineJoin;}
 
     /**
-	    Gets the current line width [PDF:1.6:4.3.2].
-	  */
-		public float getLineWidth(
-			)
-		{return lineWidth;}
+      Gets the current line width [PDF:1.6:4.3.2].
+    */
+    public float getLineWidth(
+      )
+    {return lineWidth;}
 
     /**
-	    Gets the current miter limit [PDF:1.6:4.3.2].
-	  */
-		public float getMiterLimit(
-			)
-		{return miterLimit;}
+      Gets the current miter limit [PDF:1.6:4.3.2].
+    */
+    public float getMiterLimit(
+      )
+    {return miterLimit;}
 
     /**
-	    Gets the current text rendering mode [PDF:1.6:5.2.5].
-	  */
-		public TextRenderModeEnum getRenderMode(
-			)
-		{return renderMode;}
+      Gets the current text rendering mode [PDF:1.6:5.2.5].
+    */
+    public TextRenderModeEnum getRenderMode(
+      )
+    {return renderMode;}
 
     /**
-	    Gets the current text rise [PDF:1.6:5.2.6].
-	  */
-		public float getRise(
-			)
-		{return rise;}
+      Gets the current text rise [PDF:1.6:5.2.6].
+    */
+    public float getRise(
+      )
+    {return rise;}
 
     /**
-	    Gets the current horizontal scaling [PDF:1.6:5.2.3].
-	  */
-		public float getScale(
-			)
-		{return scale;}
+      Gets the current horizontal scaling [PDF:1.6:5.2.3].
+    */
+    public float getScale(
+      )
+    {return scale;}
 
     /**
       Gets the scanner associated to this state.
@@ -345,217 +345,217 @@ public final class ContentScanner
     {return scanner;}
 
     /**
-	    Gets the current color for stroking operations [PDF:1.6:4.5.1].
-	  */
+      Gets the current color for stroking operations [PDF:1.6:4.5.1].
+    */
     public Color<?> getStrokeColor(
-    	)
-		{return strokeColor;}
+      )
+    {return strokeColor;}
 
     /**
-	    Gets the current color space for stroking operations [PDF:1.6:4.5.1].
-	  */
+      Gets the current color space for stroking operations [PDF:1.6:4.5.1].
+    */
     public ColorSpace<?> getStrokeColorSpace(
-    	)
-		{return strokeColorSpace;}
+      )
+    {return strokeColorSpace;}
 
     /**
-	    Gets the current text line matrix [PDF:1.6:5.3].
-	  */
+      Gets the current text line matrix [PDF:1.6:5.3].
+    */
     public AffineTransform getTlm(
-    	)
-		{return tlm;}
+      )
+    {return tlm;}
 
     /**
-	    Gets the current text matrix [PDF:1.6:5.3].
-	  */
+      Gets the current text matrix [PDF:1.6:5.3].
+    */
     public AffineTransform getTm(
-    	)
-		{return tm;}
+      )
+    {return tm;}
 
     /**
-	    Gets the current word spacing [PDF:1.6:5.2.2].
-	  */
+      Gets the current word spacing [PDF:1.6:5.2.2].
+    */
     public float getWordSpace(
-    	)
-		{return wordSpace;}
+      )
+    {return wordSpace;}
 
     /**
-    	@see #getCharSpace()
+      @see #getCharSpace()
     */
     public void setCharSpace(
-    	float value
-    	)
-		{charSpace = value;}
+      float value
+      )
+    {charSpace = value;}
 
     /**
-	  	@see #getCtm()
-	  */
+      @see #getCtm()
+    */
     public void setCtm(
-    	AffineTransform value
-    	)
-		{ctm = value;}
+      AffineTransform value
+      )
+    {ctm = value;}
 
     /**
-	  	@see #getFillColor()
-	  */
+      @see #getFillColor()
+    */
     public void setFillColor(
-    	Color<?> value
-    	)
-		{fillColor = value;}
+      Color<?> value
+      )
+    {fillColor = value;}
 
     /**
-	  	@see #getFillColorSpace()
-	  */
+      @see #getFillColorSpace()
+    */
     public void setFillColorSpace(
-    	ColorSpace<?> value
-    	)
-		{fillColorSpace = value;}
+      ColorSpace<?> value
+      )
+    {fillColorSpace = value;}
 
     /**
-	  	@see #getFont()
-	  */
+      @see #getFont()
+    */
     public void setFont(
-    	Font value
-    	)
-		{font = value;}
+      Font value
+      )
+    {font = value;}
 
     /**
-	  	@see #getFontSize()
-	  */
+      @see #getFontSize()
+    */
     public void setFontSize(
-    	float value
-    	)
-		{fontSize = value;}
+      float value
+      )
+    {fontSize = value;}
 
     /**
-	  	@see #getLead()
-	  */
+      @see #getLead()
+    */
     public void setLead(
-    	float value
-    	)
-		{lead = value;}
+      float value
+      )
+    {lead = value;}
 
     /**
-	  	@see #getLineCap()
-	  */
+      @see #getLineCap()
+    */
     public void setLineCap(
-    	LineCapEnum value
-    	)
-		{lineCap = value;}
+      LineCapEnum value
+      )
+    {lineCap = value;}
 
     /**
-	  	@see #getLineDash()
-	  */
+      @see #getLineDash()
+    */
     public void setLineDash(
-    	LineDash value
-    	)
-		{lineDash = value;}
+      LineDash value
+      )
+    {lineDash = value;}
 
     /**
-	  	@see #getLineJoin()
-	  */
+      @see #getLineJoin()
+    */
     public void setLineJoin(
-    	LineJoinEnum value
-    	)
-		{lineJoin = value;}
+      LineJoinEnum value
+      )
+    {lineJoin = value;}
 
     /**
-	  	@see #getLineWidth()
-	  */
+      @see #getLineWidth()
+    */
     public void setLineWidth(
-    	float value
-    	)
-		{lineWidth = value;}
+      float value
+      )
+    {lineWidth = value;}
 
     /**
-	  	@see #getMiterLimit()
-	  */
+      @see #getMiterLimit()
+    */
     public void setMiterLimit(
-    	float value
-    	)
-		{miterLimit = value;}
+      float value
+      )
+    {miterLimit = value;}
 
     /**
-	  	@see #getRenderMode()
-	  */
+      @see #getRenderMode()
+    */
     public void setRenderMode(
-    	TextRenderModeEnum value
-    	)
-		{renderMode = value;}
+      TextRenderModeEnum value
+      )
+    {renderMode = value;}
 
     /**
-	  	@see #getRise()
-	  */
+      @see #getRise()
+    */
     public void setRise(
-    	float value
-    	)
-		{rise = value;}
+      float value
+      )
+    {rise = value;}
 
     /**
-	  	@see #getScale()
-	  */
+      @see #getScale()
+    */
     public void setScale(
-    	float value
-    	)
-		{scale = value;}
+      float value
+      )
+    {scale = value;}
 
     /**
-	  	@see #getStrokeColor()
-	  */
+      @see #getStrokeColor()
+    */
     public void setStrokeColor(
-    	Color<?> value
-    	)
-		{strokeColor = value;}
+      Color<?> value
+      )
+    {strokeColor = value;}
 
     /**
-	  	@see #getStrokeColorSpace()
-	  */
+      @see #getStrokeColorSpace()
+    */
     public void setStrokeColorSpace(
-    	ColorSpace<?> value
-    	)
-		{strokeColorSpace = value;}
+      ColorSpace<?> value
+      )
+    {strokeColorSpace = value;}
 
     /**
-	  	@see #getTlm()
-	  */
+      @see #getTlm()
+    */
     public void setTlm(
-    	AffineTransform value
-    	)
-		{tlm = value;}
+      AffineTransform value
+      )
+    {tlm = value;}
 
     /**
-	  	@see #getTm()
-	  */
+      @see #getTm()
+    */
     public void setTm(
-    	AffineTransform value
-    	)
-		{tm = value;}
+      AffineTransform value
+      )
+    {tm = value;}
 
     /**
-	  	@see #getWordSpace()
-	  */
+      @see #getWordSpace()
+    */
     public void setWordSpace(
-    	float value
-    	)
-		{wordSpace = value;}
-		
+      float value
+      )
+    {wordSpace = value;}
+
     /**
-	    Resolves the given text-space point to its equivalent device-space one [PDF:1.6:5.3.3],
-	    expressed in standard PDF coordinate system (lower-left origin).
-	    
-	    @param point Point to transform.
-	  */
-	  public Point2D textToDeviceSpace(
-	    Point2D point
-	    )
-	  {return textToDeviceSpace(point, false);}
+      Resolves the given text-space point to its equivalent device-space one [PDF:1.6:5.3.3],
+      expressed in standard PDF coordinate system (lower-left origin).
+
+      @param point Point to transform.
+    */
+    public Point2D textToDeviceSpace(
+      Point2D point
+      )
+    {return textToDeviceSpace(point, false);}
 
     /**
       Resolves the given text-space point to its equivalent device-space one [PDF:1.6:5.3.3].
-	    
-	    @param point Point to transform.
-	    @param topDown Whether the y-axis orientation has to be adjusted to common top-down orientation
-	    	rather than standard PDF coordinate system (bottom-up).
+
+      @param point Point to transform.
+      @param topDown Whether the y-axis orientation has to be adjusted to common top-down orientation
+        rather than standard PDF coordinate system (bottom-up).
     */
     public Point2D textToDeviceSpace(
       Point2D point,
@@ -566,19 +566,19 @@ public final class ContentScanner
         NOTE: The text rendering matrix (trm) is obtained from the concatenation
         of the current transformation matrix (ctm) and the text matrix (tm).
       */
-    	AffineTransform trm = topDown 
-    		? new AffineTransform(1, 0, 0, -1, 0, scanner.getCanvasSize().getHeight())
-    		: new AffineTransform();
-    	trm.concatenate(ctm);
-    	trm.concatenate(tm);
-    	return trm.transform(point, null);
+      AffineTransform trm = topDown
+        ? new AffineTransform(1, 0, 0, -1, 0, scanner.getCanvasSize().getHeight())
+        : new AffineTransform();
+      trm.concatenate(ctm);
+      trm.concatenate(tm);
+      return trm.transform(point, null);
     }
 
     /**
       Resolves the given user-space point to its equivalent device-space one [PDF:1.6:4.2.3],
-	    expressed in standard PDF coordinate system (lower-left origin).
-	    
-	    @param point Point to transform.
+      expressed in standard PDF coordinate system (lower-left origin).
+
+      @param point Point to transform.
     */
     public Point2D userToDeviceSpace(
       Point2D point
@@ -599,7 +599,7 @@ public final class ContentScanner
     private void initialize(
       )
     {
-    	// State parameters initialization.
+      // State parameters initialization.
       charSpace = 0;
       ctm = getInitialCtm();
       fillColor = DeviceGrayColor.Default;
@@ -617,8 +617,8 @@ public final class ContentScanner
       scale = 100;
       strokeColor = DeviceGrayColor.Default;
       strokeColorSpace = DeviceGrayColorSpace.Default;
-			tlm = new AffineTransform();
-			tm = new AffineTransform();
+      tlm = new AffineTransform();
+      tm = new AffineTransform();
       wordSpace = 0;
 
       // Rendering context initialization.
@@ -706,8 +706,8 @@ public final class ContentScanner
       super((InlineImage)scanner.getCurrent());
       AffineTransform ctm = scanner.getState().getCtm();
       this.box = new Rectangle2D.Double(
-      	ctm.getTranslateX(),
-      	scanner.getContentContext().getBox().getHeight() - ctm.getTranslateY(),
+        ctm.getTranslateX(),
+        scanner.getContentContext().getBox().getHeight() - ctm.getTranslateY(),
         ctm.getScaleX(),
         Math.abs(ctm.getScaleY())
         );
@@ -738,7 +738,7 @@ public final class ContentScanner
       textStrings = new ArrayList<TextStringWrapper>();
       extract(scanner.getChildLevel());
     }
-    
+
     @Override
     public Rectangle2D getBox(
       )
@@ -813,6 +813,7 @@ public final class ContentScanner
           state,
           new ShowText.IScanner()
           {
+            @Override
             public void scanChar(
               char textChar,
               Rectangle2D textCharBox
@@ -856,6 +857,7 @@ public final class ContentScanner
       )
     {return style;}
 
+    @Override
     public String getText(
       )
     {
@@ -865,6 +867,7 @@ public final class ContentScanner
       return textBuilder.toString();
     }
 
+    @Override
     public List<TextChar> getTextChars(
       )
     {return textChars;}
@@ -888,8 +891,8 @@ public final class ContentScanner
       IContentContext context = scanner.getContentContext();
       AffineTransform ctm = scanner.getState().getCtm();
       this.box = new Rectangle2D.Double(
-      	ctm.getTranslateX(),
-      	context.getBox().getHeight() - ctm.getTranslateY(),
+        ctm.getTranslateX(),
+        context.getBox().getHeight() - ctm.getTranslateY(),
         ctm.getScaleX(),
         Math.abs(ctm.getScaleY())
         );
@@ -945,18 +948,18 @@ public final class ContentScanner
     Current graphics state.
   */
   private GraphicsState state;
-  
+
   /**
-  	Rendering context.
+    Rendering context.
   */
   private Graphics2D renderContext;
   /**
-		Rendering object.
-	*/
+    Rendering object.
+  */
   private Shape renderObject;
   /**
-		Device-space size of the rendering canvas.
-	*/
+    Device-space size of the rendering canvas.
+  */
   private Dimension2D renderSize;
   // </fields>
 
@@ -1000,17 +1003,17 @@ public final class ContentScanner
   // <interface>
   // <public>
   /**
-		Gets the size of the current imageable area.
-		<p>It can be either the <i>user-space area</i> (dry scanning)
-		or the <i>device-space area</i> (wet scanning).</p>
-	*/
-	public Dimension2D getCanvasSize(
-		)
-	{
-		return renderSize == null
-			? Dimension.get(getContentContext().getBox()) // Device-independent (user-space) area.
-			: renderSize; // Device-dependent (device-space) area.
-	}
+    Gets the size of the current imageable area.
+    <p>It can be either the <i>user-space area</i> (dry scanning)
+    or the <i>device-space area</i> (wet scanning).</p>
+  */
+  public Dimension2D getCanvasSize(
+    )
+  {
+    return renderSize == null
+      ? Dimension.get(getContentContext().getBox()) // Device-independent (user-space) area.
+      : renderSize; // Device-dependent (device-space) area.
+  }
 
   /**
     Gets the current child scan level.
@@ -1089,42 +1092,42 @@ public final class ContentScanner
   {return parentLevel;}
 
   /**
-  	Gets the rendering context.
-  	
-  	@return <code>null</code> in case of dry scanning.
+    Gets the rendering context.
+
+    @return <code>null</code> in case of dry scanning.
   */
   public Graphics2D getRenderContext(
-  	)
-	{return renderContext;}
+    )
+  {return renderContext;}
 
-	/**
-  	Gets the rendering object.
-  	
-		@return <code>null</code> in case of scanning outside a shape.
+  /**
+    Gets the rendering object.
+
+    @return <code>null</code> in case of scanning outside a shape.
   */
   public Shape getRenderObject(
-		)
+    )
   {return renderObject;}
 
   /**
-	  Gets the root scan level.
-	
-	  @see #getChildLevel()
-	  @see #getParentLevel()
-	*/
-	public ContentScanner getRootLevel(
-	  )
-	{
-		ContentScanner level = this;
-		while(true)
-		{
-			ContentScanner parentLevel = level.getParentLevel();
-			if(parentLevel == null)
-				return level;
-			
-			level = parentLevel;
-		}
-	}
+    Gets the root scan level.
+
+    @see #getChildLevel()
+    @see #getParentLevel()
+  */
+  public ContentScanner getRootLevel(
+    )
+  {
+    ContentScanner level = this;
+    while(true)
+    {
+      ContentScanner parentLevel = level.getParentLevel();
+      if(parentLevel == null)
+        return level;
+
+      level = parentLevel;
+    }
+  }
 
   /**
     Gets the graphics state applied to the current content object.
@@ -1167,10 +1170,10 @@ public final class ContentScanner
   }
 
   /**
-  	Gets whether this level is the root of the hierarchy.
+    Gets whether this level is the root of the hierarchy.
   */
   public boolean isRootLevel(
-  	)
+    )
   {return parentLevel == null;}
 
   /**
@@ -1280,68 +1283,68 @@ public final class ContentScanner
 
     return removedObject;
   }
-  
+
   /**
-		Renders the contents into the specified context.
-		
-		@param renderContext Rendering context.
-		@param renderSize Rendering canvas size.
-		@since 0.1.0
-	*/
+    Renders the contents into the specified context.
+
+    @param renderContext Rendering context.
+    @param renderSize Rendering canvas size.
+    @since 0.1.0
+  */
   public void render(
-  	Graphics2D renderContext,
-  	Dimension2D renderSize
-  	)
+    Graphics2D renderContext,
+    Dimension2D renderSize
+    )
   {render(renderContext, renderSize, null);}
 
   /**
-  	Renders the contents into the specified object.
-  	
-		@param renderContext Rendering context.
-		@param renderSize Rendering canvas size.
-		@param renderObject Rendering object.
-		@since 0.1.0
+    Renders the contents into the specified object.
+
+    @param renderContext Rendering context.
+    @param renderSize Rendering canvas size.
+    @param renderObject Rendering object.
+    @since 0.1.0
   */
   public void render(
-  	Graphics2D renderContext,
-  	Dimension2D renderSize,
-  	Shape renderObject
-  	)
+    Graphics2D renderContext,
+    Dimension2D renderSize,
+    Shape renderObject
+    )
   {
-  	if(isRootLevel())
-  	{
-  		// Initialize the context!
+    if(isRootLevel())
+    {
+      // Initialize the context!
       renderContext.setRenderingHint(
-      	RenderingHints.KEY_ANTIALIASING,
-      	RenderingHints.VALUE_ANTIALIAS_ON
-      	);
-    	renderContext.setRenderingHint(
-    		RenderingHints.KEY_INTERPOLATION,
-    		RenderingHints.VALUE_INTERPOLATION_BICUBIC
-    		);
+        RenderingHints.KEY_ANTIALIASING,
+        RenderingHints.VALUE_ANTIALIAS_ON
+        );
+      renderContext.setRenderingHint(
+        RenderingHints.KEY_INTERPOLATION,
+        RenderingHints.VALUE_INTERPOLATION_BICUBIC
+        );
 
-  		// Paint the canvas background!
-  		renderContext.setColor(java.awt.Color.WHITE);
-  		renderContext.fillRect(0,0,(int)renderSize.getWidth(),(int)renderSize.getHeight());
-  	}
-  	
-  	try
-  	{
-    	this.renderContext = renderContext;
-    	this.renderSize = renderSize;
-    	this.renderObject = renderObject;
-    	
-    	// Scan this level for rendering!
-    	moveStart(); while(moveNext());
-  	}
-  	catch(Exception e)
-  	{throw new RuntimeException("Rendering failed.", e);}
-  	finally
-  	{
-    	this.renderContext = null;
-    	this.renderSize = null;
-    	this.renderObject = null;
-  	}
+      // Paint the canvas background!
+      renderContext.setColor(java.awt.Color.WHITE);
+      renderContext.fillRect(0,0,(int)renderSize.getWidth(),(int)renderSize.getHeight());
+    }
+
+    try
+    {
+      this.renderContext = renderContext;
+      this.renderSize = renderSize;
+      this.renderObject = renderObject;
+
+      // Scan this level for rendering!
+      moveStart(); while(moveNext());
+    }
+    catch(Exception e)
+    {throw new RuntimeException("Rendering failed.", e);}
+    finally
+    {
+      this.renderContext = null;
+      this.renderSize = null;
+      this.renderObject = null;
+    }
   }
 
   /**

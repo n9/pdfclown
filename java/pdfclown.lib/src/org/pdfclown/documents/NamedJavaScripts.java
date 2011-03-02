@@ -36,29 +36,29 @@ import org.pdfclown.objects.PdfString;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	Named JavaScript actions [PDF:1.6:3.6.3].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  Named JavaScript actions [PDF:1.6:3.6.3].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF13)
 public final class NamedJavaScripts
-	extends NameTree<JavaScript>
+  extends NameTree<JavaScript>
 {
   // <class>
   // <dynamic>
   // <constructors>
-	public NamedJavaScripts(
-		Document context
-		)
-	{super(context);}
+  public NamedJavaScripts(
+    Document context
+    )
+  {super(context);}
 
-	NamedJavaScripts(
-		PdfDirectObject baseObject, 
-		PdfIndirectObject container
-		)
-	{super(baseObject, container);}
+  NamedJavaScripts(
+    PdfDirectObject baseObject,
+    PdfIndirectObject container
+    )
+  {super(baseObject, container);}
   // </constructors>
 
   // <interface>
@@ -71,13 +71,13 @@ public final class NamedJavaScripts
   // </public>
 
   // <protected>
-	@Override
-	protected JavaScript wrap(
-		PdfDirectObject baseObject, 
-		PdfIndirectObject container, 
-		PdfString name
-		)
-	{return (JavaScript)Action.wrap(baseObject, container, name);}
+  @Override
+  protected JavaScript wrap(
+    PdfDirectObject baseObject,
+    PdfIndirectObject container,
+    PdfString name
+    )
+  {return (JavaScript)Action.wrap(baseObject, container, name);}
   // </protected>
   // </interface>
   // </dynamic>

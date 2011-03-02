@@ -243,7 +243,7 @@ public abstract class Field
       else if((fieldFlagsValue & FlagsEnum.Radio.getCode()) > 0) // Radio.
         return new RadioButton(reference);
       else // Check box.
-      	return new CheckBox(reference);
+        return new CheckBox(reference);
     }
     else if(fieldType.equals(PdfName.Tx)) // Text.
       return new TextField(reference);
@@ -252,12 +252,12 @@ public abstract class Field
       if((fieldFlagsValue & FlagsEnum.Combo.getCode()) > 0) // Combo box.
         return new ComboBox(reference);
       else // List box.
-      	return new ListBox(reference);
+        return new ListBox(reference);
     }
     else if(fieldType.equals(PdfName.Sig)) // Signature.
       return new SignatureField(reference);
     else // Unknown.
-    	throw new UnsupportedOperationException("Unknown field type: " + fieldType);
+      throw new UnsupportedOperationException("Unknown field type: " + fieldType);
   }
   // </public>
   // </interface>
@@ -349,26 +349,26 @@ public abstract class Field
   public String getFullName(
     )
   {
-	  StringBuilder buffer = new StringBuilder();
-	  {
-	  	Stack<String> partialNameStack = new Stack<String>();
-	  	{
-			  PdfDictionary parent = getBaseDataObject();
-			  while(parent != null)
-			  {
-			    partialNameStack.push(((PdfTextString)parent.get(PdfName.T)).getValue());
-			    parent = (PdfDictionary)parent.resolve(PdfName.Parent);
-			  }
-	  	}
-		  while(!partialNameStack.isEmpty())
-		  {
-		  	if(buffer.length() > 0)
-		  	{buffer.append('.');}
-	
-		  	buffer.append(partialNameStack.pop());
-		  }
-	  }
-	  return buffer.toString();
+    StringBuilder buffer = new StringBuilder();
+    {
+      Stack<String> partialNameStack = new Stack<String>();
+      {
+        PdfDictionary parent = getBaseDataObject();
+        while(parent != null)
+        {
+          partialNameStack.push(((PdfTextString)parent.get(PdfName.T)).getValue());
+          parent = (PdfDictionary)parent.resolve(PdfName.Parent);
+        }
+      }
+      while(!partialNameStack.isEmpty())
+      {
+        if(buffer.length() > 0)
+        {buffer.append('.');}
+
+        buffer.append(partialNameStack.pop());
+      }
+    }
+    return buffer.toString();
   }
 
   /**
@@ -408,7 +408,7 @@ public abstract class Field
     if(widgetsObject == null) // Merged annotation.
       return new FieldWidgets(getBaseObject(), null, this);
     else // Annotation array.
-    	return new FieldWidgets(widgetsObject, getContainer(), this);
+      return new FieldWidgets(widgetsObject, getContainer(), this);
   }
 
   /**

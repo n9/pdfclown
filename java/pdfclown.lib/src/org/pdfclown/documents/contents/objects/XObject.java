@@ -72,15 +72,15 @@ public final class XObject
   public PdfName getName(
     )
   {return ((PaintXObject)getObjects().get(0)).getName();}
-  
+
   /**
-  	Gets the {@link org.pdfclown.documents.contents.xObjects.XObject external object} resource.
-	  
-	  @param context Content context.
+    Gets the {@link org.pdfclown.documents.contents.xObjects.XObject external object} resource.
+
+    @param context Content context.
   */
   public org.pdfclown.documents.contents.xObjects.XObject getResource(
-  	IContentContext context
-  	)
+    IContentContext context
+    )
   {return ((PaintXObject)getObjects().get(0)).getXObject(context);}
   // </public>
   // </interface>

@@ -53,8 +53,8 @@ public final class CalRGBColorSpace
   // <class>
   // <dynamic>
   // <constructors>
-	//TODO:IMPL new element constructor!
-	
+  //TODO:IMPL new element constructor!
+
   CalRGBColorSpace(
     PdfDirectObject baseObject,
     PdfIndirectObject container
@@ -72,15 +72,15 @@ public final class CalRGBColorSpace
 
   @Override
   public CalRGBColor getColor(
-  	List<PdfDirectObject> components,
-  	IContentContext context
+    List<PdfDirectObject> components,
+    IContentContext context
     )
   {return new CalRGBColor(components);}
 
-	@Override
-	public int getComponentCount(
-		)
-	{return 3;}
+  @Override
+  public int getComponentCount(
+    )
+  {return 3;}
 
   @Override
   public CalRGBColor getDefaultColor(
@@ -89,33 +89,33 @@ public final class CalRGBColorSpace
 
   @Override
   public float[] getGamma(
-		)
-	{
-		PdfArray gammaObject = (PdfArray)getDictionary().get(PdfName.Gamma);		
-		return (gammaObject == null
-			? new float[]
-				{
-					1,
-					1,
-					1
-				}
-			: new float[]
-		  	{
-					((PdfNumber<?>)gammaObject.get(0)).getNumberValue(),
-					((PdfNumber<?>)gammaObject.get(1)).getNumberValue(),
-					((PdfNumber<?>)gammaObject.get(2)).getNumberValue()
-		  	}
-			);
-	}
+    )
+  {
+    PdfArray gammaObject = (PdfArray)getDictionary().get(PdfName.Gamma);
+    return (gammaObject == null
+      ? new float[]
+        {
+          1,
+          1,
+          1
+        }
+      : new float[]
+        {
+          ((PdfNumber<?>)gammaObject.get(0)).getNumberValue(),
+          ((PdfNumber<?>)gammaObject.get(1)).getNumberValue(),
+          ((PdfNumber<?>)gammaObject.get(2)).getNumberValue()
+        }
+      );
+  }
 
-	@Override
-	public Paint getPaint(
-		Color<?> color
-		)
-	{
-		// FIXME: temporary hack
-		return new java.awt.Color(0,0,0);
-	}
+  @Override
+  public Paint getPaint(
+    Color<?> color
+    )
+  {
+    // FIXME: temporary hack
+    return new java.awt.Color(0,0,0);
+  }
   // </public>
   // </interface>
   // </dynamic>

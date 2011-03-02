@@ -44,151 +44,151 @@ import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	Paint that consists of a repeating graphical figure or a smoothly varying color gradient
-	instead of a simple color [PDF:1.6:4.6].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  Paint that consists of a repeating graphical figure or a smoothly varying color gradient
+  instead of a simple color [PDF:1.6:4.6].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Pattern<TDataObject extends PdfDataObject>
-	extends Color<TDataObject>
+  extends Color<TDataObject>
 {
   // <class>
   // <static>
   // <fields>
-	//TODO:verify!
-	public static final Pattern<?> Default = new TilingPattern((PdfDirectObject)null,null);
-	
-	private static final int PatternType1 = 1;
-	private static final int PatternType2 = 2;
+  //TODO:verify!
+  public static final Pattern<?> Default = new TilingPattern((PdfDirectObject)null,null);
+
+  private static final int PatternType1 = 1;
+  private static final int PatternType2 = 2;
   // </fields>
 
   // <interface>
   // <public>
   /**
-	  Wraps the specified base object into a pattern object.
-	
-	  @param baseObject Base object of a pattern object.
-	  @param container Indirect object possibly containing the pattern base object.
-	  @return Pattern object corresponding to the base object.
-	*/
-	public static Pattern<?> wrap(
-		PdfDirectObject baseObject,
-		PdfIndirectObject container
-		)
-	{
-	  if(baseObject == null)
-	    return null;
-	
-	  PdfDataObject dataObject = File.resolve(baseObject);
-	  PdfDictionary dictionary = getDictionary(dataObject);
-	  int patternType = ((PdfInteger)dictionary.get(PdfName.PatternType)).getRawValue();
-	  switch(patternType)
-		{
-			case PatternType1:
-				return new TilingPattern(baseObject, container);
-			case PatternType2:
-				return new ShadingPattern(baseObject, container);
-			default:
-				throw new UnsupportedOperationException("Pattern type " + patternType + " unknown.");
-		}
-	}
+    Wraps the specified base object into a pattern object.
+
+    @param baseObject Base object of a pattern object.
+    @param container Indirect object possibly containing the pattern base object.
+    @return Pattern object corresponding to the base object.
+  */
+  public static Pattern<?> wrap(
+    PdfDirectObject baseObject,
+    PdfIndirectObject container
+    )
+  {
+    if(baseObject == null)
+      return null;
+
+    PdfDataObject dataObject = File.resolve(baseObject);
+    PdfDictionary dictionary = getDictionary(dataObject);
+    int patternType = ((PdfInteger)dictionary.get(PdfName.PatternType)).getRawValue();
+    switch(patternType)
+    {
+      case PatternType1:
+        return new TilingPattern(baseObject, container);
+      case PatternType2:
+        return new ShadingPattern(baseObject, container);
+      default:
+        throw new UnsupportedOperationException("Pattern type " + patternType + " unknown.");
+    }
+  }
   // </public>
 
   // <private>
   /**
-		Gets a pattern's dictionary.
-		
-		@param patternDataObject Pattern data object.
-	*/
-	private static final PdfDictionary getDictionary(
-		PdfDataObject patternDataObject
-		)
-	{
-		if(patternDataObject instanceof PdfDictionary)
-			return (PdfDictionary)patternDataObject;
-		else // MUST be PdfStream.
-			return ((PdfStream)patternDataObject).getHeader();
-	}
+    Gets a pattern's dictionary.
+
+    @param patternDataObject Pattern data object.
+  */
+  private static final PdfDictionary getDictionary(
+    PdfDataObject patternDataObject
+    )
+  {
+    if(patternDataObject instanceof PdfDictionary)
+      return (PdfDictionary)patternDataObject;
+    else // MUST be PdfStream.
+      return ((PdfStream)patternDataObject).getHeader();
+  }
   // </private>
   // </interface>
   // </static>
 
   // <dynamic>
   // <constructors>
-	//TODO:verify (colorspace is available or may be implicit?)
-	protected Pattern(
+  //TODO:verify (colorspace is available or may be implicit?)
+  protected Pattern(
     PdfDirectObject baseObject,
     PdfIndirectObject container
-		)
-	{super(baseObject, container);}
+    )
+  {super(baseObject, container);}
 
-	//TODO:verify (colorspace is available or may be implicit?)
-	protected Pattern(
-		PatternColorSpace colorSpace,
-		PdfDirectObject baseObject
-		)
-	{super(colorSpace, baseObject);}
+  //TODO:verify (colorspace is available or may be implicit?)
+  protected Pattern(
+    PatternColorSpace colorSpace,
+    PdfDirectObject baseObject
+    )
+  {super(colorSpace, baseObject);}
   // </constructors>
 
   // <interface>
   // <public>
-	@Override
-	public Object clone(
-		Document context
-		)
-	{throw new NotImplementedException();}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {throw new NotImplementedException();}
 
-	@Override
-	public List<PdfDirectObject> getComponents(
-		)
-	{return new ArrayList<PdfDirectObject>();}//TODO:verify (see SetFillColor/SetStrokeColor -- name!)!
+  @Override
+  public List<PdfDirectObject> getComponents(
+    )
+  {return new ArrayList<PdfDirectObject>();}//TODO:verify (see SetFillColor/SetStrokeColor -- name!)!
 
-	/**
-		Gets the <b>pattern matrix</b>, a transformation matrix that <i>maps the pattern's
-		internal coordinate system to the default coordinate system of the pattern's
-		parent content stream</i> (the content stream in which the pattern is defined as a resource).
-		<p>The concatenation of the pattern matrix with that of the parent content stream establishes 
-		the pattern coordinate space, within which all graphics objects in the pattern are interpreted.</p>
-	*/
+  /**
+    Gets the <b>pattern matrix</b>, a transformation matrix that <i>maps the pattern's
+    internal coordinate system to the default coordinate system of the pattern's
+    parent content stream</i> (the content stream in which the pattern is defined as a resource).
+    <p>The concatenation of the pattern matrix with that of the parent content stream establishes
+    the pattern coordinate space, within which all graphics objects in the pattern are interpreted.</p>
+  */
   public double[] getMatrix(
-	  )
-	{
-	  /*
-	    NOTE: Pattern-space-to-user-space matrix is identity [1 0 0 1 0 0] by default.
-	  */
-	  PdfArray matrix = (PdfArray)getDictionary().get(PdfName.Matrix);
-	  if(matrix == null)
-	    return new double[]
-	      {
-	        1, // a.
-	        0, // b.
-	        0, // c.
-	        1, // d.
-	        0, // e.
-	        0 // f.
-	      };
-	  else
-		  return new double[]
-		    {
-		      ((PdfNumber<?>)matrix.get(0)).getNumberValue(), // a.
-		      ((PdfNumber<?>)matrix.get(1)).getNumberValue(), // b.
-		      ((PdfNumber<?>)matrix.get(2)).getNumberValue(), // c.
-		      ((PdfNumber<?>)matrix.get(3)).getNumberValue(), // d.
-		      ((PdfNumber<?>)matrix.get(4)).getNumberValue(), // e.
-		      ((PdfNumber<?>)matrix.get(5)).getNumberValue() // f.
-		    };
-	}
+    )
+  {
+    /*
+      NOTE: Pattern-space-to-user-space matrix is identity [1 0 0 1 0 0] by default.
+    */
+    PdfArray matrix = (PdfArray)getDictionary().get(PdfName.Matrix);
+    if(matrix == null)
+      return new double[]
+        {
+          1, // a.
+          0, // b.
+          0, // c.
+          1, // d.
+          0, // e.
+          0 // f.
+        };
+    else
+      return new double[]
+        {
+          ((PdfNumber<?>)matrix.get(0)).getNumberValue(), // a.
+          ((PdfNumber<?>)matrix.get(1)).getNumberValue(), // b.
+          ((PdfNumber<?>)matrix.get(2)).getNumberValue(), // c.
+          ((PdfNumber<?>)matrix.get(3)).getNumberValue(), // d.
+          ((PdfNumber<?>)matrix.get(4)).getNumberValue(), // e.
+          ((PdfNumber<?>)matrix.get(5)).getNumberValue() // f.
+        };
+  }
   // </public>
 
   // <protected>
   /**
-  	Gets this pattern's dictionary.
+    Gets this pattern's dictionary.
   */
   protected final PdfDictionary getDictionary(
-  	)
+    )
   {return getDictionary(getBaseDataObject());}
   // </protected>
   // </interface>

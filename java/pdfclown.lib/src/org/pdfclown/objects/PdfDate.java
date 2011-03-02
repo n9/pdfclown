@@ -95,7 +95,7 @@ public final class PdfDate
   // <dynamic>
   // <constructors>
   public PdfDate(
-		)
+    )
   {}
 
   public PdfDate(
@@ -119,11 +119,11 @@ public final class PdfDate
     byte[] buffer = new byte[23];
     {
       byte[] valueBytes = Encoding.encode(formatter.format(value));
-	    buffer[0] = 68; buffer[1] = 58;
-			System.arraycopy(valueBytes, 0, buffer, 2, 17);
-	    buffer[19] = 39;
-			System.arraycopy(valueBytes, 17, buffer, 20, 2);
-	    buffer[22] = 39;
+      buffer[0] = 68; buffer[1] = 58;
+      System.arraycopy(valueBytes, 0, buffer, 2, 17);
+      buffer[19] = 39;
+      System.arraycopy(valueBytes, 17, buffer, 20, 2);
+      buffer[22] = 39;
     }
     setRawValue(buffer);
   }

@@ -74,32 +74,32 @@ public final class TextStyle
   // <interface>
   // <public>
   public Color<?> getFillColor(
-  	)
-	{return fillColor;}
-  
+    )
+  {return fillColor;}
+
   public ColorSpace<?> getFillColorSpace(
-  	)
-	{return fillColorSpace;}
-  
+    )
+  {return fillColorSpace;}
+
   public Font getFont(
-  	)
-	{return font;}
-  
+    )
+  {return font;}
+
   public float getFontSize(
-  	)
-	{return fontSize;}
-  
+    )
+  {return fontSize;}
+
   public TextRenderModeEnum getRenderMode(
-  	)
-	{return renderMode;}
-  
+    )
+  {return renderMode;}
+
   public Color<?> getStrokeColor(
-  	)
-	{return strokeColor;}
-  
+    )
+  {return strokeColor;}
+
   public ColorSpace<?> getStrokeColorSpace(
-  	)
-	{return strokeColorSpace;}
+    )
+  {return strokeColorSpace;}
   // </public>
   // </interface>
   // </dynamic>

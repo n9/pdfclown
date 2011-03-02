@@ -65,7 +65,7 @@ public final class MarkedContentPoint
   {super(tag, properties);}
 
   MarkedContentPoint(
-  	String operator,
+    String operator,
     List<PdfDirectObject> operands
     )
   {super(operator, operands);}
@@ -75,12 +75,12 @@ public final class MarkedContentPoint
   // <protected>
   @Override
   protected String getPropertyListOperator(
-  	)
+    )
   {return PropertyListOperator;}
-  
+
   @Override
   protected String getSimpleOperator(
-  	)
+    )
   {return SimpleOperator;}
   // </protected>
   // </interface>

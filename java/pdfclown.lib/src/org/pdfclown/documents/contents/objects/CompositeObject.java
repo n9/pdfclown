@@ -84,11 +84,11 @@ public abstract class CompositeObject
   // <interface>
   // <public>
   /**
-	  Gets the object header.
-	*/
-	public Operation getHeader(
-	  )
-	{return null;}
+    Gets the object header.
+  */
+  public Operation getHeader(
+    )
+  {return null;}
 
   /**
     Gets the list of inner objects.
@@ -96,7 +96,7 @@ public abstract class CompositeObject
   public List<ContentObject> getObjects(
     )
   {return objects;}
-  
+
   @Override
   public void scan(
     GraphicsState state
@@ -104,25 +104,25 @@ public abstract class CompositeObject
   {
     ContentScanner childLevel = state.getScanner().getChildLevel();
 
-  	if(!render(state))
-  	{childLevel.moveEnd();} // Forces the current object to its final graphics state.
+    if(!render(state))
+    {childLevel.moveEnd();} // Forces the current object to its final graphics state.
 
-  	childLevel.getState().copyTo(state); // Copies the current object's final graphics state to the current level's.
+    childLevel.getState().copyTo(state); // Copies the current object's final graphics state to the current level's.
   }
-  
+
   /**
-		@see #getHeader()
-	*/
-	public void setHeader(
-		Operation value
-		)
-	{throw new UnsupportedOperationException();}
+    @see #getHeader()
+  */
+  public void setHeader(
+    Operation value
+    )
+  {throw new UnsupportedOperationException();}
 
   @Override
   public String toString(
     )
   {return "{" + objects.toString() + "}";}
-  
+
   @Override
   public void writeTo(
     IOutputStream stream
@@ -132,37 +132,37 @@ public abstract class CompositeObject
     {object.writeTo(stream);}
   }
   // </public>
-  
+
   // <protected>
   /**
-  	Creates the rendering object corresponding to this container.
+    Creates the rendering object corresponding to this container.
   */
   protected Shape createRenderObject(
-  	)
+    )
   {return null;}
 
   /**
-  	Renders this container.
+    Renders this container.
 
-  	@param state Graphics state.
-  	@return Whether the rendering has been executed.
+    @param state Graphics state.
+    @return Whether the rendering has been executed.
    */
   protected boolean render(
     GraphicsState state
-  	)
+    )
   {
-  	ContentScanner scanner = state.getScanner();
-  	Graphics2D context = scanner.getRenderContext();
-  	if(context == null)
-  		return false;
+    ContentScanner scanner = state.getScanner();
+    Graphics2D context = scanner.getRenderContext();
+    if(context == null)
+      return false;
 
-  	// Render the inner elements!
-		scanner.getChildLevel().render(
-  		context,
-  		scanner.getCanvasSize(),
-  		createRenderObject()
-  		);
-  	return true;
+    // Render the inner elements!
+    scanner.getChildLevel().render(
+      context,
+      scanner.getCanvasSize(),
+      createRenderObject()
+      );
+    return true;
   }
   // </protected>
   // </interface>

@@ -64,20 +64,20 @@ public final class TextChar
   // <interface>
   // <public>
   public Rectangle2D getBox(
-  	)
-	{return box;}
+    )
+  {return box;}
 
   public TextStyle getStyle(
-  	)
-	{return style;}
+    )
+  {return style;}
 
   public char getValue(
-  	)
-	{return value;}
+    )
+  {return value;}
 
   public boolean isVirtual(
-  	)
-	{return virtual;}
+    )
+  {return virtual;}
 
   @Override
   public String toString(

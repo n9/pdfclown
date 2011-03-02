@@ -25,16 +25,6 @@
 
 package org.pdfclown.tools;
 
-import org.pdfclown.documents.contents.Contents;
-import org.pdfclown.documents.contents.ContentScanner;
-import org.pdfclown.documents.contents.IContentContext;
-import org.pdfclown.documents.contents.ITextString;
-import org.pdfclown.documents.contents.TextChar;
-import org.pdfclown.documents.contents.TextStyle;
-import org.pdfclown.documents.contents.objects.ContainerObject;
-import org.pdfclown.documents.contents.objects.ContentObject;
-import org.pdfclown.documents.contents.objects.Text;
-
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +32,16 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.pdfclown.documents.contents.ContentScanner;
+import org.pdfclown.documents.contents.Contents;
+import org.pdfclown.documents.contents.IContentContext;
+import org.pdfclown.documents.contents.ITextString;
+import org.pdfclown.documents.contents.TextChar;
+import org.pdfclown.documents.contents.TextStyle;
+import org.pdfclown.documents.contents.objects.ContainerObject;
+import org.pdfclown.documents.contents.objects.ContentObject;
+import org.pdfclown.documents.contents.objects.Text;
 
 /**
   Tool for extracting text from {@link IContentContext content contexts}.
@@ -86,6 +86,7 @@ public final class TextExtractor
 
     // <interface>
     // <public>
+    @Override
     public Rectangle2D getBox(
       )
     {
@@ -100,6 +101,7 @@ public final class TextExtractor
       return box;
     }
 
+    @Override
     public String getText(
       )
     {
@@ -109,6 +111,7 @@ public final class TextExtractor
       return textBuilder.toString();
     }
 
+    @Override
     public List<TextChar> getTextChars(
       )
     {return textChars;}
@@ -150,6 +153,7 @@ public final class TextExtractor
 
     // <dynamic>
     // <Comparator>
+    @Override
     public int compare(
       ITextString textString1,
       ITextString textString2
@@ -355,11 +359,11 @@ public final class TextExtractor
       filteredAreasTextStrings.put(area, filteredAreaTextStrings);
       Rectangle2D toleratedArea = (areaTolerance != 0
         ? new Rectangle2D.Double(
-        	area.getX() - areaTolerance,
-        	area.getY() - areaTolerance,
-        	area.getWidth() + areaTolerance * 2,
-        	area.getHeight() + areaTolerance * 2
-        	)
+          area.getX() - areaTolerance,
+          area.getY() - areaTolerance,
+          area.getWidth() + areaTolerance * 2,
+          area.getHeight() + areaTolerance * 2
+          )
         : area);
       for(ITextString textString : textStrings)
       {

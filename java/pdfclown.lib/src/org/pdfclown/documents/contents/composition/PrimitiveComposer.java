@@ -821,7 +821,7 @@ public final class PrimitiveComposer
     )
   {
     // Reset the CTM!
-		add(ModifyCTM.getResetCTM(scanner.getState()));
+    add(ModifyCTM.getResetCTM(scanner.getState()));
     // Apply the transformation!
     add(new ModifyCTM(a,b,c,d,e,f));
   }
@@ -1362,8 +1362,8 @@ public final class PrimitiveComposer
     try
     {
       translate(
-      	(float)location.getX(),
-      	(float)(scanner.getContentContext().getBox().getHeight() - location.getY())
+        (float)location.getX(),
+        (float)(scanner.getContentContext().getBox().getHeight() - location.getY())
         );
       if(rotation != 0)
       {rotate(rotation);}

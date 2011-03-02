@@ -60,7 +60,7 @@ public final class JavaScript
     String script
     )
   {
-		super(context, PdfName.JavaScript);
+    super(context, PdfName.JavaScript);
     getBaseDataObject().put(PdfName.JS,new PdfTextString(script));
   }
 
@@ -88,7 +88,7 @@ public final class JavaScript
     */
     PdfDataObject scriptObject = getBaseDataObject().get(PdfName.JS);
     if(scriptObject instanceof PdfTextString)
-    {return (String)((PdfTextString)scriptObject).getValue();}
+    {return ((PdfTextString)scriptObject).getValue();}
     else
     {
       IBuffer scriptBuffer = ((PdfStream)scriptObject).getBody();

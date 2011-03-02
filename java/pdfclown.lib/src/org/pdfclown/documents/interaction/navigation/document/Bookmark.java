@@ -59,10 +59,10 @@ public final class Bookmark
   // <classes>
   /**
     Bookmark flags [PDF:1.6:8.2.2].
-    
+
     @since 0.1.0
   */
-	@PDF(VersionEnum.PDF14)
+  @PDF(VersionEnum.PDF14)
   public enum FlagsEnum
   {
     // <class>
@@ -171,7 +171,7 @@ public final class Bookmark
     this(context,title);
     setAction(action);
   }
-  
+
   Bookmark(
     PdfDirectObject baseObject
     )
@@ -199,30 +199,30 @@ public final class Bookmark
   {return new Bookmarks(getBaseObject());}
 
   /**
-	  Gets the bookmark text color.
-	  
+    Gets the bookmark text color.
+
     @since 0.1.0
-	*/
+  */
   @PDF(VersionEnum.PDF14)
-	public DeviceRGBColor getColor(
-	  )
-	{return DeviceRGBColor.get((PdfArray)getBaseDataObject().get(PdfName.C));}
-  
+  public DeviceRGBColor getColor(
+    )
+  {return DeviceRGBColor.get((PdfArray)getBaseDataObject().get(PdfName.C));}
+
   /**
-	  Gets the bookmark flags.
-	  
+    Gets the bookmark flags.
+
     @since 0.1.0
-	*/
+  */
   @PDF(VersionEnum.PDF14)
-	public EnumSet<FlagsEnum> getFlags(
-	  )
-	{
-	  PdfInteger flagsObject = (PdfInteger)getBaseDataObject().get(PdfName.F);
-	  if(flagsObject == null)
-	    return EnumSet.noneOf(FlagsEnum.class);
-	
-	  return FlagsEnum.toEnumSet(flagsObject.getRawValue());
-	}
+  public EnumSet<FlagsEnum> getFlags(
+    )
+  {
+    PdfInteger flagsObject = (PdfInteger)getBaseDataObject().get(PdfName.F);
+    if(flagsObject == null)
+      return EnumSet.noneOf(FlagsEnum.class);
+
+    return FlagsEnum.toEnumSet(flagsObject.getRawValue());
+  }
 
   /**
     Gets the parent bookmark.
@@ -247,7 +247,7 @@ public final class Bookmark
   */
   public String getTitle(
     )
-  {return (String)((PdfTextString)getBaseDataObject().get(PdfName.Title)).getValue();}
+  {return ((PdfTextString)getBaseDataObject().get(PdfName.Title)).getValue();}
 
   /**
     Gets whether this bookmark's children are displayed.
@@ -262,20 +262,20 @@ public final class Bookmark
   }
 
   /**
-	  @see #getColor()
-	*/
-	public void setColor(
-		DeviceRGBColor value
-	  )
-	{
-		if(value == null)
-		{getBaseDataObject().remove(PdfName.C);}
-		else
-		{
-			checkCompatibility("color");
-			getBaseDataObject().put(PdfName.C, value.getBaseObject());
-		}
-	}
+    @see #getColor()
+  */
+  public void setColor(
+    DeviceRGBColor value
+    )
+  {
+    if(value == null)
+    {getBaseDataObject().remove(PdfName.C);}
+    else
+    {
+      checkCompatibility("color");
+      getBaseDataObject().put(PdfName.C, value.getBaseObject());
+    }
+  }
 
   /**
     @see #isExpanded()
@@ -295,20 +295,20 @@ public final class Bookmark
   }
 
   /**
-	  @see #getFlags()
-	*/
-	public void setFlags(
-	  EnumSet<FlagsEnum> value
-	  )
-	{
-		if(value.isEmpty())
-		{getBaseDataObject().remove(PdfName.F);}
-		else
-		{
-			checkCompatibility(value);
-			getBaseDataObject().put(PdfName.F, new PdfInteger(FlagsEnum.toInt(value)));
-		}
-	}
+    @see #getFlags()
+  */
+  public void setFlags(
+    EnumSet<FlagsEnum> value
+    )
+  {
+    if(value.isEmpty())
+    {getBaseDataObject().remove(PdfName.F);}
+    else
+    {
+      checkCompatibility(value);
+      getBaseDataObject().put(PdfName.F, new PdfInteger(FlagsEnum.toInt(value)));
+    }
+  }
 
   /**
     @see #getTitle()
@@ -317,8 +317,9 @@ public final class Bookmark
     String value
     )
   {getBaseDataObject().put(PdfName.Title,new PdfTextString(value));}
-  
+
   // <ILink>
+  @Override
   @PDF(VersionEnum.PDF11)
   public Action getAction(
     )
@@ -329,10 +330,11 @@ public final class Bookmark
     PdfDirectObject actionObject = getBaseDataObject().get(PdfName.A);
     if(actionObject == null)
       return null;
-  
+
     return Action.wrap(actionObject,getContainer());
   }
 
+  @Override
   public Destination getDestination(
     )
   {
@@ -350,6 +352,7 @@ public final class Bookmark
       );
   }
 
+  @Override
   public PdfObjectWrapper<?> getTarget(
     )
   {
@@ -361,6 +364,7 @@ public final class Bookmark
       return null;
   }
 
+  @Override
   public void setAction(
     Action value
     )
@@ -369,18 +373,19 @@ public final class Bookmark
     {getBaseDataObject().remove(PdfName.A);}
     else
     {
-    	checkCompatibility("action");
-    	
+      checkCompatibility("action");
+
       /*
         NOTE: This entry is not permitted in bookmarks if a 'Dest' entry already exists.
       */
       if(getBaseDataObject().containsKey(PdfName.Dest))
       {getBaseDataObject().remove(PdfName.Dest);}
-      
+
       getBaseDataObject().put(PdfName.A,value.getBaseObject());
     }
   }
-  
+
+  @Override
   public void setDestination(
     Destination value
     )
@@ -399,6 +404,7 @@ public final class Bookmark
     }
   }
 
+  @Override
   public void setTarget(
     PdfObjectWrapper<?> value
     )

@@ -170,7 +170,7 @@ public abstract class ShowText
     }
     else
     {tm = (AffineTransform)state.getTm().clone();}
-    
+
     for(Object textElement : getValue())
     {
       if(textElement instanceof byte[]) // Text string.
@@ -183,11 +183,11 @@ public abstract class ShowText
           if(textScanner != null)
           {
             /*
-	            NOTE: The text rendering matrix is recomputed before each glyph is painted
-	            during a text-showing operation.
-	          */
-	          AffineTransform trm = (AffineTransform)ctm.clone(); trm.concatenate(tm);
-	          float charHeight = font.getHeight(textChar,fontSize);
+              NOTE: The text rendering matrix is recomputed before each glyph is painted
+              during a text-showing operation.
+            */
+            AffineTransform trm = (AffineTransform)ctm.clone(); trm.concatenate(tm);
+            float charHeight = font.getHeight(textChar,fontSize);
             Rectangle2D charBox = new Rectangle2D.Double(
               trm.getTranslateX(),
               contextHeight - trm.getTranslateY() - font.getAscent(fontSize) * tm.getScaleY(),
@@ -201,7 +201,7 @@ public abstract class ShowText
             NOTE: After the glyph is painted, the text matrix is updated
             according to the glyph displacement and any applicable spacing parameter.
           */
-					tm.translate(charWidth + charSpace + (textChar == ' ' ? wordSpace : 0), 0);
+          tm.translate(charWidth + charSpace + (textChar == ' ' ? wordSpace : 0), 0);
         }
       }
       else // Text position adjustment.

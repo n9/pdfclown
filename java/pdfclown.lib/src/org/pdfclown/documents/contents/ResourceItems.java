@@ -95,7 +95,7 @@ public abstract class ResourceItems<TValue extends PdfObjectWrapper<?>>
     )
   {return getBaseDataObject().containsKey(key);}
 
-	@Override
+  @Override
   @SuppressWarnings("unchecked")
   public boolean containsValue(
     Object value
@@ -153,18 +153,18 @@ public abstract class ResourceItems<TValue extends PdfObjectWrapper<?>>
   {
     Collection<TValue> values;
     {
-	    // Get the low-level objects!
-	    Collection<PdfDirectObject> valueObjects = getBaseDataObject().values();
-	    // Populating the high-level collection...
-	    values = new ArrayList<TValue>(valueObjects.size());
-	    for(PdfDirectObject valueObject : valueObjects)
-	    {values.add(wrap(valueObject));}
+      // Get the low-level objects!
+      Collection<PdfDirectObject> valueObjects = getBaseDataObject().values();
+      // Populating the high-level collection...
+      values = new ArrayList<TValue>(valueObjects.size());
+      for(PdfDirectObject valueObject : valueObjects)
+      {values.add(wrap(valueObject));}
     }
     return values;
   }
   // </Map>
   // </public>
-  
+
   // <protected>
   /**
     Wraps a base object within its corresponding high-level representation.

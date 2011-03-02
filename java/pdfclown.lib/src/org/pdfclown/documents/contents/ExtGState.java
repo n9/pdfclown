@@ -53,7 +53,7 @@ public final class ExtGState
   extends PdfObjectWrapper<PdfDictionary>
 {
   // <class>
-	// <static>
+  // <static>
   // <interface>
   // <public>
   /**
@@ -78,14 +78,14 @@ public final class ExtGState
     PdfDirectObject baseObject,
     PdfIndirectObject container
     )
-	{
-  	return baseObject == null
-			? null
-			: new ExtGState(baseObject, container);
-	}
+  {
+    return baseObject == null
+      ? null
+      : new ExtGState(baseObject, container);
+  }
   // </public>
   // </interface>
-	// </static>
+  // </static>
 
   // <dynamic>
   // <constructors>
@@ -105,8 +105,8 @@ public final class ExtGState
   // <interface>
   // <public>
   public void applyTo(
-  	GraphicsState state
-  	)
+    GraphicsState state
+    )
   {
     for(PdfName parameterName : getBaseDataObject().keySet())
     {
@@ -128,7 +128,7 @@ public final class ExtGState
       //TODO:extend supported parameters!!!
     }
   }
-  
+
   @Override
   public ExtGState clone(
     Document context
@@ -141,8 +141,8 @@ public final class ExtGState
   {
     PdfArray fontObject = (PdfArray)getBaseDataObject().get(PdfName.Font);
     return fontObject == null
-    	? null
-  		: Font.wrap((PdfReference)fontObject.get(0));
+      ? null
+      : Font.wrap((PdfReference)fontObject.get(0));
   }
 
   @PDF(VersionEnum.PDF13)
@@ -151,8 +151,8 @@ public final class ExtGState
   {
     PdfArray fontObject = (PdfArray)getBaseDataObject().get(PdfName.Font);
     return fontObject == null
-    	? null
-  		: ((PdfNumber<?>)fontObject.get(1)).getNumberValue();
+      ? null
+      : ((PdfNumber<?>)fontObject.get(1)).getNumberValue();
   }
 
   @PDF(VersionEnum.PDF13)
@@ -161,8 +161,8 @@ public final class ExtGState
   {
     PdfInteger lineCapObject = (PdfInteger)getBaseDataObject().get(PdfName.LC);
     return lineCapObject == null
-    	? null
-  		: LineCapEnum.valueOf(lineCapObject.getRawValue());
+      ? null
+      : LineCapEnum.valueOf(lineCapObject.getRawValue());
   }
 
   @PDF(VersionEnum.PDF13)
@@ -175,15 +175,15 @@ public final class ExtGState
 
     float[] dashArray;
     {
-	    PdfArray baseDashArray = (PdfArray)lineDashObject.get(0);
-	    dashArray = new float[baseDashArray.size()];
-	    for(
-	      int index = 0,
-	        length = dashArray.length;
-	      index < length;
-	      index++
-	      )
-	    {dashArray[index] = ((PdfNumber<?>)baseDashArray.get(index)).getNumberValue();}
+      PdfArray baseDashArray = (PdfArray)lineDashObject.get(0);
+      dashArray = new float[baseDashArray.size()];
+      for(
+        int index = 0,
+          length = dashArray.length;
+        index < length;
+        index++
+        )
+      {dashArray[index] = ((PdfNumber<?>)baseDashArray.get(index)).getNumberValue();}
     }
     float dashPhase = ((PdfNumber<?>)lineDashObject.get(1)).getNumberValue();
     return new LineDash(dashArray, dashPhase);
@@ -195,8 +195,8 @@ public final class ExtGState
   {
     PdfInteger lineJoinObject = (PdfInteger)getBaseDataObject().get(PdfName.LJ);
     return lineJoinObject == null
-    	? null
-  		: LineJoinEnum.valueOf(lineJoinObject.getRawValue());
+      ? null
+      : LineJoinEnum.valueOf(lineJoinObject.getRawValue());
   }
 
   @PDF(VersionEnum.PDF13)
@@ -205,8 +205,8 @@ public final class ExtGState
   {
     PdfNumber<?> lineWidthObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.LW);
     return lineWidthObject == null
-    	? null
-  		: lineWidthObject.getNumberValue();
+      ? null
+      : lineWidthObject.getNumberValue();
   }
 
   @PDF(VersionEnum.PDF13)
@@ -215,8 +215,8 @@ public final class ExtGState
   {
     PdfNumber<?> miterLimitObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.ML);
     return miterLimitObject == null
-    	? null
-  		: miterLimitObject.getNumberValue();
+      ? null
+      : miterLimitObject.getNumberValue();
   }
   // </public>
   // </interface>

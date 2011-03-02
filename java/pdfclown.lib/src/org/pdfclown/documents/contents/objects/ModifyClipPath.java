@@ -49,26 +49,26 @@ public final class ModifyClipPath
   // <fields>
   public static final String EvenOddOperator = "W*";
   public static final String NonZeroOperator = "W";
-  
+
   /**
-	  'Modify the current clipping path by intersecting it with the current path,
-	  using the even-odd rule to determine which regions lie inside the clipping path'
-	  operation.
-	*/
+    'Modify the current clipping path by intersecting it with the current path,
+    using the even-odd rule to determine which regions lie inside the clipping path'
+    operation.
+  */
   public static final ModifyClipPath EvenOdd = new ModifyClipPath(EvenOddOperator, WindModeEnum.EvenOdd);
   /**
-	  'Modify the current clipping path by intersecting it with the current path,
-	  using the nonzero winding number rule to determine which regions lie inside
-	  the clipping path' operation.
-	*/
+    'Modify the current clipping path by intersecting it with the current path,
+    using the nonzero winding number rule to determine which regions lie inside
+    the clipping path' operation.
+  */
   public static final ModifyClipPath NonZero = new ModifyClipPath(NonZeroOperator, WindModeEnum.NonZero);
   // </fields>
   // </static>
 
   // <dynamic>
-	// <fields>
-	private WindModeEnum clipMode;
-	// </fields>
+  // <fields>
+  private WindModeEnum clipMode;
+  // </fields>
 
   // <constructors>
   private ModifyClipPath(
@@ -76,32 +76,32 @@ public final class ModifyClipPath
     WindModeEnum clipMode
     )
   {
-  	super(operator);
-  	this.clipMode = clipMode;
-	}
+    super(operator);
+    this.clipMode = clipMode;
+  }
   // </constructors>
-  
+
   // <interface>
   // <public>
   /**
-  	Gets the clipping rule.
+    Gets the clipping rule.
   */
   public WindModeEnum getClipMode(
-  	)
-	{return clipMode;}
+    )
+  {return clipMode;}
 
   @Override
   public void scan(
-  	GraphicsState state
-  	)
+    GraphicsState state
+    )
   {
-  	ContentScanner scanner = state.getScanner();
-  	Path2D pathObject = (Path2D)scanner.getRenderObject();
-  	if(pathObject != null)
-  	{
-  		pathObject.setWindingRule(clipMode.toAwt());
-  		scanner.getRenderContext().clip(pathObject);
-		}
+    ContentScanner scanner = state.getScanner();
+    Path2D pathObject = (Path2D)scanner.getRenderObject();
+    if(pathObject != null)
+    {
+      pathObject.setWindingRule(clipMode.toAwt());
+      scanner.getRenderContext().clip(pathObject);
+    }
   }
   // </public>
   // </interface>

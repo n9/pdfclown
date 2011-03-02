@@ -40,18 +40,18 @@ public abstract class PdfObject
   // <class>
   // <static>
   /**
-	  Gets the clone of the specified object, registered inside the specified file context.
-	  
-	  @param object Object to clone into the specified file context.
-	  @param context File context of the cloning.
-	*/
-	public static final Object clone(
-		PdfObject object,
+    Gets the clone of the specified object, registered inside the specified file context.
+
+    @param object Object to clone into the specified file context.
+    @param context File context of the cloning.
+  */
+  public static final Object clone(
+    PdfObject object,
     File context
     )
-	{return object == null ? null : object.clone(context);}
+  {return object == null ? null : object.clone(context);}
   // </static>
-	
+
   // <dynamic>
   // <constructors>
   protected PdfObject(

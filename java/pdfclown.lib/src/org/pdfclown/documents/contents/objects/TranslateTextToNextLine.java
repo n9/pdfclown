@@ -46,7 +46,7 @@ public final class TranslateTextToNextLine
   // <static>
   // <fields>
   public static final String Operator = "T*";
-  
+
   public static final TranslateTextToNextLine Value = new TranslateTextToNextLine();
   // </fields>
   // </static>
@@ -65,7 +65,7 @@ public final class TranslateTextToNextLine
     GraphicsState state
     )
   {
-  	state.getTlm().translate(0, state.getLead());
+    state.getTlm().translate(0, state.getLead());
     state.setTm((AffineTransform)state.getTlm().clone());
   }
   // </public>

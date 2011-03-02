@@ -39,23 +39,23 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	Special color space that can contain an arbitrary number of color components [PDF:1.6:4.5.5].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  Special color space that can contain an arbitrary number of color components [PDF:1.6:4.5.5].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF13)
 public final class DeviceNColorSpace
-	extends SpecialDeviceColorSpace
+  extends SpecialDeviceColorSpace
 {
   // <class>
   // <dynamic>
   // <constructors>
-	//TODO:IMPL new element constructor!
-	
+  //TODO:IMPL new element constructor!
+
   DeviceNColorSpace(
-  	PdfDirectObject baseObject,
+    PdfDirectObject baseObject,
     PdfIndirectObject container
     )
   {super(baseObject, container);}
@@ -63,52 +63,52 @@ public final class DeviceNColorSpace
 
   // <interface>
   // <public>
-	@Override
-	public Object clone(
-		Document context
-		)
-	{throw new NotImplementedException();}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {throw new NotImplementedException();}
 
-	@Override
-	public DeviceNColor getColor(
-		List<PdfDirectObject> components,
-		IContentContext context
-		)
-	{return new DeviceNColor(components);}
+  @Override
+  public DeviceNColor getColor(
+    List<PdfDirectObject> components,
+    IContentContext context
+    )
+  {return new DeviceNColor(components);}
 
-	@Override
-	public DeviceNColor getDefaultColor(
-		)
-	{
-		float[] components = new float[getComponentCount()];
-		for(
-			int index = 0,
-				length = components.length;
-			index < length;
-			index++
-			)
-		{components[index] = 1;}
+  @Override
+  public DeviceNColor getDefaultColor(
+    )
+  {
+    float[] components = new float[getComponentCount()];
+    for(
+      int index = 0,
+        length = components.length;
+      index < length;
+      index++
+      )
+    {components[index] = 1;}
 
-		return new DeviceNColor(components);
-	}
+    return new DeviceNColor(components);
+  }
 
-	@Override
-	public int getComponentCount(
-		)
-	{return ((PdfArray)getBaseDataObject().get(1)).size();}
-	
-	@Override
-	public List<String> getComponentNames(
-		)
-	{
-		List<String> componentNames = new ArrayList<String>();
-		{
-			PdfArray namesObject = (PdfArray)getBaseDataObject().get(1);
-			for(PdfDirectObject nameObject : namesObject)
-			{componentNames.add((String)((PdfName)nameObject).getValue());}
-		}
-		return componentNames;
-	}
+  @Override
+  public int getComponentCount(
+    )
+  {return ((PdfArray)getBaseDataObject().get(1)).size();}
+
+  @Override
+  public List<String> getComponentNames(
+    )
+  {
+    List<String> componentNames = new ArrayList<String>();
+    {
+      PdfArray namesObject = (PdfArray)getBaseDataObject().get(1);
+      for(PdfDirectObject nameObject : namesObject)
+      {componentNames.add((String)((PdfName)nameObject).getValue());}
+    }
+    return componentNames;
+  }
   // </public>
   // </interface>
   // </dynamic>

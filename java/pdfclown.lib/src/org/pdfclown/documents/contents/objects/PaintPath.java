@@ -48,7 +48,7 @@ public final class PaintPath
 {
   // <class>
   // <static>
-	// <fields>
+  // <fields>
   public static final String CloseFillStrokeEvenOddOperator = "b*";
   public static final String CloseFillStrokeOperator = "b";
   public static final String CloseStrokeOperator = "s";
@@ -61,155 +61,155 @@ public final class PaintPath
   public static final String StrokeOperator = "S";
 
   /**
-	  'Close, fill, and then stroke the path, using the nonzero winding number rule to determine
-	  the region to fill' operation.
-	*/
+    'Close, fill, and then stroke the path, using the nonzero winding number rule to determine
+    the region to fill' operation.
+  */
   public static final PaintPath CloseFillStroke = new PaintPath(CloseFillStrokeOperator, true, true, true, WindModeEnum.NonZero);
   /**
-	  'Close, fill, and then stroke the path, using the even-odd rule to determine the region
-	  to fill' operation.
-	*/
+    'Close, fill, and then stroke the path, using the even-odd rule to determine the region
+    to fill' operation.
+  */
   public static final PaintPath CloseFillStrokeEvenOdd = new PaintPath(CloseFillStrokeEvenOddOperator, true, true, true, WindModeEnum.EvenOdd);
   /**
-	  'Close and stroke the path' operation.
-	*/
+    'Close and stroke the path' operation.
+  */
   public static final PaintPath CloseStroke = new PaintPath(CloseStrokeOperator, true, true, false, null);
   /**
-	  'End the path object without filling or stroking it' operation.
-	*/
+    'End the path object without filling or stroking it' operation.
+  */
   public static final PaintPath EndPathNoOp = new PaintPath(EndPathNoOpOperator, false, false, false, null);
   /**
-	  'Fill the path, using the nonzero winding number rule to determine the region to fill' operation.
-	*/
+    'Fill the path, using the nonzero winding number rule to determine the region to fill' operation.
+  */
   public static final PaintPath Fill = new PaintPath(FillOperator, false, false, true, WindModeEnum.NonZero);
   /**
-	  'Fill the path, using the even-odd rule to determine the region to fill' operation.
-	*/
+    'Fill the path, using the even-odd rule to determine the region to fill' operation.
+  */
   public static final PaintPath FillEvenOdd = new PaintPath(FillEvenOddOperator, false, false, true, WindModeEnum.EvenOdd);
   /**
-	  'Fill and then stroke the path, using the nonzero winding number rule to determine the region to
-	  fill' operation.
-	*/
+    'Fill and then stroke the path, using the nonzero winding number rule to determine the region to
+    fill' operation.
+  */
   public static final PaintPath FillStroke = new PaintPath(FillStrokeOperator, false, true, true, WindModeEnum.NonZero);
   /**
-	  'Fill and then stroke the path, using the even-odd rule to determine the region to fill' operation.
-	*/
+    'Fill and then stroke the path, using the even-odd rule to determine the region to fill' operation.
+  */
   public static final PaintPath FillStrokeEvenOdd = new PaintPath(FillStrokeEvenOddOperator, false, true, true, WindModeEnum.EvenOdd);
   /**
-	  'Stroke the path' operation.
-	*/
+    'Stroke the path' operation.
+  */
   public static final PaintPath Stroke = new PaintPath(StrokeOperator, false, true, false, null);
-	// </fields>
+  // </fields>
 
   // <interface>
   // <private>
-	private static java.awt.Stroke getStroke(
-		GraphicsState state
-		)
+  private static java.awt.Stroke getStroke(
+    GraphicsState state
+    )
   {
     return new BasicStroke(
-    	state.getLineWidth(),
-    	state.getLineCap().toAwt(),
-    	state.getLineJoin().toAwt(),
-    	state.getMiterLimit(),
-    	(state.getLineDash().getDashArray() == null
-    			|| state.getLineDash().getDashArray().length == 0
-    		? null 
-  			: state.getLineDash().getDashArray()),
-    	state.getLineDash().getDashPhase()
-    	);
+      state.getLineWidth(),
+      state.getLineCap().toAwt(),
+      state.getLineJoin().toAwt(),
+      state.getMiterLimit(),
+      (state.getLineDash().getDashArray() == null
+          || state.getLineDash().getDashArray().length == 0
+        ? null
+        : state.getLineDash().getDashArray()),
+      state.getLineDash().getDashPhase()
+      );
   }
   // </private>
   // </interface>
   // </static>
 
   // <dynamic>
-	// <fields>
-	private boolean closed;
-	private boolean filled;
-	private WindModeEnum fillMode;
-	private boolean stroked;
-	// </fields>
+  // <fields>
+  private boolean closed;
+  private boolean filled;
+  private WindModeEnum fillMode;
+  private boolean stroked;
+  // </fields>
 
   // <constructors>
   private PaintPath(
     String operator,
-  	boolean closed,
-  	boolean stroked,
-  	boolean filled,
-  	WindModeEnum fillMode
+    boolean closed,
+    boolean stroked,
+    boolean filled,
+    WindModeEnum fillMode
     )
   {
-  	super(operator);
-  	
-  	this.closed = closed;
-  	this.stroked = stroked;
-  	this.filled = filled;
-  	this.fillMode = fillMode;
-	}
+    super(operator);
+
+    this.closed = closed;
+    this.stroked = stroked;
+    this.filled = filled;
+    this.fillMode = fillMode;
+  }
   // </constructors>
-  
+
   // <interface>
   // <public>
   /**
-		Gets the filling rule.
-	*/
+    Gets the filling rule.
+  */
   public WindModeEnum getFillMode(
-  	)
-	{return fillMode;}
+    )
+  {return fillMode;}
 
   /**
-  	Gets whether the current path has to be closed.
+    Gets whether the current path has to be closed.
   */
   public boolean isClosed(
-  	)
-	{return closed;}
-  
-  /**
-		Gets whether the current path has to be filled.
-	*/
-  public boolean isFilled(
-  	)
-	{return filled;}
-  
-  /**
-		Gets whether the current path has to be stroked.
-	*/
-  public boolean isStroked(
-  	)
-	{return stroked;}
+    )
+  {return closed;}
 
-	@Override
+  /**
+    Gets whether the current path has to be filled.
+  */
+  public boolean isFilled(
+    )
+  {return filled;}
+
+  /**
+    Gets whether the current path has to be stroked.
+  */
+  public boolean isStroked(
+    )
+  {return stroked;}
+
+  @Override
   public void scan(
-  	GraphicsState state
-  	)
+    GraphicsState state
+    )
   {
-  	ContentScanner scanner = state.getScanner();
-  	Path2D pathObject = (Path2D)scanner.getRenderObject();
-  	if(pathObject != null)
-  	{
-    	Graphics2D context = scanner.getRenderContext();
-    	
-  		if(closed)
-			{
-				pathObject.closePath();
-			}
-  		if(filled)
-  		{
-  			context.setPaint(
-  				state.getFillColorSpace().getPaint(state.getFillColor())
-  				);
-  			pathObject.setWindingRule(fillMode.toAwt());
-  			context.fill(pathObject);
-  		}
-  		if(stroked)
-  		{
-		  	context.setPaint(
-		  		state.getStrokeColorSpace().getPaint(state.getStrokeColor())
-		  		);
+    ContentScanner scanner = state.getScanner();
+    Path2D pathObject = (Path2D)scanner.getRenderObject();
+    if(pathObject != null)
+    {
+      Graphics2D context = scanner.getRenderContext();
+
+      if(closed)
+      {
+        pathObject.closePath();
+      }
+      if(filled)
+      {
+        context.setPaint(
+          state.getFillColorSpace().getPaint(state.getFillColor())
+          );
+        pathObject.setWindingRule(fillMode.toAwt());
+        context.fill(pathObject);
+      }
+      if(stroked)
+      {
+        context.setPaint(
+          state.getStrokeColorSpace().getPaint(state.getStrokeColor())
+          );
         context.fill(new Path2D.Double(getStroke(state).createStrokedShape(pathObject)));
-  		}
-  	}
+      }
+    }
   }
   // </public>
   // </interface>

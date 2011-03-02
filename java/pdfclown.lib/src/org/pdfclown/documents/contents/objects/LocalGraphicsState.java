@@ -52,9 +52,9 @@ public final class LocalGraphicsState
   // <fields>
   public static final String BeginOperator = SaveGraphicsState.Operator;
   public static final String EndOperator = RestoreGraphicsState.Operator;
-  
-	private static final byte[] BeginChunk = Encoding.encode(BeginOperator + Symbol.LineFeed);
-	private static final byte[] EndChunk = Encoding.encode(EndOperator + Symbol.LineFeed);
+
+  private static final byte[] BeginChunk = Encoding.encode(BeginOperator + Symbol.LineFeed);
+  private static final byte[] EndChunk = Encoding.encode(EndOperator + Symbol.LineFeed);
   // </fields>
   // </static>
 
@@ -77,23 +77,23 @@ public final class LocalGraphicsState
     GraphicsState state
     )
   {
-  	Graphics2D context = state.getScanner().getRenderContext();
-  	if(context != null)
-  	{
-	  	/*
-	  		NOTE: Local graphics state is purposely isolated from surrounding graphics state,
-	  		so no inner operation can alter its subsequent scanning.
-			*/
-  		// Save outer graphics state!
-	  	Shape clip = context.getClip();
-	  	
-	  	render(state);
+    Graphics2D context = state.getScanner().getRenderContext();
+    if(context != null)
+    {
+      /*
+        NOTE: Local graphics state is purposely isolated from surrounding graphics state,
+        so no inner operation can alter its subsequent scanning.
+      */
+      // Save outer graphics state!
+      Shape clip = context.getClip();
 
-  		// Restore outer graphics state!
-	  	context.setClip(clip);
-	  	context.setTransform(state.getCtm());
-  	}
-	}
+      render(state);
+
+      // Restore outer graphics state!
+      context.setClip(clip);
+      context.setTransform(state.getCtm());
+    }
+  }
 
   @Override
   public void writeTo(

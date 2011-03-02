@@ -33,20 +33,20 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfNumber;
 
 /**
-	Color value defined by numeric-level components.
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@version 0.1.0
+  Color value defined by numeric-level components.
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @version 0.1.0
 */
 public abstract class LeveledColor
-	extends Color<PdfArray>
+  extends Color<PdfArray>
 {
   // <class>
   // <dynamic>
   // <constructors>
   protected LeveledColor(
     ColorSpace<?> colorSpace,
-		PdfDirectObject baseObject
+    PdfDirectObject baseObject
     )
   {super(colorSpace,baseObject);}
   // </constructors>
@@ -59,51 +59,51 @@ public abstract class LeveledColor
     )
   {
     if(object == null
-    	|| !object.getClass().equals(getClass()))
+      || !object.getClass().equals(getClass()))
       return false;
 
     Iterator<PdfDirectObject> objectIterator = ((LeveledColor)object).getBaseDataObject().iterator();
     Iterator<PdfDirectObject> thisIterator = getBaseDataObject().iterator();
     while(thisIterator.hasNext())
     {
-    	if(!thisIterator.next().equals(objectIterator.next()))
-    		return false;
+      if(!thisIterator.next().equals(objectIterator.next()))
+        return false;
     }
     return true;
   }
 
   @Override
   public final List<PdfDirectObject> getComponents(
-  	)
-	{return getBaseDataObject();}
+    )
+  {return getBaseDataObject();}
 
   @Override
   public final int hashCode(
     )
   {
-  	int hashCode = 0;
-  	for(PdfDirectObject component : getBaseDataObject())
-  	{hashCode ^= component.hashCode();}
-  	return hashCode;
-	}
+    int hashCode = 0;
+    for(PdfDirectObject component : getBaseDataObject())
+    {hashCode ^= component.hashCode();}
+    return hashCode;
+  }
   // </public>
-  
+
   // <protected>
   /**
-		Gets the specified color component.
-	
-		@param index Component index.
-	*/
-	protected final float getComponentValue(
-		int index
-	  )
-	{return ((PdfNumber<?>)getComponents().get(index)).getNumberValue();}
+    Gets the specified color component.
+
+    @param index Component index.
+  */
+  protected final float getComponentValue(
+    int index
+    )
+  {return ((PdfNumber<?>)getComponents().get(index)).getNumberValue();}
 
   /**
-		@see #getComponentValue(int)
+    @see #getComponentValue(int)
   */
   protected final void setComponentValue(
-  	int index,
+    int index,
     float value
     )
   {((PdfNumber<?>)getComponents().get(index)).setValue(normalizeComponent(value));}

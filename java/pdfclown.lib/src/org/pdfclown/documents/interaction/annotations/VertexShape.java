@@ -105,9 +105,9 @@ public abstract class VertexShape
     {
       vertices.add(
         new Point2D.Double(
-        	((PdfNumber<?>)verticesObject.get(index)).getNumberValue(),
-        	pageHeight - ((PdfNumber<?>)verticesObject.get(index+1)).getNumberValue()
-        	)
+          ((PdfNumber<?>)verticesObject.get(index)).getNumberValue(),
+          pageHeight - ((PdfNumber<?>)verticesObject.get(index+1)).getNumberValue()
+          )
         );
     }
 

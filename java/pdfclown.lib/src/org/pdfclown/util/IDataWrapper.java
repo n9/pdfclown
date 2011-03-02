@@ -26,7 +26,7 @@
 package org.pdfclown.util;
 
 /**
-	Generic data buffer.
+  Generic data buffer.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @version 0.1.0
@@ -34,8 +34,8 @@ package org.pdfclown.util;
 public interface IDataWrapper
 {
   /**
-	  Gets the buffer data copied to a newly-allocated byte array.
-	*/
-	byte[] toByteArray(
-		);
+    Gets the buffer data copied to a newly-allocated byte array.
+  */
+  byte[] toByteArray(
+    );
 }

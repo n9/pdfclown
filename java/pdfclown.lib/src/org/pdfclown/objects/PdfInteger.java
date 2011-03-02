@@ -49,13 +49,13 @@ public final class PdfInteger
   // <public>
   @Override
   public Integer getValue(
-  	)
+    )
   {return super.getValue().intValue();}
-  
+
   @Override
   public void setValue(
-  	Object value
-  	)
+    Object value
+    )
   {super.setValue(((Number)value).intValue());}
 
   @Override

@@ -33,31 +33,31 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfIndirectObject;
 
 /**
-	Shading resources collection [PDF:1.6:3.7.2].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  Shading resources collection [PDF:1.6:3.7.2].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF13)
 public final class ShadingResources
-	extends ResourceItems<Shading<?>>
+  extends ResourceItems<Shading<?>>
 {
   // <class>
   // <static>
   // <interface>
-	static ShadingResources wrap(
-		PdfDirectObject baseObject,
-		PdfIndirectObject container
-		)
-	{
+  static ShadingResources wrap(
+    PdfDirectObject baseObject,
+    PdfIndirectObject container
+    )
+  {
     return baseObject == null
-	  	? null
-			: new ShadingResources(baseObject, container);
-	}
+      ? null
+      : new ShadingResources(baseObject, container);
+  }
   // </interface>
   // </static>
-	
+
   // <dynamic>
   // <constructors>
   public ShadingResources(
@@ -74,13 +74,13 @@ public final class ShadingResources
 
   // <interface>
   // <protected>
-	@Override
-	protected Shading<?> wrap(
-		PdfDirectObject baseObject
-		)
-	{return Shading.wrap(baseObject, getContainer());}
+  @Override
+  protected Shading<?> wrap(
+    PdfDirectObject baseObject
+    )
+  {return Shading.wrap(baseObject, getContainer());}
   // </protected>
-	// </interface>
-	// </dynamic>
-	// </class>
+  // </interface>
+  // </dynamic>
+  // </class>
 }

@@ -38,194 +38,194 @@ import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfStream;
 
 /**
-	Pattern consisting of a small graphical figure called <i>pattern cell</i> [PDF:1.6:4.6.2].
-	<p>Painting with the pattern replicates the cell at fixed horizontal and vertical intervals
-	to fill an area.</p>
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  Pattern consisting of a small graphical figure called <i>pattern cell</i> [PDF:1.6:4.6.2].
+  <p>Painting with the pattern replicates the cell at fixed horizontal and vertical intervals
+  to fill an area.</p>
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 //TODO: define as IContentContext?
 @PDF(VersionEnum.PDF12)
 public class TilingPattern
-	extends Pattern<PdfStream>
+  extends Pattern<PdfStream>
 {
   // <class>
   // <classes>
-	/**
-		Uncolored tiling pattern ("stencil") associated to a color.
-	*/
-	public static final class Colorized
-		extends TilingPattern
-	{
-		private Color<?> color;
-		
-		private Colorized(
-			TilingPattern uncoloredPattern,
-			Color<?> color
-			)
-		{
-			super(
-				(PatternColorSpace)uncoloredPattern.getColorSpace(),
-				uncoloredPattern.getBaseObject()
-				);
-			
-			this.color = color;
-		}
-		
-		/**
-			Gets the color applied to the stencil.
-		*/
-		public Color<?> getColor(
-			)
-		{return color;}
-	}
-	
-	/**
-		Pattern cell color mode.
-	*/
-	public enum PaintTypeEnum
-	{
-		/**
-			The pattern's content stream <i>specifies the colors used to paint the pattern cell</i>.
-			<p>When the content stream begins execution, the current color is the one 
-			that was initially in effect in the pattern's parent content stream.</p>
-		*/
-		Colored(1),
-		/**
-			The pattern's content stream <i>does NOT specify any color information</i>.
-			<p>Instead, the entire pattern cell is painted with a separately specified color
-			each time the pattern is used; essentially, the content stream describes a <i>stencil</i>
-			through which the current color is to be poured.</p>
-			<p>The content stream must not invoke operators that specify colors
-			or other color-related parameters in the graphics state.</p>
-		 */
-		Uncolored(2);
-		
-		public static PaintTypeEnum get(
-			int code
-			)
-		{
-			for(PaintTypeEnum paintType : values())
-				if(paintType.getCode() == code)
-					return paintType;
-			return null;
-		}
-		
-		private int code;
-		
-		private PaintTypeEnum(
-			int code
-			)
-		{this.code = code;}
-		
-		public int getCode(
-			)
-		{return code;}
-	}
-	
-	/**
-		Spacing adjustment of tiles relative to the device pixel grid.
-	*/
-	public enum TilingTypeEnum
-	{
-		/**
-			Pattern cells are <i>spaced consistently</i>, that is by a multiple of a device pixel.
-		*/
-		ConstantSpacing(1),
-		/**
-			The pattern cell is not distorted, but <i>the spacing between pattern cells
-			may vary</i> by as much as 1 device pixel, both horizontally and vertically,
-			when the pattern is painted.
-		*/
-		VariableSpacing(2),
-		/**
-			Pattern cells are <i>spaced consistently</i> as in tiling type 1
-			but with additional distortion permitted to enable a more efficient implementation.
-		*/
-		FasterConstantSpacing(3);
-		
-		public static TilingTypeEnum get(
-			int code
-			)
-		{
-			for(TilingTypeEnum tilingType : values())
-				if(tilingType.getCode() == code)
-					return tilingType;
-			return null;
-		}
-		
-		private int code;
-		
-		private TilingTypeEnum(
-			int code
-			)
-		{this.code = code;}
-		
-		public int getCode(
-			)
-		{return code;}
-	}
+  /**
+    Uncolored tiling pattern ("stencil") associated to a color.
+  */
+  public static final class Colorized
+    extends TilingPattern
+  {
+    private Color<?> color;
+
+    private Colorized(
+      TilingPattern uncoloredPattern,
+      Color<?> color
+      )
+    {
+      super(
+        (PatternColorSpace)uncoloredPattern.getColorSpace(),
+        uncoloredPattern.getBaseObject()
+        );
+
+      this.color = color;
+    }
+
+    /**
+      Gets the color applied to the stencil.
+    */
+    public Color<?> getColor(
+      )
+    {return color;}
+  }
+
+  /**
+    Pattern cell color mode.
+  */
+  public enum PaintTypeEnum
+  {
+    /**
+      The pattern's content stream <i>specifies the colors used to paint the pattern cell</i>.
+      <p>When the content stream begins execution, the current color is the one
+      that was initially in effect in the pattern's parent content stream.</p>
+    */
+    Colored(1),
+    /**
+      The pattern's content stream <i>does NOT specify any color information</i>.
+      <p>Instead, the entire pattern cell is painted with a separately specified color
+      each time the pattern is used; essentially, the content stream describes a <i>stencil</i>
+      through which the current color is to be poured.</p>
+      <p>The content stream must not invoke operators that specify colors
+      or other color-related parameters in the graphics state.</p>
+     */
+    Uncolored(2);
+
+    public static PaintTypeEnum get(
+      int code
+      )
+    {
+      for(PaintTypeEnum paintType : values())
+        if(paintType.getCode() == code)
+          return paintType;
+      return null;
+    }
+
+    private int code;
+
+    private PaintTypeEnum(
+      int code
+      )
+    {this.code = code;}
+
+    public int getCode(
+      )
+    {return code;}
+  }
+
+  /**
+    Spacing adjustment of tiles relative to the device pixel grid.
+  */
+  public enum TilingTypeEnum
+  {
+    /**
+      Pattern cells are <i>spaced consistently</i>, that is by a multiple of a device pixel.
+    */
+    ConstantSpacing(1),
+    /**
+      The pattern cell is not distorted, but <i>the spacing between pattern cells
+      may vary</i> by as much as 1 device pixel, both horizontally and vertically,
+      when the pattern is painted.
+    */
+    VariableSpacing(2),
+    /**
+      Pattern cells are <i>spaced consistently</i> as in tiling type 1
+      but with additional distortion permitted to enable a more efficient implementation.
+    */
+    FasterConstantSpacing(3);
+
+    public static TilingTypeEnum get(
+      int code
+      )
+    {
+      for(TilingTypeEnum tilingType : values())
+        if(tilingType.getCode() == code)
+          return tilingType;
+      return null;
+    }
+
+    private int code;
+
+    private TilingTypeEnum(
+      int code
+      )
+    {this.code = code;}
+
+    public int getCode(
+      )
+    {return code;}
+  }
   // </classes>
 
   // <dynamic>
   // <constructors>
-	TilingPattern(
-		PatternColorSpace colorSpace,
-		PdfDirectObject baseObject
-		)
-	{super(colorSpace, baseObject);}
+  TilingPattern(
+    PatternColorSpace colorSpace,
+    PdfDirectObject baseObject
+    )
+  {super(colorSpace, baseObject);}
 
-	TilingPattern(
+  TilingPattern(
     PdfDirectObject baseObject,
     PdfIndirectObject container
-		)
-	{super(baseObject, container);}
+    )
+  {super(baseObject, container);}
   // </constructors>
 
   // <interface>
   // <public>
-	/**
-		Gets the colorized representation of this pattern.
+  /**
+    Gets the colorized representation of this pattern.
 
-		@param color Color to be applied to the pattern.
-		@throws UnsupportedOperationException In case this isn't an <i>uncolored tiling pattern</i>.
-	 */
-	public Colorized colorize(
-		Color<?> color
-		)
-	{
-		if(getPaintType() != PaintTypeEnum.Uncolored)
-			throw new UnsupportedOperationException("Only uncolored tiling patterns can be colorized.");
+    @param color Color to be applied to the pattern.
+    @throws UnsupportedOperationException In case this isn't an <i>uncolored tiling pattern</i>.
+   */
+  public Colorized colorize(
+    Color<?> color
+    )
+  {
+    if(getPaintType() != PaintTypeEnum.Uncolored)
+      throw new UnsupportedOperationException("Only uncolored tiling patterns can be colorized.");
 
-		return new Colorized(this, color);
-	}
+    return new Colorized(this, color);
+  }
 
-	/**
-		Gets the pattern cell's bounding box (expressed in the pattern coordinate system)
-		used to clip the pattern cell.
-	*/
-	public Rectangle2D getBox(
-		)
-	{
+  /**
+    Gets the pattern cell's bounding box (expressed in the pattern coordinate system)
+    used to clip the pattern cell.
+  */
+  public Rectangle2D getBox(
+    )
+  {
     /*
-	    NOTE: 'BBox' entry MUST be defined.
-	  */
-	  org.pdfclown.objects.Rectangle box = new org.pdfclown.objects.Rectangle(getBaseDataObject().getHeader().get(PdfName.BBox));
-		return new Rectangle2D.Double(box.getX(), box.getY(), box.getWidth(), box.getHeight());
-	}
+      NOTE: 'BBox' entry MUST be defined.
+    */
+    org.pdfclown.objects.Rectangle box = new org.pdfclown.objects.Rectangle(getBaseDataObject().getHeader().get(PdfName.BBox));
+    return new Rectangle2D.Double(box.getX(), box.getY(), box.getWidth(), box.getHeight());
+  }
 
-	/**
-		Gets how the color of the pattern cell is to be specified.
-	*/
-	public PaintTypeEnum getPaintType(
-		)
-	{return PaintTypeEnum.get(((PdfInteger)getBaseDataObject().getHeader().get(PdfName.PaintType)).getRawValue());}
+  /**
+    Gets how the color of the pattern cell is to be specified.
+  */
+  public PaintTypeEnum getPaintType(
+    )
+  {return PaintTypeEnum.get(((PdfInteger)getBaseDataObject().getHeader().get(PdfName.PaintType)).getRawValue());}
 
-	/**
-		Gets the named resources required by the pattern's content stream.
-	*/
+  /**
+    Gets the named resources required by the pattern's content stream.
+  */
   public Resources getResources(
     )
   {
@@ -235,26 +235,26 @@ public class TilingPattern
       );
   }
 
-	/**
-		Gets how to adjust the spacing of tiles relative to the device pixel grid.
-	*/
-	public TilingTypeEnum getTilingType(
-		)
-	{return TilingTypeEnum.get(((PdfInteger)getBaseDataObject().getHeader().get(PdfName.TilingType)).getRawValue());}
-	
-	/**
-		Gets the horizontal spacing between pattern cells (expressed in the pattern coordinate system).
-	*/
-	public float getXStep(
-		)
-	{return ((PdfNumber<?>)getBaseDataObject().getHeader().get(PdfName.XStep)).getNumberValue();}
-	
-	/**
-		Gets the vertical spacing between pattern cells (expressed in the pattern coordinate system).
-	*/
-	public float getYStep(
-		)
-	{return ((PdfNumber<?>)getBaseDataObject().getHeader().get(PdfName.YStep)).getNumberValue();}	
+  /**
+    Gets how to adjust the spacing of tiles relative to the device pixel grid.
+  */
+  public TilingTypeEnum getTilingType(
+    )
+  {return TilingTypeEnum.get(((PdfInteger)getBaseDataObject().getHeader().get(PdfName.TilingType)).getRawValue());}
+
+  /**
+    Gets the horizontal spacing between pattern cells (expressed in the pattern coordinate system).
+  */
+  public float getXStep(
+    )
+  {return ((PdfNumber<?>)getBaseDataObject().getHeader().get(PdfName.XStep)).getNumberValue();}
+
+  /**
+    Gets the vertical spacing between pattern cells (expressed in the pattern coordinate system).
+  */
+  public float getYStep(
+    )
+  {return ((PdfNumber<?>)getBaseDataObject().getHeader().get(PdfName.YStep)).getNumberValue();}
   // </public>
   // </interface>
   // </dynamic>

@@ -28,6 +28,11 @@
 
 package org.pdfclown.tokens;
 
+import java.io.Closeable;
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.Date;
+
 import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.files.File;
@@ -44,11 +49,6 @@ import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
-
-import java.io.Closeable;
-import java.io.EOFException;
-import java.io.IOException;
-import java.util.Date;
 
 /**
   Token parser.
@@ -108,15 +108,15 @@ public final class Parser
     int c
     )
   {
-  	return c == Symbol.OpenRoundBracket 
-  		|| c == Symbol.CloseRoundBracket 
-  		|| c == Symbol.OpenAngleBracket 
-  		|| c == Symbol.CloseAngleBracket 
-  		|| c == Symbol.OpenSquareBracket 
-  		|| c == Symbol.CloseSquareBracket 
-  		|| c == Symbol.Slash
-			|| c == Symbol.Percent;
-	}
+    return c == Symbol.OpenRoundBracket
+      || c == Symbol.CloseRoundBracket
+      || c == Symbol.OpenAngleBracket
+      || c == Symbol.CloseAngleBracket
+      || c == Symbol.OpenSquareBracket
+      || c == Symbol.CloseSquareBracket
+      || c == Symbol.Slash
+      || c == Symbol.Percent;
+  }
 
   /**
     Evaluates whether a character is an EOL marker [PDF:1.6:3.1.1].
@@ -178,17 +178,17 @@ public final class Parser
   public Object getToken(
     )
   {return token;}
-  
+
   /**
-	  Gets a token after moving to the given offset.
+    Gets a token after moving to the given offset.
 
     @param offset Number of tokens to skip before reaching the intended one.
     @see #getToken()
-	*/
-	public Object getToken(
-		int offset
-	  ) throws FileFormatException
-	{moveNext(offset); return getToken();}
+  */
+  public Object getToken(
+    int offset
+    ) throws FileFormatException
+  {moveNext(offset); return getToken();}
 
   /**
     Gets the currently-parsed token type.
@@ -197,12 +197,13 @@ public final class Parser
     )
   {return tokenType;}
 
+  @Override
   public int hashCode(
     )
   {return stream.hashCode();}
 
   /**
-		Moves the pointer to the next token.
+    Moves the pointer to the next token.
 
     @param offset Number of tokens to skip before reaching the intended one.
   */
@@ -225,7 +226,7 @@ public final class Parser
   /**
     Parses the next token [PDF:1.6:3.1].
     <p>To properly parse the current token, the pointer MUST be just before its starting
-    (leading whitespaces are ignored). When this method terminates, the pointer IS 
+    (leading whitespaces are ignored). When this method terminates, the pointer IS
     at the last byte of the current token.</p>
 
     @return Whether a new token was found.
@@ -525,23 +526,23 @@ public final class Parser
         tokenType = TokenTypeEnum.Reference;
         break;
       case Symbol.Percent: // Comment [PDF:1.6:3.1.2].
-    	  tokenType = TokenTypeEnum.Comment;
-    	  
-    	  buffer = new StringBuilder();
-    	  try
-    	  {
-    	    while(true)
-    	    {
-    	    	c = stream.readUnsignedByte();
-    	    	if(isEOL(c))
-    	    		break;
-    	    	
-    	    	buffer.append((char)c);
-    	    }
-    	  }
-    	  catch(EOFException e)
-    	  {/* NOOP */}
-    	  break;
+        tokenType = TokenTypeEnum.Comment;
+
+        buffer = new StringBuilder();
+        try
+        {
+          while(true)
+          {
+            c = stream.readUnsignedByte();
+            if(isEOL(c))
+              break;
+
+            buffer.append((char)c);
+          }
+        }
+        catch(EOFException e)
+        {/* NOOP */}
+        break;
       default: // Keyword object.
         tokenType = TokenTypeEnum.Keyword;
 
@@ -607,7 +608,7 @@ public final class Parser
     }
     return true;
   }
-	
+
   /**
     Parses the current PDF object [PDF:1.6:3.2].
   */
@@ -620,139 +621,139 @@ public final class Parser
       the position of the stream pointer, so we are forced to carefully keep track of our
       current position in order to recover its proper state after any outbound call.
     */
-  	do
-  	{
-	    // Which token type?
-	    switch(tokenType)
-	    {
-	      case Integer:
-	        return new PdfInteger((Integer)token);
-	      case Name:
-	        return new PdfName((String)token,true);
-	      case Reference:
-	        /*
-	          NOTE: Curiously, PDF references are the only primitive objects that require
-	          a file reference. That's because they deal with indirect objects, which are strongly
-	          coupled with the current state of the file: so, PDF references are the fundamental
-	          bridge between the token layer and the file layer.
-	        */
-	        return new PdfReference(
-	          (Reference)token,
-	          file
-	          );
-	      case Literal:
-          return new PdfTextString(
-          	Encoding.encode((String)token)
+    do
+    {
+      // Which token type?
+      switch(tokenType)
+      {
+        case Integer:
+          return new PdfInteger((Integer)token);
+        case Name:
+          return new PdfName((String)token,true);
+        case Reference:
+          /*
+            NOTE: Curiously, PDF references are the only primitive objects that require
+            a file reference. That's because they deal with indirect objects, which are strongly
+            coupled with the current state of the file: so, PDF references are the fundamental
+            bridge between the token layer and the file layer.
+          */
+          return new PdfReference(
+            (Reference)token,
+            file
             );
-	      case DictionaryBegin:
-	        PdfDictionary dictionary = new PdfDictionary();
-	        while(true)
-	        {
-	          // Key.
-	          moveNext(); if(tokenType == TokenTypeEnum.DictionaryEnd) break;
-	          PdfName key = (PdfName)parsePdfObject();
-	          // Value.
-	          moveNext();
-	          PdfDirectObject value = (PdfDirectObject)parsePdfObject();
-	          // Add the current entry to the dictionary!
-	          dictionary.put(key,value);
-	        }
-	
-	        int oldOffset = (int)stream.getPosition();
-	        moveNext();
-	        // Is this dictionary the header of a stream object [PDF:1.6:3.2.7]?
-	        if((tokenType == TokenTypeEnum.Keyword)
-	          && token.equals(Keyword.BeginStream)) // Stream.
-	        {
-	          // Keep track of current position!
-	          long position = stream.getPosition();
-	
-	          // Get the stream length!
-	          /*
-	            NOTE: Indirect reference resolution is an outbound call (stream pointer hazard!),
-	            so we need to recover our current position after it returns.
-	          */
-	          int length = ((PdfInteger)File.resolve(dictionary.get(PdfName.Length))).getRawValue();
-	
-	          // Move to the stream data beginning!
-	          stream.seek(position); skipEOL();
-	
-	          // Copy the stream data to the instance!
-	          byte[] data = new byte[length];
-	          try
-	          {stream.read(data);}
-	          catch(EOFException e)
-	          {throw new FileFormatException("Unexpected EOF (malformed stream object).",e,stream.getPosition());}
-	
-	          moveNext(); // Postcondition (last token should be 'endstream' keyword).
-	
-	          Object streamType = dictionary.get(PdfName.Type);
-	        	if(PdfName.ObjStm.equals(streamType)) // Object stream [PDF:1.6:3.4.6].
-	        		return new ObjectStream(
-	              dictionary,
-	              new Buffer(data),
-	      				file
-	              );
-	        	else if(PdfName.XRef.equals(streamType)) // Cross-reference stream [PDF:1.6:3.4.7].
-	        		return new XRefStream(
-	              dictionary,
-	              new Buffer(data),
-	              file
-	              );
-	        	else // Generic stream.
-		          return new PdfStream(
-		            dictionary,
-		            new Buffer(data)
-		            );
-	        }
-	        else // Stand-alone dictionary.
-	        {
-	          stream.seek(oldOffset); // Restores postcondition (last token should be the dictionary end).
-	
-	          return dictionary;
-	        }
-	      case ArrayBegin:
-	        PdfArray array = new PdfArray();
-	        while(true)
-	        {
-	          // Value.
-	          moveNext(); if(tokenType == TokenTypeEnum.ArrayEnd) break;
-	          // Add the current item to the array!
-	          array.add((PdfDirectObject)parsePdfObject());
-	        }
-	        return array;
-	      case Real:
-	        return new PdfReal((Float)token);
-	      case Boolean:
-	        return PdfBoolean.get((Boolean)token);
-	      case Date:
-	        return new PdfDate((Date)token);
-	      case Hex:
+        case Literal:
           return new PdfTextString(
-          	(String)token,
-          	PdfString.SerializationModeEnum.Hex
+            Encoding.encode((String)token)
             );
-	      case Null:
-	        return null;
+        case DictionaryBegin:
+          PdfDictionary dictionary = new PdfDictionary();
+          while(true)
+          {
+            // Key.
+            moveNext(); if(tokenType == TokenTypeEnum.DictionaryEnd) break;
+            PdfName key = (PdfName)parsePdfObject();
+            // Value.
+            moveNext();
+            PdfDirectObject value = (PdfDirectObject)parsePdfObject();
+            // Add the current entry to the dictionary!
+            dictionary.put(key,value);
+          }
+
+          int oldOffset = (int)stream.getPosition();
+          moveNext();
+          // Is this dictionary the header of a stream object [PDF:1.6:3.2.7]?
+          if((tokenType == TokenTypeEnum.Keyword)
+            && token.equals(Keyword.BeginStream)) // Stream.
+          {
+            // Keep track of current position!
+            long position = stream.getPosition();
+
+            // Get the stream length!
+            /*
+              NOTE: Indirect reference resolution is an outbound call (stream pointer hazard!),
+              so we need to recover our current position after it returns.
+            */
+            int length = ((PdfInteger)File.resolve(dictionary.get(PdfName.Length))).getRawValue();
+
+            // Move to the stream data beginning!
+            stream.seek(position); skipEOL();
+
+            // Copy the stream data to the instance!
+            byte[] data = new byte[length];
+            try
+            {stream.read(data);}
+            catch(EOFException e)
+            {throw new FileFormatException("Unexpected EOF (malformed stream object).",e,stream.getPosition());}
+
+            moveNext(); // Postcondition (last token should be 'endstream' keyword).
+
+            Object streamType = dictionary.get(PdfName.Type);
+            if(PdfName.ObjStm.equals(streamType)) // Object stream [PDF:1.6:3.4.6].
+              return new ObjectStream(
+                dictionary,
+                new Buffer(data),
+                file
+                );
+            else if(PdfName.XRef.equals(streamType)) // Cross-reference stream [PDF:1.6:3.4.7].
+              return new XRefStream(
+                dictionary,
+                new Buffer(data),
+                file
+                );
+            else // Generic stream.
+              return new PdfStream(
+                dictionary,
+                new Buffer(data)
+                );
+          }
+          else // Stand-alone dictionary.
+          {
+            stream.seek(oldOffset); // Restores postcondition (last token should be the dictionary end).
+
+            return dictionary;
+          }
+        case ArrayBegin:
+          PdfArray array = new PdfArray();
+          while(true)
+          {
+            // Value.
+            moveNext(); if(tokenType == TokenTypeEnum.ArrayEnd) break;
+            // Add the current item to the array!
+            array.add((PdfDirectObject)parsePdfObject());
+          }
+          return array;
+        case Real:
+          return new PdfReal((Float)token);
+        case Boolean:
+          return PdfBoolean.get((Boolean)token);
+        case Date:
+          return new PdfDate((Date)token);
+        case Hex:
+          return new PdfTextString(
+            (String)token,
+            PdfString.SerializationModeEnum.Hex
+            );
+        case Null:
+          return null;
         case Comment:
-      		// NOOP: Comments are simply ignored and skipped.
-        	break;
-	      default:
-	        throw new RuntimeException("Unknown type: " + tokenType);
-	    }
-  	} while(moveNext());
-  	return null;
+          // NOOP: Comments are simply ignored and skipped.
+          break;
+        default:
+          throw new RuntimeException("Unknown type: " + tokenType);
+      }
+    } while(moveNext());
+    return null;
   }
 
   /**
-	  Parses a PDF object after moving to the given token offset.
+    Parses a PDF object after moving to the given token offset.
 
     @param offset Number of tokens to skip before reaching the intended one.
     @see #parsePdfObject()
-	*/
-	public PdfDataObject parsePdfObject(
-	  int offset
-	  ) throws FileFormatException
+  */
+  public PdfDataObject parsePdfObject(
+    int offset
+    ) throws FileFormatException
   {moveNext(offset); return parsePdfObject();}
 
   /**
@@ -804,7 +805,7 @@ public final class Parser
     catch(EOFException e)
     {throw new FileFormatException("Unexpected EOF looking for '" + Keyword.StartXRef + "' keyword.", e, stream.getPosition());}
     if(index < 0)
-			throw new FileFormatException("'" + Keyword.StartXRef + "' keyword not found.", stream.getPosition());
+      throw new FileFormatException("'" + Keyword.StartXRef + "' keyword not found.", stream.getPosition());
 
     // Go past the 'startxref' keyword!
     stream.seek(position + index); moveNext();
@@ -818,7 +819,7 @@ public final class Parser
   }
 
   /**
-  	Moves the pointer to the given absolute byte position.
+    Moves the pointer to the given absolute byte position.
   */
   public void seek(
     long position
@@ -826,20 +827,20 @@ public final class Parser
   {stream.seek(position);}
 
   /**
-		Moves the pointer to the given relative byte position.
-	*/
+    Moves the pointer to the given relative byte position.
+  */
   public void skip(
     long offset
     )
   {stream.skip(offset);}
 
   /**
-	  Moves the pointer before the next non-EOL character after the current position.
-    
+    Moves the pointer before the next non-EOL character after the current position.
+
     @return Whether the stream can be further read.
-	*/
-	public boolean skipEOL(
-	  )
+  */
+  public boolean skipEOL(
+    )
   {
     try
     {
@@ -854,8 +855,8 @@ public final class Parser
   }
 
   /**
-	  Moves the pointer before the next non-whitespace character after the current position.
-    
+    Moves the pointer before the next non-whitespace character after the current position.
+
     @return Whether the stream can be further read.
   */
   public boolean skipWhitespace(
@@ -874,6 +875,7 @@ public final class Parser
   }
 
   // <Closeable>
+  @Override
   public void close(
     ) throws IOException
   {

@@ -25,6 +25,12 @@
 
 package org.pdfclown.tools;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.documents.Document;
@@ -39,12 +45,6 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfStream;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 /**
   Tool for page management.
 
@@ -55,106 +55,106 @@ import java.util.Set;
 public final class PageManager
 {
   /*
-		NOTE: As you can read on the PDF Clown's User Guide, referential operations on high-level object such as pages
-		can be done at two levels:
-			1. shallow, involving page references but NOT their data within the document;
-			2. deep, involving page data within the document.
-		This means that, for example, if you remove a page reference (shallow level) from the pages collection,
-		the data of that page (deep level) are still within the document!
-	*/
+    NOTE: As you can read on the PDF Clown's User Guide, referential operations on high-level object such as pages
+    can be done at two levels:
+      1. shallow, involving page references but NOT their data within the document;
+      2. deep, involving page data within the document.
+    This means that, for example, if you remove a page reference (shallow level) from the pages collection,
+    the data of that page (deep level) are still within the document!
+  */
 
   // <class>
-	// <static>
-	// <interface>
-	// <public>
-	/**
-		Gets the data size of the specified page expressed in bytes.
+  // <static>
+  // <interface>
+  // <public>
+  /**
+    Gets the data size of the specified page expressed in bytes.
 
-		@param page Page whose data size has to be calculated.
-	*/
-	public static long getSize(
-		Page page
-		)
-	{return getSize(page, new HashSet<PdfReference>());}
+    @param page Page whose data size has to be calculated.
+  */
+  public static long getSize(
+    Page page
+    )
+  {return getSize(page, new HashSet<PdfReference>());}
 
-	/**
-		Gets the data size of the specified page expressed in bytes.
+  /**
+    Gets the data size of the specified page expressed in bytes.
 
-		@param page Page whose data size has to be calculated.
-		@param visitedReferences References to data objects excluded from calculation.
-			This set is useful, for example, to avoid recalculating the data size of shared resources.
-			During the operation, this set is populated with references to visited data objects. 
-	*/
-	public static long getSize(
-		Page page,
-		Set<PdfReference> visitedReferences
-		)
-	{return getSize(page.getBaseObject(), visitedReferences, true);}
-	// </public>
+    @param page Page whose data size has to be calculated.
+    @param visitedReferences References to data objects excluded from calculation.
+      This set is useful, for example, to avoid recalculating the data size of shared resources.
+      During the operation, this set is populated with references to visited data objects.
+  */
+  public static long getSize(
+    Page page,
+    Set<PdfReference> visitedReferences
+    )
+  {return getSize(page.getBaseObject(), visitedReferences, true);}
+  // </public>
 
-	// <private>
-	/**
-		Gets the data size of the specified object expressed in bytes.
+  // <private>
+  /**
+    Gets the data size of the specified object expressed in bytes.
 
-		@param object Data object whose size has to be calculated.
-		@param visitedReferences References to data objects excluded from calculation.
-			This set is useful, for example, to avoid recalculating the data size of shared resources.
-			During the operation, this set is populated with references to visited data objects. 
-		@param isRoot Whether this data object represents the page root.
-	*/
-	private static long getSize(
-		PdfDirectObject object,
-		Set<PdfReference> visitedReferences,
-		boolean isRoot
-		)
-	{
-		long dataSize = 0;
-		{
-	  	PdfDataObject dataObject = File.resolve(object);
+    @param object Data object whose size has to be calculated.
+    @param visitedReferences References to data objects excluded from calculation.
+      This set is useful, for example, to avoid recalculating the data size of shared resources.
+      During the operation, this set is populated with references to visited data objects.
+    @param isRoot Whether this data object represents the page root.
+  */
+  private static long getSize(
+    PdfDirectObject object,
+    Set<PdfReference> visitedReferences,
+    boolean isRoot
+    )
+  {
+    long dataSize = 0;
+    {
+      PdfDataObject dataObject = File.resolve(object);
 
-			// 1. Evaluating the current object...
-			if(object instanceof PdfReference)
-			{
-				PdfReference reference = (PdfReference)object;
-				if(visitedReferences.contains(reference))
-					return 0; // Avoids circular references.
+      // 1. Evaluating the current object...
+      if(object instanceof PdfReference)
+      {
+        PdfReference reference = (PdfReference)object;
+        if(visitedReferences.contains(reference))
+          return 0; // Avoids circular references.
 
-		  	if(dataObject instanceof PdfDictionary
-		  		&& PdfName.Page.equals(((PdfDictionary)dataObject).get(PdfName.Type))
-		  		&& !isRoot)
-		  		return 0; // Avoids references to other pages.
-				
-				visitedReferences.add(reference);
+        if(dataObject instanceof PdfDictionary
+          && PdfName.Page.equals(((PdfDictionary)dataObject).get(PdfName.Type))
+          && !isRoot)
+          return 0; // Avoids references to other pages.
 
-				// Calculate the data size of the current object!
-				IOutputStream buffer = new Buffer();
-				reference.getIndirectObject().writeTo(buffer);
-				dataSize += buffer.getLength();
-			}
+        visitedReferences.add(reference);
 
-			// 2. Evaluating the current object's children...
-	  	Collection<PdfDirectObject> values = null;
-	  	{
-		  	if(dataObject instanceof PdfStream)
-		  	{dataObject = ((PdfStream)dataObject).getHeader();}
-		  	if(dataObject instanceof PdfDictionary)
-	  		{values = ((PdfDictionary)dataObject).values();}
-		  	else if(dataObject instanceof PdfArray)
-		  	{values = (PdfArray)dataObject;}
-	  	}
-	  	if(values != null)
-	  	{
-				// Calculate the data size of the current object's children!
-		    for(PdfDirectObject value : values)
-	    	{dataSize += getSize(value, visitedReferences, false);}
-	  	}
-		}
+        // Calculate the data size of the current object!
+        IOutputStream buffer = new Buffer();
+        reference.getIndirectObject().writeTo(buffer);
+        dataSize += buffer.getLength();
+      }
+
+      // 2. Evaluating the current object's children...
+      Collection<PdfDirectObject> values = null;
+      {
+        if(dataObject instanceof PdfStream)
+        {dataObject = ((PdfStream)dataObject).getHeader();}
+        if(dataObject instanceof PdfDictionary)
+        {values = ((PdfDictionary)dataObject).values();}
+        else if(dataObject instanceof PdfArray)
+        {values = (PdfArray)dataObject;}
+      }
+      if(values != null)
+      {
+        // Calculate the data size of the current object's children!
+        for(PdfDirectObject value : values)
+        {dataSize += getSize(value, visitedReferences, false);}
+      }
+    }
     return dataSize;
-	}
-	// </private>
-	// </interface>
-	// </static>
-	
+  }
+  // </private>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <fields>
   private Document document;
@@ -182,7 +182,7 @@ public final class PageManager
   public void add(
     Document document
     )
-  {add((Collection<Page>)document.getPages());}
+  {add(document.getPages());}
 
   /**
     Inserts a document at the specified position in the document.
@@ -194,7 +194,7 @@ public final class PageManager
     int index,
     Document document
     )
-  {add(index,(Collection<Page>)document.getPages());}
+  {add(index,document.getPages());}
 
   /**
     Appends a collection of pages to the end of the document.
@@ -207,8 +207,8 @@ public final class PageManager
     )
   {
     // Add the source pages to the document (deep level)!
-  	Collection<Page> importedPages = (Collection<Page>)document.contextualize(pages); // NOTE: Alien pages MUST be contextualized (i.e. imported).
-  		
+    Collection<Page> importedPages = (Collection<Page>)document.contextualize(pages); // NOTE: Alien pages MUST be contextualized (i.e. imported).
+
     // Add the imported pages to the pages collection (shallow level)!
     this.pages.addAll(importedPages);
     this.pages.update(); // NOTE: Update is fundamental to override original page collection.
@@ -228,7 +228,7 @@ public final class PageManager
   {
     // Add the source pages to the document (deep level)!
     Collection<Page> importedPages = (Collection<Page>)document.contextualize(pages); // NOTE: Alien pages MUST be contextualized (i.e. imported).
-    
+
     // Add the imported pages to the pages collection (shallow level)!
     if(index >= this.pages.size())
     {this.pages.addAll(importedPages);}
@@ -252,17 +252,17 @@ public final class PageManager
   {
     Document extractedDocument = new File().getDocument();
     {
-	    // Add the pages to the target file!
-	    /*
-	      NOTE: To be added to an alien document,
-	      pages MUST be contextualized within it first,
-	      then added to the target pages collection.
-	    */
-	    extractedDocument.getPages().addAll(
-	      (Collection<Page>)extractedDocument.contextualize(
-	        pages.subList(startIndex,endIndex)
-	        )
-	      );
+      // Add the pages to the target file!
+      /*
+        NOTE: To be added to an alien document,
+        pages MUST be contextualized within it first,
+        then added to the target pages collection.
+      */
+      extractedDocument.getPages().addAll(
+        (Collection<Page>)extractedDocument.contextualize(
+          pages.subList(startIndex,endIndex)
+          )
+        );
     }
     return extractedDocument;
   }
@@ -282,11 +282,11 @@ public final class PageManager
   {
     int pageCount = pages.size();
 
-		List<Page> movingPages = pages.subList(startIndex, endIndex);
+    List<Page> movingPages = pages.subList(startIndex, endIndex);
 
     // Temporarily remove the pages from the pages collection!
     /*
-    	NOTE: Shallow removal (only page references are removed, as their data are kept in the document).
+      NOTE: Shallow removal (only page references are removed, as their data are kept in the document).
     */
     pages.removeAll(movingPages);
 
@@ -297,8 +297,8 @@ public final class PageManager
 
     // Reinsert the pages at the target position!
     /*
-    	NOTE: Shallow addition (only page references are added, as their data are already in the document).
-  	*/
+      NOTE: Shallow addition (only page references are added, as their data are already in the document).
+    */
     if(targetIndex >= pageCount)
     {pages.addAll(movingPages);}
     else
@@ -348,8 +348,8 @@ public final class PageManager
 
   /**
     Bursts the document into single-page documents.
-    
-  	@return Split subdocuments.
+
+    @return Split subdocuments.
   */
   public List<Document> split(
     )
@@ -359,7 +359,7 @@ public final class PageManager
     {
       Document pageDocument = new File().getDocument();
       pageDocument.getPages().add(
-        (Page)page.clone(pageDocument)
+        page.clone(pageDocument)
         );
       documents.add(pageDocument);
     }
@@ -367,65 +367,65 @@ public final class PageManager
   }
 
   /**
-  	Splits the document into multiple subdocuments delimited by the specified page indexes.
-  	
-  	@param indexes Split page indexes.
-  	@return Split subdocuments.
+    Splits the document into multiple subdocuments delimited by the specified page indexes.
+
+    @param indexes Split page indexes.
+    @return Split subdocuments.
   */
   public List<Document> split(
-  	int... indexes
-  	)
-	{
+    int... indexes
+    )
+  {
     List<Document> documents = new ArrayList<Document>();
     {
-	    int startIndex = 0;
-	    for(int index : indexes)
-	    {
-	    	documents.add(extract(startIndex, index));
-	    	startIndex = index;
-	    }
-	  	documents.add(extract(startIndex, pages.size()));
-    }
-  	return documents;
-	}
-  
-  /**
-		Splits the document into multiple subdocuments on maximum file size.
-		
-		@param maxDataSize Maximum data size (expressed in bytes) of target files.
-			Note that resulting files may be a little bit larger than this value, as file data include (along with actual page data)
-			some extra structures such as cross reference tables. 
-		@return Split documents.
-	*/
-  public List<Document> split(
-  	long maxDataSize
-  	)
-	{
-    List<Document> documents = new ArrayList<Document>();
-    {
-	    int startPageIndex = 0;
-	    long incrementalDataSize = 0;
-	    Set<PdfReference> visitedReferences = new HashSet<PdfReference>();
-	    for(Page page : pages)
-	    {
-				long pageDifferentialDataSize = getSize(page, visitedReferences);
-				incrementalDataSize += pageDifferentialDataSize;
-	    	if(incrementalDataSize > maxDataSize) // Data size limit reached.
-	    	{
-	    		int endPageIndex = page.getIndex();
-	    		
-	  			// Split the current document page range!
-					documents.add(extract(startPageIndex, endPageIndex));
-	
-	        startPageIndex = endPageIndex;
-					incrementalDataSize = getSize(page, visitedReferences = new HashSet<PdfReference>());
-	    	}
-	    }
-			// Split the last document page range!
-			documents.add(extract(startPageIndex, pages.size()));
+      int startIndex = 0;
+      for(int index : indexes)
+      {
+        documents.add(extract(startIndex, index));
+        startIndex = index;
+      }
+      documents.add(extract(startIndex, pages.size()));
     }
     return documents;
-	}
+  }
+
+  /**
+    Splits the document into multiple subdocuments on maximum file size.
+
+    @param maxDataSize Maximum data size (expressed in bytes) of target files.
+      Note that resulting files may be a little bit larger than this value, as file data include (along with actual page data)
+      some extra structures such as cross reference tables.
+    @return Split documents.
+  */
+  public List<Document> split(
+    long maxDataSize
+    )
+  {
+    List<Document> documents = new ArrayList<Document>();
+    {
+      int startPageIndex = 0;
+      long incrementalDataSize = 0;
+      Set<PdfReference> visitedReferences = new HashSet<PdfReference>();
+      for(Page page : pages)
+      {
+        long pageDifferentialDataSize = getSize(page, visitedReferences);
+        incrementalDataSize += pageDifferentialDataSize;
+        if(incrementalDataSize > maxDataSize) // Data size limit reached.
+        {
+          int endPageIndex = page.getIndex();
+
+          // Split the current document page range!
+          documents.add(extract(startPageIndex, endPageIndex));
+
+          startPageIndex = endPageIndex;
+          incrementalDataSize = getSize(page, visitedReferences = new HashSet<PdfReference>());
+        }
+      }
+      // Split the last document page range!
+      documents.add(extract(startPageIndex, pages.size()));
+    }
+    return documents;
+  }
   // </public>
   // </interface>
   // </dynamic>

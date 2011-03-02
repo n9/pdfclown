@@ -37,15 +37,15 @@ import org.pdfclown.objects.PdfReal;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	CIE-based red-green-blue color value [PDF:1.6:4.5.4].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  CIE-based red-green-blue color value [PDF:1.6:4.5.4].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF11)
 public final class CalRGBColor
-	extends LeveledColor
+  extends LeveledColor
 {
   // <class>
   // <static>
@@ -66,32 +66,32 @@ public final class CalRGBColor
     )
   {
     this(
-  		Arrays.asList(
-    		new PdfReal(normalizeComponent(r)),
-    		new PdfReal(normalizeComponent(g)),
-    		new PdfReal(normalizeComponent(b))
-    		)
-  		);
+      Arrays.asList(
+        new PdfReal(normalizeComponent(r)),
+        new PdfReal(normalizeComponent(g)),
+        new PdfReal(normalizeComponent(b))
+        )
+      );
   }
-  
+
   CalRGBColor(
-  	List<? extends PdfDirectObject> components
+    List<? extends PdfDirectObject> components
     )
   {
     super(
-    	null,//TODO:colorspace?
-    	new PdfArray(components)
-    	);
+      null,//TODO:colorspace?
+      new PdfArray(components)
+      );
   }
   // </constructors>
 
   // <interface>
   // <public>
-	@Override
-	public Object clone(
-		Document context
-		)
-	{throw new NotImplementedException();}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {throw new NotImplementedException();}
 
   /**
     Gets the blue component.
@@ -101,42 +101,42 @@ public final class CalRGBColor
   {return getComponentValue(2);}
 
   /**
-	  Gets the green component.
-	*/
-	public float getG(
-	  )
-	{return getComponentValue(1);}
-	
-	/**
-	  Gets the red component.
-	*/
-	public float getR(
-	  )
-	{return getComponentValue(0);}
-	
-	/**
-		@see #getB()
-	*/
-	public void setB(
-	  float value
-	  )
-	{setComponentValue(2, value);}
-	
-	/**
-		@see #getG()
-	*/
-	public void setG(
-	  float value
-	  )
-	{setComponentValue(1, value);}
-	
-	/**
-		@see #getR()
-	*/
-	public void setR(
-	  float value
-	  )
-	{setComponentValue(0, value);}
+    Gets the green component.
+  */
+  public float getG(
+    )
+  {return getComponentValue(1);}
+
+  /**
+    Gets the red component.
+  */
+  public float getR(
+    )
+  {return getComponentValue(0);}
+
+  /**
+    @see #getB()
+  */
+  public void setB(
+    float value
+    )
+  {setComponentValue(2, value);}
+
+  /**
+    @see #getG()
+  */
+  public void setG(
+    float value
+    )
+  {setComponentValue(1, value);}
+
+  /**
+    @see #getR()
+  */
+  public void setR(
+    float value
+    )
+  {setComponentValue(0, value);}
   // </public>
   // </interface>
   // </dynamic>

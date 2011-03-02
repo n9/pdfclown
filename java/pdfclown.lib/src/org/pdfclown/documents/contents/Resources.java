@@ -52,18 +52,18 @@ public final class Resources
   // <class>
   // <static>
   // <interface>
-	public static Resources wrap(
-		PdfDirectObject baseObject,
-		PdfIndirectObject container
-		)
-	{
+  public static Resources wrap(
+    PdfDirectObject baseObject,
+    PdfIndirectObject container
+    )
+  {
     return baseObject == null
-	  	? null
-			: new Resources(baseObject, container);
-	}
+      ? null
+      : new Resources(baseObject, container);
+  }
   // </interface>
   // </static>
-	
+
   // <dynamic>
   // <constructors>
   public Resources(
@@ -109,8 +109,8 @@ public final class Resources
 
   @PDF(VersionEnum.PDF13)
   public ShadingResources getShadings(
-	  )
-	{return ShadingResources.wrap(getBaseDataObject().get(PdfName.Shading), getContainer());}
+    )
+  {return ShadingResources.wrap(getBaseDataObject().get(PdfName.Shading), getContainer());}
 
   public XObjectResources getXObjects(
     )
@@ -140,17 +140,17 @@ public final class Resources
     PropertyListResources value
     )
   {
-  	checkCompatibility("propertyLists");
-  	getBaseDataObject().put(PdfName.Properties,value.getBaseObject());
-	}
+    checkCompatibility("propertyLists");
+    getBaseDataObject().put(PdfName.Properties,value.getBaseObject());
+  }
 
   public void setShadings(
     ShadingResources value
     )
   {
-  	checkCompatibility("shadings");
-  	getBaseDataObject().put(PdfName.Shading,value.getBaseObject());
-	}
+    checkCompatibility("shadings");
+    getBaseDataObject().put(PdfName.Shading,value.getBaseObject());
+  }
 
   public void setXObjects(
     XObjectResources value

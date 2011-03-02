@@ -25,14 +25,14 @@
 
 package org.pdfclown.documents.contents.objects;
 
-import org.pdfclown.VersionEnum;
+import java.util.List;
+
 import org.pdfclown.PDF;
+import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.contents.IContentContext;
 import org.pdfclown.documents.contents.ShadingResources;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-
-import java.util.List;
 
 /**
   'Paint the shape and color shading' operation [PDF:1.6:4.6.3].
@@ -71,21 +71,21 @@ public final class PaintShading
     Gets the name of the {@link org.pdfclown.documents.contents.colorSpaces.Shading shading} resource
     to be painted.
 
-		@see #getShading(IContentContext)
+    @see #getShading(IContentContext)
     @see ShadingResources
   */
   public PdfName getName(
     )
   {return (PdfName)operands.get(0);}
-  
+
   /**
     Gets the {@link org.pdfclown.documents.contents.colorSpaces.Shading shading} resource to be painted.
-	  
-	  @param context Content context.
+
+    @param context Content context.
   */
   public org.pdfclown.documents.contents.colorSpaces.Shading<?> getShading(
-  	IContentContext context
-  	)
+    IContentContext context
+    )
   {return context.getResources().getShadings().get(getName());}
 
   /**

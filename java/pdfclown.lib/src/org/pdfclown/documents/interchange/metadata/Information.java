@@ -189,19 +189,19 @@ public final class Information
     Class<TPdf> entryType // This Class<TPdf> parameter is an ugly workaround to the horrific generics type erasure that precludes full reflection over parameterized types.
     )
   {
-  	if(value == null)
-  	{getBaseDataObject().remove(key);}
-  	else
-  	{
-	    if(!getBaseDataObject().containsKey(key))
-	    {
-	      try
-	      {getBaseDataObject().put(key, entryType.newInstance());}
-	      catch(Exception e)
-	      {throw new RuntimeException(e);}
-	    }
-	    ((TPdf)getBaseDataObject().resolve(key)).setValue(value);
-  	}
+    if(value == null)
+    {getBaseDataObject().remove(key);}
+    else
+    {
+      if(!getBaseDataObject().containsKey(key))
+      {
+        try
+        {getBaseDataObject().put(key, entryType.newInstance());}
+        catch(Exception e)
+        {throw new RuntimeException(e);}
+      }
+      ((TPdf)getBaseDataObject().resolve(key)).setValue(value);
+    }
   }
   // </protected>
   // </interface>

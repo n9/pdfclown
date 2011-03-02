@@ -34,58 +34,58 @@ import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 
 /**
-	Pattern providing a smooth transition between colors across an area to be painted [PDF:1.6:4.6.3].
-	<p>The transition is continuous and independent of the resolution of any particular output device.</p>
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  Pattern providing a smooth transition between colors across an area to be painted [PDF:1.6:4.6.3].
+  <p>The transition is continuous and independent of the resolution of any particular output device.</p>
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF13)
 public final class ShadingPattern
-	extends Pattern<PdfDictionary>
+  extends Pattern<PdfDictionary>
 {
   // <class>
   // <dynamic>
   // <constructors>
-	//TODO:IMPL new element constructor!
+  //TODO:IMPL new element constructor!
 
-	ShadingPattern(
+  ShadingPattern(
     PdfDirectObject baseObject,
     PdfIndirectObject container
-		)
-	{super(baseObject, container);}
+    )
+  {super(baseObject, container);}
   // </constructors>
 
   // <interface>
   // <public>
-	/**
-		Gets the <b>graphics state parameters</b> to be put into effect temporarily
-		while the shading pattern is painted.
-		<p>Any parameters that are not so specified are inherited from the graphics state
-		that was in effect at the beginning of the content stream in which the pattern 
-		is defined as a resource.</p>
-	 */
-	public ExtGState getExtGState(
-		)
-	{
-		return ExtGState.wrap(
-			getBaseDataObject().get(PdfName.ExtGState),
-			getContainer()
-			);
-	}
-	
-	/**
-		Gets a <b>shading object</b> defining the shading pattern's gradient fill.
-	*/
-	public Shading<?> getShading(
-		)
-	{
-		return Shading.wrap(
-			getBaseDataObject().get(PdfName.Shading),
-			getContainer()
-			);
-	}
+  /**
+    Gets the <b>graphics state parameters</b> to be put into effect temporarily
+    while the shading pattern is painted.
+    <p>Any parameters that are not so specified are inherited from the graphics state
+    that was in effect at the beginning of the content stream in which the pattern
+    is defined as a resource.</p>
+   */
+  public ExtGState getExtGState(
+    )
+  {
+    return ExtGState.wrap(
+      getBaseDataObject().get(PdfName.ExtGState),
+      getContainer()
+      );
+  }
+
+  /**
+    Gets a <b>shading object</b> defining the shading pattern's gradient fill.
+  */
+  public Shading<?> getShading(
+    )
+  {
+    return Shading.wrap(
+      getBaseDataObject().get(PdfName.Shading),
+      getContainer()
+      );
+  }
   // </public>
   // </interface>
   // </dynamic>

@@ -54,24 +54,24 @@ public final class DeviceGrayColor
 
   public static final DeviceGrayColor Default = Black;
   // </fields>
-  
+
   // <interface>
   // <public>
   /**
-  	Gets the color corresponding to the specified components.
-  	
-  	@param components Color components to convert.
-  	@since 0.1.0
+    Gets the color corresponding to the specified components.
+
+    @param components Color components to convert.
+    @since 0.1.0
    */
   public static DeviceGrayColor get(
-  	PdfArray components
-  	)
+    PdfArray components
+    )
   {
-  	return (components != null
-  		? new DeviceGrayColor(components) 
-  		: Default
-  		);
-	}
+    return (components != null
+      ? new DeviceGrayColor(components)
+      : Default
+      );
+  }
   // </public>
   // </interface>
   // </static>
@@ -83,40 +83,40 @@ public final class DeviceGrayColor
     )
   {
     this(
-  		Arrays.asList(
-    		new PdfReal(normalizeComponent(g))
-    		)
-  		);
+      Arrays.asList(
+        new PdfReal(normalizeComponent(g))
+        )
+      );
   }
-  
+
   DeviceGrayColor(
-  	List<? extends PdfDirectObject> components
+    List<? extends PdfDirectObject> components
     )
   {
     super(
-    	DeviceGrayColorSpace.Default,
-    	new PdfArray(components)
-    	);
+      DeviceGrayColorSpace.Default,
+      new PdfArray(components)
+      );
   }
   // </constructors>
 
   // <interface>
   // <public>
-	@Override
-	public Object clone(
-		Document context
-		)
-	{throw new NotImplementedException();}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {throw new NotImplementedException();}
 
   /**
     Gets the gray component.
-  */ 
+  */
   public float getG(
     )
   {return getComponentValue(0);}
 
   /**
-  	@see #getG()
+    @see #getG()
   */
   public void setG(
     float value

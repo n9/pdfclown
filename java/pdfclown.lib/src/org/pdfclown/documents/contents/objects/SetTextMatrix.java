@@ -57,17 +57,17 @@ public final class SetTextMatrix
   // <dynamic>
   // <constructors>
   public SetTextMatrix(
-  	AffineTransform value
-  	)
+    AffineTransform value
+    )
   {
-  	this(
-  		value.getScaleX(),
-  		value.getShearY(),
-  		value.getShearX(),
-  		value.getScaleY(),
-  		value.getTranslateX(),
-  		value.getTranslateY()
-  		);
+    this(
+      value.getScaleX(),
+      value.getShearY(),
+      value.getShearX(),
+      value.getScaleY(),
+      value.getTranslateX(),
+      value.getTranslateY()
+      );
   }
 
   public SetTextMatrix(
@@ -99,17 +99,17 @@ public final class SetTextMatrix
   // <interface>
   // <public>
   public AffineTransform getValue(
-	  )
-	{
-	  return new AffineTransform(
-	  	((PdfNumber<?>)operands.get(0)).getNumberValue(),
-	    ((PdfNumber<?>)operands.get(1)).getNumberValue(),
-	    ((PdfNumber<?>)operands.get(2)).getNumberValue(),
-	    ((PdfNumber<?>)operands.get(3)).getNumberValue(),
-	    ((PdfNumber<?>)operands.get(4)).getNumberValue(),
-	    ((PdfNumber<?>)operands.get(5)).getNumberValue()
-	    );
-	}
+    )
+  {
+    return new AffineTransform(
+      ((PdfNumber<?>)operands.get(0)).getNumberValue(),
+      ((PdfNumber<?>)operands.get(1)).getNumberValue(),
+      ((PdfNumber<?>)operands.get(2)).getNumberValue(),
+      ((PdfNumber<?>)operands.get(3)).getNumberValue(),
+      ((PdfNumber<?>)operands.get(4)).getNumberValue(),
+      ((PdfNumber<?>)operands.get(5)).getNumberValue()
+      );
+  }
 
   @Override
   public void scan(

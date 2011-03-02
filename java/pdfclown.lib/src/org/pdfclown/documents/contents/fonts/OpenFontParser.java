@@ -25,11 +25,11 @@
 
 package org.pdfclown.documents.contents.fonts;
 
-import org.pdfclown.bytes.IInputStream;
-import org.pdfclown.tokens.CharsetName;
-
 import java.util.Hashtable;
 import java.util.Map;
+
+import org.pdfclown.bytes.IInputStream;
+import org.pdfclown.tokens.CharsetName;
 
 /**
   Open Font Format parser [OFF:2009].
@@ -886,24 +886,24 @@ final class OpenFontParser
         return readAsciiString(length);
     }
   }
-  
+
   /**
-	  Reads a string from the font file using the specified encoding.
-	*/
-	private String readString(
-	  int length,
-	  String charName
-	  )
-	{
-	  try
-	  {
-	    byte[] data = new byte[length];
-	    fontData.read(data);
-	    return new String(data, charName);
-	  }
-	  catch(Exception e)
-	  {throw new RuntimeException(e);}
-	}
+    Reads a string from the font file using the specified encoding.
+  */
+  private String readString(
+    int length,
+    String charName
+    )
+  {
+    try
+    {
+      byte[] data = new byte[length];
+      fontData.read(data);
+      return new String(data, charName);
+    }
+    catch(Exception e)
+    {throw new RuntimeException(e);}
+  }
 
   /**
     Reads a string from the font file using the Unicode encoding.

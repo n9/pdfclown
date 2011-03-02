@@ -67,13 +67,13 @@ public abstract class Operation
     else if(operator.equals(SetFont.Operator))
       return new SetFont(operands);
     else if(operator.equals(SetStrokeColor.Operator)
-    	|| operator.equals(SetStrokeColor.ExtendedOperator))
-			return new SetStrokeColor(operator, operands);
+      || operator.equals(SetStrokeColor.ExtendedOperator))
+      return new SetStrokeColor(operator, operands);
     else if(operator.equals(SetStrokeColorSpace.Operator))
       return new SetStrokeColorSpace(operands);
     else if(operator.equals(SetFillColor.Operator)
-    	|| operator.equals(SetFillColor.ExtendedOperator))
-			return new SetFillColor(operator, operands);
+      || operator.equals(SetFillColor.ExtendedOperator))
+      return new SetFillColor(operator, operands);
     else if(operator.equals(SetFillColorSpace.Operator))
       return new SetFillColorSpace(operands);
     else if(operator.equals(SetDeviceGrayStrokeColor.Operator))
@@ -123,12 +123,12 @@ public abstract class Operation
       return new ShowSimpleText(operands);
     else if(operator.equals(ShowTextToNextLine.SimpleOperator)
       || operator.equals(ShowTextToNextLine.SpaceOperator))
-			return new ShowTextToNextLine(operator, operands);
+      return new ShowTextToNextLine(operator, operands);
     else if(operator.equals(ShowAdjustedText.Operator))
       return new ShowAdjustedText(operands);
     else if(operator.equals(TranslateTextRelative.SimpleOperator)
       || operator.equals(TranslateTextRelative.LeadOperator))
-			return new TranslateTextRelative(operator, operands);
+      return new TranslateTextRelative(operator, operands);
     else if(operator.equals(SetTextMatrix.Operator))
       return new SetTextMatrix(operands);
     else if(operator.equals(ModifyCTM.Operator))
@@ -166,7 +166,7 @@ public abstract class Operation
     else if(operator.equals(DrawCurve.FinalOperator)
       || operator.equals(DrawCurve.FullOperator)
       || operator.equals(DrawCurve.InitialOperator))
-			return new DrawCurve(operator, operands);
+      return new DrawCurve(operator, operands);
     else if(operator.equals(EndInlineImage.Operator))
       return EndInlineImage.Value;
     else if(operator.equals(BeginText.Operator))
@@ -174,13 +174,13 @@ public abstract class Operation
     else if(operator.equals(EndText.Operator))
       return EndText.Value;
     else if(operator.equals(BeginMarkedContent.SimpleOperator)
-    	|| operator.equals(BeginMarkedContent.PropertyListOperator))
-			return new BeginMarkedContent(operator, operands);
+      || operator.equals(BeginMarkedContent.PropertyListOperator))
+      return new BeginMarkedContent(operator, operands);
     else if(operator.equals(EndMarkedContent.Operator))
       return EndMarkedContent.Value;
     else if(operator.equals(MarkedContentPoint.SimpleOperator)
-    	|| operator.equals(MarkedContentPoint.PropertyListOperator))
-			return new MarkedContentPoint(operator, operands);
+      || operator.equals(MarkedContentPoint.PropertyListOperator))
+      return new MarkedContentPoint(operator, operands);
     else if(operator.equals(BeginInlineImage.Operator))
       return BeginInlineImage.Value;
     else if(operator.equals(EndInlineImage.Operator))
@@ -188,7 +188,7 @@ public abstract class Operation
     else if(operator.equals(SetExtGState.Operator))
       return new SetExtGState(operands);
     else // No explicit operation implementation available.
-			return new GenericOperation(operator, operands);
+      return new GenericOperation(operator, operands);
   }
   // </public>
   // </interface>

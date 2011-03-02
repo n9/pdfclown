@@ -508,24 +508,24 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
 
         break;
       case '%': // Comment [PDF:1.6:3.1.2].
-    	  tokenType = TokenTypeEnum.Comment;
-    	  
-    	  buffer = new StringBuilder();
-    	  try
-    	  {
-    	    while(true)
-    	    {
-    	    	c = stream.readUnsignedByte();
-    	    	if(isEOL(c))
-    	    		break;
-    	    	
-    	    	buffer.append((char)c);
-    	    }
-    	  }
-    	  catch(EOFException e)
-    	  {/* NOOP */}
+        tokenType = TokenTypeEnum.Comment;
 
-    	  break;
+        buffer = new StringBuilder();
+        try
+        {
+          while(true)
+          {
+            c = stream.readUnsignedByte();
+            if(isEOL(c))
+              break;
+
+            buffer.append((char)c);
+          }
+        }
+        catch(EOFException e)
+        {/* NOOP */}
+
+        break;
       default: // Keyword.
         tokenType = TokenTypeEnum.Keyword;
 
@@ -700,83 +700,83 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
   protected PdfDirectObject parsePdfObject(
     ) throws FileFormatException
   {
-  	do
-  	{
-	    switch(tokenType)
-	    {
-	      case Integer:
-	        return new PdfInteger((Integer)token);
-	      case Name:
-	        return new PdfName((String)token,true);
-	      case Literal:
+    do
+    {
+      switch(tokenType)
+      {
+        case Integer:
+          return new PdfInteger((Integer)token);
+        case Name:
+          return new PdfName((String)token,true);
+        case Literal:
           return new PdfString(
-          	Encoding.encode((String)token),
+            Encoding.encode((String)token),
             PdfString.SerializationModeEnum.Literal
             );
-	      case DictionaryBegin:
-	        {
-	          PdfDictionary dictionary = new PdfDictionary();
-	          // Populate the dictionary.
-	          while(true)
-	          {
-	            // Key.
-	            moveNext();
-	            if(tokenType == TokenTypeEnum.DictionaryEnd)
-	              break;
-	            PdfName key = (PdfName)parsePdfObject();
-	
-	            // Value.
-	            moveNext();
-	            PdfDirectObject value = (PdfDirectObject)parsePdfObject();
-	
-	            // Add the current entry to the dictionary!
-	            dictionary.put(key,value);
-	          }
-	          return dictionary;
-	        }
-	      case ArrayBegin:
-	        {
-	          PdfArray array = new PdfArray();
-	          // Populate the array.
-	          while(true)
-	          {
-	            // Value.
-	            moveNext();
-	            if(tokenType == TokenTypeEnum.ArrayEnd)
-	              break;
-	
-	            // Add the current item to the array!
-	            array.add((PdfDirectObject)parsePdfObject());
-	          }
-	          return array;
-	        }
-	      case Real:
-	        return new PdfReal((Float)token);
-	      case Boolean:
-	        return PdfBoolean.get((Boolean)token);
-	      case Date:
-	        return new PdfDate((Date)token);
-	      case Hex:
-	        try
-	        {
-	          return new PdfString(
-	            (String)token,
-	            PdfString.SerializationModeEnum.Hex
-	            );
-	        }
-	        catch(Exception e)
-	        {throw new RuntimeException(e);}
-	      case Null:
-	        return null;
+        case DictionaryBegin:
+          {
+            PdfDictionary dictionary = new PdfDictionary();
+            // Populate the dictionary.
+            while(true)
+            {
+              // Key.
+              moveNext();
+              if(tokenType == TokenTypeEnum.DictionaryEnd)
+                break;
+              PdfName key = (PdfName)parsePdfObject();
+
+              // Value.
+              moveNext();
+              PdfDirectObject value = parsePdfObject();
+
+              // Add the current entry to the dictionary!
+              dictionary.put(key,value);
+            }
+            return dictionary;
+          }
+        case ArrayBegin:
+          {
+            PdfArray array = new PdfArray();
+            // Populate the array.
+            while(true)
+            {
+              // Value.
+              moveNext();
+              if(tokenType == TokenTypeEnum.ArrayEnd)
+                break;
+
+              // Add the current item to the array!
+              array.add(parsePdfObject());
+            }
+            return array;
+          }
+        case Real:
+          return new PdfReal((Float)token);
+        case Boolean:
+          return PdfBoolean.get((Boolean)token);
+        case Date:
+          return new PdfDate((Date)token);
+        case Hex:
+          try
+          {
+            return new PdfString(
+              (String)token,
+              PdfString.SerializationModeEnum.Hex
+              );
+          }
+          catch(Exception e)
+          {throw new RuntimeException(e);}
+        case Null:
+          return null;
         case Comment:
-      		// NOOP: Comments are simply ignored and skipped.
-        	break;
-	      default:
-	        throw new RuntimeException("Unknown type: " + tokenType);
-	    }
-  	} while(moveNext());
-  	
-  	return null;
+          // NOOP: Comments are simply ignored and skipped.
+          break;
+        default:
+          throw new RuntimeException("Unknown type: " + tokenType);
+      }
+    } while(moveNext());
+
+    return null;
   }
 
   public void seek(
@@ -859,21 +859,21 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
   {
     // Is the content stream just a single stream?
     /*
-    	NOTE: A content stream may be made up of multiple streams [PDF:1.6:3.6.2].
+      NOTE: A content stream may be made up of multiple streams [PDF:1.6:3.6.2].
     */
     if(contentStream instanceof PdfStream) // Single stream.
     {
       if(streamIndex < 1)
       {
-	      streamIndex++;
+        streamIndex++;
 
-	      basePosition = (streamIndex == 0
-	      	? 0
-      		: basePosition + stream.getLength());
-	      
-	      stream = (streamIndex < 1
-	      	? ((PdfStream)contentStream).getBody()
-	    		: null);
+        basePosition = (streamIndex == 0
+          ? 0
+          : basePosition + stream.getLength());
+
+        stream = (streamIndex < 1
+          ? ((PdfStream)contentStream).getBody()
+          : null);
       }
     }
     else // Multiple streams.
@@ -881,19 +881,19 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
       PdfArray streams = (PdfArray)contentStream;
       if(streamIndex < streams.size())
       {
-	      streamIndex++;
+        streamIndex++;
 
-	      basePosition = (streamIndex == 0
-	      	? 0
-      		: basePosition + stream.getLength());
-	      
-	      stream = (streamIndex < streams.size()
-	      	? ((PdfStream)streams.resolve(streamIndex)).getBody()
-	    		: null);
+        basePosition = (streamIndex == 0
+          ? 0
+          : basePosition + stream.getLength());
+
+        stream = (streamIndex < streams.size()
+          ? ((PdfStream)streams.resolve(streamIndex)).getBody()
+          : null);
       }
     }
     if(stream == null)
-    	return false;
+      return false;
 
     stream.setPosition(0);
     return true;

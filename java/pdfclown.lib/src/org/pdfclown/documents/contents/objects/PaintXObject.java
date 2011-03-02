@@ -25,14 +25,14 @@
 
 package org.pdfclown.documents.contents.objects;
 
+import java.util.List;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.contents.IContentContext;
 import org.pdfclown.documents.contents.XObjectResources;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-
-import java.util.List;
 
 /**
   'Paint the specified XObject' operation [PDF:1.6:4.7].
@@ -70,23 +70,23 @@ public final class PaintXObject
   /**
     Gets the name of the {@link org.pdfclown.documents.contents.xObjects.XObject external object}
     resource to be painted.
-    
+
     @see #getXObject(IContentContext)
     @see XObjectResources
   */
   public PdfName getName(
     )
   {return (PdfName)operands.get(0);}
-  
+
   /**
-  	Gets the {@link org.pdfclown.documents.contents.xObjects.XObject external object} resource 
-  	to be painted.
-	  
-	  @param context Content context.
+    Gets the {@link org.pdfclown.documents.contents.xObjects.XObject external object} resource
+    to be painted.
+
+    @param context Content context.
   */
   public org.pdfclown.documents.contents.xObjects.XObject getXObject(
-  	IContentContext context
-  	)
+    IContentContext context
+    )
   {return context.getResources().getXObjects().get(getName());}
 
   /**

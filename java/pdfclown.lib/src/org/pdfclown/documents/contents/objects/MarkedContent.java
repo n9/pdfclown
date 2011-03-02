@@ -74,19 +74,19 @@ public final class MarkedContent
   // <interface>
   // <public>
   /**
-  	Gets information about this marked-content sequence.
+    Gets information about this marked-content sequence.
   */
   @Override
   public BeginMarkedContent getHeader(
-  	)
+    )
   {return header;}
-  
+
   @Override
   public void setHeader(
-  	Operation value
-  	)
-	{header = (BeginMarkedContent)value;}
-  
+    Operation value
+    )
+  {header = (BeginMarkedContent)value;}
+
   @Override
   public void writeTo(
     IOutputStream stream

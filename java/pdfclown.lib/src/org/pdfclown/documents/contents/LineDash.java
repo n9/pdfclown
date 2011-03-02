@@ -57,7 +57,7 @@ public final class LineDash
   {this(dashArray,0);}
 
   public LineDash(
-  	float[] dashArray,
+    float[] dashArray,
     float dashPhase
     )
   {
@@ -69,14 +69,14 @@ public final class LineDash
   // <interface>
   // <public>
   /**
-  	Gets the lengths of alternating dashes and gaps.
+    Gets the lengths of alternating dashes and gaps.
   */
   public float[] getDashArray(
     )
   {return dashArray;}
 
   /**
-  	Gets the distance into the dash pattern at which to start the dash.
+    Gets the distance into the dash pattern at which to start the dash.
   */
   public float getDashPhase(
     )

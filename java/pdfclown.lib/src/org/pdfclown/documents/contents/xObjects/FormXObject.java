@@ -136,15 +136,15 @@ public final class FormXObject
           0 // f.
         };
     else
-	    return new double[]
-	      {
-	        ((PdfNumber<?>)matrix.get(0)).getNumberValue(), // a.
-	        ((PdfNumber<?>)matrix.get(1)).getNumberValue(), // b.
-	        ((PdfNumber<?>)matrix.get(2)).getNumberValue(), // c.
-	        ((PdfNumber<?>)matrix.get(3)).getNumberValue(), // d.
-	        ((PdfNumber<?>)matrix.get(4)).getNumberValue(), // e.
-	        ((PdfNumber<?>)matrix.get(5)).getNumberValue() // f.
-	      };
+      return new double[]
+        {
+          ((PdfNumber<?>)matrix.get(0)).getNumberValue(), // a.
+          ((PdfNumber<?>)matrix.get(1)).getNumberValue(), // b.
+          ((PdfNumber<?>)matrix.get(2)).getNumberValue(), // c.
+          ((PdfNumber<?>)matrix.get(3)).getNumberValue(), // d.
+          ((PdfNumber<?>)matrix.get(4)).getNumberValue(), // e.
+          ((PdfNumber<?>)matrix.get(5)).getNumberValue() // f.
+        };
   }
 
   /**
@@ -194,7 +194,7 @@ public final class FormXObject
   }
 
   // <IContentContext>
-	@Override
+  @Override
   public Rectangle2D getBox(
     )
   {
@@ -209,39 +209,39 @@ public final class FormXObject
       );
   }
 
-	@Override
+  @Override
   public Contents getContents(
     )
   {return new Contents(getBaseObject(), getContainer(), this);}
 
-	@Override
+  @Override
   public Resources getResources(
     )
   {return Resources.wrap(getBaseDataObject().getHeader().get(PdfName.Resources), getContainer());}
 
-	@Override
-	public RotationEnum getRotation(
-		)
-	{return RotationEnum.Downward;}
+  @Override
+  public RotationEnum getRotation(
+    )
+  {return RotationEnum.Downward;}
 
-	@Override
-	public void render(
-		Graphics2D context,
-		Dimension2D size
-		)
-	{
-		ContentScanner scanner = new ContentScanner(getContents());
-		scanner.render(context,size);
-	}
+  @Override
+  public void render(
+    Graphics2D context,
+    Dimension2D size
+    )
+  {
+    ContentScanner scanner = new ContentScanner(getContents());
+    scanner.render(context,size);
+  }
 
   // <IContentEntity>
-	@Override
+  @Override
   public ContentObject toInlineObject(
     PrimitiveComposer composer
     )
   {throw new NotImplementedException();}
 
-	@Override
+  @Override
   public XObject toXObject(
     Document context
     )

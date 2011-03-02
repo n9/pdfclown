@@ -42,17 +42,17 @@ public abstract class DeviceColor
   // <interface>
   // <public>
   /**
-  	Gets the color corresponding to the specified components.
-  	
-  	@param components Color components to convert.
-  	@since 0.1.0
+    Gets the color corresponding to the specified components.
+
+    @param components Color components to convert.
+    @since 0.1.0
    */
   public static DeviceColor get(
-  	PdfArray components
-  	)
+    PdfArray components
+    )
   {
-  	if(components == null)
-  		return null;
+    if(components == null)
+      return null;
 
     switch(components.size())
     {
@@ -69,12 +69,12 @@ public abstract class DeviceColor
   // </public>
   // </interface>
   // </static>
-  
+
   // <dynamic>
   // <constructors>
   protected DeviceColor(
     DeviceColorSpace colorSpace,
-		PdfDirectObject baseObject
+    PdfDirectObject baseObject
     )
   {super(colorSpace, baseObject);}
   // </constructors>

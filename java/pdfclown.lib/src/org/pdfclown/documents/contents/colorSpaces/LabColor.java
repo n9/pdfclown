@@ -37,22 +37,22 @@ import org.pdfclown.objects.PdfReal;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-	CIE-based L*a*b* color value [PDF:1.6:4.5.4].
-	
-	@author Stefano Chizzolini (http://www.stefanochizzolini.it)
-	@since 0.1.0
-	@version 0.1.0
+  CIE-based L*a*b* color value [PDF:1.6:4.5.4].
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.0
+  @version 0.1.0
 */
 @PDF(VersionEnum.PDF11)
 public final class LabColor
-	extends LeveledColor
+  extends LeveledColor
 {
   // <class>
   // <dynamic>
   // <constructors>
   /*
-  	TODO:colors MUST be instantiated only indirectly by the ColorSpace.getColor method!
-  	This method MUST be made internal and its color space MUST be passed as argument!
+    TODO:colors MUST be instantiated only indirectly by the ColorSpace.getColor method!
+    This method MUST be made internal and its color space MUST be passed as argument!
   */
   public LabColor(
     float l,
@@ -61,46 +61,46 @@ public final class LabColor
     )
   {
     this(
-  		Arrays.asList(
-    		new PdfReal(normalizeComponent(l)),//TODO:normalize using the actual color space ranges!!!
-    		new PdfReal(normalizeComponent(a)),
-    		new PdfReal(normalizeComponent(b))
-    		)
-  		);
+      Arrays.asList(
+        new PdfReal(normalizeComponent(l)),//TODO:normalize using the actual color space ranges!!!
+        new PdfReal(normalizeComponent(a)),
+        new PdfReal(normalizeComponent(b))
+        )
+      );
   }
-  
+
   LabColor(
-  	List<? extends PdfDirectObject> components
+    List<? extends PdfDirectObject> components
     )
   {
     super(
-    	null,//TODO:colorspace?
-    	new PdfArray(components)
-    	);
+      null,//TODO:colorspace?
+      new PdfArray(components)
+      );
   }
   // </constructors>
 
   // <interface>
   // <public>
-	@Override
-	public Object clone(
-		Document context
-		)
-	{throw new NotImplementedException();}
+  @Override
+  public Object clone(
+    Document context
+    )
+  {throw new NotImplementedException();}
 
   /**
-	  Gets the second component (a*).
-	*/
-	public float getA(
-	  )
-	{return getComponentValue(1);}
-	
-	/**
-		Gets the third component (b*).
-	*/
-	public float getB(
-		)
-	{return getComponentValue(2);}
+    Gets the second component (a*).
+  */
+  public float getA(
+    )
+  {return getComponentValue(1);}
+
+  /**
+    Gets the third component (b*).
+  */
+  public float getB(
+    )
+  {return getComponentValue(2);}
 
   /**
     Gets the first component (L*).
@@ -108,30 +108,30 @@ public final class LabColor
   public float getL(
     )
   {return getComponentValue(0);}
-	
-	/**
-		@see #getA()
-	*/
-	public void setA(
-	  float value
-	  )
-	{setComponentValue(1, value);}
-	
-	/**
-		@see #getB()
-	*/
-	public void setB(
-	  float value
-	  )
-	{setComponentValue(2, value);}
-	
-	/**
-		@see #getL()
-	*/
-	public void setL(
-	  float value
-	  )
-	{setComponentValue(0, value);}
+
+  /**
+    @see #getA()
+  */
+  public void setA(
+    float value
+    )
+  {setComponentValue(1, value);}
+
+  /**
+    @see #getB()
+  */
+  public void setB(
+    float value
+    )
+  {setComponentValue(2, value);}
+
+  /**
+    @see #getL()
+  */
+  public void setL(
+    float value
+    )
+  {setComponentValue(0, value);}
   // </public>
   // </interface>
   // </dynamic>

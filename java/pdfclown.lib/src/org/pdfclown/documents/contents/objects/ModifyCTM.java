@@ -58,31 +58,31 @@ public final class ModifyCTM
   // <interface>
   // <public>
   public static ModifyCTM getResetCTM(
-  	GraphicsState state
+    GraphicsState state
     )
   {
-		return new ModifyCTM(
-			SquareMatrix.get(state.getCtm()).solve(
-				SquareMatrix.get(state.getInitialCtm())
-				).toTransform()
-			);
-	}
+    return new ModifyCTM(
+      SquareMatrix.get(state.getCtm()).solve(
+        SquareMatrix.get(state.getInitialCtm())
+        ).toTransform()
+      );
+  }
   // </static>
 
   // <dynamic>
   // <constructors>
   public ModifyCTM(
-  	AffineTransform value
-  	)
+    AffineTransform value
+    )
   {
-  	this(
-  		value.getScaleX(),
-  		value.getShearY(),
-  		value.getShearX(),
-  		value.getScaleY(),
-  		value.getTranslateX(),
-  		value.getTranslateY()
-  		);
+    this(
+      value.getScaleX(),
+      value.getShearY(),
+      value.getShearX(),
+      value.getScaleY(),
+      value.getTranslateX(),
+      value.getTranslateY()
+      );
   }
 
   public ModifyCTM(
@@ -119,17 +119,17 @@ public final class ModifyCTM
     )
   {
     state.getCtm().concatenate(getValue());
-    
-  	Graphics2D context = state.getScanner().getRenderContext();
-  	if(context != null)
-  	{context.setTransform(state.getCtm());}
+
+    Graphics2D context = state.getScanner().getRenderContext();
+    if(context != null)
+    {context.setTransform(state.getCtm());}
   }
 
   public AffineTransform getValue(
     )
   {
     return new AffineTransform(
-    	((PdfNumber<?>)operands.get(0)).getNumberValue(),
+      ((PdfNumber<?>)operands.get(0)).getNumberValue(),
       ((PdfNumber<?>)operands.get(1)).getNumberValue(),
       ((PdfNumber<?>)operands.get(2)).getNumberValue(),
       ((PdfNumber<?>)operands.get(3)).getNumberValue(),

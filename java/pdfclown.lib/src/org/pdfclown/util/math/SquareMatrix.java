@@ -43,21 +43,21 @@ public final class SquareMatrix
 {
   // <class>
   // <static>
-	/**
-		Gets the {@link SquareMatrix} representation of an {@link java.awt.geom.AffineTransform AffineTransform} object.
-	*/
-	public static SquareMatrix get(
-		AffineTransform transform
-		)
-	{
-		return new SquareMatrix(
-			new double[][]
+  /**
+    Gets the {@link SquareMatrix} representation of an {@link java.awt.geom.AffineTransform AffineTransform} object.
+  */
+  public static SquareMatrix get(
+    AffineTransform transform
+    )
+  {
+    return new SquareMatrix(
+      new double[][]
       {
-				{transform.getScaleX(), transform.getShearY(), 0},
-				{transform.getShearX(), transform.getScaleY(), 0},
-				{transform.getTranslateX(), transform.getTranslateY(), 1}}
-			);
-	}
+        {transform.getScaleX(), transform.getShearY(), 0},
+        {transform.getShearX(), transform.getScaleY(), 0},
+        {transform.getTranslateX(), transform.getTranslateY(), 1}}
+      );
+  }
 
   /**
     Gets the identity matrix.
@@ -159,6 +159,7 @@ public final class SquareMatrix
    }
   // </constructors>
 
+  @Override
   public Object clone(
     )
   {
@@ -431,23 +432,23 @@ public final class SquareMatrix
     SquareMatrix target
     )
   {return (new LUDecomposition(this)).solve(target);}
-  
+
   /**
-  	Converts this matrix into an {@link java.awt.geom.AffineTransform AffineTransform} object. 
+    Converts this matrix into an {@link java.awt.geom.AffineTransform AffineTransform} object.
   */
   public AffineTransform toTransform(
-  	)
+    )
   {
-  	if(size != 3)
-  		throw new IllegalStateException("Matrix dimension MUST be 3.");
+    if(size != 3)
+      throw new IllegalStateException("Matrix dimension MUST be 3.");
 
-  	return new AffineTransform(
-  		data[0][0],
-	    data[0][1],
-	    data[1][0],
-	    data[1][1],
-	    data[2][0],
-	    data[2][1]
+    return new AffineTransform(
+      data[0][0],
+      data[0][1],
+      data[1][0],
+      data[1][1],
+      data[2][0],
+      data[2][1]
       );
   }
   // </dynamic>

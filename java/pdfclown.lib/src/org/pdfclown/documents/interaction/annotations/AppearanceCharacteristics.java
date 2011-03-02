@@ -615,7 +615,7 @@ public final class AppearanceCharacteristics
     if(alternateCaptionObject == null)
       return null;
 
-    return (String)alternateCaptionObject.getValue();
+    return alternateCaptionObject.getValue();
   }
 
   /**
@@ -699,7 +699,7 @@ public final class AppearanceCharacteristics
     if(normalCaptionObject == null)
       return null;
 
-    return (String)normalCaptionObject.getValue();
+    return normalCaptionObject.getValue();
   }
 
   /**
@@ -750,7 +750,7 @@ public final class AppearanceCharacteristics
     if(rolloverCaptionObject == null)
       return null;
 
-    return (String)rolloverCaptionObject.getValue();
+    return rolloverCaptionObject.getValue();
   }
 
   /**
@@ -894,10 +894,10 @@ public final class AppearanceCharacteristics
     DeviceColor value
     )
   {
-  	if(value == null)
-  	{getBaseDataObject().remove(key);}
-  	else
-  	{getBaseDataObject().put(key, value.getBaseObject());}
+    if(value == null)
+    {getBaseDataObject().remove(key);}
+    else
+    {getBaseDataObject().put(key, value.getBaseObject());}
   }
   // </private>
   // </interface>

@@ -25,6 +25,10 @@
 
 package org.pdfclown.documents.interaction.annotations;
 
+import java.awt.geom.Rectangle2D;
+import java.util.Date;
+import java.util.EnumSet;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -42,10 +46,6 @@ import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.NotImplementedException;
-
-import java.awt.geom.Rectangle2D;
-import java.util.Date;
-import java.util.EnumSet;
 
 /**
   Annotation [PDF:1.6:8.4].
@@ -334,7 +334,7 @@ public class Annotation
     )
   {
     PdfDirectObject actionsObject = getBaseDataObject().get(PdfName.AA);
-		return actionsObject == null ? null : new AnnotationActions(this, actionsObject, getContainer());
+    return actionsObject == null ? null : new AnnotationActions(this, actionsObject, getContainer());
   }
 
   /**
@@ -345,7 +345,7 @@ public class Annotation
     )
   {
     PdfDirectObject appearanceObject = getBaseDataObject().get(PdfName.AP);
-		return appearanceObject == null ? null : new Appearance(appearanceObject, getContainer());
+    return appearanceObject == null ? null : new Appearance(appearanceObject, getContainer());
   }
 
   /**
@@ -356,7 +356,7 @@ public class Annotation
     )
   {
     PdfDirectObject borderObject = getBaseDataObject().get(PdfName.BS);
-		return borderObject == null ? null : new Border(borderObject, getContainer());
+    return borderObject == null ? null : new Border(borderObject, getContainer());
   }
 
   /**
@@ -385,9 +385,9 @@ public class Annotation
     )
   {
     PdfInteger flagsObject = (PdfInteger)getBaseDataObject().get(PdfName.F);
-    return flagsObject == null 
-    	? EnumSet.noneOf(FlagsEnum.class) 
-  		: FlagsEnum.toEnumSet(flagsObject.getValue());
+    return flagsObject == null
+      ? EnumSet.noneOf(FlagsEnum.class)
+      : FlagsEnum.toEnumSet(flagsObject.getValue());
   }
 
   /**
@@ -402,7 +402,7 @@ public class Annotation
       || !(modificationDateObject instanceof PdfDate)) // NOTE: Non-well-formed dates are ignored.
       return null;
 
-    return (Date)((PdfDate)modificationDateObject).getValue();
+    return ((PdfDate)modificationDateObject).getValue();
   }
 
   /**
