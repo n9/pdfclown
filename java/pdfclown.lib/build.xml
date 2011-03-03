@@ -17,9 +17,11 @@
   <property name="javadoc.dir"
     location="${build.dir}/docs/api"
     />
+  <!--
   <property name="package.resources.dir"
     location="res"
     />
+  -->
   <property name="package.resources.common.dir"
     location="../../main/res/pkg"
     />
@@ -91,7 +93,7 @@
       windowtitle="${project.title} ${project.version} API Reference"
       >
       <header><![CDATA[<b>${project.title}</b><br/><small>${project.version}</small>]]></header>
-      <bottom><![CDATA[<small><a href="http://www.pdfclown.org">Project home page</a><br><br>Copyright &#169; 2006-2010 ${project.vendor}. Some Rights Reserved.<br/>This documentation is available under the terms of the <a href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License</a>.</small>]]></bottom>
+      <bottom><![CDATA[<small><a href="http://www.pdfclown.org">Project home page</a><br><br>Copyright &#169; 2006-2011 ${project.vendor}. Some Rights Reserved.<br/>This documentation is available under the terms of the <a href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License</a>.</small>]]></bottom>
       <link href="http://download.oracle.com/javase/6/docs/api"/>
     </javadoc>
   </target>
@@ -105,9 +107,11 @@
       <fileset dir="${compile.dir}">
         <include name="**/*.class"/>
       </fileset>
+      <!--
       <fileset dir="${package.resources.dir}">
         <include name="**/*" />
       </fileset>
+      -->
       <fileset dir="${package.resources.common.dir}">
         <include name="**/*" />
       </fileset>
