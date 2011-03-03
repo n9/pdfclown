@@ -84,6 +84,7 @@
     </delete>
     <javadoc
       author="true"
+      charset="UTF-8"
       classpath="${classpath}"
       destdir="${javadoc.dir}"
       doctitle="${project.title} ${project.version}&lt;br/&gt;API Reference"
