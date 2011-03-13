@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -52,7 +52,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 03/13/11
 */
 @PDF(VersionEnum.PDF10)
 public class Annotation
@@ -203,16 +203,14 @@ public class Annotation
     PdfIndirectObject container
     )
   {
-    /*
-      NOTE: This is a factory method for any annotation-derived object.
-    */
     if(baseObject == null)
       return null;
 
     PdfDictionary dataObject = (PdfDictionary)File.resolve(baseObject);
-    if(!dataObject.get(PdfName.Type).equals(PdfName.Annot))
-      return null;
 
+    /*
+      NOTE: Annotation's subtype MUST exist.
+    */
     PdfName annotationType = (PdfName)dataObject.get(PdfName.Subtype);
     if(annotationType.equals(PdfName.Text))
       return new Note(baseObject,container);

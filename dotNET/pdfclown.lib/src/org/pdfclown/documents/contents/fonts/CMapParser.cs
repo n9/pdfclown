@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -490,27 +490,10 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
                     itemIndex++
                     )
                   {
-                    // 1. Input code.
                     MoveNext();
                     ByteArray inputCode = new ByteArray((byte[])token);
-                    // 2. Character...
                     MoveNext();
-                    switch(tokenType)
-                    {
-                      case TokenTypeEnum.Hex: // ...code (hex).
-                        codes[inputCode] = ConvertUtils.ByteArrayToInt((byte[])token);
-                        break;
-                      case TokenTypeEnum.Integer: // ...code (plain).
-                        codes[inputCode] = (int)token;
-                        break;
-                      case TokenTypeEnum.Name: // ...name.
-                        codes[inputCode] = GlyphMapping.NameToCode((String)token);
-                        break;
-                      default:
-                        throw new Exception(
-                          operator_ + " section syntax error: hex string, integer or name expected instead of " + tokenType
-                          );
-                    }
+                    codes[inputCode] = ParseUnicode();
                   }
                 }
                 else if(operator_.Equals(BeginBaseFontRangeOperator)
@@ -537,24 +520,21 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
                     MoveNext();
                     switch(tokenType)
                     {
-                      case TokenTypeEnum.Hex:
-                      case TokenTypeEnum.Integer:
+                      case TokenTypeEnum.ArrayBegin:
                       {
                         byte[] inputCode = beginInputCode;
-                        int charCode;
-                        switch(tokenType)
+                        while(MoveNext()
+                          && tokenType != TokenTypeEnum.ArrayEnd)
                         {
-                          case TokenTypeEnum.Hex:
-                            charCode = ConvertUtils.ByteArrayToInt((byte[])token);
-                            break;
-                          case TokenTypeEnum.Integer:
-                            charCode = (int)token;
-                            break;
-                          default:
-                            throw new Exception(
-                              operator_ + " section syntax error: hex string or integer expected instead of " + tokenType
-                              );
+                          codes[new ByteArray(inputCode)] = ParseUnicode();
+                          OperationUtils.Increment(inputCode);
                         }
+                        break;
+                      }
+                      default:
+                      {
+                        byte[] inputCode = beginInputCode;
+                        int charCode = ParseUnicode();
                         int endCharCode = charCode + (ConvertUtils.ByteArrayToInt(endInputCode) - ConvertUtils.ByteArrayToInt(beginInputCode));
                         while(true)
                         {
@@ -567,21 +547,6 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
                         }
                         break;
                       }
-                      case TokenTypeEnum.ArrayBegin:
-                      {
-                        byte[] inputCode = beginInputCode;
-                        while(MoveNext()
-                          && tokenType != TokenTypeEnum.ArrayEnd)
-                        {
-                          codes[new ByteArray(inputCode)] = GlyphMapping.NameToCode((String)token);
-                          OperationUtils.Increment(inputCode);
-                        }
-                        break;
-                      }
-                      default:
-                        throw new Exception(
-                          operator_ + " section syntax error: hex string, integer or name array expected instead of " + tokenType
-                          );
                     }
                   }
                 }
@@ -653,19 +618,51 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
       <summary>Gets the stream to be parsed.</summary>
     */
     public bytes::IInputStream Stream
-    {get{return stream;}}
+    {
+      get
+      {return stream;}
+    }
 
     /**
       <summary>Gets the currently-parsed token.</summary>
     */
     public object Token
-    {get{return token;}}
+    {
+      get
+      {return token;}
+    }
 
     /**
       <summary>Gets the currently-parsed token type.</summary>
     */
     public TokenTypeEnum TokenType
-    {get{return tokenType;}}
+    {
+      get
+      {return tokenType;}
+    }
+    #endregion
+
+    #region private
+    /**
+      <summary>Converts the current token into its Unicode value.</summary>
+    */
+    private int ParseUnicode(
+      )
+    {
+      switch(tokenType)
+      {
+        case TokenTypeEnum.Hex: // Character code in hexadecimal format.
+          return ConvertUtils.ByteArrayToInt((byte[])token);
+        case TokenTypeEnum.Integer: // Character code in plain format.
+          return (int)token;
+        case TokenTypeEnum.Name: // Character name.
+          return GlyphMapping.NameToCode((string)token);
+        default:
+          throw new Exception(
+            "Hex string, integer or name expected instead of " + tokenType
+            );
+      }
+    }
     #endregion
     #endregion
     #endregion

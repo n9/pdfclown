@@ -31,10 +31,10 @@
     value="pdfclown"
     />
   <property name="project.version"
-    value="0.1.0"
+    value="0.1.1"
     />
   <property name="project.stage"
-    value="Beta"
+    value="Alpha"
     />
   <property name="project.version.ext"
     value="${project.version}-${project.stage}"

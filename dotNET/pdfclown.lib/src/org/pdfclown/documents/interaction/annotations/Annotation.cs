@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -114,16 +114,14 @@ namespace org.pdfclown.documents.interaction.annotations
       PdfIndirectObject container
       )
     {
-      /*
-        NOTE: This is a factory method for any annotation-derived object.
-      */
       if(baseObject == null)
         return null;
 
       PdfDictionary dataObject = (PdfDictionary)File.Resolve(baseObject);
-      if(!dataObject[PdfName.Type].Equals(PdfName.Annot))
-        return null;
 
+      /*
+        NOTE: Annotation's subtype MUST exist.
+      */
       PdfName annotationType = (PdfName)dataObject[PdfName.Subtype];
       if(annotationType.Equals(PdfName.Text))
         return new Note(baseObject,container);

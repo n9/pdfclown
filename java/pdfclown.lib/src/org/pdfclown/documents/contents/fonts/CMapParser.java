@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,11 @@
 
 package org.pdfclown.documents.contents.fonts;
 
+import java.io.EOFException;
+import java.io.InputStream;
+import java.util.Hashtable;
+import java.util.Map;
+
 import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.tokens.FileFormatException;
@@ -33,17 +38,12 @@ import org.pdfclown.util.ByteArray;
 import org.pdfclown.util.ConvertUtils;
 import org.pdfclown.util.math.OperationUtils;
 
-import java.io.EOFException;
-import java.io.InputStream;
-import java.util.Hashtable;
-import java.util.Map;
-
 /**
   CMap parser [PDF:1.6:5.6.4;CMAP].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 03/13/11
 */
 final class CMapParser
 {
@@ -104,7 +104,7 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
 
   // <dynamic>
   // <fields>
-  private IInputStream stream;
+  private final IInputStream stream;
   private Object token;
   private TokenTypeEnum tokenType;
   // </fields>
@@ -177,30 +177,8 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
   }
 
   /**
-    Parse the next token [PDF:1.6:3.1].
-    <h3>Contract</h3>
-    <ul>
-     <li>Preconditions:
-      <ol>
-       <li>To properly parse the current token, the pointer MUST be just before its starting (leading whitespaces are ignored).</li>
-      </ol>
-     </li>
-     <li>Postconditions:
-      <ol>
-       <li id="moveNext_contract_post[0]">When this method terminates, the pointer IS at the last byte of the current token.</li>
-      </ol>
-     </li>
-     <li>Invariants:
-      <ol>
-       <li>The byte-level position of the pointer IS anytime (during token parsing) at the end of the current token (whereas the 'current token' represents the token-level position of the pointer).</li>
-      </ol>
-     </li>
-     <li>Side-effects:
-      <ol>
-       <li>See <a href="#moveNext_contract_post[0]">Postconditions</a>.</li>
-      </ol>
-     </li>
-    </ul>
+    Parse the next token.
+
     @return Whether a new token was found.
   */
   public boolean moveNext(
@@ -537,27 +515,10 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
                   itemIndex++
                   )
                 {
-                  // 1. Input code.
                   moveNext();
                   ByteArray inputCode = new ByteArray((byte[])token);
-                  // 2. Character...
                   moveNext();
-                  switch(tokenType)
-                  {
-                    case Hex: // ...code (hex).
-                      codes.put(inputCode,ConvertUtils.byteArrayToInt((byte[])token));
-                      break;
-                    case Integer: // ...code (plain).
-                      codes.put(inputCode,(Integer)token);
-                      break;
-                    case Name: // ...name.
-                      codes.put(inputCode,GlyphMapping.nameToCode((String)token));
-                      break;
-                    default:
-                      throw new RuntimeException(
-                        operator + " section syntax error: hex string, integer or name expected instead of " + tokenType
-                        );
-                  }
+                  codes.put(inputCode, parseUnicode());
                 }
               }
               else if(operator.equals(BeginBaseFontRangeOperator)
@@ -584,28 +545,25 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
                   moveNext();
                   switch(tokenType)
                   {
-                    case Hex:
-                    case Integer:
+                    case ArrayBegin:
                     {
                       byte[] inputCode = beginInputCode;
-                      int charCode;
-                      switch(tokenType)
+                      while(moveNext()
+                        && tokenType != TokenTypeEnum.ArrayEnd)
                       {
-                        case Hex:
-                          charCode = ConvertUtils.byteArrayToInt((byte[])token);
-                          break;
-                        case Integer:
-                          charCode = (Integer)token;
-                          break;
-                        default:
-                          throw new RuntimeException(
-                            operator + " section syntax error: hex string or integer expected instead of " + tokenType
-                            );
+                        codes.put(new ByteArray(inputCode), parseUnicode());
+                        OperationUtils.increment(inputCode);
                       }
+                      break;
+                    }
+                    default:
+                    {
+                      byte[] inputCode = beginInputCode;
+                      int charCode = parseUnicode();
                       int endCharCode = charCode + (ConvertUtils.byteArrayToInt(endInputCode) - ConvertUtils.byteArrayToInt(beginInputCode));
                       while(true)
                       {
-                        codes.put(new ByteArray(inputCode),charCode);
+                        codes.put(new ByteArray(inputCode), charCode);
                         if(charCode == endCharCode)
                           break;
 
@@ -614,21 +572,6 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
                       }
                       break;
                     }
-                    case ArrayBegin:
-                    {
-                      byte[] inputCode = beginInputCode;
-                      while(moveNext()
-                        && tokenType != TokenTypeEnum.ArrayEnd)
-                      {
-                        codes.put(new ByteArray(inputCode),GlyphMapping.nameToCode((String)token));
-                        OperationUtils.increment(inputCode);
-                      }
-                      break;
-                    }
-                    default:
-                      throw new RuntimeException(
-                        operator + " section syntax error: hex string, integer or name array expected instead of " + tokenType
-                        );
                   }
                 }
               }
@@ -684,7 +627,8 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
     try
     {
       do
-      {b = stream.readUnsignedByte();} while(isWhitespace(b)); // Keep goin' till there's a white-space character...
+      {b = stream.readUnsignedByte();}
+      while(isWhitespace(b)); // Keep goin' till there's a white-space character...
     }
     catch(EOFException e)
     {return false;}
@@ -693,6 +637,29 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
     return true;
   }
   // </public>
+
+  // <private>
+  /**
+    Converts the current token into its Unicode value.
+  */
+  private int parseUnicode(
+    )
+  {
+    switch(tokenType)
+    {
+      case Hex: // Character code in hexadecimal format.
+        return ConvertUtils.byteArrayToInt((byte[])token);
+      case Integer: // Character code in plain format.
+        return (Integer)token;
+      case Name: // Character name.
+        return GlyphMapping.nameToCode((String)token);
+      default:
+        throw new RuntimeException(
+          "Hex string, integer or name expected instead of " + tokenType
+          );
+    }
+  }
+  // </private>
   // </interface>
   // </dynamic>
   // </class>
