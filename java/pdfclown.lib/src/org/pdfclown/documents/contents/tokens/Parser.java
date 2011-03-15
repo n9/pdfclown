@@ -578,8 +578,13 @@ TODO:IMPL this parser evaluates a subset of the lexical domain of the token pars
           // Late recognition.
           if(((String)token).startsWith("D:")) // Date.
           {
-            tokenType = TokenTypeEnum.Date;
-            token = PdfDate.toDate((String)token);
+            try
+            {
+              token = PdfDate.toDate((String)token);
+              tokenType = TokenTypeEnum.Date;
+            }
+            catch (Exception e)
+            {/* NOOP: degrade to a common literal. */}
           }
           break;
         case Integer:

@@ -139,7 +139,7 @@ public final class Parser
 
   // <dynamic>
   // <fields>
-  private File file;
+  private final File file;
   private IInputStream stream;
   private Object token;
   private TokenTypeEnum tokenType;
@@ -594,8 +594,13 @@ public final class Parser
           // Late recognition.
           if(((String)token).startsWith(Keyword.DatePrefix)) // Date.
           {
-            tokenType = TokenTypeEnum.Date;
-            token = PdfDate.toDate((String)token);
+            try
+            {
+              token = PdfDate.toDate((String)token);
+              tokenType = TokenTypeEnum.Date;
+            }
+            catch (Exception e)
+            {/* NOOP: degrade to a common literal. */}
           }
           break;
         case Integer:

@@ -457,7 +457,15 @@ public final class Page
   @Override
   public Contents getContents(
     )
-  {return new Contents(getBaseDataObject().get(PdfName.Contents), getContainer(), this);}
+  {
+    PdfDirectObject contentsObject = getBaseDataObject().get(PdfName.Contents);
+    if(contentsObject == null)
+    {
+      getBaseDataObject().put(PdfName.Contents, contentsObject = getFile().register(new PdfStream()));
+      update();
+    }
+    return new Contents(contentsObject, getContainer(), this);
+  }
 
   @Override
   public Resources getResources(

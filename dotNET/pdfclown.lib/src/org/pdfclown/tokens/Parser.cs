@@ -532,8 +532,13 @@ namespace org.pdfclown.tokens
             // Late recognition.
             if(((string)token).StartsWith(Keyword.DatePrefix)) // Date.
             {
-              tokenType = TokenTypeEnum.Date;
-              token = PdfDate.ToDate((string)token);
+              try
+              {
+                token = PdfDate.ToDate((string)token);
+                tokenType = TokenTypeEnum.Date;
+              }
+              catch
+              {/* NOOP: degrade to a common literal. */}
             }
             break;
           case TokenTypeEnum.Integer:

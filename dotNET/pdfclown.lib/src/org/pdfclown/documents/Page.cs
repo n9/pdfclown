@@ -376,7 +376,15 @@ namespace org.pdfclown.documents
     public Contents Contents
     {
       get
-      {return new Contents(BaseDataObject[PdfName.Contents], Container, this);}
+      {
+        PdfDirectObject contentsObject = BaseDataObject[PdfName.Contents];
+        if(contentsObject == null)
+        {
+          BaseDataObject[PdfName.Contents] = (contentsObject = File.Register(new PdfStream()));
+          Update();
+        }
+        return new Contents(contentsObject, Container, this);
+      }
     }
 
     public void Render(
