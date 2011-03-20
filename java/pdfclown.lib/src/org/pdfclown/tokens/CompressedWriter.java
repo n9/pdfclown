@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -37,7 +37,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF file writer implementing compressed cross-reference stream [PDF:1.6:3.4.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/17/11
 */
 final class CompressedWriter
   extends Writer
@@ -61,7 +61,7 @@ final class CompressedWriter
     try
     {
       // 1. Original content (head, body and previous trailer).
-      Parser parser = file.getReader().getParser();
+      FileParser parser = file.getReader().getParser();
       stream.write(parser.getStream());
 
       // 2. Body update (modified indirect objects insertion).

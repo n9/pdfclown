@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,12 +36,13 @@ import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.util.parsers.PostScriptParser.TokenTypeEnum;
 
 /**
   PDF file reader.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/17/11
 */
 public final class Reader
   implements Closeable
@@ -50,9 +51,9 @@ public final class Reader
   // <classes>
   public static final class FileInfo
   {
-    private PdfDictionary trailer;
-    private Version version;
-    private SortedMap<Integer,XRefEntry> xrefEntries;
+    private final PdfDictionary trailer;
+    private final Version version;
+    private final SortedMap<Integer,XRefEntry> xrefEntries;
 
     FileInfo(
       Version version,
@@ -81,7 +82,7 @@ public final class Reader
 
   // <dynamic>
   // <fields>
-  private Parser parser;
+  private FileParser parser;
   // </fields>
 
   // <constructors>
@@ -92,7 +93,7 @@ public final class Reader
     IInputStream stream,
     File file
     )
-  {this.parser = new Parser(stream, file);}
+  {this.parser = new FileParser(stream, file);}
   // </constructors>
 
   // <interface>
@@ -102,7 +103,7 @@ public final class Reader
     )
   {return parser.hashCode();}
 
-  public Parser getParser(
+  public FileParser getParser(
     )
   {return parser;}
 

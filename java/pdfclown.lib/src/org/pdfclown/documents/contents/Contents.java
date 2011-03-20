@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,7 +30,7 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.IBuffer;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.objects.ContentObject;
-import org.pdfclown.documents.contents.tokens.Parser;
+import org.pdfclown.documents.contents.tokens.ContentParser;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
@@ -55,7 +55,7 @@ import java.util.ListIterator;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 03/17/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Contents
@@ -311,7 +311,7 @@ public final class Contents
   private void load(
     )
   {
-    final Parser parser = new Parser(getBaseDataObject());
+    final ContentParser parser = new ContentParser(getBaseDataObject());
     try
     {items = parser.parseContentObjects();}
     catch(Exception e)

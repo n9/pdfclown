@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -106,6 +106,10 @@ namespace org.pdfclown.tokens
       <summary>PDF null object.</summary>
     */
     public const string Null = "null";
+    /**
+      <summary>PDF indirect reference marker.</summary>
+    */
+    public static readonly string Reference = Symbol.CapitalR.ToString();
     /**
       <summary>PDF xref start offset.</summary>
     */

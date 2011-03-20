@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,7 +30,7 @@ import org.pdfclown.files.File;
 import org.pdfclown.tokens.Encoding;
 import org.pdfclown.tokens.Keyword;
 import org.pdfclown.tokens.ObjectStream;
-import org.pdfclown.tokens.Parser;
+import org.pdfclown.tokens.FileParser;
 import org.pdfclown.tokens.Symbol;
 import org.pdfclown.tokens.XRefEntry;
 import org.pdfclown.tokens.XRefEntry.UsageEnum;
@@ -39,7 +39,7 @@ import org.pdfclown.tokens.XRefEntry.UsageEnum;
   PDF indirect object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/17/11
 */
 public final class PdfIndirectObject
   extends PdfObject
@@ -250,7 +250,7 @@ public final class PdfIndirectObject
           // In-use entry (late-bound data object).
           case InUse:
           {
-            Parser parser = file.getReader().getParser();
+            FileParser parser = file.getReader().getParser();
             // Retrieve the associated data object among the original objects!
             parser.seek(xrefEntry.getOffset());
             // Get the indirect data object!

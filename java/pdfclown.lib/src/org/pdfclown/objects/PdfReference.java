@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -27,7 +27,7 @@ package org.pdfclown.objects;
 
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.files.File;
-import org.pdfclown.tokens.Parser;
+import org.pdfclown.tokens.FileParser;
 import org.pdfclown.tokens.Symbol;
 import org.pdfclown.util.NotImplementedException;
 
@@ -35,7 +35,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF indirect reference object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/17/11
 */
 public final class PdfReference
   extends PdfDirectObject
@@ -46,8 +46,8 @@ public final class PdfReference
   // <fields>
   private PdfIndirectObject indirectObject;
 
-  private int generationNumber;
-  private int objectNumber;
+  private final int generationNumber;
+  private final int objectNumber;
 
   private File file;
   // </fields>
@@ -71,7 +71,7 @@ public final class PdfReference
     (see File(IInputStream) constructor).</p>
   */
   public PdfReference(
-    Parser.Reference reference,
+    FileParser.Reference reference,
     File file
     )
   {

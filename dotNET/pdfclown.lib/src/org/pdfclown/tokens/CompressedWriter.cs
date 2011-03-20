@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -57,7 +57,7 @@ namespace org.pdfclown.tokens
       try
       {
         // 1. Original content (head, body and previous trailer).
-        Parser parser = file.Reader.Parser;
+        FileParser parser = file.Reader.Parser;
         stream.Write(parser.Stream);
 
         // 2. Body update (modified indirect objects insertion).

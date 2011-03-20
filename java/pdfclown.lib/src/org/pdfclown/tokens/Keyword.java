@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,7 +30,7 @@ package org.pdfclown.tokens;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 03/17/11
 */
 public final class Keyword
 {
@@ -110,6 +110,10 @@ public final class Keyword
     PDF null object.
   */
   public static final String Null = "null";
+  /**
+    PDF indirect reference marker.
+  */
+  public static final String Reference = "" + Symbol.CapitalR;
   /**
     PDF xref start offset.
   */

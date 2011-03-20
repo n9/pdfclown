@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,6 +28,7 @@ using org.pdfclown.documents;
 using org.pdfclown.files;
 using org.pdfclown.objects;
 using org.pdfclown.util.collections.generic;
+using org.pdfclown.util.parsers;
 
 using System;
 using System.Collections.Generic;
@@ -82,7 +83,7 @@ namespace org.pdfclown.tokens
 
     #region dynamic
     #region fields
-    private Parser parser;
+    private FileParser parser;
     #endregion
 
     #region constructors
@@ -90,7 +91,7 @@ namespace org.pdfclown.tokens
       IInputStream stream,
       files.File file
       )
-    {this.parser = new Parser(stream, file);}
+    {this.parser = new FileParser(stream, file);}
     #endregion
 
     #region interface
@@ -99,8 +100,11 @@ namespace org.pdfclown.tokens
       )
     {return parser.GetHashCode();}
 
-    public Parser Parser
-    {get{return parser;}}
+    public FileParser Parser
+    {
+      get
+      {return parser;}
+    }
 
     /**
       <summary>Retrieves the file information.</summary>
@@ -132,10 +136,10 @@ namespace org.pdfclown.tokens
               */
               // 1. First object number.
               parser.MoveNext();
-              if((parser.TokenType == TokenTypeEnum.Keyword)
+              if((parser.TokenType == PostScriptParser.TokenTypeEnum.Keyword)
                   && parser.Token.Equals(Keyword.Trailer)) // XRef-table section ended.
                 break;
-              else if(parser.TokenType != TokenTypeEnum.Integer)
+              else if(parser.TokenType != PostScriptParser.TokenTypeEnum.Integer)
                 throw new FileFormatException("Neither object number of the first object in this xref subsection nor end of xref section found.",parser.Position);
 
               // Get the object number of the first object in this xref-table subsection!
@@ -143,7 +147,7 @@ namespace org.pdfclown.tokens
 
               // 2. Last object number.
               parser.MoveNext();
-              if(parser.TokenType != TokenTypeEnum.Integer)
+              if(parser.TokenType != PostScriptParser.TokenTypeEnum.Integer)
                 throw new FileFormatException("Number of entries in this xref subsection not found.", parser.Position);
 
               // Get the object number of the last object in this xref-table subsection!

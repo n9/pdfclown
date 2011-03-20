@@ -151,7 +151,6 @@
     <Compile Include="src\org\pdfclown\documents\contents\objects\TranslateTextToNextLine.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\objects\XObject.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\tokens\namespace.cs" />
-    <Compile Include="src\org\pdfclown\documents\contents\tokens\Parser.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\xObjects\FormXObject.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\xObjects\ImageXObject.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\xObjects\namespace.cs" />
@@ -313,9 +312,7 @@
     <Compile Include="src\org\pdfclown\objects\Rectangle.cs" />
     <Compile Include="src\org\pdfclown\tokens\FileFormatException.cs" />
     <Compile Include="src\org\pdfclown\tokens\namespace.cs" />
-    <Compile Include="src\org\pdfclown\tokens\Parser.cs" />
     <Compile Include="src\org\pdfclown\tokens\Reader.cs" />
-    <Compile Include="src\org\pdfclown\tokens\TokenTypeEnum.cs" />
     <Compile Include="src\org\pdfclown\tokens\Writer.cs" />
     <Compile Include="src\org\pdfclown\tokens\XRefEntry.cs" />
     <Compile Include="src\org\pdfclown\tools\namespace.cs" />
@@ -394,6 +391,10 @@
     <Compile Include="src\org\pdfclown\documents\contents\objects\SetDeviceRGBFillColor.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\objects\SetDeviceRGBStrokeColor.cs" />
     <Compile Include="src\org\pdfclown\tools\Renderer.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\tokens\ContentParser.cs" />
+    <Compile Include="src\org\pdfclown\tokens\FileParser.cs" />
+    <Compile Include="src\org\pdfclown\util\parsers\PostScriptParser.cs" />
+    <Compile Include="src\org\pdfclown\tokens\BaseParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
@@ -478,5 +479,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\org\pdfclown\documents\functions\" />
+    <Folder Include="src\org\pdfclown\util\parsers\" />
   </ItemGroup>
 </Project>

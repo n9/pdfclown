@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF file writer implementing classic cross-reference table [PDF:1.6:3.4.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/17/11
 */
 final class PlainWriter
   extends Writer
@@ -77,7 +77,7 @@ final class PlainWriter
     )
   {
     // 1. Original content (head, body and previous trailer).
-    Parser parser = file.getReader().getParser();
+    FileParser parser = file.getReader().getParser();
     stream.write(parser.getStream());
 
     // 2. Body update (modified indirect objects insertion).
@@ -315,7 +315,7 @@ final class PlainWriter
   private void writeTrailer(
     long startxref,
     int xrefSize,
-    Parser parser
+    FileParser parser
     )
   {
     try

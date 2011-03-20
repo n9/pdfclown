@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -49,7 +49,7 @@ namespace org.pdfclown.documents.contents
   {
     #region dynamic
     #region fields
-    private List<ContentObject> items;
+    private IList<ContentObject> items;
 
     private IContentContext contentContext;
     #endregion
@@ -205,7 +205,7 @@ namespace org.pdfclown.documents.contents
     private void Load(
       )
     {
-      Parser parser = new Parser(BaseDataObject);
+      ContentParser parser = new ContentParser(BaseDataObject);
       try
       {items = parser.ParseContentObjects();}
       catch(Exception e)

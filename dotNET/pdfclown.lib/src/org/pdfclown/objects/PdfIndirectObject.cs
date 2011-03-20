@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -231,7 +231,7 @@ namespace org.pdfclown.objects
               // In-use entry (late-bound data object).
               case XRefEntry.UsageEnum.InUse:
               {
-                Parser parser = file.Reader.Parser;
+                FileParser parser = file.Reader.Parser;
                 // Retrieve the associated data object among the original objects!
                 parser.Seek(xrefEntry.Offset);
                 // Get the indirect data object!

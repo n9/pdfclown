@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -50,16 +50,16 @@ namespace org.pdfclown.tokens
       internal PdfDataObject dataObject;
       internal int offset;
 
-      private Parser parser;
+      private FileParser parser;
 
       private ObjectEntry(
-        Parser parser
+        FileParser parser
         )
       {this.parser = parser;}
 
       public ObjectEntry(
         int offset,
-        Parser parser
+        FileParser parser
         ) : this(parser)
       {
         this.dataObject = null;
@@ -68,7 +68,7 @@ namespace org.pdfclown.tokens
 
       public ObjectEntry(
         PdfDataObject dataObject,
-        Parser parser
+        FileParser parser
         ) : this(parser)
       {
         this.dataObject = dataObject;
@@ -104,7 +104,7 @@ namespace org.pdfclown.tokens
     */
     private IDictionary<int,ObjectEntry> entries;
     private File file;
-    private Parser parser;
+    private FileParser parser;
     #endregion
 
     #region constructors
@@ -273,7 +273,7 @@ namespace org.pdfclown.tokens
         if(entries == null)
         {
           entries = new Dictionary<int,ObjectEntry>();
-          parser = new Parser(Body, file);
+          parser = new FileParser(Body, file);
           int baseOffset = ((PdfInteger)Header[PdfName.First]).IntValue;
           for(
             int index = 0,

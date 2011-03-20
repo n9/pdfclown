@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -54,7 +54,7 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 03/17/11
 */
 public final class ObjectStream
   extends PdfStream
@@ -143,7 +143,7 @@ public final class ObjectStream
   */
   private Map<Integer,ObjectEntry> entries;
   private File file;
-  private Parser parser;
+  private FileParser parser;
   // </fields>
 
   // <constructors>
@@ -359,7 +359,7 @@ public final class ObjectStream
     if(entries == null)
     {
       entries = new HashMap<Integer,ObjectEntry>();
-      parser = new Parser(getBody(), file);
+      parser = new FileParser(getBody(), file);
       int baseOffset = ((PdfInteger)getHeader().get(PdfName.First)).getValue();
       for(
         int index = 0,

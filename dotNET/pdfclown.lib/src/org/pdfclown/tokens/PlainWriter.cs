@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -66,7 +66,7 @@ namespace org.pdfclown.tokens
       )
     {
       // 1. Original content (head, body and previous trailer).
-      Parser parser = file.Reader.Parser;
+      FileParser parser = file.Reader.Parser;
       stream.Write(parser.Stream);
 
       // 2. Body update (modified indirect objects insertion).
@@ -299,7 +299,7 @@ namespace org.pdfclown.tokens
     private void WriteTrailer(
       long startxref,
       int xrefSize,
-      Parser parser
+      FileParser parser
       )
     {
       try
