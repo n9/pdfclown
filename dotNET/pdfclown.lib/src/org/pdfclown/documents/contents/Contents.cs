@@ -49,7 +49,10 @@ namespace org.pdfclown.documents.contents
       IList<ContentObject>
   {
     #region types
-    public class ContentStream
+    /**
+      <summary>Content stream wrapper.</summary>
+    */
+    private class ContentStream
       : bytes::IInputStream
     {
       private readonly PdfDataObject baseDataObject;
