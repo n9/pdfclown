@@ -25,9 +25,18 @@
 
 package org.pdfclown.documents.contents;
 
+import java.io.EOFException;
+import java.io.IOException;
+import java.nio.ByteOrder;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.IBuffer;
+import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.objects.ContentObject;
 import org.pdfclown.documents.contents.tokens.ContentParser;
@@ -41,21 +50,16 @@ import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.NotImplementedException;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-
 /**
   <b>Content stream</b> [PDF:1.6:3.7.1].
   <p>During its loading, this content stream is parsed and its instructions
   are exposed as a list; in case of modifications, it's user responsability
   to call the {@link #flush()} method in order to serialize back the instructions
-  into this content stream.</p> 
+  into this content stream.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 03/17/11
+  @version 0.1.1, 03/21/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Contents
@@ -63,11 +67,299 @@ public final class Contents
   implements List<ContentObject>
 {
   // <class>
+  // <classes>
+  /**
+    Content stream wrapper.
+  */
+  private static class ContentStream
+    implements IInputStream
+  {
+    private final PdfDataObject baseDataObject;
+
+    private long basePosition;
+    private IInputStream stream;
+    private int streamIndex = -1;
+
+    public ContentStream(
+      PdfDataObject baseDataObject
+      )
+    {
+      this.baseDataObject = baseDataObject;
+      moveNextStream();
+    }
+
+    @Override
+    public long getLength(
+      )
+    {
+      if(baseDataObject instanceof PdfStream) // Single stream.
+        return ((PdfStream)baseDataObject).getBody().getLength();
+      else // Array of streams.
+      {
+        int length = 0;
+        for(PdfDirectObject stream : (PdfArray)baseDataObject)
+        {length += ((PdfStream)((PdfReference)stream).getDataObject()).getBody().getLength();}
+        return length;
+      }
+    }
+
+    @Override
+    public void close(
+      ) throws IOException
+    {/* NOOP */}
+
+    @Override
+    public ByteOrder getByteOrder(
+      )
+    {return stream.getByteOrder();}
+
+    @Override
+    public long getPosition(
+      )
+    {return basePosition + stream.getPosition();}
+
+    @Override
+    public void read(
+      byte[] data
+      ) throws EOFException
+    {throw new NotImplementedException();}
+
+    @Override
+    public void read(
+      byte[] data,
+      int offset,
+      int length
+      ) throws EOFException
+    {throw new NotImplementedException();}
+
+    @Override
+    public byte readByte(
+      ) throws EOFException
+    {
+      while(true)
+      {
+        try
+        {return stream.readByte();}
+        catch(Exception e)
+        {
+          if(stream == null || e instanceof EOFException)
+          {
+            if(!moveNextStream())
+              throw new EOFException();
+          }
+          else
+            throw new RuntimeException(e);
+        }
+      }
+    }
+
+    @Override
+    public int readInt(
+      ) throws EOFException
+    {throw new NotImplementedException();}
+
+    @Override
+    public int readInt(
+      int length
+      ) throws EOFException
+    {throw new NotImplementedException();}
+
+    @Override
+    public String readLine(
+      ) throws EOFException
+    {throw new NotImplementedException();}
+
+    @Override
+    public short readShort(
+      ) throws EOFException
+    {throw new NotImplementedException();}
+
+    @Override
+    public String readString(
+      int length
+      ) throws EOFException
+    {throw new NotImplementedException();}
+
+    @Override
+    public int readUnsignedByte(
+      ) throws EOFException
+    {
+      while(true)
+      {
+        try
+        {return stream.readUnsignedByte();}
+        catch(Exception e)
+        {
+          if(stream == null || e instanceof EOFException)
+          {
+            if(!moveNextStream())
+              throw new EOFException();
+          }
+          else
+            throw new RuntimeException(e);
+        }
+      }
+    }
+
+    @Override
+    public int readUnsignedShort(
+      ) throws EOFException
+    {throw new NotImplementedException();}
+
+    @Override
+    public void seek(
+      long position
+      )
+    {
+      while(true)
+      {
+        if(position < basePosition) //Before current stream.
+        {
+          if(!movePreviousStream())
+            throw new IllegalArgumentException("The 'position' argument is lower than acceptable.");
+        }
+        else if(position > basePosition + stream.getLength()) // After current stream.
+        {
+          if(!moveNextStream())
+            throw new IllegalArgumentException("The 'position' argument is higher than acceptable.");
+        }
+        else // At current stream.
+        {
+          stream.seek(position - basePosition);
+          break;
+        }
+      }
+    }
+
+    @Override
+    public void setByteOrder(
+      ByteOrder value
+      )
+    {throw new UnsupportedOperationException();}
+
+    @Override
+    public void setPosition(
+      long value
+      )
+    {seek(value);}
+
+    @Override
+    public void skip(
+      long offset
+      )
+    {
+      while(true)
+      {
+        long position = stream.getPosition() + offset;
+        if(position < 0) //Before current stream.
+        {
+          offset += stream.getPosition();
+          if(!movePreviousStream())
+            throw new IllegalArgumentException("The 'offset' argument is lower than acceptable.");
+
+          stream.setPosition(stream.getLength());
+        }
+        else if(position > stream.getLength()) // After current stream.
+        {
+          offset -= (stream.getLength() - stream.getPosition());
+          if(!moveNextStream())
+            throw new IllegalArgumentException("The 'offset' argument is higher than acceptable.");
+        }
+        else // At current stream.
+        {
+          stream.seek(position);
+          break;
+        }
+      }
+    }
+
+    @Override
+    public byte[] toByteArray(
+      )
+    {throw new NotImplementedException();}
+
+    private boolean moveNextStream(
+      )
+    {
+      // Is the content stream just a single stream?
+      /*
+        NOTE: A content stream may be made up of multiple streams [PDF:1.6:3.6.2].
+      */
+      if(baseDataObject instanceof PdfStream) // Single stream.
+      {
+        if(streamIndex < 1)
+        {
+          streamIndex++;
+
+          basePosition = (streamIndex == 0
+            ? 0
+            : basePosition + stream.getLength());
+
+          stream = (streamIndex < 1
+            ? ((PdfStream)baseDataObject).getBody()
+            : null);
+        }
+      }
+      else // Multiple streams.
+      {
+        PdfArray streams = (PdfArray)baseDataObject;
+        if(streamIndex < streams.size())
+        {
+          streamIndex++;
+
+          basePosition = (streamIndex == 0
+            ? 0
+            : basePosition + stream.getLength());
+
+          stream = (streamIndex < streams.size()
+            ? ((PdfStream)streams.resolve(streamIndex)).getBody()
+            : null);
+        }
+      }
+      if(stream == null)
+        return false;
+
+      stream.setPosition(0);
+      return true;
+    }
+
+    private boolean movePreviousStream(
+      )
+    {
+      if(streamIndex == 0)
+      {
+        streamIndex--;
+        stream = null;
+      }
+      if(streamIndex == -1)
+        return false;
+
+      streamIndex--;
+      /* NOTE: A content stream may be made up of multiple streams [PDF:1.6:3.6.2]. */
+      // Is the content stream just a single stream?
+      if(baseDataObject instanceof PdfStream) // Single stream.
+      {
+        stream = ((PdfStream)baseDataObject).getBody();
+        basePosition = 0;
+      }
+      else // Array of streams.
+      {
+        PdfArray streams = (PdfArray)baseDataObject;
+
+        stream = ((PdfStream)((PdfReference)streams.get(streamIndex)).getDataObject()).getBody();
+        basePosition -= stream.getLength();
+      }
+
+      return true;
+    }
+  }
+  // </classes>
+
   // <dynamic>
   // <fields>
   private List<ContentObject> items;
 
-  private IContentContext contentContext;
+  private final IContentContext contentContext;
   // </fields>
 
   // <constructors>
@@ -311,7 +603,7 @@ public final class Contents
   private void load(
     )
   {
-    final ContentParser parser = new ContentParser(getBaseDataObject());
+    final ContentParser parser = new ContentParser(new ContentStream(getBaseDataObject()));
     try
     {items = parser.parseContentObjects();}
     catch(Exception e)
