@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,7 +40,7 @@ import org.pdfclown.tokens.Symbol;
   PDF stream object [PDF:1.6:3.2.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 public class PdfStream
   extends PdfDataObject
@@ -236,7 +236,7 @@ public class PdfStream
     if(unencodedBody)
     {
       // Restore actual header entries!
-      ((PdfInteger)header.get(PdfName.Length)).setValue((int)body.getLength());
+      header.put(PdfName.Length, new PdfInteger((int)body.getLength()));
       header.put(PdfName.Filter, null);
     }
 

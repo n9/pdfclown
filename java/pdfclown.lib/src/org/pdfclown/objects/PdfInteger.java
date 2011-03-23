@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,7 +31,7 @@ import org.pdfclown.bytes.IOutputStream;
   PDF integer number object [PDF:1.6:3.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 public final class PdfInteger
   extends PdfNumber<Integer>
@@ -53,17 +53,19 @@ public final class PdfInteger
   {return super.getValue().intValue();}
 
   @Override
-  public void setValue(
-    Object value
-    )
-  {super.setValue(((Number)value).intValue());}
-
-  @Override
   public void writeTo(
     IOutputStream stream
     )
   {stream.write(Integer.toString(getRawValue()));}
   // </public>
+
+  // <protected>
+  @Override
+  protected void setValue(
+    Object value
+    )
+  {super.setValue(((Number)value).intValue());}
+  // </protected>
   // </interface>
   // </dynamic>
   // </class>

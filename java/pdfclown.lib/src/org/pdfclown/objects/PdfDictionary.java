@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 public final class PdfDictionary
   extends PdfDirectObject
@@ -264,13 +264,21 @@ public final class PdfDictionary
     PdfName key,
     PdfDirectObject value
     )
-  {return entries.put(key,value);}
+  {
+    if(value == null)
+      return entries.remove(key);
+    else
+      return entries.put(key,value);
+  }
 
   @Override
   public void putAll(
     Map<? extends PdfName,? extends PdfDirectObject> entries
     )
-  {this.entries.putAll(entries);}
+  {
+    for(Entry<? extends PdfName,? extends PdfDirectObject> entry : entries.entrySet())
+    {put(entry.getKey(), entry.getValue());}
+  }
 
   @Override
   public PdfDirectObject remove(

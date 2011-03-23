@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -51,7 +51,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF12)
 public final class AppearanceCharacteristics
@@ -426,11 +426,17 @@ public final class AppearanceCharacteristics
       float objectValue;
       switch(value)
       {
-        case Left: objectValue = 0; break;
-        case Right: objectValue = 1; break;
-        default: objectValue = 0.5f; break;
+        case Left:
+          objectValue = 0;
+          break;
+        case Right:
+          objectValue = 1;
+          break;
+        default:
+          objectValue = 0.5f;
+          break;
       }
-      ((PdfNumber<?>)alignmentObject.get(0)).setValue(objectValue);
+      alignmentObject.set(0, new PdfReal(objectValue));
     }
 
     /**
@@ -461,11 +467,17 @@ public final class AppearanceCharacteristics
       float objectValue;
       switch(value)
       {
-        case Bottom: objectValue = 0; break;
-        case Top: objectValue = 1; break;
-        default: objectValue = 0.5f; break;
+        case Bottom:
+          objectValue = 0;
+          break;
+        case Top:
+          objectValue = 1;
+          break;
+        default:
+          objectValue = 0.5f;
+          break;
       }
-      ((PdfNumber<?>)alignmentObject.get(1)).setValue(objectValue);
+      alignmentObject.set(1, new PdfReal(objectValue));
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -110,8 +110,7 @@ namespace org.pdfclown.documents.contents.objects
       set
       {
         EnsureSpaceOperation();
-
-        ((IPdfNumber)operands[1]).Value = value;
+        operands[1] = new PdfReal(value.Value);
       }
     }
 
@@ -125,9 +124,9 @@ namespace org.pdfclown.documents.contents.objects
       }
       set
       {
-        ((PdfString)operands[
+        operands[
           operator_.Equals(SimpleOperatorKeyword) ? 0 : 2
-          ]).RawValue = value;
+          ] = new PdfString(value);
       }
     }
 
@@ -146,8 +145,7 @@ namespace org.pdfclown.documents.contents.objects
       set
       {
         EnsureSpaceOperation();
-
-        ((IPdfNumber)operands[0]).Value = value;
+        operands[0] = new PdfReal(value.Value);
       }
     }
     #endregion

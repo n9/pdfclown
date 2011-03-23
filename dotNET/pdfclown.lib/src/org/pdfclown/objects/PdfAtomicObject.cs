@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -27,6 +27,7 @@ using org.pdfclown.bytes;
 using org.pdfclown.files;
 
 using System;
+using System.Reflection;
 
 namespace org.pdfclown.objects
 {
@@ -37,6 +38,42 @@ namespace org.pdfclown.objects
     : PdfDirectObject,
       IPdfAtomicObject<TValue>
   {
+    #region static
+    #region interface
+    #region public
+    /**
+      <summary>Gets the value corresponding to the given object.</summary>
+      <param name="obj">Object to extract the value from.</param>
+    */
+    public static Object GetValue(
+      PdfObject obj
+      )
+    {return GetValue(obj, null);}
+
+    /**
+      <summary>Gets the value corresponding to the given object.</summary>
+      <param name="obj">Object to extract the value from.</param>
+      <param name="defaultValue">Value returned in case the object's one is undefined.</param>
+    */
+    public static object GetValue(
+      PdfObject obj,
+      object defaultValue
+      )
+    {
+      object value = null;
+      obj = File.Resolve(obj);
+      if(obj != null)
+      {
+        PropertyInfo valueProperty = obj.GetType().GetProperty("Value");
+        if(valueProperty != null)
+        {value = valueProperty.GetGetMethod().Invoke(obj, null);}
+      }
+      return (value != null ? value : defaultValue);
+    }
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region fields
     private TValue value;
@@ -72,7 +109,7 @@ namespace org.pdfclown.objects
     {
       get
       {return value;}
-      set
+      protected set
       {this.value = value;}
     }
 
@@ -84,7 +121,7 @@ namespace org.pdfclown.objects
     {
       get
       {return value;}
-      set
+      protected set
       {this.value = (TValue)value;}
     }
     #endregion

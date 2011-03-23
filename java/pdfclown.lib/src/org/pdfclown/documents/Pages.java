@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,7 +42,6 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.util.NotImplementedException;
@@ -51,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
   Document pages collection [PDF:1.6:3.6.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Pages
@@ -309,29 +308,20 @@ public final class Pages
     PdfArray kidsData = (PdfArray)File.resolve(kids);
     // Remove the page!
     kidsData.remove(pageObj.getBaseObject());
-    boolean updateParent = !File.update(kids); // Try to update the page collection.
+    File.update(kids);
+
     // Unbind the page from its parent!
     pageData.put(PdfName.Parent,null);
     pageObj.update();
+
     // Decrementing the pages counters...
     do
     {
       // Get the page collection counter!
-      PdfDirectObject count = parentData.get(PdfName.Count);
-      PdfNumber<?> countData = (PdfNumber<?>)File.resolve(count);
+      PdfInteger countObject = (PdfInteger)parentData.get(PdfName.Count);
       // Decrement the counter at the current level!
-      countData.setValue(countData.getNumberValue()-1);
-      updateParent |= !File.update(count); // Try to update the counter.
-      // Is the parent tree node to be updated?
-      /*
-        NOTE: It avoids to update the parent tree node if its modified fields are all
-        indirect objects which perform independent updates.
-      */
-      if(updateParent)
-      {
-        File.update(parent);
-        updateParent = false; // Reset.
-      }
+      parentData.put(PdfName.Count, new PdfInteger(countObject.getValue()-1));
+      File.update(parent);
 
       // Iterate upward!
       parent = parentData.get(PdfName.Parent);
@@ -397,7 +387,7 @@ public final class Pages
       /**
         Collection size.
       */
-      private int size = size();
+      private final int size = size();
 
       /**
         Current level index.
@@ -406,7 +396,7 @@ public final class Pages
       /**
         Stacked level indexes.
       */
-      private Stack<Integer> levelIndexes = new Stack<Integer>();
+      private final Stack<Integer> levelIndexes = new Stack<Integer>();
       /**
         Current parent tree node.
       */
@@ -573,27 +563,16 @@ public final class Pages
       page.getBaseDataObject().put(PdfName.Parent,parent);
       page.update();
     }
-    boolean updateParent = !File.update(kids); // Try to update the page collection.
+    File.update(kids);
 
     // Incrementing the pages counters...
     do
     {
       // Get the page collection counter!
-      PdfDirectObject count = parentData.get(PdfName.Count);
-      PdfInteger countData = (PdfInteger)File.resolve(count);
+      PdfInteger countObject = (PdfInteger)parentData.get(PdfName.Count);
       // Increment the counter at the current level!
-      countData.setValue(countData.getValue()+pages.size());
-      updateParent |= !File.update(count); // Try to update the page counter.
-      // Is the parent tree node to be updated?
-      /*
-        NOTE: It avoids to update the parent tree node if its modified fields are all
-        indirect objects which perform independent updates.
-      */
-      if(updateParent)
-      {
-        File.update(parent);
-        updateParent = false; // Reset.
-      }
+      parentData.put(PdfName.Count, new PdfInteger(countObject.getValue()+pages.size()));
+      File.update(parent);
 
       // Iterate upward!
       parent = parentData.get(PdfName.Parent);

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Field
@@ -462,25 +462,7 @@ public abstract class Field
   public void setFlags(
     EnumSet<FlagsEnum> value
     )
-  {
-    /*
-      NOTE: As flags may be inherited from a parent field dictionary,
-      we MUST ensure that the change will affect just this one;
-      so, if such flags are implicit (inherited), they MUST be cloned
-      and explicitly assigned to this field in order to apply changes.
-    */
-    PdfDictionary baseDataObject = getBaseDataObject();
-    PdfInteger entry = (PdfInteger)baseDataObject.get(PdfName.Ff);
-    if(entry == null) // Implicit flags.
-    {
-      // Clone the inherited attribute in order to restrict its change to this field's scope only!
-      entry = (PdfInteger)getInheritableAttribute(PdfName.Ff).clone(getFile());
-      // Associate the cloned attribute to this field's dictionary!
-      baseDataObject.put(PdfName.Ff,entry);
-    }
-
-    entry.setRawValue(FlagsEnum.toInt(value));
-  }
+  {getBaseDataObject().put(PdfName.Ff, new PdfInteger(FlagsEnum.toInt(value)));}
 
   /**
     @see #getName()

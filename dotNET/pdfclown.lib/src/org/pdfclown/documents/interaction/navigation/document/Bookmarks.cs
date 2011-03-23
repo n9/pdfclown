@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -139,8 +139,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
         BaseDataObject[PdfName.Last]
           = BaseDataObject[PdfName.First]
           = bookmark.BaseObject;
-
-        countObject.Value = ((int)countObject.Value)+1;
+        BaseDataObject[PdfName.Count] = new PdfInteger(countObject.IntValue+1);
       }
       else // Non-first bookmark.
       {
@@ -154,7 +153,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
           NOTE: The Count entry is a relative number (whose sign represents
           the node open state).
         */
-        countObject.Value = (int)countObject.Value + Math.Sign((int)countObject.Value);
+        BaseDataObject[PdfName.Count] = new PdfInteger(countObject.IntValue + Math.Sign(countObject.IntValue));
       }
     }
 

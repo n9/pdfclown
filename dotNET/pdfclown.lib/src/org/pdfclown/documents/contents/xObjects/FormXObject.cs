@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -133,8 +133,8 @@ namespace org.pdfclown.documents.contents.xObjects
       {
         PdfDirectObject box = BaseDataObject.Header[PdfName.BBox];
         PdfArray boxObject = (PdfArray)File.Resolve(box);
-        ((IPdfNumber)boxObject[2]).RawValue = value.Width;
-        ((IPdfNumber)boxObject[3]).RawValue = value.Height;
+        boxObject[2] = new PdfReal(value.Width);
+        boxObject[3] = new PdfReal(value.Height);
 
         File.Update(box);
       }

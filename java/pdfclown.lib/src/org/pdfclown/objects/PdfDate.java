@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -34,7 +34,7 @@ import org.pdfclown.tokens.Encoding;
   PDF date object [PDF:1.6:3.8.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 public final class PdfDate
   extends PdfString
@@ -52,6 +52,14 @@ public final class PdfDate
 
   // <interface>
   // <public>
+  /**
+    Gets the object equivalent to the given value.
+  */
+  public static PdfDate get(
+    Date value
+    )
+  {return value == null ? null : new PdfDate(value);}
+
   /**
     Converts a PDF-formatted date value to a date value.
   */
@@ -110,9 +118,11 @@ public final class PdfDate
   public Date getValue(
     )
   {return toDate(Encoding.decode(getRawValue()));}
+  // </public>
 
+  // <protected>
   @Override
-  public void setValue(
+  protected void setValue(
     Object value
     )
   {
@@ -127,7 +137,7 @@ public final class PdfDate
     }
     setRawValue(buffer);
   }
-  // </public>
+  // </protected>
   // </interface>
   // </dynamic>
   // </class>

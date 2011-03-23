@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,7 @@ import org.pdfclown.tokens.Keyword;
   PDF name object [PDF:1.6:3.2.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 public final class PdfName
   extends PdfAtomicObject<String>
@@ -481,40 +481,6 @@ public final class PdfName
   }
 
   @Override
-  public void setValue(
-    Object value
-    )
-  {
-    /*
-      NOTE: Before being accepted, any character sequence identifying a name MUST be normalized
-      escaping reserved characters.
-    */
-    StringBuilder buffer = new StringBuilder();
-    {
-      String stringValue = (String)value;
-      int index = 0;
-      Matcher unescapedMatcher = UnescapedPattern.matcher(stringValue);
-      while(unescapedMatcher.find())
-      {
-        int start = unescapedMatcher.start();
-        if(start > index)
-        {buffer.append(stringValue.substring(index,start));}
-
-        buffer.append(
-          '#' + Integer.toHexString(
-            unescapedMatcher.group(0).charAt(0)
-            )
-          );
-
-        index = unescapedMatcher.end();
-      }
-      if(index < stringValue.length())
-      {buffer.append(stringValue.substring(index));}
-    }
-    setRawValue(buffer.toString());
-  }
-
-  @Override
   public String toString(
     )
   {
@@ -552,6 +518,42 @@ public final class PdfName
     )
   {stream.write(NamePrefixChunk); stream.write(getRawValue());}
   // </public>
+
+  // <protected>
+  @Override
+  protected void setValue(
+    Object value
+    )
+  {
+    /*
+      NOTE: Before being accepted, any character sequence identifying a name MUST be normalized
+      escaping reserved characters.
+    */
+    StringBuilder buffer = new StringBuilder();
+    {
+      String stringValue = (String)value;
+      int index = 0;
+      Matcher unescapedMatcher = UnescapedPattern.matcher(stringValue);
+      while(unescapedMatcher.find())
+      {
+        int start = unescapedMatcher.start();
+        if(start > index)
+        {buffer.append(stringValue.substring(index,start));}
+
+        buffer.append(
+          '#' + Integer.toHexString(
+            unescapedMatcher.group(0).charAt(0)
+            )
+          );
+
+        index = unescapedMatcher.end();
+      }
+      if(index < stringValue.length())
+      {buffer.append(stringValue.substring(index));}
+    }
+    setRawValue(buffer.toString());
+  }
+  // </protected>
   // </interface>
   // </dynamic>
   // </class>

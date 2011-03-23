@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -68,7 +68,7 @@ namespace org.pdfclown.documents.contents.objects
       get
       {return ((IPdfNumber)operands[0]).RawValue;}
       set
-      {((IPdfNumber)operands[0]).RawValue = value;}
+      {operands[0] = new PdfReal(value);}
     }
     #endregion
     #endregion

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,11 +35,26 @@ import org.pdfclown.tokens.CharsetName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 public final class PdfTextString
   extends PdfString
 {
+  // <class>
+  // <static>
+  // <interface>
+  // <public>
+  /**
+    Gets the object equivalent to the given value.
+  */
+  public static PdfTextString get(
+    String value
+    )
+  {return value == null ? null : new PdfTextString(value);}
+  // </public>
+  // </interface>
+  // </static>
+
   /*
     NOTE: Text strings are string objects encoded in either
     PDFDocEncoding (superset of the ISO Latin 1 encoding [PDF:1.6:D])
@@ -105,9 +120,11 @@ public final class PdfTextString
     catch(Exception e)
     {throw new RuntimeException(e); /* (should NEVER happen). */}
   }
+  // </public>
 
+  // <protected>
   @Override
-  public void setRawValue(
+  protected void setRawValue(
     byte[] value
     )
   {
@@ -121,7 +138,7 @@ public final class PdfTextString
   }
 
   @Override
-  public void setValue(
+  protected void setValue(
     Object value
     )
   {
@@ -148,7 +165,7 @@ public final class PdfTextString
         break;
     }
   }
-  // </public>
+  // </protected>
   // </interface>
   // </dynamic>
   // </class>

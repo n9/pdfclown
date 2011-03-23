@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -263,7 +263,7 @@ namespace org.pdfclown.documents.interaction.annotations
             case AlignmentXEnum.Right: objectValue = 1; break;
             default: objectValue = 0.5f; break;
           }
-          ((IPdfNumber)alignmentObject[0]).RawValue = objectValue;
+          alignmentObject[0] = new PdfReal(objectValue);
         }
       }
 
@@ -313,7 +313,7 @@ namespace org.pdfclown.documents.interaction.annotations
             case AlignmentYEnum.Top: objectValue = 1; break;
             default: objectValue = 0.5f; break;
           }
-          ((IPdfNumber)alignmentObject[1]).RawValue = objectValue;
+          alignmentObject[1] = new PdfReal(objectValue);
         }
       }
 

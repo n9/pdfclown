@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,7 +45,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF10)
 public final class DrawCurve
@@ -146,7 +146,8 @@ public final class DrawCurve
 
     @param point Final endpoint.
     @param control Explicit control point.
-    @param operator Operator (either <code>InitialOperator</code> or <code>FinalOperator</code>). It defines how to interpret the <code>control</code> parameter.
+    @param operator Operator (either <code>InitialOperator</code> or <code>FinalOperator</code>).
+      It defines how to interpret the <code>control</code> parameter.
   */
   public DrawCurve(
     Point2D point,
@@ -264,8 +265,8 @@ public final class DrawCurve
     }
     else
     {
-      ((PdfNumber<?>)operands.get(0)).setValue(value.getX());
-      ((PdfNumber<?>)operands.get(1)).setValue(value.getY());
+      operands.set(0, new PdfReal(value.getX()));
+      operands.set(1, new PdfReal(value.getY()));
     }
   }
 
@@ -278,13 +279,13 @@ public final class DrawCurve
   {
     if(operator.equals(FinalOperator))
     {
-      ((PdfNumber<?>)operands.get(0)).setValue(value.getX());
-      ((PdfNumber<?>)operands.get(1)).setValue(value.getY());
+      operands.set(0, new PdfReal(value.getX()));
+      operands.set(1, new PdfReal(value.getY()));
     }
     else
     {
-      ((PdfNumber<?>)operands.get(2)).setValue(value.getX());
-      ((PdfNumber<?>)operands.get(3)).setValue(value.getY());
+      operands.set(2, new PdfReal(value.getX()));
+      operands.set(3, new PdfReal(value.getY()));
     }
   }
 
@@ -297,13 +298,13 @@ public final class DrawCurve
   {
     if(operator.equals(FullOperator))
     {
-      ((PdfNumber<?>)operands.get(4)).setValue(value.getX());
-      ((PdfNumber<?>)operands.get(5)).setValue(value.getY());
+      operands.set(4, new PdfReal(value.getX()));
+      operands.set(5, new PdfReal(value.getY()));
     }
     else
     {
-      ((PdfNumber<?>)operands.get(2)).setValue(value.getX());
-      ((PdfNumber<?>)operands.get(3)).setValue(value.getY());
+      operands.set(2, new PdfReal(value.getX()));
+      operands.set(3, new PdfReal(value.getY()));
     }
   }
   // </public>

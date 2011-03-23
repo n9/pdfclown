@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -99,8 +99,8 @@ namespace org.pdfclown.documents.contents.objects
       }
       set
       {
-        ((IPdfNumber)operands[0]).Value = value.X;
-        ((IPdfNumber)operands[1]).Value = value.Y;
+        operands[0] = new PdfReal(value.X);
+        operands[1] = new PdfReal(value.Y);
       }
     }
 

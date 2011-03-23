@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,7 +28,6 @@ package org.pdfclown.documents.interaction.viewer;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfAtomicObject;
 import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDictionary;
@@ -42,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
   Viewer preferences [PDF:1.6:8.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF12)
 public final class ViewerPreferences
@@ -150,113 +149,77 @@ public final class ViewerPreferences
   public DirectionEnum getDirection(
     )
   {
-    /*
-      NOTE: 'Direction' entry may be undefined.
-    */
     PdfName directionObject = (PdfName)getBaseDataObject().get(PdfName.Direction);
-    if(directionObject == null)
-      return DirectionEnum.LeftToRight;
-
-    return DirectionEnum.get(directionObject);
+    return directionObject != null ? DirectionEnum.get(directionObject) : DirectionEnum.LeftToRight;
   }
 
   public boolean isCenterWindow(
     )
-  {return this.<Boolean,PdfBoolean>getEntry(PdfName.CenterWindow);}
+  {return (Boolean)get(PdfName.CenterWindow, false);}
 
   public boolean isDisplayDocTitle(
     )
-  {return this.<Boolean,PdfBoolean>getEntry(PdfName.DisplayDocTitle);}
+  {return (Boolean)get(PdfName.DisplayDocTitle, false);}
 
   public boolean isFitWindow(
     )
-  {return this.<Boolean,PdfBoolean>getEntry(PdfName.FitWindow);}
+  {return (Boolean)get(PdfName.FitWindow, false);}
 
   public boolean isHideMenubar(
     )
-  {return this.<Boolean,PdfBoolean>getEntry(PdfName.HideMenubar);}
+  {return (Boolean)get(PdfName.HideMenubar, false);}
 
   public boolean isHideToolbar(
     )
-  {return this.<Boolean,PdfBoolean>getEntry(PdfName.HideToolbar);}
+  {return (Boolean)get(PdfName.HideToolbar, false);}
 
   public boolean isHideWindowUI(
     )
-  {return this.<Boolean,PdfBoolean>getEntry(PdfName.HideWindowUI);}
+  {return (Boolean)get(PdfName.HideWindowUI, false);}
 
   public void setCenterWindow(
     boolean value
     )
-  {this.<Boolean,PdfBoolean>setEntry(PdfName.CenterWindow,value,PdfBoolean.class);}
+  {getBaseDataObject().put(PdfName.CenterWindow, PdfBoolean.get(value));}
 
   public void setDirection(
     DirectionEnum value
     )
-  {getBaseDataObject().put(PdfName.Direction,value.getCode());}
+  {getBaseDataObject().put(PdfName.Direction, value == null ? null : value.getCode());}
 
   public void setDisplayDocTitle(
     boolean value
     )
-  {this.<Boolean,PdfBoolean>setEntry(PdfName.DisplayDocTitle,value,PdfBoolean.class);}
+  {getBaseDataObject().put(PdfName.DisplayDocTitle, PdfBoolean.get(value));}
 
   public void setFitWindow(
     boolean value
     )
-  {this.<Boolean,PdfBoolean>setEntry(PdfName.FitWindow,value,PdfBoolean.class);}
+  {getBaseDataObject().put(PdfName.FitWindow, PdfBoolean.get(value));}
 
   public void setHideMenubar(
     boolean value
     )
-  {this.<Boolean,PdfBoolean>setEntry(PdfName.HideMenubar,value,PdfBoolean.class);}
+  {getBaseDataObject().put(PdfName.HideMenubar, PdfBoolean.get(value));}
 
   public void setHideToolbar(
     boolean value
     )
-  {this.<Boolean,PdfBoolean>setEntry(PdfName.HideToolbar,value,PdfBoolean.class);}
+  {getBaseDataObject().put(PdfName.HideToolbar, PdfBoolean.get(value));}
 
   public void setHideWindowUI(
     boolean value
     )
-  {this.<Boolean,PdfBoolean>setEntry(PdfName.HideWindowUI,value,PdfBoolean.class);}
+  {getBaseDataObject().put(PdfName.HideWindowUI, PdfBoolean.get(value));}
   // </public>
 
-  // <protected>
-  @SuppressWarnings("unchecked")
-  protected <T,TPdf extends PdfAtomicObject<T>> T getEntry(
-    PdfName key
-    )
-  {
-    TPdf entry = (TPdf)File.resolve(getBaseDataObject().get(key));
-    if(entry == null)
-      return null;
-
-    return (T)entry.getValue();
-  }
-
-  @SuppressWarnings("unchecked")
-  protected <T,TPdf extends PdfAtomicObject<T>> void setEntry(
+  // <private>
+  private Object get(
     PdfName key,
-    T value,
-    Class<TPdf> entryType // This Class<TPdf> parameter is an ugly workaround to the horrific generics type erasure that precludes full reflection over parameterized types.
+    Object defaultValue
     )
-  {
-    TPdf entry = (TPdf)File.resolve(getBaseDataObject().get(key));
-    if(entry == null)
-    {
-      try
-      {
-        getBaseDataObject().put(
-          key,
-          entry = entryType.newInstance()
-          );
-      }
-      catch(Exception e)
-      {throw new RuntimeException(e);}
-    }
-
-    entry.setValue(value);
-  }
-  // </protected>
+  {return PdfAtomicObject.getValue(getBaseDataObject().get(key), defaultValue);}
+  // </private>
   // </interface>
   // </dynamic>
   // </class>

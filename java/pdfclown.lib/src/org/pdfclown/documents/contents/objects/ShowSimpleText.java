@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,19 +25,19 @@
 
 package org.pdfclown.documents.contents.objects;
 
+import java.util.List;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfString;
-
-import java.util.List;
 
 /**
   'Show a text string' operation [PDF:1.6:5.3.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF10)
 public final class ShowSimpleText
@@ -77,7 +77,7 @@ public final class ShowSimpleText
   public void setText(
     byte[] value
     )
-  {((PdfString)operands.get(0)).setRawValue(value);}
+  {operands.set(0, new PdfString(value));}
   // </public>
   // </interface>
   // </dynamic>

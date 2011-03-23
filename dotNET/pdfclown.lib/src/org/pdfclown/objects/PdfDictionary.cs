@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -233,7 +233,12 @@ namespace org.pdfclown.objects
         PdfDirectObject value; entries.TryGetValue(key,out value); return value;
       }
       set
-      {entries[key] = value;}
+      {
+        if(value == null)
+        {entries.Remove(key);}
+        else
+        {entries[key] = value;}
+      }
     }
 
     public bool TryGetValue(

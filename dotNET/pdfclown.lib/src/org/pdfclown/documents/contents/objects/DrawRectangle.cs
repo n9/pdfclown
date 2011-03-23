@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -80,7 +80,7 @@ namespace org.pdfclown.documents.contents.objects
       get
       {return ((IPdfNumber)operands[3]).RawValue;}
       set
-      {((IPdfNumber)operands[3]).RawValue = value;}
+      {operands[3] = new PdfReal(value);}
     }
 
     public override void Scan(
@@ -106,7 +106,7 @@ namespace org.pdfclown.documents.contents.objects
       get
       {return ((IPdfNumber)operands[2]).RawValue;}
       set
-      {((IPdfNumber)operands[2]).RawValue = value;}
+      {operands[2] = new PdfReal(value);}
     }
 
     public float X
@@ -114,7 +114,7 @@ namespace org.pdfclown.documents.contents.objects
       get
       {return ((IPdfNumber)operands[0]).RawValue;}
       set
-      {((IPdfNumber)operands[0]).RawValue = value;}
+      {operands[0] = new PdfReal(value);}
     }
 
     public float Y
@@ -122,7 +122,7 @@ namespace org.pdfclown.documents.contents.objects
       get
       {return ((IPdfNumber)operands[1]).RawValue;}
       set
-      {((IPdfNumber)operands[1]).RawValue = value;}
+      {operands[1] = new PdfReal(value);}
     }
     #endregion
     #endregion

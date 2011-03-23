@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,6 +45,7 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
+import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.Rectangle;
 import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.geom.Dimension;
@@ -53,7 +54,7 @@ import org.pdfclown.util.math.geom.Dimension;
   Form external object [PDF:1.6:4.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF10)
 public final class FormXObject
@@ -187,8 +188,8 @@ public final class FormXObject
     PdfDirectObject box = getBaseDataObject().getHeader().get(PdfName.BBox);
 
     PdfArray boxObject = (PdfArray)File.resolve(box);
-    ((PdfNumber<?>)boxObject.get(2)).setValue(value.getWidth());
-    ((PdfNumber<?>)boxObject.get(3)).setValue(value.getHeight());
+    boxObject.set(2, new PdfReal(value.getWidth()));
+    boxObject.set(3, new PdfReal(value.getHeight()));
 
     File.update(box);
   }

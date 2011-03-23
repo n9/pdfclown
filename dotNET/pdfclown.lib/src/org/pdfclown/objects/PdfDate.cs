@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,6 +38,14 @@ namespace org.pdfclown.objects
     #region static
     #region interface
     #region public
+    /**
+      <summary>Gets the object equivalent to the given value.</summary>
+    */
+    public static PdfDate Get(
+      DateTime? value
+      )
+    {return value.HasValue ? new PdfDate(value.Value) : null;}
+
     public static DateTime ToDate(
       string value
       )
@@ -102,7 +110,7 @@ namespace org.pdfclown.objects
     {
       get
       {return ToDate(tokens.Encoding.Decode(RawValue));}
-      set
+      protected set
       {RawValue = tokens.Encoding.Encode(Format((DateTime)value));}
     }
     #endregion

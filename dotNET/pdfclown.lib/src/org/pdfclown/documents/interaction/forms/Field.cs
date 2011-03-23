@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -295,25 +295,7 @@ namespace org.pdfclown.documents.interaction.forms
           );
       }
       set
-      {
-        /*
-          NOTE: As flags may be inherited from a parent field dictionary,
-          we MUST ensure that the change will affect just this one;
-          so, if such flags are implicit (inherited), they MUST be cloned
-          and explicitly assigned to this field in order to apply changes.
-        */
-        PdfDictionary baseDataObject = BaseDataObject;
-        PdfInteger entry = (PdfInteger)baseDataObject[PdfName.Ff];
-        if(entry == null) // Implicit flags.
-        {
-          // Clone the inherited attribute in order to restrict its change to this field's scope only!
-          entry = (PdfInteger)GetInheritableAttribute(PdfName.Ff).Clone(File);
-          // Associate the cloned attribute to this field's dictionary!
-          baseDataObject[PdfName.Ff] = entry;
-        }
-
-        entry.RawValue = (int)value;
-      }
+      {BaseDataObject[PdfName.Ff] = new PdfInteger((int)value);}
     }
 
     /**

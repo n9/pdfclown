@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -123,7 +123,7 @@ namespace org.pdfclown.objects
       get
       {return ((IPdfNumber)BaseDataObject[1]).RawValue;}
       set
-      {((IPdfNumber)BaseDataObject[1]).RawValue = value;}
+      {BaseDataObject[1] = new PdfReal(value);}
     }
 
     public override object Clone(
@@ -144,7 +144,7 @@ namespace org.pdfclown.objects
       get
       {return ((IPdfNumber)BaseDataObject[0]).RawValue;}
       set
-      {((IPdfNumber)BaseDataObject[0]).RawValue = value;}
+      {BaseDataObject[0] = new PdfReal(value);}
     }
 
     public float Right
@@ -152,7 +152,7 @@ namespace org.pdfclown.objects
       get
       {return ((IPdfNumber)BaseDataObject[2]).RawValue;}
       set
-      {((IPdfNumber)BaseDataObject[2]).RawValue = value;}
+      {BaseDataObject[2] = new PdfReal(value);}
     }
 
     public float Top
@@ -160,7 +160,7 @@ namespace org.pdfclown.objects
       get
       {return ((IPdfNumber)BaseDataObject[3]).RawValue;}
       set
-      {((IPdfNumber)BaseDataObject[3]).RawValue = value;}
+      {BaseDataObject[3] = new PdfReal(value);}
     }
 
     public RectangleF ToRectangleF(

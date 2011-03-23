@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -105,7 +105,7 @@ namespace org.pdfclown.documents.contents.objects
         {baseDashArray[index] = new PdfReal(dashArray[index]);}
         operands[0] = baseDashArray;
         // 2. Dash phase.
-        ((IPdfNumber)operands[1]).Value = value.DashPhase;
+        operands[1] = new PdfReal(value.DashPhase);
       }
     }
     #endregion

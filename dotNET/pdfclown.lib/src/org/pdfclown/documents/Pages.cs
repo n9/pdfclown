@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -429,29 +429,20 @@ namespace org.pdfclown.documents
       PdfArray kidsData = (PdfArray)File.Resolve(kids);
       // Remove the page!
       kidsData.Remove(page.BaseObject);
-      bool updateParent = !File.Update(kids); // Try to update the page collection.
+      File.Update(kids);
+
       // Unbind the page from its parent!
       pageData[PdfName.Parent] = null;
       page.Update();
+
       // Decrementing the pages counters...
       do
       {
         // Get the page collection counter!
-        PdfDirectObject count = parentData[PdfName.Count];
-        IPdfNumber countData = (IPdfNumber)File.Resolve(count);
+        PdfInteger countObject = (PdfInteger)parentData[PdfName.Count];
         // Decrement the counter at the current level!
-        countData.RawValue--;
-        updateParent |= !File.Update(count); // Try to update the counter.
-        // Is the parent tree node to be updated?
-        /*
-          NOTE: It avoids to update the parent tree node if its modified fields are all
-          indirect objects which perform independent updates.
-        */
-        if(updateParent)
-        {
-          File.Update(parent);
-          updateParent = false; // Reset.
-        }
+        parentData[PdfName.Count] = new PdfInteger(countObject.IntValue-1);
+        File.Update(parent);
 
         // Iterate upward!
         parent = parentData[PdfName.Parent];
@@ -539,27 +530,16 @@ namespace org.pdfclown.documents
         page.BaseDataObject[PdfName.Parent] = parent;
         page.Update();
       }
-      bool updateParent = !File.Update(kids); // Try to update the page collection.
+      File.Update(kids);
 
       // Incrementing the pages counters...
       do
       {
         // Get the page collection counter!
-        PdfDirectObject count = parentData[PdfName.Count];
-        IPdfNumber countData = (IPdfNumber)File.Resolve(count);
+        PdfInteger countObject = (PdfInteger)parentData[PdfName.Count];
         // Increment the counter at the current level!
-        countData.RawValue += pages.Count;
-        updateParent |= !File.Update(count); // Try to update the page counter.
-        // Is the parent tree node to be updated?
-        /*
-          NOTE: It avoids to update the parent tree node if its modified fields are all
-          indirect objects which perform independent updates.
-        */
-        if(updateParent)
-        {
-          File.Update(parent);
-          updateParent = false; // Reset.
-        }
+        parentData[PdfName.Count] = new PdfInteger(countObject.IntValue+pages.Count);
+        File.Update(parent);
 
         // Iterate upward!
         parent = parentData[PdfName.Parent];

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -34,7 +34,7 @@ import org.pdfclown.bytes.IOutputStream;
   PDF real number object [PDF:1.6:3.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 public final class PdfReal
   extends PdfNumber<Float>
@@ -88,17 +88,19 @@ public final class PdfReal
   {return super.getValue().floatValue();}
 
   @Override
-  public void setValue(
-    Object value
-    )
-  {super.setValue(((Number)value).floatValue());}
-
-  @Override
   public void writeTo(
     IOutputStream stream
     )
   {stream.write(formatter.format(getRawValue()));}
   // </public>
+
+  // <protected>
+  @Override
+  protected void setValue(
+    Object value
+    )
+  {super.setValue(((Number)value).floatValue());}
+  // </protected>
   // </interface>
   // </class>
 }

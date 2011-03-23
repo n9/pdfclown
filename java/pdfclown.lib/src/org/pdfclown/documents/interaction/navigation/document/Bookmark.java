@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -48,7 +48,7 @@ import org.pdfclown.util.NotImplementedException;
   Outline item [PDF:1.6:8.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Bookmark
@@ -289,9 +289,12 @@ public final class Bookmark
       return;
 
     /*
-      NOTE: Non-negative Count entry means open, negative Count entry means closed [PDF:1.6:8.2.2].
+      NOTE: Positive Count entry means open, negative Count entry means closed [PDF:1.6:8.2.2].
     */
-    countObject.setRawValue((value ? 1 : -1) * Math.abs(countObject.getRawValue()));
+    getBaseDataObject().put(
+      PdfName.Count,
+      new PdfInteger((value ? 1 : -1) * Math.abs(countObject.getValue()))
+      );
   }
 
   /**

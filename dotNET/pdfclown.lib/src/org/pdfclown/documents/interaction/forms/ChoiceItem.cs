@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -121,7 +121,7 @@ namespace org.pdfclown.documents.interaction.forms
           }
         }
 
-        ((PdfTextString)((PdfArray)baseDataObject)[1]).Value = value;
+        ((PdfArray)baseDataObject)[1] = new PdfTextString(value);
       }
     }
 
@@ -142,9 +142,9 @@ namespace org.pdfclown.documents.interaction.forms
       {
         PdfDirectObject baseDataObject = BaseDataObject;
         if(baseDataObject is PdfArray) // <value,text> pair.
-          ((PdfTextString)((PdfArray)baseDataObject)[0]).Value = value;
+        {((PdfArray)baseDataObject)[0] = new PdfTextString(value);}
         else // Single text string.
-          ((PdfTextString)baseDataObject).Value = value;
+        {BaseObject = new PdfTextString(value);}
       }
     }
     #endregion

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,6 +38,20 @@ namespace org.pdfclown.objects
   public sealed class PdfTextString
     : PdfString
   {
+    #region static
+    #region interface
+    #region public
+    /**
+      <summary>Gets the object equivalent to the given value.</summary>
+    */
+    public static PdfTextString Get(
+      string value
+      )
+    {return value != null ? new PdfTextString(value) : null;}
+    #endregion
+    #endregion
+    #endregion
+
     /*
       NOTE: Text strings are string objects encoded in either
       PDFDocEncoding (superset of the ISO Latin 1 encoding [PDF:1.6:D])
@@ -86,7 +100,7 @@ namespace org.pdfclown.objects
 
     public override byte[] RawValue
     {
-      set
+      protected set
       {
         if(value.Length > 2
           && value[0] == (byte)254
@@ -114,7 +128,7 @@ namespace org.pdfclown.objects
         {buffer = valueBytes;}
         return encoding.GetString(buffer);
       }
-      set
+      protected set
       {
         switch(SerializationMode)
         {

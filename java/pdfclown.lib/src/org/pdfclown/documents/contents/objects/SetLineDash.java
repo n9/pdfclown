@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,8 +29,8 @@ import java.util.List;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
-import org.pdfclown.documents.contents.LineDash;
 import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
+import org.pdfclown.documents.contents.LineDash;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfNumber;
@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF10)
 public final class SetLineDash
@@ -118,10 +118,10 @@ public final class SetLineDash
       index < length;
       index++
       )
-    {baseDashArray.set(index,new PdfReal(dashArray[index]));}
+    {baseDashArray.set(index, new PdfReal(dashArray[index]));}
     operands.set(0,baseDashArray);
     // 2. Dash phase.
-    ((PdfNumber<?>)operands.get(1)).setValue(value.getDashPhase());
+    operands.set(1, new PdfReal(value.getDashPhase()));
   }
   // </public>
   // </interface>

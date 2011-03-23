@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -87,14 +87,14 @@ namespace org.pdfclown.documents.interaction.actions
           NOTE: 'JS' entry MUST be defined.
         */
         PdfDataObject scriptObject = BaseDataObject[PdfName.JS];
-        if(scriptObject is PdfTextString)
-        {((PdfTextString)scriptObject).Value = value;}
-        else
+        if(scriptObject is PdfStream)
         {
           bytes::IBuffer scriptBuffer = ((PdfStream)scriptObject).Body;
           scriptBuffer.SetLength(0);
           scriptBuffer.Append(value);
         }
+        else
+        {BaseDataObject[PdfName.JS] = new PdfTextString(value);}
       }
     }
     #endregion

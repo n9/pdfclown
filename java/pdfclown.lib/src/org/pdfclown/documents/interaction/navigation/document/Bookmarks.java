@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,7 +47,7 @@ import org.pdfclown.util.NotImplementedException;
   Collection of bookmarks [PDF:1.6:8.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Bookmarks
@@ -193,10 +193,9 @@ public final class Bookmarks
     // Is it the first bookmark?
     if(countObject.getValue() == 0) // First bookmark.
     {
-      getBaseDataObject().put(PdfName.First,bookmark.getBaseObject());
-      getBaseDataObject().put(PdfName.Last,bookmark.getBaseObject());
-
-      countObject.setValue(countObject.getValue()+1);
+      getBaseDataObject().put(PdfName.First, bookmark.getBaseObject());
+      getBaseDataObject().put(PdfName.Last, bookmark.getBaseObject());
+      getBaseDataObject().put(PdfName.Count, new PdfInteger(countObject.getValue()+1));
     }
     else // Non-first bookmark.
     {
@@ -204,12 +203,11 @@ public final class Bookmarks
       getBaseDataObject().put(PdfName.Last,bookmark.getBaseObject()); // Added bookmark is the last in the collection...
       ((PdfDictionary)File.resolve(oldLastBookmarkReference)).put(PdfName.Next,bookmark.getBaseObject()); // ...and the next of the previously-last bookmark.
       bookmark.getBaseDataObject().put(PdfName.Prev,oldLastBookmarkReference);
-
       /*
         NOTE: The Count entry is a relative number (whose sign represents
         the node open state).
       */
-      countObject.setValue(countObject.getValue()+Math.signum(countObject.getValue()));
+      getBaseDataObject().put(PdfName.Count, new PdfInteger(countObject.getValue()+(int)Math.signum(countObject.getValue())));
     }
 
     return true;
@@ -320,10 +318,12 @@ public final class Bookmarks
       // <interface>
       // <public>
       // <Iterator>
+      @Override
       public boolean hasNext(
         )
       {return (nextBookmarkObject != null);}
 
+      @Override
       public Bookmark next(
         )
       {
@@ -336,6 +336,7 @@ public final class Bookmarks
         return new Bookmark(currentBookmarkObject);
       }
 
+      @Override
       public void remove(
         )
       {throw new UnsupportedOperationException();}

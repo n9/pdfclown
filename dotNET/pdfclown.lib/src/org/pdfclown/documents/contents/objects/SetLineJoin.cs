@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -65,8 +65,10 @@ namespace org.pdfclown.documents.contents.objects
 
     public LineJoinEnum Value
     {
-      get{return (LineJoinEnum)((IPdfNumber)operands[0]).Value;}
-      set{((IPdfNumber)operands[0]).Value = value;}
+      get
+      {return (LineJoinEnum)((IPdfNumber)operands[0]).Value;}
+      set
+      {operands[0] = new PdfInteger((int)value);}
     }
     #endregion
     #endregion

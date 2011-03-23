@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -39,7 +39,7 @@ import org.pdfclown.objects.PdfInteger;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF10)
 public final class SetLineJoin
@@ -77,14 +77,14 @@ public final class SetLineJoin
     )
   {
     return LineJoinEnum.valueOf(
-      ((PdfInteger)operands.get(0)).getRawValue()
+      ((PdfInteger)operands.get(0)).getValue()
       );
   }
 
   public void setValue(
     LineJoinEnum value
     )
-  {((PdfInteger)operands.get(0)).setRawValue(value.getCode());}
+  {operands.set(0, new PdfInteger(value.getCode()));}
   // </public>
   // </interface>
   // </dynamic>

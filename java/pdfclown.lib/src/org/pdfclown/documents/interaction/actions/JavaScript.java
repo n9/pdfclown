@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF13)
 public final class JavaScript
@@ -107,14 +107,14 @@ public final class JavaScript
       NOTE: 'JS' entry MUST be defined.
     */
     PdfDataObject scriptObject = getBaseDataObject().get(PdfName.JS);
-    if(scriptObject instanceof PdfTextString)
-    {((PdfTextString)scriptObject).setValue(value);}
-    else
+    if(scriptObject instanceof PdfStream)
     {
       IBuffer scriptBuffer = ((PdfStream)scriptObject).getBody();
       scriptBuffer.setLength(0);
       scriptBuffer.append(value);
     }
+    else
+    {getBaseDataObject().put(PdfName.JS, new PdfTextString(value));}
   }
   // </public>
   // </interface>

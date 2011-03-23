@@ -38,7 +38,7 @@ namespace org.pdfclown.samples.cli
         Console.WriteLine("Author: " + info.Author);
         Console.WriteLine("Title: " + info.Title);
         Console.WriteLine("Subject: " + info.Subject);
-//         Console.WriteLine("CreationDate: " + info.CreationDate);
+        Console.WriteLine("CreationDate: " + info.CreationDate);
       }
 
       Console.WriteLine("\nIterating through the indirect-object collection (please wait)...");

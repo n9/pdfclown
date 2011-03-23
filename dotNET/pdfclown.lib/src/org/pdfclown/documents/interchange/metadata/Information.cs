@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -67,9 +67,9 @@ namespace org.pdfclown.documents.interchange.metadata
     public string Author
     {
       get
-      {return (string)GetEntry<byte[],PdfTextString>(PdfName.Author);}
+      {return (string)Get(PdfName.Author);}
       set
-      {SetEntry<byte[],PdfTextString>(PdfName.Author,value);}
+      {BaseDataObject[PdfName.Author] = PdfTextString.Get(value);}
     }
 
     public override object Clone(
@@ -80,87 +80,69 @@ namespace org.pdfclown.documents.interchange.metadata
     public DateTime? CreationDate
     {
       get
-      {return (DateTime?)GetEntry<byte[],PdfDate>(PdfName.CreationDate);}
+      {return (DateTime?)Get(PdfName.CreationDate);}
       set
-      {SetEntry<byte[],PdfDate>(PdfName.CreationDate,value);}
+      {BaseDataObject[PdfName.CreationDate] = PdfDate.Get(value);}
     }
 
     public string Creator
     {
       get
-      {return (string)GetEntry<byte[],PdfTextString>(PdfName.Creator);}
+      {return (string)Get(PdfName.Creator);}
       set
-      {SetEntry<byte[],PdfTextString>(PdfName.Creator,value);}
+      {BaseDataObject[PdfName.Creator] = PdfTextString.Get(value);}
     }
 
     [PDF(VersionEnum.PDF11)]
     public string Keywords
     {
       get
-      {return (string)GetEntry<byte[],PdfTextString>(PdfName.Keywords);}
+      {return (string)Get(PdfName.Keywords);}
       set
-      {SetEntry<byte[],PdfTextString>(PdfName.Keywords,value);}
+      {BaseDataObject[PdfName.Keywords] = PdfTextString.Get(value);}
     }
 
     [PDF(VersionEnum.PDF11)]
     public DateTime? ModificationDate
     {
       get
-      {return (DateTime?)GetEntry<byte[],PdfDate>(PdfName.ModDate);}
+      {return (DateTime?)Get(PdfName.ModDate);}
       set
-      {SetEntry<byte[],PdfDate>(PdfName.ModDate,value);}
+      {BaseDataObject[PdfName.ModDate] = PdfDate.Get(value);}
     }
 
     public string Producer
     {
       get
-      {return (string)GetEntry<byte[],PdfTextString>(PdfName.Producer);}
+      {return (string)Get(PdfName.Producer);}
       set
-      {SetEntry<byte[],PdfTextString>(PdfName.Producer,value);}
+      {BaseDataObject[PdfName.Producer] = PdfTextString.Get(value);}
     }
 
     [PDF(VersionEnum.PDF11)]
     public string Subject
     {
       get
-      {return (string)GetEntry<byte[],PdfTextString>(PdfName.Subject);}
+      {return (string)Get(PdfName.Subject);}
       set
-      {SetEntry<byte[],PdfTextString>(PdfName.Subject,value);}
+      {BaseDataObject[PdfName.Subject] = PdfTextString.Get(value);}
     }
 
     [PDF(VersionEnum.PDF11)]
     public string Title
     {
       get
-      {return (string)GetEntry<byte[],PdfTextString>(PdfName.Title);}
+      {return (string)Get(PdfName.Title);}
       set
-      {SetEntry<byte[],PdfTextString>(PdfName.Title,value);}
+      {BaseDataObject[PdfName.Title] = PdfTextString.Get(value);}
     }
     #endregion
 
     #region private
-    private object GetEntry<T,TPdf>(
+    private object Get(
       PdfName key
-      ) where TPdf : PdfAtomicObject<T>
-    {
-      TPdf entry = (TPdf)BaseDataObject.Resolve(key);
-      return entry == null ? null : entry.Value;
-    }
-
-    private void SetEntry<T,TPdf>(
-      PdfName key,
-      object value
-      ) where TPdf : PdfAtomicObject<T>, new()
-    {
-      if(value == null)
-      {BaseDataObject.Remove(key);}
-      else
-      {
-        if(!BaseDataObject.ContainsKey(key))
-        {BaseDataObject[key] = new TPdf();}
-        ((TPdf)BaseDataObject.Resolve(key)).Value = value;
-      }
-    }
+      )
+    {return PdfAtomicObject<object>.GetValue(BaseDataObject[key]);}
     #endregion
     #endregion
     #endregion

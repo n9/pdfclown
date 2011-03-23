@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -169,8 +169,8 @@ namespace org.pdfclown.documents.contents.objects
         }
         else
         {
-          ((IPdfNumber)operands[0]).RawValue = value.Value.X;
-          ((IPdfNumber)operands[1]).RawValue = value.Value.Y;
+          operands[0] = new PdfReal(value.Value.X);
+          operands[1] = new PdfReal(value.Value.Y);
         }
       }
     }
@@ -197,13 +197,13 @@ namespace org.pdfclown.documents.contents.objects
       {
         if(operator_.Equals(FinalOperatorKeyword))
         {
-          ((IPdfNumber)operands[0]).Value = value.Value.X;
-          ((IPdfNumber)operands[1]).Value = value.Value.Y;
+          operands[0] = new PdfReal(value.Value.X);
+          operands[1] = new PdfReal(value.Value.Y);
         }
         else
         {
-          ((IPdfNumber)operands[2]).Value = value.Value.X;
-          ((IPdfNumber)operands[3]).Value = value.Value.Y;
+          operands[2] = new PdfReal(value.Value.X);
+          operands[3] = new PdfReal(value.Value.Y);
         }
       }
     }
@@ -230,13 +230,13 @@ namespace org.pdfclown.documents.contents.objects
       {
         if(operator_.Equals(FullOperatorKeyword))
         {
-          ((IPdfNumber)operands[4]).Value = value.X;
-          ((IPdfNumber)operands[5]).Value = value.Y;
+          operands[4] = new PdfReal(value.X);
+          operands[5] = new PdfReal(value.Y);
         }
         else
         {
-          ((IPdfNumber)operands[2]).Value = value.X;
-          ((IPdfNumber)operands[3]).Value = value.Y;
+          operands[2] = new PdfReal(value.X);
+          operands[3] = new PdfReal(value.Y);
         }
       }
     }

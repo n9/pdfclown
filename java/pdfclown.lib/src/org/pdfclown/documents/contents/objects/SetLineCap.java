@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,8 +29,8 @@ import java.util.List;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
-import org.pdfclown.documents.contents.LineCapEnum;
 import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
+import org.pdfclown.documents.contents.LineCapEnum;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 
@@ -39,7 +39,7 @@ import org.pdfclown.objects.PdfInteger;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF10)
 public final class SetLineCap
@@ -77,17 +77,14 @@ public final class SetLineCap
     )
   {
     return LineCapEnum.valueOf(
-      ((PdfInteger)operands.get(0)).getRawValue()
+      ((PdfInteger)operands.get(0)).getValue()
       );
   }
 
-  /**
-    @since 0.0.6
-  */
   public void setValue(
     LineCapEnum value
     )
-  {((PdfInteger)operands.get(0)).setRawValue(value.getCode());}
+  {operands.set(0, new PdfInteger(value.getCode()));}
   // </public>
   // </interface>
   // </dynamic>

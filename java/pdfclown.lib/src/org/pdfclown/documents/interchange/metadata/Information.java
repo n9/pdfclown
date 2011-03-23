@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
   Document information [PDF:1.6:10.2.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Information
@@ -89,121 +89,95 @@ public final class Information
 
   // <interface>
   // <public>
-  public String getAuthor(
-    )
-  {return (String)this.<PdfTextString>getEntry(PdfName.Author);}
-
   @Override
   public Information clone(
     Document context
     )
   {throw new NotImplementedException();}
 
+  public String getAuthor(
+  )
+  {return (String)get(PdfName.Author);}
+
   public Date getCreationDate(
     )
-  {return (Date)this.<PdfDate>getEntry(PdfName.CreationDate);}
+  {return (Date)get(PdfName.CreationDate);}
 
   public String getCreator(
     )
-  {return (String)this.<PdfTextString>getEntry(PdfName.Creator);}
+  {return (String)get(PdfName.Creator);}
 
   @PDF(VersionEnum.PDF11)
   public String getKeywords(
     )
-  {return (String)this.<PdfTextString>getEntry(PdfName.Keywords);}
+  {return (String)get(PdfName.Keywords);}
 
   @PDF(VersionEnum.PDF11)
   public Date getModificationDate(
     )
-  {return (Date)this.<PdfDate>getEntry(PdfName.ModDate);}
+  {return (Date)get(PdfName.ModDate);}
 
   public String getProducer(
     )
-  {return (String)this.<PdfTextString>getEntry(PdfName.Producer);}
+  {return (String)get(PdfName.Producer);}
 
   @PDF(VersionEnum.PDF11)
   public String getSubject(
     )
-  {return (String)this.<PdfTextString>getEntry(PdfName.Subject);}
+  {return (String)get(PdfName.Subject);}
 
   @PDF(VersionEnum.PDF11)
   public String getTitle(
     )
-  {return (String)this.<PdfTextString>getEntry(PdfName.Title);}
+  {return (String)get(PdfName.Title);}
 
   public void setAuthor(
     String value
     )
-  {this.<PdfTextString>setEntry(PdfName.Author,value,PdfTextString.class);}
+  {getBaseDataObject().put(PdfName.Author, PdfTextString.get(value));}
 
   public void setCreationDate(
     Date value
     )
-  {this.<PdfDate>setEntry(PdfName.CreationDate,value,PdfDate.class);}
+  {getBaseDataObject().put(PdfName.CreationDate, PdfDate.get(value));}
 
   public void setCreator(
     String value
     )
-  {this.<PdfTextString>setEntry(PdfName.Creator,value,PdfTextString.class);}
+  {getBaseDataObject().put(PdfName.Creator, PdfTextString.get(value));}
 
   public void setKeywords(
     String value
     )
-  {this.<PdfTextString>setEntry(PdfName.Keywords,value,PdfTextString.class);}
+  {getBaseDataObject().put(PdfName.Keywords, PdfTextString.get(value));}
 
   public void setModificationDate(
     Date value
     )
-  {this.<PdfDate>setEntry(PdfName.ModDate,value,PdfDate.class);}
+  {getBaseDataObject().put(PdfName.ModDate, PdfDate.get(value));}
 
   public void setProducer(
     String value
     )
-  {this.<PdfTextString>setEntry(PdfName.Producer,value,PdfTextString.class);}
+  {getBaseDataObject().put(PdfName.Producer, PdfTextString.get(value));}
 
   public void setSubject(
     String value
     )
-  {this.<PdfTextString>setEntry(PdfName.Subject,value,PdfTextString.class);}
+  {getBaseDataObject().put(PdfName.Subject, PdfTextString.get(value));}
 
   public void setTitle(
     String value
     )
-  {this.<PdfTextString>setEntry(PdfName.Title,value,PdfTextString.class);}
+  {getBaseDataObject().put(PdfName.Title, PdfTextString.get(value));}
   // </public>
 
-  // <protected>
-  @SuppressWarnings("unchecked")
-  protected <TPdf extends PdfAtomicObject<?>> Object getEntry(
+  // <private>
+  private Object get(
     PdfName key
     )
-  {
-    TPdf entry = (TPdf)getBaseDataObject().resolve(key);
-    return entry == null ? null : entry.getValue();
-  }
-
-  @SuppressWarnings("unchecked")
-  protected <TPdf extends PdfAtomicObject<?>> void setEntry(
-    PdfName key,
-    Object value,
-    Class<TPdf> entryType // This Class<TPdf> parameter is an ugly workaround to the horrific generics type erasure that precludes full reflection over parameterized types.
-    )
-  {
-    if(value == null)
-    {getBaseDataObject().remove(key);}
-    else
-    {
-      if(!getBaseDataObject().containsKey(key))
-      {
-        try
-        {getBaseDataObject().put(key, entryType.newInstance());}
-        catch(Exception e)
-        {throw new RuntimeException(e);}
-      }
-      ((TPdf)getBaseDataObject().resolve(key)).setValue(value);
-    }
-  }
-  // </protected>
+  {return PdfAtomicObject.getValue(getBaseDataObject().get(key));}
+  // </private>
   // </interface>
   // </class>
 }

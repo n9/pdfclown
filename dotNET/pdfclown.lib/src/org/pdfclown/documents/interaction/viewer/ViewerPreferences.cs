@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -123,9 +123,9 @@ namespace org.pdfclown.documents.interaction.viewer
     public bool CenterWindow
     {
       get
-      {return GetEntry<bool,PdfBoolean>(PdfName.CenterWindow);}
+      {return (bool)Get(PdfName.CenterWindow, false);}
       set
-      {SetEntry<bool,PdfBoolean>(PdfName.CenterWindow,value);}
+      {BaseDataObject[PdfName.CenterWindow] = PdfBoolean.Get(value);}
     }
 
     public override object Clone(
@@ -144,65 +144,50 @@ namespace org.pdfclown.documents.interaction.viewer
     public bool DisplayDocTitle
     {
       get
-      {return GetEntry<bool,PdfBoolean>(PdfName.DisplayDocTitle);}
+      {return (bool)Get(PdfName.DisplayDocTitle, false);}
       set
-      {SetEntry<bool,PdfBoolean>(PdfName.DisplayDocTitle,value);}
+      {BaseDataObject[PdfName.DisplayDocTitle] = PdfBoolean.Get(value);}
     }
 
     public bool FitWindow
     {
       get
-      {return GetEntry<bool,PdfBoolean>(PdfName.FitWindow);}
+      {return (bool)Get(PdfName.FitWindow, false);}
       set
-      {SetEntry<bool,PdfBoolean>(PdfName.FitWindow,value);}
+      {BaseDataObject[PdfName.FitWindow] = PdfBoolean.Get(value);}
     }
 
     public bool HideMenubar
     {
       get
-      {return GetEntry<bool,PdfBoolean>(PdfName.HideMenubar);}
+      {return (bool)Get(PdfName.HideMenubar, false);}
       set
-      {SetEntry<bool,PdfBoolean>(PdfName.HideMenubar,value);}
+      {BaseDataObject[PdfName.HideMenubar] = PdfBoolean.Get(value);}
     }
 
     public bool HideToolbar
     {
       get
-      {return GetEntry<bool,PdfBoolean>(PdfName.HideToolbar);}
+      {return (bool)Get(PdfName.HideToolbar, false);}
       set
-      {SetEntry<bool,PdfBoolean>(PdfName.HideToolbar,value);}
+      {BaseDataObject[PdfName.HideToolbar] = PdfBoolean.Get(value);}
     }
 
     public bool HideWindowUI
     {
       get
-      {return GetEntry<bool,PdfBoolean>(PdfName.HideWindowUI);}
+      {return (bool)Get(PdfName.HideWindowUI, false);}
       set
-      {SetEntry<bool,PdfBoolean>(PdfName.HideWindowUI,value);}
+      {BaseDataObject[PdfName.HideWindowUI] = PdfBoolean.Get(value);}
     }
     #endregion
 
     #region private
-    private T GetEntry<T,TPdf>(
-      PdfName key
-      ) where TPdf : PdfAtomicObject<T>
-    {
-      try
-      {return (T)((TPdf)File.Resolve(BaseDataObject[key])).Value;}
-      catch
-      {return default(T);}
-    }
-
-    private void SetEntry<T,TPdf>(
+    private object Get(
       PdfName key,
-      T value
-      ) where TPdf : PdfAtomicObject<T>, new()
-    {
-      if(!BaseDataObject.ContainsKey(key))
-        BaseDataObject[key] = new TPdf();
-
-      ((TPdf)File.Resolve(BaseDataObject[key])).Value = value;
-    }
+      object defaultValue
+      )
+    {return PdfAtomicObject<object>.GetValue(BaseDataObject[key], defaultValue);}
     #endregion
     #endregion
     #endregion

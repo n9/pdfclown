@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,12 +31,45 @@ import org.pdfclown.files.File;
   Abstract PDF atomic object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 public abstract class PdfAtomicObject<TValue>
   extends PdfDirectObject
 {
   // <class>
+  // <static>
+  // <interface>
+  // <public>
+  /**
+    Gets the value corresponding to the given object.
+
+    @param object Object to extract the value from.
+  */
+  public static Object getValue(
+    PdfObject object
+    )
+  {return getValue(object, null);}
+
+  /**
+    Gets the value corresponding to the given object.
+
+    @param object Object to extract the value from.
+    @param defaultValue Value returned in case the object's one is undefined.
+  */
+  public static Object getValue(
+    PdfObject object,
+    Object defaultValue
+    )
+  {
+    Object value = ((object = File.resolve(object)) instanceof PdfAtomicObject<?>
+      ? ((PdfAtomicObject<?>)object).getValue()
+      : null);
+    return (value != null ? value : defaultValue);
+  }
+  // </public>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <fields>
   private TValue value;
@@ -86,10 +119,17 @@ public abstract class PdfAtomicObject<TValue>
     )
   {return getRawValue().hashCode();}
 
+  @Override
+  public String toString(
+    )
+  {return getValue().toString();}
+  // </public>
+
+  // <protected>
   /**
     Sets the low-level representation of the value.
   */
-  public void setRawValue(
+  protected void setRawValue(
     TValue value
     )
   {this.value = value;}
@@ -98,16 +138,11 @@ public abstract class PdfAtomicObject<TValue>
     Sets the high-level representation of the value.
   */
   @SuppressWarnings("unchecked")
-  public void setValue(
+  protected void setValue(
     Object value
     )
   {this.value = (TValue)value;}
-
-  @Override
-  public String toString(
-    )
-  {return getValue().toString();}
-  // </public>
+  // </protected>
   // </interface>
   // </dynamic>
   // </class>

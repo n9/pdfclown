@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -39,7 +39,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF10)
 public final class SetTextRise
@@ -83,7 +83,7 @@ public final class SetTextRise
   public void setValue(
     float value
     )
-  {((PdfNumber<?>)operands.get(0)).setValue(value);}
+  {operands.set(0, new PdfReal(value));}
   // </public>
   // </interface>
   // </dynamic>

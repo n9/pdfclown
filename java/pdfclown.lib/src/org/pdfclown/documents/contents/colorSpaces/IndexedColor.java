@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,7 +40,7 @@ import org.pdfclown.util.NotImplementedException;
   Indexed color value [PDF:1.6:4.5.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF11)
 public final class IndexedColor
@@ -123,7 +123,7 @@ public final class IndexedColor
   public void setIndex(
     int value
     )
-  {((PdfInteger)getBaseDataObject().get(0)).setValue(value);}
+  {getBaseDataObject().set(0, new PdfInteger(value));}
   // </public>
   // </interface>
   // </dynamic>

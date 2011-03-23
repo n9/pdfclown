@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,7 +40,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 @PDF(VersionEnum.PDF12)
 public final class ChoiceItem
@@ -101,9 +101,9 @@ public final class ChoiceItem
   {
     PdfDirectObject baseDataObject = getBaseDataObject();
     if(baseDataObject instanceof PdfArray) // <value,text> pair.
-      return (String)((PdfTextString)((PdfArray)baseDataObject).get(1)).getValue();
+      return ((PdfTextString)((PdfArray)baseDataObject).get(1)).getValue();
     else // Single text string.
-      return (String)((PdfTextString)baseDataObject).getValue();
+      return ((PdfTextString)baseDataObject).getValue();
   }
 
   /**
@@ -113,9 +113,9 @@ public final class ChoiceItem
   {
     PdfDirectObject baseDataObject = getBaseDataObject();
     if(baseDataObject instanceof PdfArray) // <value,text> pair.
-      return (String)((PdfTextString)((PdfArray)baseDataObject).get(0)).getValue();
+      return ((PdfTextString)((PdfArray)baseDataObject).get(0)).getValue();
     else // Single text string.
-      return (String)((PdfTextString)baseDataObject).getValue();
+      return ((PdfTextString)baseDataObject).getValue();
   }
 
   //TODO:make the class immutable (to avoid needing wiring it up to its collection...)!!!
@@ -153,7 +153,7 @@ public final class ChoiceItem
       }
     }
 
-    ((PdfTextString)((PdfArray)baseDataObject).get(1)).setValue(value);
+    ((PdfArray)baseDataObject).set(1, new PdfTextString(value));
   }
 
   /**
@@ -165,9 +165,9 @@ public final class ChoiceItem
   {
     PdfDirectObject baseDataObject = getBaseDataObject();
     if(baseDataObject instanceof PdfArray) // <value,text> pair.
-      ((PdfTextString)((PdfArray)baseDataObject).get(0)).setValue(value);
+    {((PdfArray)baseDataObject).set(0, new PdfTextString(value));}
     else // Single text string.
-      ((PdfTextString)baseDataObject).setValue(value);
+    {setBaseObject(new PdfTextString(value));}
   }
   // </public>
 

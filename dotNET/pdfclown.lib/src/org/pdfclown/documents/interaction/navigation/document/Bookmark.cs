@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -146,9 +146,9 @@ namespace org.pdfclown.documents.interaction.navigation.document
           return;
 
         /*
-          NOTE: Non-negative Count entry means open, negative Count entry means closed [PDF:1.6:8.2.2].
+          NOTE: Positive Count entry means open, negative Count entry means closed [PDF:1.6:8.2.2].
         */
-        countObject.RawValue = (value ? 1 : -1) * Math.Abs(countObject.RawValue);
+        BaseDataObject[PdfName.Count] = new PdfInteger((value ? 1 : -1) * Math.Abs(countObject.IntValue));
       }
     }
 

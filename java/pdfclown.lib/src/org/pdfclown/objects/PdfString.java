@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.0
+  @version 0.1.1, 03/22/11
 */
 public class PdfString
   extends PdfAtomicObject<byte[]>
@@ -172,24 +172,6 @@ public class PdfString
   {serializationMode = value;}
 
   @Override
-  public void setValue(
-    Object value
-    )
-  {
-    switch(serializationMode)
-    {
-      case Literal:
-        setRawValue(Encoding.encode((String)value));
-        break;
-      case Hex:
-        setRawValue(ConvertUtils.hexToByteArray((String)value));
-        break;
-      default:
-        throw new NotImplementedException(serializationMode + " serialization mode is not implemented.");
-    }
-  }
-
-  @Override
   public byte[] toByteArray(
     )
   {return getRawValue().clone();}
@@ -259,6 +241,26 @@ public class PdfString
     stream.write(buffer.toByteArray());
   }
   // </public>
+
+  // <protected>
+  @Override
+  protected void setValue(
+    Object value
+    )
+  {
+    switch(serializationMode)
+    {
+      case Literal:
+        setRawValue(Encoding.encode((String)value));
+        break;
+      case Hex:
+        setRawValue(ConvertUtils.hexToByteArray((String)value));
+        break;
+      default:
+        throw new NotImplementedException(serializationMode + " serialization mode is not implemented.");
+    }
+  }
+  // </protected>
   // </interface>
   // </dynamic>
   // </class>

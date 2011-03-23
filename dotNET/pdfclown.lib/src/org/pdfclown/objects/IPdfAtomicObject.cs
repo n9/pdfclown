@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,13 +36,11 @@ namespace org.pdfclown.objects
     TValue RawValue
     {
       get;
-      set;
     }
 
     object Value
     {
       get;
-      set;
     }
   }
 }
