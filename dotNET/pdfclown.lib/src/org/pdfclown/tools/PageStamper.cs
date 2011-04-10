@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -81,45 +81,40 @@ namespace org.pdfclown.tools
           streams = new PdfArray();
           streams.Add(contentsObject);
           page.BaseDataObject[PdfName.Contents] = streams;
-
-          page.Update(); // Fundamental to override original page contents collection.
         }
         else
-        {
-          streams = (PdfArray)contentsDataObject;
-
-          if(!File.Update(contentsObject))
-          {page.Update();} // Fundamental to override original page contents collection.
-        }
+        {streams = (PdfArray)contentsDataObject;}
       }
 
       // Background.
       // Serialize the content!
       background.Flush();
       // Insert the serialized content into the page's content stream!
-      streams.Insert(
-        0,
-        (PdfReference)background.Scanner.Contents.BaseObject
-        );
+      streams.Insert(0, background.Scanner.Contents.BaseObject);
 
       // Foreground.
       // Serialize the content!
       foreground.Flush();
       // Append the serialized content into the page's content stream!
-      streams.Add(
-        (PdfReference)foreground.Scanner.Contents.BaseObject
-        );
+      streams.Add(foreground.Scanner.Contents.BaseObject);
     }
 
     public PrimitiveComposer Background
-    {get{return background;}}
+    {
+      get
+      {return background;}
+    }
 
     public PrimitiveComposer Foreground
-    {get{return foreground;}}
+    {
+      get
+      {return foreground;}
+    }
 
     public Page Page
     {
-      get{return page;}
+      get
+      {return page;}
       set
       {
         page = value;
@@ -154,13 +149,10 @@ namespace org.pdfclown.tools
     private PrimitiveComposer CreateFilter(
       )
     {
-      PdfReference reference = page.File.Register(new PdfStream());
-
       return new PrimitiveComposer(
         new ContentScanner(
           new Contents(
-            reference,
-            reference.IndirectObject,
+            page.File.Register(new PdfStream()),
             page
             )
           )

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,7 +30,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interaction.navigation.page.Transition;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.NotImplementedException;
 
@@ -39,7 +38,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF15)
 public final class DoTransition
@@ -61,10 +60,9 @@ public final class DoTransition
   }
 
   DoTransition(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container, null);}
+  {super(baseObject, null);}
   // </constructors>
 
   // <interface>
@@ -80,12 +78,7 @@ public final class DoTransition
   */
   public Transition getTransition(
     )
-  {
-    /*
-      NOTE: 'Trans' entry MUST exist.
-    */
-    return new Transition(getBaseDataObject().get(PdfName.Trans),getContainer());
-  }
+  {return new Transition(getBaseDataObject().get(PdfName.Trans));}
 
   /**
     @see #getTransition()

@@ -43,7 +43,7 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 03/17/11
+  @version 0.1.1, 04/10/11
 */
 public final class FileParser
   extends BaseParser
@@ -165,17 +165,16 @@ public final class FileParser
       if(getTokenType() == TokenTypeEnum.Keyword
         && getToken().equals(Keyword.BeginStream)) // Stream.
       {
-        PdfDictionary dictionary = (PdfDictionary)pdfObject;
-        // Keep track of current position!
-        long position = stream.getPosition();
+        PdfDictionary streamHeader = (PdfDictionary)pdfObject;
 
-        // Get the stream length!
+        // Keep track of current position!
         /*
-          NOTE: Indirect reference resolution is an outbound call (stream pointer hazard!),
+          NOTE: Indirect reference resolution is an outbound call which affects the stream pointer position,
           so we need to recover our current position after it returns.
         */
-        int length = ((PdfInteger)File.resolve(dictionary.get(PdfName.Length))).getRawValue();
-
+        long position = stream.getPosition();
+        // Get the stream length!
+        int length = ((PdfInteger)streamHeader.resolve(PdfName.Length)).getValue();
         // Move to the stream data beginning!
         stream.seek(position); skipEOL();
 
@@ -188,22 +187,20 @@ public final class FileParser
 
         moveNext(); // Postcondition (last token should be 'endstream' keyword).
 
-        Object streamType = dictionary.get(PdfName.Type);
+        Object streamType = streamHeader.get(PdfName.Type);
         if(PdfName.ObjStm.equals(streamType)) // Object stream [PDF:1.6:3.4.6].
           return new ObjectStream(
-            dictionary,
-            new Buffer(data),
-            file
+            streamHeader,
+            new Buffer(data)
             );
         else if(PdfName.XRef.equals(streamType)) // Cross-reference stream [PDF:1.6:3.4.7].
           return new XRefStream(
-            dictionary,
-            new Buffer(data),
-            file
+            streamHeader,
+            new Buffer(data)
             );
         else // Generic stream.
           return new PdfStream(
-            dictionary,
+            streamHeader,
             new Buffer(data)
             );
       }

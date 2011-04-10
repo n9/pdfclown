@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -74,16 +74,12 @@ namespace org.pdfclown.documents.contents.colorSpaces
     protected Color(
       ColorSpace colorSpace,
       PdfDirectObject baseObject
-      ) : base(baseObject, null) /* TODO: container is defined:
-                                   == null: color within content stream operations;
-                                   != null: color within external structures (such as for describing acroform widget styles)
-                                 */
+      ) : base(baseObject)
     {this.colorSpace = colorSpace;}
 
     protected Color(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 

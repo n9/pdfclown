@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,20 +41,6 @@ namespace org.pdfclown.documents.contents
   public sealed class XObjectResources
     : ResourceItems<XObject>
   {
-    #region static
-    #region interface
-    internal static XObjectResources Wrap(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      )
-    {
-      return baseObject == null
-        ? null
-        : new XObjectResources(baseObject, container);
-    }
-    #endregion
-    #endregion
-
     #region dynamic
     #region constructors
     public XObjectResources(
@@ -62,10 +48,9 @@ namespace org.pdfclown.documents.contents
       ) : base(context)
     {}
 
-    private XObjectResources(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+    internal XObjectResources(
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -74,7 +59,7 @@ namespace org.pdfclown.documents.contents
     protected override XObject Wrap(
       PdfDirectObject baseObject
       )
-    {return XObject.Wrap((PdfReference)baseObject);}
+    {return XObject.Wrap(baseObject);}
     #endregion
     #endregion
     #endregion

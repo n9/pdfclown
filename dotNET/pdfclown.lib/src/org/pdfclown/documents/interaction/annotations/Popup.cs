@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -56,9 +56,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {}
 
     public Popup(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -76,14 +75,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'Open' entry may be undefined.
-        */
         PdfBoolean openObject = (PdfBoolean)BaseDataObject[PdfName.Open];
-        if(openObject == null)
-          return false;
-
-        return openObject.RawValue;
+        return openObject != null ? openObject.RawValue : false;
       }
       set
       {BaseDataObject[PdfName.Open] = PdfBoolean.Get(value);}
@@ -95,16 +88,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public Annotation Parent
     {
       get
-      {
-        /*
-          NOTE: 'Parent' entry may be undefined.
-        */
-        PdfReference parentObject = (PdfReference)BaseDataObject[PdfName.Parent];
-        if(parentObject == null)
-          return null;
-
-        return Annotation.Wrap(parentObject);
-      }
+      {return Annotation.Wrap(BaseDataObject[PdfName.Parent]);}
       set
       {BaseDataObject[PdfName.Parent] = value.BaseObject;}
     }

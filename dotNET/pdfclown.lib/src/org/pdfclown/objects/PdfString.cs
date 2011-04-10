@@ -45,7 +45,7 @@ namespace org.pdfclown.objects
     </remarks>
   */
   public class PdfString
-    : PdfAtomicObject<byte[]>,
+    : PdfSimpleObject<byte[]>,
       IDataWrapper
   {
     /*

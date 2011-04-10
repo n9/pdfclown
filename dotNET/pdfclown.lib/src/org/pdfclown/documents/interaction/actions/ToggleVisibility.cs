@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -51,19 +51,15 @@ namespace org.pdfclown.documents.interaction.actions
       Document context,
       ICollection<PdfObjectWrapper> objects,
       bool visible
-      ) : base(
-        context,
-        PdfName.Hide
-        )
+      ) : base(context, PdfName.Hide)
     {
       Objects = objects;
       Visible = visible;
     }
 
     internal ToggleVisibility(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container, null)
+      PdfDirectObject baseObject
+      ) : base(baseObject, null)
     {}
     #endregion
 
@@ -82,13 +78,10 @@ namespace org.pdfclown.documents.interaction.actions
       get
       {
         List<PdfObjectWrapper> objects = new List<PdfObjectWrapper>();
-
-        /*
-          NOTE: 'T' entry MUST exist.
-        */
-        PdfDirectObject objectsObject = BaseDataObject[PdfName.T];
-        FillObjects(objectsObject,objects);
-
+        {
+          PdfDirectObject objectsObject = BaseDataObject[PdfName.T];
+          FillObjects(objectsObject, objects);
+        }
         return objects;
       }
       set
@@ -127,14 +120,8 @@ namespace org.pdfclown.documents.interaction.actions
     {
       get
       {
-        /*
-          NOTE: 'H' entry may be undefined.
-        */
         PdfBoolean hideObject = (PdfBoolean)BaseDataObject[PdfName.H];
-        if(hideObject == null)
-          return false;
-
-        return !hideObject.RawValue;
+        return hideObject != null ? !hideObject.RawValue : false;
       }
       set
       {BaseDataObject[PdfName.H] = PdfBoolean.Get(!value);}

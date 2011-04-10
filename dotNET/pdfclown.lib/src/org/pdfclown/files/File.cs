@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -98,26 +98,6 @@ namespace org.pdfclown.files
       }
       else
         return new ResolvedObject<T>((T)obj,container.IndirectObject);
-    }
-
-    /**
-      <summary>Forces a direct object to be updated (whether possible).</summary>
-    */
-    public static bool Update(
-      PdfDirectObject obj
-      )
-    {
-      /*
-        NOTE: Only PDF references are able to be updated. Other direct types
-        are dependent on their respective containers for update.
-      */
-      if(obj is PdfReference)
-      {
-        ((PdfReference)obj).IndirectObject.Update();
-        return true;
-      }
-      else
-        return false;
     }
     #endregion
     #endregion

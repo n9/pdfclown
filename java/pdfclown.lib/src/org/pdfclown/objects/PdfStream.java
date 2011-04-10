@@ -40,7 +40,7 @@ import org.pdfclown.tokens.Symbol;
   PDF stream object [PDF:1.6:3.2.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/10/11
 */
 public class PdfStream
   extends PdfDataObject
@@ -57,6 +57,8 @@ public class PdfStream
   // <fields>
   private IBuffer body;
   private PdfDictionary header;
+
+  private PdfObject parent;
   // </fields>
 
   // <constructors>
@@ -94,7 +96,7 @@ public class PdfStream
     IBuffer body
     )
   {
-    this.header = header;
+    this.header = (PdfDictionary)include(header);
     this.body = body;
   }
   // </constructors>
@@ -106,9 +108,8 @@ public class PdfStream
     File context
     )
   {
-    PdfStream clone = (PdfStream)super.clone();
+    PdfStream clone = (PdfStream)super.clone(context);
     {
-      // Deep cloning...
       clone.header = header.clone(context);
       clone.body = body.clone();
     }
@@ -144,22 +145,21 @@ public class PdfStream
       /*
         NOTE: It defines possible encodings applied to the stream.
       */
-      PdfDirectObject filterObj = header.get(PdfName.Filter);
-      if(filterObj != null) // Stream encoded.
+      PdfDataObject filterObject = header.resolve(PdfName.Filter);
+      if(filterObject != null) // Stream encoded.
       {
         /*
           NOTE: If the stream is encoded, we must decode it before continuing.
         */
-        PdfDataObject filterDataObj = File.resolve(filterObj);
         PdfDataObject decodeParms = header.resolve(PdfName.DecodeParms);
-        if(filterDataObj instanceof PdfName) // PdfName.
+        if(filterObject instanceof PdfName) // PdfName.
         {
           PdfDictionary filterDecodeParms = (PdfDictionary)decodeParms;
-          body.decode(Filter.get((PdfName)filterDataObj), filterDecodeParms);
+          body.decode(Filter.get((PdfName)filterObject), filterDecodeParms);
         }
         else // MUST be PdfArray.
         {
-          Iterator<PdfDirectObject> filterObjIterator = ((PdfArray)filterDataObj).iterator();
+          Iterator<PdfDirectObject> filterObjIterator = ((PdfArray)filterObject).iterator();
           Iterator<PdfDirectObject> decodeParmsIterator = (decodeParms != null ? ((PdfArray)decodeParms).iterator() : null);
           while(filterObjIterator.hasNext())
           {
@@ -174,12 +174,27 @@ public class PdfStream
     return body;
   }
 
+  @Override
+  public PdfIndirectObject getContainer(
+    )
+  {return getRoot();}
+
   /**
     Gets the stream header.
   */
   public PdfDictionary getHeader(
     )
   {return header;}
+
+  @Override
+  public PdfObject getParent(
+    )
+  {return parent;}
+
+  @Override
+  public PdfIndirectObject getRoot(
+    )
+  {return (PdfIndirectObject)parent;} // NOTE: Stream root is by-definition its parent.
 
   @Override
   public void writeTo(
@@ -199,8 +214,8 @@ public class PdfStream
       That is, as encoding is just a serialization practise, it is excluded from
       alive, instanced streams.
     */
-    PdfDirectObject filterObj = header.get(PdfName.Filter);
-    if(filterObj == null) // Unencoded body.
+    PdfDirectObject filterObject = header.get(PdfName.Filter);
+    if(filterObject == null) // Unencoded body.
     {
       /*
         NOTE: As online representation is unencoded,
@@ -210,13 +225,13 @@ public class PdfStream
       unencodedBody = true;
 
       // Set the filter to apply!
-      filterObj = PdfName.FlateDecode; // zlib/deflate filter.
+      filterObject = PdfName.FlateDecode; // zlib/deflate filter.
       // Get encoded body data applying the filter to the stream!
-      bodyData = body.encode(Filter.get((PdfName)filterObj), null);
+      bodyData = body.encode(Filter.get((PdfName)filterObject), null);
       // Set encoded length!
       bodyLength = bodyData.length;
       // Update 'Filter' entry!
-      header.put(PdfName.Filter, filterObj);
+      header.put(PdfName.Filter, filterObject);
     }
     else // Encoded body.
     {
@@ -246,6 +261,27 @@ public class PdfStream
     stream.write(EndStreamBodyChunk);
   }
   // </public>
+
+  // <protected>
+  @Override
+  protected boolean isUpdated(
+    )
+  {return header.isUpdated();}
+
+  @Override
+  protected void setUpdated(
+    boolean value
+    )
+  {/* NOOP: State update is delegated to its inner objects. */}
+  // </protected>
+
+  // <internal>
+  @Override
+  void setParent(
+    PdfObject value
+    )
+  {parent = value;}
+  // </internal>
   // </interface>
   // </dynamic>
   // </class>

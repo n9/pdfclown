@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -46,16 +46,12 @@ namespace org.pdfclown.documents.interaction.actions
     */
     public ResetForm(
       Document context
-      ) : base(
-        context,
-        PdfName.ResetForm
-        )
+      ) : base(context, PdfName.ResetForm)
     {}
 
     internal ResetForm(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container, null)
+      PdfDirectObject baseObject
+      ) : base(baseObject, null)
     {}
     #endregion
 

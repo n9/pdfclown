@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -83,7 +83,6 @@ namespace org.pdfclown.tokens
     #region dynamic
     #region fields
     private SortedDictionary<int,XRefEntry> entries;
-    private File file;
     #endregion
 
     #region constructors
@@ -96,8 +95,7 @@ namespace org.pdfclown.tokens
           new PdfDirectObject[]
             {PdfName.XRef}
           ),
-        new bytes.Buffer(),
-        file
+        new bytes.Buffer()
         )
     {
       PdfDictionary header = Header;
@@ -113,10 +111,9 @@ namespace org.pdfclown.tokens
 
     public XRefStream(
       PdfDictionary header,
-      IBuffer body,
-      File file
+      IBuffer body
       ) : base(header, body)
-    {this.file = file;}
+    {}
     #endregion
 
     #region interface
@@ -431,7 +428,7 @@ namespace org.pdfclown.tokens
       {
         PdfDictionary header = Header;
         header[PdfName.Index] = indexArray;
-        header[PdfName.Size] = new PdfInteger(file.IndirectObjects.Count+1);
+        header[PdfName.Size] = new PdfInteger(File.IndirectObjects.Count+1);
         header[PdfName.W] = new PdfArray(
           new PdfInteger(entryFieldSizes[0]),
           new PdfInteger(entryFieldSizes[1]),

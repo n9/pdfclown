@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -177,29 +177,13 @@ namespace org.pdfclown.documents
     #region interface
     #region public
     public static T Resolve<T>(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
+      PdfDirectObject baseObject
       ) where T : PdfObjectWrapper
     {
       if(typeof(Destination).IsAssignableFrom(typeof(T)))
-        return Destination.Wrap(baseObject,container,null) as T;
+        return Destination.Wrap(baseObject, null) as T;
       else
         throw new NotSupportedException("Type '" + typeof(T).Name + "' wrapping is not supported.");
-    }
-
-    /**
-      <summary>Forces a named base object to be expressed as its corresponding
-      high-level representation.</summary>
-    */
-    public static T ResolveName<T>(
-      PdfDirectObject namedBaseObject,
-      PdfIndirectObject container
-      ) where T : PdfObjectWrapper
-    {
-      if(namedBaseObject is PdfString) // Named destination.
-        return container.File.Document.Names.Resolve<T>((PdfString)namedBaseObject);
-      else // Explicit destination.
-        return Resolve<T>(namedBaseObject,container);
     }
     #endregion
     #endregion
@@ -243,11 +227,8 @@ namespace org.pdfclown.documents
     }
 
     internal Document(
-      PdfDirectObject baseObject
-      ) : base(
-        baseObject,
-        null // NO container (the document catalog MUST be an indirect object [PDF:1.6:3.4.4]).
-        )
+      PdfDirectObject baseObject // Catalog.
+      ) : base(baseObject)
     {configuration = new Config(this);}
     #endregion
 
@@ -262,10 +243,7 @@ namespace org.pdfclown.documents
       get
       {
         PdfDirectObject actionsObject = BaseDataObject[PdfName.AA];
-        if(actionsObject == null)
-          return null;
-
-        return new DocumentActions(actionsObject, Container);
+        return actionsObject != null ? new DocumentActions(actionsObject) : null;
       }
       set
       {BaseDataObject[PdfName.AA] = value.BaseObject;}
@@ -279,10 +257,7 @@ namespace org.pdfclown.documents
       get
       {
         PdfDirectObject bookmarksObject = BaseDataObject[PdfName.Outlines];
-        if(bookmarksObject == null)
-          return null;
-
-        return new Bookmarks(bookmarksObject);
+        return bookmarksObject != null ? new Bookmarks(bookmarksObject) : null;
       }
       set
       {BaseDataObject[PdfName.Outlines] = value.BaseObject;}
@@ -305,36 +280,9 @@ namespace org.pdfclown.documents
     }
 
     /**
-      <summary>Clones the object within this document context.</summary>
-    */
-    public PdfObjectWrapper Contextualize(
-      PdfObjectWrapper obj
-      )
-    {
-      if(obj.File == File)
-        return obj;
-
-      return (PdfObjectWrapper)obj.Clone(this);
-    }
-
-    /**
-      <summary>Clones the collection objects within this document context.</summary>
-    */
-    public ICollection<T> Contextualize<T>(
-      ICollection<T> objs
-      ) where T : PdfObjectWrapper
-    {
-      List<T> contextualizedObjects = new List<T>(objs.Count);
-      foreach(T obj in objs)
-      {contextualizedObjects.Add((T)Contextualize(obj));}
-
-      return (ICollection<T>)contextualizedObjects;
-    }
-
-    /**
       <summary>Drops the object from this document context.</summary>
     */
-    public void Decontextualize(
+    public void Exclude(
       PdfObjectWrapper obj
       )
     {
@@ -347,12 +295,12 @@ namespace org.pdfclown.documents
     /**
       <summary>Drops the collection's objects from this document context.</summary>
     */
-    public void Decontextualize<T>(
+    public void Exclude<T>(
       ICollection<T> objs
       ) where T : PdfObjectWrapper
     {
       foreach(T obj in objs)
-      {Decontextualize(obj);}
+      {Exclude(obj);}
     }
 
     /**
@@ -364,10 +312,7 @@ namespace org.pdfclown.documents
       get
       {
         PdfDirectObject formObject = BaseDataObject[PdfName.AcroForm];
-        if(formObject == null)
-          return null;
-
-        return new Form(formObject, Container);
+        return formObject != null ? new Form(formObject) : null;
       }
       set
       {BaseDataObject[PdfName.AcroForm] = value.BaseObject;}
@@ -391,6 +336,33 @@ namespace org.pdfclown.documents
     }
 
     /**
+      <summary>Clones the object within this document context.</summary>
+    */
+    public PdfObjectWrapper Include(
+      PdfObjectWrapper obj
+      )
+    {
+      if(obj.File == File)
+        return obj;
+
+      return (PdfObjectWrapper)obj.Clone(this);
+    }
+
+    /**
+      <summary>Clones the collection objects within this document context.</summary>
+    */
+    public ICollection<T> Include<T>(
+      ICollection<T> objs
+      ) where T : PdfObjectWrapper
+    {
+      List<T> includedObjects = new List<T>(objs.Count);
+      foreach(T obj in objs)
+      {includedObjects.Add((T)Include(obj));}
+
+      return (ICollection<T>)includedObjects;
+    }
+
+    /**
       <summary>Gets/Sets the document information dictionary [PDF:1.6:10.2.1].</summary>
     */
     public Information Information
@@ -398,10 +370,7 @@ namespace org.pdfclown.documents
       get
       {
         PdfDirectObject informationObject = File.Trailer[PdfName.Info];
-        if(informationObject == null)
-          return null;
-
-        return new Information(informationObject);
+        return informationObject != null ? new Information(informationObject) : null;
       }
       set
       {File.Trailer[PdfName.Info] = value.BaseObject;}
@@ -416,10 +385,7 @@ namespace org.pdfclown.documents
       get
       {
         PdfDirectObject namesObject = BaseDataObject[PdfName.Names];
-        if(namesObject == null)
-          return null;
-
-        return new Names(namesObject, Container);
+        return namesObject != null ? new Names(namesObject) : null;
       }
       set
       {BaseDataObject[PdfName.Names] = value.BaseObject;}
@@ -529,18 +495,13 @@ namespace org.pdfclown.documents
     {
       get
       {
-        /*
-          NOTE: Due to the contract,
-          we cannot force the existence of the default media box at document level.
-        */
         PdfArray mediaBox = MediaBox;
-        if(mediaBox == null)
-          return null;
-
-        return new drawing::Size(
-          (int)((IPdfNumber)mediaBox[2]).RawValue,
-          (int)((IPdfNumber)mediaBox[3]).RawValue
-          );
+        return mediaBox != null
+          ? new drawing::Size(
+            (int)((IPdfNumber)mediaBox[2]).RawValue,
+            (int)((IPdfNumber)mediaBox[3]).RawValue
+            )
+          : (drawing::Size?)null;
       }
       set
       {
@@ -558,6 +519,20 @@ namespace org.pdfclown.documents
     }
 
     /**
+      <summary>Forces a named base object to be expressed as its corresponding
+      high-level representation.</summary>
+    */
+    public T ResolveName<T>(
+      PdfDirectObject namedBaseObject
+      ) where T : PdfObjectWrapper
+    {
+      if(namedBaseObject is PdfString) // Named object.
+        return Names.Resolve<T>((PdfString)namedBaseObject);
+      else // Explicit object.
+        return Resolve<T>(namedBaseObject);
+    }
+
+    /**
       <summary>Gets/Sets the default resource collection [PDF:1.6:3.6.2].</summary>
       <remarks>The default resource collection is used as last resort by every page
       that doesn't reference one explicitly (and doesn't reference an intermediate one
@@ -568,10 +543,7 @@ namespace org.pdfclown.documents
       get
       {
         PdfReference pagesReference = (PdfReference)BaseDataObject[PdfName.Pages];
-        return Resources.Wrap(
-          ((PdfDictionary)File.Resolve(pagesReference))[PdfName.Resources],
-          pagesReference.IndirectObject
-          );
+        return Resources.Wrap(((PdfDictionary)File.Resolve(pagesReference))[PdfName.Resources]);
       }
       set
       {
@@ -619,10 +591,7 @@ namespace org.pdfclown.documents
       get
       {
         PdfDirectObject viewerPreferencesObject = BaseDataObject[PdfName.ViewerPreferences];
-        if(viewerPreferencesObject == null)
-          return null;
-
-        return new ViewerPreferences(viewerPreferencesObject, Container);
+        return viewerPreferencesObject != null ? new ViewerPreferences(viewerPreferencesObject) : null;
       }
       set
       {BaseDataObject[PdfName.ViewerPreferences] = value.BaseObject;}

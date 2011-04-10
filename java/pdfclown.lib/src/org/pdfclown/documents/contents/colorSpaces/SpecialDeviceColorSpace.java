@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,7 +33,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.functions.Function;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 
@@ -41,7 +40,7 @@ import org.pdfclown.objects.PdfNumber;
   Special device color space [PDF:1.6:4.5.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class SpecialDeviceColorSpace
@@ -64,10 +63,9 @@ public abstract class SpecialDeviceColorSpace
   //TODO:IMPL new element constructor!
 
   protected SpecialDeviceColorSpace(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -78,12 +76,7 @@ public abstract class SpecialDeviceColorSpace
   */
   public ColorSpace<?> getAlternateSpace(
     )
-  {
-    return ColorSpace.wrap(
-      getBaseDataObject().get(2),
-      getContainer()
-      );
-  }
+  {return ColorSpace.wrap(getBaseDataObject().get(2));}
 
   /**
     Gets the <b>names of the color components</b>.
@@ -125,12 +118,7 @@ public abstract class SpecialDeviceColorSpace
   */
   public Function<?> getTintFunction(
     )
-  {
-    return Function.wrap(
-      getBaseDataObject().get(3),
-      getContainer()
-      );
-  }
+  {return Function.wrap(getBaseDataObject().get(3));}
   // </public>
   // </interface>
   // </dynamic>

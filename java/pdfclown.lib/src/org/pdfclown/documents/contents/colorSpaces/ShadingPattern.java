@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,7 +30,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.contents.ExtGState;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 
 /**
@@ -39,7 +38,7 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF13)
 public final class ShadingPattern
@@ -51,10 +50,9 @@ public final class ShadingPattern
   //TODO:IMPL new element constructor!
 
   ShadingPattern(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -68,24 +66,14 @@ public final class ShadingPattern
    */
   public ExtGState getExtGState(
     )
-  {
-    return ExtGState.wrap(
-      getBaseDataObject().get(PdfName.ExtGState),
-      getContainer()
-      );
-  }
+  {return ExtGState.wrap(getBaseDataObject().get(PdfName.ExtGState));}
 
   /**
     Gets a <b>shading object</b> defining the shading pattern's gradient fill.
   */
   public Shading<?> getShading(
     )
-  {
-    return Shading.wrap(
-      getBaseDataObject().get(PdfName.Shading),
-      getContainer()
-      );
-  }
+  {return Shading.wrap(getBaseDataObject().get(PdfName.Shading));}
   // </public>
   // </interface>
   // </dynamic>

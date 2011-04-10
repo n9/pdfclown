@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,7 +47,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
       in the ColorSpace subdictionary of the contextual resource dictionary) [PDF:1.6:4.5.7].
     */
     //TODO:verify parameters!!!
-    public static readonly PatternColorSpace Default = new PatternColorSpace((PdfDirectObject)null,null);
+    public static readonly PatternColorSpace Default = new PatternColorSpace(null);
     #endregion
     #endregion
 
@@ -56,9 +56,8 @@ namespace org.pdfclown.documents.contents.colorSpaces
     //TODO:IMPL new element constructor!
 
     internal PatternColorSpace(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -130,7 +129,7 @@ return null;
         {
           PdfArray baseArrayObject = (PdfArray)baseDataObject;
           if(baseArrayObject.Count > 1)
-            return ColorSpace.Wrap(baseArrayObject[1], Container);
+            return ColorSpace.Wrap(baseArrayObject[1]);
         }
         return null;
       }

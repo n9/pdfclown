@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -53,10 +53,11 @@ import org.pdfclown.util.NotImplementedException;
   across a B-tree instead of a flat <code>PdfArray</code> and so on.</p>
   <p>So, <i>in order to hide all these annoying inner workings, I chose to adopt a composition pattern instead of
   the apparently-reasonable (but actually awkward!) inheritance pattern</i>.
-  Nonetheless, users can navigate through the low-level structure accessing the {@link #getBaseDataObject()} method.</p>
+  Nonetheless, users can navigate through the low-level structure getting the {@link #getBaseDataObject() baseDataObject}
+  backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
 {
@@ -69,29 +70,30 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   // </fields>
 
   // <constructors>
+  /**
+    Creates a new wrapper into the specified file context.
+
+    @param context File context into which the specified data object has to be registered.
+    @param baseDataObject PDF data object backing this wrapper.
+  */
   protected PdfObjectWrapper(
     File context,
     TDataObject baseDataObject
     )
-  {
-    this(
-      context.register(baseDataObject),
-      null
-      );
-  }
+  {this(context.register(baseDataObject));}
 
   /**
-    @param baseObject Base PDF object. MUST be a {@link PdfReference PdfReference}
+    Instantiates a wrapper in case of reference or mutable data object.
+
+    @param baseObject PDF object backing this wrapper. MUST be a {@link PdfReference reference}
     everytime available.
-    @param container Indirect object containing the base object.
   */
   protected PdfObjectWrapper(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
   {
     setBaseObject(baseObject);
-    setContainer(container);
+    container = (baseObject != null ? baseObject.getContainer() : null);
   }
   // </constructors>
 
@@ -164,13 +166,6 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   public File getFile(
     )
   {return container.getFile();}
-
-  /**
-    Manually update the underlying indirect object.
-  */
-  public void update(
-    )
-  {container.update();}
   // </public>
 
   // <protected>
@@ -318,26 +313,11 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   protected void setBaseObject(
     PdfDirectObject value
     )
-  {
+  {//TODO: assignment should trigger container.setDataObject!!!
     baseObject = value;
     baseDataObject = (TDataObject)File.resolve(baseObject);
   }
   // </protected>
-
-  // <internal>
-  /**
-    For internal use only.
-  */
-  public void setContainer(
-    PdfIndirectObject value
-    )
-  {
-    if(baseObject instanceof PdfReference) // Base object is indirect (self-contained).
-    {container = ((PdfReference)baseObject).getIndirectObject();}
-    else // Base object is direct (contained).
-    {container = value;}
-  }
-  // </internal>
   // </interface>
   // </dynamic>
   // </class>

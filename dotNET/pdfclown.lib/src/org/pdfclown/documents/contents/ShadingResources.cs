@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,20 +40,6 @@ namespace org.pdfclown.documents.contents
   public sealed class ShadingResources
     : ResourceItems<Shading>
   {
-    #region static
-    #region interface
-    internal static ShadingResources Wrap(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      )
-    {
-      return baseObject == null
-        ? null
-        : new ShadingResources(baseObject, container);
-    }
-    #endregion
-    #endregion
-
     #region dynamic
     #region constructors
     public ShadingResources(
@@ -61,10 +47,9 @@ namespace org.pdfclown.documents.contents
       ) : base(context)
     {}
 
-    private ShadingResources(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+    internal ShadingResources(
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -73,7 +58,7 @@ namespace org.pdfclown.documents.contents
     protected override Shading Wrap(
       PdfDirectObject baseObject
       )
-    {return Shading.Wrap(baseObject, Container);}
+    {return Shading.Wrap(baseObject);}
     #endregion
     #endregion
     #endregion

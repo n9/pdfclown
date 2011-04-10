@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -199,14 +199,10 @@ namespace org.pdfclown.objects
             {
               // 2. Object found.
               PdfString key = (PdfString)names[levelIndex];
-              TValue value = nameTree.Wrap(
-                names[levelIndex + 1],
-                container,
-                key
-                );
+              TValue value = nameTree.Wrap(names[levelIndex + 1], key);
               levelIndex+=2;
 
-              return new KeyValuePair<PdfString,TValue>(key,value);
+              return new KeyValuePair<PdfString,TValue>(key, value);
             }
           }
         }
@@ -222,11 +218,13 @@ namespace org.pdfclown.objects
     {
       void Add(
         PdfArray names,
-        int offset,
-        PdfIndirectObject container
+        int offset
         );
+
       ICollection<TObject> Collection
-      {get;}
+      {
+        get;
+      }
     }
 
     private class KeysFiller
@@ -236,8 +234,7 @@ namespace org.pdfclown.objects
 
       public void Add(
         PdfArray names,
-        int offset,
-        PdfIndirectObject container
+        int offset
         )
       {
         keys.Add(
@@ -246,7 +243,10 @@ namespace org.pdfclown.objects
       }
 
       public ICollection<PdfString> Collection
-      {get{return keys;}}
+      {
+        get
+        {return keys;}
+      }
     }
 
     private class ValuesFiller
@@ -255,26 +255,29 @@ namespace org.pdfclown.objects
       private NameTree<TValue> nameTree;
       private ICollection<TValue> values = new List<TValue>();
 
-      internal ValuesFiller(NameTree<TValue> nameTree)
+      internal ValuesFiller(
+        NameTree<TValue> nameTree
+        )
       {this.nameTree = nameTree;}
 
       public void Add(
         PdfArray names,
-        int offset,
-        PdfIndirectObject container
+        int offset
         )
       {
         values.Add(
           nameTree.Wrap(
             names[offset + 1],
-            container,
             (PdfString)names[offset]
             )
           );
       }
 
       public ICollection<TValue> Collection
-      {get{return values;}}
+      {
+        get
+        {return values;}
+      }
     }
     #endregion
     #endregion
@@ -312,20 +315,16 @@ namespace org.pdfclown.objects
         context.File,
         new PdfDictionary(
           new PdfName[]
-          { PdfName.Names },
+          {PdfName.Names},
           new PdfDirectObject[]
-          { new PdfArray() }
+          {new PdfArray()}
           ) // NOTE: Initial root is by-definition a leaf node.
         )
     {}
 
     public NameTree(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(
-        baseObject,
-        container
-        )
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -378,12 +377,11 @@ namespace org.pdfclown.objects
     {
       get
       {
-        PdfDirectObject containerObject = BaseObject;
         PdfDictionary parent = BaseDataObject;
         while(true)
         {
-          PdfDirectObject namesObject = parent[PdfName.Names];
-          if(namesObject == null) // Intermediate node.
+          PdfArray names = (PdfArray)parent.Resolve(PdfName.Names);
+          if(names == null) // Intermediate node.
           {
             PdfArray kids = (PdfArray)File.Resolve(parent[PdfName.Kids]);
             int low = 0, high = kids.Count - 1;
@@ -393,27 +391,21 @@ namespace org.pdfclown.objects
                 return null;
 
               int mid = (low + high) / 2;
-              PdfDirectObject kidObject = kids[mid];
-              PdfDictionary kid = (PdfDictionary)File.Resolve(kidObject);
-              PdfArray limits = (PdfArray)File.Resolve(kid[PdfName.Limits]);
+              PdfDictionary kid = (PdfDictionary)kids.Resolve(mid);
+              PdfArray limits = (PdfArray)kid.Resolve(PdfName.Limits);
               // Compare to the lower limit!
-              int comparison = key.CompareTo(
-                (PdfString)limits[0]
-                );
+              int comparison = key.CompareTo(limits[0]);
               if(comparison < 0)
               {high = mid - 1;}
               else
               {
                 // Compare to the upper limit!
-                comparison = key.CompareTo(
-                  (PdfString)limits[1]
-                  );
+                comparison = key.CompareTo(limits[1]);
                 if(comparison > 0)
                 {low = mid + 1;}
                 else
                 {
                   // Go down one level!
-                  containerObject = kidObject; // NOTE: Node children MUST be indirectly referenced.
                   parent = kid;
                   break;
                 }
@@ -422,10 +414,6 @@ namespace org.pdfclown.objects
           }
           else // Leaf node.
           {
-            if(namesObject is PdfReference)
-            {containerObject = namesObject;}
-
-            PdfArray names = (PdfArray)File.Resolve(namesObject);
             int low = 0, high = names.Count;
             while(true)
             {
@@ -433,9 +421,7 @@ namespace org.pdfclown.objects
                 return null;
 
               int mid = (mid = ((low + high) / 2)) - (mid % 2);
-              int comparison = key.CompareTo(
-                (PdfString)names[mid]
-                );
+              int comparison = key.CompareTo(names[mid]);
               if(comparison < 0)
               {high = mid - 2;}
               else if(comparison > 0)
@@ -445,7 +431,6 @@ namespace org.pdfclown.objects
                 // We got it!
                 return Wrap(
                   names[mid + 1],
-                  ((PdfReference)containerObject).IndirectObject,
                   (PdfString)names[mid]
                   );
               }
@@ -463,7 +448,6 @@ namespace org.pdfclown.objects
       )
     {
       value = this[key];
-
       return value != null;
     }
 
@@ -503,10 +487,16 @@ namespace org.pdfclown.objects
     {throw new NotImplementedException();}
 
     public int Count
-    {get{return GetCount(BaseDataObject);}}
+    {
+      get
+      {return GetCount(BaseDataObject);}
+    }
 
     public bool IsReadOnly
-    {get{return false;}}
+    {
+      get
+      {return false;}
+    }
 
     public bool Remove(
       KeyValuePair<PdfString,TValue> keyValuePair
@@ -534,7 +524,6 @@ namespace org.pdfclown.objects
     */
     protected abstract TValue Wrap(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       PdfString name
       );
     #endregion
@@ -585,12 +574,7 @@ namespace org.pdfclown.objects
       }
 
       // Set the entry under the root node!
-      Add(
-        key,
-        value,
-        overwrite,
-        root
-        );
+      Add(key, value, overwrite, root);
     }
 
     /**
@@ -618,9 +602,9 @@ namespace org.pdfclown.objects
           int mid = (low + high) / 2;
           PdfDictionary kid = (PdfDictionary)File.Resolve(children[mid]);
           PdfArray limits = (PdfArray)File.Resolve(kid[PdfName.Limits]);
-          if(key.CompareTo((PdfString)limits[0]) < 0) // Before the lower limit.
+          if(key.CompareTo(limits[0]) < 0) // Before the lower limit.
           {high = mid - 1;}
-          else if(key.CompareTo((PdfString)limits[1]) > 0) // After the upper limit.
+          else if(key.CompareTo(limits[1]) > 0) // After the upper limit.
           {low = mid + 1;}
           else // Limit range matched.
           {matched = true;}
@@ -644,18 +628,9 @@ namespace org.pdfclown.objects
               {kid = (PdfDictionary)File.Resolve(children[mid]);}
             }
 
-            Add(
-              key,
-              value,
-              overwrite,
-              kid
-              );
+            Add(key, value, overwrite, kid);
             // Update the key limits!
-            UpdateNodeLimits(
-              node,
-              children,
-              PdfName.Kids
-              );
+            UpdateNodeLimits(node, children, PdfName.Kids);
             break;
           }
         }
@@ -675,9 +650,7 @@ namespace org.pdfclown.objects
             break;
           }
 
-          int comparison = key.CompareTo(
-            (PdfString)children[mid]
-            );
+          int comparison = key.CompareTo(children[mid]);
           if(comparison < 0) // Before.
           {high = mid - 2;}
           else if(comparison > 0) // After.
@@ -701,11 +674,7 @@ namespace org.pdfclown.objects
           }
         }
         // Update the key limits!
-        UpdateNodeLimits(
-          node,
-          children,
-          PdfName.Names
-          );
+        UpdateNodeLimits(node, children, PdfName.Names);
       }
     }
 
@@ -762,8 +731,7 @@ namespace org.pdfclown.objects
         {
           filler.Add(
             namesObject.DataObject,
-            index,
-            namesObject.Container
+            index
             );
         }
       }
@@ -872,16 +840,8 @@ namespace org.pdfclown.objects
       }
 
       // Update the key limits!
-      UpdateNodeLimits(
-        newNode,
-        newNodeChildren,
-        childrenTypeName
-        );
-      UpdateNodeLimits(
-        fullNode,
-        fullNodeChildren,
-        childrenTypeName
-        );
+      UpdateNodeLimits(newNode, newNodeChildren, childrenTypeName);
+      UpdateNodeLimits(fullNode, fullNodeChildren, childrenTypeName);
     }
 
     /**

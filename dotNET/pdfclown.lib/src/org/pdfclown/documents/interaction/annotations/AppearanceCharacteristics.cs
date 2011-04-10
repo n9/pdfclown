@@ -209,9 +209,8 @@ namespace org.pdfclown.documents.interaction.annotations
       {}
 
       public IconFitObject(
-        PdfDirectObject baseObject,
-        PdfIndirectObject container
-        ) : base(baseObject,container)
+        PdfDirectObject baseObject
+        ) : base(baseObject)
       {}
       #endregion
 
@@ -403,9 +402,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {}
 
     public AppearanceCharacteristics(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -425,14 +423,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'AC' entry may be undefined.
-        */
         PdfTextString alternateCaptionObject = (PdfTextString)BaseDataObject[PdfName.AC];
-        if(alternateCaptionObject == null)
-          return null;
-
-        return (string)alternateCaptionObject.Value;
+        return alternateCaptionObject != null ? (string)alternateCaptionObject.Value : null;
       }
       set
       {BaseDataObject[PdfName.AC] = new PdfTextString(value);}
@@ -447,14 +439,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'IX' entry may be undefined (anyway, MUST be an indirect reference).
-        */
         PdfReference alternateIconObject = (PdfReference)BaseDataObject[PdfName.IX];
-        if(alternateIconObject == null)
-          return null;
-
-        return new FormXObject(alternateIconObject);
+        return alternateIconObject != null ? new FormXObject(alternateIconObject) : null;
       }
       set
       {BaseDataObject[PdfName.IX] = value.BaseObject;}
@@ -489,14 +475,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'TP' entry may be undefined.
-        */
         PdfInteger captionPositionObject = (PdfInteger)BaseDataObject[PdfName.TP];
-        if(captionPositionObject == null)
-          return CaptionPositionEnum.CaptionOnly;
-
-        return (CaptionPositionEnum)captionPositionObject.RawValue;
+        return captionPositionObject != null ? (CaptionPositionEnum)captionPositionObject.RawValue : CaptionPositionEnum.CaptionOnly;
       }
       set
       {BaseDataObject[PdfName.TP] = new PdfInteger((int)value);}
@@ -512,14 +492,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'IF' entry may be undefined.
-        */
         PdfDirectObject iconFitObject = BaseDataObject[PdfName.IF];
-        if(iconFitObject == null)
-          return null;
-
-        return new IconFitObject(iconFitObject,Container);
+        return iconFitObject != null ? new IconFitObject(iconFitObject) : null;
       }
       set
       {BaseDataObject[PdfName.IF] = value.BaseObject;}
@@ -533,14 +507,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'CA' entry may be undefined.
-        */
         PdfTextString normalCaptionObject = (PdfTextString)BaseDataObject[PdfName.CA];
-        if(normalCaptionObject == null)
-          return null;
-
-        return (string)normalCaptionObject.Value;
+        return normalCaptionObject != null ? (string)normalCaptionObject.Value : null;
       }
       set
       {BaseDataObject[PdfName.CA] = new PdfTextString(value);}
@@ -554,14 +522,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'I' entry may be undefined (anyway, MUST be an indirect reference).
-        */
         PdfReference normalIconObject = (PdfReference)BaseDataObject[PdfName.I];
-        if(normalIconObject == null)
-          return null;
-
-        return new FormXObject(normalIconObject);
+        return normalIconObject != null ? new FormXObject(normalIconObject) : null;
       }
       set
       {BaseDataObject[PdfName.I] = value.BaseObject;}
@@ -574,14 +536,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'R' entry may be undefined.
-        */
         PdfInteger orientationObject = (PdfInteger)BaseDataObject[PdfName.R];
-        if(orientationObject == null)
-          return OrientationEnum.Up;
-
-        return (OrientationEnum)orientationObject.RawValue;
+        return orientationObject != null ? (OrientationEnum)orientationObject.RawValue : OrientationEnum.Up;
       }
       set
       {BaseDataObject[PdfName.R] = new PdfInteger((int)value);}
@@ -596,14 +552,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'RC' entry may be undefined.
-        */
         PdfTextString rolloverCaptionObject = (PdfTextString)BaseDataObject[PdfName.RC];
-        if(rolloverCaptionObject == null)
-          return null;
-
-        return (string)rolloverCaptionObject.Value;
+        return rolloverCaptionObject != null ? (string)rolloverCaptionObject.Value : null;
       }
       set
       {BaseDataObject[PdfName.RC] = new PdfTextString(value);}
@@ -618,14 +568,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'RI' entry may be undefined (anyway, MUST be an indirect reference).
-        */
         PdfReference rolloverIconObject = (PdfReference)BaseDataObject[PdfName.RI];
-        if(rolloverIconObject == null)
-          return null;
-
-        return new FormXObject(rolloverIconObject);
+        return rolloverIconObject != null ? new FormXObject(rolloverIconObject) : null;
       }
       set
       {BaseDataObject[PdfName.RI] = value.BaseObject;}

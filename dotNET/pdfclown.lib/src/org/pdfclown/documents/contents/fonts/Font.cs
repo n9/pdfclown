@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -142,16 +142,17 @@ namespace org.pdfclown.documents.contents.fonts
 
     /**
       <summary>Wraps a font reference into a font object.</summary>
-      <param name="reference">Reference to a font object.</param>
+      <param name="baseObject">Font base object.</param>
       <returns>Font object associated to the reference.</returns>
     */
     public static Font Wrap(
-      PdfReference reference
+      PdfDirectObject baseObject
       )
     {
-      if(reference == null)
+      if(baseObject == null)
         return null;
 
+      PdfReference reference = (PdfReference)baseObject;
       {
         // Has the font been already instantiated?
         /*
@@ -268,10 +269,7 @@ namespace org.pdfclown.documents.contents.fonts
     */
     protected Font(
       PdfDirectObject baseObject
-      ) : base(
-        baseObject,
-        null // NO container. NOTE: this is a simplification (the spec [PDF:1.6] doesn't apparently prescribe the use of an indirect object for font dictionary, whilst the general practice is as such. If an exception occurs, you'll need to specify the proper container).
-        )
+      ) : base(baseObject)
     {
       Initialize();
       Load();

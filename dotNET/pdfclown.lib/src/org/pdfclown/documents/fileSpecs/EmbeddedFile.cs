@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -87,10 +87,7 @@ namespace org.pdfclown.documents.fileSpecs
     */
     internal EmbeddedFile(
       PdfDirectObject baseObject
-      ) : base(
-        baseObject,
-        null // NO container (baseObject is (by definition) a PDF stream, so it MUST be an indirect object [PDF:1.6:3.2.7]).
-        )
+      ) : base(baseObject)
     {}
     #endregion
 

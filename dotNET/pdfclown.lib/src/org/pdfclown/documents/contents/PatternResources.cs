@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,20 +40,6 @@ namespace org.pdfclown.documents.contents
   public sealed class PatternResources
     : ResourceItems<Pattern>
   {
-    #region static
-    #region interface
-    internal static PatternResources Wrap(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      )
-    {
-      return baseObject == null
-        ? null
-        : new PatternResources(baseObject, container);
-    }
-    #endregion
-    #endregion
-
     #region dynamic
     #region constructors
     public PatternResources(
@@ -61,10 +47,9 @@ namespace org.pdfclown.documents.contents
       ) : base(context)
     {}
 
-    private PatternResources(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+    internal PatternResources(
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -73,7 +58,7 @@ namespace org.pdfclown.documents.contents
     protected override Pattern Wrap(
       PdfDirectObject baseObject
       )
-    {return Pattern.Wrap(baseObject, Container);}
+    {return Pattern.Wrap(baseObject);}
     #endregion
     #endregion
     #endregion

@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -26,8 +26,8 @@
 package org.pdfclown.tools;
 
 import org.pdfclown.documents.Page;
-import org.pdfclown.documents.contents.Contents;
 import org.pdfclown.documents.contents.ContentScanner;
+import org.pdfclown.documents.contents.Contents;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.objects.RestoreGraphicsState;
 import org.pdfclown.documents.contents.objects.SaveGraphicsState;
@@ -36,14 +36,13 @@ import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfStream;
 
 /**
   Tool for content insertion into existing pages.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public final class PageStamper
 {
@@ -92,34 +91,22 @@ public final class PageStamper
         streams = new PdfArray();
         streams.add(contentsObject);
         page.getBaseDataObject().put(PdfName.Contents,streams);
-
-        page.update(); // Fundamental to override original page contents collection.
       }
       else
-      {
-        streams = (PdfArray)contentsDataObject;
-
-        if(!File.update(contentsObject))
-        {page.update();} // Fundamental to override original page contents collection.
-      }
+      {streams = (PdfArray)contentsDataObject;}
     }
 
     // Background.
     // Serialize the content!
     background.flush();
     // Insert the serialized content into the page's content stream!
-    streams.add(
-      0,
-      (PdfReference)background.getScanner().getContents().getBaseObject()
-      );
+    streams.add(0, background.getScanner().getContents().getBaseObject());
 
     // Foreground.
     // Serialize the content!
     foreground.flush();
     // Append the serialized content into the page's content stream!
-    streams.add(
-      (PdfReference)foreground.getScanner().getContents().getBaseObject()
-      );
+    streams.add(foreground.getScanner().getContents().getBaseObject());
   }
 
   public PrimitiveComposer getBackground(
@@ -169,13 +156,10 @@ public final class PageStamper
   private PrimitiveComposer createFilter(
     )
   {
-    PdfReference reference = page.getFile().register(new PdfStream());
-
     return new PrimitiveComposer(
       new ContentScanner(
         new Contents(
-          reference,
-          reference.getIndirectObject(),
+          page.getFile().register(new PdfStream()),
           page
           )
         )

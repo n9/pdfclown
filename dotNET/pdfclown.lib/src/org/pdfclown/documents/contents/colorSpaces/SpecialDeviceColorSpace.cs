@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -57,9 +57,8 @@ namespace org.pdfclown.documents.contents.colorSpaces
     //TODO:IMPL new element constructor!
 
     internal SpecialDeviceColorSpace(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -72,12 +71,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     public ColorSpace AlternateSpace
     {
       get
-      {
-        return ColorSpace.Wrap(
-          ((PdfArray)BaseDataObject)[2],
-          Container
-          );
-      }
+      {return ColorSpace.Wrap(((PdfArray)BaseDataObject)[2]);}
     }
 
     /**
@@ -113,12 +107,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     public Function TintFunction
     {
       get
-      {
-        return Function.Wrap(
-          ((PdfArray)BaseDataObject)[3],
-          Container
-          );
-      }
+      {return Function.Wrap(((PdfArray)BaseDataObject)[3]);}
     }
     #endregion
     #endregion

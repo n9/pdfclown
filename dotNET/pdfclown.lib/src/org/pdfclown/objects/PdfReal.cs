@@ -34,7 +34,7 @@ namespace org.pdfclown.objects
     <summary>PDF real number object [PDF:1.6:3.2.2].</summary>
   */
   public sealed class PdfReal
-    : PdfAtomicObject<float>,
+    : PdfSimpleObject<float>,
       IPdfNumber
   {
     #region static

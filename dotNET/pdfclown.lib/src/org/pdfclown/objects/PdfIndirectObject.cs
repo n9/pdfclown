@@ -52,6 +52,8 @@ namespace org.pdfclown.objects
     private bool original;
     private PdfReference reference;
     private XRefEntry xrefEntry;
+
+    private bool updated;
     #endregion
 
     #region constructors
@@ -79,7 +81,7 @@ namespace org.pdfclown.objects
       )
     {
       this.file = file;
-      this.dataObject = dataObject;
+      this.dataObject = Include(dataObject);
       this.xrefEntry = xrefEntry;
 
       this.original = (xrefEntry.Offset != 0);
@@ -96,35 +98,37 @@ namespace org.pdfclown.objects
     /**
       <summary>Adds the <see cref="DataObject">data object</see> to the specified object stream
       [PDF:1.6:3.4.6].</summary>
-      <param name="objectStreamIndirectObject">Target object stream.</param>
+      <param name="objectStream">Target object stream.</param>
      */
     public void Compress(
-      PdfIndirectObject objectStreamIndirectObject
+      ObjectStream objectStream
       )
     {
-      if(objectStreamIndirectObject == null)
-      {Uncompress();}
-      else
+      // Remove from previous object stream!
+      Uncompress();
+
+      if(objectStream != null)
       {
-        PdfDataObject objectStreamDataObject = objectStreamIndirectObject.DataObject;
-        if(!(objectStreamDataObject is ObjectStream))
-          throw new ArgumentException("MUST contain an ObjectStream instance.","objectStreamIndirectObject");
-
-        // Ensure removal from previous object stream!
-        Uncompress();
-
         // Add to the object stream!
-        ObjectStream objectStream = (ObjectStream)objectStreamDataObject;
         objectStream[xrefEntry.Number] = DataObject;
         // Update its xref entry!
         xrefEntry.Usage = XRefEntry.UsageEnum.InUseCompressed;
-        xrefEntry.StreamNumber = objectStreamIndirectObject.Reference.ObjectNumber;
+        xrefEntry.StreamNumber = objectStream.Container.Reference.ObjectNumber;
         xrefEntry.Offset = -1; // Internal object index unknown (to set on object stream serialization -- see ObjectStream).
       }
     }
 
-    public File File
-    {get{return file;}}
+    public override PdfIndirectObject Container
+    {
+      get
+      {return this;}
+    }
+
+    public override File File
+    {
+      get
+      {return file;}
+    }
 
     public override int GetHashCode(
       )
@@ -159,6 +163,20 @@ namespace org.pdfclown.objects
       )
     {return original;}
 
+    public override PdfObject Parent
+    {
+      get
+      {return null;} // NOTE: As indirect objects are root objects, no parent can be associated.
+      internal set
+      {/* NOOP: As indirect objects are root objects, no parent can be associated. */}
+    }
+
+    public override PdfIndirectObject Root
+    {
+      get
+      {return null;} // NOTE: As indirect objects are root objects, no root can be associated.
+    }
+
     /**
       <summary>Removes the <see cref="DataObject">data object</see> from its object stream [PDF:1.6:3.4.6].</summary>
     */
@@ -175,20 +193,6 @@ namespace org.pdfclown.objects
       xrefEntry.Usage = XRefEntry.UsageEnum.InUse;
       xrefEntry.StreamNumber = -1; // No object stream.
       xrefEntry.Offset = -1; // Offset unknown (to set on file serialization -- see CompressedWriter).
-    }
-
-    public void Update(
-      )
-    {
-      if(original)
-      {
-        /*
-          NOTE: It's expected that DropOriginal() is invoked by IndirectObjects indexer;
-          such an action is delegated because clients may invoke directly the indexer skipping
-          this method.
-        */
-        file.IndirectObjects.Update(this);
-      }
     }
 
     public override void WriteTo(
@@ -235,7 +239,7 @@ namespace org.pdfclown.objects
                 // Retrieve the associated data object among the original objects!
                 parser.Seek(xrefEntry.Offset);
                 // Get the indirect data object!
-                dataObject = parser.ParsePdfObject(4); // NOTE: Skips the indirect-object header.
+                dataObject = Include(parser.ParsePdfObject(4)); // NOTE: Skips the indirect-object header.
                 break;
               }
               case XRefEntry.UsageEnum.InUseCompressed:
@@ -243,7 +247,7 @@ namespace org.pdfclown.objects
                 // Get the object stream where its data object is stored!
                 ObjectStream objectStream = (ObjectStream)file.IndirectObjects[xrefEntry.StreamNumber].DataObject;
                 // Get the indirect data object!
-                dataObject = objectStream[xrefEntry.Number];
+                dataObject = Include(objectStream[xrefEntry.Number]);
                 break;
               }
             }
@@ -258,7 +262,7 @@ namespace org.pdfclown.objects
         if(xrefEntry.Generation == XRefEntry.GenerationUnreusable)
           throw new Exception("Unreusable entry.");
 
-        dataObject = value;
+        dataObject = Include(value);
         xrefEntry.Usage = XRefEntry.UsageEnum.InUse;
         Update();
       }
@@ -279,11 +283,38 @@ namespace org.pdfclown.objects
     }
 
     public PdfIndirectObject IndirectObject
-    {get{return this;}}
+    {
+      get
+      {return this;}
+    }
 
     public PdfReference Reference
-    {get{return reference;}}
+    {
+      get
+      {return reference;}
+    }
     #endregion
+    #endregion
+
+    #region protected
+    protected internal override bool Updated
+    {
+      get
+      {return updated;} //FIXME: In case of dataObject instanceof PdfStream, body buffer update is NOT notified!!!
+      set
+      {
+        if(value && original)
+        {
+          /*
+            NOTE: It's expected that DropOriginal() is invoked by IndirectObjects indexer;
+            such an action is delegated because clients may invoke directly the indexer skipping
+            this method.
+          */
+          file.IndirectObjects.Update(this);
+        }
+        updated = value;
+      }
+    }
     #endregion
 
     #region internal

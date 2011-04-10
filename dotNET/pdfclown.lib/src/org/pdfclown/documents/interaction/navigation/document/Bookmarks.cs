@@ -65,10 +65,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
 
     internal Bookmarks(
       PdfDirectObject baseObject
-      ) : base(
-        baseObject,
-        null // NO container (bookmark MUST be an indirect object [PDF:1.6:8.2.2]).
-        )
+      ) : base(baseObject)
     {}
     #endregion
 

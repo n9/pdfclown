@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,27 +25,26 @@
 
 package org.pdfclown.documents.interaction.forms;
 
-import org.pdfclown.PDF;
-import org.pdfclown.VersionEnum;
-import org.pdfclown.documents.Document;
-import org.pdfclown.objects.PdfArray;
-import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
-import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.util.NotImplementedException;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+import org.pdfclown.PDF;
+import org.pdfclown.VersionEnum;
+import org.pdfclown.documents.Document;
+import org.pdfclown.objects.PdfArray;
+import org.pdfclown.objects.PdfDirectObject;
+import org.pdfclown.objects.PdfObjectWrapper;
+import org.pdfclown.util.NotImplementedException;
+
 /**
   Field options [PDF:1.6:8.6.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class ChoiceItems
@@ -69,10 +68,9 @@ public final class ChoiceItems
   }
 
   public ChoiceItems(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -131,7 +129,7 @@ public final class ChoiceItems
   public ChoiceItem get(
     int index
     )
-  {return new ChoiceItem(getBaseDataObject().get(index),getContainer(),this);}
+  {return new ChoiceItem(getBaseDataObject().get(index), this);}
 
   @Override
   public int indexOf(
@@ -172,8 +170,7 @@ public final class ChoiceItems
     )
   {
     PdfDirectObject itemObject = getBaseDataObject().remove(index);
-
-    return new ChoiceItem(itemObject,getContainer(),null);
+    return new ChoiceItem(itemObject, null);
   }
 
   @Override
@@ -184,12 +181,7 @@ public final class ChoiceItems
   {
     PdfDirectObject oldValueObject = getBaseDataObject().set(index,value.getBaseObject());
     value.setItems(this);
-
-    return new ChoiceItem(
-      oldValueObject,
-      getContainer(),
-      null
-      );
+    return new ChoiceItem(oldValueObject, null);
   }
 
   @Override
@@ -299,18 +291,17 @@ public final class ChoiceItems
     T[] values
     )
   {
-    PdfArray itemObjects = (PdfArray)getBaseDataObject();
+    PdfArray itemObjects = getBaseDataObject();
     if(values.length < itemObjects.size())
     {values = (T[])new Object[itemObjects.size()];}
 
-    PdfIndirectObject container = getContainer();
     for(
       int index = 0,
         length = itemObjects.size();
       index < length;
       index++
       )
-    {values[index] = (T)new ChoiceItem(itemObjects.get(index),container,this);}
+    {values[index] = (T)new ChoiceItem(itemObjects.get(index), this);}
 
     return values;
   }
@@ -332,16 +323,18 @@ public final class ChoiceItems
       /**
         Collection size.
       */
-      private int size = size();
+      private final int size = size();
       // </fields>
 
       // <interface>
       // <public>
       // <Iterator>
+      @Override
       public boolean hasNext(
         )
       {return (index < size);}
 
+      @Override
       public ChoiceItem next(
         )
       {
@@ -351,6 +344,7 @@ public final class ChoiceItems
         return get(index++);
       }
 
+      @Override
       public void remove(
         )
       {throw new UnsupportedOperationException();}

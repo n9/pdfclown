@@ -48,7 +48,7 @@ import org.pdfclown.util.NotImplementedException;
   Outline item [PDF:1.6:8.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Bookmark
@@ -149,6 +149,7 @@ public final class Bookmark
       context.getFile(),
       new PdfDictionary()
       );
+
     setTitle(title);
   }
 
@@ -159,6 +160,7 @@ public final class Bookmark
     )
   {
     this(context,title);
+
     setDestination(destination);
   }
 
@@ -169,18 +171,14 @@ public final class Bookmark
     )
   {
     this(context,title);
+
     setAction(action);
   }
 
   Bookmark(
     PdfDirectObject baseObject
     )
-  {
-    super(
-      baseObject,
-      null // NO container (bookmark MUST be an indirect object [PDF:1.6:8.2.2]).
-      );
-  }
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -326,33 +324,19 @@ public final class Bookmark
   @PDF(VersionEnum.PDF11)
   public Action getAction(
     )
-  {
-    /*
-      NOTE: 'A' entry may be undefined.
-    */
-    PdfDirectObject actionObject = getBaseDataObject().get(PdfName.A);
-    if(actionObject == null)
-      return null;
-
-    return Action.wrap(actionObject,getContainer());
-  }
+  {return Action.wrap(getBaseDataObject().get(PdfName.A));}
 
   @Override
   public Destination getDestination(
     )
   {
-    /*
-      NOTE: 'Dest' entry may be undefined.
-    */
     PdfDirectObject destinationObject = getBaseDataObject().get(PdfName.Dest);
-    if(destinationObject == null)
-      return null;
-
-    return Document.resolveName(
-      LocalDestination.class,
-      destinationObject,
-      getContainer()
-      );
+    return destinationObject != null
+      ? getDocument().resolveName(
+        LocalDestination.class,
+        destinationObject
+        )
+      : null;
   }
 
   @Override

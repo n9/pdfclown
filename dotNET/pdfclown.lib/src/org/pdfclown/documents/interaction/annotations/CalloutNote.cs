@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -98,9 +98,8 @@ namespace org.pdfclown.documents.interaction.annotations
       }
 
       internal LineObject(
-        PdfDirectObject baseObject,
-        PdfIndirectObject container
-        ) : base(baseObject,container)
+        PdfDirectObject baseObject
+        ) : base(baseObject)
       {}
       #endregion
 
@@ -239,9 +238,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {Text = text;}
 
     public CalloutNote(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -270,14 +268,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'CL' entry may be undefined.
-        */
         PdfArray calloutLineObject = (PdfArray)BaseDataObject[PdfName.CL];
-        if(calloutLineObject == null)
-          return null;
-
-        return new LineObject(calloutLineObject,Container);
+        return calloutLineObject != null ? new LineObject(calloutLineObject) : null;
       }
       set
       {BaseDataObject[PdfName.CL] = value.BaseObject;}

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,24 +25,23 @@
 
 package org.pdfclown.documents.interaction.actions;
 
+import java.util.EnumSet;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.fileSpecs.FileSpec;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
-import org.pdfclown.objects.PdfAtomicObject;
 import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
+import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.NotImplementedException;
-
-import java.util.EnumSet;
 
 /**
   'Change the view to a specified destination in a PDF file
@@ -50,7 +49,7 @@ import java.util.EnumSet;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF11)
 public final class GoToEmbedded
@@ -212,10 +211,9 @@ public final class GoToEmbedded
     }
 
     private TargetObject(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
+      PdfDirectObject baseObject
       )
-    {super(baseObject,container);}
+    {super(baseObject);}
     // </constructors>
 
     // <interface>
@@ -235,14 +233,8 @@ public final class GoToEmbedded
     public Object getAnnotationPageRef(
       )
     {
-      /*
-        NOTE: 'P' entry may be undefined.
-      */
-      PdfAtomicObject<?> pageRefObject = (PdfAtomicObject<?>)getBaseDataObject().get(PdfName.P);
-      if(pageRefObject == null)
-        return null;
-
-      return pageRefObject.getValue();
+      PdfSimpleObject<?> pageRefObject = (PdfSimpleObject<?>)getBaseDataObject().get(PdfName.P);
+      return pageRefObject != null ? pageRefObject.getValue() : null;
     }
 
     /**
@@ -255,14 +247,8 @@ public final class GoToEmbedded
     public Object getAnnotationRef(
       )
     {
-      /*
-        NOTE: 'A' entry may be undefined.
-      */
-      PdfAtomicObject<?> annotationRefObject = (PdfAtomicObject<?>)getBaseDataObject().get(PdfName.A);
-      if(annotationRefObject == null)
-        return null;
-
-      return annotationRefObject.getValue();
+      PdfSimpleObject<?> annotationRefObject = (PdfSimpleObject<?>)getBaseDataObject().get(PdfName.A);
+      return annotationRefObject != null ? annotationRefObject.getValue() : null;
     }
 
     /**
@@ -271,14 +257,8 @@ public final class GoToEmbedded
     public String getEmbeddedFileName(
       )
     {
-      /*
-        NOTE: 'N' entry may be undefined.
-      */
       PdfString fileNameObject = (PdfString)getBaseDataObject().get(PdfName.N);
-      if(fileNameObject == null)
-        return null;
-
-      return (String)fileNameObject.getValue();
+      return fileNameObject != null ? (String)fileNameObject.getValue() : null;
     }
 
     /**
@@ -286,12 +266,7 @@ public final class GoToEmbedded
     */
     public RelationEnum getRelation(
       )
-    {
-      /*
-        NOTE: 'R' entry MUST exist.
-      */
-      return RelationEnum.get((PdfName)getBaseDataObject().get(PdfName.R));
-    }
+    {return RelationEnum.get((PdfName)getBaseDataObject().get(PdfName.R));}
 
     /**
       Gets a further path information to the target document.
@@ -299,14 +274,8 @@ public final class GoToEmbedded
     public TargetObject getTarget(
       )
     {
-      /*
-        NOTE: 'T' entry may be undefined.
-      */
       PdfDirectObject targetObject = getBaseDataObject().get(PdfName.T);
-      if(targetObject == null)
-        return null;
-
-      return new TargetObject(targetObject,getContainer());
+      return targetObject != null ? new TargetObject(targetObject) : null;
     }
 
     /**
@@ -453,15 +422,9 @@ public final class GoToEmbedded
   }
 
   GoToEmbedded(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {
-    super(
-      baseObject,
-      container
-      );
-  }
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -494,14 +457,8 @@ public final class GoToEmbedded
   public TargetObject getTarget(
     )
   {
-    /*
-      NOTE: 'T' entry may be undefined.
-    */
     PdfDirectObject targetObject = getBaseDataObject().get(PdfName.T);
-    if(targetObject == null)
-      return null;
-
-    return new TargetObject(targetObject,getContainer());
+    return targetObject != null ? new TargetObject(targetObject) : null;
   }
 
   /**
@@ -532,12 +489,12 @@ public final class GoToEmbedded
     {getBaseDataObject().put(PdfName.T, value.getBaseObject());}
   }
   // </public>
-  
+
   // <protected>
   @Override
-  protected Class<Destination> getDestinationClass() {
-    return Destination.class;
-  }
+  protected Class<Destination> getDestinationClass(
+    )
+  {return Destination.class;}
   // </protected>
   // </interface>
   // </dynamic>

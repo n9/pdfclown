@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -60,7 +60,7 @@ namespace org.pdfclown.documents.functions
 
     internal Type0Function(
       PdfDirectObject baseObject
-      ) : base(baseObject, null) // NOTE: PdfStream is self-contained.
+      ) : base(baseObject)
     {}
     #endregion
 

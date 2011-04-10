@@ -45,7 +45,6 @@ namespace org.pdfclown.samples.cli
         }
         // Associate the action to the document!
         document.BaseDataObject[new PdfName("OpenAction")] = file.Register(action);  // Adds the action to the file, returning its reference.
-        document.Update(); // Updates the existing document object (fundamental to override previous content).
       }
 
       // (boilerplate metadata insertion -- ignore it)

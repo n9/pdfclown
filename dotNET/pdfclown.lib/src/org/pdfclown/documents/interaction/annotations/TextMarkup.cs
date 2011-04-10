@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -130,9 +130,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {}
 
     public TextMarkup(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -146,9 +145,6 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'QuadPoints' entry MUST be present.
-        */
         PdfArray quadPointsObject = (PdfArray)BaseDataObject[PdfName.QuadPoints];
         IList<RectangleF> boxes = new List<RectangleF>();
         double pageHeight = Page.Box.Height;
@@ -167,7 +163,6 @@ namespace org.pdfclown.documents.interaction.annotations
             new RectangleF((float)x,(float)y,(float)width,(float)height)
             );
         }
-
         return boxes;
       }
       set

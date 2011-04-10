@@ -43,7 +43,6 @@ namespace org.pdfclown.samples.cli
           );
         // Set the display time of the page on presentation!
         page.Duration = 2; // Page display duration (2 seconds).
-        page.Update();
       }
 
       // (boilerplate metadata insertion -- ignore it)

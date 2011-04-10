@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,9 +44,8 @@ namespace org.pdfclown.documents.contents.colorSpaces
     {}
 
     protected DeviceColorSpace(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
     #endregion

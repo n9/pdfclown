@@ -39,7 +39,7 @@ import org.pdfclown.tokens.Symbol;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 03/17/11
+  @version 0.1.1, 04/10/11
 */
 public class PostScriptParser
   implements Closeable
@@ -232,7 +232,7 @@ public class PostScriptParser
         tokenType = TokenTypeEnum.Name;
 
         /*
-          NOTE: As name objects are atomic symbols uniquely defined by sequences of characters,
+          NOTE: As name objects are simple symbols uniquely defined by sequences of characters,
           the bytes making up the name are never treated as text, so here they are just
           passed through without unescaping.
         */

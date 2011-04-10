@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,24 +25,23 @@
 
 package org.pdfclown.documents.interaction.annotations;
 
+import java.awt.geom.Rectangle2D;
+import java.util.EnumSet;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.NotImplementedException;
-
-import java.awt.geom.Rectangle2D;
-import java.util.EnumSet;
 
 /**
   Widget annotation [PDF:1.6:8.4.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public class Widget
@@ -142,10 +141,9 @@ public class Widget
   }
 
   public Widget(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -161,10 +159,7 @@ public class Widget
     )
   {
     PdfDirectObject actionsObject = getBaseDataObject().get(PdfName.AA);
-    if(actionsObject == null)
-      return null;
-
-    return new WidgetActions(this,actionsObject,getContainer());
+    return actionsObject != null ? new WidgetActions(this, actionsObject) : null;
   }
 
   /**
@@ -174,14 +169,8 @@ public class Widget
   public AppearanceCharacteristics getAppearanceCharacteristics(
     )
   {
-    /*
-      NOTE: 'MK' entry may be undefined.
-    */
     PdfDirectObject appearanceObject = getBaseDataObject().get(PdfName.MK);
-    if(appearanceObject == null)
-      return null;
-
-    return new AppearanceCharacteristics(appearanceObject,getContainer());
+    return appearanceObject != null ? new AppearanceCharacteristics(appearanceObject) : null;
   }
 
   /**
@@ -191,14 +180,10 @@ public class Widget
   public HighlightModeEnum getHighlightMode(
     )
   {
-    /*
-      NOTE: 'H' entry may be undefined.
-    */
     PdfName highlightModeObject = (PdfName)getBaseDataObject().get(PdfName.H);
-    if(highlightModeObject == null)
-      return HighlightModeEnum.Invert;
-
-    return HighlightModeEnum.get(highlightModeObject);
+    return highlightModeObject != null
+      ? HighlightModeEnum.get(highlightModeObject)
+      : HighlightModeEnum.Invert;
   }
 
   /**

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,8 +42,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     #region interface
     #region public
     public static Shading Wrap(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
+      PdfDirectObject baseObject
       )
     {return null;}  //TODO:shading types!
     #endregion
@@ -55,9 +54,8 @@ namespace org.pdfclown.documents.contents.colorSpaces
     //TODO:IMPL new element constructor!
 
     internal Shading(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 

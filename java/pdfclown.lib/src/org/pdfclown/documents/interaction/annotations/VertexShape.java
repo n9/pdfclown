@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,7 +36,6 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfReal;
@@ -47,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF15)
 public abstract class VertexShape
@@ -70,10 +69,9 @@ public abstract class VertexShape
   }
 
   protected VertexShape(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -90,9 +88,6 @@ public abstract class VertexShape
   public List<Point2D> getVertices(
     )
   {
-    /*
-      NOTE: 'Vertices' entry MUST be present.
-    */
     PdfArray verticesObject = (PdfArray)getBaseDataObject().get(PdfName.Vertices);
     List<Point2D> vertices = new ArrayList<Point2D>();
     double pageHeight = getPage().getBox().getHeight();

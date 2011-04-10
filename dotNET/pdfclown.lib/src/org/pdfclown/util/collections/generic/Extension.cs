@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,32 +23,44 @@
   this list of conditions.
 */
 
-using org.pdfclown.documents;
-using org.pdfclown.documents.contents;
-using org.pdfclown.objects;
-using org.pdfclown.tokens;
-
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
-namespace org.pdfclown.files
+namespace org.pdfclown.util.collections.generic
 {
-  public enum UpdateModeEnum
+  public static class Extension
   {
+    public static void AddAll<T>(
+      this ICollection<T> collection,
+      IEnumerable<T> enumerable
+      )
+    {
+      foreach(T item in enumerable)
+      {collection.Add(item);}
+    }
+
+    public static void RemoveAll<T>(
+      this ICollection<T> collection,
+      IEnumerable<T> enumerable
+      )
+    {
+      foreach(T item in enumerable)
+      {collection.Remove(item);}
+    }
+
     /**
-      <summary>Delegate the update management of original indirect objects to the
-      client commitment (late registration).</summary>
-      <remarks>Suitable for incremental update.</remarks>
+      <summary>Sets all the specified entries into this dictionary.</summary>
+      <remarks>The effect of this call is equivalent to that of calling the indexer on this dictionary
+      once for each entry in the specified enumerable.</remarks>
     */
-    Manual = 0,
-    /**
-      <summary>Automatically update every original indirect object that is requested,
-      indipendently from any actual modification (early registration).</summary>
-      <remarks>Suitable for compact update.</remarks>
-    */
-    Automatic
+    public static void SetAll<TKey,TValue>(
+      this IDictionary<TKey,TValue> dictionary,
+      IEnumerable<KeyValuePair<TKey,TValue>> enumerable
+      )
+    {
+      foreach(KeyValuePair<TKey,TValue> entry in enumerable)
+      {dictionary[entry.Key] = entry.Value;}
+    }
   }
 }
+

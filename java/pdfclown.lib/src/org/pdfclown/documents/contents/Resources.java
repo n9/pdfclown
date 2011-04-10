@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,7 +30,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.util.NotImplementedException;
@@ -39,7 +38,7 @@ import org.pdfclown.util.NotImplementedException;
   Resources collection [PDF:1.6:3.7.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Resources
@@ -53,14 +52,9 @@ public final class Resources
   // <static>
   // <interface>
   public static Resources wrap(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {
-    return baseObject == null
-      ? null
-      : new Resources(baseObject, container);
-  }
+  {return baseObject != null ? new Resources(baseObject) : null;}
   // </interface>
   // </static>
 
@@ -72,10 +66,9 @@ public final class Resources
   {super(context.getFile(), new PdfDictionary());}
 
   private Resources(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -88,33 +81,54 @@ public final class Resources
 
   public ColorSpaceResources getColorSpaces(
     )
-  {return ColorSpaceResources.wrap(getBaseDataObject().get(PdfName.ColorSpace), getContainer());}
+  {
+    PdfDirectObject colorSpaceObject = getBaseDataObject().get(PdfName.ColorSpace);
+    return colorSpaceObject != null ? new ColorSpaceResources(colorSpaceObject) : null;
+  }
 
   public ExtGStateResources getExtGStates(
     )
-  {return ExtGStateResources.wrap(getBaseDataObject().get(PdfName.ExtGState), getContainer());}
+  {
+    PdfDirectObject extGStateObject = getBaseDataObject().get(PdfName.ExtGState);
+    return extGStateObject != null ? new ExtGStateResources(extGStateObject) : null;
+  }
 
   public FontResources getFonts(
     )
-  {return FontResources.wrap(getBaseDataObject().get(PdfName.Font), getContainer());}
+  {
+    PdfDirectObject fontObject = getBaseDataObject().get(PdfName.Font);
+    return fontObject != null ? new FontResources(fontObject) : null;
+  }
 
   public PatternResources getPatterns(
     )
-  {return PatternResources.wrap(getBaseDataObject().get(PdfName.Pattern), getContainer());}
+  {
+    PdfDirectObject patternObject = getBaseDataObject().get(PdfName.Pattern);
+    return patternObject != null ? new PatternResources(patternObject) : null;
+  }
 
   @PDF(VersionEnum.PDF12)
   public PropertyListResources getPropertyLists(
     )
-  {return PropertyListResources.wrap(getBaseDataObject().get(PdfName.Properties), getContainer());}
+  {
+    PdfDirectObject propertiesObject = getBaseDataObject().get(PdfName.Properties);
+    return propertiesObject != null ? new PropertyListResources(propertiesObject) : null;
+  }
 
   @PDF(VersionEnum.PDF13)
   public ShadingResources getShadings(
     )
-  {return ShadingResources.wrap(getBaseDataObject().get(PdfName.Shading), getContainer());}
+  {
+    PdfDirectObject shadingObject = getBaseDataObject().get(PdfName.Shading);
+    return shadingObject != null ? new ShadingResources(shadingObject) : null;
+  }
 
   public XObjectResources getXObjects(
     )
-  {return XObjectResources.wrap(getBaseDataObject().get(PdfName.XObject), getContainer());}
+  {
+    PdfDirectObject xObjectObject = getBaseDataObject().get(PdfName.XObject);
+    return xObjectObject != null ? new XObjectResources(xObjectObject) : null;
+  }
 
   public void setColorSpaces(
     ColorSpaceResources value

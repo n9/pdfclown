@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,7 +31,6 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNamedObjectWrapper;
@@ -50,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
   </ul>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Destination
@@ -157,28 +156,23 @@ public abstract class Destination
     Wraps a destination base object into a destination object.
 
     @param baseObject Destination base object.
-    @param container Destination base object container.
     @param name Destination name.
     @return Destination object associated to the base object.
   */
   public static final Destination wrap(
     PdfDirectObject baseObject,
-    PdfIndirectObject container,
     PdfString name
     )
   {
-    /*
-      NOTE: This is a factory method for any destination-derived object.
-    */
     if(baseObject == null)
       return null;
 
     PdfArray dataObject = (PdfArray)File.resolve(baseObject);
     PdfDirectObject pageObject = dataObject.get(0);
     if(pageObject instanceof PdfReference)
-      return new LocalDestination(baseObject,container,name);
+      return new LocalDestination(baseObject, name);
     else if(pageObject instanceof PdfInteger)
-      return new RemoteDestination(baseObject,container,name);
+      return new RemoteDestination(baseObject, name);
     else
       throw new IllegalArgumentException("'baseObject' parameter doesn't represent a valid destination object.");
   }
@@ -256,16 +250,9 @@ public abstract class Destination
 
   protected Destination(
     PdfDirectObject baseObject,
-    PdfIndirectObject container,
     PdfString name
     )
-  {
-    super(
-      baseObject,
-      container,
-      name
-      );
-  }
+  {super(baseObject, name);}
   // </constructors>
 
   // <interface>

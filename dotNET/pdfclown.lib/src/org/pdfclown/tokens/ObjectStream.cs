@@ -103,17 +103,15 @@ namespace org.pdfclown.tokens
       when a compressed object is required, its offset is used to retrieve it.</remarks>
     */
     private IDictionary<int,ObjectEntry> entries;
-    private File file;
     private FileParser parser;
     #endregion
 
     #region constructors
     public ObjectStream(
       PdfDictionary header,
-      IBuffer body,
-      File file
-      ) : base(header,body)
-    {this.file = file;}
+      IBuffer body
+      ) : base(header, body)
+    {}
     #endregion
 
     #region interface
@@ -273,7 +271,7 @@ namespace org.pdfclown.tokens
         if(entries == null)
         {
           entries = new Dictionary<int,ObjectEntry>();
-          parser = new FileParser(Body, file);
+          parser = new FileParser(Body, File);
           int baseOffset = ((PdfInteger)Header[PdfName.First]).IntValue;
           for(
             int index = 0,
@@ -310,7 +308,7 @@ namespace org.pdfclown.tokens
         // Serializing the entries into the stream buffer...
         IBuffer indexBuffer = new bytes.Buffer();
         IBuffer dataBuffer = new bytes.Buffer();
-        IndirectObjects indirectObjects = file.IndirectObjects;
+        IndirectObjects indirectObjects = File.IndirectObjects;
         int objectIndex = -1;
         foreach(KeyValuePair<int,ObjectEntry> entry in Entries)
         {

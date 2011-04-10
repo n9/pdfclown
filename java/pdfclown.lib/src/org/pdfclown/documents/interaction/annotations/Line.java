@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,7 +36,6 @@ import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfReal;
@@ -49,7 +48,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF13)
 public final class Line
@@ -188,10 +187,9 @@ public final class Line
   }
 
   public Line(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -208,11 +206,7 @@ public final class Line
   public Point2D getEndPoint(
     )
   {
-    /*
-      NOTE: 'L' entry MUST be defined.
-    */
     PdfArray coordinatesObject = (PdfArray)getBaseDataObject().get(PdfName.L);
-
     return new Point2D.Double(
       ((PdfNumber<?>)coordinatesObject.get(2)).getNumberValue(),
       ((PdfNumber<?>)coordinatesObject.get(3)).getNumberValue()
@@ -225,14 +219,10 @@ public final class Line
   public LineEndStyleEnum getEndStyle(
     )
   {
-    /*
-      NOTE: 'LE' entry may be undefined.
-    */
     PdfArray endstylesObject = (PdfArray)getBaseDataObject().get(PdfName.LE);
-    if(endstylesObject == null)
-      return DefaultLineEndStyle;
-
-    return LineEndStyleEnum.get((PdfName)endstylesObject.get(1));
+    return endstylesObject != null
+      ? LineEndStyleEnum.get((PdfName)endstylesObject.get(1))
+      : DefaultLineEndStyle;
   }
 
   /**
@@ -241,9 +231,6 @@ public final class Line
   public DeviceRGBColor getFillColor(
     )
   {
-    /*
-      NOTE: 'IC' entry may be undefined.
-    */
     PdfArray fillColorObject = (PdfArray)getBaseDataObject().get(PdfName.IC);
     if(fillColorObject == null)
       return null;
@@ -262,14 +249,10 @@ public final class Line
   public double getLeaderLineExtensionLength(
     )
   {
-    /*
-      NOTE: 'LLE' entry may be undefined.
-    */
     PdfNumber<?> leaderLineExtensionLengthObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.LLE);
-    if(leaderLineExtensionLengthObject == null)
-      return DefaultLeaderLineExtensionLength;
-
-    return leaderLineExtensionLengthObject.getNumberValue();
+    return leaderLineExtensionLengthObject != null
+      ? leaderLineExtensionLengthObject.getNumberValue()
+      : DefaultLeaderLineExtensionLength;
   }
 
   /**
@@ -282,14 +265,10 @@ public final class Line
   public double getLeaderLineLength(
     )
   {
-    /*
-      NOTE: 'LL' entry may be undefined.
-    */
     PdfNumber<?> leaderLineLengthObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.LL);
-    if(leaderLineLengthObject == null)
-      return DefaultLeaderLineLength;
-
-    return -leaderLineLengthObject.getNumberValue();
+    return leaderLineLengthObject != null
+      ? -leaderLineLengthObject.getNumberValue()
+      : DefaultLeaderLineLength;
   }
 
   /**
@@ -298,11 +277,7 @@ public final class Line
   public Point2D getStartPoint(
     )
   {
-    /*
-      NOTE: 'L' entry MUST be defined.
-    */
     PdfArray coordinatesObject = (PdfArray)getBaseDataObject().get(PdfName.L);
-
     return new Point2D.Double(
       ((PdfNumber<?>)coordinatesObject.get(0)).getNumberValue(),
       ((PdfNumber<?>)coordinatesObject.get(1)).getNumberValue()
@@ -315,14 +290,10 @@ public final class Line
   public LineEndStyleEnum getStartStyle(
     )
   {
-    /*
-      NOTE: 'LE' entry may be undefined.
-    */
     PdfArray endstylesObject = (PdfArray)getBaseDataObject().get(PdfName.LE);
-    if(endstylesObject == null)
-      return DefaultLineEndStyle;
-
-    return LineEndStyleEnum.get((PdfName)endstylesObject.get(0));
+    return endstylesObject != null
+      ? LineEndStyleEnum.get((PdfName)endstylesObject.get(0))
+      : DefaultLineEndStyle;
   }
 
   /**
@@ -331,14 +302,10 @@ public final class Line
   public boolean isCaptionVisible(
     )
   {
-    /*
-      NOTE: 'Cap' entry may be undefined.
-    */
     PdfBoolean captionVisibleObject = (PdfBoolean)getBaseDataObject().get(PdfName.Cap);
-    if(captionVisibleObject == null)
-      return false;
-
-    return ((Boolean)captionVisibleObject.getValue()).booleanValue();
+    return captionVisibleObject != null
+      ? ((Boolean)captionVisibleObject.getValue()).booleanValue()
+      : false;
   }
 
   /**

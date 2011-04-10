@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,14 +35,13 @@ import org.pdfclown.documents.contents.IContentContext;
 import org.pdfclown.documents.contents.colorSpaces.TilingPattern.PaintTypeEnum;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.util.NotImplementedException;
 
 /**
   Pattern color space [PDF:1.6:4.5.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class PatternColorSpace
@@ -56,7 +55,7 @@ public final class PatternColorSpace
     in the ColorSpace subdictionary of the contextual resource dictionary) [PDF:1.6:4.5.7].
   */
   //TODO:verify parameters!!!
-  public static final PatternColorSpace Default = new PatternColorSpace((PdfDirectObject)null,null);
+  public static final PatternColorSpace Default = new PatternColorSpace(null);
   // </fields>
   // </static>
 
@@ -65,10 +64,9 @@ public final class PatternColorSpace
   //TODO:IMPL new element constructor!
 
   PatternColorSpace(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -135,7 +133,7 @@ public final class PatternColorSpace
     {
       PdfArray baseArrayObject = (PdfArray)baseDataObject;
       if(baseArrayObject.size() > 1)
-        return ColorSpace.wrap(baseArrayObject.get(1), getContainer());
+        return ColorSpace.wrap(baseArrayObject.get(1));
     }
     return null;
   }

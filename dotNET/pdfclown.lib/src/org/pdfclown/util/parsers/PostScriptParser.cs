@@ -201,7 +201,7 @@ namespace org.pdfclown.util.parsers
           tokenType = TokenTypeEnum.Name;
 
           /*
-            NOTE: As name objects are atomic symbols uniquely defined by sequences of characters,
+            NOTE: As name objects are simple symbols uniquely defined by sequences of characters,
             the bytes making up the name are never treated as text, so here they are just
             passed through without unescaping.
           */

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -50,7 +50,7 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public final class PageManager
 {
@@ -207,11 +207,10 @@ public final class PageManager
     )
   {
     // Add the source pages to the document (deep level)!
-    Collection<Page> importedPages = (Collection<Page>)document.contextualize(pages); // NOTE: Alien pages MUST be contextualized (i.e. imported).
+    Collection<Page> importedPages = (Collection<Page>)document.include(pages); // NOTE: Alien pages MUST be contextualized (i.e. imported).
 
     // Add the imported pages to the pages collection (shallow level)!
     this.pages.addAll(importedPages);
-    this.pages.update(); // NOTE: Update is fundamental to override original page collection.
   }
 
   /**
@@ -227,14 +226,13 @@ public final class PageManager
     )
   {
     // Add the source pages to the document (deep level)!
-    Collection<Page> importedPages = (Collection<Page>)document.contextualize(pages); // NOTE: Alien pages MUST be contextualized (i.e. imported).
+    Collection<Page> importedPages = (Collection<Page>)document.include(pages); // NOTE: Alien pages MUST be contextualized (i.e. imported).
 
     // Add the imported pages to the pages collection (shallow level)!
     if(index >= this.pages.size())
     {this.pages.addAll(importedPages);}
     else
     {this.pages.addAll(index, importedPages);}
-    this.pages.update(); // NOTE: Update is fundamental to override original page collection.
   }
 
   /**
@@ -259,7 +257,7 @@ public final class PageManager
         then added to the target pages collection.
       */
       extractedDocument.getPages().addAll(
-        (Collection<Page>)extractedDocument.contextualize(
+        (Collection<Page>)extractedDocument.include(
           pages.subList(startIndex,endIndex)
           )
         );
@@ -303,7 +301,6 @@ public final class PageManager
     {pages.addAll(movingPages);}
     else
     {pages.addAll(targetIndex, movingPages);}
-    pages.update(); // NOTE: Update is fundamental to override original page collection.
   }
 
   /**
@@ -328,11 +325,11 @@ public final class PageManager
 
     // Remove the pages from the pages collection!
     /* NOTE: Shallow removal. */
-    pages.removeAll(removingPages); pages.update();
+    pages.removeAll(removingPages);
 
     // Remove the pages from the document (decontextualize)!
     /* NOTE: Deep removal. */
-    document.decontextualize(removingPages);
+    document.exclude(removingPages);
   }
 
   /**

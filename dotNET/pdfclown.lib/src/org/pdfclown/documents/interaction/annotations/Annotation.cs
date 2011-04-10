@@ -94,24 +94,12 @@ namespace org.pdfclown.documents.interaction.annotations
     #region interface
     #region public
     /**
-      <summary>Wraps an annotation reference into an annotation object.</summary>
-      <param name="reference">Reference to an annotation object.</param>
-      <returns>Annotation object associated to the reference.</returns>
-    */
-    public static Annotation Wrap(
-      PdfReference reference
-      )
-    {return Wrap(reference,null);}
-
-    /**
       <summary>Wraps an annotation base object into an annotation object.</summary>
       <param name="baseObject">Annotation base object.</param>
-      <param name="container">Annotation base object container.</param>
       <returns>Annotation object associated to the base object.</returns>
     */
     public static Annotation Wrap(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
+      PdfDirectObject baseObject
       )
     {
       if(baseObject == null)
@@ -124,50 +112,50 @@ namespace org.pdfclown.documents.interaction.annotations
       */
       PdfName annotationType = (PdfName)dataObject[PdfName.Subtype];
       if(annotationType.Equals(PdfName.Text))
-        return new Note(baseObject,container);
+        return new Note(baseObject);
       else if(annotationType.Equals(PdfName.Link))
-        return new Link(baseObject,container);
+        return new Link(baseObject);
       else if(annotationType.Equals(PdfName.FreeText))
-        return new CalloutNote(baseObject,container);
+        return new CalloutNote(baseObject);
       else if(annotationType.Equals(PdfName.Line))
-        return new Line(baseObject,container);
+        return new Line(baseObject);
       else if(annotationType.Equals(PdfName.Square))
-        return new Rectangle(baseObject,container);
+        return new Rectangle(baseObject);
       else if(annotationType.Equals(PdfName.Circle))
-        return new Ellipse(baseObject,container);
+        return new Ellipse(baseObject);
       else if(annotationType.Equals(PdfName.Polygon))
-        return new Polygon(baseObject,container);
+        return new Polygon(baseObject);
       else if(annotationType.Equals(PdfName.PolyLine))
-        return new Polyline(baseObject,container);
+        return new Polyline(baseObject);
       else if(annotationType.Equals(PdfName.Highlight)
         || annotationType.Equals(PdfName.Underline)
         || annotationType.Equals(PdfName.Squiggly)
         || annotationType.Equals(PdfName.StrikeOut))
-        return new TextMarkup(baseObject,container);
+        return new TextMarkup(baseObject);
       else if(annotationType.Equals(PdfName.Stamp))
-        return new RubberStamp(baseObject,container);
+        return new RubberStamp(baseObject);
       else if(annotationType.Equals(PdfName.Caret))
-        return new Caret(baseObject,container);
+        return new Caret(baseObject);
       else if(annotationType.Equals(PdfName.Ink))
-        return new Scribble(baseObject,container);
+        return new Scribble(baseObject);
       else if(annotationType.Equals(PdfName.Popup))
-        return new Popup(baseObject,container);
+        return new Popup(baseObject);
       else if(annotationType.Equals(PdfName.FileAttachment))
-        return new FileAttachment(baseObject,container);
+        return new FileAttachment(baseObject);
       else if(annotationType.Equals(PdfName.Sound))
-        return new Sound(baseObject,container);
+        return new Sound(baseObject);
       else if(annotationType.Equals(PdfName.Movie))
-        return new Movie(baseObject,container);
+        return new Movie(baseObject);
       else if(annotationType.Equals(PdfName.Widget))
-        return new Widget(baseObject,container);
+        return new Widget(baseObject);
 //TODO
-//     else if(annotationType.Equals(PdfName.Screen)) return new Screen(baseObject,container);
-//     else if(annotationType.Equals(PdfName.PrinterMark)) return new PrinterMark(baseObject,container);
-//     else if(annotationType.Equals(PdfName.TrapNet)) return new TrapNet(baseObject,container);
-//     else if(annotationType.Equals(PdfName.Watermark)) return new Watermark(baseObject,container);
-//     else if(annotationType.Equals(PdfName.3DAnnotation)) return new 3DAnnotation(baseObject,container);
+//     else if(annotationType.Equals(PdfName.Screen)) return new Screen(baseObject);
+//     else if(annotationType.Equals(PdfName.PrinterMark)) return new PrinterMark(baseObject);
+//     else if(annotationType.Equals(PdfName.TrapNet)) return new TrapNet(baseObject);
+//     else if(annotationType.Equals(PdfName.Watermark)) return new Watermark(baseObject);
+//     else if(annotationType.Equals(PdfName.3DAnnotation)) return new 3DAnnotation(baseObject);
       else // Other annotation type.
-        return new Annotation(baseObject,container);
+        return new Annotation(baseObject);
     }
     #endregion
     #endregion
@@ -209,9 +197,8 @@ namespace org.pdfclown.documents.interaction.annotations
     }
 
     protected Annotation(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -224,7 +211,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public virtual actions.Action Action
     {
       get
-      {return actions.Action.Wrap(BaseDataObject[PdfName.A], Container);}
+      {return actions.Action.Wrap(BaseDataObject[PdfName.A]);}
       set
       {
         if(value == null)
@@ -243,7 +230,7 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {
         PdfDirectObject actionsObject = BaseDataObject[PdfName.AA];
-        return actionsObject == null ? null : new AnnotationActions(this, actionsObject, Container);
+        return actionsObject != null ? new AnnotationActions(this, actionsObject) : null;
       }
       set
       {
@@ -263,7 +250,7 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {
         PdfDirectObject appearanceObject = BaseDataObject[PdfName.AP];
-        return appearanceObject == null ? null : new Appearance(appearanceObject, Container);
+        return appearanceObject != null ? new Appearance(appearanceObject) : null;
       }
       set
       {
@@ -283,7 +270,7 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {
         PdfDirectObject borderObject = BaseDataObject[PdfName.BS];
-        return borderObject == null ? null : new Border(borderObject, Container);
+        return borderObject != null ? new Border(borderObject) : null;
       }
       set
       {
@@ -304,9 +291,6 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'Rect' entry MUST be defined.
-        */
         org.pdfclown.objects.Rectangle box = new org.pdfclown.objects.Rectangle(BaseDataObject[PdfName.Rect]);
         return new RectangleF(
           box.Left,
@@ -357,11 +341,7 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {
         PdfDirectObject modificationDateObject = BaseDataObject[PdfName.M];
-        if(modificationDateObject == null
-          || !(modificationDateObject is PdfDate)) // NOTE: Non-well-formed dates are ignored.
-          return null;
-
-        return (DateTime)((PdfDate)modificationDateObject).Value;
+        return (DateTime?)(modificationDateObject is PdfDate ? ((PdfDate)modificationDateObject).Value : null);
       }
       set
       {
@@ -382,7 +362,7 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {
         PdfTextString nameObject = (PdfTextString)BaseDataObject[PdfName.NM];
-        return nameObject == null ? null : (string)nameObject.Value;
+        return nameObject != null ? (string)nameObject.Value : null;
       }
       set
       {BaseDataObject[PdfName.NM] = new PdfTextString(value);}
@@ -410,7 +390,7 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {
         PdfTextString textObject = (PdfTextString)BaseDataObject[PdfName.Contents];
-        return textObject == null ? null : (string)textObject.Value;
+        return textObject != null ? (string)textObject.Value : null;
       }
       set
       {

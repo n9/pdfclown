@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -74,17 +74,8 @@ namespace org.pdfclown.documents.interaction.forms
     {
       get
       {
-        /*
-          NOTE: 'Opt' entry may be undefined [PDF:1.6:8.6.3].
-        */
         PdfArray items = (PdfArray)File.Resolve(BaseDataObject[PdfName.Opt]);
-        if(items == null)
-          return null;
-
-        return new ChoiceItems(
-          items,
-          Container
-          );
+        return items != null ? new ChoiceItems(items) :null;
       }
       set
       {BaseDataObject[PdfName.Opt] = value.BaseObject;}

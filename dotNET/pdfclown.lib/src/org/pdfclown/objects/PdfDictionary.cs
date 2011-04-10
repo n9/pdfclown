@@ -50,7 +50,10 @@ namespace org.pdfclown.objects
 
     #region dynamic
     #region fields
-    private Dictionary<PdfName,PdfDirectObject> entries;
+    private IDictionary<PdfName,PdfDirectObject> entries;
+
+    private PdfObject parent;
+    private bool updated;
     #endregion
 
     #region constructors
@@ -74,6 +77,16 @@ namespace org.pdfclown.objects
         index++
         )
       {this[keys[index]] = values[index];}
+      Ready();
+    }
+
+    public PdfDictionary(
+      IDictionary<PdfName,PdfDirectObject> entries
+      ) : this(entries.Count)
+    {
+      foreach(KeyValuePair<PdfName,PdfDirectObject> entry in entries)
+      {this[entry.Key] = (PdfDirectObject)Include(entry.Value);}
+      Ready();
     }
     #endregion
 
@@ -83,9 +96,8 @@ namespace org.pdfclown.objects
       File context
       )
     {
-      PdfDictionary clone = (PdfDictionary)MemberwiseClone();
+      PdfDictionary clone = (PdfDictionary)base.Clone(context);
       {
-        // Deep cloning...
         clone.entries = new Dictionary<PdfName,PdfDirectObject>(entries.Count);
         foreach(KeyValuePair<PdfName,PdfDirectObject> entry in entries)
         {clone[entry.Key] = (PdfDirectObject)PdfObject.Clone(entry.Value, context);}
@@ -97,6 +109,12 @@ namespace org.pdfclown.objects
       PdfDirectObject obj
       )
     {throw new NotImplementedException();}
+
+    public override PdfIndirectObject Container
+    {
+      get
+      {return Root;}
+    }
 
     public override bool Equals(
       object obj
@@ -137,6 +155,14 @@ namespace org.pdfclown.objects
       return null; // Not found.
     }
 
+    public override PdfObject Parent
+    {
+      get
+      {return parent;}
+      internal set
+      {parent = value;}
+    }
+
     /**
       <summary>Gets the dereferenced value corresponding to the given key.</summary>
       <remarks>This method takes care to resolve the value returned by <see cref="this[PdfName]">this[PdfName]</see>.</remarks>
@@ -147,6 +173,12 @@ namespace org.pdfclown.objects
       PdfName key
       )
     {return File.Resolve(this[key]);}
+
+    public override PdfIndirectObject Root
+    {
+      get
+      {return parent != null ? parent.Root : null;}
+    }
 
     public override string ToString(
       )
@@ -194,7 +226,10 @@ namespace org.pdfclown.objects
       PdfName key,
       PdfDirectObject value
       )
-    {entries.Add(key,value);}
+    {
+      entries.Add(key, (PdfDirectObject)Include(value));
+      Update();
+    }
 
     public bool ContainsKey(
       PdfName key
@@ -202,12 +237,24 @@ namespace org.pdfclown.objects
     {return entries.ContainsKey(key);}
 
     public ICollection<PdfName> Keys
-    {get{return entries.Keys;}}
+    {
+      get
+      {return entries.Keys;}
+    }
 
     public bool Remove(
       PdfName key
       )
-    {return entries.Remove(key);}
+    {
+      PdfDirectObject oldValue = this[key];
+      if(entries.Remove(key))
+      {
+        Exclude(oldValue);
+        Update();
+        return true;
+      }
+      return false;
+    }
 
     public PdfDirectObject this[
       PdfName key
@@ -217,27 +264,24 @@ namespace org.pdfclown.objects
       {
         /*
           NOTE: This is an intentional violation of the official .NET Framework Class
-          Library prescription.
-          It's way too idiotic to throw an exception anytime a key is not found,
-          as a dictionary is somewhat fuzzier than a list: using lists you have just
-          1 boundary to keep in mind and an out-of-range exception is feasible,
-          whilst dictionaries have so many boundaries as their entries and using them
-          accordingly to the official fashion is a real nightmare!
-          My loose implementation prizes client coding smoothness and concision,
-          against cumbersome exception handling blocks or ugly TryGetValue()
-          invocations: unfound keys are treated happily returning a default (null) value.
-          If the user is interested in verifying whether such result represents
-          a non-existing key or an actual null object, it suffices to query
-          ContainsKey() method (a nice application of the KISS principle ;-)).
+          Library prescription (no exception is thrown anytime a key is not found --
+          a null pointer is returned instead).
         */
-        PdfDirectObject value; entries.TryGetValue(key,out value); return value;
+        PdfDirectObject value;
+        entries.TryGetValue(key,out value);
+        return value;
       }
       set
       {
         if(value == null)
-        {entries.Remove(key);}
+        {Remove(key);}
         else
-        {entries[key] = value;}
+        {
+          PdfDirectObject oldValue = this[key];
+          entries[key] = (PdfDirectObject)Include(value);
+          Exclude(oldValue);
+          Update();
+        }
       }
     }
 
@@ -248,39 +292,56 @@ namespace org.pdfclown.objects
     {return entries.TryGetValue(key,out value);}
 
     public ICollection<PdfDirectObject> Values
-    {get{return entries.Values;}}
+    {
+      get
+      {return entries.Values;}
+    }
 
     #region ICollection
     void ICollection<KeyValuePair<PdfName,PdfDirectObject>>.Add(
-      KeyValuePair<PdfName,PdfDirectObject> keyValuePair
+      KeyValuePair<PdfName,PdfDirectObject> entry
       )
-    {((ICollection<KeyValuePair<PdfName,PdfDirectObject>>)entries).Add(keyValuePair);}
+    {Add(entry.Key, entry.Value);}
 
     public void Clear(
       )
-    {entries.Clear();}
+    {
+      foreach(PdfName key in entries.Keys)
+      {Remove(key);}
+    }
 
     bool ICollection<KeyValuePair<PdfName,PdfDirectObject>>.Contains(
-      KeyValuePair<PdfName,PdfDirectObject> keyValuePair
+      KeyValuePair<PdfName,PdfDirectObject> entry
       )
-    {return ((ICollection<KeyValuePair<PdfName,PdfDirectObject>>)entries).Contains(keyValuePair);}
+    {return ((ICollection<KeyValuePair<PdfName,PdfDirectObject>>)entries).Contains(entry);}
 
     public void CopyTo(
-      KeyValuePair<PdfName,PdfDirectObject>[] keyValuePairs,
+      KeyValuePair<PdfName,PdfDirectObject>[] entries,
       int index
       )
     {throw new NotImplementedException();}
 
     public int Count
-    {get{return entries.Count;}}
+    {
+      get
+      {return entries.Count;}
+    }
 
     public bool IsReadOnly
-    {get{return false;}}
+    {
+      get
+      {return false;}
+    }
 
     public bool Remove(
-      KeyValuePair<PdfName,PdfDirectObject> keyValuePair
+      KeyValuePair<PdfName,PdfDirectObject> entry
       )
-    {return ((ICollection<KeyValuePair<PdfName,PdfDirectObject>>)entries).Remove(keyValuePair);}
+    {
+      if(entry.Value.Equals(this[entry.Key]))
+        return Remove(entry.Key);
+      else
+        return false;
+    }
 
     #region IEnumerable<KeyValuePair<PdfName,PdfDirectObject>>
     IEnumerator<KeyValuePair<PdfName,PdfDirectObject>> IEnumerable<KeyValuePair<PdfName,PdfDirectObject>>.GetEnumerator(
@@ -295,6 +356,16 @@ namespace org.pdfclown.objects
     #endregion
     #endregion
     #endregion
+    #endregion
+
+    #region protected
+    protected internal override bool Updated
+    {
+      get
+      {return updated;}
+      set
+      {updated = value;}
+    }
     #endregion
     #endregion
     #endregion

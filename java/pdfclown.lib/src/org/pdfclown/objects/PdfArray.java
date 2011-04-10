@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public final class PdfArray
   extends PdfDirectObject
@@ -60,6 +60,9 @@ public final class PdfArray
   // <dynamic>
   // <fields>
   private ArrayList<PdfDirectObject> items;
+
+  private PdfObject parent;
+  private boolean updated;
   // </fields>
 
   // <constructors>
@@ -77,8 +80,10 @@ public final class PdfArray
     )
   {
     this(items.length);
+
     for(PdfDirectObject item : items)
-    {this.items.add(item);}
+    {add(item);}
+    ready();
   }
 
   public PdfArray(
@@ -86,20 +91,21 @@ public final class PdfArray
     )
   {
     this(items.size());
-    this.items.addAll(items);
+
+    addAll(items);
+    ready();
   }
   // </constructors>
 
   // <interface>
   // <public>
   @Override
-  public Object clone(
+  public PdfArray clone(
     File context
     )
   {
-    PdfArray clone = (PdfArray)super.clone();
+    PdfArray clone = (PdfArray)super.clone(context);
     {
-      // Deep cloning...
       clone.items = new ArrayList<PdfDirectObject>(items.size());
       for(PdfDirectObject item : items)
       {clone.add((PdfDirectObject)PdfObject.clone(item, context));}
@@ -112,6 +118,21 @@ public final class PdfArray
     PdfDirectObject obj
     )
   {throw new NotImplementedException();}
+
+  @Override
+  public PdfIndirectObject getContainer(
+    )
+  {return getRoot();}
+
+  @Override
+  public PdfObject getParent(
+    )
+  {return parent;}
+
+  @Override
+  public PdfIndirectObject getRoot(
+    )
+  {return parent != null ? parent.getRoot() : null;}
 
   /**
     Gets the dereferenced value corresponding to the given index.
@@ -162,16 +183,23 @@ public final class PdfArray
   @Override
   public void add(
     int index,
-    PdfDirectObject object
+    PdfDirectObject item
     )
-  {items.add(index,object);}
+  {
+    items.add(index, (PdfDirectObject)include(item));
+    update();
+  }
 
   @Override
   public boolean addAll(
     int index,
-    Collection<? extends PdfDirectObject> objects
+    Collection<? extends PdfDirectObject> items
     )
-  {return items.addAll(index,objects);}
+  {
+    for(PdfDirectObject item : items)
+    {add(index++, item);}
+    return true;
+  }
 
   @Override
   public PdfDirectObject get(
@@ -181,15 +209,15 @@ public final class PdfArray
 
   @Override
   public int indexOf(
-    Object object
+    Object item
     )
-  {return items.indexOf(object);}
+  {return items.indexOf(item);}
 
   @Override
   public int lastIndexOf(
-    Object object
+    Object item
     )
-  {return items.lastIndexOf(object);}
+  {return items.lastIndexOf(item);}
 
   @Override
   public ListIterator<PdfDirectObject> listIterator(
@@ -206,14 +234,24 @@ public final class PdfArray
   public PdfDirectObject remove(
     int index
     )
-  {return items.remove(index);}
+  {
+    PdfDirectObject oldItem = items.remove(index);
+    exclude(oldItem);
+    update();
+    return oldItem;
+  }
 
   @Override
   public PdfDirectObject set(
     int index,
-    PdfDirectObject object
+    PdfDirectObject item
     )
-  {return items.set(index,object);}
+  {
+    PdfDirectObject oldItem = items.set(index, item = (PdfDirectObject)include(item));
+    exclude(oldItem);
+    update();
+    return oldItem;
+  }
 
   @Override
   public List<PdfDirectObject> subList(
@@ -225,32 +263,40 @@ public final class PdfArray
   // <Collection>
   @Override
   public boolean add(
-    PdfDirectObject object
+    PdfDirectObject item
     )
-  {return items.add(object);}
+  {
+    items.add(item = (PdfDirectObject)include(item));
+    update();
+    return true;
+  }
 
   @Override
   public boolean addAll(
-    Collection<? extends PdfDirectObject> objects
+    Collection<? extends PdfDirectObject> items
     )
-  {return items.addAll(objects);}
+  {
+    for(PdfDirectObject item : items)
+    {add(item);}
+    return true;
+  }
 
   @Override
   public void clear(
     )
-  {items.clear();}
+  {removeAll(items);}
 
   @Override
   public boolean contains(
-    Object object
+    Object item
     )
-  {return items.contains(object);}
+  {return items.contains(item);}
 
   @Override
   public boolean containsAll(
-    Collection<?> objects
+    Collection<?> items
     )
-  {return items.containsAll(objects);}
+  {return this.items.containsAll(items);}
 
   @Override
   public boolean equals(
@@ -274,21 +320,42 @@ public final class PdfArray
 
   @Override
   public boolean remove(
-    Object object
+    Object item
     )
-  {return items.remove(object);}
+  {
+    if(!items.remove(item))
+      return false;
+
+    exclude((PdfDirectObject)item);
+    update();
+    return true;
+  }
 
   @Override
   public boolean removeAll(
-    Collection<?> objects
+    Collection<?> items
     )
-  {return items.removeAll(objects);}
+  {
+    for(Object item : items)
+    {remove(item);}
+    return true;
+  }
 
   @Override
   public boolean retainAll(
-    Collection<?> objects
+    Collection<?> items
     )
-  {return items.retainAll(objects);}
+  {
+    int index = 0;
+    while(index < this.items.size())
+    {
+      if(!items.contains(get(index)))
+      {remove(index);}
+      else
+      {index++;}
+    }
+    return true;
+  }
 
   @Override
   public int size(
@@ -302,9 +369,9 @@ public final class PdfArray
 
   @Override
   public <T> T[] toArray(
-    T[] objects
+    T[] items
     )
-  {return items.toArray(objects);}
+  {return this.items.toArray(items);}
 
   // <Iterable>
   @Override
@@ -315,6 +382,27 @@ public final class PdfArray
   // </Collection>
   // </List>
   // </public>
+
+  // <protected>
+  @Override
+  protected boolean isUpdated(
+    )
+  {return updated;}
+
+  @Override
+  protected void setUpdated(
+    boolean value
+    )
+  {updated = value;}
+  // </protected>
+
+  // <internal>
+  @Override
+  void setParent(
+    PdfObject value
+    )
+  {parent = value;}
+  // </internal>
   // </interface>
   // </dynamic>
   // </class>

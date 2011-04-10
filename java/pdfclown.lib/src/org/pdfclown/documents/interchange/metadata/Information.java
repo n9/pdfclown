@@ -30,12 +30,12 @@ import java.util.Date;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.objects.PdfAtomicObject;
 import org.pdfclown.objects.PdfDate;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
+import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.NotImplementedException;
 
@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
   Document information [PDF:1.6:10.2.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Information
@@ -79,12 +79,7 @@ public final class Information
   public Information(
     PdfDirectObject baseObject
     )
-  {
-    super(
-      baseObject,
-      null // NO container (baseObject MUST be an indirect object [PDF:1.6:3.4.4]).
-      );
-  }
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -176,7 +171,7 @@ public final class Information
   private Object get(
     PdfName key
     )
-  {return PdfAtomicObject.getValue(getBaseDataObject().get(key));}
+  {return PdfSimpleObject.getValue(getBaseDataObject().get(key));}
   // </private>
   // </interface>
   // </class>

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,7 +30,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.util.NotImplementedException;
@@ -40,7 +39,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class Appearance
@@ -60,10 +59,9 @@ public final class Appearance
   }
 
   public Appearance(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -79,50 +77,21 @@ public final class Appearance
   */
   public AppearanceStates getDown(
     )
-  {
-    /*
-      NOTE: 'D' entry may be undefined;
-      nonetheless, since it always has a default value, it is always exposed.
-    */
-    return new AppearanceStates(
-      PdfName.D,
-      getContainer(),
-      this
-      );
-  }
+  {return new AppearanceStates(PdfName.D, this);}
 
   /**
     Gets the annotation's normal appearance.
   */
   public AppearanceStates getNormal(
     )
-  {
-    /*
-      NOTE: 'N' entry is required.
-    */
-    return new AppearanceStates(
-      PdfName.N,
-      getContainer(),
-      this
-      );
-  }
+  {return new AppearanceStates(PdfName.N, this);}
 
   /**
     Gets the annotation's rollover appearance.
   */
   public AppearanceStates getRollover(
     )
-  {
-    /*
-      NOTE: 'R' entry may be undefined;
-      nonetheless, since it always has a default value, it is always exposed.
-    */
-    return new AppearanceStates(
-      PdfName.R,
-      getContainer(),
-      this
-      );
-  }
+  {return new AppearanceStates(PdfName.R, this);}
   // </public>
   // </interface>
   // </dynamic>

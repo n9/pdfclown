@@ -36,7 +36,6 @@ import java.util.Set;
 import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.IBuffer;
 import org.pdfclown.bytes.IOutputStream;
-import org.pdfclown.files.File;
 import org.pdfclown.files.IndirectObjects;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
@@ -54,7 +53,7 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 03/17/11
+  @version 0.1.1, 04/10/11
 */
 public final class ObjectStream
   extends PdfStream
@@ -66,8 +65,8 @@ public final class ObjectStream
   private static final class Entry
     implements Map.Entry<Integer,PdfDataObject>
   {
-    private Integer key;
-    private PdfDataObject value;
+    private final Integer key;
+    private final PdfDataObject value;
 
     public Entry(
       Integer key,
@@ -142,21 +141,15 @@ public final class ObjectStream
     when a compressed object is required, its offset is used to retrieve it.
   */
   private Map<Integer,ObjectEntry> entries;
-  private File file;
   private FileParser parser;
   // </fields>
 
   // <constructors>
   public ObjectStream(
     PdfDictionary header,
-    IBuffer body,
-    File file
+    IBuffer body
     )
-  {
-    super(header,body);
-
-    this.file = file;
-  }
+  {super(header, body);}
   // </constructors>
 
   // <interface>
@@ -301,7 +294,7 @@ public final class ObjectStream
       // Serializing the entries into the stream buffer...
       IBuffer indexBuffer = new Buffer();
       IBuffer dataBuffer = new Buffer();
-      IndirectObjects indirectObjects = file.getIndirectObjects();
+      IndirectObjects indirectObjects = getFile().getIndirectObjects();
       int objectIndex = -1;
       for(Map.Entry<Integer,ObjectEntry> entry : getEntries().entrySet())
       {
@@ -359,7 +352,7 @@ public final class ObjectStream
     if(entries == null)
     {
       entries = new HashMap<Integer,ObjectEntry>();
-      parser = new FileParser(getBody(), file);
+      parser = new FileParser(getBody(), getFile());
       int baseOffset = ((PdfInteger)getHeader().get(PdfName.First)).getValue();
       for(
         int index = 0,

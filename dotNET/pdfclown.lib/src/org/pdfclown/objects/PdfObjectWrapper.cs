@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -46,17 +46,16 @@ namespace org.pdfclown.objects
 
     #region constructors
     /**
-      <param name="baseObject">Base PDF object. MUST be a <see cref="PdfReference"/>
+      <summary>Instantiates a wrapper in case of reference or mutable data object.</summary>
+      <param name="baseObject">PDF object backing this wrapper. MUST be a <see cref="PdfReference"/>
       everytime available.</param>
-      <param name="container">Indirect object containing the base object.</param>
     */
     protected PdfObjectWrapper(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
+      PdfDirectObject baseObject
       )
     {
       BaseObject = baseObject;
-      Container = container;
+      container = (baseObject != null ? baseObject.Container : null);
     }
     #endregion
 
@@ -90,13 +89,6 @@ namespace org.pdfclown.objects
     {
       get
       {return container;}
-      internal set
-      {
-        if(baseObject is PdfReference) // Base object is indirect (self-contained).
-          container = ((PdfReference)baseObject).IndirectObject;
-        else // Base object is direct (contained).
-          container = value;
-      }
     }
 
     /**
@@ -124,20 +116,19 @@ namespace org.pdfclown.objects
       <summary>Gets the document context.</summary>
     */
     public Document Document
-    {get{return container.File.Document;}}
+    {
+      get
+      {return container.File.Document;}
+    }
 
     /**
       <summary>Gets the file context.</summary>
     */
     public File File
-    {get{return container.File;}}
-
-    /**
-      <summary>Manually update the underlying indirect object.</summary>
-    */
-    public void Update(
-      )
-    {container.Update();}
+    {
+      get
+      {return container.File;}
+    }
     #endregion
 
     #region protected
@@ -250,8 +241,8 @@ namespace org.pdfclown.objects
       dictionaries may be a simple reference to a <code>PdfStream</code> or a <code>PdfArray</code> of references to <code>PdfStream</code>-s,
       <code>Pages</code> collections may be spread across a B-tree instead of a flat <code>PdfArray</code> and so on.</para>
       <para>So, in order to hide all these annoying inner workings, I chose to adopt a composition pattern instead of the apparently-reasonable
-      (but actually awkward!) inheritance pattern. Nonetheless, users can navigate through the low-level structure accessing the
-      <see cref="BaseDataObject">BaseDataObject</see> property.</para>
+      (but actually awkward!) inheritance pattern. Nonetheless, users can navigate through the low-level structure getting the
+      <see cref="BaseDataObject">BaseDataObject</see> backing this object.</para>
     </remarks>
   */
   public abstract class PdfObjectWrapper<TDataObject>
@@ -264,27 +255,25 @@ namespace org.pdfclown.objects
     #endregion
 
     #region constructors
+    /**
+      <summary>Creates a new wrapper into the specified file context.</summary>
+      <param name="context">File context into which the specified data object has to be registered.</param>
+      <param name="baseDataObject">PDF data object backing this wrapper.</param>
+    */
     protected PdfObjectWrapper(
       File context,
       TDataObject baseDataObject
-      ) : this(
-        context.Register(baseDataObject),
-        null
-        )
+      ) : this(context.Register(baseDataObject))
     {}
 
     /**
-      <param name="baseObject">Base PDF object. MUST be a <see cref="PdfReference"/>
+      <summary>Instantiates a wrapper in case of reference or mutable data object.</summary>
+      <param name="baseObject">PDF object backing this wrapper. MUST be a <see cref="PdfReference"/>
       everytime available.</param>
-      <param name="container">Indirect object containing the base object.</param>
     */
     protected PdfObjectWrapper(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(
-        baseObject,
-        container
-        )
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -294,14 +283,17 @@ namespace org.pdfclown.objects
       <summary>Gets the underlying data object.</summary>
     */
     public TDataObject BaseDataObject
-    {get{return baseDataObject;}}
+    {
+      get
+      {return baseDataObject;}
+    }
 
     public override PdfDirectObject BaseObject
     {
       get
       {return base.BaseObject;}
       protected set
-      {
+      {//TODO: assignment should trigger container.setDataObject!!!
         base.BaseObject = value;
         baseDataObject = (TDataObject)File.Resolve(value);
       }

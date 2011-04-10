@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -53,12 +53,8 @@ namespace org.pdfclown.documents.interaction.annotations
     #region constructors
     internal AppearanceStates(
       PdfName statesKey,
-      PdfIndirectObject container,
       Appearance appearance
-      ) : base(
-        appearance.BaseDataObject[statesKey],
-        container
-        )
+      ) : base(appearance.BaseDataObject[statesKey])
     {
       this.appearance = appearance;
       this.statesKey = statesKey;

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,29 +25,28 @@
 
 package org.pdfclown.documents.interaction.annotations;
 
-import org.pdfclown.PDF;
-import org.pdfclown.VersionEnum;
-import org.pdfclown.documents.Document;
-import org.pdfclown.documents.interaction.actions.Action;
-import org.pdfclown.objects.PdfDictionary;
-import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
-import org.pdfclown.objects.PdfName;
-import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.util.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.pdfclown.PDF;
+import org.pdfclown.VersionEnum;
+import org.pdfclown.documents.Document;
+import org.pdfclown.documents.interaction.actions.Action;
+import org.pdfclown.objects.PdfDictionary;
+import org.pdfclown.objects.PdfDirectObject;
+import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfObjectWrapper;
+import org.pdfclown.util.NotImplementedException;
+
 /**
   Annotation actions [PDF:1.6:8.5.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public class AnnotationActions
@@ -57,7 +56,7 @@ public class AnnotationActions
   // <class>
   // <dynamic>
   // <fields>
-  private Annotation parent;
+  private final Annotation parent;
   // </fields>
 
   // <constructors>
@@ -75,11 +74,10 @@ public class AnnotationActions
 
   public AnnotationActions(
     Annotation parent,
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
   {
-    super(baseObject,container);
+    super(baseObject);
 
     this.parent = parent;
   }
@@ -105,32 +103,14 @@ public class AnnotationActions
   */
   public Action getOnEnter(
     )
-  {
-    /*
-      NOTE: 'E' entry may be undefined.
-    */
-    PdfDirectObject onEnterObject = getBaseDataObject().get(PdfName.E);
-    if(onEnterObject == null)
-      return null;
-
-    return Action.wrap(onEnterObject,getContainer());
-  }
+  {return get(PdfName.E);}
 
   /**
     Gets the action to be performed when the cursor exits the annotation's active area.
   */
   public Action getOnExit(
     )
-  {
-    /*
-      NOTE: 'X' entry may be undefined.
-    */
-    PdfDirectObject onExitObject = getBaseDataObject().get(PdfName.X);
-    if(onExitObject == null)
-      return null;
-
-    return Action.wrap(onExitObject,getContainer());
-  }
+  {return get(PdfName.X);}
 
   /**
     Gets the action to be performed when the mouse button is pressed
@@ -138,16 +118,7 @@ public class AnnotationActions
   */
   public Action getOnMouseDown(
     )
-  {
-    /*
-      NOTE: 'D' entry may be undefined.
-    */
-    PdfDirectObject onMouseDownObject = getBaseDataObject().get(PdfName.D);
-    if(onMouseDownObject == null)
-      return null;
-
-    return Action.wrap(onMouseDownObject,getContainer());
-  }
+  {return get(PdfName.D);}
 
   /**
     Gets the action to be performed when the mouse button is released
@@ -155,32 +126,14 @@ public class AnnotationActions
   */
   public Action getOnMouseUp(
     )
-  {
-    /*
-      NOTE: 'U' entry may be undefined.
-    */
-    PdfDirectObject onMouseUpObject = getBaseDataObject().get(PdfName.U);
-    if(onMouseUpObject == null)
-      return null;
-
-    return Action.wrap(onMouseUpObject,getContainer());
-  }
+  {return get(PdfName.U);}
 
   /**
     Gets the action to be performed when the page containing the annotation is closed.
   */
   public Action getOnPageClose(
     )
-  {
-    /*
-      NOTE: 'PC' entry may be undefined.
-    */
-    PdfDirectObject onPageCloseObject = getBaseDataObject().get(PdfName.PC);
-    if(onPageCloseObject == null)
-      return null;
-
-    return Action.wrap(onPageCloseObject,getContainer());
-  }
+  {return get(PdfName.PC);}
 
   /**
     Gets the action to be performed when the page containing the annotation
@@ -188,32 +141,14 @@ public class AnnotationActions
   */
   public Action getOnPageInvisible(
     )
-  {
-    /*
-      NOTE: 'PI' entry may be undefined.
-    */
-    PdfDirectObject onPageInvisibleObject = getBaseDataObject().get(PdfName.PI);
-    if(onPageInvisibleObject == null)
-      return null;
-
-    return Action.wrap(onPageInvisibleObject,getContainer());
-  }
+  {return get(PdfName.PI);}
 
   /**
     Gets the action to be performed when the page containing the annotation is opened.
   */
   public Action getOnPageOpen(
     )
-  {
-    /*
-      NOTE: 'PO' entry may be undefined.
-    */
-    PdfDirectObject onPageOpenObject = getBaseDataObject().get(PdfName.PO);
-    if(onPageOpenObject == null)
-      return null;
-
-    return Action.wrap(onPageOpenObject,getContainer());
-  }
+  {return get(PdfName.PO);}
 
   /**
     Gets the action to be performed when the page containing the annotation
@@ -221,16 +156,7 @@ public class AnnotationActions
   */
   public Action getOnPageVisible(
     )
-  {
-    /*
-      NOTE: 'PV' entry may be undefined.
-    */
-    PdfDirectObject onPageVisibleObject = getBaseDataObject().get(PdfName.PV);
-    if(onPageVisibleObject == null)
-      return null;
-
-    return Action.wrap(onPageVisibleObject,getContainer());
-  }
+  {return get(PdfName.PV);}
 
   /**
     @see #getOnActivate()
@@ -238,7 +164,7 @@ public class AnnotationActions
   public void setOnActivate(
     Action value
     )
-  {parent.setAction(value); parent.update();}
+  {parent.setAction(value);}
 
   /**
     @see #getOnEnter()
@@ -246,7 +172,7 @@ public class AnnotationActions
   public void setOnEnter(
     Action value
     )
-  {getBaseDataObject().put(PdfName.E, value.getBaseObject());}
+  {put(PdfName.E, value);}
 
   /**
     @see #getOnExit()
@@ -254,7 +180,7 @@ public class AnnotationActions
   public void setOnExit(
     Action value
     )
-  {getBaseDataObject().put(PdfName.X, value.getBaseObject());}
+  {put(PdfName.X, value);}
 
   /**
     @see #getOnMouseDown()
@@ -262,7 +188,7 @@ public class AnnotationActions
   public void setOnMouseDown(
     Action value
     )
-  {getBaseDataObject().put(PdfName.D, value.getBaseObject());}
+  {put(PdfName.D, value);}
 
   /**
     @see #getOnMouseUp()
@@ -270,7 +196,7 @@ public class AnnotationActions
   public void setOnMouseUp(
     Action value
     )
-  {getBaseDataObject().put(PdfName.U, value.getBaseObject());}
+  {put(PdfName.U, value);}
 
   /**
     @see #getOnPageClose()
@@ -278,7 +204,7 @@ public class AnnotationActions
   public void setOnPageClose(
     Action value
     )
-  {getBaseDataObject().put(PdfName.PC, value.getBaseObject());}
+  {put(PdfName.PC, value);}
 
   /**
     @see #getOnPageInvisible()
@@ -286,7 +212,7 @@ public class AnnotationActions
   public void setOnPageInvisible(
     Action value
     )
-  {getBaseDataObject().put(PdfName.PI, value.getBaseObject());}
+  {put(PdfName.PI, value);}
 
   /**
     @see #getOnPageOpen()
@@ -294,7 +220,7 @@ public class AnnotationActions
   public void setOnPageOpen(
     Action value
     )
-  {getBaseDataObject().put(PdfName.PO, value.getBaseObject());}
+  {put(PdfName.PO, value);}
 
   /**
     @see #getOnPageVisible()
@@ -302,7 +228,7 @@ public class AnnotationActions
   public void setOnPageVisible(
     Action value
     )
-  {getBaseDataObject().put(PdfName.PV, value.getBaseObject());}
+  {put(PdfName.PV, value);}
 
   // <Map>
   @Override
@@ -341,12 +267,7 @@ public class AnnotationActions
   public Action get(
     Object key
     )
-  {
-    return Action.wrap(
-      getBaseDataObject().get(key),
-      getContainer()
-      );
-  }
+  {return Action.wrap(getBaseDataObject().get(key));}
 
   @Override
   public boolean isEmpty(
@@ -369,14 +290,7 @@ public class AnnotationActions
     PdfName key,
     Action value
     )
-  {
-    return Action.wrap(
-      value == null
-        ? getBaseDataObject().remove(key)
-        : getBaseDataObject().put(key,value.getBaseObject()),
-      getContainer()
-      );
-  }
+  {return Action.wrap(getBaseDataObject().put(key, value != null ? value.getBaseObject() : null));}
 
   @Override
   public void putAll(
@@ -390,18 +304,13 @@ public class AnnotationActions
     )
   {
     Action oldValue;
-    if(PdfName.A.equals(key))
+    if(PdfName.A.equals(key) && parent.getBaseDataObject().containsKey(key))
     {
       oldValue = getOnActivate();
       setOnActivate(null);
     }
     else
-    {
-      oldValue = Action.wrap(
-        getBaseDataObject().remove(key),
-        getContainer()
-        );
-    }
+    {oldValue = Action.wrap(getBaseDataObject().remove(key));}
     return oldValue;
   }
 
@@ -417,14 +326,16 @@ public class AnnotationActions
   public Collection<Action> values(
     )
   {
-    Collection<PdfDirectObject> objects = getBaseDataObject().values();
-    Collection<Action> values = new ArrayList<Action>(objects.size());
-    for(PdfDirectObject object : objects)
-    {values.add(Action.wrap(object,getContainer()));}
-    Action action = getOnActivate();
-    if(action != null)
-    {values.add(action);}
-
+    Collection<Action> values;
+    {
+      Collection<PdfDirectObject> objects = getBaseDataObject().values();
+      values = new ArrayList<Action>(objects.size());
+      for(PdfDirectObject object : objects)
+      {values.add(Action.wrap(object));}
+      Action action = getOnActivate();
+      if(action != null)
+      {values.add(action);}
+    }
     return values;
   }
   // </Map>

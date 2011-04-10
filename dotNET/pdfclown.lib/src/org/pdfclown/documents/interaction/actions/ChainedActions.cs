@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -58,9 +58,8 @@ namespace org.pdfclown.documents.interaction.actions
     #region constructors
     internal ChainedActions(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       Action parent
-      ) : base(baseObject,container)
+      ) : base(baseObject)
     {this.parent = parent;}
     #endregion
 
@@ -112,10 +111,10 @@ namespace org.pdfclown.documents.interaction.actions
           if(index != 0)
             throw new ArgumentException("Index: " + index + ", Size: 1");
 
-          return Action.Wrap(BaseObject,Container);
+          return Action.Wrap(BaseObject);
         }
         else // Multiple actions.
-          return Action.Wrap(((PdfArray)baseDataObject)[index],Container);
+          return Action.Wrap(((PdfArray)baseDataObject)[index]);
       }
       set
       {EnsureArray()[index] = value.BaseObject;}

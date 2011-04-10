@@ -220,10 +220,7 @@ namespace org.pdfclown.documents
 
     internal Pages(
       PdfDirectObject baseObject
-      ) : base(
-        baseObject,
-        null // NO container (page tree root node MUST be an indirect object [PDF:1.6:3.6.1]).
-        )
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -429,11 +426,9 @@ namespace org.pdfclown.documents
       PdfArray kidsData = (PdfArray)File.Resolve(kids);
       // Remove the page!
       kidsData.Remove(page.BaseObject);
-      File.Update(kids);
 
       // Unbind the page from its parent!
       pageData[PdfName.Parent] = null;
-      page.Update();
 
       // Decrementing the pages counters...
       do
@@ -442,7 +437,6 @@ namespace org.pdfclown.documents
         PdfInteger countObject = (PdfInteger)parentData[PdfName.Count];
         // Decrement the counter at the current level!
         parentData[PdfName.Count] = new PdfInteger(countObject.IntValue-1);
-        File.Update(parent);
 
         // Iterate upward!
         parent = parentData[PdfName.Parent];
@@ -476,8 +470,7 @@ namespace org.pdfclown.documents
     private void CommonAddAll<TPage>(
       int index,
       ICollection<TPage> pages
-      )
-      where TPage : Page
+      ) where TPage : Page
     {
       PdfDirectObject parent;
       PdfDictionary parentData;
@@ -528,9 +521,7 @@ namespace org.pdfclown.documents
         }
         // Bind the page to the collection!
         page.BaseDataObject[PdfName.Parent] = parent;
-        page.Update();
       }
-      File.Update(kids);
 
       // Incrementing the pages counters...
       do
@@ -539,7 +530,6 @@ namespace org.pdfclown.documents
         PdfInteger countObject = (PdfInteger)parentData[PdfName.Count];
         // Increment the counter at the current level!
         parentData[PdfName.Count] = new PdfInteger(countObject.IntValue+pages.Count);
-        File.Update(parent);
 
         // Iterate upward!
         parent = parentData[PdfName.Parent];

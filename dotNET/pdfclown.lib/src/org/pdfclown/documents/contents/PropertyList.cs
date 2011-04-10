@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,30 +43,14 @@ namespace org.pdfclown.documents.contents
     #region interface
     #region public
     /**
-      <summary>Wraps a reference into a property list object.</summary>
-      <param name="reference">Reference to a property list object.</param>
-      <returns>Property list object corresponding to the reference.</returns>
-    */
-    public static PropertyList Wrap(
-      PdfReference reference
-      )
-    {return Wrap(reference, null);}
-
-    /**
       <summary>Wraps the specified base object into a property list object.</summary>
       <param name="baseObject">Base object of a property list object.</param>
-      <param name="container">Indirect object possibly containing the property list base object.</param>
       <returns>Property list object corresponding to the base object.</returns>
     */
     public static PropertyList Wrap(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
+      PdfDirectObject baseObject
       )
-    {
-      return baseObject == null
-        ? null
-        : new PropertyList(baseObject, container);
-    }
+    {return baseObject != null ? new PropertyList(baseObject) : null;}
     #endregion
     #endregion
     #endregion
@@ -80,9 +64,8 @@ namespace org.pdfclown.documents.contents
     {}
 
     internal PropertyList(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 

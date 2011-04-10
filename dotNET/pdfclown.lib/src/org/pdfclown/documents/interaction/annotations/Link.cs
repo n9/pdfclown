@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -65,9 +65,8 @@ namespace org.pdfclown.documents.interaction.annotations
     }
 
     public Link(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
 
     private Link(
@@ -114,17 +113,10 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'Dest' entry may be undefined.
-        */
         PdfDirectObject destinationObject = BaseDataObject[PdfName.Dest];
-        if(destinationObject == null)
-          return null;
-
-        return Document.ResolveName<Destination>(
-          destinationObject,
-          Container
-          );
+        return destinationObject != null
+          ? Document.ResolveName<Destination>(destinationObject)
+          : null;
       }
       set
       {

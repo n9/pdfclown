@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,34 +29,19 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 
 /**
   Graphics state parameter resources collection [PDF:1.6:3.7.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class ExtGStateResources
   extends ResourceItems<ExtGState>
 {
   // <class>
-  // <static>
-  // <interface>
-  static ExtGStateResources wrap(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
-    )
-  {
-    return baseObject == null
-      ? null
-      : new ExtGStateResources(baseObject, container);
-  }
-  // </interface>
-  // </static>
-
   // <dynamic>
   // <constructors>
   public ExtGStateResources(
@@ -64,11 +49,10 @@ public final class ExtGStateResources
     )
   {super(context);}
 
-  private ExtGStateResources(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+  ExtGStateResources(
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -77,7 +61,7 @@ public final class ExtGStateResources
   protected ExtGState wrap(
     PdfDirectObject baseObject
     )
-  {return ExtGState.wrap(baseObject, getContainer());}
+  {return ExtGState.wrap(baseObject);}
   // </protected>
   // </interface>
   // </dynamic>

@@ -87,10 +87,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
 
     internal Bookmark(
       PdfDirectObject baseObject
-      ) : base(
-        baseObject,
-        null // NO container (bookmark MUST be an indirect object [PDF:1.6:8.2.2]).
-        )
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -217,16 +214,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
     public actions.Action Action
     {
       get
-      {
-        /*
-          NOTE: 'A' entry may be undefined.
-        */
-        PdfDirectObject actionObject = BaseDataObject[PdfName.A];
-        if(actionObject == null)
-          return null;
-
-        return actions.Action.Wrap(actionObject,Container);
-      }
+      {return actions.Action.Wrap(BaseDataObject[PdfName.A]);}
       set
       {
         if(value == null)
@@ -250,17 +238,10 @@ namespace org.pdfclown.documents.interaction.navigation.document
     {
       get
       {
-        /*
-          NOTE: 'Dest' entry may be undefined.
-        */
         PdfDirectObject destinationObject = BaseDataObject[PdfName.Dest];
-        if(destinationObject == null)
-          return null;
-
-        return Document.ResolveName<LocalDestination>(
-          destinationObject,
-          Container
-          );
+        return destinationObject != null
+          ? Document.ResolveName<LocalDestination>(destinationObject)
+          : null;
       }
       set
       {

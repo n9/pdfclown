@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -34,16 +34,14 @@ import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.objects.PdfReference;
 
 /**
   Color space [PDF:1.6:4.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public abstract class ColorSpace<TDataObject extends PdfDirectObject>
   extends PdfObjectWrapper<TDataObject>
@@ -53,26 +51,13 @@ public abstract class ColorSpace<TDataObject extends PdfDirectObject>
   // <interface>
   // <public>
   /**
-    Wraps the specified color space reference into a color space object.
-
-    @param reference Reference to a color space object.
-    @return Color space object corresponding to the reference.
-  */
-  public static ColorSpace<?> wrap(
-    PdfReference reference
-    )
-  {return wrap(reference, null);}
-
-  /**
     Wraps the specified color space base object into a color space object.
 
     @param baseObject Base object of a color space object.
-    @param container Indirect object possibly containing the color space base object.
     @return Color space object corresponding to the base object.
   */
   public static ColorSpace<?> wrap(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
   {
     if(baseObject == null)
@@ -90,27 +75,27 @@ public abstract class ColorSpace<TDataObject extends PdfDirectObject>
       ? ((PdfArray)baseDataObject).get(0)
       : baseDataObject);
     if(name.equals(PdfName.DeviceRGB))
-      return new DeviceRGBColorSpace(baseObject,container);
+      return new DeviceRGBColorSpace(baseObject);
     else if(name.equals(PdfName.DeviceCMYK))
-      return new DeviceCMYKColorSpace(baseObject,container);
+      return new DeviceCMYKColorSpace(baseObject);
     else if(name.equals(PdfName.DeviceGray))
-      return new DeviceGrayColorSpace(baseObject,container);
+      return new DeviceGrayColorSpace(baseObject);
     else if(name.equals(PdfName.CalRGB))
-      return new CalRGBColorSpace(baseObject,container);
+      return new CalRGBColorSpace(baseObject);
     else if(name.equals(PdfName.CalGray))
-      return new CalGrayColorSpace(baseObject,container);
+      return new CalGrayColorSpace(baseObject);
     else if(name.equals(PdfName.ICCBased))
-      return new ICCBasedColorSpace(baseObject,container);
+      return new ICCBasedColorSpace(baseObject);
     else if(name.equals(PdfName.Lab))
-      return new LabColorSpace(baseObject,container);
+      return new LabColorSpace(baseObject);
     else if(name.equals(PdfName.DeviceN))
-      return new DeviceNColorSpace(baseObject,container);
+      return new DeviceNColorSpace(baseObject);
     else if(name.equals(PdfName.Indexed))
-      return new IndexedColorSpace(baseObject,container);
+      return new IndexedColorSpace(baseObject);
     else if(name.equals(PdfName.Pattern))
-      return new PatternColorSpace(baseObject,container);
+      return new PatternColorSpace(baseObject);
     else if(name.equals(PdfName.Separation))
-      return new SeparationColorSpace(baseObject,container);
+      return new SeparationColorSpace(baseObject);
     else
       throw new UnsupportedOperationException("Color space " + name + " unknown.");
   }
@@ -127,10 +112,9 @@ public abstract class ColorSpace<TDataObject extends PdfDirectObject>
   {super(context.getFile(), baseDataObject);}
 
   protected ColorSpace(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>

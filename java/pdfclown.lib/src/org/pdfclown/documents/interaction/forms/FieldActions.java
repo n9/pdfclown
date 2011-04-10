@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,7 +32,6 @@ import org.pdfclown.documents.interaction.actions.Action;
 import org.pdfclown.documents.interaction.actions.JavaScript;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.util.NotImplementedException;
@@ -42,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class FieldActions
@@ -62,10 +61,9 @@ public final class FieldActions
   }
 
   public FieldActions(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -82,16 +80,7 @@ public final class FieldActions
   */
   public JavaScript getOnCalculate(
     )
-  {
-    /*
-      NOTE: 'C' entry may be undefined.
-    */
-    PdfDirectObject onCalculateObject = getBaseDataObject().get(PdfName.C);
-    if(onCalculateObject == null)
-      return null;
-
-    return (JavaScript)Action.wrap(onCalculateObject,getContainer());
-  }
+  {return (JavaScript)Action.wrap(getBaseDataObject().get(PdfName.C));}
 
   /**
     Gets a JavaScript action to be performed when the user types a keystroke
@@ -99,16 +88,7 @@ public final class FieldActions
   */
   public JavaScript getOnChange(
     )
-  {
-    /*
-      NOTE: 'K' entry may be undefined.
-    */
-    PdfDirectObject onChangeObject = getBaseDataObject().get(PdfName.K);
-    if(onChangeObject == null)
-      return null;
-
-    return (JavaScript)Action.wrap(onChangeObject,getContainer());
-  }
+  {return (JavaScript)Action.wrap(getBaseDataObject().get(PdfName.K));}
 
   /**
     Gets a JavaScript action to be performed before the field is formatted
@@ -117,16 +97,7 @@ public final class FieldActions
   */
   public JavaScript getOnFormat(
     )
-  {
-    /*
-      NOTE: 'F' entry may be undefined.
-    */
-    PdfDirectObject onFormatObject = getBaseDataObject().get(PdfName.F);
-    if(onFormatObject == null)
-      return null;
-
-    return (JavaScript)Action.wrap(onFormatObject,getContainer());
-  }
+  {return (JavaScript)Action.wrap(getBaseDataObject().get(PdfName.F));}
 
   /**
     Gets a JavaScript action to be performed when the field's value is changed.
@@ -134,16 +105,7 @@ public final class FieldActions
   */
   public JavaScript getOnValidate(
     )
-  {
-    /*
-      NOTE: 'V' entry may be undefined.
-    */
-    PdfDirectObject onValidateObject = getBaseDataObject().get(PdfName.V);
-    if(onValidateObject == null)
-      return null;
-
-    return (JavaScript)Action.wrap(onValidateObject,getContainer());
-  }
+  {return (JavaScript)Action.wrap(getBaseDataObject().get(PdfName.V));}
 
   /**
     @see #getOnCalculate()

@@ -31,7 +31,7 @@ namespace org.pdfclown.objects
     <summary>PDF integer number object [PDF:1.6:3.2.2].</summary>
   */
   public sealed class PdfInteger
-    : PdfAtomicObject<int>,
+    : PdfSimpleObject<int>,
       IPdfNumber
   {
     #region dynamic
@@ -70,13 +70,13 @@ namespace org.pdfclown.objects
     {stream.Write(RawValue.ToString());}
 
     #region IPdfNumber
-    float IPdfAtomicObject<float>.RawValue
+    float IPdfSimpleObject<float>.RawValue
     {
       get
       {return this.RawValue;}
     }
 
-    object IPdfAtomicObject<float>.Value
+    object IPdfSimpleObject<float>.Value
     {
       get
       {return this.Value;}

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -51,7 +51,7 @@ import org.pdfclown.util.ConvertUtils;
   <p>It is alternative to the classic cross-reference table.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public final class XRefStream
   extends PdfStream
@@ -100,7 +100,6 @@ public final class XRefStream
   // <dynamic>
   // <fields>
   private SortedMap<Integer,XRefEntry> entries;
-  private File file;
   // </fields>
 
   // <constructors>
@@ -115,8 +114,7 @@ public final class XRefStream
         new PdfDirectObject[]
           {PdfName.XRef}
         ),
-      new Buffer(),
-      file
+      new Buffer()
       );
     PdfDictionary header = getHeader();
     for(Entry<PdfName,PdfDirectObject> entry : file.getTrailer().entrySet())
@@ -131,14 +129,9 @@ public final class XRefStream
 
   public XRefStream(
     PdfDictionary header,
-    IBuffer body,
-    File file
+    IBuffer body
     )
-  {
-    super(header, body);
-
-    this.file = file;
-  }
+  {super(header, body);}
   // </constructors>
 
   // <interface>
@@ -311,7 +304,7 @@ public final class XRefStream
         );
       header.put(
         PdfName.Size,
-        new PdfInteger(file.getIndirectObjects().size()+1)
+        new PdfInteger(getFile().getIndirectObjects().size()+1)
         );
       header.put(
         PdfName.W,

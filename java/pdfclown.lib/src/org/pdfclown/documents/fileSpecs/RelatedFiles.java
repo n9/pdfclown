@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,16 +25,6 @@
 
 package org.pdfclown.documents.fileSpecs;
 
-import org.pdfclown.PDF;
-import org.pdfclown.VersionEnum;
-import org.pdfclown.documents.Document;
-import org.pdfclown.objects.PdfArray;
-import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
-import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.objects.PdfTextString;
-import org.pdfclown.util.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -42,12 +32,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.pdfclown.PDF;
+import org.pdfclown.VersionEnum;
+import org.pdfclown.documents.Document;
+import org.pdfclown.objects.PdfArray;
+import org.pdfclown.objects.PdfDirectObject;
+import org.pdfclown.objects.PdfObjectWrapper;
+import org.pdfclown.objects.PdfTextString;
+import org.pdfclown.util.NotImplementedException;
+
 /**
   Embedded files referenced by another one (dependencies) [PDF:1.6:3.10.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF13)
 public final class RelatedFiles
@@ -80,14 +79,17 @@ public final class RelatedFiles
     // <interface>
     // <public>
     // <Map.Entry>
+    @Override
     public String getKey(
       )
     {return key;}
 
+    @Override
     public EmbeddedFile getValue(
       )
     {return value;}
 
+    @Override
     public EmbeddedFile setValue(
       EmbeddedFile value
       )
@@ -113,10 +115,9 @@ public final class RelatedFiles
   }
 
   RelatedFiles(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -188,7 +189,7 @@ public final class RelatedFiles
     {
       entrySet.add(
         new Entry(
-          (String)((PdfTextString)itemPairs.get(index)).getValue(),
+          ((PdfTextString)itemPairs.get(index)).getValue(),
           new EmbeddedFile(itemPairs.get(index+1))
           )
         );
@@ -247,7 +248,7 @@ public final class RelatedFiles
       )
     {
       keySet.add(
-        (String)((PdfTextString)itemPairs.get(index)).getValue()
+        ((PdfTextString)itemPairs.get(index)).getValue()
         );
     }
 

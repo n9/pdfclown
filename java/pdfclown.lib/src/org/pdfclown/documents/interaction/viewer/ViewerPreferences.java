@@ -28,20 +28,19 @@ package org.pdfclown.documents.interaction.viewer;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.objects.PdfAtomicObject;
 import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
+import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.util.NotImplementedException;
 
 /**
   Viewer preferences [PDF:1.6:8.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class ViewerPreferences
@@ -127,15 +126,9 @@ public final class ViewerPreferences
     For internal use only.
   */
   public ViewerPreferences(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {
-    super(
-      baseObject,
-      container
-      );
-  }
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -218,7 +211,7 @@ public final class ViewerPreferences
     PdfName key,
     Object defaultValue
     )
-  {return PdfAtomicObject.getValue(getBaseDataObject().get(key), defaultValue);}
+  {return PdfSimpleObject.getValue(getBaseDataObject().get(key), defaultValue);}
   // </private>
   // </interface>
   // </dynamic>

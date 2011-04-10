@@ -92,9 +92,7 @@ namespace org.pdfclown.documents.contents.xObjects
         NOTE: Form-space-to-user-space matrix is identity [1 0 0 1 0 0] by default,
         but may be adjusted by setting the Matrix entry in the form dictionary [PDF:1.6:4.9].
       */
-      PdfArray matrix = (PdfArray)File.Resolve(
-        BaseDataObject.Header[PdfName.Matrix]
-        );
+      PdfArray matrix = (PdfArray)BaseDataObject.Header.Resolve(PdfName.Matrix);
       if(matrix == null)
         return new double[]
           {
@@ -121,9 +119,7 @@ namespace org.pdfclown.documents.contents.xObjects
     {
       get
       {
-        PdfArray box = (PdfArray)File.Resolve(
-          BaseDataObject.Header[PdfName.BBox]
-          );
+        PdfArray box = (PdfArray)BaseDataObject.Header.Resolve(PdfName.BBox);
         return new drawing::SizeF(
           ((IPdfNumber)box[2]).RawValue,
           ((IPdfNumber)box[3]).RawValue
@@ -131,12 +127,9 @@ namespace org.pdfclown.documents.contents.xObjects
       }
       set
       {
-        PdfDirectObject box = BaseDataObject.Header[PdfName.BBox];
-        PdfArray boxObject = (PdfArray)File.Resolve(box);
+        PdfArray boxObject = (PdfArray)BaseDataObject.Header.Resolve(PdfName.BBox);
         boxObject[2] = new PdfReal(value.Width);
         boxObject[3] = new PdfReal(value.Height);
-
-        File.Update(box);
       }
     }
     #endregion
@@ -147,7 +140,7 @@ namespace org.pdfclown.documents.contents.xObjects
     {
       get
       {
-        PdfArray box = (PdfArray)BaseDataObject.Header.Resolve(PdfName.BBox); // Required [PDF:1.6:4.9.1].
+        PdfArray box = (PdfArray)BaseDataObject.Header.Resolve(PdfName.BBox);
         return new drawing::RectangleF(
           (float)((IPdfNumber)box[0]).RawValue,
           (float)((IPdfNumber)box[1]).RawValue,
@@ -160,7 +153,7 @@ namespace org.pdfclown.documents.contents.xObjects
     public Contents Contents
     {
       get
-      {return new Contents(BaseObject, Container, this);}
+      {return new Contents(BaseObject, this);}
     }
 
     public void Render(
@@ -175,7 +168,7 @@ namespace org.pdfclown.documents.contents.xObjects
     public Resources Resources
     {
       get
-      {return Resources.Wrap(BaseDataObject.Header[PdfName.Resources], Container);}
+      {return Resources.Wrap(BaseDataObject.Header[PdfName.Resources]);}
       set
       {BaseDataObject.Header[PdfName.Resources] = value.BaseObject;}
     }

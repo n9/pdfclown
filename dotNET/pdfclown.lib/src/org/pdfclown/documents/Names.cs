@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -48,9 +48,8 @@ namespace org.pdfclown.documents
     {}
 
     internal Names(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -70,13 +69,7 @@ namespace org.pdfclown.documents
       get
       {
         PdfDirectObject destinationsObject = BaseDataObject[PdfName.Dests];
-        if(destinationsObject == null)
-          return null;
-
-        return new NamedDestinations(
-          destinationsObject,
-          Container
-          );
+        return destinationsObject != null ? new NamedDestinations(destinationsObject) : null;
       }
       set
       {BaseDataObject[PdfName.Dests] = value.BaseObject;}
@@ -91,13 +84,7 @@ namespace org.pdfclown.documents
       get
       {
         PdfDirectObject embeddedFilesObject = BaseDataObject[PdfName.EmbeddedFiles];
-        if(embeddedFilesObject == null)
-          return null;
-
-        return new NamedEmbeddedFiles(
-          embeddedFilesObject,
-          Container
-          );
+        return embeddedFilesObject != null ? new NamedEmbeddedFiles(embeddedFilesObject) : null;
       }
       set
       {BaseDataObject[PdfName.EmbeddedFiles] = value.BaseObject;}
@@ -112,13 +99,7 @@ namespace org.pdfclown.documents
       get
       {
         PdfDirectObject javaScriptsObject = BaseDataObject[PdfName.JavaScript];
-        if(javaScriptsObject == null)
-          return null;
-
-        return new NamedJavaScripts(
-          javaScriptsObject,
-          Container
-          );
+        return javaScriptsObject != null ? new NamedJavaScripts(javaScriptsObject) : null;
       }
       set
       {BaseDataObject[PdfName.JavaScript] = value.BaseObject;}

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,7 +36,6 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.IContentContext;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.util.NotImplementedException;
@@ -47,7 +46,7 @@ import org.pdfclown.util.math.Interval;
   where A, B and C represent the <i>L*, a* and b* components of a CIE 1976 L*a*b* space</i> [PDF:1.6:4.5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF11)
 public final class LabColorSpace
@@ -59,10 +58,9 @@ public final class LabColorSpace
   //TODO:IMPL new element constructor!
 
   LabColorSpace(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>

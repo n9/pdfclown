@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -54,9 +54,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {}
 
     protected VertexShape(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -74,9 +73,6 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'Vertices' entry MUST be present.
-        */
         PdfArray verticesObject = (PdfArray)BaseDataObject[PdfName.Vertices];
         IList<PointF> vertices = new List<PointF>();
         float pageHeight = Page.Box.Height;

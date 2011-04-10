@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,34 +30,19 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.colorSpaces.Shading;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 
 /**
   Shading resources collection [PDF:1.6:3.7.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF13)
 public final class ShadingResources
   extends ResourceItems<Shading<?>>
 {
   // <class>
-  // <static>
-  // <interface>
-  static ShadingResources wrap(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
-    )
-  {
-    return baseObject == null
-      ? null
-      : new ShadingResources(baseObject, container);
-  }
-  // </interface>
-  // </static>
-
   // <dynamic>
   // <constructors>
   public ShadingResources(
@@ -65,11 +50,10 @@ public final class ShadingResources
     )
   {super(context);}
 
-  private ShadingResources(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+  ShadingResources(
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -78,7 +62,7 @@ public final class ShadingResources
   protected Shading<?> wrap(
     PdfDirectObject baseObject
     )
-  {return Shading.wrap(baseObject, getContainer());}
+  {return Shading.wrap(baseObject);}
   // </protected>
   // </interface>
   // </dynamic>

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,9 @@
 
 package org.pdfclown.documents.interaction.actions;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -36,22 +39,18 @@ import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.NotImplementedException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 /**
   'Toggle the visibility of one or more annotations on the screen' action [PDF:1.6:8.5.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class ToggleVisibility
@@ -69,20 +68,15 @@ public final class ToggleVisibility
     boolean visible
     )
   {
-    super(
-      context,
-      PdfName.Hide
-      );
-
+    super(context, PdfName.Hide);
     setObjects(objects);
     setVisible(visible);
   }
 
   ToggleVisibility(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container, null);}
+  {super(baseObject, null);}
   // </constructors>
 
   // <interface>
@@ -100,13 +94,10 @@ public final class ToggleVisibility
     )
   {
     ArrayList<PdfObjectWrapper<?>> objects = new ArrayList<PdfObjectWrapper<?>>();
-
-    /*
-      NOTE: 'T' entry MUST exist.
-    */
-    PdfDirectObject objectsObject = getBaseDataObject().get(PdfName.T);
-    fillObjects(objectsObject,objects);
-
+    {
+      PdfDirectObject objectsObject = getBaseDataObject().get(PdfName.T);
+      fillObjects(objectsObject, objects);
+    }
     return objects;
   }
 
@@ -116,14 +107,8 @@ public final class ToggleVisibility
   public boolean isVisible(
     )
   {
-    /*
-      NOTE: 'H' entry may be undefined.
-    */
     PdfBoolean hideObject = (PdfBoolean)getBaseDataObject().get(PdfName.H);
-    if(hideObject == null)
-      return false;
-
-    return !((Boolean)hideObject.getValue()).booleanValue();
+    return hideObject != null ? !((Boolean)hideObject.getValue()).booleanValue() : false;
   }
 
   /**
@@ -183,7 +168,7 @@ public final class ToggleVisibility
       else if(objectDataObject instanceof PdfTextString) // Form field (associated to widget annotations).
         objects.add(
           getDocument().getForm().getFields().get(
-            (String)((PdfTextString)objectDataObject).getValue()
+            ((PdfTextString)objectDataObject).getValue()
             )
           );
       else // Invalid object type.

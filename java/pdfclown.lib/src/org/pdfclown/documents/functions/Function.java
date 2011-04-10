@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -37,13 +37,11 @@ import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReal;
-import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.math.Interval;
 
@@ -52,7 +50,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Function<TDataObject extends PdfDataObject>
@@ -78,26 +76,13 @@ public abstract class Function<TDataObject extends PdfDataObject>
   // <interface>
   // <public>
   /**
-    Wraps a function reference into a function object.
-
-    @param reference Reference to a function object.
-    @return Function object associated to the reference.
-  */
-  public static final Function<?> wrap(
-    PdfReference reference
-  )
-  {return wrap(reference,null);}
-
-  /**
     Wraps a function base object into a function object.
 
     @param baseObject Function base object.
-    @param container Function base object container.
     @return Function object associated to the base object.
   */
   public static final Function<?> wrap(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
   {
     if(baseObject == null)
@@ -111,9 +96,9 @@ public abstract class Function<TDataObject extends PdfDataObject>
       case FunctionType0:
         return new Type0Function(baseObject);
       case FunctionType2:
-        return new Type2Function(baseObject, container);
+        return new Type2Function(baseObject);
       case FunctionType3:
-        return new Type3Function(baseObject, container);
+        return new Type3Function(baseObject);
       case FunctionType4:
         return new Type4Function(baseObject);
       default:
@@ -150,10 +135,9 @@ public abstract class Function<TDataObject extends PdfDataObject>
   {super(context.getFile(), baseDataObject);}
 
   protected Function(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>

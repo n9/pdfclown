@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -50,9 +50,8 @@ namespace org.pdfclown.documents.functions
     #region constructors
     internal Functions(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       Type3Function parent
-      ) : base(baseObject, container)
+      ) : base(baseObject)
     {this.parent = parent;}
     #endregion
 
@@ -97,12 +96,7 @@ namespace org.pdfclown.documents.functions
       ]
     {
       get
-      {
-        return Function.Wrap(
-          BaseDataObject[index],
-          Container
-          );
-      }
+      {return Function.Wrap(BaseDataObject[index]);}
       set
       {
         Validate(value);

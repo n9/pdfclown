@@ -1,11 +1,11 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
 
-  This file should be part of the source code distribution of "PDF Clown library"
-  (the Program): see the accompanying README files for more info.
+  This file should be part of the source code distribution of "PDF Clown library" (the
+  Program): see the accompanying README files for more info.
 
   This Program is free software; you can redistribute it and/or modify it under the terms
   of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -23,22 +23,24 @@
   this list of conditions.
 */
 
-package org.pdfclown.files;
+using System;
 
-/**
-  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
-*/
-public enum UpdateModeEnum
+namespace org.pdfclown.objects
 {
   /**
-    Delegate the update management of original indirect objects to the client commitment (late registration).
-    <p>Suitable for incremental update.</p>
+    <summary>PDF atomic object interface.</summary>
   */
-  Manual,
-  /**
-    Automatically update every original indirect object that is requested, indipendently from any actual modification (early registration).
-    <p>Suitable for compact update.</p>
-  */
-  Automatic
+  public interface IPdfSimpleObject<TValue>
+    : IComparable<PdfDirectObject>
+  {
+    TValue RawValue
+    {
+      get;
+    }
+
+    object Value
+    {
+      get;
+    }
+  }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,7 +32,6 @@ import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.documents.interaction.navigation.document.LocalDestination;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.util.NotImplementedException;
@@ -42,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF14)
 public final class DocumentActions
@@ -62,10 +61,9 @@ public final class DocumentActions
   }
 
   public DocumentActions(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -81,80 +79,35 @@ public final class DocumentActions
   */
   public Action getAfterPrint(
     )
-  {
-    /*
-      NOTE: 'DP' entry may be undefined.
-    */
-    PdfDirectObject afterPrintObject = getBaseDataObject().get(PdfName.DP);
-    if(afterPrintObject == null)
-      return null;
-
-    return Action.wrap(afterPrintObject,getContainer());
-  }
+  {return Action.wrap(getBaseDataObject().get(PdfName.DP));}
 
   /**
     Gets the action to be performed after saving the document.
   */
   public Action getAfterSave(
     )
-  {
-    /*
-      NOTE: 'DS' entry may be undefined.
-    */
-    PdfDirectObject afterSaveObject = getBaseDataObject().get(PdfName.DS);
-    if(afterSaveObject == null)
-      return null;
-
-    return Action.wrap(afterSaveObject,getContainer());
-  }
+  {return Action.wrap(getBaseDataObject().get(PdfName.DS));}
 
   /**
     Gets the action to be performed before printing the document.
   */
   public Action getBeforePrint(
     )
-  {
-    /*
-      NOTE: 'WP' entry may be undefined.
-    */
-    PdfDirectObject beforePrintObject = getBaseDataObject().get(PdfName.WP);
-    if(beforePrintObject == null)
-      return null;
-
-    return Action.wrap(beforePrintObject,getContainer());
-  }
+  {return Action.wrap(getBaseDataObject().get(PdfName.WP));}
 
   /**
     Gets the action to be performed before saving the document.
   */
   public Action getBeforeSave(
     )
-  {
-    /*
-      NOTE: 'WS' entry may be undefined.
-    */
-    PdfDirectObject beforeSaveObject = getBaseDataObject().get(PdfName.WS);
-    if(beforeSaveObject == null)
-      return null;
-
-    return Action.wrap(beforeSaveObject,getContainer());
-  }
+  {return Action.wrap(getBaseDataObject().get(PdfName.WS));}
 
   /**
     Gets the action to be performed before closing the document.
   */
   public Action getOnClose(
     )
-  {
-    /*
-      NOTE: 'DC' entry may be undefined.
-    */
-    PdfDirectObject onCloseObject = getBaseDataObject().get(PdfName.DC);
-    if(onCloseObject == null)
-      return null;
-
-    return Action.wrap(onCloseObject,getContainer());
-  }
+  {return Action.wrap(getBaseDataObject().get(PdfName.DC));}
 
   /**
     Gets the destination to be displayed or the action to be performed
@@ -163,17 +116,11 @@ public final class DocumentActions
   public PdfObjectWrapper<?> getOnOpen(
     )
   {
-    /*
-      NOTE: 'OpenAction' entry may be undefined.
-    */
     PdfDirectObject onOpenObject = getDocument().getBaseDataObject().get(PdfName.OpenAction);
-    if(onOpenObject == null)
-      return null;
-
     if(onOpenObject instanceof PdfDictionary) // Action (dictionary).
-      return Action.wrap(onOpenObject,getContainer());
+      return Action.wrap(onOpenObject);
     else // Destination (array).
-      return Destination.wrap(onOpenObject,getContainer(),null);
+      return Destination.wrap(onOpenObject, null);
   }
 
   /**
@@ -227,9 +174,7 @@ public final class DocumentActions
       || value instanceof LocalDestination))
       throw new IllegalArgumentException("Value MUST be either an Action or a LocalDestination.");
 
-    Document document = getDocument();
-    document.getBaseDataObject().put(PdfName.OpenAction, value.getBaseObject());
-    document.update(); // Ensures that the document's object modification is preserved.
+    getDocument().getBaseDataObject().put(PdfName.OpenAction, value.getBaseObject());
   }
   // </public>
   // </interface>

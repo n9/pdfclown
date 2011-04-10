@@ -15,7 +15,7 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public class IndirectObjectEditingSample
   extends Sample
@@ -94,13 +94,11 @@ public class IndirectObjectEditingSample
         IBuffer streamBody = toUnicodeStream.getBody();
         streamBody.append("... created ..."); // Adds arbitrary contents (NOTE: this would NOT be done in a real ToUnicode stream! We are just testing the editing functionality...).
       }
-
-      toUnicodeReference.getIndirectObject().update(); // Ensures that the indirect object is updated.
     }
 
     // 3. Serialize the PDF file!
     serialize(file);
-    
+
     return true;
   }
 }

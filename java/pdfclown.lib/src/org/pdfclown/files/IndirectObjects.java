@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -59,7 +59,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public final class IndirectObjects
   implements List<PdfIndirectObject>
@@ -70,7 +70,7 @@ public final class IndirectObjects
   /**
     Associated file.
   */
-  private File file;
+  private final File file;
 
   /**
     Map of matching references of imported indirect objects.
@@ -79,16 +79,16 @@ public final class IndirectObjects
     <p><code>Key</code> is the external indirect object hashcode, <code>Value</code> is the
     matching internal indirect object.</p>
   */
-  private Hashtable<Integer,PdfIndirectObject> importedObjects = new Hashtable<Integer,PdfIndirectObject>();
+  private final Hashtable<Integer,PdfIndirectObject> importedObjects = new Hashtable<Integer,PdfIndirectObject>();
   /**
     Collection of newly-registered indirect objects.
   */
-  private TreeMap<Integer,PdfIndirectObject> modifiedObjects = new TreeMap<Integer,PdfIndirectObject>();
+  private final TreeMap<Integer,PdfIndirectObject> modifiedObjects = new TreeMap<Integer,PdfIndirectObject>();
   /**
     Collection of instantiated original indirect objects.
     <p>This collection is used as a cache to avoid unconsistent parsing duplications.</p>
   */
-  private TreeMap<Integer,PdfIndirectObject> wokenObjects = new TreeMap<Integer,PdfIndirectObject>();
+  private final TreeMap<Integer,PdfIndirectObject> wokenObjects = new TreeMap<Integer,PdfIndirectObject>();
 
   /**
     Object counter.
@@ -100,9 +100,7 @@ public final class IndirectObjects
     <p>This information is vital to randomly retrieve the indirect-object persistent
     representation inside the associated file.</p>
   */
-  private SortedMap<Integer,XRefEntry> xrefEntries;
-
-  private UpdateModeEnum updateMode = UpdateModeEnum.Manual;
+  private final SortedMap<Integer,XRefEntry> xrefEntries;
   // </fields>
 
   // <constructors>
@@ -280,10 +278,6 @@ public final class IndirectObjects
           avoiding multiple incoherent instantiations of the same original indirect object.
         */
         wokenObjects.put(index, object = new PdfIndirectObject(file, null, xrefEntry));
-
-        // Early registration?
-        if(updateMode == UpdateModeEnum.Automatic)
-        {update(object);}
       }
     }
     return object;

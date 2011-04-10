@@ -50,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
   Document pages collection [PDF:1.6:3.6.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Pages
@@ -91,12 +91,7 @@ public final class Pages
   Pages(
     PdfDirectObject baseObject
     )
-  {
-    super(
-      baseObject,
-      null // NO container (page tree root node MUST be an indirect object [PDF:1.6:3.6.1]).
-      );
-  }
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -308,11 +303,9 @@ public final class Pages
     PdfArray kidsData = (PdfArray)File.resolve(kids);
     // Remove the page!
     kidsData.remove(pageObj.getBaseObject());
-    File.update(kids);
 
     // Unbind the page from its parent!
     pageData.put(PdfName.Parent,null);
-    pageObj.update();
 
     // Decrementing the pages counters...
     do
@@ -321,7 +314,6 @@ public final class Pages
       PdfInteger countObject = (PdfInteger)parentData.get(PdfName.Count);
       // Decrement the counter at the current level!
       parentData.put(PdfName.Count, new PdfInteger(countObject.getValue()-1));
-      File.update(parent);
 
       // Iterate upward!
       parent = parentData.get(PdfName.Parent);
@@ -561,9 +553,7 @@ public final class Pages
       }
       // Bind the page to the collection!
       page.getBaseDataObject().put(PdfName.Parent,parent);
-      page.update();
     }
-    File.update(kids);
 
     // Incrementing the pages counters...
     do
@@ -572,7 +562,6 @@ public final class Pages
       PdfInteger countObject = (PdfInteger)parentData.get(PdfName.Count);
       // Increment the counter at the current level!
       parentData.put(PdfName.Count, new PdfInteger(countObject.getValue()+pages.size()));
-      File.update(parent);
 
       // Iterate upward!
       parent = parentData.get(PdfName.Parent);

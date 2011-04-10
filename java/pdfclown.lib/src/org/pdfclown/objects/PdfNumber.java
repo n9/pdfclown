@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,10 +29,10 @@ package org.pdfclown.objects;
   PDF number object [PDF:1.6:3.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public abstract class PdfNumber<TValue extends Number>
-  extends PdfAtomicObject<TValue>
+  extends PdfSimpleObject<TValue>
 {
   // <class>
   // <dynamic>

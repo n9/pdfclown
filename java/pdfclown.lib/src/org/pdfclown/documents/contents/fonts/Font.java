@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -53,7 +53,7 @@ import org.pdfclown.util.NotImplementedException;
   Abstract font [PDF:1.6:5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Font
@@ -205,16 +205,17 @@ public abstract class Font
   /**
     Wraps a font reference into a font object.
 
-    @param reference Reference to a font object.
+    @param baseObject Font base object.
     @return Font object associated to the reference.
   */
   public static final Font wrap(
-    PdfReference reference
+    PdfDirectObject baseObject
     )
   {
-    if(reference == null)
+    if(baseObject == null)
       return null;
 
+    PdfReference reference = (PdfReference)baseObject;
     {
       // Has the font been already instantiated?
       /*
@@ -335,10 +336,8 @@ public abstract class Font
     PdfDirectObject baseObject
     )
   {
-    super(
-      baseObject,
-      null // NO container. NOTE: this is a simplification (the spec [PDF:1.6] doesn't apparently prescribe the use of an indirect object for font dictionary, whilst the general practice is as such. If an exception occurs, you'll need to specify the proper container).
-      );
+    super(baseObject);
+
     initialize();
     load();
   }

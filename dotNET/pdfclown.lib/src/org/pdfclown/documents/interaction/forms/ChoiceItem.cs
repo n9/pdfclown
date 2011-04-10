@@ -49,7 +49,7 @@ namespace org.pdfclown.documents.interaction.forms
     #region constructors
     public ChoiceItem(
       string value
-      ) : base(new PdfTextString(value),null)
+      ) : base(new PdfTextString(value))
     {}
 
     public ChoiceItem(
@@ -70,9 +70,8 @@ namespace org.pdfclown.documents.interaction.forms
 
     internal ChoiceItem(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       ChoiceItems items
-      ) : base(baseObject,container)
+      ) : base(baseObject)
     {Items = items;}
     #endregion
 

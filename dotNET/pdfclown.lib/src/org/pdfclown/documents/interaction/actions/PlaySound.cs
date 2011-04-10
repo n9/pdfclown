@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,16 +47,12 @@ namespace org.pdfclown.documents.interaction.actions
     public PlaySound(
       Document context,
       Sound sound
-      ) : base(
-        context,
-        PdfName.Sound
-        )
+      ) : base(context, PdfName.Sound)
     {Sound = sound;}
 
     internal PlaySound(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container, null)
+      PdfDirectObject baseObject
+      ) : base(baseObject, null)
     {}
     #endregion
 

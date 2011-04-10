@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -55,9 +55,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {Content = content;}
 
     public Movie(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -74,15 +73,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public multimedia::Movie Content
     {
       get
-      {
-        /*
-          NOTE: 'Movie' entry MUST exist.
-        */
-        return new multimedia::Movie(
-          BaseDataObject[PdfName.Movie],
-          Container
-          );
-      }
+      {return new multimedia::Movie(BaseDataObject[PdfName.Movie]);}
       set
       {
         if(value == null)

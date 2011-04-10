@@ -28,9 +28,9 @@ package org.pdfclown.objects;
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.files.File;
 import org.pdfclown.tokens.Encoding;
+import org.pdfclown.tokens.FileParser;
 import org.pdfclown.tokens.Keyword;
 import org.pdfclown.tokens.ObjectStream;
-import org.pdfclown.tokens.FileParser;
 import org.pdfclown.tokens.Symbol;
 import org.pdfclown.tokens.XRefEntry;
 import org.pdfclown.tokens.XRefEntry.UsageEnum;
@@ -39,7 +39,7 @@ import org.pdfclown.tokens.XRefEntry.UsageEnum;
   PDF indirect object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/17/11
+  @version 0.1.1, 04/10/11
 */
 public final class PdfIndirectObject
   extends PdfObject
@@ -58,8 +58,10 @@ public final class PdfIndirectObject
   private PdfDataObject dataObject;
   private File file;
   private boolean original;
-  private PdfReference reference;
-  private XRefEntry xrefEntry;
+  private final PdfReference reference;
+  private final XRefEntry xrefEntry;
+
+  private boolean updated;
   // </fields>
 
   // <constructors>
@@ -81,7 +83,7 @@ public final class PdfIndirectObject
     )
   {
     this.file = file;
-    this.dataObject = dataObject;
+    this.dataObject = include(dataObject);
     this.xrefEntry = xrefEntry;
 
     this.original = (xrefEntry.getOffset() != 0);
@@ -98,36 +100,45 @@ public final class PdfIndirectObject
   /**
     Adds the {@link #getDataObject() data object} to the specified object stream [PDF:1.6:3.4.6].
 
-    @param objectStreamIndirectObject Target object stream.
+    @param objectStream Target object stream.
    */
   public void compress(
-    PdfIndirectObject objectStreamIndirectObject
+    ObjectStream objectStream
     )
   {
-    if(objectStreamIndirectObject == null)
-    {uncompress();}
-    else
+    // Remove from previous object stream!
+    uncompress();
+
+    if(objectStream != null)
     {
-      PdfDataObject objectStreamDataObject = objectStreamIndirectObject.getDataObject();
-      if(!(objectStreamDataObject instanceof ObjectStream))
-        throw new IllegalArgumentException("'objectStreamIndirectObject' argument MUST contain an ObjectStream instance.");
-
-      // Ensure removal from previous object stream!
-      uncompress();
-
       // Add to the object stream!
-      ObjectStream objectStream = (ObjectStream)objectStreamDataObject;
       objectStream.put(xrefEntry.getNumber(),getDataObject());
       // Update its xref entry!
       xrefEntry.setUsage(UsageEnum.InUseCompressed);
-      xrefEntry.setStreamNumber(objectStreamIndirectObject.getReference().getObjectNumber());
+      xrefEntry.setStreamNumber(objectStream.getContainer().getReference().getObjectNumber());
       xrefEntry.setOffset(-1); // Internal object index unknown (to set on object stream serialization -- see ObjectStream).
     }
   }
 
+  @Override
+  public PdfIndirectObject getContainer(
+    )
+  {return this;}
+
+  @Override
   public File getFile(
     )
   {return file;}
+
+  @Override
+  public PdfObject getParent(
+    )
+  {return null;} // NOTE: As indirect objects are root objects, no parent can be associated.
+
+  @Override
+  public PdfIndirectObject getRoot(
+    )
+  {return null;} // NOTE: As indirect objects are root objects, no root can be associated.
 
   public XRefEntry getXrefEntry(
     )
@@ -185,20 +196,6 @@ public final class PdfIndirectObject
     xrefEntry.setOffset(-1); // Offset unknown (to set on file serialization -- see CompressedWriter).
   }
 
-  public void update(
-    )
-  {
-    if(original)
-    {
-      /*
-        NOTE: It's expected that dropOriginal() is invoked by IndirectObjects set() method;
-        such an action is delegated because clients may invoke directly set() method, skipping
-        this method.
-      */
-      file.getIndirectObjects().update(this);
-    }
-  }
-
   @Override
   public void writeTo(
     IOutputStream stream
@@ -254,7 +251,7 @@ public final class PdfIndirectObject
             // Retrieve the associated data object among the original objects!
             parser.seek(xrefEntry.getOffset());
             // Get the indirect data object!
-            dataObject = parser.parsePdfObject(4); // NOTE: Skips the indirect-object header.
+            dataObject = include(parser.parsePdfObject(4)); // NOTE: Skips the indirect-object header.
             break;
           }
           case InUseCompressed:
@@ -262,7 +259,7 @@ public final class PdfIndirectObject
             // Get the object stream where its data object is stored!
             ObjectStream objectStream = (ObjectStream)file.getIndirectObjects().get(xrefEntry.getStreamNumber()).getDataObject();
             // Get the indirect data object!
-            dataObject = objectStream.get(xrefEntry.getNumber());
+            dataObject = include(objectStream.get(xrefEntry.getNumber()));
             break;
           }
         }
@@ -291,12 +288,36 @@ public final class PdfIndirectObject
     if(xrefEntry.getGeneration() == XRefEntry.GenerationUnreusable)
       throw new RuntimeException("Unreusable entry.");
 
-    dataObject = value;
+    dataObject = include(value);
     xrefEntry.setUsage(UsageEnum.InUse);
     update();
   }
   // </IPdfIndirectObject>
   // </public>
+
+  // <protected>
+  @Override
+  protected boolean isUpdated(
+    )
+  {return updated;} //FIXME: In case of dataObject instanceof PdfStream, body buffer update is NOT notified!!!
+
+  @Override
+  protected void setUpdated(
+    boolean value
+    )
+  {
+    if(value && original)
+    {
+      /*
+        NOTE: It's expected that dropOriginal() is invoked by IndirectObjects set() method;
+        such an action is delegated because clients may invoke directly set() method, skipping
+        this method.
+      */
+      file.getIndirectObjects().update(this);
+    }
+    updated = value;
+  }
+  // </protected>
 
   // <internal>
   /**
@@ -315,6 +336,12 @@ public final class PdfIndirectObject
   public void dropOriginal(
     )
   {original = false;}
+
+  @Override
+  void setParent(
+    PdfObject value
+    )
+  {/* NOOP: As indirect objects are root objects, no parent can be associated. */}
   // </internal>
   // </interface>
   // </dynamic>

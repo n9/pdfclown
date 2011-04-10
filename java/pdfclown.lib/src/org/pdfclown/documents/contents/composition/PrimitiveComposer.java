@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -98,7 +98,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public final class PrimitiveComposer
 {
@@ -1593,7 +1593,7 @@ public final class PrimitiveComposer
     {
       // Create the font resources collection!
       fonts = new FontResources(scanner.getContents().getDocument());
-      resources.setFonts(fonts); resources.update();
+      resources.setFonts(fonts);
     }
     // Get the key associated to the font!
     PdfName name = fonts.getBaseDataObject().getKey(value.getBaseObject());
@@ -1605,7 +1605,7 @@ public final class PrimitiveComposer
       do
       {name = new PdfName(String.valueOf(++fontIndex));}
       while(fonts.containsKey(name));
-      fonts.put(name,value); fonts.update();
+      fonts.put(name,value);
     }
 
     return name;
@@ -1623,7 +1623,7 @@ public final class PrimitiveComposer
     {
       // Create the external object resources collection!
       xObjects = new XObjectResources(scanner.getContents().getDocument());
-      resources.setXObjects(xObjects); resources.update();
+      resources.setXObjects(xObjects);
     }
     // Get the key associated to the external object!
     PdfName name = xObjects.getBaseDataObject().getKey(value.getBaseObject());
@@ -1635,7 +1635,7 @@ public final class PrimitiveComposer
       do
       {name = new PdfName(String.valueOf(++xObjectIndex));}
       while(xObjects.containsKey(name));
-      xObjects.put(name,value); xObjects.update();
+      xObjects.put(name,value);
     }
 
     return name;

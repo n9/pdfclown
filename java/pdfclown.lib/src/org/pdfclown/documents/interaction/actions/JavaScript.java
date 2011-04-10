@@ -31,7 +31,6 @@ import org.pdfclown.bytes.IBuffer;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.objects.PdfString;
@@ -43,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF13)
 public final class JavaScript
@@ -66,10 +65,9 @@ public final class JavaScript
 
   JavaScript(
     PdfDirectObject baseObject,
-    PdfIndirectObject container,
     PdfString name
     )
-  {super(baseObject, container, name);}
+  {super(baseObject, name);}
   // </constructors>
 
   // <interface>

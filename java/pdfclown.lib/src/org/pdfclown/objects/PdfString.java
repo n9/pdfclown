@@ -45,10 +45,10 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/10/11
 */
 public class PdfString
-  extends PdfAtomicObject<byte[]>
+  extends PdfSimpleObject<byte[]>
   implements IDataWrapper
 {
   /*

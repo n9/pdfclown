@@ -52,9 +52,8 @@ namespace org.pdfclown.documents.interaction.actions
 
     internal JavaScript(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       PdfString name
-      ) : base(baseObject, container, name)
+      ) : base(baseObject, name)
     {}
     #endregion
 

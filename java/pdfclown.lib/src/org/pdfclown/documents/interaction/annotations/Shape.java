@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -34,7 +34,6 @@ import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.util.NotImplementedException;
@@ -44,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF13)
 public abstract class Shape
@@ -68,10 +67,9 @@ public abstract class Shape
   }
 
   protected Shape(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -88,18 +86,15 @@ public abstract class Shape
   public DeviceRGBColor getFillColor(
     )
   {
-    /*
-      NOTE: 'IC' entry may be undefined.
-    */
     PdfArray fillColorObject = (PdfArray)getBaseDataObject().get(PdfName.IC);
-    if(fillColorObject == null)
-      return null;
 //TODO:use baseObject constructor!!!
-    return new DeviceRGBColor(
-      ((PdfNumber<?>)fillColorObject.get(0)).getNumberValue(),
-      ((PdfNumber<?>)fillColorObject.get(1)).getNumberValue(),
-      ((PdfNumber<?>)fillColorObject.get(2)).getNumberValue()
-      );
+    return fillColorObject != null
+      ? new DeviceRGBColor(
+        ((PdfNumber<?>)fillColorObject.get(0)).getNumberValue(),
+        ((PdfNumber<?>)fillColorObject.get(1)).getNumberValue(),
+        ((PdfNumber<?>)fillColorObject.get(2)).getNumberValue()
+        )
+      : null;
   }
 
   /**

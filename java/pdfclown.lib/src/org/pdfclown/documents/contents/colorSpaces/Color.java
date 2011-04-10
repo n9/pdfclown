@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,14 +29,13 @@ import java.util.List;
 
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfObjectWrapper;
 
 /**
   Color value [PDF:1.6:4.5.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public abstract class Color<TDataObject extends PdfDataObject>
   extends PdfObjectWrapper<TDataObject>
@@ -82,20 +81,15 @@ public abstract class Color<TDataObject extends PdfDataObject>
     PdfDirectObject baseObject
     )
   {
-    /*
-      TODO: container is defined:
-      == null: color within content stream operations;
-      != null: color within external structures (such as for describing acroform widget styles)
-    */
-    super(baseObject, null);
+    super(baseObject);
+
     this.colorSpace = colorSpace;
   }
 
   protected Color(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>

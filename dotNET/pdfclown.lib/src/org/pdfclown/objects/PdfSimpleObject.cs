@@ -32,11 +32,11 @@ using System.Reflection;
 namespace org.pdfclown.objects
 {
   /**
-    <summary>Abstract PDF atomic object.</summary>
+    <summary>Abstract PDF simple object.</summary>
   */
-  public abstract class PdfAtomicObject<TValue>
+  public abstract class PdfSimpleObject<TValue>
     : PdfDirectObject,
-      IPdfAtomicObject<TValue>
+      IPdfSimpleObject<TValue>
   {
     #region static
     #region interface
@@ -80,7 +80,7 @@ namespace org.pdfclown.objects
     #endregion
 
     #region constructors
-    public PdfAtomicObject(
+    public PdfSimpleObject(
       )
     {}
     #endregion
@@ -90,7 +90,13 @@ namespace org.pdfclown.objects
     public override object Clone(
       File context
       )
-    {return MemberwiseClone();}
+    {return this;} // NOTE: Simple objects are immutable.
+
+    public sealed override PdfIndirectObject Container
+    {
+      get
+      {return null;} // NOTE: As simple objects are immutable, no container can be associated.
+    }
 
     public override bool Equals(
       object obj
@@ -98,13 +104,24 @@ namespace org.pdfclown.objects
     {
       return obj != null
         && obj.GetType().Equals(GetType())
-        && ((PdfAtomicObject<TValue>)obj).RawValue.Equals(RawValue);
+        && ((PdfSimpleObject<TValue>)obj).RawValue.Equals(RawValue);
     }
 
     public override int GetHashCode(
       )
     {return RawValue.GetHashCode();}
 
+    public sealed override PdfObject Parent
+    {
+      get
+      {return null;} // NOTE: As simple objects are immutable, no parent can be associated.
+      internal set
+      {/* NOOP: As simple objects are immutable, no parent can be associated. */}
+    }
+
+    /**
+      <summary>Gets/Sets the low-level representation of the value.</summary>
+    */
     public virtual TValue RawValue
     {
       get
@@ -113,16 +130,35 @@ namespace org.pdfclown.objects
       {this.value = value;}
     }
 
+    public sealed override PdfIndirectObject Root
+    {
+      get
+      {return null;} // NOTE: As simple objects are immutable, no root can be associated.
+    }
+
     public override string ToString(
       )
     {return Value.ToString();}
 
+    /**
+      <summary>Gets/Sets the high-level representation of the value.</summary>
+    */
     public virtual object Value
     {
       get
       {return value;}
       protected set
       {this.value = (TValue)value;}
+    }
+    #endregion
+
+    #region protected
+    protected internal sealed override bool Updated
+    {
+      get
+      {return false;} // NOTE: Simple objects are immutable.
+      set
+      {/* NOOP: As simple objects are immutable, no update can be done. */}
     }
     #endregion
     #endregion

@@ -31,7 +31,7 @@ namespace org.pdfclown.objects
     <summary>PDF number interface.</summary>
   */
   public interface IPdfNumber
-    : IPdfAtomicObject<float>
+    : IPdfSimpleObject<float>
   {}
 
   internal class PdfNumber

@@ -47,7 +47,7 @@ import org.pdfclown.util.NotImplementedException;
   Collection of bookmarks [PDF:1.6:8.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Bookmarks
@@ -84,12 +84,7 @@ public final class Bookmarks
   public Bookmarks(
     PdfDirectObject baseObject
     )
-  {
-    super(
-      baseObject,
-      null // NO container (bookmark MUST be an indirect object [PDF:1.6:8.2.2]).
-      );
-  }
+  {super(baseObject);}
   // </constructors>
 
   // <interface>

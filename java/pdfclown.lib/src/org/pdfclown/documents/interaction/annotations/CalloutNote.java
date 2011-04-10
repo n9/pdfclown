@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -34,7 +34,6 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
@@ -50,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF13)
 public final class CalloutNote
@@ -117,10 +116,9 @@ public final class CalloutNote
     }
 
     private LineObject(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
+      PdfDirectObject baseObject
       )
-    {super(baseObject,container);}
+    {super(baseObject);}
     // </constructors>
 
     // <interface>
@@ -261,10 +259,9 @@ public final class CalloutNote
   }
 
   public CalloutNote(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -281,14 +278,8 @@ public final class CalloutNote
   public JustificationEnum getJustification(
     )
   {
-    /*
-      NOTE: 'Q' entry may be undefined.
-    */
     PdfInteger justificationObject = (PdfInteger)getBaseDataObject().get(PdfName.Q);
-    if(justificationObject == null)
-      return JustificationEnum.Left;
-
-    return JustificationEnum.get(justificationObject);
+    return justificationObject != null ? JustificationEnum.get(justificationObject) : JustificationEnum.Left;
   }
 
   /**
@@ -297,14 +288,8 @@ public final class CalloutNote
   public LineObject getLine(
     )
   {
-    /*
-      NOTE: 'CL' entry may be undefined.
-    */
     PdfArray calloutLineObject = (PdfArray)getBaseDataObject().get(PdfName.CL);
-    if(calloutLineObject == null)
-      return null;
-
-    return new LineObject(calloutLineObject,getContainer());
+    return calloutLineObject != null ? new LineObject(calloutLineObject) : null;
   }
 
   /**

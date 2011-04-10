@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -51,9 +51,8 @@ namespace org.pdfclown.documents.interaction.forms
     {}
 
     public FieldActions(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -71,16 +70,7 @@ namespace org.pdfclown.documents.interaction.forms
     public JavaScript OnCalculate
     {
       get
-      {
-        /*
-          NOTE: 'C' entry may be undefined.
-        */
-        PdfDirectObject onCalculateObject = BaseDataObject[PdfName.C];
-        if(onCalculateObject == null)
-          return null;
-
-        return (JavaScript)Action.Wrap(onCalculateObject,Container);
-      }
+      {return (JavaScript)Action.Wrap(BaseDataObject[PdfName.C]);}
       set
       {BaseDataObject[PdfName.C] = value.BaseObject;}
     }
@@ -92,16 +82,7 @@ namespace org.pdfclown.documents.interaction.forms
     public JavaScript OnChange
     {
       get
-      {
-        /*
-          NOTE: 'K' entry may be undefined.
-        */
-        PdfDirectObject onChangeObject = BaseDataObject[PdfName.K];
-        if(onChangeObject == null)
-          return null;
-
-        return (JavaScript)Action.Wrap(onChangeObject,Container);
-      }
+      {return (JavaScript)Action.Wrap(BaseDataObject[PdfName.K]);}
       set
       {BaseDataObject[PdfName.K] = value.BaseObject;}
     }
@@ -114,16 +95,7 @@ namespace org.pdfclown.documents.interaction.forms
     public JavaScript OnFormat
     {
       get
-      {
-        /*
-          NOTE: 'F' entry may be undefined.
-        */
-        PdfDirectObject onFormatObject = BaseDataObject[PdfName.F];
-        if(onFormatObject == null)
-          return null;
-
-        return (JavaScript)Action.Wrap(onFormatObject,Container);
-      }
+      {return (JavaScript)Action.Wrap(BaseDataObject[PdfName.F]);}
       set
       {BaseDataObject[PdfName.F] = value.BaseObject;}
     }
@@ -135,16 +107,7 @@ namespace org.pdfclown.documents.interaction.forms
     public JavaScript OnValidate
     {
       get
-      {
-        /*
-          NOTE: 'V' entry may be undefined.
-        */
-        PdfDirectObject onValidateObject = BaseDataObject[PdfName.V];
-        if(onValidateObject == null)
-          return null;
-
-        return (JavaScript)Action.Wrap(onValidateObject,Container);
-      }
+      {return (JavaScript)Action.Wrap(BaseDataObject[PdfName.V]);}
       set
       {BaseDataObject[PdfName.V] = value.BaseObject;}
     }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,7 +38,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF13)
 public final class Type4Function
@@ -52,7 +52,7 @@ public final class Type4Function
   Type4Function(
     PdfDirectObject baseObject
     )
-  {super(baseObject, null);} // NOTE: PdfStream is self-contained.
+  {super(baseObject);}
   // </constructors>
 
   // <interface>

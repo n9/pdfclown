@@ -140,17 +140,16 @@ namespace org.pdfclown.tokens
         if((TokenType == TokenTypeEnum.Keyword)
           && Token.Equals(Keyword.BeginStream))
         {
-          PdfDictionary dictionary = (PdfDictionary)pdfObject;
-          // Keep track of current position!
-          long position = stream.Position;
+          PdfDictionary streamHeader = (PdfDictionary)pdfObject;
 
-          // Get the stream length!
+          // Keep track of current position!
           /*
-            NOTE: Indirect reference resolution is an outbound call (stream pointer hazard!),
+            NOTE: Indirect reference resolution is an outbound call which affects the stream pointer position,
             so we need to recover our current position after it returns.
           */
-          int length = ((PdfInteger)files.File.Resolve(dictionary[PdfName.Length])).RawValue;
-
+          long position = stream.Position;
+          // Get the stream length!
+          int length = ((PdfInteger)streamHeader.Resolve(PdfName.Length)).IntValue;
           // Move to the stream data beginning!
           stream.Seek(position); SkipEOL();
 
@@ -160,22 +159,20 @@ namespace org.pdfclown.tokens
 
           MoveNext(); // Postcondition (last token should be 'endstream' keyword).
 
-        Object streamType = dictionary[PdfName.Type];
+        Object streamType = streamHeader[PdfName.Type];
         if(PdfName.ObjStm.Equals(streamType)) // Object stream [PDF:1.6:3.4.6].
           return new ObjectStream(
-            dictionary,
-            new bytes.Buffer(data),
-            file
+            streamHeader,
+            new bytes.Buffer(data)
             );
         else if(PdfName.XRef.Equals(streamType)) // Cross-reference stream [PDF:1.6:3.4.7].
           return new XRefStream(
-            dictionary,
-            new bytes.Buffer(data),
-            file
+            streamHeader,
+            new bytes.Buffer(data)
             );
         else // Generic stream.
           return new PdfStream(
-            dictionary,
+            streamHeader,
             new bytes.Buffer(data)
             );
         }

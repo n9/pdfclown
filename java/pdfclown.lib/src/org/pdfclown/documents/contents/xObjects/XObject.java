@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,22 +25,22 @@
 
 package org.pdfclown.documents.contents.xObjects;
 
+import java.awt.geom.Dimension2D;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
+import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfStream;
-
-import java.awt.geom.Dimension2D;
 
 /**
   Abstract external object [PDF:1.6:4.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class XObject
@@ -52,24 +52,21 @@ public abstract class XObject
   // <public>
   /**
     Wraps an external object reference into an external object.
-    @param reference Reference to an external object.
+    @param baseObject External object base object.
     @return External object associated to the reference.
   */
   public static XObject wrap(
-    PdfReference reference
+    PdfDirectObject baseObject
     )
   {
-    /*
-      NOTE: This is a factory method for any xobject-derived object.
-    */
-    if(reference == null)
+    if(baseObject == null)
       return null;
 
-    PdfName subtype = (PdfName)((PdfStream)reference.getDataObject()).getHeader().get(PdfName.Subtype);
+    PdfName subtype = (PdfName)((PdfStream)File.resolve(baseObject)).getHeader().get(PdfName.Subtype);
     if(subtype.equals(PdfName.Form))
-      return new FormXObject(reference);
+      return new FormXObject(baseObject);
     else if(subtype.equals(PdfName.Image))
-      return new ImageXObject(reference);
+      return new ImageXObject(baseObject);
     else
       return null;
   }
@@ -114,12 +111,7 @@ public abstract class XObject
   protected XObject(
     PdfDirectObject baseObject
     )
-  {
-    super(
-      baseObject,
-      null // NO container (baseObject is (by definition) a PDF stream, so it MUST be an indirect object [PDF:1.6:3.2.7]).
-      );
-  }
+  {super(baseObject);}
   // </constructors>
 
   // <interface>

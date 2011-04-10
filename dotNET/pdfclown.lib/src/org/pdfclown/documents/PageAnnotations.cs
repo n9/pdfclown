@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -98,12 +98,8 @@ namespace org.pdfclown.documents
     #region constructors
     internal PageAnnotations(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       Page page
-      ) : base(
-        baseObject,
-        container
-        )
+      ) : base(baseObject)
     {this.page = page;}
     #endregion
 
@@ -142,7 +138,7 @@ namespace org.pdfclown.documents
       ]
     {
       get
-      {return Annotation.Wrap(BaseDataObject[index],Container);}
+      {return Annotation.Wrap(BaseDataObject[index]);}
       set
       {BaseDataObject[index] = value.BaseObject;}
     }

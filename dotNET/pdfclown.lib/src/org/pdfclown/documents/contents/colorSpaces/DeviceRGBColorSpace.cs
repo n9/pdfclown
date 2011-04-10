@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,7 +45,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
       NOTE: It may be specified directly (i.e. without being defined in the ColorSpace subdictionary
       of the contextual resource dictionary) [PDF:1.6:4.5.7].
     */
-    public static readonly DeviceRGBColorSpace Default = new DeviceRGBColorSpace(null,null);
+    public static readonly DeviceRGBColorSpace Default = new DeviceRGBColorSpace(PdfName.DeviceRGB);
     #endregion
     #endregion
 
@@ -57,9 +57,8 @@ namespace org.pdfclown.documents.contents.colorSpaces
     {}
 
     internal DeviceRGBColorSpace(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 

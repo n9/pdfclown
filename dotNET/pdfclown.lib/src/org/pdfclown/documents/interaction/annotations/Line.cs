@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -170,9 +170,8 @@ namespace org.pdfclown.documents.interaction.annotations
     }
 
     public Line(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -185,14 +184,10 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'Cap' entry may be undefined.
-        */
         PdfBoolean captionVisibleObject = (PdfBoolean)BaseDataObject[PdfName.Cap];
-        if(captionVisibleObject == null)
-          return false;
-
-        return captionVisibleObject.RawValue;
+        return captionVisibleObject != null
+          ? captionVisibleObject.RawValue
+          : false;
       }
       set
       {BaseDataObject[PdfName.Cap] = PdfBoolean.Get(value);}
@@ -210,11 +205,7 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'L' entry MUST be defined.
-        */
         PdfArray coordinatesObject = (PdfArray)BaseDataObject[PdfName.L];
-
         return new PointF(
           (float)((IPdfNumber)coordinatesObject[2]).RawValue,
           (float)((IPdfNumber)coordinatesObject[3]).RawValue
@@ -235,14 +226,10 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'LE' entry may be undefined.
-        */
         PdfArray endstylesObject = (PdfArray)BaseDataObject[PdfName.LE];
-        if(endstylesObject == null)
-          return DefaultLineEndStyle;
-
-        return ToLineEndStyleEnum((PdfName)endstylesObject[1]);
+        return endstylesObject != null
+          ? ToLineEndStyleEnum((PdfName)endstylesObject[1])
+          : DefaultLineEndStyle;
       }
       set
       {EnsureLineEndStylesObject()[1] = ToCode(value);}
@@ -255,9 +242,6 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'IC' entry may be undefined.
-        */
         PdfArray fillColorObject = (PdfArray)BaseDataObject[PdfName.IC];
         if(fillColorObject == null)
           return null;
@@ -280,14 +264,10 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'LLE' entry may be undefined.
-        */
         IPdfNumber leaderLineExtensionLengthObject = (IPdfNumber)BaseDataObject[PdfName.LLE];
-        if(leaderLineExtensionLengthObject == null)
-          return DefaultLeaderLineExtensionLength;
-
-        return leaderLineExtensionLengthObject.RawValue;
+        return leaderLineExtensionLengthObject != null
+          ? leaderLineExtensionLengthObject.RawValue
+          : DefaultLeaderLineExtensionLength;
       }
       set
       {
@@ -311,14 +291,10 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'LL' entry may be undefined.
-        */
         IPdfNumber leaderLineLengthObject = (IPdfNumber)BaseDataObject[PdfName.LL];
-        if(leaderLineLengthObject == null)
-          return DefaultLeaderLineLength;
-
-        return -leaderLineLengthObject.RawValue;
+        return leaderLineLengthObject != null
+          ? -leaderLineLengthObject.RawValue
+          : DefaultLeaderLineLength;
       }
       set
       {BaseDataObject[PdfName.LL] = new PdfReal(-value);}
@@ -331,11 +307,7 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'L' entry MUST be defined.
-        */
         PdfArray coordinatesObject = (PdfArray)BaseDataObject[PdfName.L];
-
         return new PointF(
           (float)((IPdfNumber)coordinatesObject[0]).RawValue,
           (float)((IPdfNumber)coordinatesObject[1]).RawValue
@@ -356,14 +328,10 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'LE' entry may be undefined.
-        */
         PdfArray endstylesObject = (PdfArray)BaseDataObject[PdfName.LE];
-        if(endstylesObject == null)
-          return DefaultLineEndStyle;
-
-        return ToLineEndStyleEnum((PdfName)endstylesObject[0]);
+        return endstylesObject != null
+          ? ToLineEndStyleEnum((PdfName)endstylesObject[0])
+          : DefaultLineEndStyle;
       }
       set
       {EnsureLineEndStylesObject()[0] = ToCode(value);}
@@ -385,7 +353,6 @@ namespace org.pdfclown.documents.interaction.annotations
           }
           );
       }
-
       return endStylesObject;
     }
     #endregion

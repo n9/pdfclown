@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -149,28 +149,23 @@ namespace org.pdfclown.documents.interaction.navigation.document
     /**
       <summary>Wraps a destination base object into a destination object.</summary>
       <param name="baseObject">Destination base object.</param>
-      <param name="container">Destination base object container.</param>
       <param name="name">Destination name.</param>
       <returns>Destination object associated to the base object.</returns>
     */
     public static Destination Wrap(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       PdfString name
       )
     {
-      /*
-        NOTE: This is a factory method for any destination-derived object.
-      */
       if(baseObject == null)
         return null;
 
       PdfArray dataObject = (PdfArray)File.Resolve(baseObject);
       PdfDirectObject pageObject = dataObject[0];
       if(pageObject is PdfReference)
-        return new LocalDestination(baseObject,container,name);
+        return new LocalDestination(baseObject, name);
       else if(pageObject is PdfInteger)
-        return new RemoteDestination(baseObject,container,name);
+        return new RemoteDestination(baseObject, name);
       else
         throw new ArgumentException("'baseObject' parameter doesn't represent a valid destination object.");
     }
@@ -245,13 +240,8 @@ namespace org.pdfclown.documents.interaction.navigation.document
 
     protected Destination(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       PdfString name
-      ) : base(
-        baseObject,
-        container,
-        name
-        )
+      ) : base(baseObject, name)
     {}
     #endregion
 

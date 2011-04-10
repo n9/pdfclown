@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -48,7 +48,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class Type0Function
@@ -99,7 +99,7 @@ public final class Type0Function
   Type0Function(
     PdfDirectObject baseObject
   )
-  {super(baseObject, null);} // NOTE: PdfStream is self-contained.
+  {super(baseObject);}
   // </constructors>
 
   // <interface>

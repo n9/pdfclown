@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -48,13 +48,12 @@ namespace org.pdfclown.documents.interaction.actions
       PdfName actionType,
       FileSpec fileSpec,
       T destination
-      ) : base(context,actionType,destination)
+      ) : base(context, actionType, destination)
     {FileSpec = fileSpec;}
 
     protected GotoNonLocal(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -68,10 +67,7 @@ namespace org.pdfclown.documents.interaction.actions
       get
       {
         PdfDirectObject fileSpecObject = BaseDataObject[PdfName.F];
-        if(fileSpecObject == null)
-          return null;
-
-        return new FileSpec(fileSpecObject,Container,null);
+        return fileSpecObject != null ? new FileSpec(fileSpecObject, null) : null;
       }
       set
       {

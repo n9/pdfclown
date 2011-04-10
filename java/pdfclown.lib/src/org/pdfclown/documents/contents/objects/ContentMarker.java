@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class ContentMarker
@@ -93,7 +93,7 @@ public abstract class ContentMarker
     else if(propertiesObject instanceof PdfName)
       return propertiesObject;
     else if(propertiesObject instanceof PdfDictionary)
-      return PropertyList.wrap(propertiesObject, null);
+      return PropertyList.wrap(propertiesObject);
     else
       throw new UnsupportedOperationException("Property list type unknown: " + propertiesObject.getClass().getName());
   }

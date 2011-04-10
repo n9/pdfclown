@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -185,11 +185,10 @@ namespace org.pdfclown.tools
       )
     {
       // Add the source pages to the document (deep level)!
-      ICollection<Page> importedPages = (ICollection<Page>)document.Contextualize(pages); // NOTE: Alien pages MUST be contextualized (i.e. imported).
+      ICollection<Page> importedPages = (ICollection<Page>)document.Include(pages); // NOTE: Alien pages MUST be contextualized (i.e. imported).
 
       // Add the imported pages to the pages collection (shallow level)!
       this.pages.AddAll(importedPages);
-      this.pages.Update(); // NOTE: Update is fundamental to override original page collection.
     }
 
     /**
@@ -203,14 +202,13 @@ namespace org.pdfclown.tools
       )
     {
       // Add the source pages to the document (deep level)!
-      ICollection<Page> importedPages = (ICollection<Page>)document.Contextualize(pages); // NOTE: Alien pages MUST be contextualized (i.e. imported).
+      ICollection<Page> importedPages = (ICollection<Page>)document.Include(pages); // NOTE: Alien pages MUST be contextualized (i.e. imported).
 
       // Add the imported pages to the pages collection (shallow level)!
       if(index >= this.pages.Count)
       {this.pages.AddAll(importedPages);}
       else
       {this.pages.InsertAll(index, importedPages);}
-      this.pages.Update(); // NOTE: Update is fundamental to override original page collection.
     }
 
     /**
@@ -247,7 +245,7 @@ namespace org.pdfclown.tools
           then added to the target pages collection.
         */
         extractedDocument.Pages.AddAll(
-          (ICollection<Page>)extractedDocument.Contextualize(
+          (ICollection<Page>)extractedDocument.Include(
             pages.GetSlice(startIndex, endIndex)
             )
           );
@@ -290,7 +288,6 @@ namespace org.pdfclown.tools
       {pages.AddAll(movingPages);}
       else
       {pages.InsertAll(targetIndex, movingPages);}
-      pages.Update(); // NOTE: Update is fundamental to override original page collection.
     }
 
     /**
@@ -307,11 +304,11 @@ namespace org.pdfclown.tools
 
       // Remove the pages from the pages collection!
       /* NOTE: Shallow removal. */
-      pages.RemoveAll(removingPages); pages.Update();
+      pages.RemoveAll(removingPages);
 
       // Remove the pages from the document (decontextualize)!
       /* NOTE: Deep removal. */
-      document.Decontextualize(removingPages);
+      document.Exclude(removingPages);
     }
 
     /**

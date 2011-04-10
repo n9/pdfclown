@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,7 +36,6 @@ import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
@@ -49,7 +48,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Pattern<TDataObject extends PdfDataObject>
@@ -59,7 +58,7 @@ public abstract class Pattern<TDataObject extends PdfDataObject>
   // <static>
   // <fields>
   //TODO:verify!
-  public static final Pattern<?> Default = new TilingPattern((PdfDirectObject)null,null);
+  public static final Pattern<?> Default = new TilingPattern(null);
 
   private static final int PatternType1 = 1;
   private static final int PatternType2 = 2;
@@ -71,12 +70,10 @@ public abstract class Pattern<TDataObject extends PdfDataObject>
     Wraps the specified base object into a pattern object.
 
     @param baseObject Base object of a pattern object.
-    @param container Indirect object possibly containing the pattern base object.
     @return Pattern object corresponding to the base object.
   */
   public static Pattern<?> wrap(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
   {
     if(baseObject == null)
@@ -88,9 +85,9 @@ public abstract class Pattern<TDataObject extends PdfDataObject>
     switch(patternType)
     {
       case PatternType1:
-        return new TilingPattern(baseObject, container);
+        return new TilingPattern(baseObject);
       case PatternType2:
-        return new ShadingPattern(baseObject, container);
+        return new ShadingPattern(baseObject);
       default:
         throw new UnsupportedOperationException("Pattern type " + patternType + " unknown.");
     }
@@ -120,10 +117,9 @@ public abstract class Pattern<TDataObject extends PdfDataObject>
   // <constructors>
   //TODO:verify (colorspace is available or may be implicit?)
   protected Pattern(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container);}
+  {super(baseObject);}
 
   //TODO:verify (colorspace is available or may be implicit?)
   protected Pattern(

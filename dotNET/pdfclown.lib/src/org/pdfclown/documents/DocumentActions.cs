@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -51,9 +51,8 @@ namespace org.pdfclown.documents
     {}
 
     internal DocumentActions(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -70,16 +69,7 @@ namespace org.pdfclown.documents
     public Action AfterPrint
     {
       get
-      {
-        /*
-          NOTE: 'DP' entry may be undefined.
-        */
-        PdfDirectObject afterPrintObject = BaseDataObject[PdfName.DP];
-        if(afterPrintObject == null)
-          return null;
-
-        return Action.Wrap(afterPrintObject,Container);
-      }
+      {return Action.Wrap(BaseDataObject[PdfName.DP]);}
       set
       {BaseDataObject[PdfName.DP] = value.BaseObject;}
     }
@@ -90,16 +80,7 @@ namespace org.pdfclown.documents
     public Action AfterSave
     {
       get
-      {
-        /*
-          NOTE: 'DS' entry may be undefined.
-        */
-        PdfDirectObject afterSaveObject = BaseDataObject[PdfName.DS];
-        if(afterSaveObject == null)
-          return null;
-
-        return Action.Wrap(afterSaveObject,Container);
-      }
+      {return Action.Wrap(BaseDataObject[PdfName.DS]);}
       set
       {BaseDataObject[PdfName.DS] = value.BaseObject;}
     }
@@ -110,16 +91,7 @@ namespace org.pdfclown.documents
     public Action BeforePrint
     {
       get
-      {
-        /*
-          NOTE: 'WP' entry may be undefined.
-        */
-        PdfDirectObject beforePrintObject = BaseDataObject[PdfName.WP];
-        if(beforePrintObject == null)
-          return null;
-
-        return Action.Wrap(beforePrintObject,Container);
-      }
+      {return Action.Wrap(BaseDataObject[PdfName.WP]);}
       set
       {BaseDataObject[PdfName.WP] = value.BaseObject;}
     }
@@ -130,16 +102,7 @@ namespace org.pdfclown.documents
     public Action BeforeSave
     {
       get
-      {
-        /*
-          NOTE: 'WS' entry may be undefined.
-        */
-        PdfDirectObject beforeSaveObject = BaseDataObject[PdfName.WS];
-        if(beforeSaveObject == null)
-          return null;
-
-        return Action.Wrap(beforeSaveObject,Container);
-      }
+      {return Action.Wrap(BaseDataObject[PdfName.WS]);}
       set
       {BaseDataObject[PdfName.WS] = value.BaseObject;}
     }
@@ -150,16 +113,7 @@ namespace org.pdfclown.documents
     public Action OnClose
     {
       get
-      {
-        /*
-          NOTE: 'DC' entry may be undefined.
-        */
-        PdfDirectObject onCloseObject = BaseDataObject[PdfName.DC];
-        if(onCloseObject == null)
-          return null;
-
-        return Action.Wrap(onCloseObject,Container);
-      }
+      {return Action.Wrap(BaseDataObject[PdfName.DC]);}
       set
       {BaseDataObject[PdfName.DC] = value.BaseObject;}
     }
@@ -172,18 +126,11 @@ namespace org.pdfclown.documents
     {
       get
       {
-        /*
-          NOTE: 'OpenAction' entry may be undefined.
-        */
         PdfDirectObject onOpenObject = Document.BaseDataObject[PdfName.OpenAction];
-        if(onOpenObject == null)
-          return null;
-
-
         if(onOpenObject is PdfDictionary) // Action (dictionary).
-          return Action.Wrap(onOpenObject,Container);
+          return Action.Wrap(onOpenObject);
         else // Destination (array).
-          return Destination.Wrap(onOpenObject,Container,null);
+          return Destination.Wrap(onOpenObject, null);
       }
       set
       {
@@ -191,9 +138,7 @@ namespace org.pdfclown.documents
           || value is LocalDestination))
           throw new system::ArgumentException("Value MUST be either an Action or a LocalDestination.");
 
-        Document document = Document;
-        document.BaseDataObject[PdfName.OpenAction] = value.BaseObject;
-        document.Update(); // Ensures that the document's object modification is preserved.
+        Document.BaseDataObject[PdfName.OpenAction] = value.BaseObject;
       }
     }
     #endregion

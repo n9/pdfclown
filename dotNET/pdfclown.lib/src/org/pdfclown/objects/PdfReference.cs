@@ -84,6 +84,12 @@ namespace org.pdfclown.objects
       )
     {throw new NotImplementedException();}
 
+    public override PdfIndirectObject Container
+    {
+      get
+      {return IndirectObject;}
+    }
+
     public override bool Equals(
       object obj
       )
@@ -135,6 +141,20 @@ namespace org.pdfclown.objects
       {return objectNumber;}
     }
 
+    public override PdfObject Parent
+    {
+      get
+      {return null;} // NOTE: As references are immutable, no parent can be associated.
+      internal set
+      {/* NOOP: As references are immutable, no parent can be associated. */}
+    }
+
+    public override PdfIndirectObject Root
+    {
+      get
+      {return null;} // NOTE: As references are immutable, no root can be associated.
+    }
+
     public override string ToString(
       )
     {return IndirectReference;}
@@ -148,7 +168,15 @@ namespace org.pdfclown.objects
     public override object Clone(
       File context
       )
-    {return ((PdfIndirectObject)IndirectObject.Clone(context)).Reference;}
+    {
+      /*
+        NOTE: Local cloning keeps the same reference as it's immutable;
+        conversely, alien cloning generates a new reference in the new file context.
+      */
+      return context == null || context == file
+        ? this // Local clone (immutable).
+        : ((PdfIndirectObject)IndirectObject.Clone(context)).Reference; // Alien clone.
+    }
 
     public PdfDataObject DataObject
     {
@@ -179,6 +207,16 @@ namespace org.pdfclown.objects
       {return this;}
     }
     #endregion
+    #endregion
+
+    #region protected
+    protected internal override bool Updated
+    {
+      get
+      {return false;}
+      set
+      {/* NOOP: As references are immutable, no update can be done. */}
+    }
     #endregion
     #endregion
     #endregion

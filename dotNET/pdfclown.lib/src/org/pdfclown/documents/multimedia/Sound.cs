@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -60,10 +60,7 @@ namespace org.pdfclown.documents.multimedia
 
     public Sound(
       PdfDirectObject baseObject
-      ) : base(
-        baseObject,
-        null // NO container (streams are self-contained).
-        )
+      ) : base(baseObject)
     {}
     #endregion
 

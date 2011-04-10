@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,7 +36,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.util.NotImplementedException;
 
@@ -45,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF13)
 public final class Functions
@@ -58,17 +57,17 @@ public final class Functions
   /**
     Parent function.
   */
-  private Type3Function parent;
+  private final Type3Function parent;
   // </fields>
 
   // <constructors>
   Functions(
     PdfDirectObject baseObject,
-    PdfIndirectObject container,
     Type3Function parent
     )
   {
-    super(baseObject, container);
+    super(baseObject);
+
     this.parent = parent;
   }
   // </constructors>
@@ -115,12 +114,7 @@ public final class Functions
   public Function<?> get(
     int index
     )
-  {
-    return Function.wrap(
-      getBaseDataObject().get(index),
-      getContainer()
-      );
-  }
+  {return Function.wrap(getBaseDataObject().get(index));}
 
   @Override
   public int indexOf(
@@ -154,12 +148,7 @@ public final class Functions
   public Function<?> remove(
     int index
     )
-  {
-    return Function.wrap(
-      getBaseDataObject().remove(index),
-      getContainer()
-      );
-  }
+  {return Function.wrap(getBaseDataObject().remove(index));}
 
   @Override
   public Function<?> set(
@@ -168,10 +157,7 @@ public final class Functions
     )
   {
     validate(value);
-    return Function.wrap(
-      getBaseDataObject().set(index,value.getBaseObject()),
-      getContainer()
-      );
+    return Function.wrap(getBaseDataObject().set(index,value.getBaseObject()));
   }
 
   @Override
@@ -283,14 +269,13 @@ public final class Functions
     if(values.length < functionObjects.size())
     {values = (T[])new Object[functionObjects.size()];}
 
-    PdfIndirectObject container = getContainer();
     for(
       int index = 0,
         length = functionObjects.size();
       index < length;
       index++
       )
-    {values[index] = (T)Function.wrap(functionObjects.get(index),container);}
+    {values[index] = (T)Function.wrap(functionObjects.get(index));}
 
     return values;
   }
@@ -312,7 +297,7 @@ public final class Functions
         /**
           Collection size.
         */
-        private int size = size();
+        private final int size = size();
         // </fields>
 
         // <interface>

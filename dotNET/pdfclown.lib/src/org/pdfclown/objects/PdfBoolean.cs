@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -34,7 +34,7 @@ namespace org.pdfclown.objects
     <summary>PDF boolean object [PDF:1.6:3.2.1].</summary>
   */
   public sealed class PdfBoolean
-    : PdfAtomicObject<bool>
+    : PdfSimpleObject<bool>
   {
     #region static
     #region fields

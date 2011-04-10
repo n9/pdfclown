@@ -40,11 +40,9 @@ import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.objects.ContentObject;
 import org.pdfclown.documents.contents.tokens.ContentParser;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfStream;
@@ -59,7 +57,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 03/21/11
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Contents
@@ -368,11 +366,11 @@ public final class Contents
   */
   public Contents(
     PdfDirectObject baseObject,
-    PdfIndirectObject container,
     IContentContext contentContext
     )
   {
-    super(baseObject, container);
+    super(baseObject);
+
     this.contentContext = contentContext;
     load();
   }
@@ -422,10 +420,7 @@ public final class Contents
             (PdfReference)streams.remove(1) // Removes the exceeding stream from the content stream.
             );
         }
-
-        PdfReference streamReference = (PdfReference)streams.get(0);
-        File.update(streamReference); // Updates the existing stream into the file.
-        stream = (PdfStream)streamReference.getDataObject();
+        stream = (PdfStream)streams.resolve(0);
       }
     }
 
@@ -436,9 +431,6 @@ public final class Contents
     // Serializing the new contents into the stream buffer...
     for(ContentObject item : items)
     {item.writeTo(buffer);}
-
-    // Update the content stream container!
-    update();
   }
 
   public IContentContext getContentContext(

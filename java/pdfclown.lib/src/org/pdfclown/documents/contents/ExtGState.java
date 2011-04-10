@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,7 +33,6 @@ import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
@@ -46,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class ExtGState
@@ -57,17 +56,6 @@ public final class ExtGState
   // <interface>
   // <public>
   /**
-    Wraps a reference into a graphics state parameter dictionary object.
-
-    @param reference Reference to a graphics state parameter dictionary object.
-    @return Graphics state parameter dictionary object corresponding to the reference.
-  */
-  public static ExtGState wrap(
-    PdfReference reference
-    )
-  {return wrap(reference,null);}
-
-  /**
     Wraps the specified base object into a graphics state parameter dictionary object.
 
     @param baseObject Base object of a graphics state parameter dictionary object.
@@ -75,14 +63,9 @@ public final class ExtGState
     @return Graphics state parameter dictionary object corresponding to the base object.
   */
   public static ExtGState wrap(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {
-    return baseObject == null
-      ? null
-      : new ExtGState(baseObject, container);
-  }
+  {return baseObject != null ? new ExtGState(baseObject) : null;}
   // </public>
   // </interface>
   // </static>
@@ -96,10 +79,9 @@ public final class ExtGState
   {super(context.getFile(), baseDataObject);}
 
   ExtGState(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>

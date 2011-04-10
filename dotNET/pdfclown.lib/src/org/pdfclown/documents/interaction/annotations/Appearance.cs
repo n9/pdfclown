@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -49,9 +49,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {}
 
     public Appearance(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -68,17 +67,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public AppearanceStates Down
     {
       get
-      {
-        /*
-          NOTE: 'D' entry may be undefined;
-          nonetheless, since it always has a default value, it is always exposed.
-        */
-        return new AppearanceStates(
-          PdfName.D,
-          Container,
-          this
-          );
-      }
+      {return new AppearanceStates(PdfName.D, this);}
     }
 
     /**
@@ -87,16 +76,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public AppearanceStates Normal
     {
       get
-      {
-        /*
-          NOTE: 'N' entry is required.
-        */
-        return new AppearanceStates(
-          PdfName.N,
-          Container,
-          this
-          );
-      }
+      {return new AppearanceStates(PdfName.N, this);}
     }
 
     /**
@@ -105,17 +85,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public AppearanceStates Rollover
     {
       get
-      {
-        /*
-          NOTE: 'R' entry may be undefined;
-          nonetheless, since it always has a default value, it is always exposed.
-        */
-        return new AppearanceStates(
-          PdfName.R,
-          Container,
-          this
-          );
-      }
+      {return new AppearanceStates(PdfName.R, this);}
     }
     #endregion
     #endregion

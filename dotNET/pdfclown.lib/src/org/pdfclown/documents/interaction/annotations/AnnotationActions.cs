@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -57,9 +57,8 @@ namespace org.pdfclown.documents.interaction.annotations
 
     internal AnnotationActions(
       Annotation parent,
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {this.parent = parent;}
     #endregion
 
@@ -78,7 +77,7 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {return parent.Action;}
       set
-      {parent.Action = value; parent.Update();}
+      {parent.Action = value;}
     }
 
     /**
@@ -87,18 +86,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public Action OnEnter
     {
       get
-      {
-        /*
-          NOTE: 'E' entry may be undefined.
-        */
-        PdfDirectObject onEnterObject = BaseDataObject[PdfName.E];
-        if(onEnterObject == null)
-          return null;
-
-        return Action.Wrap(onEnterObject,Container);
-      }
+      {return this[PdfName.E];}
       set
-      {BaseDataObject[PdfName.E] = value.BaseObject;}
+      {this[PdfName.E] = value;}
     }
 
     /**
@@ -107,18 +97,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public Action OnExit
     {
       get
-      {
-        /*
-          NOTE: 'X' entry may be undefined.
-        */
-        PdfDirectObject onExitObject = BaseDataObject[PdfName.X];
-        if(onExitObject == null)
-          return null;
-
-        return Action.Wrap(onExitObject,Container);
-      }
+      {return this[PdfName.X];}
       set
-      {BaseDataObject[PdfName.X] = value.BaseObject;}
+      {this[PdfName.X] = value;}
     }
 
     /**
@@ -128,18 +109,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public Action OnMouseDown
     {
       get
-      {
-        /*
-          NOTE: 'D' entry may be undefined.
-        */
-        PdfDirectObject onMouseDownObject = BaseDataObject[PdfName.D];
-        if(onMouseDownObject == null)
-          return null;
-
-        return Action.Wrap(onMouseDownObject,Container);
-      }
+      {return this[PdfName.D];}
       set
-      {BaseDataObject[PdfName.D] = value.BaseObject;}
+      {this[PdfName.D] = value;}
     }
 
     /**
@@ -149,18 +121,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public Action OnMouseUp
     {
       get
-      {
-        /*
-          NOTE: 'U' entry may be undefined.
-        */
-        PdfDirectObject onMouseUpObject = BaseDataObject[PdfName.U];
-        if(onMouseUpObject == null)
-          return null;
-
-        return Action.Wrap(onMouseUpObject,Container);
-      }
+      {return this[PdfName.U];}
       set
-      {BaseDataObject[PdfName.U] = value.BaseObject;}
+      {this[PdfName.U] = value;}
     }
 
     /**
@@ -169,18 +132,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public Action OnPageClose
     {
       get
-      {
-        /*
-          NOTE: 'PC' entry may be undefined.
-        */
-        PdfDirectObject onPageCloseObject = BaseDataObject[PdfName.PC];
-        if(onPageCloseObject == null)
-          return null;
-
-        return Action.Wrap(onPageCloseObject,Container);
-      }
+      {return this[PdfName.PC];}
       set
-      {BaseDataObject[PdfName.PC] = value.BaseObject;}
+      {this[PdfName.PC] = value;}
     }
 
     /**
@@ -190,18 +144,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public Action OnPageInvisible
     {
       get
-      {
-        /*
-          NOTE: 'PI' entry may be undefined.
-        */
-        PdfDirectObject onPageInvisibleObject = BaseDataObject[PdfName.PI];
-        if(onPageInvisibleObject == null)
-          return null;
-
-        return Action.Wrap(onPageInvisibleObject,Container);
-      }
+      {return this[PdfName.PI];}
       set
-      {BaseDataObject[PdfName.PI] = value.BaseObject;}
+      {this[PdfName.PI] = value;}
     }
 
     /**
@@ -210,18 +155,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public Action OnPageOpen
     {
       get
-      {
-        /*
-          NOTE: 'PO' entry may be undefined.
-        */
-        PdfDirectObject onPageOpenObject = BaseDataObject[PdfName.PO];
-        if(onPageOpenObject == null)
-          return null;
-
-        return Action.Wrap(onPageOpenObject,Container);
-      }
+      {return this[PdfName.PO];}
       set
-      {BaseDataObject[PdfName.PO] = value.BaseObject;}
+      {this[PdfName.PO] = value;}
     }
 
     /**
@@ -231,18 +167,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public Action OnPageVisible
     {
       get
-      {
-        /*
-          NOTE: 'PV' entry may be undefined.
-        */
-        PdfDirectObject onPageVisibleObject = BaseDataObject[PdfName.PV];
-        if(onPageVisibleObject == null)
-          return null;
-
-        return Action.Wrap(onPageVisibleObject,Container);
-      }
+      {return this[PdfName.PV];}
       set
-      {BaseDataObject[PdfName.PV] = value.BaseObject;}
+      {this[PdfName.PV] = value;}
     }
 
     #region IDictionary
@@ -261,7 +188,10 @@ namespace org.pdfclown.documents.interaction.annotations
     }
 
     public ICollection<PdfName> Keys
-    {get{return BaseDataObject.Keys;}}
+    {
+      get
+      {return BaseDataObject.Keys;}
+    }
 
     public bool Remove(
       PdfName key
@@ -281,19 +211,9 @@ namespace org.pdfclown.documents.interaction.annotations
       ]
     {
       get
-      {
-        return Action.Wrap(
-          BaseDataObject[key],
-          Container
-          );
-      }
+      {return Action.Wrap(BaseDataObject[key]);}
       set
-      {
-        if(value == null)
-        {BaseDataObject.Remove(key);}
-        else
-        {BaseDataObject[key] = value.BaseObject;}
-      }
+      {BaseDataObject[key] = (value != null ? value.BaseObject : null);}
     }
 
     public bool TryGetValue(
@@ -312,14 +232,16 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        ICollection<PdfDirectObject> objs = BaseDataObject.Values;
-        List<Action> values = new List<Action>(objs.Count);
-        foreach(PdfDirectObject obj in objs)
-        {values.Add(Action.Wrap((PdfReference)obj,Container));}
-        Action action = OnActivate;
-        if(action != null)
-        {values.Add(action);}
-
+        List<Action> values;
+        {
+          ICollection<PdfDirectObject> objs = BaseDataObject.Values;
+          values = new List<Action>(objs.Count);
+          foreach(PdfDirectObject obj in objs)
+          {values.Add(Action.Wrap(obj));}
+          Action action = OnActivate;
+          if(action != null)
+          {values.Add(action);}
+        }
         return values;
       }
     }
@@ -349,10 +271,16 @@ namespace org.pdfclown.documents.interaction.annotations
     {throw new system::NotImplementedException();}
 
     public int Count
-    {get{return BaseDataObject.Count + (parent.BaseDataObject.ContainsKey(PdfName.A) ? 1 : 0);}}
+    {
+      get
+      {return BaseDataObject.Count + (parent.BaseDataObject.ContainsKey(PdfName.A) ? 1 : 0);}
+    }
 
     public bool IsReadOnly
-    {get{return false;}}
+    {
+      get
+      {return false;}
+    }
 
     public bool Remove(
       KeyValuePair<PdfName,Action> entry

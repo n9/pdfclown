@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,9 +30,7 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.objects.PdfReference;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -41,7 +39,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class PropertyList
@@ -52,32 +50,15 @@ public final class PropertyList
   // <interface>
   // <public>
   /**
-    Wraps a reference into a property list object.
-
-    @param reference Reference to a property list object.
-    @return Property list object corresponding to the reference.
-  */
-  public static PropertyList wrap(
-    PdfReference reference
-    )
-  {return wrap(reference, null);}
-
-  /**
     Wraps the specified base object into a property list object.
 
     @param baseObject Base object of a property list object.
-    @param container Indirect object possibly containing the property list base object.
     @return Property list object corresponding to the base object.
   */
   public static PropertyList wrap(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {
-    return baseObject == null
-      ? null
-      : new PropertyList(baseObject, container);
-  }
+  {return baseObject != null ? new PropertyList(baseObject) : null;}
   // </public>
   // </interface>
   // </static>
@@ -91,10 +72,9 @@ public final class PropertyList
   {super(context.getFile(), baseDataObject);}
 
   PropertyList(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>

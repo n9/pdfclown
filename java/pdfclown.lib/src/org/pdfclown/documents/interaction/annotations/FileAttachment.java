@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,17 +25,16 @@
 
 package org.pdfclown.documents.interaction.annotations;
 
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.fileSpecs.FileSpec;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.NotImplementedException;
-
-import java.awt.geom.Rectangle2D;
 
 /**
   File attachment annotation [PDF:1.6:8.4.5].
@@ -43,7 +42,7 @@ import java.awt.geom.Rectangle2D;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF13)
 public final class FileAttachment
@@ -140,10 +139,9 @@ public final class FileAttachment
   }
 
   public FileAttachment(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -159,12 +157,7 @@ public final class FileAttachment
   */
   public FileSpec getFileSpec(
     )
-  {
-    /*
-      NOTE: 'FS' entry MUST exist.
-    */
-    return new FileSpec(getBaseDataObject().get(PdfName.FS),getContainer(),null);
-  }
+  {return new FileSpec(getBaseDataObject().get(PdfName.FS), null);}
 
   /**
     Gets the icon to be used in displaying the annotation.
@@ -172,14 +165,8 @@ public final class FileAttachment
   public IconTypeEnum getIconType(
     )
   {
-    /*
-      NOTE: 'Name' entry may be undefined.
-    */
     PdfName nameObject = (PdfName)getBaseDataObject().get(PdfName.Name);
-    if(nameObject == null)
-      return IconTypeEnum.PushPin;
-
-    return IconTypeEnum.get(nameObject);
+    return nameObject != null ? IconTypeEnum.get(nameObject) : IconTypeEnum.PushPin;
   }
 
   /**

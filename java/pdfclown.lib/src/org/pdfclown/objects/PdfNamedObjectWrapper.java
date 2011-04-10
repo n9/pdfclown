@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,7 +40,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public abstract class PdfNamedObjectWrapper<TDataObject extends PdfDataObject>
   extends PdfObjectWrapper<TDataObject>
@@ -56,30 +56,20 @@ public abstract class PdfNamedObjectWrapper<TDataObject extends PdfDataObject>
     File context,
     TDataObject baseDataObject
     )
-  {
-    this(
-      context.register(baseDataObject),
-      null,
-      null
-      );
-  }
+  {this(context.register(baseDataObject), null);}
 
   /**
     @param baseObject Base PDF object. MUST be a {@link PdfReference}
     everytime available.
-    @param container Indirect object containing the base object.
     @param name Object name.
   */
   protected PdfNamedObjectWrapper(
     PdfDirectObject baseObject,
-    PdfIndirectObject container,
     PdfString name
     )
   {
-    super(
-      baseObject,
-      container
-      );
+    super(baseObject);
+
     this.name = name;
   }
   // </constructors>

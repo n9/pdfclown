@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,15 +30,14 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 
 /**
   Abstract go-to-destination action.
-  
+
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF11)
 public abstract class GoToDestination<T extends Destination>
@@ -58,10 +57,9 @@ public abstract class GoToDestination<T extends Destination>
   }
 
   protected GoToDestination(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container, null);}
+  {super(baseObject, null);}
   // </constructors>
 
   // <interface>
@@ -72,16 +70,12 @@ public abstract class GoToDestination<T extends Destination>
   public T getDestination(
     )
   {
-    /*
-      NOTE: 'D' entry MUST exist.
-    */
-    return Document.resolveName(
+    return getDocument().resolveName(
       getDestinationClass(),
-      getBaseDataObject().get(PdfName.D),
-      getContainer()
+      getBaseDataObject().get(PdfName.D)
       );
   }
-  
+
   /**
     @see #getDestination()
   */
@@ -91,11 +85,11 @@ public abstract class GoToDestination<T extends Destination>
   {
     if(value == null)
       throw new IllegalArgumentException("Destination MUST be defined.");
-  
+
     getBaseDataObject().put(PdfName.D,value.getNamedBaseObject());
   }
   // </public>
-  
+
   // <protected>
   /*
     NOTE: This getter is necessary because of type erasure.

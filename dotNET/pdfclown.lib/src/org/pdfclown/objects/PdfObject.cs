@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -59,11 +59,69 @@ namespace org.pdfclown.objects
     #region interface
     #region public
     /**
-      <summary>Gets the clone of this object, registered inside the specified file context.</summary>
+      <summary>Creates a deep copy of this object within the same file context.</summary>
     */
-    public abstract object Clone(
+    public object Clone(
+      )
+    {return Clone(null);}
+
+    /**
+      <summary>Creates a deep copy of this object within the specified file context.</summary>
+    */
+    public virtual object Clone(
       File context
-      );
+      )
+    {
+      PdfObject clone = (PdfObject)MemberwiseClone();
+      clone.Parent = null;
+      return clone;
+    }
+
+    /**
+      <summary>
+        <para>Gets the indirect object containing the data associated to this object.</para>
+        <para>It generally corresponds to the <see cref="Root">root</see>, except for
+        <see cref="PdfReference">references</see>; in the latter case, data is contained
+        by an indirect object which is different from that containing the reference itself.</para>
+      </summary>
+    */
+    public abstract PdfIndirectObject Container
+    {
+      get;
+    }
+
+    /**
+      <summary>Gets the file containing this object.</summary>
+    */
+    public virtual File File
+    {
+      get
+      {return Container != null ? Container.File : null;}
+    }
+
+    /**
+      <summary>Gets/Sets the parent of this object.</summary>
+    */
+    public abstract PdfObject Parent
+    {
+      get;
+      internal set;
+    }
+
+    /**
+      <summary>Notifies the completion of the initialization process.</summary>
+    */
+    public void Ready(
+      )
+    {Updated = false;} // Cleans the update flag.
+
+    /**
+      <summary>Gets the top-most ancestor of this object.</summary>
+    */
+    public abstract PdfIndirectObject Root
+    {
+      get;
+    }
 
     /**
       <summary>Serializes this object to the specified stream.</summary>
@@ -71,6 +129,68 @@ namespace org.pdfclown.objects
     public abstract void WriteTo(
       IOutputStream stream
       );
+    #endregion
+
+    #region protected
+    /**
+      <summary>Updates the state of this object.</summary>
+    */
+    protected void Update(
+      )
+    {
+      if(Updated)
+        return;
+
+      Updated = true;
+
+      // Propagate the update to the ascendants!
+      if(Parent != null)
+      {Parent.Update();}
+    }
+
+    /**
+      <summary>Gets/Sets whether the initial state of this object has been modified.</summary>
+    */
+    protected internal abstract bool Updated
+    {
+      get;
+      set;
+    }
+    #endregion
+
+    #region internal
+    /**
+      <summary>Ensures that the specified object is decontextualized from this object.</summary>
+      <param name="obj">Object to decontextualize from this object.</param>
+      <seealso cref="Include(PdfDataObject)"/>
+    */
+    internal void Exclude(
+      PdfDataObject obj
+      )
+    {
+      if(obj != null)
+      {obj.Parent = null;}
+    }
+
+    /**
+      <summary>Ensures that the specified object is contextualized into this object.</summary>
+      <param name="obj">Object to contextualize into this object; if it is already contextualized
+        into another object, it will be cloned to preserve its previous association.</param>
+      <returns>Contextualized object.</returns>
+      <seealso cref="Exclude(PdfDataObject)"/>
+    */
+    internal PdfDataObject Include(
+      PdfDataObject obj
+      )
+    {
+      if(obj != null)
+      {
+        if(obj.Parent != null)
+        {obj = (PdfDataObject)obj.Clone();}
+        obj.Parent = this;
+      }
+      return obj;
+    }
     #endregion
     #endregion
     #endregion

@@ -15,7 +15,7 @@ import org.pdfclown.objects.PdfName;
   through their resource names.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public class ImageSubstitutionSample
   extends Sample
@@ -44,7 +44,7 @@ public class ImageSubstitutionSample
 
     // 3. Serialize the PDF file!
     serialize(file);
-    
+
     return true;
   }
 
@@ -72,9 +72,9 @@ public class ImageSubstitutionSample
         {
           System.out.println("Substituting " + xObjectKey + " image xobject.");
           xObjects.put(xObjectKey,imageXObject);
-          xObjects.update();
         }
       }
+//TODO
 /*      for(Map.Entry<PdfName,XObject> xObjectEntry : xObjects.entrySet())
       {
         if(xObjectEntry.getValue() instanceof ImageXObject)

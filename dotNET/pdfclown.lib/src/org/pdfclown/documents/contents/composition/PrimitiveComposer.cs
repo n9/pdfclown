@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -1426,7 +1426,7 @@ namespace org.pdfclown.documents.contents.composition
       {
         // Create the font resources collection!
         fonts = new FontResources(scanner.Contents.Document);
-        resources.Fonts = fonts; resources.Update();
+        resources.Fonts = fonts;
       }
       // Get the key associated to the font!
       PdfName name = fonts.BaseDataObject.GetKey(value.BaseObject);
@@ -1438,7 +1438,7 @@ namespace org.pdfclown.documents.contents.composition
         do
         {name = new PdfName((++fontIndex).ToString());}
         while(fonts.ContainsKey(name));
-        fonts[name] = value; fonts.Update();
+        fonts[name] = value;
       }
 
       return name;
@@ -1456,7 +1456,7 @@ namespace org.pdfclown.documents.contents.composition
       {
         // Create the external object resources collection!
         xObjects = new XObjectResources(scanner.Contents.Document);
-        resources.XObjects = xObjects; resources.Update();
+        resources.XObjects = xObjects;
       }
       // Get the key associated to the external object!
       PdfName name = xObjects.BaseDataObject.GetKey(value.BaseObject);
@@ -1468,7 +1468,7 @@ namespace org.pdfclown.documents.contents.composition
         do
         {name = new PdfName((++xObjectIndex).ToString());}
         while(xObjects.ContainsKey(name));
-        xObjects[name] = value; xObjects.Update();
+        xObjects[name] = value;
       }
 
       return name;

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -55,9 +55,8 @@ namespace org.pdfclown.documents.multimedia
     {FileSpec = fileSpec;}
 
     internal Movie(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -74,12 +73,7 @@ namespace org.pdfclown.documents.multimedia
     public FileSpec FileSpec
     {
       get
-      {
-        /*
-          NOTE: 'F' entry MUST exist.
-        */
-        return new FileSpec(BaseDataObject[PdfName.F],Container,null);
-      }
+      {return new FileSpec(BaseDataObject[PdfName.F], null);}
       set
       {BaseDataObject[PdfName.F] = value.BaseObject;}
     }

@@ -30,7 +30,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.NotImplementedException;
@@ -40,7 +39,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class ChoiceItem
@@ -54,7 +53,7 @@ public final class ChoiceItem
   public ChoiceItem(
     String value
     )
-  {super(new PdfTextString(value),null);}
+  {super(new PdfTextString(value));}
 
   public ChoiceItem(
     Document context,
@@ -76,11 +75,10 @@ public final class ChoiceItem
 
   ChoiceItem(
     PdfDirectObject baseObject,
-    PdfIndirectObject container,
     ChoiceItems items
     )
   {
-    super(baseObject,container);
+    super(baseObject);
 
     setItems(items);
   }

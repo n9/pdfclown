@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,24 +44,21 @@ namespace org.pdfclown.documents.contents.xObjects
     #region public
     /**
       <summary>Wraps an external object reference into an external object.</summary>
-      <param name="reference">Reference to an external object.</param>
+      <param name="baseObject">External object base object.</param>
       <returns>External object associated to the reference.</returns>
     */
     public static XObject Wrap(
-      PdfReference reference
+      PdfDirectObject baseObject
       )
     {
-      /*
-        NOTE: This is a factory method for any xobject-derived object.
-      */
-      if(reference == null)
+      if(baseObject == null)
         return null;
 
-      PdfName subtype = (PdfName)((PdfStream)reference.DataObject).Header[PdfName.Subtype];
+      PdfName subtype = (PdfName)((PdfStream)File.Resolve(baseObject)).Header[PdfName.Subtype];
       if(subtype.Equals(PdfName.Form))
-        return new FormXObject(reference);
+        return new FormXObject(baseObject);
       else if(subtype.Equals(PdfName.Image))
-        return new ImageXObject(reference);
+        return new ImageXObject(baseObject);
       else
         return null;
     }
@@ -99,10 +96,7 @@ namespace org.pdfclown.documents.contents.xObjects
     */
     protected XObject(
       PdfDirectObject baseObject
-      ) : base(
-        baseObject,
-        null // NO container (baseObject is (by definition) a PDF stream, so it MUST be an indirect object [PDF:1.6:3.2.7]).
-        )
+      ) : base(baseObject)
     {}
     #endregion
 

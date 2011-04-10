@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,20 +40,6 @@ namespace org.pdfclown.documents.contents
   public sealed class ExtGStateResources
     : ResourceItems<ExtGState>
   {
-    #region static
-    #region interface
-    internal static ExtGStateResources Wrap(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      )
-    {
-      return baseObject == null
-        ? null
-        : new ExtGStateResources(baseObject, container);
-    }
-    #endregion
-    #endregion
-
     #region dynamic
     #region constructors
     public ExtGStateResources(
@@ -61,10 +47,9 @@ namespace org.pdfclown.documents.contents
       ) : base(context)
     {}
 
-    private ExtGStateResources(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+    internal ExtGStateResources(
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -73,7 +58,7 @@ namespace org.pdfclown.documents.contents
     protected override ExtGState Wrap(
       PdfDirectObject baseObject
       )
-    {return ExtGState.Wrap(baseObject, Container);}
+    {return ExtGState.Wrap(baseObject);}
     #endregion
     #endregion
     #endregion

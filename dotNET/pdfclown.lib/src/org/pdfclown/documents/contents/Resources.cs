@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,14 +45,9 @@ namespace org.pdfclown.documents.contents
     #region static
     #region interface
     public static Resources Wrap(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
+      PdfDirectObject baseObject
       )
-    {
-      return baseObject == null
-        ? null
-        : new Resources(baseObject, container);
-    }
+    {return baseObject != null ? new Resources(baseObject) : null;}
     #endregion
     #endregion
 
@@ -64,9 +59,8 @@ namespace org.pdfclown.documents.contents
     {}
 
     private Resources(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -80,7 +74,10 @@ namespace org.pdfclown.documents.contents
     public ColorSpaceResources ColorSpaces
     {
       get
-      {return ColorSpaceResources.Wrap(BaseDataObject[PdfName.ColorSpace], Container);}
+      {
+        PdfDirectObject colorSpaceObject = BaseDataObject[PdfName.ColorSpace];
+        return colorSpaceObject != null ? new ColorSpaceResources(colorSpaceObject) : null;
+      }
       set
       {BaseDataObject[PdfName.ColorSpace] = value.BaseObject;}
     }
@@ -88,7 +85,10 @@ namespace org.pdfclown.documents.contents
     public ExtGStateResources ExtGStates
     {
       get
-      {return ExtGStateResources.Wrap(BaseDataObject[PdfName.ExtGState], Container);}
+      {
+        PdfDirectObject extGStateObject = BaseDataObject[PdfName.ExtGState];
+        return extGStateObject != null ? new ExtGStateResources(extGStateObject) : null;
+      }
       set
       {BaseDataObject[PdfName.ExtGState] = value.BaseObject;}
     }
@@ -96,7 +96,10 @@ namespace org.pdfclown.documents.contents
     public FontResources Fonts
     {
       get
-      {return FontResources.Wrap(BaseDataObject[PdfName.Font], Container);}
+      {
+        PdfDirectObject fontObject = BaseDataObject[PdfName.Font];
+        return fontObject != null ? new FontResources(fontObject) : null;
+      }
       set
       {BaseDataObject[PdfName.Font] = value.BaseObject;}
     }
@@ -104,7 +107,10 @@ namespace org.pdfclown.documents.contents
     public PatternResources Patterns
     {
       get
-      {return PatternResources.Wrap(BaseDataObject[PdfName.Pattern], Container);}
+      {
+        PdfDirectObject patternObject = BaseDataObject[PdfName.Pattern];
+        return patternObject != null ? new PatternResources(patternObject) : null;
+      }
       set
       {BaseDataObject[PdfName.Pattern] = value.BaseObject;}
     }
@@ -113,7 +119,10 @@ namespace org.pdfclown.documents.contents
     public PropertyListResources PropertyLists
     {
       get
-      {return PropertyListResources.Wrap(BaseDataObject[PdfName.Properties], Container);}
+      {
+        PdfDirectObject propertiesObject = BaseDataObject[PdfName.Properties];
+        return propertiesObject != null ? new PropertyListResources(propertiesObject) : null;
+      }
       set
       {
         CheckCompatibility("PropertyLists");
@@ -125,7 +134,10 @@ namespace org.pdfclown.documents.contents
     public ShadingResources Shadings
     {
       get
-      {return ShadingResources.Wrap(BaseDataObject[PdfName.Shading], Container);}
+      {
+        PdfDirectObject shadingObject = BaseDataObject[PdfName.Shading];
+        return shadingObject != null ? new ShadingResources(shadingObject) : null;
+      }
       set
       {BaseDataObject[PdfName.Shading] = value.BaseObject;}
     }
@@ -133,7 +145,10 @@ namespace org.pdfclown.documents.contents
     public XObjectResources XObjects
     {
       get
-      {return XObjectResources.Wrap(BaseDataObject[PdfName.XObject], Container);}
+      {
+        PdfDirectObject xObjectObject = BaseDataObject[PdfName.XObject];
+        return xObjectObject != null ? new XObjectResources(xObjectObject) : null;
+      }
       set
       {BaseDataObject[PdfName.XObject] = value.BaseObject;}
     }

@@ -206,10 +206,7 @@ namespace org.pdfclown.documents.interaction.forms
 
     protected Field(
       PdfDirectObject baseObject
-      ) : base(
-        baseObject,
-        null // NO container (baseObject MUST be an indirect reference).
-        )
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -223,10 +220,7 @@ namespace org.pdfclown.documents.interaction.forms
       get
       {
         PdfDirectObject actionsObject = BaseDataObject[PdfName.AA];
-        if(actionsObject == null)
-          return null;
-
-        return new FieldActions(actionsObject,Container);
+        return actionsObject != null ? new FieldActions(actionsObject) : null;
       }
       set
       {BaseDataObject[PdfName.AA] = value.BaseObject;}
@@ -244,19 +238,16 @@ namespace org.pdfclown.documents.interaction.forms
     {
       get
       {
-        PdfDataObject defaultValueObject = File.Resolve(
-          GetInheritableAttribute(PdfName.DV)
-          );
-        if(defaultValueObject == null)
-          return null;
-
-        return defaultValueObject.GetType().InvokeMember(
-          "Value",
-          BindingFlags.GetProperty,
-          null,
-          defaultValueObject,
-          null
-          );
+        PdfDataObject defaultValueObject = File.Resolve(GetInheritableAttribute(PdfName.DV));
+        return defaultValueObject != null
+          ? defaultValueObject.GetType().InvokeMember(
+            "Value",
+            BindingFlags.GetProperty,
+            null,
+            defaultValueObject,
+            null
+            )
+          : null;
       }
     }
 
@@ -285,10 +276,7 @@ namespace org.pdfclown.documents.interaction.forms
     {
       get
       {
-        PdfInteger flagsObject = (PdfInteger)File.Resolve(
-          GetInheritableAttribute(PdfName.Ff)
-          );
-
+        PdfInteger flagsObject = (PdfInteger)File.Resolve(GetInheritableAttribute(PdfName.Ff));
         return (FlagsEnum)Enum.ToObject(
           typeof(FlagsEnum),
           (flagsObject == null ? 0 : flagsObject.RawValue)
@@ -383,19 +371,16 @@ namespace org.pdfclown.documents.interaction.forms
     {
       get
       {
-        PdfDataObject valueObject = File.Resolve(
-          GetInheritableAttribute(PdfName.V)
-          );
-        if(valueObject == null)
-          return null;
-
-        return valueObject.GetType().InvokeMember(
-          "Value",
-          BindingFlags.GetProperty,
-          null,
-          valueObject,
-          null
-          );
+        PdfDataObject valueObject = File.Resolve(GetInheritableAttribute(PdfName.V));
+        return valueObject != null
+          ? valueObject.GetType().InvokeMember(
+            "Value",
+            BindingFlags.GetProperty,
+            null,
+            valueObject,
+            null
+            )
+          : null;
       }
       set
       {BaseDataObject[PdfName.V] = new PdfString((string)value);}
@@ -414,10 +399,12 @@ namespace org.pdfclown.documents.interaction.forms
           have been merged into the field dictionary, 'Kids' entry MUST be omitted.
         */
         PdfDirectObject widgetsObject = BaseDataObject[PdfName.Kids];
-        if(widgetsObject == null) // Merged annotation.
-          return new FieldWidgets(BaseObject, null, this);
-        else // Annotation array.
-          return new FieldWidgets(widgetsObject, Container, this);
+        return new FieldWidgets(
+          widgetsObject != null
+            ? widgetsObject // Annotation array.
+            : BaseObject, // Merged annotation.
+          this
+          );
       }
     }
     #endregion

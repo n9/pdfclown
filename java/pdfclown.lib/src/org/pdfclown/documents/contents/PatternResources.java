@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,34 +30,19 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.colorSpaces.Pattern;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 
 /**
   Pattern resources collection [PDF:1.6:3.7.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class PatternResources
   extends ResourceItems<Pattern<?>>
 {
   // <class>
-  // <static>
-  // <interface>
-  static PatternResources wrap(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
-    )
-  {
-    return baseObject == null
-      ? null
-      : new PatternResources(baseObject, container);
-  }
-  // </interface>
-  // </static>
-
   // <dynamic>
   // <constructors>
   public PatternResources(
@@ -65,11 +50,10 @@ public final class PatternResources
     )
   {super(context);}
 
-  private PatternResources(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+  PatternResources(
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -78,7 +62,7 @@ public final class PatternResources
   protected Pattern<?> wrap(
     PdfDirectObject baseObject
     )
-  {return Pattern.wrap(baseObject, getContainer());}
+  {return Pattern.wrap(baseObject);}
   // </protected>
   // </interface>
   // </dynamic>

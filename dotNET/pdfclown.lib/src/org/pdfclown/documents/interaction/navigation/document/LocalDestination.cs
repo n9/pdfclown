@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -62,13 +62,8 @@ namespace org.pdfclown.documents.interaction.navigation.document
 
     internal LocalDestination(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       PdfString name
-      ) : base(
-        baseObject,
-        container,
-        name
-        )
+      ) : base(baseObject, name)
     {}
     #endregion
 

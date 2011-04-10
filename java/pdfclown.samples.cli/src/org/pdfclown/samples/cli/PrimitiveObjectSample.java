@@ -16,7 +16,7 @@ import org.pdfclown.objects.PdfName;
   by PDF Clown (you don't need to work at the low level shown here!).</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public class PrimitiveObjectSample
   extends Sample
@@ -60,7 +60,7 @@ public class PrimitiveObjectSample
       document.getBaseDataObject().put(
         new PdfName("OpenAction"),
         file.register(action) // Adds the action to the file, returning its reference.
-        ); document.update(); // Updates the existing document object (fundamental to override previous content).
+        );
     }
 
     // (boilerplate metadata insertion -- ignore it)
@@ -68,7 +68,7 @@ public class PrimitiveObjectSample
 
     // 3. Serialize the PDF file!
     serialize(file);
-    
+
     return true;
   }
 }

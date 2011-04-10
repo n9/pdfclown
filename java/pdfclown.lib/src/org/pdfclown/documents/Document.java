@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,7 +47,6 @@ import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfObjectWrapper;
@@ -61,7 +60,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF document [PDF:1.6:3.6.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Document
@@ -121,7 +120,7 @@ public final class Document
     private CompatibilityModeEnum compatibilityMode = CompatibilityModeEnum.Loose;
     private XRefModeEnum xrefMode = XRefModeEnum.Plain;
 
-    private Document document;
+    private final Document document;
 
     Configuration(
       Document document
@@ -210,30 +209,13 @@ public final class Document
   @SuppressWarnings("unchecked")
   public static <T extends PdfObjectWrapper<?>> T resolve(
     Class<T> type,
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
   {
     if(Destination.class.isAssignableFrom(type))
-      return (T)Destination.wrap(baseObject,container,null);
+      return (T)Destination.wrap(baseObject, null);
     else
       throw new UnsupportedOperationException("Type '" + type.getName() + "' wrapping is not supported.");
-  }
-
-  /**
-    Forces a named base object to be expressed as its corresponding
-    high-level representation.
-  */
-  public static <T extends PdfObjectWrapper<?>> T resolveName(
-    Class<T> type,
-    PdfDirectObject namedBaseObject,
-    PdfIndirectObject container
-    )
-  {
-    if(namedBaseObject instanceof PdfString) // Named destination.
-      return container.getFile().getDocument().getNames().resolve(type,(PdfString)namedBaseObject);
-    else // Explicit destination.
-      return resolve(type,namedBaseObject,container);
   }
   // </public>
   // </interface>
@@ -288,12 +270,7 @@ public final class Document
   public Document(
     PdfDirectObject baseObject // Catalog.
     )
-  {
-    super(
-      baseObject,
-      null // NO container (catalog MUST be an indirect object [PDF:1.6:3.4.4]).
-      );
-  }
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -305,36 +282,9 @@ public final class Document
   {throw new NotImplementedException();}
 
   /**
-    Clones the object within this document context.
-  */
-  public Object contextualize(
-    PdfObjectWrapper<?> object
-    )
-  {
-    if(object.getFile() == getFile())
-      return object;
-
-    return object.clone(this);
-  }
-
-  /**
-    Clones the collection objects within this document context.
-  */
-  public Collection<? extends PdfObjectWrapper<?>> contextualize(
-    Collection<? extends PdfObjectWrapper<?>> objects
-    )
-  {
-    ArrayList<PdfObjectWrapper<?>> contextualizedObjects = new ArrayList<PdfObjectWrapper<?>>(objects.size());
-    for(PdfObjectWrapper<?> object : objects)
-    {contextualizedObjects.add((PdfObjectWrapper<?>)contextualize(object));}
-
-    return contextualizedObjects;
-  }
-
-  /**
     Drops the object from this document context.
   */
-  public void decontextualize(
+  public void exclude(
     PdfObjectWrapper<?> object
     )
   {
@@ -347,28 +297,23 @@ public final class Document
   /**
     Drops the collection's objects from this document context.
   */
-  public void decontextualize(
+  public void exclude(
     Collection<? extends PdfObjectWrapper<?>> objects
     )
   {
     for(PdfObjectWrapper<?> object : objects)
-    {decontextualize(object);}
+    {exclude(object);}
   }
 
   /**
     Gets the document's behavior in response to trigger events.
-
-    @since 0.0.7
   */
   @PDF(VersionEnum.PDF14)
   public DocumentActions getActions(
     )
   {
     PdfDirectObject actionsObject = getBaseDataObject().get(PdfName.AA);
-    if(actionsObject == null)
-      return null;
-
-    return new DocumentActions(actionsObject, getContainer());
+    return actionsObject != null ? new DocumentActions(actionsObject) : null;
   }
 
   /**
@@ -378,10 +323,7 @@ public final class Document
     )
   {
     PdfDirectObject bookmarksObject = getBaseDataObject().get(PdfName.Outlines);
-    if(bookmarksObject == null)
-      return null;
-
-    return new Bookmarks(bookmarksObject);
+    return bookmarksObject != null ? new Bookmarks(bookmarksObject) : null;
   }
 
   /**
@@ -401,10 +343,7 @@ public final class Document
     )
   {
     PdfDirectObject formObject = getBaseDataObject().get(PdfName.AcroForm);
-    if(formObject == null)
-      return null;
-
-    return new Form(formObject, getContainer());
+    return formObject != null ? new Form(formObject) : null;
   }
 
   /**
@@ -414,10 +353,7 @@ public final class Document
     )
   {
     PdfDirectObject informationObject = getFile().getTrailer().get(PdfName.Info);
-    if(informationObject == null)
-      return null;
-
-    return new Information(informationObject);
+    return informationObject != null ? new Information(informationObject) : null;
   }
 
   /**
@@ -428,10 +364,7 @@ public final class Document
     )
   {
     PdfDirectObject namesObject = getBaseDataObject().get(PdfName.Names);
-    if(namesObject == null)
-      return null;
-
-    return new Names(namesObject, getContainer());
+    return namesObject != null ? new Names(namesObject) : null;
   }
 
   /**
@@ -486,18 +419,13 @@ public final class Document
   public Dimension2D getPageSize(
     )
   {
-    /*
-      NOTE: Due to the contract,
-      we cannot force the existence of the default media box at document level.
-    */
     PdfArray mediaBox = getMediaBox();
-    if(mediaBox == null)
-      return null;
-
-    return new Dimension(
-      ((PdfNumber<?>)mediaBox.get(2)).getValue().intValue(),
-      ((PdfNumber<?>)mediaBox.get(3)).getValue().intValue()
-      );
+    return mediaBox != null
+      ? new Dimension(
+        ((PdfNumber<?>)mediaBox.get(2)).getValue().intValue(),
+        ((PdfNumber<?>)mediaBox.get(3)).getValue().intValue()
+        )
+      : null;
   }
 
   /**
@@ -510,10 +438,7 @@ public final class Document
     )
   {
     PdfReference pagesReference = (PdfReference)getBaseDataObject().get(PdfName.Pages);
-    return Resources.wrap(
-      ((PdfDictionary)File.resolve(pagesReference)).get(PdfName.Resources),
-      pagesReference.getIndirectObject()
-      );
+    return Resources.wrap(((PdfDictionary)File.resolve(pagesReference)).get(PdfName.Resources));
   }
 
   /**
@@ -564,10 +489,49 @@ public final class Document
     )
   {
     PdfDirectObject viewerPreferencesObject = getBaseDataObject().get(PdfName.ViewerPreferences);
-    if(viewerPreferencesObject == null)
-      return null;
+    return viewerPreferencesObject != null ? new ViewerPreferences(viewerPreferencesObject) : null;
+  }
 
-    return new ViewerPreferences(viewerPreferencesObject, getContainer());
+  /**
+    Clones the specified object within this document context.
+  */
+  public PdfObjectWrapper<?> include(
+    PdfObjectWrapper<?> object
+    )
+  {
+    if(object.getFile() == getFile())
+      return object;
+
+    return (PdfObjectWrapper<?>)object.clone(this);
+  }
+
+  /**
+    Clones the specified collection objects within this document context.
+  */
+  public Collection<? extends PdfObjectWrapper<?>> include(
+    Collection<? extends PdfObjectWrapper<?>> objects
+    )
+  {
+    ArrayList<PdfObjectWrapper<?>> includedObjects = new ArrayList<PdfObjectWrapper<?>>(objects.size());
+    for(PdfObjectWrapper<?> object : objects)
+    {includedObjects.add(include(object));}
+
+    return includedObjects;
+  }
+
+  /**
+    Forces a named base object to be expressed as its corresponding
+    high-level representation.
+  */
+  public <T extends PdfObjectWrapper<?>> T resolveName(
+    Class<T> type,
+    PdfDirectObject namedBaseObject
+    )
+  {
+    if(namedBaseObject instanceof PdfString) // Named object.
+      return getNames().resolve(type, (PdfString)namedBaseObject);
+    else // Explicit object.
+      return resolve(type, namedBaseObject);
   }
 
   /**

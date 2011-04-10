@@ -285,14 +285,11 @@
     <Compile Include="src\org\pdfclown\files\IndirectObjects.cs" />
     <Compile Include="src\org\pdfclown\files\namespace.cs" />
     <Compile Include="src\org\pdfclown\files\SerializationModeEnum.cs" />
-    <Compile Include="src\org\pdfclown\files\UpdateModeEnum.cs" />
-    <Compile Include="src\org\pdfclown\objects\IPdfAtomicObject.cs" />
     <Compile Include="src\org\pdfclown\objects\IPdfIndirectObject.cs" />
     <Compile Include="src\org\pdfclown\objects\IPdfNumber.cs" />
     <Compile Include="src\org\pdfclown\objects\namespace.cs" />
     <Compile Include="src\org\pdfclown\objects\NameTree.cs" />
     <Compile Include="src\org\pdfclown\objects\PdfArray.cs" />
-    <Compile Include="src\org\pdfclown\objects\PdfAtomicObject.cs" />
     <Compile Include="src\org\pdfclown\objects\PdfBoolean.cs" />
     <Compile Include="src\org\pdfclown\objects\PdfDataObject.cs" />
     <Compile Include="src\org\pdfclown\objects\PdfDate.cs" />
@@ -344,7 +341,6 @@
     <Compile Include="src\org\pdfclown\documents\functions\namespace.cs" />
     <Compile Include="src\org\pdfclown\tokens\XRefStream.cs" />
     <Compile Include="src\org\pdfclown\tokens\ObjectStream.cs" />
-    <Compile Include="src\org\pdfclown\util\collections\generic\Extensions.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\Movie.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\Sound.cs" />
     <Compile Include="src\org\pdfclown\tokens\PlainWriter.cs" />
@@ -395,6 +391,9 @@
     <Compile Include="src\org\pdfclown\tokens\FileParser.cs" />
     <Compile Include="src\org\pdfclown\util\parsers\PostScriptParser.cs" />
     <Compile Include="src\org\pdfclown\tokens\BaseParser.cs" />
+    <Compile Include="src\org\pdfclown\util\collections\generic\Extension.cs" />
+    <Compile Include="src\org\pdfclown\objects\IPdfSimpleObject.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfSimpleObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">

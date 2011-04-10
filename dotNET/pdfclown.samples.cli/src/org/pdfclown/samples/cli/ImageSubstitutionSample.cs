@@ -64,7 +64,6 @@ namespace org.pdfclown.samples.cli
           {
             Console.WriteLine("Substituting " + xObjectKey + " image xobject.");
             xObjects[xObjectKey] = imageXObject;
-            xObjects.Update();
           }
         }
       }

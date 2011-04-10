@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,9 +47,8 @@ namespace org.pdfclown.documents
     {}
 
     internal NamedEmbeddedFiles(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -64,10 +63,9 @@ namespace org.pdfclown.documents
     #region protected
     protected override FileSpec Wrap(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       PdfString name
       )
-    {return new FileSpec(baseObject, container, name);}
+    {return new FileSpec(baseObject, name);}
     #endregion
     #endregion
     #endregion

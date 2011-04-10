@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,9 +47,8 @@ namespace org.pdfclown.documents
     {}
 
     internal NamedDestinations(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -64,7 +63,6 @@ namespace org.pdfclown.documents
     #region protected
     protected override Destination Wrap(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       PdfString name
       )
     {
@@ -80,14 +78,7 @@ namespace org.pdfclown.documents
         else
         {destinationObject = baseObject;}
       }
-
-      return Destination.Wrap(
-        destinationObject,
-        baseObject is PdfReference
-          ? ((PdfReference)baseObject).IndirectObject
-          : container,
-        name
-        );
+      return Destination.Wrap(destinationObject, name);
     }
     #endregion
     #endregion

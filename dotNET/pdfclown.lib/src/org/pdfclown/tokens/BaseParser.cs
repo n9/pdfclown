@@ -102,6 +102,7 @@ namespace org.pdfclown.tokens
               // Add the current entry to the dictionary!
               dictionary[key] = value;
             }
+            dictionary.Ready();
             return dictionary;
           }
           case TokenTypeEnum.ArrayBegin:
@@ -114,6 +115,7 @@ namespace org.pdfclown.tokens
               // Add the current item to the array!
               array.Add((PdfDirectObject)ParsePdfObject());
             }
+            array.Ready();
             return array;
           }
           case TokenTypeEnum.Literal:

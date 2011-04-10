@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,24 +25,24 @@
 
 package org.pdfclown.objects;
 
-import org.pdfclown.PDF;
-import org.pdfclown.VersionEnum;
-import org.pdfclown.documents.Document;
-import org.pdfclown.files.File;
-import org.pdfclown.util.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.pdfclown.PDF;
+import org.pdfclown.VersionEnum;
+import org.pdfclown.documents.Document;
+import org.pdfclown.files.File;
+import org.pdfclown.util.NotImplementedException;
+
 /**
   Name tree [PDF:1.6:3.8.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
@@ -100,6 +100,7 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
     // <interface>
     // <public>
     // <Comparable>
+    @Override
     public int compareTo(
       Entry obj
       )
@@ -107,14 +108,17 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
     // </Comparable>
 
     // <Map.Entry>
+    @Override
     public PdfString getKey(
       )
     {return key;}
 
+    @Override
     public TValue getValue(
       )
     {return value;}
 
+    @Override
     public TValue setValue(
       TValue value
       )
@@ -130,8 +134,7 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
   {
     void add(
       PdfArray names,
-      int offset,
-      PdfIndirectObject container
+      int offset
       );
     TCollection getCollection(
       );
@@ -173,27 +176,22 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
       context.getFile(),
       new PdfDictionary(
         new PdfName[]
-        { PdfName.Names },
+        {PdfName.Names},
         new PdfDirectObject[]
-        { new PdfArray() }
+        {new PdfArray()}
         )
       ); // NOTE: Initial root is by-definition a leaf node.
   }
 
   public NameTree(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {
-    super(
-      baseObject,
-      container
-      );
-  }
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
   // <public>
+  @Override
   public NameTree<TValue> clone(
     Document context
     )
@@ -228,23 +226,20 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
   {
     IFiller<Set<Map.Entry<PdfString,TValue>>> filler = new IFiller<Set<Map.Entry<PdfString,TValue>>>()
       {
-        private Set<Map.Entry<PdfString,TValue>> entrySet = new HashSet<Map.Entry<PdfString,TValue>>();
+        private final Set<Map.Entry<PdfString,TValue>> entrySet = new HashSet<Map.Entry<PdfString,TValue>>();
+        @Override
         public void add(
           PdfArray names,
-          int offset,
-          PdfIndirectObject container
+          int offset
           )
         {
           PdfString key = (PdfString)names.get(offset);
-          TValue value = wrap(
-            names.get(offset + 1),
-            container,
-            key
-            );
+          TValue value = wrap(names.get(offset + 1), key);
           entrySet.add(
             new Entry(key,value)
             );
         }
+        @Override
         public Set<Map.Entry<PdfString,TValue>> getCollection(
           )
         {return entrySet;}
@@ -269,12 +264,11 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
     )
   {
     PdfString keyString = (PdfString)key;
-    PdfDirectObject containerObject = getBaseObject();
     PdfDictionary parent = getBaseDataObject();
     while(true)
     {
-      PdfDirectObject namesObject = parent.get(PdfName.Names);
-      if(namesObject == null) // Intermediate node.
+      PdfArray names = (PdfArray)parent.resolve(PdfName.Names);
+      if(names == null) // Intermediate node.
       {
         PdfArray kids = (PdfArray)parent.resolve(PdfName.Kids);
         int low = 0, high = kids.size() - 1;
@@ -284,27 +278,21 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
             return null;
 
           int mid = (low + high) / 2;
-          PdfDirectObject kidObject = kids.get(mid);
-          PdfDictionary kid = (PdfDictionary)File.resolve(kidObject);
+          PdfDictionary kid = (PdfDictionary)kids.resolve(mid);
           PdfArray limits = (PdfArray)kid.resolve(PdfName.Limits);
           // Compare to the lower limit!
-          int comparison = keyString.compareTo(
-            (PdfString)limits.get(0)
-            );
+          int comparison = keyString.compareTo(limits.get(0));
           if(comparison < 0)
           {high = mid - 1;}
           else
           {
             // Compare to the upper limit!
-            comparison = keyString.compareTo(
-              (PdfString)limits.get(1)
-              );
+            comparison = keyString.compareTo(limits.get(1));
             if(comparison > 0)
             {low = mid + 1;}
             else
             {
               // Go down one level!
-              containerObject = kidObject; // NOTE: Node children MUST be indirectly referenced.
               parent = kid;
               break;
             }
@@ -313,10 +301,6 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
       }
       else // Leaf node.
       {
-        if(namesObject instanceof PdfReference)
-        {containerObject = namesObject;}
-
-        PdfArray names = (PdfArray)File.resolve(namesObject);
         int low = 0, high = names.size();
         while(true)
         {
@@ -324,9 +308,7 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
             return null;
 
           int mid = (mid = ((low + high) / 2)) - (mid % 2);
-          int comparison = keyString.compareTo(
-            (PdfString)names.get(mid)
-            );
+          int comparison = keyString.compareTo(names.get(mid));
           if(comparison < 0)
           {high = mid - 2;}
           else if(comparison > 0)
@@ -336,7 +318,6 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
             // We got it!
             return wrap(
               names.get(mid + 1),
-              ((PdfReference)containerObject).getIndirectObject(),
               (PdfString)names.get(mid)
               );
           }
@@ -369,17 +350,18 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
   {
     IFiller<Set<PdfString>> filler = new IFiller<Set<PdfString>>()
       {
-        private Set<PdfString> keySet = new HashSet<PdfString>();
+        private final Set<PdfString> keySet = new HashSet<PdfString>();
+        @Override
         public void add(
           PdfArray names,
-          int offset,
-          PdfIndirectObject container
+          int offset
           )
         {
           keySet.add(
             (PdfString)names.get(offset)
             );
         }
+        @Override
         public Set<PdfString> getCollection(
           )
         {return keySet;}
@@ -464,21 +446,21 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
   {
     IFiller<Collection<TValue>> filler = new IFiller<Collection<TValue>>()
       {
-        private Collection<TValue> values = new ArrayList<TValue>();
+        private final Collection<TValue> values = new ArrayList<TValue>();
+        @Override
         public void add(
           PdfArray names,
-          int offset,
-          PdfIndirectObject container
+          int offset
           )
         {
           values.add(
             wrap(
               names.get(offset + 1),
-              container,
               (PdfString)names.get(offset)
               )
             );
         }
+        @Override
         public Collection<TValue> getCollection(
           )
         {return values;}
@@ -499,7 +481,6 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
   */
   protected abstract TValue wrap(
     PdfDirectObject baseObject,
-    PdfIndirectObject container,
     PdfString name
     );
   // </protected>
@@ -557,8 +538,7 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
       {
         filler.add(
           namesObject.dataObject,
-          index,
-          namesObject.container
+          index
           );
       }
     }
@@ -650,9 +630,9 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
         PdfReference kidReference = (PdfReference)children.get(mid);
         PdfDictionary kid = (PdfDictionary)kidReference.getDataObject();
         PdfArray limits = (PdfArray)kid.resolve(PdfName.Limits);
-        if(key.compareTo((PdfString)limits.get(0)) < 0) // Before the lower limit.
+        if(key.compareTo(limits.get(0)) < 0) // Before the lower limit.
         {high = mid - 1;}
-        else if(key.compareTo((PdfString)limits.get(1)) > 0) // After the upper limit.
+        else if(key.compareTo(limits.get(1)) > 0) // After the upper limit.
         {low = mid + 1;}
         else // Limit range matched.
         {matched = true;}
@@ -677,17 +657,9 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
             }
           }
 
-          oldValue = put(
-            key,
-            value,
-            kidReference
-            );
+          oldValue = put(key, value, kidReference);
           // Update the key limits!
-          updateNodeLimits(
-            node,
-            children,
-            PdfName.Kids
-            );
+          updateNodeLimits(node, children, PdfName.Kids);
           break;
         }
       }
@@ -708,9 +680,7 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
           break;
         }
 
-        int comparison = key.compareTo(
-          (PdfString)children.get(mid)
-          );
+        int comparison = key.compareTo(children.get(mid));
         if(comparison < 0) // Before.
         {high = mid - 2;}
         else if(comparison > 0) // After.
@@ -719,7 +689,6 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
         {
           oldValue = wrap(
             children.get(mid + 1),
-            nodeReference.getIndirectObject(),
             (PdfString)children.get(mid)
             );
           // Overwrite the entry!
@@ -738,11 +707,7 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
       }
 
       // Update the key limits!
-      updateNodeLimits(
-        node,
-        children,
-        PdfName.Names
-        );
+      updateNodeLimits(node, children, PdfName.Names);
     }
     return oldValue;
   }
@@ -791,16 +756,8 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
     }
 
     // Update the key limits!
-    updateNodeLimits(
-      newNode,
-      newNodeChildren,
-      childrenTypeName
-      );
-    updateNodeLimits(
-      fullNode,
-      fullNodeChildren,
-      childrenTypeName
-      );
+    updateNodeLimits(newNode, newNodeChildren, childrenTypeName);
+    updateNodeLimits(fullNode, fullNodeChildren, childrenTypeName);
   }
 
   /**

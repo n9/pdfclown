@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,6 @@ import org.pdfclown.documents.Document.Configuration.XRefModeEnum;
 import org.pdfclown.objects.IPdfIndirectObject;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
-import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObject;
@@ -57,7 +56,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public final class File
   implements Closeable
@@ -119,39 +118,19 @@ public final class File
     else
       return new ResolvedObject<T>((T)object,container.getIndirectObject());
   }
-
-  /**
-    Forces a direct object to be updated (whether possible).
-  */
-  public static boolean update(
-    PdfDirectObject object
-    )
-  {
-    /*
-      NOTE: Only PDF references are able to be updated. Other direct types
-      are dependent on their respective containers for update.
-    */
-    if(object instanceof PdfReference)
-    {
-      ((PdfReference)object).getIndirectObject().update();
-      return true;
-    }
-    else
-      return false;
-  }
   // </public>
   // </interface>
   // </static>
 
   // <dynamic>
   // <fields>
-  private Document document;
-  private int hashCode = hashCodeGenerator.nextInt();
-  private IndirectObjects indirectObjects;
+  private final Document document;
+  private final int hashCode = hashCodeGenerator.nextInt();
+  private final IndirectObjects indirectObjects;
   private String path;
   private Reader reader;
-  private PdfDictionary trailer;
-  private Version version;
+  private final PdfDictionary trailer;
+  private final Version version;
   // </fields>
 
   // <constructors>

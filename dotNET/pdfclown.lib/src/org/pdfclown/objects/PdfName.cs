@@ -35,13 +35,13 @@ namespace org.pdfclown.objects
   /**
     <summary>PDF name object [PDF:1.6:3.2.4].</summary>
   */
-  /*
-    NOTE: As name objects are atomic symbols uniquely defined by sequences of characters,
-    the bytes making up the name are never treated as text, always keeping them escaped.
-  */
   public sealed class PdfName
-    : PdfAtomicObject<string>
+    : PdfSimpleObject<string>
   {
+    /*
+      NOTE: As name objects are simple symbols uniquely defined by sequences of characters,
+      the bytes making up the name are never treated as text, always keeping them escaped.
+    */
     #region static
     #region fields
     /*
@@ -54,6 +54,7 @@ namespace org.pdfclown.objects
     private static readonly Regex EscapedPattern = new Regex("#([\\da-fA-F]{2})");
     private static readonly Regex UnescapedPattern = new Regex("[\\s\\(\\)<>\\[\\]{}/%#]");
 
+    #pragma warning disable 0108
     public static readonly PdfName A = new PdfName("A");
     public static readonly PdfName A85 = new PdfName("A85");
     public static readonly PdfName AA = new PdfName("AA");
@@ -432,6 +433,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName XYZ = new PdfName("XYZ");
     public static readonly PdfName Yes = new PdfName("Yes");
     public static readonly PdfName YStep = new PdfName("YStep");
+    #pragma warning restore 0108
 
     private static readonly byte[] NamePrefixChunk = tokens.Encoding.Encode(tokens.Keyword.NamePrefix);
     #endregion

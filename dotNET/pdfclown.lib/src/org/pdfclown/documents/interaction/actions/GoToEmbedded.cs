@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -184,9 +184,8 @@ namespace org.pdfclown.documents.interaction.actions
       }
 
       internal TargetObject(
-        PdfDirectObject baseObject,
-        PdfIndirectObject container
-        ) : base(baseObject,container)
+        PdfDirectObject baseObject
+        ) : base(baseObject)
       {}
       #endregion
 
@@ -206,9 +205,6 @@ namespace org.pdfclown.documents.interaction.actions
       {
         get
         {
-          /*
-            NOTE: 'P' entry may be undefined.
-          */
           PdfDirectObject pageRefObject = BaseDataObject[PdfName.P];
           if(pageRefObject == null)
             return null;
@@ -246,9 +242,6 @@ namespace org.pdfclown.documents.interaction.actions
       {
         get
         {
-          /*
-            NOTE: 'A' entry may be undefined.
-          */
           PdfDirectObject annotationRefObject = BaseDataObject[PdfName.A];
           if(annotationRefObject == null)
             return null;
@@ -284,14 +277,8 @@ namespace org.pdfclown.documents.interaction.actions
       {
         get
         {
-          /*
-            NOTE: 'N' entry may be undefined.
-          */
           PdfString fileNameObject = (PdfString)BaseDataObject[PdfName.N];
-          if(fileNameObject == null)
-            return null;
-
-          return (string)fileNameObject.Value;
+          return fileNameObject != null ? (string)fileNameObject.Value : null;
         }
         set
         {
@@ -308,12 +295,7 @@ namespace org.pdfclown.documents.interaction.actions
       public RelationEnum Relation
       {
         get
-        {
-          /*
-            NOTE: 'R' entry MUST exist.
-          */
-          return ToRelationEnum((PdfName)BaseDataObject[PdfName.R]);
-        }
+        {return ToRelationEnum((PdfName)BaseDataObject[PdfName.R]);}
         set
         {BaseDataObject[PdfName.R] = ToCode(value);}
       }
@@ -325,14 +307,8 @@ namespace org.pdfclown.documents.interaction.actions
       {
         get
         {
-          /*
-            NOTE: 'T' entry may be undefined.
-          */
           PdfDirectObject targetObject = BaseDataObject[PdfName.T];
-          if(targetObject == null)
-            return null;
-
-          return new TargetObject(targetObject,Container);
+          return targetObject != null ? new TargetObject(targetObject) : null;
         }
         set
         {
@@ -399,9 +375,8 @@ namespace org.pdfclown.documents.interaction.actions
     {Target = target;}
 
     internal GoToEmbedded(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -446,14 +421,8 @@ namespace org.pdfclown.documents.interaction.actions
     {
       get
       {
-        /*
-          NOTE: 'T' entry may be undefined.
-        */
         PdfDirectObject targetObject = BaseDataObject[PdfName.T];
-        if(targetObject == null)
-          return null;
-
-        return new TargetObject(targetObject,Container);
+        return targetObject != null ? new TargetObject(targetObject) : null;
       }
       set
       {

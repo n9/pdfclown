@@ -51,6 +51,8 @@ namespace org.pdfclown.objects
     #region fields
     private IBuffer body;
     private PdfDictionary header;
+
+    private PdfObject parent;
     #endregion
 
     #region constructors
@@ -82,7 +84,7 @@ namespace org.pdfclown.objects
       IBuffer body
       )
     {
-      this.header = header;
+      this.header = (PdfDictionary)Include(header);
       this.body = body;
     }
     #endregion
@@ -109,13 +111,18 @@ namespace org.pdfclown.objects
       File context
       )
     {
-      PdfStream clone = (PdfStream)MemberwiseClone();
+      PdfStream clone = (PdfStream)base.Clone(context);
       {
-        // Deep cloning...
         clone.header = (PdfDictionary)header.Clone(context);
         clone.body = (IBuffer)body.Clone();
       }
       return clone;
+    }
+
+    public override PdfIndirectObject Container
+    {
+      get
+      {return Root;}
     }
 
     /**
@@ -132,22 +139,21 @@ namespace org.pdfclown.objects
         /*
           NOTE: It defines possible encodings applied to the stream.
         */
-        PdfDirectObject filterObj = header[PdfName.Filter];
-        if(filterObj != null) // Stream encoded.
+        PdfDataObject filterObject = header.Resolve(PdfName.Filter);
+        if(filterObject != null) // Stream encoded.
         {
           /*
             NOTE: If the stream is encoded, we must decode it before continuing.
           */
-          PdfDataObject filterDataObj = files.File.Resolve(filterObj);
           PdfDataObject decodeParms = header.Resolve(PdfName.DecodeParms);
-          if(filterDataObj is PdfName) // PdfName.
+          if(filterObject is PdfName) // PdfName.
           {
             PdfDictionary filterDecodeParms = (PdfDictionary)decodeParms;
-            body.Decode(Filter.Get((PdfName)filterDataObj), filterDecodeParms);
+            body.Decode(Filter.Get((PdfName)filterObject), filterDecodeParms);
           }
           else // MUST be PdfArray.
           {
-            IEnumerator<PdfDirectObject> filterObjIterator = ((PdfArray)filterDataObj).GetEnumerator();
+            IEnumerator<PdfDirectObject> filterObjIterator = ((PdfArray)filterObject).GetEnumerator();
             IEnumerator<PdfDirectObject> decodeParmsIterator = (decodeParms != null ? ((PdfArray)decodeParms).GetEnumerator() : null);
             while(filterObjIterator.MoveNext())
             {
@@ -178,6 +184,20 @@ namespace org.pdfclown.objects
       {return header;}
     }
 
+    public override PdfObject Parent
+    {
+      get
+      {return parent;}
+      internal set
+      {parent = value;}
+    }
+
+    public override PdfIndirectObject Root
+    {
+      get
+      {return (PdfIndirectObject)parent;} // NOTE: Stream root is by-definition its parent.
+    }
+
     public override void WriteTo(
       IOutputStream stream
       )
@@ -195,8 +215,8 @@ namespace org.pdfclown.objects
         That is, as encoding is just a serialization practise, it is excluded from
         alive, instanced streams.
       */
-      PdfDirectObject filterObj = header[PdfName.Filter];
-      if(filterObj == null) // Unencoded body.
+      PdfDirectObject filterObject = header[PdfName.Filter];
+      if(filterObject == null) // Unencoded body.
       {
         /*
           NOTE: As online representation is unencoded,
@@ -206,13 +226,13 @@ namespace org.pdfclown.objects
         unencodedBody = true;
 
         // Set the filter to apply!
-        filterObj = PdfName.FlateDecode; // zlib/deflate filter.
+        filterObject = PdfName.FlateDecode; // zlib/deflate filter.
         // Get encoded body data applying the filter to the stream!
-        bodyData = body.Encode(Filter.Get((PdfName)filterObj), null);
+        bodyData = body.Encode(Filter.Get((PdfName)filterObject), null);
         // Set encoded length!
         bodyLength = bodyData.Length;
         // Update 'Filter' entry!
-        header[PdfName.Filter] = filterObj;
+        header[PdfName.Filter] = filterObject;
       }
       else // Encoded body.
       {
@@ -240,6 +260,16 @@ namespace org.pdfclown.objects
       stream.Write(BeginStreamBodyChunk);
       stream.Write(bodyData);
       stream.Write(EndStreamBodyChunk);
+    }
+    #endregion
+
+    #region protected
+    protected internal override bool Updated
+    {
+      get
+      {return header.Updated;}
+      set
+      {/* NOOP: State update is delegated to its inner objects. */}
     }
     #endregion
     #endregion

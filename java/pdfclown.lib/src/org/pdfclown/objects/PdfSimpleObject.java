@@ -28,12 +28,12 @@ package org.pdfclown.objects;
 import org.pdfclown.files.File;
 
 /**
-  Abstract PDF atomic object.
+  Abstract PDF simple object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/10/11
 */
-public abstract class PdfAtomicObject<TValue>
+public abstract class PdfSimpleObject<TValue>
   extends PdfDirectObject
 {
   // <class>
@@ -61,8 +61,8 @@ public abstract class PdfAtomicObject<TValue>
     Object defaultValue
     )
   {
-    Object value = ((object = File.resolve(object)) instanceof PdfAtomicObject<?>
-      ? ((PdfAtomicObject<?>)object).getValue()
+    Object value = ((object = File.resolve(object)) instanceof PdfSimpleObject<?>
+      ? ((PdfSimpleObject<?>)object).getValue()
       : null);
     return (value != null ? value : defaultValue);
   }
@@ -76,7 +76,7 @@ public abstract class PdfAtomicObject<TValue>
   // </fields>
 
   // <constructors>
-  public PdfAtomicObject(
+  public PdfSimpleObject(
     )
   {}
   // </constructors>
@@ -84,11 +84,10 @@ public abstract class PdfAtomicObject<TValue>
   // <interface>
   // <public>
   @Override
-  @SuppressWarnings("unchecked")
-  public PdfAtomicObject<TValue> clone(
+  public final PdfSimpleObject<TValue> clone(
     File context
     )
-  {return (PdfAtomicObject<TValue>)super.clone();}
+  {return this;} // NOTE: Simple objects are immutable.
 
   @Override
   public boolean equals(
@@ -97,8 +96,18 @@ public abstract class PdfAtomicObject<TValue>
   {
     return object != null
       && object.getClass().equals(getClass())
-      && ((PdfAtomicObject<?>)object).getRawValue().equals(getRawValue());
+      && ((PdfSimpleObject<?>)object).getRawValue().equals(getRawValue());
   }
+
+  @Override
+  public final PdfIndirectObject getContainer(
+    )
+  {return null;} // NOTE: As simple objects are immutable, no container can be associated.
+
+  @Override
+  public final PdfObject getParent(
+    )
+  {return null;} // NOTE: As simple objects are immutable, no parent can be associated.
 
   /**
     Gets the low-level representation of the value.
@@ -106,6 +115,11 @@ public abstract class PdfAtomicObject<TValue>
   public TValue getRawValue(
     )
   {return value;}
+
+  @Override
+  public final PdfIndirectObject getRoot(
+    )
+  {return null;} // NOTE: As simple objects are immutable, no root can be associated.
 
   /**
     Gets the high-level representation of the value.
@@ -120,22 +134,39 @@ public abstract class PdfAtomicObject<TValue>
   {return getRawValue().hashCode();}
 
   @Override
+  final void setParent(
+    PdfObject value
+    )
+  {/* NOOP: As simple objects are immutable, no parent can be associated. */}
+
+  @Override
   public String toString(
     )
   {return getValue().toString();}
   // </public>
 
   // <protected>
+  @Override
+  protected final boolean isUpdated(
+    )
+  {return false;} // NOTE: Simple objects are immutable.
+
   /**
-    Sets the low-level representation of the value.
+    @see #getRawValue()
   */
   protected void setRawValue(
     TValue value
     )
   {this.value = value;}
 
+  @Override
+  protected final void setUpdated(
+    boolean value
+    )
+  {/* NOOP: As simple objects are immutable, no update can be done. */}
+
   /**
-    Sets the high-level representation of the value.
+    @see #getValue()
   */
   @SuppressWarnings("unchecked")
   protected void setValue(

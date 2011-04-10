@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,9 +42,8 @@ namespace org.pdfclown.documents.contents.colorSpaces
     //TODO:IMPL new element constructor!
 
     internal ShadingPattern(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -60,12 +59,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     public ExtGState ExtGState
     {
       get
-      {
-        return ExtGState.Wrap(
-          ((PdfDictionary)BaseDataObject)[PdfName.ExtGState],
-          Container
-          );
-      }
+      {return ExtGState.Wrap(((PdfDictionary)BaseDataObject)[PdfName.ExtGState]);}
     }
 
     /**
@@ -74,12 +68,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     public Shading Shading
     {
       get
-      {
-        return Shading.Wrap(
-          ((PdfDictionary)BaseDataObject)[PdfName.Shading],
-          Container
-          );
-      }
+      {return Shading.Wrap(((PdfDictionary)BaseDataObject)[PdfName.Shading]);}
     }
     #endregion
     #endregion

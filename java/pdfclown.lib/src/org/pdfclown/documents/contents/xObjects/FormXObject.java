@@ -39,7 +39,6 @@ import org.pdfclown.documents.contents.Resources;
 import org.pdfclown.documents.contents.RotationEnum;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.objects.ContentObject;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
@@ -54,7 +53,7 @@ import org.pdfclown.util.math.geom.Dimension;
   Form external object [PDF:1.6:4.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public final class FormXObject
@@ -123,9 +122,7 @@ public final class FormXObject
       NOTE: Form-space-to-user-space matrix is identity [1 0 0 1 0 0] by default,
       but may be adjusted by setting the Matrix entry in the form dictionary [PDF:1.6:4.9].
     */
-    PdfArray matrix = (PdfArray)File.resolve(
-      getBaseDataObject().getHeader().get(PdfName.Matrix)
-      );
+    PdfArray matrix = (PdfArray)getBaseDataObject().getHeader().resolve(PdfName.Matrix);
     if(matrix == null)
       return new double[]
         {
@@ -155,9 +152,7 @@ public final class FormXObject
   public Dimension2D getSize(
     )
   {
-    PdfArray box = (PdfArray)File.resolve(
-      getBaseDataObject().getHeader().get(PdfName.BBox)
-      );
+    PdfArray box = (PdfArray)getBaseDataObject().getHeader().resolve(PdfName.BBox);
     return new Dimension(
       ((PdfNumber<?>)box.get(2)).getNumberValue(),
       ((PdfNumber<?>)box.get(3)).getNumberValue()
@@ -185,13 +180,9 @@ public final class FormXObject
     Dimension2D value
     )
   {
-    PdfDirectObject box = getBaseDataObject().getHeader().get(PdfName.BBox);
-
-    PdfArray boxObject = (PdfArray)File.resolve(box);
+    PdfArray boxObject = (PdfArray)getBaseDataObject().getHeader().resolve(PdfName.BBox);
     boxObject.set(2, new PdfReal(value.getWidth()));
     boxObject.set(3, new PdfReal(value.getHeight()));
-
-    File.update(box);
   }
 
   // <IContentContext>
@@ -199,9 +190,7 @@ public final class FormXObject
   public Rectangle2D getBox(
     )
   {
-    PdfArray box = (PdfArray)File.resolve(
-      getBaseDataObject().getHeader().get(PdfName.BBox) // NOTE: Required [PDF:1.6:4.9.1].
-      );
+    PdfArray box = (PdfArray)getBaseDataObject().getHeader().resolve(PdfName.BBox);
     return new Rectangle2D.Double(
       ((PdfNumber<?>)box.get(0)).getNumberValue(),
       ((PdfNumber<?>)box.get(1)).getNumberValue(),
@@ -213,12 +202,12 @@ public final class FormXObject
   @Override
   public Contents getContents(
     )
-  {return new Contents(getBaseObject(), getContainer(), this);}
+  {return new Contents(getBaseObject(), this);}
 
   @Override
   public Resources getResources(
     )
-  {return Resources.wrap(getBaseDataObject().getHeader().get(PdfName.Resources), getContainer());}
+  {return Resources.wrap(getBaseDataObject().getHeader().get(PdfName.Resources));}
 
   @Override
   public RotationEnum getRotation(

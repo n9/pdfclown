@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,18 +25,16 @@
 
 package org.pdfclown.documents.interaction.annotations;
 
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.objects.PdfReference;
 import org.pdfclown.util.NotImplementedException;
-
-import java.awt.geom.Rectangle2D;
 
 /**
   Pop-up annotation [PDF:1.6:8.4.5].
@@ -46,7 +44,7 @@ import java.awt.geom.Rectangle2D;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF13)
 public final class Popup
@@ -69,10 +67,9 @@ public final class Popup
   }
 
   protected Popup(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -89,14 +86,8 @@ public final class Popup
   public boolean isOpen(
     )
   {
-    /*
-      NOTE: 'Open' entry may be undefined.
-    */
     PdfBoolean openObject = (PdfBoolean)getBaseDataObject().get(PdfName.Open);
-    if(openObject == null)
-      return false;
-
-    return ((Boolean)openObject.getValue()).booleanValue();
+    return openObject != null ? ((Boolean)openObject.getValue()).booleanValue() : false;
   }
 
   /**
@@ -104,16 +95,7 @@ public final class Popup
   */
   public Annotation getParent(
     )
-  {
-    /*
-      NOTE: 'Parent' entry may be undefined.
-    */
-    PdfReference parentObject = (PdfReference)getBaseDataObject().get(PdfName.Parent);
-    if(parentObject == null)
-      return null;
-
-    return Annotation.wrap(parentObject);
-  }
+  {return Annotation.wrap(getBaseDataObject().get(PdfName.Parent));}
 
   /**
     @see #isOpen()

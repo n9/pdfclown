@@ -1,5 +1,7 @@
 package org.pdfclown.samples.cli;
 
+import java.net.URI;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.DocumentActions;
 import org.pdfclown.documents.Page;
@@ -10,8 +12,6 @@ import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.documents.interaction.navigation.document.LocalDestination;
 import org.pdfclown.files.File;
 
-import java.net.URI;
-
 /**
   This sample demonstrates <b>how to apply actions</b> to a PDF document.
   <p>In this case on document-opening a go-to-page-2 action is triggered;
@@ -19,7 +19,7 @@ import java.net.URI;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public class ActionSample
   extends Sample
@@ -45,10 +45,7 @@ public class ActionSample
     {
       DocumentActions documentActions = document.getActions();
       if(documentActions == null)
-      {
-        document.setActions(documentActions = new DocumentActions(document));
-        document.update();
-      }
+      {document.setActions(documentActions = new DocumentActions(document));}
       /*
         NOTE: This statement instructs the PDF viewer to go to page 2 on document opening.
       */
@@ -62,18 +59,14 @@ public class ActionSample
             )
           )
         );
-      documentActions.update();
     }
-    
+
     // 2.2. Remote go-to.
     {
       Page page = document.getPages().get(1); // Page 2 (zero-based index).
       PageActions pageActions = page.getActions();
       if(pageActions == null)
-      {
-        page.setActions(pageActions = new PageActions(document));
-        page.update();
-      }
+      {page.setActions(pageActions = new PageActions(document));}
       try
       {
         /*
@@ -85,7 +78,6 @@ public class ActionSample
             new URI("http://www.sourceforge.net/projects/clown")
             )
           );
-        pageActions.update();
       }
       catch(Exception exception)
       {throw new RuntimeException(exception);}
@@ -96,7 +88,7 @@ public class ActionSample
 
     // 3. Serialize the PDF file (again, boilerplate code -- see the SampleLoader class source code)!
     serialize(file);
-    
+
     return true;
   }
 }

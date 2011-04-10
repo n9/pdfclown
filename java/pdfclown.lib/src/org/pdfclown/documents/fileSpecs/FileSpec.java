@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,7 +30,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNamedObjectWrapper;
 import org.pdfclown.objects.PdfReference;
@@ -43,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF11)
 public final class FileSpec
@@ -80,10 +79,9 @@ public final class FileSpec
 
   public FileSpec(
     PdfDirectObject baseObject,
-    PdfIndirectObject container,
     PdfString name
     )
-  {super(baseObject,container,name);}
+  {super(baseObject, name);}
   // </constructors>
 
   // <interface>
@@ -107,14 +105,11 @@ public final class FileSpec
   public String getDescription(
     )
   {
-    /*
-      NOTE: 'Desc' entry may be undefined.
-    */
     PdfTextString descriptionObject = (PdfTextString)getBaseDataObject().get(PdfName.Desc);
     if(descriptionObject == null)
       return null;
 
-    return (String)descriptionObject.getValue();
+    return descriptionObject.getValue();
   }
 
   /**
@@ -307,21 +302,12 @@ public final class FileSpec
     PdfName key
     )
   {
-    /*
-      NOTE: 'RF' entry may be undefined.
-    */
     PdfDictionary dependenciesObject = (PdfDictionary)getBaseDataObject().get(PdfName.RF);
     if(dependenciesObject == null)
       return null;
 
-    /*
-      NOTE: key entry may be undefined.
-    */
     PdfReference dependencyFilesObject = (PdfReference)dependenciesObject.get(key);
-    if(dependencyFilesObject == null)
-      return null;
-
-    return new RelatedFiles(dependencyFilesObject,getContainer());
+    return dependencyFilesObject != null ? new RelatedFiles(dependencyFilesObject) : null;
   }
 
   /**
@@ -331,21 +317,12 @@ public final class FileSpec
     PdfName key
     )
   {
-    /*
-      NOTE: 'EF' entry may be undefined.
-    */
     PdfDictionary embeddedFilesObject = (PdfDictionary)getBaseDataObject().get(PdfName.EF);
     if(embeddedFilesObject == null)
       return null;
 
-    /*
-      NOTE: key entry may be undefined.
-    */
     PdfReference embeddedFileObject = (PdfReference)embeddedFilesObject.get(key);
-    if(embeddedFileObject == null)
-      return null;
-
-    return new EmbeddedFile(embeddedFileObject);
+    return embeddedFileObject != null ? new EmbeddedFile(embeddedFileObject) : null;
   }
 
   /**
@@ -355,14 +332,8 @@ public final class FileSpec
     PdfName key
     )
   {
-    /*
-      NOTE: key entry may be undefined.
-    */
     PdfString nameObject = (PdfString)getBaseDataObject().get(key);
-    if(nameObject == null)
-      return null;
-
-    return (String)nameObject.getValue();
+    return nameObject != null ? (String)nameObject.getValue() : null;
   }
 
   /**

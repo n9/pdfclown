@@ -39,11 +39,9 @@ import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDate;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.NotImplementedException;
 
@@ -52,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 03/13/11
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public class Annotation
@@ -181,26 +179,13 @@ public class Annotation
   // <interface>
   // <public>
   /**
-    Wraps an annotation reference into an annotation object.
-
-    @param reference Reference to an annotation object.
-    @return Annotation object associated to the reference.
-  */
-  public static final Annotation wrap(
-    PdfReference reference
-    )
-  {return wrap(reference,null);}
-
-  /**
     Wraps an annotation base object into an annotation object.
 
     @param baseObject Annotation base object.
-    @param container Annotation base object container.
     @return Annotation object associated to the base object.
   */
   public static final Annotation wrap(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
   {
     if(baseObject == null)
@@ -213,50 +198,50 @@ public class Annotation
     */
     PdfName annotationType = (PdfName)dataObject.get(PdfName.Subtype);
     if(annotationType.equals(PdfName.Text))
-      return new Note(baseObject,container);
+      return new Note(baseObject);
     else if(annotationType.equals(PdfName.Link))
-      return new Link(baseObject,container);
+      return new Link(baseObject);
     else if(annotationType.equals(PdfName.FreeText))
-      return new CalloutNote(baseObject,container);
+      return new CalloutNote(baseObject);
     else if(annotationType.equals(PdfName.Line))
-      return new Line(baseObject,container);
+      return new Line(baseObject);
     else if(annotationType.equals(PdfName.Square))
-      return new Rectangle(baseObject,container);
+      return new Rectangle(baseObject);
     else if(annotationType.equals(PdfName.Circle))
-      return new Ellipse(baseObject,container);
+      return new Ellipse(baseObject);
     else if(annotationType.equals(PdfName.Polygon))
-      return new Polygon(baseObject,container);
+      return new Polygon(baseObject);
     else if(annotationType.equals(PdfName.PolyLine))
-      return new Polyline(baseObject,container);
+      return new Polyline(baseObject);
     else if(annotationType.equals(PdfName.Highlight)
       || annotationType.equals(PdfName.Underline)
       || annotationType.equals(PdfName.Squiggly)
       || annotationType.equals(PdfName.StrikeOut))
-      return new TextMarkup(baseObject,container);
+      return new TextMarkup(baseObject);
     else if(annotationType.equals(PdfName.Stamp))
-      return new RubberStamp(baseObject,container);
+      return new RubberStamp(baseObject);
     else if(annotationType.equals(PdfName.Caret))
-      return new Caret(baseObject,container);
+      return new Caret(baseObject);
     else if(annotationType.equals(PdfName.Ink))
-      return new Scribble(baseObject,container);
+      return new Scribble(baseObject);
     else if(annotationType.equals(PdfName.Popup))
-      return new Popup(baseObject,container);
+      return new Popup(baseObject);
     else if(annotationType.equals(PdfName.FileAttachment))
-      return new FileAttachment(baseObject,container);
+      return new FileAttachment(baseObject);
     else if(annotationType.equals(PdfName.Sound))
-      return new Sound(baseObject,container);
+      return new Sound(baseObject);
     else if(annotationType.equals(PdfName.Movie))
-      return new Movie(baseObject,container);
+      return new Movie(baseObject);
     else if(annotationType.equals(PdfName.Widget))
-      return new Widget(baseObject,container);
+      return new Widget(baseObject);
 //TODO
-//     else if(annotationType.equals(PdfName.Screen)) return new Screen(baseObject,container);
-//     else if(annotationType.equals(PdfName.PrinterMark)) return new PrinterMark(baseObject,container);
-//     else if(annotationType.equals(PdfName.TrapNet)) return new TrapNet(baseObject,container);
-//     else if(annotationType.equals(PdfName.Watermark)) return new Watermark(baseObject,container);
-//     else if(annotationType.equals(PdfName.3DAnnotation)) return new 3DAnnotation(baseObject,container);
+//     else if(annotationType.equals(PdfName.Screen)) return new Screen(baseObject);
+//     else if(annotationType.equals(PdfName.PrinterMark)) return new PrinterMark(baseObject);
+//     else if(annotationType.equals(PdfName.TrapNet)) return new TrapNet(baseObject);
+//     else if(annotationType.equals(PdfName.Watermark)) return new Watermark(baseObject);
+//     else if(annotationType.equals(PdfName.3DAnnotation)) return new 3DAnnotation(baseObject);
     else // Other annotation type.
-      return new Annotation(baseObject,container);
+      return new Annotation(baseObject);
   }
   // </public>
   // </interface>
@@ -302,10 +287,9 @@ public class Annotation
   }
 
   protected Annotation(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -322,7 +306,7 @@ public class Annotation
   @PDF(VersionEnum.PDF11)
   public Action getAction(
     )
-  {return Action.wrap(getBaseDataObject().get(PdfName.A), getContainer());}
+  {return Action.wrap(getBaseDataObject().get(PdfName.A));}
 
   /**
     Gets the annotation's behavior in response to various trigger events.
@@ -332,7 +316,7 @@ public class Annotation
     )
   {
     PdfDirectObject actionsObject = getBaseDataObject().get(PdfName.AA);
-    return actionsObject == null ? null : new AnnotationActions(this, actionsObject, getContainer());
+    return actionsObject != null ? new AnnotationActions(this, actionsObject) : null;
   }
 
   /**
@@ -343,7 +327,7 @@ public class Annotation
     )
   {
     PdfDirectObject appearanceObject = getBaseDataObject().get(PdfName.AP);
-    return appearanceObject == null ? null : new Appearance(appearanceObject, getContainer());
+    return appearanceObject != null ? new Appearance(appearanceObject) : null;
   }
 
   /**
@@ -354,7 +338,7 @@ public class Annotation
     )
   {
     PdfDirectObject borderObject = getBaseDataObject().get(PdfName.BS);
-    return borderObject == null ? null : new Border(borderObject, getContainer());
+    return borderObject != null ? new Border(borderObject) : null;
   }
 
   /**
@@ -363,9 +347,6 @@ public class Annotation
   public Rectangle2D getBox(
     )
   {
-    /*
-      NOTE: 'Rect' entry MUST be defined.
-    */
     org.pdfclown.objects.Rectangle box = new org.pdfclown.objects.Rectangle(getBaseDataObject().get(PdfName.Rect));
     return new Rectangle2D.Double(
       box.getLeft(),
@@ -396,11 +377,7 @@ public class Annotation
     )
   {
     PdfDirectObject modificationDateObject = getBaseDataObject().get(PdfName.M);
-    if(modificationDateObject == null
-      || !(modificationDateObject instanceof PdfDate)) // NOTE: Non-well-formed dates are ignored.
-      return null;
-
-    return ((PdfDate)modificationDateObject).getValue();
+    return modificationDateObject instanceof PdfDate ? ((PdfDate)modificationDateObject).getValue() : null;
   }
 
   /**
@@ -412,7 +389,7 @@ public class Annotation
     )
   {
     PdfTextString nameObject = (PdfTextString)getBaseDataObject().get(PdfName.NM);
-    return nameObject == null ? null : nameObject.getValue();
+    return nameObject != null ? nameObject.getValue() : null;
   }
 
   /**
@@ -433,7 +410,7 @@ public class Annotation
     )
   {
     PdfTextString textObject = (PdfTextString)getBaseDataObject().get(PdfName.Contents);
-    return textObject == null ? null : textObject.getValue();
+    return textObject != null ? textObject.getValue() : null;
   }
 
   /**

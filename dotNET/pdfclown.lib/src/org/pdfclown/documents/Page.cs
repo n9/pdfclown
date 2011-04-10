@@ -181,7 +181,7 @@ namespace org.pdfclown.documents
 
     private Page(
       PdfDirectObject baseObject
-      ) : base(baseObject, null)
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -196,7 +196,7 @@ namespace org.pdfclown.documents
       get
       {
         PdfDirectObject actionsObject = BaseDataObject[PdfName.AA];
-        return actionsObject != null ? new PageActions(actionsObject, Container) : null;
+        return actionsObject != null ? new PageActions(actionsObject) : null;
       }
       set
       {BaseDataObject[PdfName.AA] = value.BaseObject;}
@@ -210,7 +210,7 @@ namespace org.pdfclown.documents
       get
       {
         PdfDirectObject annotationsObject = BaseDataObject[PdfName.Annots];
-        return annotationsObject != null ? new PageAnnotations(annotationsObject, Container, this) : null;
+        return annotationsObject != null ? new PageAnnotations(annotationsObject, this) : null;
       }
       set
       {BaseDataObject[PdfName.Annots] = value.BaseObject;}
@@ -358,7 +358,7 @@ namespace org.pdfclown.documents
       get
       {
         PdfDirectObject transitionObject = BaseDataObject[PdfName.Trans];
-        return transitionObject != null ? new Transition(transitionObject, Container) : null;
+        return transitionObject != null ? new Transition(transitionObject) : null;
       }
       set
       {BaseDataObject[PdfName.Trans] = value.BaseObject;}
@@ -379,11 +379,8 @@ namespace org.pdfclown.documents
       {
         PdfDirectObject contentsObject = BaseDataObject[PdfName.Contents];
         if(contentsObject == null)
-        {
-          BaseDataObject[PdfName.Contents] = (contentsObject = File.Register(new PdfStream()));
-          Update();
-        }
-        return new Contents(contentsObject, Container, this);
+        {BaseDataObject[PdfName.Contents] = (contentsObject = File.Register(new PdfStream()));}
+        return new Contents(contentsObject, this);
       }
     }
 
@@ -399,7 +396,7 @@ namespace org.pdfclown.documents
     public Resources Resources
     {
       get
-      {return Resources.Wrap(GetInheritableAttribute(PdfName.Resources), Container);}
+      {return Resources.Wrap(GetInheritableAttribute(PdfName.Resources));}
     }
 
     public RotationEnum Rotation

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,7 +38,6 @@ import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.util.NotImplementedException;
@@ -48,7 +47,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class ChainedActions
@@ -66,20 +65,16 @@ public final class ChainedActions
   /**
     Parent action.
   */
-  private Action parent;
+  private final Action parent;
   // </fields>
 
   // <constructors>
   ChainedActions(
     PdfDirectObject baseObject,
-    PdfIndirectObject container,
     Action parent
     )
   {
-    super(
-      baseObject,
-      container
-      );
+    super(baseObject);
 
     this.parent = parent;
   }
@@ -131,10 +126,10 @@ public final class ChainedActions
       if(index != 0)
         throw new IndexOutOfBoundsException("Index: " + index + ", Size: 1");
 
-      return Action.wrap(getBaseObject(),getContainer());
+      return Action.wrap(getBaseObject());
     }
     else // Multiple actions.
-      return Action.wrap(((PdfArray)baseDataObject).get(index),getContainer());
+      return Action.wrap(((PdfArray)baseDataObject).get(index));
   }
 
   @Override
@@ -173,11 +168,7 @@ public final class ChainedActions
   public Action remove(
     int index
     )
-  {
-    return Action.wrap(
-      ensureArray().remove(index),
-      getContainer()
-      );
+  {return Action.wrap(ensureArray().remove(index));
   }
 
   @Override
@@ -185,12 +176,7 @@ public final class ChainedActions
     int index,
     Action value
     )
-  {
-    return Action.wrap(
-      ensureArray().set(index,value.getBaseObject()),
-      getContainer()
-      );
-  }
+  {return Action.wrap(ensureArray().set(index,value.getBaseObject()));}
 
   @Override
   public List<Action> subList(
@@ -316,7 +302,7 @@ public final class ChainedActions
       if(values.length == 0)
       {values = (T[])new Object[1];}
 
-      values[0] = (T)Action.wrap(getBaseObject(),getContainer());
+      values[0] = (T)Action.wrap(getBaseObject());
     }
     else // Multiple actions.
     {
@@ -324,14 +310,13 @@ public final class ChainedActions
       if(values.length < actionObjects.size())
       {values = (T[])new Object[actionObjects.size()];}
 
-      PdfIndirectObject container = getContainer();
       for(
         int index = 0,
           length = actionObjects.size();
         index < length;
         index++
         )
-      {values[index] = (T)Action.wrap(actionObjects.get(index),container);}
+      {values[index] = (T)Action.wrap(actionObjects.get(index));}
     }
     return values;
   }
@@ -346,7 +331,7 @@ public final class ChainedActions
       /** Index of the next item. */
       private int index = 0;
       /** Collection size. */
-      private int size = size();
+      private final int size = size();
 
       @Override
       public boolean hasNext(

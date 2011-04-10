@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,7 +33,7 @@ import org.pdfclown.tokens.Keyword;
   Abstract PDF direct object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public abstract class PdfDirectObject
   extends PdfDataObject
@@ -85,7 +85,9 @@ public abstract class PdfDirectObject
   // <public>
   // <Comparable>
   @Override
-  public abstract int compareTo(PdfDirectObject obj);
+  public abstract int compareTo(
+    PdfDirectObject obj
+    );
   // </Comparable>
   // </public>
   // </interface>

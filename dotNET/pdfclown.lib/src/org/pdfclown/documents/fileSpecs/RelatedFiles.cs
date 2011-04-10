@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -53,9 +53,8 @@ namespace org.pdfclown.documents.fileSpecs
     {}
 
     internal RelatedFiles(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -93,7 +92,6 @@ namespace org.pdfclown.documents.fileSpecs
         if(((PdfTextString)itemPairs[index]).Value.Equals(key))
           return true;
       }
-
       return false;
     }
 
@@ -109,12 +107,7 @@ namespace org.pdfclown.documents.fileSpecs
           index < length;
           index += 2
           )
-        {
-          keys.Add(
-            (string)((PdfTextString)itemPairs[index]).Value
-            );
-        }
-
+        {keys.Add((string)((PdfTextString)itemPairs[index]).Value);}
         return keys;
       }
     }
@@ -135,11 +128,9 @@ namespace org.pdfclown.documents.fileSpecs
         {
           itemPairs.RemoveAt(index); // Key removed.
           itemPairs.RemoveAt(index); // Value removed.
-
           return true;
         }
       }
-
       return false;
     }
 
@@ -160,7 +151,6 @@ namespace org.pdfclown.documents.fileSpecs
           if(((PdfTextString)itemPairs[index]).Value.Equals(key))
             return new EmbeddedFile(itemPairs[index+1]);
         }
-
         return null;
       }
       set
@@ -177,11 +167,9 @@ namespace org.pdfclown.documents.fileSpecs
           if(((PdfTextString)itemPairs[index]).Value.Equals(key))
           {
             itemPairs[index+1] = value.BaseObject;
-
             return;
           }
         }
-
         // New entry.
         itemPairs.Add(new PdfTextString(key));
         itemPairs.Add(value.BaseObject);
@@ -212,12 +200,7 @@ namespace org.pdfclown.documents.fileSpecs
           index < length;
           index += 2
           )
-        {
-          values.Add(
-            new EmbeddedFile(itemPairs[index])
-            );
-        }
-
+        {values.Add(new EmbeddedFile(itemPairs[index]));}
         return values;
       }
     }

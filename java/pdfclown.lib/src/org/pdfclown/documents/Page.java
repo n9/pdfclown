@@ -68,7 +68,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 03/15/11
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Page
@@ -224,7 +224,7 @@ public final class Page
   private Page(
     PdfDirectObject baseObject
     )
-  {super(baseObject, null);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -270,7 +270,7 @@ public final class Page
     )
   {
     PdfDirectObject actionsObject = getBaseDataObject().get(PdfName.AA);
-    return actionsObject != null ? new PageActions(actionsObject, getContainer()) : null;
+    return actionsObject != null ? new PageActions(actionsObject) : null;
   }
 
   /**
@@ -280,7 +280,7 @@ public final class Page
     )
   {
     PdfDirectObject annotationsObject = getBaseDataObject().get(PdfName.Annots);
-    return annotationsObject != null ? new PageAnnotations(annotationsObject, getContainer(), this) : null;
+    return annotationsObject != null ? new PageAnnotations(annotationsObject, this) : null;
   }
 
   /**
@@ -377,7 +377,7 @@ public final class Page
     )
   {
     PdfDirectObject transitionObject = getBaseDataObject().get(PdfName.Trans);
-    return transitionObject != null ? new Transition(transitionObject, getContainer()) : null;
+    return transitionObject != null ? new Transition(transitionObject) : null;
   }
 
   /**
@@ -460,17 +460,14 @@ public final class Page
   {
     PdfDirectObject contentsObject = getBaseDataObject().get(PdfName.Contents);
     if(contentsObject == null)
-    {
-      getBaseDataObject().put(PdfName.Contents, contentsObject = getFile().register(new PdfStream()));
-      update();
-    }
-    return new Contents(contentsObject, getContainer(), this);
+    {getBaseDataObject().put(PdfName.Contents, contentsObject = getFile().register(new PdfStream()));}
+    return new Contents(contentsObject, this);
   }
 
   @Override
   public Resources getResources(
     )
-  {return Resources.wrap(getInheritableAttribute(PdfName.Resources), getContainer());}
+  {return Resources.wrap(getInheritableAttribute(PdfName.Resources));}
 
   @Override
   public RotationEnum getRotation(

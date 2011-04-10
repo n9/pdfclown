@@ -33,13 +33,13 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.files.File;
-import org.pdfclown.objects.PdfAtomicObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
+import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.NotImplementedException;
@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Field
@@ -284,12 +284,7 @@ public abstract class Field
   protected Field(
     PdfDirectObject baseObject
     )
-  {
-    super(
-      baseObject,
-      null // NO container (baseObject MUST be an indirect reference).
-      );
-  }
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -307,10 +302,7 @@ public abstract class Field
     )
   {
     PdfDirectObject actionsObject = getBaseDataObject().get(PdfName.AA);
-    if(actionsObject == null)
-      return null;
-
-    return new FieldActions(actionsObject,getContainer());
+    return actionsObject != null ? new FieldActions(actionsObject) : null;
   }
 
   /**
@@ -319,13 +311,8 @@ public abstract class Field
   public Object getDefaultValue(
     )
   {
-    PdfAtomicObject<?> defaultValueObject = (PdfAtomicObject<?>)File.resolve(
-      getInheritableAttribute(PdfName.DV)
-      );
-    if(defaultValueObject == null)
-      return null;
-
-    return defaultValueObject.getValue();
+    PdfSimpleObject<?> defaultValueObject = (PdfSimpleObject<?>)File.resolve(getInheritableAttribute(PdfName.DV));
+    return defaultValueObject != null ? defaultValueObject.getValue() : null;
   }
 
   /**
@@ -334,13 +321,8 @@ public abstract class Field
   public EnumSet<FlagsEnum> getFlags(
     )
   {
-    PdfInteger flagsObject = (PdfInteger)File.resolve(
-      getInheritableAttribute(PdfName.Ff)
-      );
-    if(flagsObject == null)
-      return EnumSet.noneOf(FlagsEnum.class);
-
-    return FlagsEnum.toEnumSet(flagsObject.getRawValue());
+    PdfInteger flagsObject = (PdfInteger)File.resolve(getInheritableAttribute(PdfName.Ff));
+    return flagsObject != null ? FlagsEnum.toEnumSet(flagsObject.getRawValue()) : EnumSet.noneOf(FlagsEnum.class);
   }
 
   /**
@@ -384,13 +366,8 @@ public abstract class Field
   public Object getValue(
     )
   {
-    PdfAtomicObject<?> valueObject = (PdfAtomicObject<?>)File.resolve(
-      getInheritableAttribute(PdfName.V)
-      );
-    if(valueObject == null)
-      return null;
-
-    return valueObject.getValue();
+    PdfSimpleObject<?> valueObject = (PdfSimpleObject<?>)File.resolve(getInheritableAttribute(PdfName.V));
+    return valueObject != null ? valueObject.getValue() : null;
   }
 
   /**
@@ -405,10 +382,12 @@ public abstract class Field
       have been merged into the field dictionary, 'Kids' entry MUST be omitted.
     */
     PdfDirectObject widgetsObject = getBaseDataObject().get(PdfName.Kids);
-    if(widgetsObject == null) // Merged annotation.
-      return new FieldWidgets(getBaseObject(), null, this);
-    else // Annotation array.
-      return new FieldWidgets(widgetsObject, getContainer(), this);
+    return new FieldWidgets(
+      widgetsObject != null
+        ? widgetsObject // Annotation array.
+        : getBaseObject(), // Merged annotation.
+      this
+      );
   }
 
   /**

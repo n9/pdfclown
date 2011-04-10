@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,9 +47,8 @@ namespace org.pdfclown.documents
     {}
 
     internal PageActions(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -66,7 +65,7 @@ namespace org.pdfclown.documents
     public Action OnClose
     {
       get
-      {return Action.Wrap(BaseDataObject[PdfName.C], Container);}
+      {return Action.Wrap(BaseDataObject[PdfName.C]);}
       set
       {BaseDataObject[PdfName.C] = value.BaseObject;}
     }
@@ -77,7 +76,7 @@ namespace org.pdfclown.documents
     public Action OnOpen
     {
       get
-      {return Action.Wrap(BaseDataObject[PdfName.O], Container);}
+      {return Action.Wrap(BaseDataObject[PdfName.O]);}
       set
       {BaseDataObject[PdfName.O] = value.BaseObject;}
     }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -125,9 +125,8 @@ namespace org.pdfclown.documents.contents.colorSpaces
     {}
 
     internal TilingPattern(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -178,12 +177,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     public Resources Resources
     {
       get
-      {
-        return Resources.Wrap(
-          BaseHeader[PdfName.Resources],
-          Container
-          );
-      }
+      {return Resources.Wrap(BaseHeader[PdfName.Resources]);}
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -46,16 +46,12 @@ namespace org.pdfclown.documents.interaction.actions
     public NamedAction(
       Document context,
       PdfName actionName
-      ) : base(
-        context,
-        PdfName.Named
-        )
+      ) : base(context, PdfName.Named)
     {BaseDataObject[PdfName.N] = actionName;}
 
     internal NamedAction(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container, null)
+      PdfDirectObject baseObject
+      ) : base(baseObject, null)
     {}
     #endregion
 

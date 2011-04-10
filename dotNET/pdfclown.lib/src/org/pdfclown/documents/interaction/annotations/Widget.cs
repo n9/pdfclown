@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -128,9 +128,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {FlagsEnum flags = Flags; flags |= FlagsEnum.Print; Flags = flags;}
 
     public Widget(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -146,10 +145,7 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {
         PdfDirectObject actionsObject = BaseDataObject[PdfName.AA];
-        if(actionsObject == null)
-          return null;
-
-        return new WidgetActions(this,actionsObject,Container);
+        return actionsObject != null ? new WidgetActions(this, actionsObject) : null;
       }
       set
       {base.Actions = value;}
@@ -163,14 +159,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'MK' entry may be undefined.
-        */
         PdfDirectObject appearanceObject = BaseDataObject[PdfName.MK];
-        if(appearanceObject == null)
-          return null;
-
-        return new AppearanceCharacteristics(appearanceObject,Container);
+        return appearanceObject != null ? new AppearanceCharacteristics(appearanceObject) : null;
       }
       set
       {BaseDataObject[PdfName.MK] = value.BaseObject;}

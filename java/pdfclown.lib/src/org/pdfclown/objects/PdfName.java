@@ -35,13 +35,13 @@ import org.pdfclown.tokens.Keyword;
   PDF name object [PDF:1.6:3.2.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/10/11
 */
 public final class PdfName
-  extends PdfAtomicObject<String>
+  extends PdfSimpleObject<String>
 {
   /*
-    NOTE: As name objects are atomic symbols uniquely defined by sequences of characters,
+    NOTE: As name objects are simple symbols uniquely defined by sequences of characters,
     the bytes making up the name are never treated as text, always keeping them escaped.
   */
   // <class>

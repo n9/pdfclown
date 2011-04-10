@@ -55,10 +55,7 @@ namespace org.pdfclown.documents.interchange.metadata
 
     internal Information(
       PdfDirectObject baseObject
-      ) : base(
-        baseObject,
-        null // NO container (info MUST be an indirect object [PDF:1.6:3.4.4]).
-        )
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -142,7 +139,7 @@ namespace org.pdfclown.documents.interchange.metadata
     private object Get(
       PdfName key
       )
-    {return PdfAtomicObject<object>.GetValue(BaseDataObject[key]);}
+    {return PdfSimpleObject<object>.GetValue(BaseDataObject[key]);}
     #endregion
     #endregion
     #endregion

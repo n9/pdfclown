@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -97,8 +97,6 @@ namespace org.pdfclown.files
       persistent representation inside the associated file.</remarks>
     */
     private SortedDictionary<int,XRefEntry> xrefEntries;
-
-    private UpdateModeEnum updateMode = UpdateModeEnum.Manual;
     #endregion
 
     #region constructors
@@ -317,10 +315,6 @@ namespace org.pdfclown.files
               avoiding multiple incoherent instantiations of the same original indirect object.
             */
             wokenObjects[index] = obj = new PdfIndirectObject(file, null, xrefEntry);
-
-            // Early registration?
-            if(updateMode == UpdateModeEnum.Automatic)
-            {Update(obj);}
           }
         }
         return obj;

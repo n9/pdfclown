@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,20 +42,6 @@ namespace org.pdfclown.documents.contents
   public sealed class FontResources
     : ResourceItems<Font>
   {
-    #region static
-    #region interface
-    internal static FontResources Wrap(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      )
-    {
-      return baseObject == null
-        ? null
-        : new FontResources(baseObject, container);
-    }
-    #endregion
-    #endregion
-
     #region dynamic
     #region constructors
     public FontResources(
@@ -63,10 +49,9 @@ namespace org.pdfclown.documents.contents
       ) : base(context)
     {}
 
-    private FontResources(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+    internal FontResources(
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -75,7 +60,7 @@ namespace org.pdfclown.documents.contents
     protected override Font Wrap(
       PdfDirectObject baseObject
       )
-    {return Font.Wrap((PdfReference)baseObject);}
+    {return Font.Wrap(baseObject);}
     #endregion
     #endregion
     #endregion

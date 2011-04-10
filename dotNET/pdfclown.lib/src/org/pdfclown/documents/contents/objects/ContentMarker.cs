@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -90,7 +90,7 @@ namespace org.pdfclown.documents.contents.objects
         else if(propertiesObject is PdfName)
           return propertiesObject;
         else if(propertiesObject is PdfDictionary)
-          return PropertyList.Wrap(propertiesObject, null);
+          return PropertyList.Wrap(propertiesObject);
         else
           throw new NotSupportedException("Property list type unknown: " + propertiesObject.GetType().Name);
       }

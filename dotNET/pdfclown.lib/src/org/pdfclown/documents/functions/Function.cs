@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -58,24 +58,12 @@ namespace org.pdfclown.documents.functions
     #region interface
     #region public
     /**
-      <summary>Wraps a function reference into a function object.</summary>
-      <param name="reference">Reference to a function object.</param>
-      <returns>Function object associated to the reference.</returns>
-    */
-    public static Function Wrap(
-      PdfReference reference
-      )
-    {return Wrap(reference, null);}
-
-    /**
       <summary>Wraps a function base object into a function object.</summary>
       <param name="baseObject">Function base object.</param>
-      <param name="container">Function base object container.</param>
       <returns>Function object associated to the base object.</returns>
     */
     public static Function Wrap(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
+      PdfDirectObject baseObject
       )
     {
       if(baseObject == null)
@@ -89,9 +77,9 @@ namespace org.pdfclown.documents.functions
         case FunctionType0:
           return new Type0Function(baseObject);
         case FunctionType2:
-          return new Type2Function(baseObject, container);
+          return new Type2Function(baseObject);
         case FunctionType3:
-          return new Type3Function(baseObject, container);
+          return new Type3Function(baseObject);
         case FunctionType4:
           return new Type4Function(baseObject);
         default:
@@ -127,9 +115,8 @@ namespace org.pdfclown.documents.functions
     {}
 
     protected Function(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 

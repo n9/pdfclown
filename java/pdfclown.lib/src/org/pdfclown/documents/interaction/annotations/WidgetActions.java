@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,7 +30,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interaction.actions.Action;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.NotImplementedException;
 
@@ -39,7 +38,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class WidgetActions
@@ -55,10 +54,9 @@ public final class WidgetActions
 
   public WidgetActions(
     Annotation parent,
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(parent,baseObject,container);}
+  {super(parent, baseObject);}
   // </constructors>
 
   // <interface>
@@ -74,32 +72,14 @@ public final class WidgetActions
   */
   public Action getOnBlur(
     )
-  {
-    /*
-      NOTE: 'Bl' entry may be undefined.
-    */
-    PdfDirectObject onBlurObject = getBaseDataObject().get(PdfName.Bl);
-    if(onBlurObject == null)
-      return null;
-
-    return Action.wrap(onBlurObject,getContainer());
-  }
+  {return Action.wrap(getBaseDataObject().get(PdfName.Bl));}
 
   /**
     Gets the action to be performed when the annotation receives the input focus.
   */
   public Action getOnFocus(
     )
-  {
-    /*
-      NOTE: 'Fo' entry may be undefined.
-    */
-    PdfDirectObject onFocusObject = getBaseDataObject().get(PdfName.Fo);
-    if(onFocusObject == null)
-      return null;
-
-    return Action.wrap(onFocusObject,getContainer());
-  }
+  {return Action.wrap(getBaseDataObject().get(PdfName.Fo));}
 
   /**
     @see #getOnBlur()

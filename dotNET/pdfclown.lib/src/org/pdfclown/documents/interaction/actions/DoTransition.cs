@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -51,9 +51,8 @@ namespace org.pdfclown.documents.interaction.actions
     {Transition = transition;}
 
     internal DoTransition(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container, null)
+      PdfDirectObject baseObject
+      ) : base(baseObject, null)
     {}
     #endregion
 
@@ -70,12 +69,7 @@ namespace org.pdfclown.documents.interaction.actions
     public Transition Transition
     {
       get
-      {
-        /*
-          NOTE: 'Trans' entry MUST exist.
-        */
-        return new Transition(BaseDataObject[PdfName.Trans],Container);
-      }
+      {return new Transition(BaseDataObject[PdfName.Trans]);}
       set
       {BaseDataObject[PdfName.Trans] = value.BaseObject;}
     }

@@ -46,7 +46,7 @@ import org.pdfclown.util.parsers.PostScriptParser;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 03/17/11
+  @version 0.1.1, 04/10/11
 */
 public class BaseParser
   extends PostScriptParser
@@ -118,6 +118,7 @@ public class BaseParser
             // Add the current entry to the dictionary!
             dictionary.put(key,value);
           }
+          dictionary.ready();
           return dictionary;
         }
         case ArrayBegin:
@@ -130,6 +131,7 @@ public class BaseParser
             // Add the current item to the array!
             array.add((PdfDirectObject)parsePdfObject());
           }
+          array.ready();
           return array;
         }
         case Literal:

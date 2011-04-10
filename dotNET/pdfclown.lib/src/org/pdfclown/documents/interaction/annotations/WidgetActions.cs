@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -48,9 +48,8 @@ namespace org.pdfclown.documents.interaction.annotations
 
     public WidgetActions(
       Annotation parent,
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(parent,baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(parent, baseObject)
     {}
     #endregion
 
@@ -67,16 +66,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public Action OnBlur
     {
       get
-      {
-        /*
-          NOTE: 'Bl' entry may be undefined.
-        */
-        PdfDirectObject onBlurObject = BaseDataObject[PdfName.Bl];
-        if(onBlurObject == null)
-          return null;
-
-        return Action.Wrap(onBlurObject,Container);
-      }
+      {return Action.Wrap(BaseDataObject[PdfName.Bl]);}
       set
       {BaseDataObject[PdfName.Bl] = value.BaseObject;}
     }
@@ -87,16 +77,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public Action OnFocus
     {
       get
-      {
-        /*
-          NOTE: 'Fo' entry may be undefined.
-        */
-        PdfDirectObject onFocusObject = BaseDataObject[PdfName.Fo];
-        if(onFocusObject == null)
-          return null;
-
-        return Action.Wrap(onFocusObject,Container);
-      }
+      {return Action.Wrap(BaseDataObject[PdfName.Fo]);}
       set
       {BaseDataObject[PdfName.Fo] = value.BaseObject;}
     }

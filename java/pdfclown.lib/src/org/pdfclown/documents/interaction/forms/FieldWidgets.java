@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,13 @@
 
 package org.pdfclown.documents.interaction.forms;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -35,25 +42,17 @@ import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.util.NotImplementedException;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
 
 /**
   Field widget annotations [PDF:1.6:8.6].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class FieldWidgets
@@ -69,25 +68,20 @@ public final class FieldWidgets
   // <class>
   // <dynamic>
   // <fields>
-  private Field field;
+  private final Field field;
 
-  private boolean isDual;
+  private final boolean isDual;
   // </fields>
 
   // <constructors>
   FieldWidgets(
     PdfDirectObject baseObject,
-    PdfIndirectObject container,
     Field field
     )
   {
-    super(
-      baseObject,
-      container
-      );
+    super(baseObject);
 
     this.field = field;
-
     isDual = (field instanceof CheckBox
       || field instanceof RadioButton);
   }
@@ -371,16 +365,18 @@ public final class FieldWidgets
       /**
         Collection size.
       */
-      private int size = size();
+      private final int size = size();
       // </fields>
 
       // <interface>
       // <public>
       // <Iterator>
+      @Override
       public boolean hasNext(
         )
       {return (index < size);}
 
+      @Override
       public Widget next(
         )
       {
@@ -390,6 +386,7 @@ public final class FieldWidgets
         return get(index++);
       }
 
+      @Override
       public void remove(
         )
       {throw new UnsupportedOperationException();}
@@ -468,7 +465,6 @@ public final class FieldWidgets
 
       baseDataObject = widgetsArray;
     }
-
     return (PdfArray)baseDataObject;
   }
 
@@ -476,10 +472,9 @@ public final class FieldWidgets
     PdfDirectObject baseObject
     )
   {
-    if(isDual)
-      return new DualWidget(baseObject,getContainer());
-    else
-      return new Widget(baseObject,getContainer());
+    return isDual
+      ? new DualWidget(baseObject)
+      : new Widget(baseObject);
   }
   // </private>
   // </interface>

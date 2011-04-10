@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -51,9 +51,8 @@ namespace org.pdfclown.documents.interaction.actions
     {Destination = destination;}
 
     protected GoToDestination(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container, null)
+      PdfDirectObject baseObject
+      ) : base(baseObject, null)
     {}
     #endregion
 
@@ -65,15 +64,7 @@ namespace org.pdfclown.documents.interaction.actions
     public T Destination
     {
       get
-      {
-        /*
-          NOTE: 'D' entry MUST exist.
-        */
-        return Document.ResolveName<T>(
-          BaseDataObject[PdfName.D],
-          Container
-          );
-      }
+      {return Document.ResolveName<T>(BaseDataObject[PdfName.D]);}
       set
       {
         if(value == null)

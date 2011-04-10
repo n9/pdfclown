@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,37 +43,23 @@ namespace org.pdfclown.documents.interaction.actions
     #region interface
     #region public
     /**
-      <summary>Wraps an action reference into an action object.</summary>
-      <param name="reference">Reference to an action object.</param>
-      <returns>Action object associated to the reference.</returns>
-    */
-    public static Action Wrap(
-      PdfReference reference
-      )
-    {return Wrap(reference, null);}
-
-    /**
       <summary>Wraps an action base object into an action object.</summary>
       <param name="baseObject">Action base object.</param>
-      <param name="container">Action base object container.</param>
       <returns>Action object associated to the base object.</returns>
     */
     public static Action Wrap(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
+      PdfDirectObject baseObject
       )
-    {return Wrap(baseObject, container, null);}
+    {return Wrap(baseObject, null);}
 
     /**
       <summary>Wraps an action base object into an action object.</summary>
       <param name="baseObject">Action base object.</param>
-      <param name="container">Action base object container.</param>
       <param name="name">Action name.</param>
       <returns>Action object associated to the base object.</returns>
     */
     public static Action Wrap(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       PdfString name
       )
     {
@@ -88,55 +74,55 @@ namespace org.pdfclown.documents.interaction.actions
         return null;
 
       if(actionType.Equals(PdfName.GoTo))
-        return new GoToLocal(baseObject,container);
+        return new GoToLocal(baseObject);
       else if(actionType.Equals(PdfName.GoToR))
-        return new GoToRemote(baseObject,container);
+        return new GoToRemote(baseObject);
       else if(actionType.Equals(PdfName.GoToE))
-        return new GoToEmbedded(baseObject,container);
+        return new GoToEmbedded(baseObject);
       else if(actionType.Equals(PdfName.Launch))
-        return new Launch(baseObject,container);
+        return new Launch(baseObject);
       else if(actionType.Equals(PdfName.Thread))
-        return new GoToThread(baseObject,container);
+        return new GoToThread(baseObject);
       else if(actionType.Equals(PdfName.URI))
-        return new GoToURI(baseObject,container);
+        return new GoToURI(baseObject);
       else if(actionType.Equals(PdfName.Sound))
-        return new PlaySound(baseObject,container);
+        return new PlaySound(baseObject);
       else if(actionType.Equals(PdfName.Movie))
-        return new PlayMovie(baseObject,container);
+        return new PlayMovie(baseObject);
       else if(actionType.Equals(PdfName.Hide))
-        return new ToggleVisibility(baseObject,container);
+        return new ToggleVisibility(baseObject);
       else if(actionType.Equals(PdfName.Named))
       {
         PdfName actionName = (PdfName)dataObject[PdfName.N];
         if(actionName.Equals(PdfName.NextPage))
-          return new GoToNextPage(baseObject,container);
+          return new GoToNextPage(baseObject);
         else if(actionName.Equals(PdfName.PrevPage))
-          return new GoToPreviousPage(baseObject,container);
+          return new GoToPreviousPage(baseObject);
         else if(actionName.Equals(PdfName.FirstPage))
-          return new GoToFirstPage(baseObject,container);
+          return new GoToFirstPage(baseObject);
         else if(actionName.Equals(PdfName.LastPage))
-          return new GoToLastPage(baseObject,container);
+          return new GoToLastPage(baseObject);
         else // Custom named action.
-          return new NamedAction(baseObject,container);
+          return new NamedAction(baseObject);
       }
       else if(actionType.Equals(PdfName.SubmitForm))
-        return new SubmitForm(baseObject,container);
+        return new SubmitForm(baseObject);
       else if(actionType.Equals(PdfName.ResetForm))
-        return new ResetForm(baseObject,container);
+        return new ResetForm(baseObject);
       else if(actionType.Equals(PdfName.ImportData))
-        return new ImportData(baseObject,container);
+        return new ImportData(baseObject);
       else if(actionType.Equals(PdfName.JavaScript))
-        return new JavaScript(baseObject,container,name);
+        return new JavaScript(baseObject,name);
       else if(actionType.Equals(PdfName.SetOCGState))
-        return new SetOcgState(baseObject,container);
+        return new SetOcgState(baseObject);
       else if(actionType.Equals(PdfName.Rendition))
-        return new Rendition(baseObject,container);
+        return new Rendition(baseObject);
       else if(actionType.Equals(PdfName.Trans))
-        return new DoTransition(baseObject,container);
+        return new DoTransition(baseObject);
       else if(actionType.Equals(PdfName.GoTo3DView))
-        return new GoTo3dView(baseObject,container);
+        return new GoTo3dView(baseObject);
       else // Custom action.
-        return new Action(baseObject,container,name);
+        return new Action(baseObject,name);
     }
     #endregion
     #endregion
@@ -169,9 +155,8 @@ namespace org.pdfclown.documents.interaction.actions
 
     protected Action(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       PdfString name
-      ) : base(baseObject, container, name)
+      ) : base(baseObject, name)
     {}
     #endregion
 
@@ -186,7 +171,7 @@ namespace org.pdfclown.documents.interaction.actions
       get
       {
         PdfDirectObject nextObject = BaseDataObject[PdfName.Next];
-        return nextObject == null ? null : new ChainedActions(nextObject, Container, this);
+        return nextObject != null ? new ChainedActions(nextObject, this) : null;
       }
       set
       {BaseDataObject[PdfName.Next] = value.BaseObject;}

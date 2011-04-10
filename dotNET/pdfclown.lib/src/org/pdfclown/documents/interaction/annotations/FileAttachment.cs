@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -126,9 +126,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {FileSpec = fileSpec;}
 
     public FileAttachment(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -145,12 +144,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public FileSpec FileSpec
     {
       get
-      {
-        /*
-          NOTE: 'FS' entry MUST exist.
-        */
-        return new FileSpec(BaseDataObject[PdfName.FS],Container,null);
-      }
+      {return new FileSpec(BaseDataObject[PdfName.FS], null);}
       set
       {BaseDataObject[PdfName.FS] = value.BaseObject;}
     }

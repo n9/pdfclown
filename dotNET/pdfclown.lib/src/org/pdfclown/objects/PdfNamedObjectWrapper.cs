@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -52,27 +52,18 @@ namespace org.pdfclown.objects
     protected PdfNamedObjectWrapper(
       File context,
       TDataObject baseDataObject
-      ) : this(
-        context.Register(baseDataObject),
-        null,
-        null
-        )
+      ) : this(context.Register(baseDataObject), null)
     {}
 
     /**
       <param name="baseObject">Base PDF object. MUST be a <see cref="PdfReference"/>
       everytime available.</param>
-      <param name="container">Indirect object containing the base object.</param>
       <param name="name">Object name.</param>
     */
     protected PdfNamedObjectWrapper(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       PdfString name
-      ) : base(
-        baseObject,
-        container
-        )
+      ) : base(baseObject)
     {this.name = name;}
     #endregion
 

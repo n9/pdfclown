@@ -35,7 +35,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF indirect reference object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/17/11
+  @version 0.1.1, 04/10/11
 */
 public final class PdfReference
   extends PdfDirectObject
@@ -99,6 +99,11 @@ public final class PdfReference
       && ((PdfReference)object).getId().equals(getId());
   }
 
+  @Override
+  public PdfIndirectObject getContainer(
+    )
+  {return getIndirectObject();}
+
   /**
     Gets the generation number.
   */
@@ -130,6 +135,16 @@ public final class PdfReference
   {return objectNumber;}
 
   @Override
+  public PdfObject getParent(
+    )
+  {return null;} // NOTE: As references are immutable, no parent can be associated.
+
+  @Override
+  public PdfIndirectObject getRoot(
+    )
+  {return null;} // NOTE: As references are immutable, no root can be associated.
+
+  @Override
   public int hashCode(
     )
   {return getIndirectObject().hashCode();}
@@ -150,7 +165,15 @@ public final class PdfReference
   public PdfReference clone(
     File context
     )
-  {return getIndirectObject().clone(context).getReference();}
+  {
+    /*
+      NOTE: Local cloning keeps the same reference as it's immutable;
+      conversely, alien cloning generates a new reference in the new file context.
+    */
+    return context == null || context == file
+      ? this // Local clone (immutable).
+      : getIndirectObject().clone(context).getReference(); // Alien clone.
+  }
 
   @Override
   public void delete(
@@ -184,6 +207,27 @@ public final class PdfReference
   {getIndirectObject().setDataObject(value);}
   // </IPdfIndirectObject>
   // </public>
+
+  // <protected>
+  @Override
+  protected boolean isUpdated(
+    )
+  {return false;}
+
+  @Override
+  protected void setUpdated(
+    boolean value
+    )
+  {/* NOOP: As references are immutable, no update can be done. */}
+  // </protected>
+
+  // <internal>
+  @Override
+  void setParent(
+    PdfObject value
+    )
+  {/* NOOP: As references are immutable, no parent can be associated. */}
+  // </internal>
   // </interface>
   // </dynamic>
   // </class>

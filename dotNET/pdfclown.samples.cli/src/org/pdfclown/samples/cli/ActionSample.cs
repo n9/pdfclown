@@ -36,10 +36,7 @@ namespace org.pdfclown.samples.cli
       {
         DocumentActions documentActions = document.Actions;
         if(documentActions == null)
-        {
-          document.Actions = documentActions = new DocumentActions(document);
-          document.Update();
-        }
+        {document.Actions = documentActions = new DocumentActions(document);}
 
         /*
           NOTE: This statement instructs the PDF viewer to go to page 2 on document opening.
@@ -52,17 +49,13 @@ namespace org.pdfclown.samples.cli
             null
             )
           );
-        documentActions.Update();
       }
       // 2.2. Remote go-to.
       {
         Page page = document.Pages[1]; // Page 2 (zero-based index).
         PageActions pageActions = page.Actions;
         if(pageActions == null)
-        {
-          page.Actions = pageActions = new PageActions(document);
-          page.Update();
-        }
+        {page.Actions = pageActions = new PageActions(document);}
         try
         {
           /*
@@ -72,7 +65,6 @@ namespace org.pdfclown.samples.cli
             document,
             new Uri("http://www.sourceforge.net/projects/clown")
             );
-          pageActions.Update();
         }
         catch(Exception exception)
         {throw new Exception("Remote goto failed.",exception);}

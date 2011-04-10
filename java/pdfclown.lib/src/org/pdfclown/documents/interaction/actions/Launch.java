@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,8 @@
 
 package org.pdfclown.documents.interaction.actions;
 
+import java.util.EnumSet;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -32,20 +34,17 @@ import org.pdfclown.documents.fileSpecs.FileSpec;
 import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.util.NotImplementedException;
-
-import java.util.EnumSet;
 
 /**
   'Launch an application' action [PDF:1.6:8.5.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF11)
 public final class Launch
@@ -167,10 +166,9 @@ public final class Launch
     }
 
     private WinParametersObject(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
+      PdfDirectObject baseObject
       )
-    {super(baseObject,container);}
+    {super(baseObject);}
     // </constructors>
 
     // <interface>
@@ -187,14 +185,8 @@ public final class Launch
     public String getDefaultDirectory(
       )
     {
-      /*
-        NOTE: 'D' entry may be undefined.
-      */
       PdfString defaultDirectoryObject = (PdfString)getBaseDataObject().get(PdfName.D);
-      if(defaultDirectoryObject == null)
-        return null;
-
-      return (String)defaultDirectoryObject.getValue();
+      return defaultDirectoryObject != null ? (String)defaultDirectoryObject.getValue() : null;
     }
 
     /**
@@ -202,12 +194,7 @@ public final class Launch
     */
     public String getFileName(
       )
-    {
-      /*
-        NOTE: 'F' entry MUST exist.
-      */
-      return (String)((PdfString)getBaseDataObject().get(PdfName.F)).getValue();
-    }
+    {return (String)((PdfString)getBaseDataObject().get(PdfName.F)).getValue();}
 
     /**
       Gets the operation to perform.
@@ -215,14 +202,8 @@ public final class Launch
     public OperationEnum getOperation(
       )
     {
-      /*
-        NOTE: 'O' entry may be undefined.
-      */
       PdfString operationObject = (PdfString)getBaseDataObject().get(PdfName.O);
-      if(operationObject == null)
-        return OperationEnum.Open;
-
-      return OperationEnum.get(operationObject);
+      return operationObject != null ? OperationEnum.get(operationObject) : OperationEnum.Open;
     }
 
     /**
@@ -231,14 +212,8 @@ public final class Launch
     public String getParameterString(
       )
     {
-      /*
-        NOTE: 'P' entry may be undefined.
-      */
       PdfString parameterStringObject = (PdfString)getBaseDataObject().get(PdfName.P);
-      if(parameterStringObject == null)
-        return null;
-
-      return (String)parameterStringObject.getValue();
+      return parameterStringObject != null ? (String)parameterStringObject.getValue() : null;
     }
 
     /**
@@ -287,18 +262,12 @@ public final class Launch
   public Launch(
     Document context
     )
-  {
-    super(
-      context,
-      PdfName.Launch
-      );
-  }
+  {super(context, PdfName.Launch);}
 
   Launch(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container, null);}
+  {super(baseObject, null);}
   // </constructors>
 
   // <interface>
@@ -315,14 +284,8 @@ public final class Launch
   public FileSpec getFileSpec(
     )
   {
-    /*
-      NOTE: 'F' entry may be undefined.
-    */
     PdfDirectObject fileSpecObject = getBaseDataObject().get(PdfName.F);
-    if(fileSpecObject == null)
-      return null;
-
-    return new FileSpec(fileSpecObject,getContainer(),null);
+    return fileSpecObject != null ? new FileSpec(fileSpecObject, null) : null;
   }
 
   /**
@@ -347,14 +310,8 @@ public final class Launch
   public WinParametersObject getWinParameters(
     )
   {
-    /*
-      NOTE: 'Win' entry may be undefined.
-    */
     PdfDictionary parametersObject = (PdfDictionary)getBaseDataObject().get(PdfName.Win);
-    if(parametersObject == null)
-      return null;
-
-    return new WinParametersObject(parametersObject,getContainer());
+    return parametersObject != null ? new WinParametersObject(parametersObject) : null;
   }
 
   /**

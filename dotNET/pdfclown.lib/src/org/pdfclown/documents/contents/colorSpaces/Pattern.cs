@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,7 +42,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     #region static
     #region fields
     //TODO:verify!
-    public static readonly Pattern Default = new TilingPattern((PdfDirectObject)null,null);
+    public static readonly Pattern Default = new TilingPattern(null);
 
     private const int PatternType1 = 1;
     private const int PatternType2 = 2;
@@ -53,12 +53,10 @@ namespace org.pdfclown.documents.contents.colorSpaces
     /**
       <summary>Wraps the specified base object into a pattern object.</summary>
       <param name="baseObject">Base object of a pattern object.</param>
-      <param name="container">Indirect object possibly containing the pattern base object.</param>
       <returns>Pattern object corresponding to the base object.</returns>
     */
     public static Pattern Wrap(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
+      PdfDirectObject baseObject
       )
     {
       if(baseObject == null)
@@ -70,9 +68,9 @@ namespace org.pdfclown.documents.contents.colorSpaces
       switch(patternType)
       {
         case PatternType1:
-          return new TilingPattern(baseObject, container);
+          return new TilingPattern(baseObject);
         case PatternType2:
-          return new ShadingPattern(baseObject, container);
+          return new ShadingPattern(baseObject);
         default:
           throw new NotSupportedException("Pattern type " + patternType + " unknown.");
       }
@@ -101,9 +99,8 @@ namespace org.pdfclown.documents.contents.colorSpaces
     #region constructors
     //TODO:verify (colorspace is available or may be implicit?)
     protected Pattern(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
 
     //TODO:verify (colorspace is available or may be implicit?)

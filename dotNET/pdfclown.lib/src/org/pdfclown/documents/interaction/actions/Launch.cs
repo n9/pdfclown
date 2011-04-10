@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -138,9 +138,8 @@ namespace org.pdfclown.documents.interaction.actions
       {ParameterString = parameterString;}
 
       internal WinParametersObject(
-        PdfDirectObject baseObject,
-        PdfIndirectObject container
-        ) : base(baseObject,container)
+        PdfDirectObject baseObject
+        ) : base(baseObject)
       {}
       #endregion
 
@@ -158,14 +157,8 @@ namespace org.pdfclown.documents.interaction.actions
       {
         get
         {
-          /*
-            NOTE: 'D' entry may be undefined.
-          */
           PdfString defaultDirectoryObject = (PdfString)BaseDataObject[PdfName.D];
-          if(defaultDirectoryObject == null)
-            return null;
-
-          return (string)defaultDirectoryObject.Value;
+          return defaultDirectoryObject != null ? (string)defaultDirectoryObject.Value : null;
         }
         set
         {BaseDataObject[PdfName.D] = new PdfString(value);}
@@ -178,12 +171,7 @@ namespace org.pdfclown.documents.interaction.actions
       public string FileName
       {
         get
-        {
-          /*
-            NOTE: 'F' entry MUST exist.
-          */
-          return (string)((PdfString)BaseDataObject[PdfName.F]).Value;
-        }
+        {return (string)((PdfString)BaseDataObject[PdfName.F]).Value;}
         set
         {BaseDataObject[PdfName.F] = new PdfString(value);}
       }
@@ -206,14 +194,8 @@ namespace org.pdfclown.documents.interaction.actions
       {
         get
         {
-          /*
-            NOTE: 'P' entry may be undefined.
-          */
           PdfString parameterStringObject = (PdfString)BaseDataObject[PdfName.P];
-          if(parameterStringObject == null)
-            return null;
-
-          return (string)parameterStringObject.Value;
+          return parameterStringObject != null ? (string)parameterStringObject.Value : null;
         }
         set
         {BaseDataObject[PdfName.P] = new PdfString(value);}
@@ -231,16 +213,12 @@ namespace org.pdfclown.documents.interaction.actions
     */
     public Launch(
       Document context
-      ) : base(
-        context,
-        PdfName.Launch
-        )
+      ) : base(context, PdfName.Launch)
     {}
 
     internal Launch(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container, null)
+      PdfDirectObject baseObject
+      ) : base(baseObject, null)
     {}
     #endregion
 
@@ -258,14 +236,8 @@ namespace org.pdfclown.documents.interaction.actions
     {
       get
       {
-        /*
-          NOTE: 'F' entry may be undefined.
-        */
         PdfDirectObject fileSpecObject = BaseDataObject[PdfName.F];
-        if(fileSpecObject == null)
-          return null;
-
-        return new FileSpec(fileSpecObject,Container,null);
+        return fileSpecObject != null ? new FileSpec(fileSpecObject, null) : null;
       }
       set
       {BaseDataObject[PdfName.F] = value.BaseObject;}
@@ -305,14 +277,8 @@ namespace org.pdfclown.documents.interaction.actions
     {
       get
       {
-        /*
-          NOTE: 'Win' entry may be undefined.
-        */
         PdfDictionary parametersObject = (PdfDictionary)BaseDataObject[PdfName.Win];
-        if(parametersObject == null)
-          return null;
-
-        return new WinParametersObject(parametersObject,Container);
+        return parametersObject != null ? new WinParametersObject(parametersObject) : null;
       }
       set
       {BaseDataObject[PdfName.Win] = value.BaseObject;}

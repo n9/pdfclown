@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,8 @@
 
 package org.pdfclown.documents.interaction.forms;
 
+import java.util.EnumSet;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -35,14 +37,12 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.NotImplementedException;
 
-import java.util.EnumSet;
-
 /**
   Choice field [PDF:1.6:8.6.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class ChoiceField
@@ -83,17 +83,8 @@ public abstract class ChoiceField
   public ChoiceItems getItems(
     )
   {
-    /*
-      NOTE: 'Opt' entry may be undefined [PDF:1.6:8.6.3].
-    */
     PdfArray items = (PdfArray)File.resolve(getBaseDataObject().get(PdfName.Opt));
-    if(items == null)
-      return null;
-
-    return new ChoiceItems(
-      items,
-      getContainer()
-      );
+    return items != null ? new ChoiceItems(items) : null;
   }
 
   /**

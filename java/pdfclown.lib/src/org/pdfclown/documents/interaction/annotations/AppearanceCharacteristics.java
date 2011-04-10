@@ -36,13 +36,11 @@ import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReal;
-import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.NotImplementedException;
 
@@ -51,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class AppearanceCharacteristics
@@ -294,10 +292,9 @@ public final class AppearanceCharacteristics
     }
 
     public IconFitObject(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
+      PdfDirectObject baseObject
       )
-    {super(baseObject,container);}
+    {super(baseObject);}
     // </constructors>
 
     // <interface>
@@ -598,10 +595,9 @@ public final class AppearanceCharacteristics
   }
 
   public AppearanceCharacteristics(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -620,14 +616,8 @@ public final class AppearanceCharacteristics
   public String getAlternateCaption(
     )
   {
-    /*
-      NOTE: 'AC' entry may be undefined.
-    */
     PdfTextString alternateCaptionObject = (PdfTextString)getBaseDataObject().get(PdfName.AC);
-    if(alternateCaptionObject == null)
-      return null;
-
-    return alternateCaptionObject.getValue();
+    return alternateCaptionObject != null ? alternateCaptionObject.getValue() :null;
   }
 
   /**
@@ -638,14 +628,8 @@ public final class AppearanceCharacteristics
   public FormXObject getAlternateIcon(
     )
   {
-    /*
-      NOTE: 'IX' entry may be undefined (anyway, MUST be an indirect reference).
-    */
-    PdfReference alternateIconObject = (PdfReference)getBaseDataObject().get(PdfName.IX);
-    if(alternateIconObject == null)
-      return null;
-
-    return new FormXObject(alternateIconObject);
+    PdfDirectObject alternateIconObject = getBaseDataObject().get(PdfName.IX);
+    return alternateIconObject != null ? new FormXObject(alternateIconObject) : null;
   }
 
   /**
@@ -668,14 +652,10 @@ public final class AppearanceCharacteristics
   public CaptionPositionEnum getCaptionPosition(
     )
   {
-    /*
-      NOTE: 'TP' entry may be undefined.
-    */
     PdfInteger captionPositionObject = (PdfInteger)getBaseDataObject().get(PdfName.TP);
-    if(captionPositionObject == null)
-      return CaptionPositionEnum.CaptionOnly;
-
-    return CaptionPositionEnum.get(captionPositionObject.getRawValue());
+    return captionPositionObject != null
+      ? CaptionPositionEnum.get(captionPositionObject.getRawValue())
+      : CaptionPositionEnum.CaptionOnly;
   }
 
   /**
@@ -687,14 +667,8 @@ public final class AppearanceCharacteristics
   public IconFitObject getIconFit(
     )
   {
-    /*
-      NOTE: 'IF' entry may be undefined.
-    */
     PdfDirectObject iconFitObject = getBaseDataObject().get(PdfName.IF);
-    if(iconFitObject == null)
-      return null;
-
-    return new IconFitObject(iconFitObject,getContainer());
+    return iconFitObject != null ? new IconFitObject(iconFitObject) : null;
   }
 
   /**
@@ -704,14 +678,8 @@ public final class AppearanceCharacteristics
   public String getNormalCaption(
     )
   {
-    /*
-      NOTE: 'CA' entry may be undefined.
-    */
     PdfTextString normalCaptionObject = (PdfTextString)getBaseDataObject().get(PdfName.CA);
-    if(normalCaptionObject == null)
-      return null;
-
-    return normalCaptionObject.getValue();
+    return normalCaptionObject != null ? normalCaptionObject.getValue() : null;
   }
 
   /**
@@ -721,14 +689,8 @@ public final class AppearanceCharacteristics
   public FormXObject getNormalIcon(
     )
   {
-    /*
-      NOTE: 'I' entry may be undefined (anyway, MUST be an indirect reference).
-    */
-    PdfReference normalIconObject = (PdfReference)getBaseDataObject().get(PdfName.I);
-    if(normalIconObject == null)
-      return null;
-
-    return new FormXObject(normalIconObject);
+    PdfDirectObject normalIconObject = getBaseDataObject().get(PdfName.I);
+    return normalIconObject != null ? new FormXObject(normalIconObject) : null;
   }
 
   /**
@@ -737,14 +699,10 @@ public final class AppearanceCharacteristics
   public OrientationEnum getOrientation(
     )
   {
-    /*
-      NOTE: 'R' entry may be undefined.
-    */
     PdfInteger orientationObject = (PdfInteger)getBaseDataObject().get(PdfName.R);
-    if(orientationObject == null)
-      return OrientationEnum.Up;
-
-    return OrientationEnum.get(orientationObject.getRawValue());
+    return orientationObject != null
+      ? OrientationEnum.get(orientationObject.getRawValue())
+      : OrientationEnum.Up;
   }
 
   /**
@@ -755,14 +713,8 @@ public final class AppearanceCharacteristics
   public String getRolloverCaption(
     )
   {
-    /*
-      NOTE: 'RC' entry may be undefined.
-    */
     PdfTextString rolloverCaptionObject = (PdfTextString)getBaseDataObject().get(PdfName.RC);
-    if(rolloverCaptionObject == null)
-      return null;
-
-    return rolloverCaptionObject.getValue();
+    return rolloverCaptionObject != null ? rolloverCaptionObject.getValue() : null;
   }
 
   /**
@@ -773,14 +725,8 @@ public final class AppearanceCharacteristics
   public FormXObject getRolloverIcon(
     )
   {
-    /*
-      NOTE: 'RI' entry may be undefined (anyway, MUST be an indirect reference).
-    */
-    PdfReference rolloverIconObject = (PdfReference)getBaseDataObject().get(PdfName.RI);
-    if(rolloverIconObject == null)
-      return null;
-
-    return new FormXObject(rolloverIconObject);
+    PdfDirectObject rolloverIconObject = getBaseDataObject().get(PdfName.RI);
+    return rolloverIconObject != null ? new FormXObject(rolloverIconObject) : null;
   }
 
   /**

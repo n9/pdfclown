@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,15 +28,14 @@ package org.pdfclown.documents.interaction.navigation.page;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.objects.PdfAtomicObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReal;
+import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -44,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF11)
 public final class Transition
@@ -92,7 +91,7 @@ public final class Transition
       Gets the direction corresponding to the given value.
     */
     public static DirectionEnum get(
-      PdfAtomicObject<?> value
+      PdfSimpleObject<?> value
       )
     {
       for(DirectionEnum direction : DirectionEnum.values())
@@ -108,19 +107,19 @@ public final class Transition
 
     // <dynamic>
     // <fields>
-    private final PdfAtomicObject<?> code;
+    private final PdfSimpleObject<?> code;
     // </fields>
 
     // <constructors>
     private DirectionEnum(
-      PdfAtomicObject<?> code
+      PdfSimpleObject<?> code
       )
     {this.code = code;}
     // </constructors>
 
     // <interface>
     // <public>
-    public PdfAtomicObject<?> getCode(
+    public PdfSimpleObject<?> getCode(
       )
     {return code;}
     // </public>
@@ -431,10 +430,9 @@ public final class Transition
   }
 
   public Transition(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject, container);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -451,7 +449,7 @@ public final class Transition
   public DirectionEnum getDirection(
     )
   {
-    PdfAtomicObject<?> directionObject = (PdfAtomicObject<?>)getBaseDataObject().get(PdfName.Di);
+    PdfSimpleObject<?> directionObject = (PdfSimpleObject<?>)getBaseDataObject().get(PdfName.Di);
     return directionObject == null
       ? DirectionEnum.LeftToRight
       : DirectionEnum.get(directionObject);

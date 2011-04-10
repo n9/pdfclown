@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -64,9 +64,8 @@ namespace org.pdfclown.documents.interaction.annotations
     }
 
     public DualWidget(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -87,7 +86,6 @@ namespace org.pdfclown.documents.interaction.annotations
           if(!key.Equals(PdfName.Off)) // 'On' state.
             return (string)key.Value;
         }
-
         return null; // NOTE: It MUST NOT happen (on-state should always be defined).
       }
     }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -56,9 +56,8 @@ namespace org.pdfclown.documents.interaction.forms
     {}
 
     public Form(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -75,7 +74,7 @@ namespace org.pdfclown.documents.interaction.forms
     public Fields Fields
     {
       get
-      {return new Fields(BaseDataObject[PdfName.Fields], Container);}
+      {return new Fields(BaseDataObject[PdfName.Fields]);}
       set
       {BaseDataObject[PdfName.Fields] = value.BaseObject;}
     }
@@ -86,7 +85,7 @@ namespace org.pdfclown.documents.interaction.forms
     public Resources Resources
     {
       get
-      {return Resources.Wrap(BaseDataObject[PdfName.DR], Container);}
+      {return Resources.Wrap(BaseDataObject[PdfName.DR]);}
       set
       {BaseDataObject[PdfName.DR] = value.BaseObject;}
     }

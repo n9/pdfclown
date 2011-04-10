@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -65,11 +65,9 @@ namespace org.pdfclown.documents.fileSpecs
 
     internal FileSpec(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       PdfString name
       ) : base(
         baseObject,
-        container,
         name
         )
     {}
@@ -100,14 +98,8 @@ namespace org.pdfclown.documents.fileSpecs
     {
       get
       {
-        /*
-          NOTE: 'Desc' entry may be undefined.
-        */
         PdfTextString descriptionObject = (PdfTextString)BaseDataObject[PdfName.Desc];
-        if(descriptionObject == null)
-          return null;
-
-        return (string)descriptionObject.Value;
+        return descriptionObject != null ? (string)descriptionObject.Value : null;
       }
       set
       {BaseDataObject[PdfName.Desc] = new PdfTextString(value);}
@@ -243,21 +235,12 @@ namespace org.pdfclown.documents.fileSpecs
       PdfName key
       )
     {
-      /*
-        NOTE: 'RF' entry may be undefined.
-      */
       PdfDictionary dependenciesObject = (PdfDictionary)BaseDataObject[PdfName.RF];
       if(dependenciesObject == null)
         return null;
 
-      /*
-        NOTE: key entry may be undefined.
-      */
       PdfReference dependencyFilesObject = (PdfReference)dependenciesObject[key];
-      if(dependencyFilesObject == null)
-        return null;
-
-      return new RelatedFiles(dependencyFilesObject,Container);
+      return dependencyFilesObject != null ? new RelatedFiles(dependencyFilesObject) : null;
     }
 
     /**
@@ -267,21 +250,12 @@ namespace org.pdfclown.documents.fileSpecs
       PdfName key
       )
     {
-      /*
-        NOTE: 'EF' entry may be undefined.
-      */
       PdfDictionary embeddedFilesObject = (PdfDictionary)BaseDataObject[PdfName.EF];
       if(embeddedFilesObject == null)
         return null;
 
-      /*
-        NOTE: key entry may be undefined.
-      */
       PdfReference embeddedFileObject = (PdfReference)embeddedFilesObject[key];
-      if(embeddedFileObject == null)
-        return null;
-
-      return new EmbeddedFile(embeddedFileObject);
+      return embeddedFileObject != null ? new EmbeddedFile(embeddedFileObject) : null;
     }
 
     /**
@@ -291,14 +265,8 @@ namespace org.pdfclown.documents.fileSpecs
       PdfName key
       )
     {
-      /*
-        NOTE: key entry may be undefined.
-      */
       PdfString nameObject = (PdfString)BaseDataObject[key];
-      if(nameObject == null)
-        return null;
-
-      return (string)nameObject.Value;
+      return nameObject != null ? (string)nameObject.Value : null;
     }
 
     private void SetDependencies(

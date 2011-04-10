@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,7 +38,6 @@ import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfStream;
@@ -49,7 +48,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF12)
 public final class AppearanceStates
@@ -107,22 +106,18 @@ public final class AppearanceStates
 
   // <dynamic>
   // <fields>
-  private Appearance appearance;
+  private final Appearance appearance;
 
-  private PdfName statesKey;
+  private final PdfName statesKey;
   // </fields>
 
   // <constructors>
   AppearanceStates(
     PdfName statesKey,
-    PdfIndirectObject container,
     Appearance appearance
     )
   {
-    super(
-      appearance.getBaseDataObject().get(statesKey),
-      container
-      );
+    super(appearance.getBaseDataObject().get(statesKey));
 
     this.appearance = appearance;
     this.statesKey = statesKey;

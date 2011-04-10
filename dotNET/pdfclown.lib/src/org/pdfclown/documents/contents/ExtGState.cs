@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,30 +42,15 @@ namespace org.pdfclown.documents.contents
     #region interface
     #region public
     /**
-      <summary>Wraps a reference into a graphics state parameter dictionary object.</summary>
-      <param name="reference">Reference to a graphics state parameter dictionary object.</param>
-      <returns>Graphics state parameter dictionary object corresponding to the reference.</returns>
-    */
-    public static ExtGState Wrap(
-      PdfReference reference
-      )
-    {return Wrap(reference, null);}
-
-    /**
       <summary>Wraps the specified base object into a graphics state parameter dictionary object.</summary>
       <param name="baseObject">Base object of a graphics state parameter dictionary object.</param>
       <param name="container">Indirect object possibly containing the graphics state parameter dictionary base object.</param>
       <returns>Graphics state parameter dictionary object corresponding to the base object.</returns>
     */
     public static ExtGState Wrap(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
+      PdfDirectObject baseObject
       )
-    {
-      return baseObject == null
-        ? null
-        : new ExtGState(baseObject, container);
-    }
+    {return baseObject != null ? new ExtGState(baseObject) : null;}
     #endregion
     #endregion
     #endregion
@@ -79,9 +64,8 @@ namespace org.pdfclown.documents.contents
     {}
 
     internal ExtGState(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 

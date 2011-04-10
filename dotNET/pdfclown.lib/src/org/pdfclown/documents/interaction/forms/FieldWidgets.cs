@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -59,15 +59,10 @@ namespace org.pdfclown.documents.interaction.forms
     #region constructors
     internal FieldWidgets(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       Field field
-      ) : base(
-        baseObject,
-        container
-        )
+      ) : base(baseObject)
     {
       this.field = field;
-
       isDual = (field is CheckBox
         || field is RadioButton);
     }
@@ -280,10 +275,9 @@ namespace org.pdfclown.documents.interaction.forms
       PdfDirectObject baseObject
       )
     {
-      if(isDual)
-        return new DualWidget(baseObject,Container);
-      else
-        return new Widget(baseObject,Container);
+      return isDual
+        ? new DualWidget(baseObject)
+        : new Widget(baseObject);
     }
     #endregion
     #endregion

@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,7 +28,7 @@ package org.pdfclown.documents.contents.objects;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.objects.PdfArray;
-import org.pdfclown.objects.PdfAtomicObject;
+import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.PdfString;
@@ -45,7 +45,7 @@ import java.util.List;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public final class ShowAdjustedText
@@ -108,7 +108,7 @@ public final class ShowAdjustedText
     for(PdfDirectObject element : ((PdfArray)operands.get(0)))
     {
       value.add(
-        ((PdfAtomicObject<?>)element).getRawValue()
+        ((PdfSimpleObject<?>)element).getRawValue()
         );
     }
     return value;

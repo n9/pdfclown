@@ -109,12 +109,8 @@ namespace org.pdfclown.documents.interaction.viewer
     {}
 
     internal ViewerPreferences(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(
-        baseObject,
-        container
-        )
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -187,7 +183,7 @@ namespace org.pdfclown.documents.interaction.viewer
       PdfName key,
       object defaultValue
       )
-    {return PdfAtomicObject<object>.GetValue(BaseDataObject[key], defaultValue);}
+    {return PdfSimpleObject<object>.GetValue(BaseDataObject[key], defaultValue);}
     #endregion
     #endregion
     #endregion

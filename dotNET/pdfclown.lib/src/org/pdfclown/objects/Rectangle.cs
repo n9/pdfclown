@@ -112,7 +112,7 @@ namespace org.pdfclown.objects
     //TODO:integrate with the container update infrastructure (see other PdfObjectWrapper subclass implementations)!!
     public Rectangle(
       PdfDirectObject baseObject
-      ) : base(Normalize((PdfArray)File.Resolve(baseObject)), null)
+      ) : base(Normalize((PdfArray)File.Resolve(baseObject)))
     {}
     #endregion
 

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,8 @@
 
 package org.pdfclown.documents.interaction.annotations;
 
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -33,12 +35,9 @@ import org.pdfclown.documents.interaction.ILink;
 import org.pdfclown.documents.interaction.actions.Action;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.util.NotImplementedException;
-
-import java.awt.geom.Rectangle2D;
 
 /**
   Link annotation [PDF:1.6:8.4.5].
@@ -47,7 +46,7 @@ import java.awt.geom.Rectangle2D;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Link
@@ -82,10 +81,9 @@ public final class Link
   }
 
   public Link(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {super(baseObject,container);}
+  {super(baseObject);}
 
   private Link(
     Page page,
@@ -110,23 +108,20 @@ public final class Link
   {throw new NotImplementedException();}
 
   // <ILink>
+  @Override
   public Destination getDestination(
     )
   {
-    /*
-      NOTE: 'Dest' entry may be undefined.
-    */
     PdfDirectObject destinationObject = getBaseDataObject().get(PdfName.Dest);
-    if(destinationObject == null)
-      return null;
-
-    return Document.resolveName(
-      Destination.class,
-      destinationObject,
-      getContainer()
-      );
+    return destinationObject != null
+      ? getDocument().resolveName(
+        Destination.class,
+        destinationObject
+        )
+      : null;
   }
 
+  @Override
   public PdfObjectWrapper<?> getTarget(
     )
   {
@@ -149,13 +144,14 @@ public final class Link
     if(getBaseDataObject().containsKey(PdfName.Dest)
       && value != null)
     {getBaseDataObject().remove(PdfName.Dest);}
-    
+
     super.setAction(value);
   }
-  
+
   /**
     @see #getDestination()
   */
+  @Override
   public void setDestination(
     Destination value
     )
@@ -174,6 +170,7 @@ public final class Link
     }
   }
 
+  @Override
   public void setTarget(
     PdfObjectWrapper<?> value
     )

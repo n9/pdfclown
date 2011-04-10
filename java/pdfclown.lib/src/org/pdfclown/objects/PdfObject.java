@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
   Abstract PDF object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 public abstract class PdfObject
   implements Cloneable
@@ -62,11 +62,55 @@ public abstract class PdfObject
   // <interface>
   // <public>
   /**
-    Gets the clone of this object, registered inside the specified file context.
+    Creates a deep copy of this object within the specified file context.
   */
-  public abstract Object clone(
+  public PdfObject clone(
     File context
+    )
+  {
+    PdfObject clone;
+    try
+    {clone = (PdfObject)super.clone();}
+    catch(CloneNotSupportedException e)
+    {throw new RuntimeException("Unable to clone.",e);}
+    clone.setParent(null);
+    return clone;
+  }
+
+  /**
+    Gets the indirect object containing the data associated to this object.
+    <p>It generally corresponds to the {@link #getRoot() root}, except for {@link PdfReference references};
+    in the latter case, data is contained by an indirect object which is different from that containing
+    the reference itself.</p>
+  */
+  public abstract PdfIndirectObject getContainer(
     );
+
+  /**
+    Gets the file containing this object.
+  */
+  public File getFile(
+    )
+  {return getContainer() != null ? getContainer().getFile() : null;}
+
+  /**
+    Gets the parent of this object.
+  */
+  public abstract PdfObject getParent(
+    );
+
+  /**
+    Gets the top-most ancestor of this object.
+  */
+  public abstract PdfIndirectObject getRoot(
+    );
+
+  /**
+    Notifies the completion of the initialization process.
+  */
+  public void ready(
+    )
+  {setUpdated(false);} // Cleans the update flag.
 
   /**
     Serializes this object to the specified stream.
@@ -77,16 +121,87 @@ public abstract class PdfObject
   // </public>
 
   // <protected>
+  /**
+    Creates a deep copy of this object within the same file context.
+  */
   @Override
-  protected Object clone(
+  protected final Object clone(
+    )
+  {return clone(null);}
+
+  /**
+    Gets whether the initial state of this object has been modified.
+  */
+  protected abstract boolean isUpdated(
+    );
+
+  /**
+    @see #isUpdated()
+  */
+  protected abstract void setUpdated(
+    boolean value
+    );
+
+  /**
+    Updates the state of this object.
+  */
+  protected final void update(
     )
   {
-    try
-    {return super.clone();}
-    catch(CloneNotSupportedException e)
-    {throw new RuntimeException("Unable to clone.",e);}
+    if(isUpdated())
+      return;
+
+    setUpdated(true);
+
+    // Propagate the update to the ascendants!
+    if(getParent() != null)
+    {getParent().update();}
   }
   // </protected>
+
+  // <internal>
+  /**
+    Ensures that the specified object is decontextualized from this object.
+
+    @param object Object to decontextualize from this object.
+    @see #include(PdfDataObject)
+  */
+  final void exclude(
+    PdfDataObject object
+    )
+  {
+    if(object != null)
+    {object.setParent(null);}
+  }
+
+  /**
+    Ensures that the specified object is contextualized into this object.
+
+    @param object Object to contextualize into this object; if it is already contextualized
+      into another object, it will be cloned to preserve its previous association.
+    @return Contextualized object.
+    @see #exclude(PdfDataObject)
+  */
+  final PdfDataObject include(
+    PdfDataObject object
+    )
+  {
+    if(object != null)
+    {
+      if(object.getParent() != null)
+      {object = (PdfDataObject)object.clone();}
+      object.setParent(this);
+    }
+    return object;
+  }
+
+  /**
+    @see #getParent()
+  */
+  abstract void setParent(
+    PdfObject value
+    );
+  // </internal>
   // </interface>
   // </dynamic>
   // </class>

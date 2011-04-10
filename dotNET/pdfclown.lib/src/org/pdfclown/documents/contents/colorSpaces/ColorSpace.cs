@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,24 +43,12 @@ namespace org.pdfclown.documents.contents.colorSpaces
     #region interface
     #region public
     /**
-      <summary>Wraps the specified color space reference into a color space object.</summary>
-      <param name="reference">Reference to a color space object.</param>
-      <returns>Color space object corresponding to the reference.</returns>
-    */
-    public static ColorSpace Wrap(
-      PdfReference reference
-      )
-    {return Wrap(reference, null);}
-
-    /**
       <summary>Wraps the specified color space base object into a color space object.</summary>
       <param name="baseObject">Base object of a color space object.</param>
-      <param name="container">Indirect object possibly containing the color space base object.</param>
       <returns>Color space object corresponding to the base object.</returns>
     */
     public static ColorSpace Wrap(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
+      PdfDirectObject baseObject
       )
     {
       if(baseObject == null)
@@ -78,27 +66,27 @@ namespace org.pdfclown.documents.contents.colorSpaces
         ? ((PdfArray)baseDataObject)[0]
         : baseDataObject);
       if(name.Equals(PdfName.DeviceRGB))
-        return new DeviceRGBColorSpace(baseObject,container);
+        return new DeviceRGBColorSpace(baseObject);
       else if(name.Equals(PdfName.DeviceCMYK))
-        return new DeviceCMYKColorSpace(baseObject,container);
+        return new DeviceCMYKColorSpace(baseObject);
       else if(name.Equals(PdfName.DeviceGray))
-        return new DeviceGrayColorSpace(baseObject,container);
+        return new DeviceGrayColorSpace(baseObject);
       else if(name.Equals(PdfName.CalRGB))
-        return new CalRGBColorSpace(baseObject,container);
+        return new CalRGBColorSpace(baseObject);
       else if(name.Equals(PdfName.CalGray))
-        return new CalGrayColorSpace(baseObject,container);
+        return new CalGrayColorSpace(baseObject);
       else if(name.Equals(PdfName.ICCBased))
-        return new ICCBasedColorSpace(baseObject,container);
+        return new ICCBasedColorSpace(baseObject);
       else if(name.Equals(PdfName.Lab))
-        return new LabColorSpace(baseObject,container);
+        return new LabColorSpace(baseObject);
       else if(name.Equals(PdfName.DeviceN))
-        return new DeviceNColorSpace(baseObject,container);
+        return new DeviceNColorSpace(baseObject);
       else if(name.Equals(PdfName.Indexed))
-        return new IndexedColorSpace(baseObject,container);
+        return new IndexedColorSpace(baseObject);
       else if(name.Equals(PdfName.Pattern))
-        return new PatternColorSpace(baseObject,container);
+        return new PatternColorSpace(baseObject);
       else if(name.Equals(PdfName.Separation))
-        return new SeparationColorSpace(baseObject,container);
+        return new SeparationColorSpace(baseObject);
       else
         throw new NotSupportedException("Color space " + name + " unknown.");
     }
@@ -115,9 +103,8 @@ namespace org.pdfclown.documents.contents.colorSpaces
     {}
 
     protected ColorSpace(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject, container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 

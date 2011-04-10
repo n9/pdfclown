@@ -86,8 +86,6 @@ namespace org.pdfclown.samples.cli
           bytes::IBuffer streamBody = toUnicodeStream.Body;
           streamBody.Append("... created ..."); // Adds arbitrary contents (NOTE: this would NOT be done in a real ToUnicode stream! We are just testing the editing functionality...).
         }
-
-        toUnicodeReference.IndirectObject.Update(); // Ensures that the indirect object is updated.
       }
 
       // 3. Serialize the PDF file!

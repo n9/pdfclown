@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,10 +31,8 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNamedObjectWrapper;
-import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.util.NotImplementedException;
 
@@ -43,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF11)
 public class Action
@@ -51,46 +49,28 @@ public class Action
 {
   // <class>
   // <static>
-  // <fields>
-  // </fields>
-
   // <interface>
   // <public>
   /**
-    Wraps an action reference into an action object.
-
-    @param reference Reference to an action object.
-    @return Action object associated to the reference.
-  */
-  public static final Action wrap(
-    PdfReference reference
-    )
-  {return wrap(reference, null);}
-
-  /**
     Wraps an action base object into an action object.
 
     @param baseObject Action base object.
-    @param container Action base object container.
     @return Action object associated to the base object.
   */
   public static final Action wrap(
-    PdfDirectObject baseObject,
-    PdfIndirectObject container
+    PdfDirectObject baseObject
     )
-  {return wrap(baseObject, container, null);}
+  {return wrap(baseObject, null);}
 
   /**
     Wraps an action base object into an action object.
 
     @param baseObject Action base object.
-    @param container Action base object container.
     @param name Action name.
     @return Action object associated to the base object.
   */
   public static final Action wrap(
     PdfDirectObject baseObject,
-    PdfIndirectObject container,
     PdfString name
     )
   {
@@ -105,55 +85,55 @@ public class Action
       return null;
 
     if(actionType.equals(PdfName.GoTo))
-      return new GoToLocal(baseObject,container);
+      return new GoToLocal(baseObject);
     else if(actionType.equals(PdfName.GoToR))
-      return new GoToRemote(baseObject,container);
+      return new GoToRemote(baseObject);
     else if(actionType.equals(PdfName.GoToE))
-      return new GoToEmbedded(baseObject,container);
+      return new GoToEmbedded(baseObject);
     else if(actionType.equals(PdfName.Launch))
-      return new Launch(baseObject,container);
+      return new Launch(baseObject);
     else if(actionType.equals(PdfName.Thread))
-      return new GoToThread(baseObject,container);
+      return new GoToThread(baseObject);
     else if(actionType.equals(PdfName.URI))
-      return new GoToURI(baseObject,container);
+      return new GoToURI(baseObject);
     else if(actionType.equals(PdfName.Sound))
-      return new PlaySound(baseObject,container);
+      return new PlaySound(baseObject);
     else if(actionType.equals(PdfName.Movie))
-      return new PlayMovie(baseObject,container);
+      return new PlayMovie(baseObject);
     else if(actionType.equals(PdfName.Hide))
-      return new ToggleVisibility(baseObject,container);
+      return new ToggleVisibility(baseObject);
     else if(actionType.equals(PdfName.Named))
     {
       PdfName actionName = (PdfName)dataObject.get(PdfName.N);
       if(actionName.equals(PdfName.NextPage))
-        return new GoToNextPage(baseObject,container);
+        return new GoToNextPage(baseObject);
       else if(actionName.equals(PdfName.PrevPage))
-        return new GoToPreviousPage(baseObject,container);
+        return new GoToPreviousPage(baseObject);
       else if(actionName.equals(PdfName.FirstPage))
-        return new GoToFirstPage(baseObject,container);
+        return new GoToFirstPage(baseObject);
       else if(actionName.equals(PdfName.LastPage))
-        return new GoToLastPage(baseObject,container);
+        return new GoToLastPage(baseObject);
       else // Custom named action.
-        return new NamedAction(baseObject,container);
+        return new NamedAction(baseObject);
     }
     else if(actionType.equals(PdfName.SubmitForm))
-      return new SubmitForm(baseObject,container);
+      return new SubmitForm(baseObject);
     else if(actionType.equals(PdfName.ResetForm))
-      return new ResetForm(baseObject,container);
+      return new ResetForm(baseObject);
     else if(actionType.equals(PdfName.ImportData))
-      return new ImportData(baseObject,container);
+      return new ImportData(baseObject);
     else if(actionType.equals(PdfName.JavaScript))
-      return new JavaScript(baseObject,container,name);
+      return new JavaScript(baseObject,name);
     else if(actionType.equals(PdfName.SetOCGState))
-      return new SetOcgState(baseObject,container);
+      return new SetOcgState(baseObject);
     else if(actionType.equals(PdfName.Rendition))
-      return new Rendition(baseObject,container);
+      return new Rendition(baseObject);
     else if(actionType.equals(PdfName.Trans))
-      return new DoTransition(baseObject,container);
+      return new DoTransition(baseObject);
     else if(actionType.equals(PdfName.GoTo3DView))
-      return new GoTo3dView(baseObject,container);
+      return new GoTo3dView(baseObject);
     else // Custom action.
-      return new Action(baseObject,container,name);
+      return new Action(baseObject, name);
   }
   // </public>
   // </interface>
@@ -188,10 +168,9 @@ public class Action
 
   protected Action(
     PdfDirectObject baseObject,
-    PdfIndirectObject container,
     PdfString name
     )
-  {super(baseObject, container, name);}
+  {super(baseObject, name);}
   // </constructors>
 
   // <interface>
@@ -210,7 +189,7 @@ public class Action
     )
   {
     PdfDirectObject nextObject = getBaseDataObject().get(PdfName.Next);
-    return nextObject == null ? null : new ChainedActions(nextObject, getContainer(), this);
+    return nextObject != null ? new ChainedActions(nextObject, this) : null;
   }
 
   /**

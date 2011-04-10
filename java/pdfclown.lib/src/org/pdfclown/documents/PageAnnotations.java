@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,28 +25,27 @@
 
 package org.pdfclown.documents;
 
-import org.pdfclown.VersionEnum;
-import org.pdfclown.PDF;
-import org.pdfclown.documents.interaction.annotations.Annotation;
-import org.pdfclown.objects.PdfArray;
-import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfIndirectObject;
-import org.pdfclown.objects.PdfName;
-import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.util.NotImplementedException;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+import org.pdfclown.PDF;
+import org.pdfclown.VersionEnum;
+import org.pdfclown.documents.interaction.annotations.Annotation;
+import org.pdfclown.objects.PdfArray;
+import org.pdfclown.objects.PdfDirectObject;
+import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfObjectWrapper;
+import org.pdfclown.util.NotImplementedException;
+
 /**
   Page annotations [PDF:1.6:3.6.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/10/11
 */
 @PDF(VersionEnum.PDF10)
 public final class PageAnnotations
@@ -56,20 +55,16 @@ public final class PageAnnotations
   // <class>
   // <dynamic>
   // <fields>
-  private Page page;
+  private final Page page;
   // </fields>
 
   // <constructors>
   PageAnnotations(
     PdfDirectObject baseObject,
-    PdfIndirectObject container,
     Page page
     )
   {
-    super(
-      baseObject,
-      container
-      );
+    super(baseObject);
 
     this.page = page;
   }
@@ -115,7 +110,7 @@ public final class PageAnnotations
   public Annotation get(
     int index
     )
-  {return Annotation.wrap(getBaseDataObject().get(index),getContainer());}
+  {return Annotation.wrap(getBaseDataObject().get(index));}
 
   @Override
   public int indexOf(
@@ -156,7 +151,7 @@ public final class PageAnnotations
     )
   {
     PdfDirectObject annotationObject = getBaseDataObject().remove(index);
-    return Annotation.wrap(annotationObject,getContainer());
+    return Annotation.wrap(annotationObject);
   }
 
   @Override
@@ -164,7 +159,7 @@ public final class PageAnnotations
     int index,
     Annotation value
     )
-  {return Annotation.wrap(getBaseDataObject().set(index,value.getBaseObject()),getContainer());}
+  {return Annotation.wrap(getBaseDataObject().set(index,value.getBaseObject()));}
 
   @Override
   public List<Annotation> subList(
@@ -272,14 +267,13 @@ public final class PageAnnotations
     if(values.length < annotationObjects.size())
     {values = (T[])new Object[annotationObjects.size()];}
 
-    PdfIndirectObject container = getContainer();
     for(
       int index = 0,
         length = annotationObjects.size();
       index < length;
       index++
       )
-    {values[index] = (T)Annotation.wrap(annotationObjects.get(index),container);}
+    {values[index] = (T)Annotation.wrap(annotationObjects.get(index));}
     return values;
   }
 
@@ -293,12 +287,14 @@ public final class PageAnnotations
       /** Index of the next item. */
       private int index = 0;
       /** Collection size. */
-      private int size = size();
+      private final int size = size();
 
+      @Override
       public boolean hasNext(
         )
       {return (index < size);}
 
+      @Override
       public Annotation next(
         )
       {
@@ -308,6 +304,7 @@ public final class PageAnnotations
         return get(index++);
       }
 
+      @Override
       public void remove(
         )
       {throw new UnsupportedOperationException();}

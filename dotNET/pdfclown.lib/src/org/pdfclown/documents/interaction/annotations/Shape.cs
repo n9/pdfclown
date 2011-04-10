@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -55,9 +55,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {}
 
     protected Shape(
-      PdfDirectObject baseObject,
-      PdfIndirectObject container
-      ) : base(baseObject,container)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -75,18 +74,15 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'IC' entry may be undefined.
-        */
         PdfArray fillColorObject = (PdfArray)BaseDataObject[PdfName.IC];
-        if(fillColorObject == null)
-          return null;
 //TODO:use baseObject constructor!!!
-        return new DeviceRGBColor(
-          ((IPdfNumber)fillColorObject[0]).RawValue,
-          ((IPdfNumber)fillColorObject[1]).RawValue,
-          ((IPdfNumber)fillColorObject[2]).RawValue
-          );
+        return fillColorObject != null
+          ? new DeviceRGBColor(
+            ((IPdfNumber)fillColorObject[0]).RawValue,
+            ((IPdfNumber)fillColorObject[1]).RawValue,
+            ((IPdfNumber)fillColorObject[2]).RawValue
+            )
+          : null;
       }
       set
       {BaseDataObject[PdfName.IC] = (PdfDirectObject)value.BaseDataObject;}

@@ -303,9 +303,8 @@ namespace org.pdfclown.documents.contents
     #region constructors
     internal Contents(
       PdfDirectObject baseObject,
-      PdfIndirectObject container,
       IContentContext contentContext
-      ) : base(baseObject, container)
+      ) : base(baseObject)
     {
       this.contentContext = contentContext;
       Load();
@@ -354,10 +353,7 @@ namespace org.pdfclown.documents.contents
             File.Unregister((PdfReference)streams[1]); // Removes the exceeding stream from the file.
             streams.RemoveAt(1); // Removes the exceeding stream from the content stream.
           }
-
-          PdfReference streamReference = (PdfReference)streams[0];
-          File.Update(streamReference); // Updates the existing stream into the file.
-          stream = (PdfStream)streamReference.DataObject;
+          stream = (PdfStream)streams.Resolve(0);
         }
       }
 
@@ -368,9 +364,6 @@ namespace org.pdfclown.documents.contents
       // Serializing the new contents into the stream buffer...
       foreach(ContentObject item in items)
       {item.WriteTo(buffer);}
-
-      // Update the content stream container!
-      Update();
     }
 
     public IContentContext ContentContext

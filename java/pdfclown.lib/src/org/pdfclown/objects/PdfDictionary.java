@@ -42,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/10/11
 */
 public final class PdfDictionary
   extends PdfDirectObject
@@ -58,7 +58,10 @@ public final class PdfDictionary
 
   // <dynamic>
   // <fields>
-  private HashMap<PdfName,PdfDirectObject> entries;
+  private Map<PdfName,PdfDirectObject> entries;
+
+  private PdfObject parent;
+  private boolean updated;
   // </fields>
 
   // <constructors>
@@ -89,6 +92,18 @@ public final class PdfDictionary
         values[index]
         );
     }
+    ready();
+  }
+
+  public PdfDictionary(
+    Map<PdfName,PdfDirectObject> entries
+    )
+  {
+    this(entries.size());
+
+    for(Entry<PdfName,PdfDirectObject> entry : entries.entrySet())
+    {put(entry.getKey(), (PdfDirectObject)include(entry.getValue()));}
+    ready();
   }
   // </constructors>
 
@@ -99,9 +114,8 @@ public final class PdfDictionary
     File context
     )
   {
-    PdfDictionary clone = (PdfDictionary)super.clone();
+    PdfDictionary clone = (PdfDictionary)super.clone(context);
     {
-      // Deep cloning...
       clone.entries = new HashMap<PdfName,PdfDirectObject>(entries.size());
       for(Map.Entry<PdfName,PdfDirectObject> entry : entries.entrySet())
       {
@@ -119,6 +133,11 @@ public final class PdfDictionary
     PdfDirectObject obj
     )
   {throw new NotImplementedException();}
+
+  @Override
+  public PdfIndirectObject getContainer(
+    )
+  {return getRoot();}
 
   /**
     Gets the key associated to a given value.
@@ -146,6 +165,16 @@ public final class PdfDictionary
 
     return null; // Not found.
   }
+
+  @Override
+  public PdfObject getParent(
+    )
+  {return parent;}
+
+  @Override
+  public PdfIndirectObject getRoot(
+    )
+  {return parent != null ? parent.getRoot() : null;}
 
   /**
     Gets the dereferenced value corresponding to the given key.
@@ -209,7 +238,10 @@ public final class PdfDictionary
   @Override
   public void clear(
     )
-  {entries.clear();}
+  {
+    for(PdfName key : entries.keySet())
+    {remove(key);}
+  }
 
   @Override
   public boolean containsKey(
@@ -265,10 +297,16 @@ public final class PdfDictionary
     PdfDirectObject value
     )
   {
+    PdfDirectObject oldValue;
     if(value == null)
-      return entries.remove(key);
+    {oldValue = remove(key);}
     else
-      return entries.put(key,value);
+    {
+      oldValue = entries.put(key, value = (PdfDirectObject)include(value));
+      exclude(oldValue);
+      update();
+    }
+    return oldValue;
   }
 
   @Override
@@ -284,7 +322,12 @@ public final class PdfDictionary
   public PdfDirectObject remove(
     Object key
     )
-  {return entries.remove(key);}
+  {
+    PdfDirectObject oldValue = entries.remove(key);
+    exclude(oldValue);
+    update();
+    return oldValue;
+  }
 
   @Override
   public int size(
@@ -297,6 +340,27 @@ public final class PdfDictionary
   {return entries.values();}
   // </Map>
   // </public>
+
+  // <protected>
+  @Override
+  protected boolean isUpdated(
+    )
+  {return updated;}
+
+  @Override
+  protected void setUpdated(
+    boolean value
+    )
+  {updated = value;}
+  // </protected>
+
+  // <internal>
+  @Override
+  void setParent(
+    PdfObject value
+    )
+  {parent = value;}
+  // </internal>
   // </interface>
   // </dynamic>
   // </class>
