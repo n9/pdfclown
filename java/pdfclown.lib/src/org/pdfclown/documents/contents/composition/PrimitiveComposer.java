@@ -86,6 +86,7 @@ import org.pdfclown.documents.interaction.actions.Action;
 import org.pdfclown.documents.interaction.annotations.Link;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.NotImplementedException;
+import org.pdfclown.util.math.geom.Quad;
 
 /**
   Content stream primitive composer.
@@ -98,7 +99,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/16/11
 */
 public final class PrimitiveComposer
 {
@@ -238,8 +239,6 @@ public final class PrimitiveComposer
     Draws a circular arc.
 
     @see #stroke()
-    @since 0.0.7
-
     @param location Arc location.
     @param startAngle Starting angle.
     @param endAngle Ending angle.
@@ -255,8 +254,6 @@ public final class PrimitiveComposer
     Draws an arc.
 
     @see #stroke()
-    @since 0.0.7
-
     @param location Arc location.
     @param startAngle Starting angle.
     @param endAngle Ending angle.
@@ -276,8 +273,6 @@ public final class PrimitiveComposer
     Draws a cubic Bezier curve from the current point [PDF:1.6:4.4.1].
 
     @see #stroke()
-    @since 0.0.7
-
     @param endPoint Ending point.
     @param startControl Starting control point.
     @param endControl Ending control point.
@@ -305,8 +300,6 @@ public final class PrimitiveComposer
     Draws a cubic Bezier curve [PDF:1.6:4.4.1].
 
     @see #stroke()
-    @since 0.0.7
-
     @param startPoint Starting point.
     @param endPoint Ending point.
     @param startControl Starting control point.
@@ -325,12 +318,10 @@ public final class PrimitiveComposer
 
   /**
     Draws an ellipse.
-    @since 0.0.7
 
     @see #fill()
     @see #fillStroke()
     @see #stroke()
-
     @param location Ellipse location.
   */
   public void drawEllipse(
@@ -342,8 +333,6 @@ public final class PrimitiveComposer
     Draws a line from the current point [PDF:1.6:4.4.1].
 
     @see #stroke()
-    @since 0.0.7
-
     @param endPoint Ending point.
   */
   public void drawLine(
@@ -362,8 +351,6 @@ public final class PrimitiveComposer
     Draws a line [PDF:1.6:4.4.1].
 
     @see #stroke()
-    @since 0.0.7
-
     @param startPoint Starting point.
     @param endPoint Ending point.
   */
@@ -384,8 +371,6 @@ public final class PrimitiveComposer
     @see #fill()
     @see #fillStroke()
     @see #stroke()
-    @since 0.0.7
-
     @param points Points.
   */
   public void drawPolygon(
@@ -400,8 +385,6 @@ public final class PrimitiveComposer
     Draws a multiple line.
 
     @see #stroke()
-    @since 0.0.7
-
     @param points Points.
   */
   public void drawPolyline(
@@ -530,8 +513,6 @@ public final class PrimitiveComposer
     Draws a spiral.
 
     @see #stroke()
-    @since 0.0.7
-
     @param center Spiral center.
     @param startAngle Starting angle.
     @param endAngle Ending angle.
@@ -896,7 +877,7 @@ public final class PrimitiveComposer
     @param value Text to show.
     @return Bounding box vertices in default user space units.
   */
-  public Point2D[] showText(
+  public Quad showText(
     String value
     )
   {
@@ -908,8 +889,6 @@ public final class PrimitiveComposer
 
   /**
     Shows the link associated to the specified text on the page at the current location.
-
-    @since 0.0.7
 
     @param value Text to show.
     @param action Action to apply when the link is activated.
@@ -934,7 +913,7 @@ public final class PrimitiveComposer
     @param location Position at which showing the text.
     @return Bounding box vertices in default user space units.
   */
-  public Point2D[] showText(
+  public Quad showText(
     String value,
     Point2D location
     )
@@ -950,8 +929,6 @@ public final class PrimitiveComposer
 
   /**
     Shows the link associated to the specified text on the page at the specified location.
-
-    @since 0.0.7
 
     @param value Text to show.
     @param location Position at which showing the text.
@@ -984,7 +961,7 @@ public final class PrimitiveComposer
     @param rotation Rotational counterclockwise angle.
     @return Bounding box vertices in default user space units.
   */
-  public Point2D[] showText(
+  public Quad showText(
     String value,
     Point2D location,
     AlignmentXEnum alignmentX,
@@ -1000,9 +977,7 @@ public final class PrimitiveComposer
     float width = font.getKernedWidth(value,fontSize);
     float height = font.getLineHeight(fontSize);
     float descent = font.getDescent(fontSize);
-
-    Point2D[] frame = new Point2D[4];
-
+    Quad frame;
     if(alignmentX == AlignmentXEnum.Left
       && alignmentY == AlignmentYEnum.Top)
     {
@@ -1033,10 +1008,12 @@ public final class PrimitiveComposer
         }
 
         state = scanner.getState();
-        frame[0] = state.textToDeviceSpace(new Point2D.Double(0,descent),true);
-        frame[1] = state.textToDeviceSpace(new Point2D.Double(width,descent),true);
-        frame[2] = state.textToDeviceSpace(new Point2D.Double(width,height+descent),true);
-        frame[3] = state.textToDeviceSpace(new Point2D.Double(0,height+descent),true);
+        frame = new Quad(
+          state.textToDeviceSpace(new Point2D.Double(0, descent), true),
+          state.textToDeviceSpace(new Point2D.Double(width, descent), true),
+          state.textToDeviceSpace(new Point2D.Double(width, height + descent), true),
+          state.textToDeviceSpace(new Point2D.Double(0, height + descent), true)
+          );
 
         // Add the text!
         add(new ShowSimpleText(font.encode(value)));
@@ -1107,10 +1084,12 @@ public final class PrimitiveComposer
           translateText(x,y);
 
           state = scanner.getState();
-          frame[0] = state.textToDeviceSpace(new Point2D.Double(0,descent),true);
-          frame[1] = state.textToDeviceSpace(new Point2D.Double(width,descent),true);
-          frame[2] = state.textToDeviceSpace(new Point2D.Double(width,height+descent),true);
-          frame[3] = state.textToDeviceSpace(new Point2D.Double(0,height+descent),true);
+          frame = new Quad(
+            state.textToDeviceSpace(new Point2D.Double(0, descent), true),
+            state.textToDeviceSpace(new Point2D.Double(width, descent), true),
+            state.textToDeviceSpace(new Point2D.Double(width, height + descent), true),
+            state.textToDeviceSpace(new Point2D.Double(0, height + descent), true)
+            );
 
           // Add the text!
           add(new ShowSimpleText(font.encode(value)));
@@ -1125,14 +1104,11 @@ public final class PrimitiveComposer
       finally
       {end(); /* Ends the local state. */}
     }
-
     return frame;
   }
 
   /**
     Shows the link associated to the specified text on the page at the specified location.
-
-    @since 0.0.7
 
     @param value Text to show.
     @param location Anchor position at which showing the text.
@@ -1151,30 +1127,20 @@ public final class PrimitiveComposer
     Action action
     )
   {
-    Point2D[] textFrame = showText(
+    IContentContext contentContext = scanner.getContentContext();
+    if(!(contentContext instanceof Page))
+      throw new RuntimeException("Links can be shown only on page contexts.");
+
+    Rectangle2D linkBox = showText(
       value,
       location,
       alignmentX,
       alignmentY,
       rotation
-      );
-
-    IContentContext contentContext = scanner.getContentContext();
-    if(!(contentContext instanceof Page))
-      throw new RuntimeException("Link can be shown only on page contexts.");
-
-    Page page = (Page)contentContext;
-    Rectangle2D linkBox = new Rectangle2D.Double(textFrame[0].getX(),textFrame[0].getY(),0,0);
-    for(
-      int index = 1,
-        length = textFrame.length;
-      index < length;
-      index++
-      )
-    {linkBox.add(textFrame[index]);}
+      ).getBounds2D();
 
     return new Link(
-      page,
+      (Page)contentContext,
       linkBox,
       action
       );

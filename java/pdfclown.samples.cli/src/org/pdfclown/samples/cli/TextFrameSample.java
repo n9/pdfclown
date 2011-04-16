@@ -1,5 +1,8 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
@@ -11,16 +14,13 @@ import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.files.File;
 
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 /**
   This sample demonstrates <b>how to obtain the actual area occupied by text</b>
   shown in a PDF page.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/16/11
 */
 public class TextFrameSample
   extends Sample
@@ -41,7 +41,7 @@ public class TextFrameSample
 
     // 3. Serialize the PDF file!
     serialize(file,false);
-    
+
     return true;
   }
 
@@ -104,7 +104,7 @@ public class TextFrameSample
         AlignmentXEnum.Left,
         AlignmentYEnum.Middle,
         45
-        )
+        ).getPoints()
       );
     composer.stroke();
 
@@ -127,7 +127,7 @@ public class TextFrameSample
         AlignmentXEnum.Center,
         AlignmentYEnum.Middle,
         -25
-        )
+        ).getPoints()
       );
     composer.stroke();
 

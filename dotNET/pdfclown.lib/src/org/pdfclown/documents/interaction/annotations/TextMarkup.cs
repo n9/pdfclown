@@ -25,7 +25,9 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
+using org.pdfclown.documents.contents.colorSpaces;
 using org.pdfclown.objects;
+using org.pdfclown.util.math.geom;
 
 using System;
 using System.Collections.Generic;
@@ -119,15 +121,43 @@ namespace org.pdfclown.documents.interaction.annotations
     #region constructors
     public TextMarkup(
       Page page,
+      MarkupTypeEnum markupType,
+      Quad markupBox
+      ) : this(
+        page,
+        markupType,
+        markupBox.GetBounds(),
+        new List<Quad>(){markupBox}
+        )
+    {}
+
+    public TextMarkup(
+      Page page,
+      MarkupTypeEnum markupType,
+      IList<Quad> markupBoxes
+      ) : this(
+        page,
+        markupType,
+        markupBoxes[0].GetBounds(),
+        markupBoxes
+        )
+    {}
+
+    public TextMarkup(
+      Page page,
+      MarkupTypeEnum markupType,
       RectangleF box,
-      MarkupTypeEnum type
+      IList<Quad> markupBoxes
       ) : base(
         page.Document,
-        ToCode(type),
+        ToCode(markupType),
         box,
         page
         )
-    {}
+    {
+      MarkupType = markupType;
+      MarkupBoxes = markupBoxes;
+    }
 
     public TextMarkup(
       PdfDirectObject baseObject
@@ -137,17 +167,22 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region interface
     #region public
+    public override object Clone(
+      Document context
+      )
+    {throw new NotImplementedException();}
+
     /**
       <summary>Gets/Sets the quadrilaterals encompassing a word or group of contiguous words
       in the text underlying the annotation.</summary>
     */
-    public IList<RectangleF> Boxes
+    public IList<Quad> MarkupBoxes
     {
       get
       {
         PdfArray quadPointsObject = (PdfArray)BaseDataObject[PdfName.QuadPoints];
-        IList<RectangleF> boxes = new List<RectangleF>();
-        double pageHeight = Page.Box.Height;
+        IList<Quad> markupBoxes = new List<Quad>();
+        float pageHeight = Page.Box.Height;
         for(
           int index = 0,
             length = quadPointsObject.Count;
@@ -155,40 +190,54 @@ namespace org.pdfclown.documents.interaction.annotations
           index += 8
           )
         {
-          double x = ((IPdfNumber)quadPointsObject[index+6]).RawValue;
-          double y = pageHeight - ((IPdfNumber)quadPointsObject[index+7]).RawValue;
-          double width = ((IPdfNumber)quadPointsObject[index+2]).RawValue - ((IPdfNumber)quadPointsObject[index]).RawValue;
-          double height = ((IPdfNumber)quadPointsObject[index+3]).RawValue - ((IPdfNumber)quadPointsObject[index+1]).RawValue;
-          boxes.Add(
-            new RectangleF((float)x,(float)y,(float)width,(float)height)
+          /*
+            NOTE: Despite the spec prescription, Point 3 and Point 4 MUST be inverted.
+          */
+          markupBoxes.Add(
+            new Quad(
+              new PointF(
+                ((IPdfNumber)quadPointsObject[index]).RawValue,
+                pageHeight - ((IPdfNumber)quadPointsObject[index + 1]).RawValue
+                ),
+              new PointF(
+                ((IPdfNumber)quadPointsObject[index + 2]).RawValue,
+                pageHeight - ((IPdfNumber)quadPointsObject[index + 3]).RawValue
+                ),
+              new PointF(
+                ((IPdfNumber)quadPointsObject[index + 6]).RawValue,
+                pageHeight - ((IPdfNumber)quadPointsObject[index + 7]).RawValue
+                ),
+              new PointF(
+                ((IPdfNumber)quadPointsObject[index + 4]).RawValue,
+                pageHeight - ((IPdfNumber)quadPointsObject[index + 5]).RawValue
+                )
+              )
             );
         }
-        return boxes;
+        return markupBoxes;
       }
       set
       {
         PdfArray quadPointsObject = new PdfArray();
         double pageHeight = Page.Box.Height;
-        foreach(RectangleF box in value)
+        foreach(Quad markupBox in value)
         {
-          quadPointsObject.Add(new PdfReal(box.X)); // x1.
-          quadPointsObject.Add(new PdfReal(pageHeight-(box.Y+box.Height))); // y1.
-          quadPointsObject.Add(new PdfReal(box.X+box.Width)); // x2.
-          quadPointsObject.Add(quadPointsObject[1]); // y2.
-          quadPointsObject.Add(quadPointsObject[2]); // x3.
-          quadPointsObject.Add(new PdfReal(pageHeight-box.Y)); // y3.
-          quadPointsObject.Add(quadPointsObject[0]); // x4.
-          quadPointsObject.Add(quadPointsObject[5]); // y4.
+          /*
+            NOTE: Despite the spec prescription, Point 3 and Point 4 MUST be inverted.
+          */
+          PointF[] markupBoxPoints = markupBox.Points;
+          quadPointsObject.Add(new PdfReal(markupBoxPoints[0].X)); // x1.
+          quadPointsObject.Add(new PdfReal(pageHeight - markupBoxPoints[0].Y)); // y1.
+          quadPointsObject.Add(new PdfReal(markupBoxPoints[1].X)); // x2.
+          quadPointsObject.Add(new PdfReal(pageHeight - markupBoxPoints[1].Y)); // y2.
+          quadPointsObject.Add(new PdfReal(markupBoxPoints[3].X)); // x4.
+          quadPointsObject.Add(new PdfReal(pageHeight - markupBoxPoints[3].Y)); // y4.
+          quadPointsObject.Add(new PdfReal(markupBoxPoints[2].X)); // x3.
+          quadPointsObject.Add(new PdfReal(pageHeight - markupBoxPoints[2].Y)); // y3.
         }
-
         BaseDataObject[PdfName.QuadPoints] = quadPointsObject;
       }
     }
-
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
 
     /**
       <summary>Gets/Sets the markup type.</summary>
@@ -198,7 +247,21 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {return ToMarkupTypeEnum((PdfName)BaseDataObject[PdfName.Subtype]);}
       set
-      {BaseDataObject[PdfName.Subtype] = ToCode(value);}
+      {
+        BaseDataObject[PdfName.Subtype] = ToCode(value);
+        switch(value)
+        {
+          case MarkupTypeEnum.Highlight:
+            Color = new DeviceRGBColor(1, 1, 0);
+            break;
+          case MarkupTypeEnum.Squiggly:
+            Color = new DeviceRGBColor(1, 0, 0);
+            break;
+          default:
+            Color = new DeviceRGBColor(0, 0, 0);
+            break;
+        }
+      }
     }
     #endregion
     #endregion

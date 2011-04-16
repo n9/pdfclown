@@ -36,7 +36,6 @@
     <Compile Include="src\org\pdfclown\samples\cli\AcroFormCreationSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\AcroFormParsingSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\ActionSample.cs" />
-    <Compile Include="src\org\pdfclown\samples\cli\AdvancedPlainTextExtractionSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\AdvancedTextExtractionSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\AnnotationSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\BarcodeSample.cs" />
@@ -77,6 +76,7 @@
     <Compile Include="src\org\pdfclown\samples\cli\PrimitiveObjectSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\PrintingSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\RenderingSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\TextHighlightSample.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PDFClownCLISamples.exe.config">

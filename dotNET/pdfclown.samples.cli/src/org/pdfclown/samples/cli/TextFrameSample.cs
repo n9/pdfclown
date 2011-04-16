@@ -82,7 +82,7 @@ namespace org.pdfclown.samples.cli
           AlignmentXEnum.Left,
           AlignmentYEnum.Middle,
           45
-          )
+          ).Points
         );
       composer.Stroke();
 
@@ -100,7 +100,7 @@ namespace org.pdfclown.samples.cli
           AlignmentXEnum.Center,
           AlignmentYEnum.Middle,
           -25
-          )
+          ).Points
         );
       composer.Stroke();
 

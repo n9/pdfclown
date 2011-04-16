@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,8 +25,10 @@
 
 using org.pdfclown.documents.contents;
 using org.pdfclown.documents.contents.objects;
+using org.pdfclown.util.math;
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
@@ -55,20 +57,83 @@ namespace org.pdfclown.tools
     }
 
     /**
+      <summary>Text filter by interval.</summary>
+      <remarks>Iterated intervals MUST be ordered.</remarks>
+    */
+    public interface IIntervalFilter
+      : IEnumerator<Interval<int>>
+    {
+      /**
+        <summary>Notifies current matching.</summary>
+        <param name="interval">Current interval.</param>
+        <param name="match">Text string matching the current interval.</param>
+      */
+      void Process(
+        Interval<int> interval,
+        ITextString match
+        );
+    }
+
+    private class IntervalFilter
+      : IIntervalFilter
+    {
+      private IList<Interval<int>> intervals;
+
+      private IList<ITextString> textStrings = new List<ITextString>();
+      private int index = 0;
+
+      public IntervalFilter(
+        IList<Interval<int>> intervals
+        )
+      {this.intervals = intervals;}
+
+      public Interval<int> Current
+      {
+        get
+        {return intervals[index];}
+      }
+
+      object IEnumerator.Current
+      {
+        get
+        {return this.Current;}
+      }
+
+      public void Dispose(
+        )
+      {/* NOOP */}
+
+      public bool MoveNext(
+        )
+      {return (++index < intervals.Count);}
+
+      public void Process(
+        Interval<int> interval,
+        ITextString match
+        )
+      {textStrings.Add(match);}
+
+      public void Reset(
+        )
+      {throw new NotSupportedException();}
+
+      public IList<ITextString> TextStrings
+      {
+        get
+        {return textStrings;}
+      }
+    }
+
+    /**
       <summary>Text string.</summary>
-      <remarks>This is typically used to assemble multiple raw text strings
+      <remarks>This is typically used to assemble contiguous raw text strings
       laying on the same line.</remarks>
     */
     private class TextString
       : ITextString
     {
-      #region dynamic
-      #region fields
       private List<TextChar> textChars = new List<TextChar>();
-      #endregion
 
-      #region interface
-      #region public
       public RectangleF? Box
       {
         get
@@ -97,14 +162,14 @@ namespace org.pdfclown.tools
       }
 
       public List<TextChar> TextChars
-      {get{return textChars;}}
-      #endregion
-      #endregion
-      #endregion
+      {
+        get
+        {return textChars;}
+      }
     }
 
     /**
-      Text string position comparer.
+      <summary>Text string position comparer.</summary>
     */
     private class TextStringPositionComparer<T>
       : IComparer<T>
@@ -112,7 +177,7 @@ namespace org.pdfclown.tools
     {
       #region static
       /**
-        <summary>Gets whether the given boxes lay on the same text line.</summary>
+        <summary>Gets whether the specified boxes lay on the same text line.</summary>
       */
       public static bool IsOnTheSameLine(
         RectangleF box1,
@@ -165,6 +230,45 @@ namespace org.pdfclown.tools
     #region fields
     public static readonly RectangleF DefaultArea = new RectangleF(0,0,0,0);
     #endregion
+
+    #region interface
+    #region public
+    /**
+      <summary>Converts text information into plain text.</summary>
+      <param name="textStrings">Text information to convert.</param>
+      <returns>Plain text.</returns>
+    */
+    public static string ToString(
+      IDictionary<RectangleF?,IList<ITextString>> textStrings
+      )
+    {return ToString(textStrings, "", "");}
+
+    /**
+      <summary>Converts text information into plain text.</summary>
+      <param name="textStrings">Text information to convert.</param>
+      <param name="lineSeparator">Separator to apply on line break.</param>
+      <param name="areaSeparator">Separator to apply on area break.</param>
+      <returns>Plain text.</returns>
+    */
+    public static string ToString(
+      IDictionary<RectangleF?,IList<ITextString>> textStrings,
+      string lineSeparator,
+      string areaSeparator
+      )
+    {
+      StringBuilder textBuilder = new StringBuilder();
+      foreach(IList<ITextString> areaTextStrings in textStrings.Values)
+      {
+        if(textBuilder.Length > 0)
+        {textBuilder.Append(areaSeparator);}
+
+        foreach(ITextString textString in areaTextStrings)
+        {textBuilder.Append(textString.Text).Append(lineSeparator);}
+      }
+      return textBuilder.ToString();
+    }
+    #endregion
+    #endregion
     #endregion
 
     #region dynamic
@@ -172,25 +276,29 @@ namespace org.pdfclown.tools
     private AreaModeEnum areaMode = AreaModeEnum.Containment;
     private List<RectangleF> areas;
     private float areaTolerance = 0;
+    private bool dehyphenated;
     private bool sorted;
     #endregion
 
     #region constructors
     public TextExtractor(
-      ) : this(true)
+      ) : this(true, false)
     {}
 
     public TextExtractor(
-      bool sorted
-      ) : this(null,sorted)
+      bool sorted,
+      bool dehyphenated
+      ) : this(null, sorted, dehyphenated)
     {}
 
     public TextExtractor(
       IList<RectangleF> areas,
-      bool sorted
+      bool sorted,
+      bool dehyphenated
       )
     {
       Areas = areas;
+      Dehyphenated = dehyphenated;
       Sorted = sorted;
     }
     #endregion
@@ -231,7 +339,22 @@ namespace org.pdfclown.tools
     }
 
     /**
-      <summary>Extracts text strings from the given content context.</summary>
+      <summary>Gets/Sets whether the text strings have to be dehyphenated.</summary>
+    */
+    public bool Dehyphenated
+    {
+      get
+      {return dehyphenated;}
+      set
+      {
+        dehyphenated = value;
+        if(dehyphenated)
+        {Sorted = true;}
+      }
+    }
+
+    /**
+      <summary>Extracts text strings from the specified content context.</summary>
       <param name="contentContext">Source content context.</param>
     */
     public IDictionary<RectangleF?,IList<ITextString>> Extract(
@@ -272,7 +395,7 @@ namespace org.pdfclown.tools
     }
 
     /**
-      <summary>Extracts text strings from the given contents.</summary>
+      <summary>Extracts text strings from the specified contents.</summary>
       <param name="contents">Source contents.</param>
     */
     public IDictionary<RectangleF?,IList<ITextString>> Extract(
@@ -281,36 +404,71 @@ namespace org.pdfclown.tools
     {return Extract(contents.ContentContext);}
 
     /**
-      <summary>Extracts plain text from the given content context.</summary>
-      <param name="contentContext">Source content context.</param>
+      <summary>Gets the text strings matching the specified intervals.</summary>
+      <param name="textStrings">Text strings to filter.</param>
+      <param name="intervals">Text intervals to match. They MUST be ordered and not overlapping.</param>
+      <returns>A list of text strings corresponding to the specified intervals.</returns>
     */
-    public string ExtractPlain(
-      IContentContext contentContext
+    public IList<ITextString> Filter(
+      IDictionary<RectangleF?,IList<ITextString>> textStrings,
+      IList<Interval<int>> intervals
       )
     {
-      StringBuilder textBuilder = new StringBuilder();
-      foreach(List<ITextString> textStrings in Extract(contentContext).Values)
+      IntervalFilter filter = new IntervalFilter(intervals);
+      Filter(textStrings, filter);
+      return filter.TextStrings;
+    }
+  
+    /**
+      <summary>Gets the text strings matching the specified filter.</summary>
+      <param name="textStrings">Text strings to filter.</param>
+      <param name="filter">Matching processor.</param>
+    */
+    public void Filter(
+      IDictionary<RectangleF?,IList<ITextString>> textStrings,
+      IIntervalFilter filter
+      )
+    {
+      IEnumerator<IList<ITextString>> textStringsIterator = textStrings.Values.GetEnumerator(); textStringsIterator.MoveNext();
+      IEnumerator<ITextString> areaTextStringsIterator = textStringsIterator.Current.GetEnumerator(); areaTextStringsIterator.MoveNext();
+      IList<TextChar> textChars = areaTextStringsIterator.Current.TextChars;
+      int baseTextCharIndex = 0;
+      int textCharIndex = 0;
+      while(filter.MoveNext())
       {
-        if(textBuilder.Length > 0)
-        {textBuilder.Append('\n');} // Separates text belonging to different areas.
-
-        foreach(ITextString textString in textStrings)
-        {textBuilder.Append(textString.Text).Append('\n');}
+        Interval<int> interval = filter.Current;
+        TextString match = new TextString();
+        {
+          int matchStartIndex = interval.Low;
+          int matchEndIndex = interval.High;
+          while(matchStartIndex > baseTextCharIndex + textChars.Count)
+          {
+            baseTextCharIndex += textChars.Count;
+            if(!areaTextStringsIterator.MoveNext())
+            {areaTextStringsIterator = textStringsIterator.Current.GetEnumerator(); areaTextStringsIterator.MoveNext();}
+            textChars = areaTextStringsIterator.Current.TextChars;
+          }
+          textCharIndex = matchStartIndex - baseTextCharIndex;
+  
+          while(baseTextCharIndex + textCharIndex < matchEndIndex)
+          {
+            if(textCharIndex == textChars.Count)
+            {
+              baseTextCharIndex += textChars.Count;
+              if(!areaTextStringsIterator.MoveNext())
+              {areaTextStringsIterator = textStringsIterator.Current.GetEnumerator(); areaTextStringsIterator.MoveNext();}
+              textChars = areaTextStringsIterator.Current.TextChars;
+              textCharIndex = 0;
+            }
+            match.TextChars.Add(textChars[textCharIndex++]);
+          }
+        }
+        filter.Process(interval, match);
       }
-      return textBuilder.ToString();
     }
 
     /**
-      <summary>Extracts plain text from the given contents.</summary>
-      <param name="contents">Source contents.</param>
-    */
-    public string ExtractPlain(
-      Contents contents
-      )
-    {return ExtractPlain(contents.ContentContext);}
-
-    /**
-      <summary>Gets the text strings matching the given area.</summary>
+      <summary>Gets the text strings matching the specified area.</summary>
       <param name="textStrings">Text strings to filter, grouped by source area.</param>
       <param name="area">Graphic area which text strings have to be matched to.</param>
     */
@@ -321,7 +479,7 @@ namespace org.pdfclown.tools
     {return Filter(textStrings,new RectangleF[]{area})[area];}
 
     /**
-      <summary>Gets the text strings matching the given areas.</summary>
+      <summary>Gets the text strings matching the specified areas.</summary>
       <param name="textStrings">Text strings to filter, grouped by source area.</param>
       <param name="areas">Graphic areas which text strings have to be matched to.</param>
     */
@@ -350,7 +508,7 @@ namespace org.pdfclown.tools
     }
 
     /**
-      <summary>Gets the text strings matching the given area.</summary>
+      <summary>Gets the text strings matching the specified area.</summary>
       <param name="textStrings">Text strings to filter.</param>
       <param name="area">Graphic area which text strings have to be matched to.</param>
     */
@@ -361,7 +519,7 @@ namespace org.pdfclown.tools
     {return Filter(textStrings,new RectangleF[]{area})[area];}
 
     /**
-      <summary>Gets the text strings matching the given areas.</summary>
+      <summary>Gets the text strings matching the specified areas.</summary>
       <param name="textStrings">Text strings to filter.</param>
       <param name="areas">Graphic areas which text strings have to be matched to.</param>
     */
@@ -405,14 +563,18 @@ namespace org.pdfclown.tools
     }
 
     /**
-      <summary>Gets whether the text strings have to be sorted.</summary>
+      <summary>Gets/Sets whether the text strings have to be sorted.</summary>
     */
     public bool Sorted
     {
       get
       {return sorted;}
       set
-      {sorted = value;}
+      {
+        sorted = value;
+        if(!sorted)
+        {Dehyphenated = false;}
+      }
     }
     #endregion
 
@@ -464,24 +626,53 @@ namespace org.pdfclown.tools
 
       // Aggregating and integrating the source text strings into the target ones...
       TextString textString = null;
+      TextStyle textStyle = null;
       TextChar previousTextChar = null;
+      bool dehyphenating = false;
       foreach(ContentScanner.TextStringWrapper rawTextString in rawTextStrings)
       {
         /*
           NOTE: Contents on the same line are grouped together within the same text string.
         */
         // Add a new text string in case of new line!
-        if(textString == null
-          || (textString.TextChars.Count > 0
-            && !TextStringPositionComparer<ITextString>.IsOnTheSameLine(
-              textString.Box.Value,
-              rawTextString.Box.Value)))
+        if(textString != null
+          && textString.TextChars.Count > 0
+          && !TextStringPositionComparer<ITextString>.IsOnTheSameLine(
+            textString.Box.Value,
+            rawTextString.Box.Value
+            ))
         {
-          textStrings.Add(textString = new TextString());
+          if(dehyphenated
+            && previousTextChar.Value == '-') // Hyphened word.
+          {
+            textString.TextChars.Remove(previousTextChar);
+            dehyphenating = true;
+          }
+          else // Full word.
+          {
+            // Add synthesized space character!
+            textString.TextChars.Add(
+              new TextChar(
+                ' ',
+                new RectangleF(
+                  previousTextChar.Box.Right,
+                  previousTextChar.Box.Top,
+                  0,
+                  previousTextChar.Box.Height
+                  ),
+                textStyle,
+                true
+                )
+              );
+            textString = null;
+            dehyphenating = false;
+          }
           previousTextChar = null;
         }
+        if(textString == null)
+        {textStrings.Add(textString = new TextString());}
 
-        TextStyle textStyle = rawTextString.Style;
+        textStyle = rawTextString.Style;
         float spaceWidth = 0;
         try
         {spaceWidth = textStyle.Font.GetWidth(' ', textStyle.FontSize);}
@@ -504,7 +695,7 @@ namespace org.pdfclown.tools
             {
               // Add synthesized space character!
               textString.TextChars.Add(
-                new TextChar(
+                previousTextChar = new TextChar(
                   ' ',
                   new RectangleF(
                     previousTextChar.Box.Right,
@@ -516,6 +707,12 @@ namespace org.pdfclown.tools
                   true
                   )
                 );
+            }
+            if(dehyphenating
+              && previousTextChar.Value == ' ')
+            {
+              textStrings.Add(textString = new TextString());
+              dehyphenating = false;
             }
           }
           textString.TextChars.Add(previousTextChar = textChar);

@@ -34,6 +34,7 @@ using actions = org.pdfclown.documents.interaction.actions;
 using org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.files;
 using org.pdfclown.objects;
+using org.pdfclown.util.math.geom;
 
 using System;
 using System.Collections;
@@ -742,7 +743,7 @@ namespace org.pdfclown.documents.contents.composition
       <param name="value">Text to show.</param>
       <returns>Bounding box vertices in default user space units.</returns>
     */
-    public PointF[] ShowText(
+    public Quad ShowText(
       string value
       )
     {
@@ -777,7 +778,7 @@ namespace org.pdfclown.documents.contents.composition
       <param name="location">Position at which showing the text.</param>
       <returns>Bounding box vertices in default user space units.</returns>
     */
-    public PointF[] ShowText(
+    public Quad ShowText(
       string value,
       PointF location
       )
@@ -824,7 +825,7 @@ namespace org.pdfclown.documents.contents.composition
       <param name="rotation">Rotational counterclockwise angle.</param>
       <returns>Bounding box vertices in default user space units.</returns>
     */
-    public PointF[] ShowText(
+    public Quad ShowText(
       string value,
       PointF location,
       AlignmentXEnum alignmentX,
@@ -840,9 +841,7 @@ namespace org.pdfclown.documents.contents.composition
       float width = font.GetKernedWidth(value,fontSize);
       float height = font.GetLineHeight(fontSize);
       float descent = font.GetDescent(fontSize);
-
-      PointF[] frame = new PointF[4];
-
+      Quad frame;
       if(alignmentX == AlignmentXEnum.Left
         && alignmentY == AlignmentYEnum.Top)
       {
@@ -873,10 +872,12 @@ namespace org.pdfclown.documents.contents.composition
           }
 
           state = scanner.State;
-          frame[0] = state.TextToDeviceSpace(new PointF(0,descent), true);
-          frame[1] = state.TextToDeviceSpace(new PointF(width,descent), true);
-          frame[2] = state.TextToDeviceSpace(new PointF(width,height+descent), true);
-          frame[3] = state.TextToDeviceSpace(new PointF(0,height+descent), true);
+          frame = new Quad(
+            state.TextToDeviceSpace(new PointF(0, descent), true),
+            state.TextToDeviceSpace(new PointF(width, descent), true),
+            state.TextToDeviceSpace(new PointF(width, height + descent), true),
+            state.TextToDeviceSpace(new PointF(0, height + descent), true)
+            );
 
           // Add the text!
           Add(new objects::ShowSimpleText(font.Encode(value)));
@@ -948,10 +949,12 @@ namespace org.pdfclown.documents.contents.composition
             TranslateText(x,y);
 
             state = scanner.State;
-            frame[0] = state.TextToDeviceSpace(new PointF(0,descent), true);
-            frame[1] = state.TextToDeviceSpace(new PointF(width,descent), true);
-            frame[2] = state.TextToDeviceSpace(new PointF(width,height+descent), true);
-            frame[3] = state.TextToDeviceSpace(new PointF(0,height+descent), true);
+            frame = new Quad(
+              state.TextToDeviceSpace(new PointF(0, descent), true),
+              state.TextToDeviceSpace(new PointF(width, descent), true),
+              state.TextToDeviceSpace(new PointF(width, height + descent), true),
+              state.TextToDeviceSpace(new PointF(0, height + descent), true)
+              );
 
             // Add the text!
             Add(new objects::ShowSimpleText(font.Encode(value)));
@@ -966,7 +969,6 @@ namespace org.pdfclown.documents.contents.composition
         finally
         {End(); /* Ends the local state. */}
       }
-
       return frame;
     }
 
@@ -989,46 +991,20 @@ namespace org.pdfclown.documents.contents.composition
       actions::Action action
       )
     {
-      PointF[] textFramePoints = ShowText(
+      IContentContext contentContext = scanner.ContentContext;
+      if(!(contentContext is Page))
+        throw new Exception("Links can be shown only on page contexts.");
+
+      RectangleF linkBox = ShowText(
         value,
         location,
         alignmentX,
         alignmentY,
         rotation
-        );
-
-      IContentContext contentContext = scanner.ContentContext;
-      if(!(contentContext is Page))
-        throw new Exception("Link can be shown only on page contexts.");
-
-      Page page = (Page)contentContext;
-      RectangleF linkBox = new RectangleF(textFramePoints[0].X,textFramePoints[0].Y,0,0);
-      for(
-        int index = 1,
-          length = textFramePoints.Length;
-        index < length;
-        index++
-        )
-      {
-        PointF textFramePoint = textFramePoints[index];
-        if(textFramePoint.X < linkBox.X)
-        {
-          linkBox.Width = linkBox.Right - textFramePoint.X;
-          linkBox.X = textFramePoint.X;
-        }
-        else if(textFramePoint.X > linkBox.Right)
-        {linkBox.Width = textFramePoint.X - linkBox.X;}
-        if(textFramePoint.Y < linkBox.Y)
-        {
-          linkBox.Height = linkBox.Bottom - textFramePoint.Y;
-          linkBox.Y = textFramePoint.Y;
-        }
-        else if(textFramePoint.Y > linkBox.Bottom)
-        {linkBox.Height = textFramePoint.Y - linkBox.Y;}
-      }
+        ).GetBounds();
 
       return new Link(
-        page,
+        (Page)contentContext,
         linkBox,
         action
         );

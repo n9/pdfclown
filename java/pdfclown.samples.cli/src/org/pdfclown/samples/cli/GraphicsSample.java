@@ -1,5 +1,11 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.Dimension;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.EnumSet;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.LineCapEnum;
@@ -8,17 +14,12 @@ import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
 import org.pdfclown.documents.contents.composition.AlignmentXEnum;
 import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
-import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.composition.Length.UnitModeEnum;
+import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.entities.Image;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.files.File;
-
-import java.awt.Dimension;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.EnumSet;
+import org.pdfclown.util.math.geom.Quad;
 
 /**
   This sample demonstrates some of the <b>graphics operations</b> available through the PrimitiveComposer
@@ -26,7 +27,7 @@ import java.util.EnumSet;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 04/16/11
 */
 public class GraphicsSample
   extends Sample
@@ -54,7 +55,7 @@ public class GraphicsSample
 
     // 3. Serialize the PDF file!
     serialize(file,false);
-    
+
     return true;
   }
 
@@ -850,7 +851,7 @@ public class GraphicsSample
     }
     catch(Exception e)
     {throw new RuntimeException(e);}
-    
+
     int stepCount = 5;
     int step = (int)(pageSize.getHeight()) / (stepCount + 1);
     BlockComposer blockComposer = new BlockComposer(composer);
@@ -879,7 +880,7 @@ public class GraphicsSample
     {
       float relativeLineSpace = 0.5f * index;
       blockComposer.getLineSpace().setValue(relativeLineSpace);
-      
+
       composer.setFont(
         composer.getState().getFont(),
         10
@@ -907,7 +908,7 @@ public class GraphicsSample
         "Demonstrating how to set the block line space. Line space can be expressed either as an absolute value (in user-space units) or as a relative one (as a floating-point ratio); in the latter case the base value is represented by the current font's line height (so that, for example, 2 means \"a line space that's double the line height\")."
         );
       blockComposer.end();
-      
+
       composer.beginLocalState();
       composer.setLineWidth(0.2f);
       composer.setLineDash(5,5,5);
@@ -966,7 +967,7 @@ public class GraphicsSample
     composer.beginLocalState();
     composer.setFillColor(SampleColor);
     // Show the text onto the page!
-    Point2D[] textFrame = composer.showText(
+    Quad textFrame = composer.showText(
       value,
       location,
       alignmentX,
@@ -978,7 +979,7 @@ public class GraphicsSample
     // Draw the frame binding the shown text!
     drawFrame(
       composer,
-      textFrame
+      textFrame.getPoints()
       );
 
     composer.beginLocalState();

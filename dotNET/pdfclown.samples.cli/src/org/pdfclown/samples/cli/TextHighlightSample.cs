@@ -1,0 +1,136 @@
+using org.pdfclown.documents;
+using org.pdfclown.documents.contents;
+using org.pdfclown.documents.interaction.annotations;
+using org.pdfclown.files;
+using org.pdfclown.tools;
+using org.pdfclown.util.math;
+using org.pdfclown.util.math.geom;
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Text.RegularExpressions;
+
+namespace org.pdfclown.samples.cli
+{
+  /**
+    <summary>This sample demonstrates how to highlight text matching arbitrary patterns.</summary>
+    <remarks>Highlighting is defined through text markup annotations.</remarks>
+  */
+  public class TextHighlightSample
+    : Sample
+  {
+    private class TextHighlighter
+      : TextExtractor.IIntervalFilter
+    {
+      private Match match;
+      private Page page;
+
+      public TextHighlighter(
+        Page page,
+        Match match
+        )
+      {
+        this.page = page;
+        this.match = match;
+      }
+
+      public Interval<int> Current
+      {
+        get
+        {return new Interval<int>(match.Index, match.Index + match.Length);}
+      }
+
+      object IEnumerator.Current
+      {
+        get
+        {return this.Current;}
+      }
+
+      public void Dispose(
+        )
+      {/* NOOP */}
+
+      public bool MoveNext(
+        )
+      {return (match = match.NextMatch()).Success;}
+
+      public void Process(
+        Interval<int> interval,
+        ITextString match
+        )
+      {
+        // Defining the highlight box of the text pattern match...
+        IList<Quad> highlightQuads = new List<Quad>();
+        {
+          /*
+            NOTE: A text pattern match may be split across multiple contiguous lines,
+            so we have to define a distinct highlight box for each text chunk.
+          */
+          RectangleF? textBox = null;
+          foreach(TextChar textChar in match.TextChars)
+          {
+            RectangleF textCharBox = textChar.Box;
+            if(!textBox.HasValue)
+            {textBox = textCharBox;}
+            else
+            {
+              if(textCharBox.Y > textBox.Value.Bottom)
+              {
+                highlightQuads.Add(Quad.Get(textBox.Value));
+                textBox = textCharBox;
+              }
+              else
+              {textBox = RectangleF.Union(textBox.Value, textCharBox);}
+            }
+          }
+          highlightQuads.Add(Quad.Get(textBox.Value));
+        }
+        // Highlight the text pattern match!
+        new TextMarkup(page, TextMarkup.MarkupTypeEnum.Highlight, highlightQuads);
+      }
+
+      public void Reset(
+        )
+      {throw new NotSupportedException();}
+    }
+
+    public override bool Run(
+      )
+    {
+      string filePath = PromptPdfFileChoice("Please select a PDF file");
+
+      // 1. Open the PDF file!
+      File file = new File(filePath);
+
+      // Define the text pattern to look for!
+      string textRegEx = PromptChoice("Please enter the pattern to look for: ");
+      Regex pattern = new Regex(textRegEx, RegexOptions.IgnoreCase);
+
+      // 2. Iterating through the document pages...
+      TextExtractor textExtractor = new TextExtractor(true, true);
+      foreach(Page page in file.Document.Pages)
+      {
+        Console.WriteLine("\nScanning page " + (page.Index+1) + "...\n");
+
+        // 2.1. Extract the page text!
+        IDictionary<RectangleF?,IList<ITextString>> textStrings = textExtractor.Extract(page);
+
+        // 2.2. Find the text pattern matches!
+        Match match = pattern.Match(TextExtractor.ToString(textStrings));
+
+        // 2.3. Highlight the text pattern matches!
+        textExtractor.Filter(
+          textStrings,
+          new TextHighlighter(page, match)
+          );
+      }
+
+      // 3. Highlighted file serialization.
+      Serialize(file, false);
+
+      return true;
+    }
+  }
+}

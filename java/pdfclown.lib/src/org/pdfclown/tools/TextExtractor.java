@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,13 +43,14 @@ import org.pdfclown.documents.contents.TextStyle;
 import org.pdfclown.documents.contents.objects.ContainerObject;
 import org.pdfclown.documents.contents.objects.ContentObject;
 import org.pdfclown.documents.contents.objects.Text;
+import org.pdfclown.util.math.Interval;
 
 /**
   Tool for extracting text from {@link IContentContext content contexts}.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 04/16/11
 */
 public final class TextExtractor
 {
@@ -70,10 +72,27 @@ public final class TextExtractor
   }
 
   /**
+    Text filter by interval.
+    <p>Iterated intervals MUST be ordered.</p>
+  */
+  public interface IIntervalFilter
+    extends Iterator<Interval<Integer>>
+  {
+    /**
+      Notifies current matching.
+
+      @param interval Current interval.
+      @param match Text string matching the current interval.
+    */
+    void process(
+      Interval<Integer> interval,
+      ITextString match
+      );
+  }
+
+  /**
     Text string.
-    <h3>Remarks</h3>
-    <p>This is typically used to assemble multiple raw text strings
-    laying on the same line.</p>
+    <p>This is typically used to assemble contiguous raw text strings.</p>
   */
   private static class TextString
     implements ITextString
@@ -81,7 +100,7 @@ public final class TextExtractor
     // <class>
     // <dynamic>
     // <fields>
-    private List<TextChar> textChars = new ArrayList<TextChar>();
+    private final List<TextChar> textChars = new ArrayList<TextChar>();
     // </fields>
 
     // <interface>
@@ -130,7 +149,7 @@ public final class TextExtractor
     // <class>
     // <static>
     /**
-      Gets whether the given boxes lay on the same text line.
+      Gets whether the specified boxes lay on the same text line.
     */
     public static boolean isOnTheSameLine(
       Rectangle2D box1,
@@ -181,30 +200,77 @@ public final class TextExtractor
   }
   // </classes>
 
+  // <static>
+  // <interface>
+  // <public>
+  /**
+    Converts text information into plain text.
+
+    @param textStrings Text information to convert.
+    @return Plain text.
+  */
+  public static String toString(
+    Map<Rectangle2D,List<ITextString>> textStrings
+    )
+  {return toString(textStrings, "", "");}
+
+  /**
+    Converts text information into plain text.
+
+    @param textStrings Text information to convert.
+    @param lineSeparator Separator to apply on line break.
+    @param areaSeparator Separator to apply on area break.
+    @return Plain text.
+  */
+  public static String toString(
+    Map<Rectangle2D,List<ITextString>> textStrings,
+    String lineSeparator,
+    String areaSeparator
+    )
+  {
+    StringBuilder textBuilder = new StringBuilder();
+    for(List<ITextString> areaTextStrings : textStrings.values())
+    {
+      if(textBuilder.length() > 0)
+      {textBuilder.append(areaSeparator);}
+
+      for(ITextString textString : areaTextStrings)
+      {textBuilder.append(textString.getText()).append(lineSeparator);}
+    }
+    return textBuilder.toString();
+  }
+  // </public>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <fields>
   private AreaModeEnum areaMode = AreaModeEnum.Containment;
   private List<Rectangle2D> areas;
   private float areaTolerance = 0;
+  private boolean dehyphenated;
   private boolean sorted;
   // </fields>
 
   // <constructors>
   public TextExtractor(
     )
-  {this(true);}
+  {this(true, false);}
 
   public TextExtractor(
-    boolean sorted
+    boolean sorted,
+    boolean dehyphenated
     )
-  {this(null,sorted);}
+  {this(null, sorted, dehyphenated);}
 
   public TextExtractor(
     List<Rectangle2D> areas,
-    boolean sorted
+    boolean sorted,
+    boolean dehyphenated
     )
   {
     setAreas(areas);
+    setDehyphenated(dehyphenated);
     setSorted(sorted);
   }
   // </constructors>
@@ -212,7 +278,7 @@ public final class TextExtractor
   // <interface>
   // <public>
   /**
-    Extracts text strings from the given content context.
+    Extracts text strings from the specified content context.
 
     @param contentContext Source content context.
   */
@@ -251,7 +317,7 @@ public final class TextExtractor
   }
 
   /**
-    Extracts text strings from the given contents.
+    Extracts text strings from the specified contents.
 
     @param contents Source contents.
   */
@@ -261,38 +327,104 @@ public final class TextExtractor
   {return extract(contents.getContentContext());}
 
   /**
-    Extracts plain text from the given content context.
+    Gets the text strings matching the specified intervals.
 
-    @param contentContext Source content context.
+    @param textStrings Text strings to filter.
+    @param intervals Text intervals to match. They MUST be ordered and not overlapping.
+    @return A list of text strings corresponding to the specified intervals.
   */
-  public String extractPlain(
-    IContentContext contentContext
+  public List<ITextString> filter(
+    Map<Rectangle2D,List<ITextString>> textStrings,
+    final List<Interval<Integer>> intervals
     )
   {
-    StringBuilder textBuilder = new StringBuilder();
-    for(List<ITextString> textStrings : extract(contentContext).values())
+    final List<ITextString> filteredTextStrings = new ArrayList<ITextString>();
     {
-      if(textBuilder.length() > 0)
-      {textBuilder.append('\n');} // Separates text belonging to different areas.
+      filter(
+        textStrings,
+        new IIntervalFilter(
+          )
+        {
+          int index = 0;
 
-      for(ITextString textString : textStrings)
-      {textBuilder.append(textString.getText()).append('\n');}
+          @Override
+          public boolean hasNext(
+            )
+          {return index < intervals.size();}
+
+          @Override
+          public Interval<Integer> next(
+            )
+          {return intervals.get(index++);}
+
+          @Override
+          public void process(
+            Interval<Integer> interval,
+            ITextString match
+            )
+          {filteredTextStrings.add(match);}
+
+          @Override
+          public void remove(
+            )
+          {throw new UnsupportedOperationException();}
+        }
+        );
     }
-    return textBuilder.toString();
+    return filteredTextStrings;
   }
 
   /**
-    Extracts plain text from the given contents.
+    Gets the text strings matching the specified filter.
 
-    @param contents Source contents.
+    @param textStrings Text strings to filter.
+    @param filter Matching processor.
   */
-  public String extractPlain(
-    Contents contents
+  public void filter(
+    Map<Rectangle2D,List<ITextString>> textStrings,
+    IIntervalFilter filter
     )
-  {return extractPlain(contents.getContentContext());}
+  {
+    Iterator<List<ITextString>> textStringsIterator = textStrings.values().iterator();
+    Iterator<ITextString> areaTextStringsIterator = textStringsIterator.next().iterator();
+    List<TextChar> textChars = areaTextStringsIterator.next().getTextChars();
+    int baseTextCharIndex = 0;
+    int textCharIndex = 0;
+    while(filter.hasNext())
+    {
+      Interval<Integer> interval = filter.next();
+      TextString match = new TextString();
+      {
+        int matchStartIndex = interval.getLow();
+        int matchEndIndex = interval.getHigh();
+        while(matchStartIndex > baseTextCharIndex + textChars.size())
+        {
+          baseTextCharIndex += textChars.size();
+          if(!areaTextStringsIterator.hasNext())
+          {areaTextStringsIterator = textStringsIterator.next().iterator();}
+          textChars = areaTextStringsIterator.next().getTextChars();
+        }
+        textCharIndex = matchStartIndex - baseTextCharIndex;
+
+        while(baseTextCharIndex + textCharIndex < matchEndIndex)
+        {
+          if(textCharIndex == textChars.size())
+          {
+            baseTextCharIndex += textChars.size();
+            if(!areaTextStringsIterator.hasNext())
+            {areaTextStringsIterator = textStringsIterator.next().iterator();}
+            textChars = areaTextStringsIterator.next().getTextChars();
+            textCharIndex = 0;
+          }
+          match.textChars.add(textChars.get(textCharIndex++));
+        }
+      }
+      filter.process(interval, match);
+    }
+  }
 
   /**
-    Gets the text strings matching the given area.
+    Gets the text strings matching the specified area.
 
     @param textStrings Text strings to filter, grouped by source area.
     @param area Graphic area which text strings have to be matched to.
@@ -304,7 +436,7 @@ public final class TextExtractor
   {return filter(textStrings,new Rectangle2D[]{area}).get(area);}
 
   /**
-    Gets the text strings matching the given areas.
+    Gets the text strings matching the specified areas.
 
     @param textStrings Text strings to filter, grouped by source area.
     @param areas Graphic areas which text strings have to be matched to.
@@ -330,7 +462,7 @@ public final class TextExtractor
   }
 
   /**
-    Gets the text strings matching the given area.
+    Gets the text strings matching the specified area.
 
     @param textStrings Text strings to filter.
     @param area Graphic area which text strings have to be matched to.
@@ -342,7 +474,7 @@ public final class TextExtractor
   {return filter(textStrings,new Rectangle2D[]{area}).get(area);}
 
   /**
-    Gets the text strings matching the given areas.
+    Gets the text strings matching the specified areas.
 
     @param textStrings Text strings to filter.
     @param areas Graphic areas which text strings have to be matched to.
@@ -410,6 +542,13 @@ public final class TextExtractor
   {return areaTolerance;}
 
   /**
+    Gets whether the text strings have to be dehyphenated.
+  */
+  public boolean isDehyphenated(
+    )
+  {return dehyphenated;}
+
+  /**
     Gets whether the text strings have to be sorted.
   */
   public boolean isSorted(
@@ -441,12 +580,28 @@ public final class TextExtractor
   {areaTolerance = value;}
 
   /**
+    @see #isDehyphenated()
+  */
+  public void setDehyphenated(
+    boolean value
+    )
+  {
+    dehyphenated = value;
+    if(dehyphenated)
+    {setSorted(true);}
+  }
+
+  /**
     @see #isSorted()
   */
   public void setSorted(
     boolean value
     )
-  {sorted = value;}
+  {
+    sorted = value;
+    if(!sorted)
+    {setDehyphenated(false);}
+  }
   // </public>
 
   // <private>
@@ -500,24 +655,53 @@ public final class TextExtractor
 
     // Aggregating and integrating the source text strings into the target ones...
     TextString textString = null;
+    TextStyle textStyle = null;
     TextChar previousTextChar = null;
+    boolean dehyphenating = false;
     for(ContentScanner.TextStringWrapper rawTextString : rawTextStrings)
     {
       /*
         NOTE: Contents on the same line are grouped together within the same text string.
       */
       // Add a new text string in case of new line!
-      if(textString == null
-        || (!textString.getTextChars().isEmpty()
-          && !TextStringPositionComparator.isOnTheSameLine(
-            textString.getBox(),
-            rawTextString.getBox())))
+      if(textString != null
+        && !textString.textChars.isEmpty()
+        && !TextStringPositionComparator.isOnTheSameLine(
+          textString.getBox(),
+          rawTextString.getBox()
+          ))
       {
-        textStrings.add(textString = new TextString());
+        if(dehyphenated
+          && previousTextChar.getValue() == '-') // Hyphened word.
+        {
+          textString.textChars.remove(previousTextChar);
+          dehyphenating = true;
+        }
+        else // Full word.
+        {
+          // Add synthesized space character!
+          textString.textChars.add(
+            new TextChar(
+              ' ',
+              new Rectangle2D.Double(
+                previousTextChar.getBox().getMaxX(),
+                previousTextChar.getBox().getY(),
+                0,
+                previousTextChar.getBox().getHeight()
+                ),
+              textStyle,
+              true
+              )
+            );
+          textString = null;
+          dehyphenating = false;
+        }
         previousTextChar = null;
       }
+      if(textString == null)
+      {textStrings.add(textString = new TextString());}
 
-      TextStyle textStyle = rawTextString.getStyle();
+      textStyle = rawTextString.getStyle();
       float spaceWidth = 0;
       try
       {spaceWidth = textStyle.getFont().getWidth(' ', textStyle.getFontSize());}
@@ -540,7 +724,7 @@ public final class TextExtractor
           {
             // Add synthesized space character!
             textString.textChars.add(
-              new TextChar(
+              previousTextChar = new TextChar(
                 ' ',
                 new Rectangle2D.Double(
                   previousTextChar.getBox().getMaxX(),
@@ -552,6 +736,12 @@ public final class TextExtractor
                 true
                 )
               );
+          }
+          if(dehyphenating
+            && previousTextChar.getValue() == ' ')
+          {
+            textStrings.add(textString = new TextString());
+            dehyphenating = false;
           }
         }
         textString.textChars.add(previousTextChar = textChar);

@@ -6,6 +6,7 @@ using entities = org.pdfclown.documents.contents.entities;
 using org.pdfclown.documents.contents.fonts;
 using org.pdfclown.documents.contents.objects;
 using org.pdfclown.files;
+using org.pdfclown.util.math.geom;
 
 using System;
 using System.Collections.Generic;
@@ -929,7 +930,7 @@ namespace org.pdfclown.samples.cli
       composer.BeginLocalState();
       composer.SetFillColor(SampleColor);
       // Show the text onto the page!
-      PointF[] textFrame = composer.ShowText(
+      Quad textFrame = composer.ShowText(
         value,
         location,
         alignmentX,
@@ -941,7 +942,7 @@ namespace org.pdfclown.samples.cli
       // Draw the frame binding the shown text!
       DrawFrame(
         composer,
-        textFrame
+        textFrame.Points
         );
 
       composer.BeginLocalState();

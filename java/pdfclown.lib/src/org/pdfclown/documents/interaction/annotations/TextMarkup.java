@@ -25,20 +25,24 @@
 
 package org.pdfclown.documents.interaction.annotations;
 
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
+import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfReal;
 import org.pdfclown.util.NotImplementedException;
+import org.pdfclown.util.math.geom.Quad;
 
 /**
   Text markup annotation [PDF:1.6:8.4.5].
@@ -47,7 +51,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/16/11
 */
 @PDF(VersionEnum.PDF13)
 public final class TextMarkup
@@ -133,16 +137,47 @@ public final class TextMarkup
   // <constructors>
   public TextMarkup(
     Page page,
+    MarkupTypeEnum markupType,
+    Quad markupBox
+    )
+  {
+    this(
+      page,
+      markupType,
+      markupBox.getBounds2D(),
+      Arrays.asList(markupBox)
+      );
+  }
+
+  public TextMarkup(
+    Page page,
+    MarkupTypeEnum markupType,
+    List<Quad> markupBoxes
+    )
+  {
+    this(
+      page,
+      markupType,
+      markupBoxes.get(0).getBounds2D(),
+      markupBoxes
+      );
+  }
+
+  public TextMarkup(
+    Page page,
+    MarkupTypeEnum markupType,
     Rectangle2D box,
-    MarkupTypeEnum type
+    List<Quad> markupBoxes
     )
   {
     super(
       page.getDocument(),
-      type.getCode(),
+      markupType.getCode(),
       box,
       page
       );
+    setMarkupType(markupType);
+    setMarkupBoxes(markupBoxes);
   }
 
   public TextMarkup(
@@ -163,11 +198,11 @@ public final class TextMarkup
     Gets the quadrilaterals encompassing a word or group of contiguous words
     in the text underlying the annotation.
   */
-  public List<Rectangle2D> getBoxes(
+  public List<Quad> getMarkupBoxes(
     )
   {
     PdfArray quadPointsObject = (PdfArray)getBaseDataObject().get(PdfName.QuadPoints);
-    List<Rectangle2D> boxes = new ArrayList<Rectangle2D>();
+    List<Quad> markupBoxes = new ArrayList<Quad>();
     double pageHeight = getPage().getBox().getHeight();
     for(
       int index = 0,
@@ -176,15 +211,31 @@ public final class TextMarkup
       index += 8
       )
     {
-      double x = ((PdfNumber<?>)quadPointsObject.get(index+6)).getNumberValue();
-      double y = pageHeight - ((PdfNumber<?>)quadPointsObject.get(index+7)).getNumberValue();
-      double width = ((PdfNumber<?>)quadPointsObject.get(index+2)).getNumberValue() - ((PdfNumber<?>)quadPointsObject.get(index)).getNumberValue();
-      double height = ((PdfNumber<?>)quadPointsObject.get(index+3)).getNumberValue() - ((PdfNumber<?>)quadPointsObject.get(index+1)).getNumberValue();
-      boxes.add(
-        new Rectangle2D.Double(x,y,width,height)
+      /*
+        NOTE: Despite the spec prescription, Point 3 and Point 4 MUST be inverted.
+      */
+      markupBoxes.add(
+        new Quad(
+          new Point2D.Double(
+            ((PdfNumber<?>)quadPointsObject.get(index)).getNumberValue(),
+            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 1)).getNumberValue()
+            ),
+          new Point2D.Double(
+            ((PdfNumber<?>)quadPointsObject.get(index + 2)).getNumberValue(),
+            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 3)).getNumberValue()
+            ),
+          new Point2D.Double(
+            ((PdfNumber<?>)quadPointsObject.get(index + 6)).getNumberValue(),
+            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 7)).getNumberValue()
+            ),
+          new Point2D.Double(
+            ((PdfNumber<?>)quadPointsObject.get(index + 4)).getNumberValue(),
+            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 5)).getNumberValue()
+            )
+          )
         );
     }
-    return boxes;
+    return markupBoxes;
   }
 
   /**
@@ -195,27 +246,30 @@ public final class TextMarkup
   {return MarkupTypeEnum.get((PdfName)getBaseDataObject().get(PdfName.Subtype));}
 
   /**
-    @see #getBoxes()
+    @see #getMarkupBoxes()
   */
-  public void setBoxes(
-    List<Rectangle2D> value
+  public void setMarkupBoxes(
+    List<Quad> value
     )
   {
     PdfArray quadPointsObject = new PdfArray();
     double pageHeight = getPage().getBox().getHeight();
-    for(Rectangle2D box : value)
+    for(Quad markupBox : value)
     {
-      quadPointsObject.add(new PdfReal(box.getX())); // x1.
-      quadPointsObject.add(new PdfReal(pageHeight-(box.getY()+box.getHeight()))); // y1.
-      quadPointsObject.add(new PdfReal(box.getX()+box.getWidth())); // x2.
-      quadPointsObject.add(quadPointsObject.get(1)); // y2.
-      quadPointsObject.add(quadPointsObject.get(2)); // x3.
-      quadPointsObject.add(new PdfReal(pageHeight-box.getY())); // y3.
-      quadPointsObject.add(quadPointsObject.get(0)); // x4.
-      quadPointsObject.add(quadPointsObject.get(5)); // y4.
+      /*
+        NOTE: Despite the spec prescription, Point 3 and Point 4 MUST be inverted.
+      */
+      Point2D[] markupBoxPoints = markupBox.getPoints();
+      quadPointsObject.add(new PdfReal(markupBoxPoints[0].getX())); // x1.
+      quadPointsObject.add(new PdfReal(pageHeight - markupBoxPoints[0].getY())); // y1.
+      quadPointsObject.add(new PdfReal(markupBoxPoints[1].getX())); // x2.
+      quadPointsObject.add(new PdfReal(pageHeight - markupBoxPoints[1].getY())); // y2.
+      quadPointsObject.add(new PdfReal(markupBoxPoints[3].getX())); // x4.
+      quadPointsObject.add(new PdfReal(pageHeight - markupBoxPoints[3].getY())); // y4.
+      quadPointsObject.add(new PdfReal(markupBoxPoints[2].getX())); // x3.
+      quadPointsObject.add(new PdfReal(pageHeight - markupBoxPoints[2].getY())); // y3.
     }
-
-    getBaseDataObject().put(PdfName.QuadPoints,quadPointsObject);
+    getBaseDataObject().put(PdfName.QuadPoints, quadPointsObject);
   }
 
   /**
@@ -224,7 +278,21 @@ public final class TextMarkup
   public void setMarkupType(
     MarkupTypeEnum value
     )
-  {getBaseDataObject().put(PdfName.Subtype, value.getCode());}
+  {
+    getBaseDataObject().put(PdfName.Subtype, value.getCode());
+    switch(value)
+    {
+      case Highlight:
+        setColor(new DeviceRGBColor(1, 1, 0));
+        break;
+      case Squiggly:
+        setColor(new DeviceRGBColor(1, 0, 0));
+        break;
+      default:
+        setColor(new DeviceRGBColor(0, 0, 0));
+        break;
+    }
+  }
   // </public>
   // </interface>
   // </dynamic>

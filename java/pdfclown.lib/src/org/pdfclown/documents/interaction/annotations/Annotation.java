@@ -33,6 +33,7 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
+import org.pdfclown.documents.contents.colorSpaces.DeviceColor;
 import org.pdfclown.documents.interaction.actions.Action;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
@@ -50,7 +51,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/16/11
 */
 @PDF(VersionEnum.PDF10)
 public class Annotation
@@ -357,6 +358,16 @@ public class Annotation
   }
 
   /**
+    Gets the annotation color.
+
+    @since 0.1.1
+  */
+  @PDF(VersionEnum.PDF11)
+  public DeviceColor getColor(
+    )
+  {return DeviceColor.get((PdfArray)getBaseDataObject().get(PdfName.C));}
+
+  /**
     Gets the annotation flags.
   */
   @PDF(VersionEnum.PDF11)
@@ -500,6 +511,22 @@ public class Annotation
         value.getHeight()
         ).getBaseDataObject()
       );
+  }
+
+  /**
+    @see #getColor()
+  */
+  public void setColor(
+    DeviceColor value
+    )
+  {
+    if(value == null)
+    {getBaseDataObject().remove(PdfName.C);}
+    else
+    {
+      checkCompatibility("color");
+      getBaseDataObject().put(PdfName.C, value.getBaseObject());
+    }
   }
 
   /**

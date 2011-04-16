@@ -25,6 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
+using org.pdfclown.documents.contents.colorSpaces;
 using org.pdfclown.documents.interaction.actions;
 using org.pdfclown.files;
 using org.pdfclown.objects;
@@ -314,6 +315,26 @@ namespace org.pdfclown.documents.interaction.annotations
       Document context
       )
     {throw new NotImplementedException();}
+
+    /**
+      <summary>Gets/Sets the annotation color.</summary>
+    */
+    [PDF(VersionEnum.PDF11)]
+    public DeviceColor Color
+    {
+      get
+      {return DeviceColor.Get((PdfArray)BaseDataObject[PdfName.C]);}
+      set
+      {
+        if(value == null)
+        {BaseDataObject.Remove(PdfName.C);}
+        else
+        {
+          CheckCompatibility("Color");
+          BaseDataObject[PdfName.C] = value.BaseObject;
+        }
+      }
+    }
 
     /**
       <summary>Gets/Sets the annotation flags.</summary>
