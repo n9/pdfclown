@@ -60,7 +60,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF document [PDF:1.6:3.6.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/17/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Document
@@ -688,10 +688,7 @@ public final class Document
     if(value == null)
     {getBaseDataObject().remove(PdfName.Version);}
     else
-    {
-      checkCompatibility("version");
-      getBaseDataObject().put(PdfName.Version, new PdfName(value.toString()));
-    }
+    {getBaseDataObject().put(PdfName.Version, new PdfName(value.toString()));}
   }
 
   /**
