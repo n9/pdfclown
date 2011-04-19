@@ -50,30 +50,28 @@ namespace org.pdfclown.objects
       string value
       )
     {
-      //TODO:IMPL this code is quite ugly... is there a more elegant solution?
-      // Normalize datetime value.
-      // Cut leading "D:" tag!
-      value = value.Substring(2);
-      int length = value.Length;
-      switch(length)
+      StringBuilder dateBuilder = new StringBuilder();
       {
-        case 8: // Date only.
-          value += "000000+00:00";
-          break;
-        case 14: // Datetime without timezone.
-          value += "+00:00";
-          break;
-        case 15: // Datetime at UT timezone ("Z" tag).
-          value = value.Substring(0,length-1) + "+00:00";
-          break;
-        case 18: // Datetime at non-UT timezone without minutes.
-          value = value.Substring(0,length-1) + "00";
-          break;
-        case 21: // Datetime at non-UT full timezone ("'mm'" PDF timezone-minutes format).
-          value = value.Substring(0,length-1).Replace('\'',':');
-          break;
+        int length = value.Length;
+        // Year (YYYY).
+        dateBuilder.Append(value.Substring(2, 4)); // NOTE: Skips the "D:" prefix; Year is mandatory.
+        // Month (MM).
+        dateBuilder.Append(length < 7 ? "01" : value.Substring(6, 2));
+        // Day (DD).
+        dateBuilder.Append(length < 9 ? "01" : value.Substring(8, 2));
+        // Hour (HH).
+        dateBuilder.Append(length < 11 ? "00" : value.Substring(10, 2));
+        // Minute (mm).
+        dateBuilder.Append(length < 13 ? "00" : value.Substring(12, 2));
+        // Second (SS).
+        dateBuilder.Append(length < 15 ? "00" : value.Substring(14, 2));
+        // Local time / Universal Time relationship (O).
+        dateBuilder.Append(length < 16 || value.Substring(16, 1).Equals("Z") ? "+" : value.Substring(16, 1));
+        // UT Hour offset (HH').
+        dateBuilder.Append(length < 19 ? "00" : value.Substring(17, 2));
+        // UT Minute offset (mm').
+        dateBuilder.Append(":").Append(length < 22 ? "00" : value.Substring(20, 2));
       }
-
       // Parse datetime value!
       return DateTime.ParseExact(
         value,
