@@ -74,7 +74,7 @@ namespace org.pdfclown.objects
       }
       // Parse datetime value!
       return DateTime.ParseExact(
-        value,
+        dateBuilder.ToString(),
         "yyyyMMddHHmmsszzz",
         new CultureInfo("en-US")
         );

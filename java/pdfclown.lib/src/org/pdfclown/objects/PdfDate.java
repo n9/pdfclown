@@ -90,7 +90,7 @@ public final class PdfDate
       dateBuilder.append(length < 22 ? "00" : value.substring(20, 22));
     }
     try
-    {return formatter.parse(value);}
+    {return formatter.parse(dateBuilder.toString());}
     catch(Exception e)
     {throw new RuntimeException(e);}
   }
