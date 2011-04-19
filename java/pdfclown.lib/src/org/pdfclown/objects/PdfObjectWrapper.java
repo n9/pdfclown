@@ -38,6 +38,7 @@ import org.pdfclown.Version;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Document.Configuration.CompatibilityModeEnum;
+import org.pdfclown.documents.interchange.metadata.Metadata;
 import org.pdfclown.files.File;
 import org.pdfclown.util.NotImplementedException;
 
@@ -57,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
   backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/19/11
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
 {
@@ -166,6 +167,34 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   public File getFile(
     )
   {return container.getFile();}
+
+  /**
+    Gets the metadata associated to this object.
+  */
+  public Metadata getMetadata(
+    )
+  {
+    PdfDictionary dictionary = getDictionary();
+    if(dictionary == null)
+      return null;
+
+    PdfDirectObject metadataObject = dictionary.get(PdfName.Metadata);
+    return metadataObject != null ? new Metadata(metadataObject) : null;
+  }
+
+  /**
+    @see #getMetadata()
+  */
+  public void setMetadata(
+    Metadata value
+    )
+  {
+    PdfDictionary dictionary = getDictionary();
+    if(dictionary == null)
+      throw new UnsupportedOperationException("Metadata can be attached only to PdfDictionary/PdfStream base data objects.");
+
+    dictionary.put(PdfName.Metadata, value.getBaseObject());
+  }
   // </public>
 
   // <protected>
@@ -318,6 +347,19 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
     baseDataObject = (TDataObject)File.resolve(baseObject);
   }
   // </protected>
+
+  // <private>
+  private PdfDictionary getDictionary(
+    )
+  {
+    if(getBaseDataObject() instanceof PdfDictionary)
+      return (PdfDictionary)getBaseDataObject();
+    else if(getBaseDataObject() instanceof PdfStream)
+      return ((PdfStream)getBaseDataObject()).getHeader();
+    else
+      return null;
+  }
+  // </private>
   // </interface>
   // </dynamic>
   // </class>

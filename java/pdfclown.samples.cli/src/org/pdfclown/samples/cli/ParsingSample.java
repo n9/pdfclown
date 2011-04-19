@@ -1,5 +1,15 @@
 package org.pdfclown.samples.cli;
 
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.Pages;
@@ -9,6 +19,7 @@ import org.pdfclown.documents.contents.objects.CompositeObject;
 import org.pdfclown.documents.contents.objects.ContentObject;
 import org.pdfclown.documents.contents.objects.Operation;
 import org.pdfclown.documents.interchange.metadata.Information;
+import org.pdfclown.documents.interchange.metadata.Metadata;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfIndirectObject;
@@ -17,10 +28,6 @@ import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.tokens.FileFormatException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
   This sample demonstrates <b>how to inspect the structure of a PDF document</b>.
   <h3>Remarks</h3>
@@ -28,7 +35,7 @@ import java.util.Map;
   to exploit all the available access functionalities.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/19/11
 */
 public class ParsingSample
   extends Sample
@@ -51,18 +58,34 @@ public class ParsingSample
     Document document = file.getDocument();
 
     // 2. Document parsing.
-    // 2.1. Showing basic metadata...
+    // 2.1.1. Basic metadata.
     System.out.println("\nDocument information:");
     Information info = document.getInformation();
-    if(info == null)
-    {System.out.println("No information available (Info dictionary doesn't exist).");}
-    else
+    if(info != null)
     {
       System.out.println("Author: " + info.getAuthor());
       System.out.println("Title: " + info.getTitle());
       System.out.println("Subject: " + info.getSubject());
       System.out.println("CreationDate: " + info.getCreationDate());
     }
+    else
+    {System.out.println("No information available (Info dictionary doesn't exist).");}
+
+    // 2.1.2. Advanced metadata.
+    System.out.println("\nDocument metadata (XMP):");
+    Metadata metadata = document.getMetadata();
+    if(metadata != null)
+    {
+      try
+      {
+        org.w3c.dom.Document metadataContent = metadata.getContent();
+        System.out.println(toString(metadataContent));
+      }
+      catch (Exception e)
+      {System.out.println("Metadata extraction failed: " + e.getMessage());}
+    }
+    else
+    {System.out.println("No metadata available (Metadata stream doesn't exist).");}
 
     System.out.println("\nIterating through the indirect-object collection (please wait)...");
 
@@ -102,7 +125,7 @@ public class ParsingSample
       System.out.println("Next page:");
       printPageInfo(pages.get(pageIndex),pageIndex);
     }
-    
+
     return true;
   }
 
@@ -130,7 +153,7 @@ public class ParsingSample
       Resources resources = page.getResources();
       System.out.println(" Resources:");
       Map<PdfName, ? extends PdfObjectWrapper<?>> subResources;
-      
+
       subResources = resources.getFonts();
       if(subResources != null)
       {System.out.println("  Font count: " + subResources.size());}
@@ -179,5 +202,23 @@ public class ParsingSample
         break;
     }
     return index;
+  }
+
+  private String toString(
+    org.w3c.dom.Document document
+    )
+  {
+    try
+    {
+      Transformer transformer = TransformerFactory.newInstance().newTransformer();
+      StringWriter writer = new StringWriter();
+      transformer.transform(new DOMSource(document), new StreamResult(writer));
+      return writer.getBuffer().toString();
+    }
+    catch(Exception e)
+    {
+      System.out.println("Metadata content extraction failed: " + e.getMessage());
+      return "";
+    }
   }
 }

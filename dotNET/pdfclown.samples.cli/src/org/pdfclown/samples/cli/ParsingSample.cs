@@ -7,6 +7,8 @@ using org.pdfclown.objects;
 
 using System;
 using System.Collections.Generic;
+using io = System.IO;
+using System.Xml;
 
 namespace org.pdfclown.samples.cli
 {
@@ -28,18 +30,34 @@ namespace org.pdfclown.samples.cli
       Document document = file.Document;
 
       // 2. Document parsing.
-      // 2.1. Showing basic metadata...
+      // 2.1.1. Basic metadata.
       Console.WriteLine("\nDocument information:");
       Information info = document.Information;
-      if(info == null)
-      {Console.WriteLine("No information available (Info dictionary doesn't exist).");}
-      else
+      if(info != null)
       {
         Console.WriteLine("Author: " + info.Author);
         Console.WriteLine("Title: " + info.Title);
         Console.WriteLine("Subject: " + info.Subject);
         Console.WriteLine("CreationDate: " + info.CreationDate);
       }
+      else
+      {Console.WriteLine("No information available (Info dictionary doesn't exist).");}
+
+      // 2.1.2. Advanced metadata.
+      Console.WriteLine("\nDocument metadata (XMP):");
+      Metadata metadata = document.Metadata;
+      if(metadata != null)
+      {
+        try
+        {
+          XmlDocument metadataContent = metadata.Content;
+          Console.WriteLine(ToString(metadataContent));
+        }
+        catch (Exception e)
+        {Console.WriteLine("Metadata extraction failed: " + e.Message);}
+      }
+      else
+      {Console.WriteLine("No metadata available (Metadata stream doesn't exist).");}
 
       Console.WriteLine("\nIterating through the indirect-object collection (please wait)...");
 
@@ -141,6 +159,16 @@ namespace org.pdfclown.samples.cli
           break;
       }
       return index;
+    }
+
+    private string ToString(
+      XmlDocument document
+      )
+    {
+      io::StringWriter stringWriter = new io::StringWriter();
+      XmlTextWriter xmlTextWriter = new XmlTextWriter(stringWriter);
+      document.WriteTo(xmlTextWriter);
+      return stringWriter.ToString();
     }
   }
 }

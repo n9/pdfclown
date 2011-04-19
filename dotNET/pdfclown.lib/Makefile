@@ -11,7 +11,7 @@ BuildDir = ./build
 TargetDir = $(BuildDir)/package
 AssemblyTargetFile = $(Assembly).dll
 AssemblyTarget = $(TargetDir)/$(AssemblyTargetFile)
-AssemblyReferences = System.dll,System.Drawing.dll,System.Windows.Forms.dll,lib/ICSharpCode.SharpZipLib.dll
+AssemblyReferences = System.dll,System.Drawing.dll,System.Windows.Forms.dll,System.Xml.dll,lib/ICSharpCode.SharpZipLib.dll
 Compiler = gmcs
 # Documentation
 DocDir = $(BuildDir)/docs/api

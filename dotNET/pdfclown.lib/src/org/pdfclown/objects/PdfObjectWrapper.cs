@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.documents;
+using org.pdfclown.documents.interchange.metadata;
 using org.pdfclown.files;
 
 using System;
@@ -296,6 +297,45 @@ namespace org.pdfclown.objects
       {//TODO: assignment should trigger container.setDataObject!!!
         base.BaseObject = value;
         baseDataObject = (TDataObject)File.Resolve(value);
+      }
+    }
+
+    /**
+      <summary>Gets/Sets the metadata associated to this object.</summary>
+    */
+    public Metadata Metadata
+    {
+      get
+      {
+        PdfDictionary dictionary = Dictionary;
+        if(dictionary == null)
+          return null;
+
+        PdfDirectObject metadataObject = Dictionary[PdfName.Metadata];
+        return metadataObject != null ? new Metadata(metadataObject) : null;
+      }
+      set
+      {
+        PdfDictionary dictionary = Dictionary;
+        if(dictionary == null)
+          throw new NotSupportedException("Metadata can be attached only to PdfDictionary/PdfStream base data objects.");
+
+        dictionary[PdfName.Metadata] = value.BaseObject;
+      }
+    }
+    #endregion
+
+    #region private
+    private PdfDictionary Dictionary
+    {
+      get
+      {
+        if(BaseDataObject is PdfDictionary)
+          return BaseDataObject as PdfDictionary;
+        else if(BaseDataObject is PdfStream)
+          return (BaseDataObject as PdfStream).Header;
+        else
+          return null;
       }
     }
     #endregion

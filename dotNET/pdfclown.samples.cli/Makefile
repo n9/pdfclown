@@ -7,7 +7,7 @@ BuildDir = ./build
 TargetDir = $(BuildDir)/package
 AssemblyTargetFile = $(Assembly).exe
 AssemblyTarget = $(TargetDir)/$(AssemblyTargetFile)
-AssemblyReferences = ../pdfclown.lib/build/package/PDFClown.dll,System.Configuration.dll,System.Drawing.dll
+AssemblyReferences = ../pdfclown.lib/build/package/PDFClown.dll,System.Configuration.dll,System.Drawing.dll,System.Xml.dll
 Compiler = gmcs
 OutputDir = ./output
 # Documentation

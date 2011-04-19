@@ -35,7 +35,7 @@ import org.pdfclown.tokens.Keyword;
   PDF name object [PDF:1.6:3.2.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/19/11
 */
 public final class PdfName
   extends PdfSimpleObject<String>
@@ -281,6 +281,7 @@ public final class PdfName
   public static final PdfName Matrix = new PdfName("Matrix");
   public static final PdfName MaxLen = new PdfName("MaxLen");
   public static final PdfName MediaBox = new PdfName("MediaBox");
+  public static final PdfName Metadata = new PdfName("Metadata");
   public static final PdfName Mic = new PdfName("Mic");
   public static final PdfName MissingWidth = new PdfName("MissingWidth");
   public static final PdfName MK = new PdfName("MK");
@@ -429,6 +430,7 @@ public final class PdfName
   public static final PdfName WP = new PdfName("WP");
   public static final PdfName WS = new PdfName("WS");
   public static final PdfName X = new PdfName("X");
+  public static final PdfName XML = new PdfName("XML");
   public static final PdfName XObject = new PdfName("XObject");
   public static final PdfName XRef = new PdfName("XRef");
   public static final PdfName XStep = new PdfName("XStep");

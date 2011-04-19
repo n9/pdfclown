@@ -279,6 +279,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName Matrix = new PdfName("Matrix");
     public static readonly PdfName MaxLen = new PdfName("MaxLen");
     public static readonly PdfName MediaBox = new PdfName("MediaBox");
+    public static readonly PdfName Metadata = new PdfName("Metadata");
     public static readonly PdfName Mic = new PdfName("Mic");
     public static readonly PdfName MissingWidth = new PdfName("MissingWidth");
     public static readonly PdfName MK = new PdfName("MK");
@@ -427,6 +428,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName WP = new PdfName("WP");
     public static readonly PdfName WS = new PdfName("WS");
     public static readonly PdfName X = new PdfName("X");
+    public static readonly PdfName XML = new PdfName("XML");
     public static readonly PdfName XObject = new PdfName("XObject");
     public static readonly PdfName XRef = new PdfName("XRef");
     public static readonly PdfName XStep = new PdfName("XStep");

@@ -395,6 +395,7 @@
     <Compile Include="src\org\pdfclown\objects\IPdfSimpleObject.cs" />
     <Compile Include="src\org\pdfclown\objects\PdfSimpleObject.cs" />
     <Compile Include="src\org\pdfclown\util\math\geom\Quad.cs" />
+    <Compile Include="src\org\pdfclown\documents\interchange\metadata\Metadata.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
@@ -405,6 +406,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
