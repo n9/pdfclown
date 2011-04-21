@@ -375,7 +375,7 @@ public final class TextExtractor
   }
 
   /**
-    Gets the text strings matching the specified filter.
+    Processes the text strings matching the specified filter.
 
     @param textStrings Text strings to filter.
     @param filter Matching processor.
@@ -386,7 +386,13 @@ public final class TextExtractor
     )
   {
     Iterator<List<ITextString>> textStringsIterator = textStrings.values().iterator();
+    if(!textStringsIterator.hasNext())
+      return;
+
     Iterator<ITextString> areaTextStringsIterator = textStringsIterator.next().iterator();
+    if(!areaTextStringsIterator.hasNext())
+      return;
+
     List<TextChar> textChars = areaTextStringsIterator.next().getTextChars();
     int baseTextCharIndex = 0;
     int textCharIndex = 0;

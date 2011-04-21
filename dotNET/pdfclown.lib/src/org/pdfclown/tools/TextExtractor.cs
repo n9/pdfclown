@@ -420,7 +420,7 @@ namespace org.pdfclown.tools
     }
   
     /**
-      <summary>Gets the text strings matching the specified filter.</summary>
+      <summary>Processes the text strings matching the specified filter.</summary>
       <param name="textStrings">Text strings to filter.</param>
       <param name="filter">Matching processor.</param>
     */
@@ -429,8 +429,14 @@ namespace org.pdfclown.tools
       IIntervalFilter filter
       )
     {
-      IEnumerator<IList<ITextString>> textStringsIterator = textStrings.Values.GetEnumerator(); textStringsIterator.MoveNext();
-      IEnumerator<ITextString> areaTextStringsIterator = textStringsIterator.Current.GetEnumerator(); areaTextStringsIterator.MoveNext();
+      IEnumerator<IList<ITextString>> textStringsIterator = textStrings.Values.GetEnumerator();
+      if(!textStringsIterator.MoveNext())
+        return;
+
+      IEnumerator<ITextString> areaTextStringsIterator = textStringsIterator.Current.GetEnumerator();
+      if(!areaTextStringsIterator.MoveNext())
+        return;
+
       IList<TextChar> textChars = areaTextStringsIterator.Current.TextChars;
       int baseTextCharIndex = 0;
       int textCharIndex = 0;
