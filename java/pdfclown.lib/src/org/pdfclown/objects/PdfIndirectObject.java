@@ -39,7 +39,7 @@ import org.pdfclown.tokens.XRefEntry.UsageEnum;
   PDF indirect object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/25/11
 */
 public final class PdfIndirectObject
   extends PdfObject
@@ -237,35 +237,30 @@ public final class PdfIndirectObject
   {
     if(dataObject == null)
     {
-      try
+      switch (xrefEntry.getUsage())
       {
-        switch (xrefEntry.getUsage())
+        // Free entry (no data object at all).
+        case Free:
+          break;
+        // In-use entry (late-bound data object).
+        case InUse:
         {
-          // Free entry (no data object at all).
-          case Free:
-            break;
-          // In-use entry (late-bound data object).
-          case InUse:
-          {
-            FileParser parser = file.getReader().getParser();
-            // Retrieve the associated data object among the original objects!
-            parser.seek(xrefEntry.getOffset());
-            // Get the indirect data object!
-            dataObject = include(parser.parsePdfObject(4)); // NOTE: Skips the indirect-object header.
-            break;
-          }
-          case InUseCompressed:
-          {
-            // Get the object stream where its data object is stored!
-            ObjectStream objectStream = (ObjectStream)file.getIndirectObjects().get(xrefEntry.getStreamNumber()).getDataObject();
-            // Get the indirect data object!
-            dataObject = include(objectStream.get(xrefEntry.getNumber()));
-            break;
-          }
+          FileParser parser = file.getReader().getParser();
+          // Retrieve the associated data object among the original objects!
+          parser.seek(xrefEntry.getOffset());
+          // Get the indirect data object!
+          dataObject = include(parser.parsePdfObject(4)); // NOTE: Skips the indirect-object header.
+          break;
+        }
+        case InUseCompressed:
+        {
+          // Get the object stream where its data object is stored!
+          ObjectStream objectStream = (ObjectStream)file.getIndirectObjects().get(xrefEntry.getStreamNumber()).getDataObject();
+          // Get the indirect data object!
+          dataObject = include(objectStream.get(xrefEntry.getNumber()));
+          break;
         }
       }
-      catch(Exception e)
-      {throw new RuntimeException("Data object resolution failed.",e);}
     }
     return dataObject;
   }

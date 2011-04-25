@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -85,46 +85,6 @@ namespace org.pdfclown.bytes
       this.length = 0;
     }
 
-//TODO
-//     public Buffer(
-//       java.io.BufferedReader dataStream
-//       )
-//     {
-//       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//       try
-//       {
-//         char[] buffer = new char[8192]; int bufferLength;
-//         while((bufferLength = dataStream.read(buffer, 0, buffer.length)) != -1)
-//         {
-//           for(int i = 0; i < bufferLength; i++)
-//           {outputStream.write((byte)buffer[i]);}
-//         }
-//       }
-//       catch(IOException exception)
-//       {throw new RuntimeException(exception);}
-//
-//       this.data = outputStream.toByteArray();
-//       this.length = data.length;
-//     }
-//
-//     public Buffer(
-//       InputStream dataStream
-//       )
-//     {
-//       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//       try
-//       {
-//         byte[] buffer = new byte[8192]; int bufferLength;
-//         while((bufferLength = dataStream.read(buffer, 0, buffer.length)) != -1)
-//         {outputStream.write(buffer, 0, bufferLength);}
-//       }
-//       catch(IOException exception)
-//       {throw new RuntimeException(exception);}
-//
-//       this.data = outputStream.toByteArray();
-//       this.length = data.length;
-//     }
-
     public Buffer(
       byte[] data
       )
@@ -146,20 +106,8 @@ namespace org.pdfclown.bytes
       byte data
       )
     {
-      while(true)
-      {
-        try
-        {
-          this.data[this.length] = data;
-          break;
-        }
-        catch
-        {
-          if(!EnsureCapacity(1)) // Additional data did NOT exceed buffer capacity.
-            throw;
-        }
-      }
-      this.length++; // Buffer size update.
+      EnsureCapacity(1);
+      this.data[this.length++] = data;
       return this;
     }
 
@@ -174,20 +122,9 @@ namespace org.pdfclown.bytes
       int length
       )
     {
-      while(true)
-      {
-        try
-        {
-          Array.Copy(data, offset, this.data, this.length, length);
-          break;
-        }
-        catch
-        {
-          if(!EnsureCapacity(length)) // Additional data did NOT exceed buffer capacity.
-            throw;
-        }
-      }
-      this.length += length; // Buffer size update.
+      EnsureCapacity(length);
+      Array.Copy(data, offset, this.data, this.length, length);
+      this.length += length;
       return this;
     }
 
@@ -238,14 +175,9 @@ namespace org.pdfclown.bytes
       int length
       )
     {
-      try
-      {
-        // Shift left the trailing data block to override the deleted data!
-        Array.Copy(this.data, index + length, this.data, index, this.length - (index + length));
-      }
-      catch
-      {throw;}
-      this.length -= length; // Buffer size update.
+      // Shift left the trailing data block to override the deleted data!
+      Array.Copy(this.data, index + length, this.data, index, this.length - (index + length));
+      this.length -= length;
     }
 
     public byte[] Encode(
@@ -288,23 +220,12 @@ namespace org.pdfclown.bytes
       int length
       )
     {
-      while(true)
-      {
-        try
-        {
-          // Shift right the existing data block to make room for new data!
-          Array.Copy(this.data, index, this.data, index + length, this.length - index);
-          break;
-        }
-        catch
-        {
-          if(!EnsureCapacity(length)) // Additional data did NOT exceed buffer capacity.
-            throw;
-        }
-      }
+      EnsureCapacity(length);
+      // Shift right the existing data block to make room for new data!
+      Array.Copy(this.data, index, this.data, index + length, this.length - index);
       // Insert additional data!
       Array.Copy(data, offset, this.data, index, length);
-      this.length += length; // Buffer size update.
+      this.length += length;
     }
 
     public void Insert(
@@ -368,8 +289,17 @@ namespace org.pdfclown.bytes
 
     public long Position
     {
-      get{return position;}
-      set{position = (int)value;}
+      get
+      {return position;}
+      set
+      {
+        if(value < 0)
+        {value = 0;}
+        else if(value > data.Length)
+        {value = data.Length;}
+
+        position = (int)value;
+      }
     }
 
     public void Read(
@@ -390,10 +320,10 @@ namespace org.pdfclown.bytes
     public int ReadByte(
       )
     {
-      try
-      {return data[position++];}
-      catch
-      {return -1;}
+      if(position >= data.Length)
+        return -1; //TODO:harmonize with other Read*() method EOF exceptions!!!
+
+      return data[position++];
     }
 
     public int ReadInt(
@@ -416,21 +346,19 @@ namespace org.pdfclown.bytes
     public string ReadLine(
       )
     {
-      text::StringBuilder buffer = new text::StringBuilder();
-      try
-      {
-        while(true)
-        {
-          int c = data[position++];
-          if(c == '\r'
-            || c == '\n')
-            break;
+      if(position >= data.Length)
+        throw new EndOfStreamException();
 
-          buffer.Append((char)c);
-        }
+      text::StringBuilder buffer = new text::StringBuilder();
+      while(position < data.Length)
+      {
+        int c = data[position++];
+        if(c == '\r'
+          || c == '\n')
+          break;
+
+        buffer.Append((char)c);
       }
-      catch(IndexOutOfRangeException)
-      {throw new EndOfStreamException();}
       return buffer.ToString();
     }
 
@@ -454,10 +382,10 @@ namespace org.pdfclown.bytes
     public sbyte ReadSignedByte(
       )
     {
-      try
-      {return (sbyte)data[position++];}
-      catch(IndexOutOfRangeException)
-      {throw new EndOfStreamException();}
+      if(position >= data.Length)
+        throw new EndOfStreamException();
+
+      return (sbyte)data[position++];
     }
 
     public ushort ReadUnsignedShort(
@@ -471,12 +399,12 @@ namespace org.pdfclown.bytes
     public void Seek(
       long offset
       )
-    {position = (int)offset;}
+    {Position = offset;}
 
     public void Skip(
       long offset
       )
-    {position += (int)offset;}
+    {Position = position + offset;}
 
     #region IDataWrapper
     public byte[] ToByteArray(
@@ -490,7 +418,10 @@ namespace org.pdfclown.bytes
 
     #region IStream
     public long Length
-    {get{return length;}}
+    {
+      get
+      {return length;}
+    }
 
     #region IDisposable
     public void Dispose(
@@ -531,14 +462,14 @@ namespace org.pdfclown.bytes
       <summary>Check whether the buffer has sufficient room for
       adding data.</summary>
     */
-    private bool EnsureCapacity(
+    private void EnsureCapacity(
       int additionalLength
       )
     {
       int minCapacity = this.length + additionalLength;
       // Is additional data within the buffer capacity?
       if(minCapacity <= this.data.Length)
-        return false; // OK -- No change.
+        return;
 
       // Additional data exceed buffer capacity.
       // Reallocate the buffer!
@@ -550,7 +481,6 @@ namespace org.pdfclown.bytes
         ];
       Array.Copy(this.data, 0, data, 0, this.length);
       this.data = data;
-      return true; // Reallocation happened.
     }
     #endregion
     #endregion

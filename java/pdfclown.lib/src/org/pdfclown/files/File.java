@@ -45,7 +45,6 @@ import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfReference;
-import org.pdfclown.tokens.FileFormatException;
 import org.pdfclown.tokens.Reader;
 import org.pdfclown.tokens.Reader.FileInfo;
 import org.pdfclown.tokens.Writer;
@@ -56,7 +55,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/25/11
 */
 public final class File
   implements Closeable
@@ -145,8 +144,7 @@ public final class File
 
   public File(
     String path
-    ) throws FileFormatException,
-      java.io.FileNotFoundException
+    ) throws java.io.FileNotFoundException
   {
     this(
       new FileInputStream(
@@ -158,7 +156,7 @@ public final class File
 
   public File(
     IInputStream stream
-    ) throws FileFormatException
+    )
   {
     reader = new Reader(stream, this);
 

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,7 +36,7 @@ import java.io.UnsupportedEncodingException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 04/25/11
 */
 public final class Encoding
 {
@@ -52,7 +52,7 @@ public final class Encoding
   {
     try
     {return new String(value, CharsetName.ISO88591);}
-    catch(Exception e)
+    catch(UnsupportedEncodingException e)
     {throw new RuntimeException(e);}
   }
 
@@ -72,7 +72,7 @@ public final class Encoding
   {
     try
     {return new String(value, index, length, CharsetName.ISO88591);}
-    catch(Exception e)
+    catch(UnsupportedEncodingException e)
     {throw new RuntimeException(e);}
   }
 

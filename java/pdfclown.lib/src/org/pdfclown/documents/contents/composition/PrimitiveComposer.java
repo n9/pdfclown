@@ -99,7 +99,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 04/16/11
+  @version 0.1.1, 04/25/11
 */
 public final class PrimitiveComposer
 {
@@ -1018,10 +1018,8 @@ public final class PrimitiveComposer
         // Add the text!
         add(new ShowSimpleText(font.encode(value)));
       }
-      catch(Exception e)
-      {throw new RuntimeException("Failed to show text.", e);}
       finally
-      {end(); /* Ends the text object. */}
+      {end();} // Ends the text object.
     }
     else
     {
@@ -1094,15 +1092,11 @@ public final class PrimitiveComposer
           // Add the text!
           add(new ShowSimpleText(font.encode(value)));
         }
-        catch(Exception e)
-        {throw new RuntimeException("Failed to show text.", e);}
         finally
-        {end(); /* Ends the text object. */}
+        {end();} // Ends the text object.
       }
-      catch(Exception e)
-      {throw new RuntimeException("Failed to show text.", e);}
       finally
-      {end(); /* Ends the local state. */}
+      {end();} // Ends the local state.
     }
     return frame;
   }
@@ -1341,10 +1335,8 @@ public final class PrimitiveComposer
         );
       showXObject(name);
     }
-    catch (Exception e)
-    {throw new RuntimeException("Failed to show the xobject.",e);}
     finally
-    {end(); /* Ends the local state. */}
+    {end();} // Ends the local state.
   }
 
   /**

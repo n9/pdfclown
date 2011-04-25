@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
   backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/19/11
+  @version 0.1.1, 04/25/11
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
 {
@@ -269,7 +269,7 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
         {
           try
           {feature = feature.getClass().getField(((Enum<?>)feature).name());}
-          catch(Exception e)
+          catch(NoSuchFieldException e)
           {throw new RuntimeException(e);}
         }
 //TODO:remove?

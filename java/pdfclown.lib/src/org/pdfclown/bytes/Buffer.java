@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,7 +40,7 @@ import org.pdfclown.util.ConvertUtils;
   Byte buffer.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/25/11
 */
 public final class Buffer
   implements IBuffer
@@ -103,8 +103,8 @@ public final class Buffer
         {outputStream.write((byte)buffer[i]);}
       }
     }
-    catch(IOException exception)
-    {throw new RuntimeException(exception);}
+    catch(IOException e)
+    {throw new RuntimeException(e);}
 
     this.data = outputStream.toByteArray();
     this.length = data.length;
@@ -121,8 +121,8 @@ public final class Buffer
       while((bufferLength = dataStream.read(buffer, 0, buffer.length)) != -1)
       {outputStream.write(buffer, 0, bufferLength);}
     }
-    catch(IOException exception)
-    {throw new RuntimeException(exception);}
+    catch(IOException e)
+    {throw new RuntimeException(e);}
 
     this.data = outputStream.toByteArray();
     this.length = data.length;
@@ -155,20 +155,8 @@ public final class Buffer
     byte data
     )
   {
-    while(true)
-    {
-      try
-      {
-        this.data[this.length] = data;
-        break;
-      }
-      catch(Exception e)
-      {
-        if(!ensureCapacity(1)) // Additional data did NOT exceed buffer capacity.
-          throw new RuntimeException(e);
-      }
-    }
-    this.length++; // Buffer size update.
+    ensureCapacity(1);
+    this.data[this.length++] = data;
     return this;
   }
 
@@ -185,20 +173,9 @@ public final class Buffer
     int length
     )
   {
-    while(true)
-    {
-      try
-      {
-        System.arraycopy(data, offset, this.data, this.length, length);
-        break;
-      }
-      catch(Exception e)
-      {
-        if(!ensureCapacity(length)) // Additional data did NOT exceed buffer capacity.
-          throw new RuntimeException(e);
-      }
-    }
-    this.length += length; // Buffer size update.
+    ensureCapacity(length);
+    System.arraycopy(data, offset, this.data, this.length, length);
+    this.length += length;
     return this;
   }
 
@@ -239,14 +216,9 @@ public final class Buffer
     int length
     )
   {
-    try
-    {
-      // Shift left the trailing data block to override the deleted data!
-      System.arraycopy(this.data, index + length, this.data, index, this.length - (index + length));
-    }
-    catch(Exception e)
-    {throw new RuntimeException(e);}
-    this.length -= length; // Buffer size update.
+    // Shift left the trailing data block to override the deleted data!
+    System.arraycopy(this.data, index + length, this.data, index, this.length - (index + length));
+    this.length -= length;
   }
 
   @Override
@@ -300,23 +272,12 @@ public final class Buffer
     int length
     )
   {
-    while(true)
-    {
-      try
-      {
-        // Shift right the existing data block to make room for new data!
-        System.arraycopy(this.data, index, this.data, index + length, this.length - index);
-        break;
-      }
-      catch(Exception e)
-      {
-        if(!ensureCapacity(length)) // Additional data did NOT exceed buffer capacity.
-          throw new RuntimeException(e);
-      }
-    }
+    ensureCapacity(length);
+    // Shift right the existing data block to make room for new data!
+    System.arraycopy(this.data, index, this.data, index + length, this.length - index);
     // Insert additional data!
     System.arraycopy(data, offset, this.data, index, length);
-    this.length += length; // Buffer size update.
+    this.length += length;
   }
 
   @Override
@@ -401,23 +362,18 @@ public final class Buffer
     int length
     )
   {
-    try
-    {
-      System.arraycopy(this.data, position, data, offset, length);
-      position += length;
-    }
-    catch(Exception e)
-    {throw new RuntimeException(e);}
+    System.arraycopy(this.data, position, data, offset, length);
+    position += length;
   }
 
   @Override
   public byte readByte(
     ) throws EOFException
   {
-    try
-    {return data[position++];}
-    catch(ArrayIndexOutOfBoundsException e)
-    {throw new EOFException();}
+    if(position >= data.length)
+      throw new EOFException();
+
+    return data[position++];
   }
 
   @Override
@@ -443,21 +399,19 @@ public final class Buffer
   public String readLine(
     ) throws EOFException
   {
-    StringBuilder buffer = new StringBuilder();
-    try
-    {
-      while(true)
-      {
-        int c = data[position++];
-        if(c == '\r'
-          || c == '\n')
-          break;
+    if(position >= data.length)
+      throw new EOFException();
 
-        buffer.append((char)c);
-      }
+    StringBuilder buffer = new StringBuilder();
+    while(position < data.length)
+    {
+      int c = data[position++];
+      if(c == '\r'
+        || c == '\n')
+        break;
+
+      buffer.append((char)c);
     }
-    catch(ArrayIndexOutOfBoundsException e)
-    {throw new EOFException();}
     return buffer.toString();
   }
 
@@ -484,10 +438,10 @@ public final class Buffer
   public int readUnsignedByte(
     ) throws EOFException
   {
-    try
-    {return (data[position++] & 0xFF);}
-    catch(ArrayIndexOutOfBoundsException e)
-    {throw new EOFException();}
+    if(position >= data.length)
+      throw new EOFException();
+
+    return (data[position++] & 0xFF);
   }
 
   @Override
@@ -510,7 +464,7 @@ public final class Buffer
   public void seek(
     long position
     )
-  {this.position = (int)position;}
+  {setPosition(position);}
 
   @Override
   public void setByteOrder(
@@ -522,13 +476,20 @@ public final class Buffer
   public void setPosition(
     long value
     )
-  {position = (int)value;}
+  {
+    if(value < 0)
+    {value = 0;}
+    else if(value > data.length)
+    {value = data.length;}
+
+    position = (int)value;
+  }
 
   @Override
   public void skip(
     long offset
     )
-  {position += (int)offset;}
+  {setPosition(position + offset);}
 
   // <IDataWrapper>
   @Override
@@ -590,14 +551,14 @@ public final class Buffer
   /**
     Check whether the buffer capacity has sufficient room for adding data.
   */
-  protected boolean ensureCapacity(
+  protected void ensureCapacity(
     int additionalLength
     )
   {
     int minCapacity = this.length + additionalLength;
     // Is additional data within the buffer capacity?
     if(minCapacity <= this.data.length)
-      return false; // OK -- No change.
+      return;
 
     // Additional data exceed buffer capacity.
     // Reallocate the buffer!
@@ -609,7 +570,6 @@ public final class Buffer
       ];
     System.arraycopy(this.data, 0, data, 0, this.length);
     this.data = data;
-    return true; // Reallocation happened.
   }
 
   @Override

@@ -78,100 +78,95 @@ namespace org.pdfclown.documents.contents.fonts
       IDictionary<ByteArray,int> codes = new Dictionary<ByteArray,int>();
       {
         int itemCount = 0;
-        try
+        while(MoveNext())
         {
-          while(MoveNext())
+          switch(TokenType)
           {
-            switch(TokenType)
+            case TokenTypeEnum.Keyword:
             {
-              case TokenTypeEnum.Keyword:
+              string operator_ = (string)Token;
+              if(operator_.Equals(BeginBaseFontCharOperator)
+                || operator_.Equals(BeginCIDCharOperator))
               {
-                string operator_ = (string)Token;
-                if(operator_.Equals(BeginBaseFontCharOperator)
-                  || operator_.Equals(BeginCIDCharOperator))
+                /*
+                  NOTE: The first element on each line is the input code of the template font;
+                  the second element is the code or name of the character.
+                */
+                for(
+                  int itemIndex = 0;
+                  itemIndex < itemCount;
+                  itemIndex++
+                  )
                 {
-                  /*
-                    NOTE: The first element on each line is the input code of the template font;
-                    the second element is the code or name of the character.
-                  */
-                  for(
-                    int itemIndex = 0;
-                    itemIndex < itemCount;
-                    itemIndex++
-                    )
-                  {
-                    MoveNext();
-                    ByteArray inputCode = new ByteArray(ParseInputCode());
-                    MoveNext();
-                    codes[inputCode] = ParseUnicode();
-                  }
+                  MoveNext();
+                  ByteArray inputCode = new ByteArray(ParseInputCode());
+                  MoveNext();
+                  codes[inputCode] = ParseUnicode();
                 }
-                else if(operator_.Equals(BeginBaseFontRangeOperator)
-                  || operator_.Equals(BeginCIDRangeOperator))
+              }
+              else if(operator_.Equals(BeginBaseFontRangeOperator)
+                || operator_.Equals(BeginCIDRangeOperator))
+              {
+                /*
+                  NOTE: The first and second elements in each line are the beginning and
+                  ending valid input codes for the template font; the third element is
+                  the beginning character code for the range.
+                */
+                for(
+                  int itemIndex = 0;
+                  itemIndex < itemCount;
+                  itemIndex++
+                  )
                 {
-                  /*
-                    NOTE: The first and second elements in each line are the beginning and
-                    ending valid input codes for the template font; the third element is
-                    the beginning character code for the range.
-                  */
-                  for(
-                    int itemIndex = 0;
-                    itemIndex < itemCount;
-                    itemIndex++
-                    )
+                  // 1. Beginning input code.
+                  MoveNext();
+                  byte[] beginInputCode = ParseInputCode();
+                  // 2. Ending input code.
+                  MoveNext();
+                  byte[] endInputCode = ParseInputCode();
+                  // 3. Character codes.
+                  MoveNext();
+                  switch(TokenType)
                   {
-                    // 1. Beginning input code.
-                    MoveNext();
-                    byte[] beginInputCode = ParseInputCode();
-                    // 2. Ending input code.
-                    MoveNext();
-                    byte[] endInputCode = ParseInputCode();
-                    // 3. Character codes.
-                    MoveNext();
-                    switch(TokenType)
+                    case TokenTypeEnum.ArrayBegin:
                     {
-                      case TokenTypeEnum.ArrayBegin:
+                      byte[] inputCode = beginInputCode;
+                      while(MoveNext()
+                        && TokenType != TokenTypeEnum.ArrayEnd)
                       {
-                        byte[] inputCode = beginInputCode;
-                        while(MoveNext()
-                          && TokenType != TokenTypeEnum.ArrayEnd)
-                        {
-                          codes[new ByteArray(inputCode)] = ParseUnicode();
-                          OperationUtils.Increment(inputCode);
-                        }
-                        break;
+                        codes[new ByteArray(inputCode)] = ParseUnicode();
+                        OperationUtils.Increment(inputCode);
                       }
-                      default:
+                      break;
+                    }
+                    default:
+                    {
+                      byte[] inputCode = beginInputCode;
+                      int charCode = ParseUnicode();
+                      int endCharCode = charCode + (ConvertUtils.ByteArrayToInt(endInputCode) - ConvertUtils.ByteArrayToInt(beginInputCode));
+                      while(true)
                       {
-                        byte[] inputCode = beginInputCode;
-                        int charCode = ParseUnicode();
-                        int endCharCode = charCode + (ConvertUtils.ByteArrayToInt(endInputCode) - ConvertUtils.ByteArrayToInt(beginInputCode));
-                        while(true)
-                        {
-                          codes[new ByteArray(inputCode)] = charCode;
-                          if(charCode == endCharCode)
-                            break;
+                        codes[new ByteArray(inputCode)] = charCode;
+                        if(charCode == endCharCode)
+                          break;
 
-                          OperationUtils.Increment(inputCode);
-                          charCode++;
-                        }
-                        break;
+                        OperationUtils.Increment(inputCode);
+                        charCode++;
                       }
+                      break;
                     }
                   }
                 }
-                break;
               }
-              case TokenTypeEnum.Integer:
-              {
-                itemCount = (int)Token;
-                break;
-              }
+              break;
+            }
+            case TokenTypeEnum.Integer:
+            {
+              itemCount = (int)Token;
+              break;
             }
           }
         }
-        catch(FileFormatException fileFormatException)
-        {throw new Exception("Failed character map parsing.", fileFormatException);}
       }
       return codes;
     }

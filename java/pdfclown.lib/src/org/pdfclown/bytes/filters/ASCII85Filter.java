@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * J. James Jack, Ph.D., Senior Consultant at Symyx Technologies UK Ltd. (original
@@ -27,11 +27,12 @@
 
 package org.pdfclown.bytes.filters;
 
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.objects.PdfDictionary;
-
-import java.io.ByteArrayOutputStream;
 
 /**
   ASCII base-85 filter [PDF:1.6:3.3.2].
@@ -39,7 +40,7 @@ import java.io.ByteArrayOutputStream;
   @author J. James Jack (james{dot}jack{at}symyx{dot}com)
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 04/25/11
 */
 @PDF(VersionEnum.PDF10)
 public final class ASCII85Filter
@@ -156,15 +157,6 @@ public final class ASCII85Filter
     for(int i = 0; i < count; i++)
     {appendChar(buffer, (char)encodedBlock[i], params);}
   }
-
-  private static byte[] getBytes(
-    String data
-    )
-  {
-    try{return data.getBytes(Encoding);}
-    catch(Exception e)
-    {throw new RuntimeException(e);}
-  }
   // </private>
   // </interface>
   // </static>
@@ -194,7 +186,7 @@ public final class ASCII85Filter
     String dataString;
     try
     {dataString = new String(data,Encoding).trim();}
-    catch(Exception e)
+    catch(UnsupportedEncodingException e)
     {throw new RuntimeException(e);}
 
     // Stripping prefix and suffix...
@@ -239,7 +231,7 @@ public final class ASCII85Filter
 
       if(processChar)
       {
-        params.tuple += ((int)(dataChar - AsciiOffset) * Pow85[count]);
+        params.tuple += ((dataChar - AsciiOffset) * Pow85[count]);
         count++;
         if(count == encodedBlock.length)
         {
@@ -275,44 +267,47 @@ public final class ASCII85Filter
     PdfDictionary parameters
     )
   {
-      byte[] decodedBlock = new byte[4];
-      byte[] encodedBlock = new byte[5];
+    byte[] decodedBlock = new byte[4];
+    byte[] encodedBlock = new byte[5];
 
-      Params params = new Params();
+    Params params = new Params();
 
-      StringBuilder buffer = new StringBuilder((int)(data.length * (encodedBlock.length / decodedBlock.length)));
+    StringBuilder buffer = new StringBuilder((data.length * (encodedBlock.length / decodedBlock.length)));
 
-      if(EnforceMarks)
-      {appendString(buffer, PrefixMark, params);}
+    if(EnforceMarks)
+    {appendString(buffer, PrefixMark, params);}
 
-      int count = 0;
-      for(byte dataByte : data)
+    int count = 0;
+    for(byte dataByte : data)
+    {
+      if(count >= decodedBlock.length - 1)
       {
-        if(count >= decodedBlock.length - 1)
-        {
-          params.tuple |= dataByte;
-          if(params.tuple == 0)
-          {appendChar(buffer, 'z', params);}
-          else
-          {encodeBlock(encodedBlock, buffer, params);}
-          params.tuple = 0;
-          count = 0;
-        }
+        params.tuple |= dataByte;
+        if(params.tuple == 0)
+        {appendChar(buffer, 'z', params);}
         else
-        {
-          params.tuple |= (int)(dataByte << (24 - (count * 8)));
-          count++;
-        }
+        {encodeBlock(encodedBlock, buffer, params);}
+        params.tuple = 0;
+        count = 0;
       }
+      else
+      {
+        params.tuple |= (dataByte << (24 - (count * 8)));
+        count++;
+      }
+    }
 
-      // if we have some bytes left over at the end..
-      if(count > 0)
-      {encodeBlock(encodedBlock, count + 1, buffer, params);}
+    // if we have some bytes left over at the end..
+    if(count > 0)
+    {encodeBlock(encodedBlock, count + 1, buffer, params);}
 
-      if(EnforceMarks)
-      {appendString(buffer, SuffixMark, params);}
+    if(EnforceMarks)
+    {appendString(buffer, SuffixMark, params);}
 
-      return getBytes(buffer.toString());
+    try
+    {return buffer.toString().getBytes(Encoding);}
+    catch(UnsupportedEncodingException e)
+    {throw new RuntimeException(e);}
   }
   // </public>
   // </interface>

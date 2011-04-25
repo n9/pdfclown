@@ -37,7 +37,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF file writer implementing compressed cross-reference stream [PDF:1.6:3.4.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/17/11
+  @version 0.1.1, 04/25/11
 */
 final class CompressedWriter
   extends Writer
@@ -58,62 +58,57 @@ final class CompressedWriter
   protected void writeIncremental(
     )
   {
-    try
+    // 1. Original content (head, body and previous trailer).
+    FileParser parser = file.getReader().getParser();
+    stream.write(parser.getStream());
+
+    // 2. Body update (modified indirect objects insertion).
+    XRefEntry xrefStreamEntry;
     {
-      // 1. Original content (head, body and previous trailer).
-      FileParser parser = file.getReader().getParser();
-      stream.write(parser.getStream());
+      // 2.1. Content indirect objects.
+      IndirectObjects indirectObjects = file.getIndirectObjects();
 
-      // 2. Body update (modified indirect objects insertion).
-      XRefEntry xrefStreamEntry;
+      // Create the xref stream indirect object!
+      /*
+        NOTE: Incremental xref table comprises multiple sections each one composed by multiple subsections;
+        this update adds a new section.
+      */
+      /*
+        NOTE: This xref stream indirect object is purposely temporary (i.e. not registered into the file's
+        indirect objects collection).
+      */
+      XRefStream xrefStream;
+      PdfIndirectObject xrefStreamIndirectObject = new PdfIndirectObject(
+        file,
+        xrefStream = new XRefStream(file),
+        xrefStreamEntry = new XRefEntry(indirectObjects.size(), 0, 0, XRefEntry.UsageEnum.InUse)
+        );
+
+      XRefEntry prevFreeEntry = null;
+      for(PdfIndirectObject indirectObject : indirectObjects.getModifiedObjects().values())
       {
-        // 2.1. Content indirect objects.
-        IndirectObjects indirectObjects = file.getIndirectObjects();
-
-        // Create the xref stream indirect object!
-        /*
-          NOTE: Incremental xref table comprises multiple sections each one composed by multiple subsections;
-          this update adds a new section.
-        */
-        /*
-          NOTE: This xref stream indirect object is purposely temporary (i.e. not registered into the file's
-          indirect objects collection).
-        */
-        XRefStream xrefStream;
-        PdfIndirectObject xrefStreamIndirectObject = new PdfIndirectObject(
-          file,
-          xrefStream = new XRefStream(file),
-          xrefStreamEntry = new XRefEntry(indirectObjects.size(), 0, 0, XRefEntry.UsageEnum.InUse)
-          );
-
-        XRefEntry prevFreeEntry = null;
-        for(PdfIndirectObject indirectObject : indirectObjects.getModifiedObjects().values())
-        {
-          prevFreeEntry = addXRefEntry(
-            indirectObject.getXrefEntry(),
-            indirectObject,
-            xrefStream,
-            prevFreeEntry
-            );
-        }
-        if(prevFreeEntry != null)
-        {prevFreeEntry.setOffset(0);} // Linking back to the first free object. NOTE: The first entry in the table (object number 0) is always free.
-
-        // 2.2. XRef stream.
-        xrefStream.getHeader().put(PdfName.Prev,new PdfInteger((int)parser.retrieveXRefOffset()));
-        addXRefEntry(
-          xrefStreamEntry,
-          xrefStreamIndirectObject,
+        prevFreeEntry = addXRefEntry(
+          indirectObject.getXrefEntry(),
+          indirectObject,
           xrefStream,
-          null
+          prevFreeEntry
           );
       }
+      if(prevFreeEntry != null)
+      {prevFreeEntry.setOffset(0);} // Linking back to the first free object. NOTE: The first entry in the table (object number 0) is always free.
 
-      // 3. Tail.
-      writeTail(xrefStreamEntry.getOffset());
+      // 2.2. XRef stream.
+      xrefStream.getHeader().put(PdfName.Prev,new PdfInteger((int)parser.retrieveXRefOffset()));
+      addXRefEntry(
+        xrefStreamEntry,
+        xrefStreamIndirectObject,
+        xrefStream,
+        null
+        );
     }
-    catch(Exception e)
-    {throw new RuntimeException(e);}
+
+    // 3. Tail.
+    writeTail(xrefStreamEntry.getOffset());
   }
 
   @Override
@@ -125,55 +120,55 @@ final class CompressedWriter
   protected void writeStandard(
     )
   {
-    try
+    // 1. Header [PDF:1.6:3.4.1].
+    writeHeader();
+
+    // 2. Body [PDF:1.6:3.4.2,3,7].
+    XRefEntry xrefStreamEntry;
     {
-      // 1. Header [PDF:1.6:3.4.1].
-      writeHeader();
+      // 2.1. Content indirect objects.
+      IndirectObjects indirectObjects = file.getIndirectObjects();
 
-      // 2. Body [PDF:1.6:3.4.2,3,7].
-      XRefEntry xrefStreamEntry;
+      // Create the xref stream indirect object!
+      /*
+        NOTE: A standard xref stream comprises just one section composed by just one subsection.
+        The xref stream is generated on-the-fly and kept volatile not to interfere with the existing
+        file structure.
+      */
+      /*
+        NOTE: This xref stream indirect object is purposely temporary (i.e. not registered into the file's
+        indirect objects collection).
+      */
+      XRefStream xrefStream;
+      PdfIndirectObject xrefStreamIndirectObject = new PdfIndirectObject(
+        file,
+        xrefStream = new XRefStream(file),
+        xrefStreamEntry = new XRefEntry(indirectObjects.size(), 0, 0, XRefEntry.UsageEnum.InUse)
+        );
+
+      XRefEntry prevFreeEntry = null;
+      for(PdfIndirectObject indirectObject : indirectObjects)
       {
-        // 2.1. Content indirect objects.
-        IndirectObjects indirectObjects = file.getIndirectObjects();
-
-        // Create the xref stream indirect object!
-        /*
-          NOTE: A standard xref stream comprises just one section composed by just one subsection.
-          The xref stream is generated on-the-fly and kept volatile not to interfere with the existing
-          file structure.
-        */
-        /*
-          NOTE: This xref stream indirect object is purposely temporary (i.e. not registered into the file's
-          indirect objects collection).
-        */
-        XRefStream xrefStream;
-        PdfIndirectObject xrefStreamIndirectObject = new PdfIndirectObject(
-          file,
-          xrefStream = new XRefStream(file),
-          xrefStreamEntry = new XRefEntry(indirectObjects.size(), 0, 0, XRefEntry.UsageEnum.InUse)
-          );
-
-        XRefEntry prevFreeEntry = null;
-        for(PdfIndirectObject indirectObject : indirectObjects)
+        if(indirectObject.getDataObject() instanceof XRefStream)
         {
-          if(indirectObject.getDataObject() instanceof XRefStream)
-          {
-            /*
-              NOTE: Existing xref streams MUST be suppressed,
-              temporarily replacing them with free entries.
-            */
-            indirectObject = new PdfIndirectObject(
-              file,
-              null,
-              new XRefEntry(
-                indirectObject.getReference().getObjectNumber(),
-                XRefEntry.GenerationUnreusable,
-                0,
-                XRefEntry.UsageEnum.Free
-                )
-              );
-          }
+          /*
+            NOTE: Existing xref streams MUST be suppressed,
+            temporarily replacing them with free entries.
+          */
+          indirectObject = new PdfIndirectObject(
+            file,
+            null,
+            new XRefEntry(
+              indirectObject.getReference().getObjectNumber(),
+              XRefEntry.GenerationUnreusable,
+              0,
+              XRefEntry.UsageEnum.Free
+              )
+            );
+        }
 
+        try
+        {
           prevFreeEntry = addXRefEntry(
             indirectObject.getXrefEntry().clone(), // NOTE: Xref entry is cloned to preserve the original one.
             indirectObject,
@@ -181,22 +176,22 @@ final class CompressedWriter
             prevFreeEntry
             );
         }
-        prevFreeEntry.setOffset(0); // Linking back to the first free object. NOTE: The first entry in the table (object number 0) is always free.
-
-        // 2.2. XRef stream.
-        addXRefEntry(
-          xrefStreamEntry,
-          xrefStreamIndirectObject,
-          xrefStream,
-          null
-          );
+        catch(CloneNotSupportedException e)
+        {throw new RuntimeException("XRef entry addition failed.", e);}
       }
+      prevFreeEntry.setOffset(0); // Linking back to the first free object. NOTE: The first entry in the table (object number 0) is always free.
 
-      // 3. Tail.
-      writeTail(xrefStreamEntry.getOffset());
+      // 2.2. XRef stream.
+      addXRefEntry(
+        xrefStreamEntry,
+        xrefStreamIndirectObject,
+        xrefStream,
+        null
+        );
     }
-    catch(Exception e)
-    {throw new RuntimeException(e);}
+
+    // 3. Tail.
+    writeTail(xrefStreamEntry.getOffset());
   }
   // </protected>
 

@@ -45,13 +45,14 @@ import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.ConvertUtils;
+import org.pdfclown.util.parsers.ParseException;
 
 /**
   Cross-reference stream containing cross-reference information [PDF:1.6:3.4.7].
   <p>It is alternative to the classic cross-reference table.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/25/11
 */
 public final class XRefStream
   extends PdfStream
@@ -412,12 +413,12 @@ public final class XRefStream
                   break;
                 }
                 default:
-                  throw new RuntimeException("Unknown xref entry type '" + entryFieldType + "'.");
+                  throw new UnsupportedOperationException("Unknown xref entry type '" + entryFieldType + "'.");
               }
             }
           }
           catch(EOFException e)
-          {throw new RuntimeException("Unexpected EOF (malformed cross-reference stream object).",e);}
+          {throw new ParseException("Unexpected EOF (malformed cross-reference stream object).",e);}
         }
       }
     }

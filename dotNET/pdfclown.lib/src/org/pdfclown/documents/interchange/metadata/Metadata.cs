@@ -87,8 +87,6 @@ namespace org.pdfclown.documents.interchange.metadata
         XmlDocument content = new XmlDocument();
         try
         {content.Load(contentStream);}
-        catch(Exception e)
-        {throw new Exception("XML parsing failed.", e);}
         finally
         {contentStream.Close();}
         return content;

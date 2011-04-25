@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -26,6 +26,7 @@
 package org.pdfclown.documents.contents.fonts;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -36,7 +37,7 @@ import java.util.regex.Pattern;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 04/25/11
 */
 final class AfmParser
 {
@@ -100,164 +101,159 @@ final class AfmParser
   private void load(
     )
   {
-    metrics = new FontMetrics();
-
-    load_fontHeader();
-    load_charMetrics();
-    load_kerningData();
+    try
+    {
+      metrics = new FontMetrics();
+      loadFontHeader();
+      loadCharMetrics();
+      loadKerningData();
+    }
+    catch(IOException e)
+    {throw new RuntimeException(e);}
   }
 
   /**
     Loads the font header [AFM:4.1:3,4,4.1,4.2].
+
+    @throws IOException
   */
-  private void load_fontHeader(
-    )
+  private void loadFontHeader(
+    ) throws IOException
   {
     String line;
     Pattern linePattern = Pattern.compile("(\\S+)\\s+(.+)");
-    try
+    while((line = fontData.readLine()) != null)
     {
-      while((line = fontData.readLine()) != null)
-      {
-        Matcher lineMatcher = linePattern.matcher(line);
-        if(!lineMatcher.find())
-          continue;
+      Matcher lineMatcher = linePattern.matcher(line);
+      if(!lineMatcher.find())
+        continue;
 
-        String key = lineMatcher.group(1);
-        if(key.equals("FontName"))
-        {metrics.fontName = lineMatcher.group(2);}
-        else if (key.equals("Weight"))
-        {metrics.weight = lineMatcher.group(2);}
-        else if (key.equals("ItalicAngle"))
-        {metrics.italicAngle = Float.valueOf(lineMatcher.group(2));}
-        else if (key.equals("IsFixedPitch"))
-        {metrics.isFixedPitch = lineMatcher.group(2).equals("true");}
-        else if (key.equals("FontBBox"))
-        {
-          String[] coordinates = lineMatcher.group(2).split("\\s+");
-          metrics.xMin = Short.valueOf(coordinates[0]);
-          metrics.yMin = Short.valueOf(coordinates[1]);
-          metrics.xMax = Short.valueOf(coordinates[2]);
-          metrics.yMax = Short.valueOf(coordinates[3]);
-        }
-        else if (key.equals("UnderlinePosition"))
-        {metrics.underlinePosition = Short.valueOf(lineMatcher.group(2));}
-        else if (key.equals("UnderlineThickness"))
-        {metrics.underlineThickness = Short.valueOf(lineMatcher.group(2));}
-        else if (key.equals("EncodingScheme"))
-        {metrics.isCustomEncoding = lineMatcher.group(2).equals("FontSpecific");}
-        else if (key.equals("CapHeight"))
-        {metrics.capHeight = Short.valueOf(lineMatcher.group(2));}
-        else if (key.equals("XHeight"))
-        {metrics.xHeight = Short.valueOf(lineMatcher.group(2));}
-        else if (key.equals("Ascender"))
-        {metrics.ascender = Short.valueOf(lineMatcher.group(2));}
-        else if (key.equals("Descender"))
-        {metrics.descender = Short.valueOf(lineMatcher.group(2));}
-        else if (key.equals("StdHW"))
-        {metrics.stemH = Short.valueOf(lineMatcher.group(2));}
-        else if (key.equals("StdVW"))
-        {metrics.stemV = Short.valueOf(lineMatcher.group(2));}
-        else if (key.equals("StartCharMetrics"))
-        {break;}
+      String key = lineMatcher.group(1);
+      if(key.equals("FontName"))
+      {metrics.fontName = lineMatcher.group(2);}
+      else if (key.equals("Weight"))
+      {metrics.weight = lineMatcher.group(2);}
+      else if (key.equals("ItalicAngle"))
+      {metrics.italicAngle = Float.valueOf(lineMatcher.group(2));}
+      else if (key.equals("IsFixedPitch"))
+      {metrics.isFixedPitch = lineMatcher.group(2).equals("true");}
+      else if (key.equals("FontBBox"))
+      {
+        String[] coordinates = lineMatcher.group(2).split("\\s+");
+        metrics.xMin = Short.valueOf(coordinates[0]);
+        metrics.yMin = Short.valueOf(coordinates[1]);
+        metrics.xMax = Short.valueOf(coordinates[2]);
+        metrics.yMax = Short.valueOf(coordinates[3]);
       }
-      if(metrics.ascender == 0)
-      {metrics.ascender = metrics.yMax;}
-      if(metrics.descender == 0)
-      {metrics.descender = metrics.yMin;}
+      else if (key.equals("UnderlinePosition"))
+      {metrics.underlinePosition = Short.valueOf(lineMatcher.group(2));}
+      else if (key.equals("UnderlineThickness"))
+      {metrics.underlineThickness = Short.valueOf(lineMatcher.group(2));}
+      else if (key.equals("EncodingScheme"))
+      {metrics.isCustomEncoding = lineMatcher.group(2).equals("FontSpecific");}
+      else if (key.equals("CapHeight"))
+      {metrics.capHeight = Short.valueOf(lineMatcher.group(2));}
+      else if (key.equals("XHeight"))
+      {metrics.xHeight = Short.valueOf(lineMatcher.group(2));}
+      else if (key.equals("Ascender"))
+      {metrics.ascender = Short.valueOf(lineMatcher.group(2));}
+      else if (key.equals("Descender"))
+      {metrics.descender = Short.valueOf(lineMatcher.group(2));}
+      else if (key.equals("StdHW"))
+      {metrics.stemH = Short.valueOf(lineMatcher.group(2));}
+      else if (key.equals("StdVW"))
+      {metrics.stemV = Short.valueOf(lineMatcher.group(2));}
+      else if (key.equals("StartCharMetrics"))
+      {break;}
     }
-    catch(Exception e)
-    {throw new RuntimeException(e);}
+    if(metrics.ascender == 0)
+    {metrics.ascender = metrics.yMax;}
+    if(metrics.descender == 0)
+    {metrics.descender = metrics.yMin;}
   }
 
   /**
     Loads individual character metrics [AFM:4.1:3,4,4.4,8].
+
+    @throws IOException
   */
-  private void load_charMetrics(
-    )
+  private void loadCharMetrics(
+    ) throws IOException
   {
     glyphIndexes = new Hashtable<Integer, Integer>();
     glyphWidths = new Hashtable<Integer,Integer>();
 
-    try
+    String line;
+    Pattern linePattern = Pattern.compile("C (\\S+) ; WX (\\S+) ; N (\\S+)");
+    while((line = fontData.readLine()) != null)
     {
-      String line;
-      Pattern linePattern = Pattern.compile("C (\\S+) ; WX (\\S+) ; N (\\S+)");
-      while((line = fontData.readLine()) != null)
+      Matcher lineMatcher = linePattern.matcher(line);
+      if(!lineMatcher.find())
       {
-        Matcher lineMatcher = linePattern.matcher(line);
-        if(!lineMatcher.find())
-        {
-          if(line.equals("EndCharMetrics"))
-            break;
+        if(line.equals("EndCharMetrics"))
+          break;
 
-          continue;
-        }
-
-        int charCode = Integer.valueOf(lineMatcher.group(1));
-        int width = Integer.valueOf(lineMatcher.group(2));
-        String charName = lineMatcher.group(3);
-
-        if(charCode < 0)
-        {
-          if(charName == null)
-            continue;
-
-          charCode = GlyphMapping.nameToCode(charName);
-        }
-        int code = (
-          charName == null
-              || metrics.isCustomEncoding
-            ? charCode
-            : GlyphMapping.nameToCode(charName)
-          );
-        glyphIndexes.put(code,charCode);
-        glyphWidths.put(charCode,width);
+        continue;
       }
+
+      int charCode = Integer.valueOf(lineMatcher.group(1));
+      int width = Integer.valueOf(lineMatcher.group(2));
+      String charName = lineMatcher.group(3);
+
+      if(charCode < 0)
+      {
+        if(charName == null)
+          continue;
+
+        charCode = GlyphMapping.nameToCode(charName);
+      }
+      int code = (
+        charName == null
+            || metrics.isCustomEncoding
+          ? charCode
+          : GlyphMapping.nameToCode(charName)
+        );
+      glyphIndexes.put(code,charCode);
+      glyphWidths.put(charCode,width);
     }
-    catch(Exception e)
-    {throw new RuntimeException(e);}
   }
 
   /**
     Loads kerning data [AFM:4.1:3,4,4.5,9].
+
+    @throws IOException
   */
-  private void load_kerningData(
-    )
+  private void loadKerningData(
+    ) throws IOException
   {
     glyphKernings = new Hashtable<Integer,Integer>();
 
-    try
+    String line;
+    while((line = fontData.readLine()) != null)
     {
-      String line;
-      while((line = fontData.readLine()) != null)
-      {
-        if(line.startsWith("StartKernPairs"))
-          break;
-      }
-
-      Pattern linePattern = Pattern.compile("KPX (\\S+) (\\S+) (\\S+)");
-      while((line = fontData.readLine()) != null)
-      {
-        Matcher lineMatcher = linePattern.matcher(line);
-        if(!lineMatcher.find())
-        {
-          if(line.equals("EndKernPairs"))
-            break;
-
-          continue;
-        }
-
-        int code1 = GlyphMapping.nameToCode(lineMatcher.group(1));
-        int code2 = GlyphMapping.nameToCode(lineMatcher.group(2));
-        int pair = code1 << 16 + code2;
-        int value = Integer.valueOf(lineMatcher.group(3));
-
-        glyphKernings.put(pair,value);
-      }
+      if(line.startsWith("StartKernPairs"))
+        break;
     }
-    catch(Exception e)
-    {throw new RuntimeException(e);}
+
+    Pattern linePattern = Pattern.compile("KPX (\\S+) (\\S+) (\\S+)");
+    while((line = fontData.readLine()) != null)
+    {
+      Matcher lineMatcher = linePattern.matcher(line);
+      if(!lineMatcher.find())
+      {
+        if(line.equals("EndKernPairs"))
+          break;
+
+        continue;
+      }
+
+      int code1 = GlyphMapping.nameToCode(lineMatcher.group(1));
+      int code2 = GlyphMapping.nameToCode(lineMatcher.group(2));
+      int pair = code1 << 16 + code2;
+      int value = Integer.valueOf(lineMatcher.group(3));
+
+      glyphKernings.put(pair,value);
+    }
   }
   // </private>
   // </interface>

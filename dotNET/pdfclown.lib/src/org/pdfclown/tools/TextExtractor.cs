@@ -679,11 +679,7 @@ namespace org.pdfclown.tools
         {textStrings.Add(textString = new TextString());}
 
         textStyle = rawTextString.Style;
-        float spaceWidth = 0;
-        try
-        {spaceWidth = textStyle.Font.GetWidth(' ', textStyle.FontSize);}
-        catch
-        { /* NOOP. */ }
+        float spaceWidth = textStyle.Font.GetWidth(' ', textStyle.FontSize);
         if(spaceWidth == 0)
         {spaceWidth = textStyle.FontSize * .25f;} // NOTE: as a rule of thumb, space width is estimated according to the font size.
         foreach(TextChar textChar in rawTextString.TextChars)

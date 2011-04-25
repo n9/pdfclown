@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -383,10 +383,10 @@ namespace org.pdfclown.documents.contents.fonts
 
         // Width.
         int width;
-        try
-        {width = glyphWidths[glyphIndex];if(width>1000){width=1000;}}
-        catch
+        if(!glyphWidths.TryGetValue(glyphIndex, out width))
         {width = 0;}
+        else if(width > 1000)
+        {width = 1000;}
         widthsObject.Add(new PdfInteger(width));
       }
       cmapBuffer.Append(

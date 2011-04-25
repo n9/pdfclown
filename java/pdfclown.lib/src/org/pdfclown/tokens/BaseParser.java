@@ -39,6 +39,7 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
+import org.pdfclown.util.parsers.ParseException;
 import org.pdfclown.util.parsers.PostScriptParser;
 
 /**
@@ -46,7 +47,7 @@ import org.pdfclown.util.parsers.PostScriptParser;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/25/11
 */
 public class BaseParser
   extends PostScriptParser
@@ -64,7 +65,7 @@ public class BaseParser
   // <public>
   @Override
   public boolean moveNext(
-    ) throws FileFormatException
+    )
   {
     boolean moved = super.moveNext();
     if(moved)
@@ -81,7 +82,7 @@ public class BaseParser
             */
             try
             {setToken(PdfDate.toDate(literalToken));}
-            catch (Exception e)
+            catch(ParseException e)
             {/* NOOP: gently degrade to a common literal. */}
           }
         } break;
@@ -94,7 +95,7 @@ public class BaseParser
     Parses the current PDF object [PDF:1.6:3.2].
   */
   public PdfDataObject parsePdfObject(
-    ) throws FileFormatException
+    )
   {
     do
     {
@@ -153,10 +154,9 @@ public class BaseParser
         case Null:
           return null;
         case Comment:
-          // NOOP: Comments are simply ignored and skipped.
-          break;
+          break; // NOOP: Comments are simply ignored.
         default:
-          throw new RuntimeException("Unknown type: " + getToken());
+          throw new UnsupportedOperationException("Unknown type: " + getToken());
       }
     } while(moveNext());
     return null;
@@ -170,7 +170,7 @@ public class BaseParser
   */
   public PdfDataObject parsePdfObject(
     int offset
-    ) throws FileFormatException
+    )
   {
     moveNext(offset);
     return parsePdfObject();

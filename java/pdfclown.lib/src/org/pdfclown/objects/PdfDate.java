@@ -29,12 +29,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.pdfclown.tokens.Encoding;
+import org.pdfclown.util.parsers.ParseException;
 
 /**
   PDF date object [PDF:1.6:3.8.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/19/11
+  @version 0.1.1, 04/25/11
 */
 public final class PdfDate
   extends PdfString
@@ -62,10 +63,12 @@ public final class PdfDate
 
   /**
     Converts a PDF-formatted date value to a date value.
+
+    @throws ParseException
   */
   public static Date toDate(
     String value
-    )
+    ) throws ParseException
   {
     StringBuilder dateBuilder = new StringBuilder();
     {
@@ -73,17 +76,17 @@ public final class PdfDate
       // Year (YYYY).
       dateBuilder.append(value.substring(2, 6)); // NOTE: Skips the "D:" prefix; Year is mandatory.
       // Month (MM).
-      dateBuilder.append(length < 7 ? "01" : value.substring(6, 8));
+      dateBuilder.append(length < 8 ? "01" : value.substring(6, 8));
       // Day (DD).
-      dateBuilder.append(length < 9 ? "01" : value.substring(8, 10));
+      dateBuilder.append(length < 10 ? "01" : value.substring(8, 10));
       // Hour (HH).
-      dateBuilder.append(length < 11 ? "00" : value.substring(10, 12));
+      dateBuilder.append(length < 12 ? "00" : value.substring(10, 12));
       // Minute (mm).
-      dateBuilder.append(length < 13 ? "00" : value.substring(12, 14));
+      dateBuilder.append(length < 14 ? "00" : value.substring(12, 14));
       // Second (SS).
-      dateBuilder.append(length < 15 ? "00" : value.substring(14, 16));
+      dateBuilder.append(length < 16 ? "00" : value.substring(14, 16));
       // Local time / Universal Time relationship (O).
-      dateBuilder.append(length < 16 || value.substring(16, 17).equals("Z") ? "+" : value.substring(16, 17));
+      dateBuilder.append(length < 17 || value.substring(16, 17).equals("Z") ? "+" : value.substring(16, 17));
       // UT Hour offset (HH').
       dateBuilder.append(length < 19 ? "00" : value.substring(17, 19));
       // UT Minute offset (mm').
@@ -91,8 +94,8 @@ public final class PdfDate
     }
     try
     {return formatter.parse(dateBuilder.toString());}
-    catch(Exception e)
-    {throw new RuntimeException(e);}
+    catch(java.text.ParseException e)
+    {throw new ParseException(e);}
   }
   // </public>
   // </interface>

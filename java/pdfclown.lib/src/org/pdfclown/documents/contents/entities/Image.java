@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,9 @@
 
 package org.pdfclown.documents.contents.entities;
 
+import java.io.EOFException;
+import java.io.FileNotFoundException;
+
 import org.pdfclown.bytes.FileInputStream;
 import org.pdfclown.bytes.IInputStream;
 
@@ -32,7 +35,7 @@ import org.pdfclown.bytes.IInputStream;
   Abstract image object [PDF:1.6:4.8].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/25/11
 */
 public abstract class Image
   extends Entity
@@ -53,7 +56,7 @@ public abstract class Image
           )
         );
     }
-    catch(Exception e)
+    catch(FileNotFoundException e)
     {throw new RuntimeException(e);}
   }
 
@@ -82,7 +85,7 @@ public abstract class Image
       else // Unknown.
       {return null;}
     }
-    catch(Exception e)
+    catch(EOFException e)
     {throw new RuntimeException(e);}
   }
   // </public>
@@ -95,7 +98,7 @@ public abstract class Image
   private int height;
   private int width;
 
-  private IInputStream stream;
+  private final IInputStream stream;
   // </fields>
 
   // <constructors>

@@ -59,14 +59,14 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.tokens.BaseParser;
 import org.pdfclown.tokens.Encoding;
-import org.pdfclown.tokens.FileFormatException;
+import org.pdfclown.util.parsers.ParseException;
 
 /**
   Content stream parser [PDF:1.6:3.7.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 03/21/11
+  @version 0.1.1, 04/25/11
 */
 public final class ContentParser
   extends BaseParser
@@ -86,7 +86,7 @@ public final class ContentParser
     Parses the next content object [PDF:1.6:4.1].
   */
   public ContentObject parseContentObject(
-    ) throws FileFormatException
+    )
   {
     final Operation operation = parseOperation();
     if(operation instanceof PaintXObject) // External object.
@@ -119,7 +119,7 @@ public final class ContentParser
     Parses the next content objects.
   */
   public List<ContentObject> parseContentObjects(
-    ) throws FileFormatException
+    )
   {
     final List<ContentObject> contentObjects = new ArrayList<ContentObject>();
     while(moveNext())
@@ -141,7 +141,7 @@ public final class ContentParser
     Parses the next operation.
   */
   public Operation parseOperation(
-    ) throws FileFormatException
+    )
   {
     String operator = null;
     final List<PdfDirectObject> operands = new ArrayList<PdfDirectObject>();
@@ -162,7 +162,7 @@ public final class ContentParser
 
   @Override
   public PdfDirectObject parsePdfObject(
-    ) throws FileFormatException
+    )
   {
     switch(getTokenType())
     {
@@ -185,7 +185,7 @@ public final class ContentParser
 
   // <private>
   private InlineImage parseInlineImage(
-    ) throws FileFormatException
+    )
   {
     InlineImageHeader header;
     {
@@ -216,7 +216,7 @@ public final class ContentParser
         }
       }
       catch(EOFException e)
-      {throw new FileFormatException("Unexpected EOF on inline-image body parsing", e, -1);}
+      {throw new ParseException(e);}
       body = new InlineImageBody(data);
     }
 
@@ -225,7 +225,7 @@ public final class ContentParser
 
   private Path parsePath(
     Operation beginOperation
-    ) throws FileFormatException
+    )
   {
     /*
       NOTE: Paths do not have an explicit end operation, so we must infer it

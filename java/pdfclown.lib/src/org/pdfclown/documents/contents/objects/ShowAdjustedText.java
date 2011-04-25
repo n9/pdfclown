@@ -25,19 +25,19 @@
 
 package org.pdfclown.documents.contents.objects;
 
-import org.pdfclown.PDF;
-import org.pdfclown.VersionEnum;
-import org.pdfclown.objects.PdfArray;
-import org.pdfclown.objects.PdfSimpleObject;
-import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfReal;
-import org.pdfclown.objects.PdfString;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.pdfclown.PDF;
+import org.pdfclown.VersionEnum;
+import org.pdfclown.objects.PdfArray;
+import org.pdfclown.objects.PdfDirectObject;
+import org.pdfclown.objects.PdfReal;
+import org.pdfclown.objects.PdfSimpleObject;
+import org.pdfclown.objects.PdfString;
 
 /**
   'Show one or more text strings, allowing individual glyph positioning' operation
@@ -45,7 +45,7 @@ import java.util.List;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/25/11
 */
 @PDF(VersionEnum.PDF10)
 public final class ShowAdjustedText
@@ -93,8 +93,8 @@ public final class ShowAdjustedText
       {
         try
         {textStream.write(((PdfString)element).getRawValue());}
-        catch(IOException exception)
-        {throw new RuntimeException(exception);}
+        catch(IOException e)
+        {throw new RuntimeException(e);}
       }
     }
     return textStream.toByteArray();

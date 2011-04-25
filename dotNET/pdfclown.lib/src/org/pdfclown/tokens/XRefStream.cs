@@ -28,6 +28,7 @@ using org.pdfclown.files;
 using org.pdfclown.objects;
 using org.pdfclown.util;
 using org.pdfclown.util.io;
+using org.pdfclown.util.parsers;
 
 using System;
 using System.Collections;
@@ -352,12 +353,12 @@ namespace org.pdfclown.tokens
                       break;
                     }
                     default:
-                      throw new Exception("Unknown xref entry type '" + entryFieldType + "'.");
+                      throw new NotSupportedException("Unknown xref entry type '" + entryFieldType + "'.");
                   }
                 }
               }
               catch(Exception e)
-              {throw new Exception("Unexpected EOF (malformed cross-reference stream object).",e);}
+              {throw new ParseException("Unexpected EOF (malformed cross-reference stream object).",e);}
             }
           }
         }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -950,10 +950,10 @@ namespace org.pdfclown.documents.contents
     {
       get
       {
-        try
-        {return objects[index];}
-        catch
-        {return null;}
+        if(index < 0 || index >= objects.Count)
+          return null;
+
+        return objects[index];
       }
       set
       {
@@ -1169,10 +1169,9 @@ namespace org.pdfclown.documents.contents
         this.renderObject = renderObject;
 
         // Scan this level for rendering!
-        MoveStart(); while(MoveNext());
+        MoveStart();
+        while(MoveNext());
       }
-      catch(Exception e)
-      {throw new Exception("Rendering failed.", e);}
       finally
       {
         this.renderContext = null;

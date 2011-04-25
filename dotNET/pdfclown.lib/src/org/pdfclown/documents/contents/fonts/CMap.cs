@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -100,21 +100,13 @@ namespace org.pdfclown.documents.contents.fonts
       string name
       )
     {
-      IDictionary<ByteArray,int> cmap = null;
+      IDictionary<ByteArray,int> cmap;
       {
-        Stream cmapStream = null;
-        try
-        {
-          cmapStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("fonts.cmap." + name);
-          cmap = Get(new bytes::Buffer(cmapStream));
-        }
-        catch
-        { /* NOOP */ }
-        finally
-        {
-          if(cmapStream != null)
-          {cmapStream.Close();}
-        }
+        Stream cmapResourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("fonts.cmap." + name);
+        if(cmapResourceStream == null)
+          return null;
+
+        cmap = Get(new bytes::Buffer(cmapResourceStream));
       }
       return cmap;
     }

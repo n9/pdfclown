@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
   Abstract PDF object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/25/11
 */
 public abstract class PdfObject
   implements Cloneable
@@ -72,7 +72,7 @@ public abstract class PdfObject
     try
     {clone = (PdfObject)super.clone();}
     catch(CloneNotSupportedException e)
-    {throw new RuntimeException("Unable to clone.",e);}
+    {throw new RuntimeException(e);}
     clone.setParent(null);
     return clone;
   }

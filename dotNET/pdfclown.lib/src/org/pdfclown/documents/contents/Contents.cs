@@ -120,13 +120,12 @@ namespace org.pdfclown.documents.contents
       public int ReadByte(
         )
       {
-        while(true)
-        {
-          int c = (stream != null ? stream.ReadByte() : -1);
-          if(c != -1
-            || !MoveNextStream())
-            return c;
-        }
+        if((stream == null
+          || stream.Position >= stream.Length)
+          && !MoveNextStream())
+          return -1; //TODO:harmonize with other Read*() method EOF exceptions!!!
+
+        return stream.ReadByte();
       }
 
       public int ReadInt(

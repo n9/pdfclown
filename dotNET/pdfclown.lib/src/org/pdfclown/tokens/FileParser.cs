@@ -27,6 +27,7 @@ using org.pdfclown.bytes;
 using org.pdfclown.documents;
 using org.pdfclown.files;
 using org.pdfclown.objects;
+using org.pdfclown.util.parsers;
 
 using System;
 using System.Globalization;
@@ -192,7 +193,7 @@ namespace org.pdfclown.tokens
       stream.Seek(0);
       string header = stream.ReadString(10);
       if(!header.StartsWith(Keyword.BOF))
-        throw new FileFormatException("PDF header not found.",stream.Position);
+        throw new ParseException("PDF header not found.",stream.Position);
 
       return header.Substring(Keyword.BOF.Length,3);
     }
@@ -225,7 +226,7 @@ namespace org.pdfclown.tokens
       // Get 'startxref' keyword position!
       int index = stream.ReadString(chunkSize).LastIndexOf(Keyword.StartXRef);
       if(index < 0)
-        throw new FileFormatException("'" + Keyword.StartXRef + "' keyword not found.", stream.Position);
+        throw new ParseException("'" + Keyword.StartXRef + "' keyword not found.", stream.Position);
 
       // Go past the startxref keyword!
       stream.Seek(position + index); MoveNext();
@@ -233,7 +234,7 @@ namespace org.pdfclown.tokens
       // Go to the xref offset!
       MoveNext();
       if(TokenType != TokenTypeEnum.Integer)
-        throw new FileFormatException("'" + Keyword.StartXRef + "' value invalid.", stream.Position);
+        throw new ParseException("'" + Keyword.StartXRef + "' value invalid.", stream.Position);
 
       return (int)Token;
     }

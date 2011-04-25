@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * J. James Jack, Ph.D., Senior Consultant at Symyx Technologies UK Ltd. (original
@@ -143,11 +143,6 @@ namespace org.pdfclown.bytes.filters
       for(int i = 0; i < count; i++)
       {AppendChar(buffer, (char)encodedBlock[i], ref linePos);}
     }
-
-    private static byte[] GetBytes(
-      string data
-      )
-    {return ASCIIEncoding.UTF8.GetBytes(data);}
     #endregion
     #endregion
     #endregion
@@ -288,7 +283,7 @@ namespace org.pdfclown.bytes.filters
       if(EnforceMarks)
       {AppendString(buffer, SuffixMark, ref linePos);}
 
-      return GetBytes(buffer.ToString());
+      return ASCIIEncoding.UTF8.GetBytes(buffer.ToString());
     }
     #endregion
     #endregion

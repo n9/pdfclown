@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,17 +23,17 @@
   this list of conditions.
 */
 
-package org.pdfclown.tokens;
+package org.pdfclown.util.parsers;
 
 /**
-  Exception thrown in case of bad file format detection.
+  Exception thrown in case of unexpected condition while parsing.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @since 0.1.0
-  @version 0.1.0
+  @since 0.1.1
+  @version 0.1.1, 04/25/11
 */
-public class FileFormatException
-  extends Exception
+public class ParseException
+  extends RuntimeException
 {
   // <class>
   // <static>
@@ -44,11 +44,16 @@ public class FileFormatException
 
   // <dynamic>
   // <fields>
-  private long position;
+  private final long position;
   // </fields>
 
   // <constructors>
-  public FileFormatException(
+  public ParseException(
+    String message
+    )
+  {this(message, -1);}
+
+  public ParseException(
     String message,
     long position
     )
@@ -58,13 +63,24 @@ public class FileFormatException
     this.position = position;
   }
 
-  public FileFormatException(
+  public ParseException(
+    Throwable cause
+    )
+  {this(null, cause);}
+
+  public ParseException(
+    String message,
+    Throwable cause
+    )
+  {this(message, cause, -1);}
+
+  public ParseException(
     String message,
     Throwable cause,
     long position
     )
   {
-    super(message,cause);
+    super(message, cause);
 
     this.position = position;
   }
@@ -73,7 +89,7 @@ public class FileFormatException
   // <interface>
   // <public>
   /**
-    Gets the file pointer position before which the exception has occurred.
+    Gets the offset where error happened.
   */
   public long getPosition(
     )

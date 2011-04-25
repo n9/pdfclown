@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,25 +25,26 @@
 
 package org.pdfclown.documents.contents.fonts;
 
-import org.pdfclown.bytes.IInputStream;
-import org.pdfclown.util.ByteArray;
-
 import java.io.EOFException;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.pdfclown.bytes.IInputStream;
+import org.pdfclown.util.ByteArray;
+import org.pdfclown.util.parsers.ParseException;
+
 /**
   Type 1 font parser.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 04/25/11
 */
 final class PfbParser
 {
-  private IInputStream stream;
+  private final IInputStream stream;
 
   PfbParser(
     IInputStream stream
@@ -60,40 +61,46 @@ final class PfbParser
 
     String line;
     Pattern linePattern = Pattern.compile("(\\S+)\\s+(.+)");
-    try
+    while(true)
     {
-      while((line = stream.readLine()) != null)
+      try
+      {line = stream.readLine();}
+      catch(EOFException e)
+      {throw new ParseException("Encoding section not found.", e);}
+
+      Matcher lineMatcher = linePattern.matcher(line);
+      if(!lineMatcher.find())
+        continue;
+
+      String key = lineMatcher.group(1);
+      if(key.equals("/Encoding"))
       {
-        Matcher lineMatcher = linePattern.matcher(line);
-        if(!lineMatcher.find())
-          continue;
+        // Skip to the encoding array entries!
+        try
+        {stream.readLine();}
+        catch(EOFException e)
+        {throw new ParseException(e);}
 
-        String key = lineMatcher.group(1);
-        if(key.equals("/Encoding"))
+        String encodingLine;
+        Pattern encodingLinePattern = Pattern.compile("dup (\\S+) (\\S+) put");
+        while(true)
         {
-          // Skip to the encoding array entries!
-          stream.readLine();
-          String encodingLine;
-          Pattern encodingLinePattern = Pattern.compile("dup (\\S+) (\\S+) put");
-          while((encodingLine = stream.readLine()) != null)
-          {
-            Matcher encodingLineMatcher = encodingLinePattern.matcher(encodingLine);
-            if(!encodingLineMatcher.find())
-              break;
+          try
+          {encodingLine = stream.readLine();}
+          catch(EOFException e)
+          {break;}
 
-            byte[] inputCode = new byte[]{(byte)Integer.parseInt(encodingLineMatcher.group(1))};
-            String name = encodingLineMatcher.group(2).substring(1);
-            codes.put(new ByteArray(inputCode),GlyphMapping.nameToCode(name));
-          }
-          break;
+          Matcher encodingLineMatcher = encodingLinePattern.matcher(encodingLine);
+          if(!encodingLineMatcher.find())
+            break;
+
+          byte[] inputCode = new byte[]{(byte)Integer.parseInt(encodingLineMatcher.group(1))};
+          String name = encodingLineMatcher.group(2).substring(1);
+          codes.put(new ByteArray(inputCode),GlyphMapping.nameToCode(name));
         }
+        break;
       }
     }
-    catch(EOFException e)
-    {/* TODO: eof on readline? consider readline==null!!! */}
-    catch(Exception e)
-    {throw new RuntimeException(e);}
-
     return codes;
   }
 }

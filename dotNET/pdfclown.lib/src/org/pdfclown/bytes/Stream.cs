@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -114,25 +114,20 @@ namespace org.pdfclown.bytes
       )
     {
       text::StringBuilder buffer = new text::StringBuilder();
-      try
+      while(true)
       {
-        while(true)
-        {
-          int c = stream.ReadByte();
-          if(c == -1)
-            if(buffer.Length == 0)
-              return null;
-            else
-              break;
-          else if(c == '\r'
-            || c == '\n')
+        int c = stream.ReadByte();
+        if(c == -1)
+          if(buffer.Length == 0)
+            return null;
+          else
             break;
+        else if(c == '\r'
+          || c == '\n')
+          break;
 
-          buffer.Append((char)c);
-        }
+        buffer.Append((char)c);
       }
-      catch(IndexOutOfRangeException)
-      {}
       return buffer.ToString();
     }
 

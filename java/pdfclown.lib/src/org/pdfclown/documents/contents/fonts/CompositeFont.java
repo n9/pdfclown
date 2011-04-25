@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,11 @@
 
 package org.pdfclown.documents.contents.fonts;
 
+import java.awt.geom.Point2D;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.Buffer;
@@ -46,11 +51,6 @@ import org.pdfclown.util.ByteArray;
 import org.pdfclown.util.ConvertUtils;
 import org.pdfclown.util.NotImplementedException;
 
-import java.awt.geom.Point2D;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-
 /**
   Composite font, also called Type 0 font [PDF:1.6:5.6].
   <p>Do not confuse it with {@link Type0Font 'Type 0 CIDFont'}: the latter is
@@ -58,7 +58,7 @@ import java.util.Map;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 04/25/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class CompositeFont
@@ -170,8 +170,8 @@ public abstract class CompositeFont
         BiMap<ByteArray,Integer> ucs2CMap;
         {
           PdfDictionary cidSystemInfo = (PdfDictionary)getCIDFontDictionary().resolve(PdfName.CIDSystemInfo);
-          String registry = (String)((PdfTextString)cidSystemInfo.get(PdfName.Registry)).getValue();
-          String ordering = (String)((PdfTextString)cidSystemInfo.get(PdfName.Ordering)).getValue();
+          String registry = ((PdfTextString)cidSystemInfo.get(PdfName.Registry)).getValue();
+          String ordering = ((PdfTextString)cidSystemInfo.get(PdfName.Ordering)).getValue();
           String ucs2CMapName = registry + "-" + ordering + "-" + "UCS2";
           ucs2CMap = new BiMap<ByteArray,Integer>(CMap.get(ucs2CMapName));
         }
@@ -262,80 +262,75 @@ public abstract class CompositeFont
     OpenFontParser parser
     )
   {
-    try
-    {
-      glyphIndexes = parser.glyphIndexes;
-      glyphKernings = parser.glyphKernings;
-      glyphWidths = parser.glyphWidths;
+    glyphIndexes = parser.glyphIndexes;
+    glyphKernings = parser.glyphKernings;
+    glyphWidths = parser.glyphWidths;
 
-      PdfDictionary baseDataObject = getBaseDataObject();
+    PdfDictionary baseDataObject = getBaseDataObject();
+
+    // BaseFont.
+    baseDataObject.put(PdfName.BaseFont,new PdfName(parser.fontName));
+
+    // Subtype.
+    baseDataObject.put(PdfName.Subtype, PdfName.Type0);
+
+    // Encoding.
+    baseDataObject.put(PdfName.Encoding, PdfName.IdentityH); //TODO: this is a simplification (to refine later).
+
+    // Descendant font.
+    PdfDictionary cidFontDictionary = new PdfDictionary(
+      new PdfName[]{PdfName.Type},
+      new PdfDirectObject[]{PdfName.Font}
+      ); // CIDFont dictionary [PDF:1.6:5.6.3].
+    {
+      // Subtype.
+      PdfName subType;
+      switch(parser.outlineFormat)
+      {
+        case TrueType: subType = PdfName.CIDFontType2; break;
+        case CFF: subType = PdfName.CIDFontType0; break;
+        default: throw new NotImplementedException();
+      }
+      cidFontDictionary.put(PdfName.Subtype,subType);
 
       // BaseFont.
-      baseDataObject.put(PdfName.BaseFont,new PdfName(parser.fontName));
+      cidFontDictionary.put(
+        PdfName.BaseFont,
+        new PdfName(parser.fontName)
+        );
 
-      // Subtype.
-      baseDataObject.put(PdfName.Subtype, PdfName.Type0);
+      // CIDSystemInfo.
+      cidFontDictionary.put(
+        PdfName.CIDSystemInfo,
+        new PdfDictionary(
+          new PdfName[]
+          {
+            PdfName.Registry,
+            PdfName.Ordering,
+            PdfName.Supplement
+          },
+          new PdfDirectObject[]
+          {
+            new PdfTextString("Adobe"),
+            new PdfTextString("Identity"),
+            new PdfInteger(0)
+          }
+          )
+        ); // Generic predefined CMap (Identity-H/V (Adobe-Identity-0)) [PDF:1.6:5.6.4].
+
+      // FontDescriptor.
+      cidFontDictionary.put(
+        PdfName.FontDescriptor,
+        load_createFontDescriptor(parser)
+        );
 
       // Encoding.
-      baseDataObject.put(PdfName.Encoding, PdfName.IdentityH); //TODO: this is a simplification (to refine later).
-
-      // Descendant font.
-      PdfDictionary cidFontDictionary = new PdfDictionary(
-        new PdfName[]{PdfName.Type},
-        new PdfDirectObject[]{PdfName.Font}
-        ); // CIDFont dictionary [PDF:1.6:5.6.3].
-      {
-        // Subtype.
-        PdfName subType;
-        switch(parser.outlineFormat)
-        {
-          case TrueType: subType = PdfName.CIDFontType2; break;
-          case CFF: subType = PdfName.CIDFontType0; break;
-          default: throw new NotImplementedException();
-        }
-        cidFontDictionary.put(PdfName.Subtype,subType);
-
-        // BaseFont.
-        cidFontDictionary.put(
-          PdfName.BaseFont,
-          new PdfName(parser.fontName)
-          );
-
-        // CIDSystemInfo.
-        cidFontDictionary.put(
-          PdfName.CIDSystemInfo,
-          new PdfDictionary(
-            new PdfName[]
-            {
-              PdfName.Registry,
-              PdfName.Ordering,
-              PdfName.Supplement
-            },
-            new PdfDirectObject[]
-            {
-              new PdfTextString("Adobe"),
-              new PdfTextString("Identity"),
-              new PdfInteger(0)
-            }
-            )
-          ); // Generic predefined CMap (Identity-H/V (Adobe-Identity-0)) [PDF:1.6:5.6.4].
-
-        // FontDescriptor.
-        cidFontDictionary.put(
-          PdfName.FontDescriptor,
-          load_createFontDescriptor(parser)
-          );
-
-        // Encoding.
-        load_createEncoding(baseDataObject,cidFontDictionary);
-      }
-      baseDataObject.put(
-        PdfName.DescendantFonts,
-        new PdfArray(new PdfDirectObject[]{getFile().register(cidFontDictionary)})
-        );
+      load_createEncoding(baseDataObject,cidFontDictionary);
     }
-    catch(Exception e)
-    {throw new RuntimeException(e);}
+    baseDataObject.put(
+      PdfName.DescendantFonts,
+      new PdfArray(new PdfDirectObject[]{getFile().register(cidFontDictionary)})
+      );
 
     load();
   }
@@ -426,7 +421,7 @@ public abstract class CompositeFont
         charCodeBytesIndex++
         )
       {
-        String hex = Integer.toHexString((int)charCode[charCodeBytesIndex]);
+        String hex = Integer.toHexString(charCode[charCodeBytesIndex]);
         //TODO:improve hex padding!!!
         if(hex.length() == 1)
         {hex = "0" + hex;}
@@ -444,11 +439,11 @@ public abstract class CompositeFont
       gIdBuffer.append((byte)(glyphIndex & 0xFF));
 
       // Width.
-      int width;
-      try
-      {width = glyphWidths.get(glyphIndex);if(width>1000){width=1000;}}
-      catch(Exception e)
+      Integer width = glyphWidths.get(glyphIndex);
+      if(width == null)
       {width = 0;}
+      else if(width > 1000)
+      {width=1000;}
       widthsObject.add(new PdfInteger(width));
     }
     cmapBuffer.append(

@@ -100,21 +100,16 @@ namespace org.pdfclown.documents.contents.fonts
       string path
       )
     {
-      try
-      {
-        return Get(
-          context,
-          new bytes.Stream(
-            new io::FileStream(
-              path,
-              io::FileMode.Open,
-              io::FileAccess.Read
-              )
+      return Get(
+        context,
+        new bytes.Stream(
+          new io::FileStream(
+            path,
+            io::FileMode.Open,
+            io::FileAccess.Read
             )
-          );
-      }
-      catch(Exception e)
-      {throw new Exception("Failed to instantiate font.", e);}
+          )
+        );
     }
 
     /**
@@ -356,18 +351,12 @@ namespace org.pdfclown.documents.contents.fonts
       )
     {
       io::MemoryStream encodedStream = new io::MemoryStream();
-      try
+      foreach(char textChar in text)
       {
-        foreach(char textChar in text)
-        {
-          byte[] charCode = codes.GetKey((int)textChar).Data;
-          encodedStream.Write(charCode,0,charCode.Length);
-        }
-        encodedStream.Close();
+        byte[] charCode = codes.GetKey((int)textChar).Data;
+        encodedStream.Write(charCode,0,charCode.Length);
       }
-      catch(Exception exception)
-      {throw new Exception("Failed to encode text.",exception);}
-
+      encodedStream.Close();
       return encodedStream.ToArray();
     }
 
@@ -480,15 +469,25 @@ namespace org.pdfclown.documents.contents.fonts
       char textChar2
       )
     {
-      try
-      {
-        return glyphKernings[
-          glyphIndexes[(int)textChar1] << 16 // Left-hand glyph index.
-            + glyphIndexes[(int)textChar2] // Right-hand glyph index.
-          ];
-      }
-      catch
-      {return 0;}
+      if(glyphKernings == null)
+        return 0;
+
+      int textChar1Index;
+      if(!glyphIndexes.TryGetValue((int)textChar1, out textChar1Index))
+        return 0;
+
+      int textChar2Index;
+      if(!glyphIndexes.TryGetValue((int)textChar2, out textChar2Index))
+        return 0;
+
+      int kerning;
+      if(!glyphKernings.TryGetValue(
+        textChar1Index << 16 // Left-hand glyph index.
+          + textChar2Index, // Right-hand glyph index.
+        out kerning))
+        return 0;
+
+      return kerning;
     }
 
     /**
@@ -500,22 +499,18 @@ namespace org.pdfclown.documents.contents.fonts
       )
     {
       int kerning = 0;
-      // Are kerning pairs available?
-      if(glyphKernings != null)
+      char[] textChars = text.ToCharArray();
+      for(
+        int index = 0,
+          length = text.Length - 1;
+        index < length;
+        index++
+        )
       {
-        char[] textChars = text.ToCharArray();
-        for(
-          int index = 0,
-            length = text.Length - 1;
-          index < length;
-          index++
-          )
-        {
-          kerning += GetKerning(
-            textChars[index],
-            textChars[index + 1]
-            );
-        }
+        kerning += GetKerning(
+          textChars[index],
+          textChars[index + 1]
+          );
       }
       return kerning;
     }
@@ -548,11 +543,12 @@ namespace org.pdfclown.documents.contents.fonts
       char textChar
       )
     {
+      int glyphIndex;
+      if(!glyphIndexes.TryGetValue((int)textChar, out glyphIndex))
+        return 0;
+
       int glyphWidth;
-      if(glyphWidths.TryGetValue(glyphIndexes[(int)textChar],out glyphWidth))
-        return glyphWidth;
-      else
-        return defaultGlyphWidth;
+      return glyphWidths.TryGetValue(glyphIndex, out glyphWidth) ? glyphWidth : defaultGlyphWidth;
     }
 
     /**
@@ -577,7 +573,6 @@ namespace org.pdfclown.documents.contents.fonts
       int width = 0;
       foreach(char textChar in text.ToCharArray())
       {width += GetWidth(textChar);}
-
       return width;
     }
 

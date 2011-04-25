@@ -307,7 +307,7 @@ namespace org.pdfclown.files
         */
         if(System.IO.File.Exists(TempPath))
         {
-          try{System.IO.File.Delete(path);}catch{}
+          System.IO.File.Delete(path);
           System.IO.File.Move(TempPath,path);
         }
       }

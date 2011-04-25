@@ -53,7 +53,7 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/25/11
 */
 public final class ObjectStream
   extends PdfStream
@@ -120,13 +120,8 @@ public final class ObjectStream
     {
       if(dataObject == null)
       {
-        try
-        {
-          parser.seek(offset); parser.moveNext();
-          dataObject = parser.parsePdfObject();
-        }
-        catch(FileFormatException e)
-        {throw new RuntimeException("Failed to parse a compressed object.",e);}
+        parser.seek(offset); parser.moveNext();
+        dataObject = parser.parsePdfObject();
       }
       return dataObject;
     }
@@ -361,15 +356,9 @@ public final class ObjectStream
         index++
         )
       {
-        try
-        {
-          int objectNumber = ((PdfInteger)parser.parsePdfObject(1)).getValue();
-          int objectOffset = baseOffset + ((PdfInteger)parser.parsePdfObject(1)).getValue();
-
-          entries.put(objectNumber, new ObjectEntry(objectOffset));
-        }
-        catch(FileFormatException e)
-        {throw new RuntimeException("Failed to parse offset " + index,e);}
+        int objectNumber = ((PdfInteger)parser.parsePdfObject(1)).getValue();
+        int objectOffset = baseOffset + ((PdfInteger)parser.parsePdfObject(1)).getValue();
+        entries.put(objectNumber, new ObjectEntry(objectOffset));
       }
     }
     return entries;

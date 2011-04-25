@@ -31,7 +31,6 @@ import java.util.Map;
 
 import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.IInputStream;
-import org.pdfclown.tokens.FileFormatException;
 import org.pdfclown.util.ByteArray;
 import org.pdfclown.util.ConvertUtils;
 import org.pdfclown.util.math.OperationUtils;
@@ -42,7 +41,7 @@ import org.pdfclown.util.parsers.PostScriptParser;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 03/17/11
+  @version 0.1.1, 04/25/11
 */
 final class CMapParser
   extends PostScriptParser
@@ -87,100 +86,95 @@ final class CMapParser
     Hashtable<ByteArray,Integer> codes = new Hashtable<ByteArray,Integer>();
     {
       int itemCount = 0;
-      try
+      while(moveNext())
       {
-        while(moveNext())
+        switch(getTokenType())
         {
-          switch(getTokenType())
+          case Keyword:
           {
-            case Keyword:
+            String operator = (String)getToken();
+            if(operator.equals(BeginBaseFontCharOperator)
+              || operator.equals(BeginCIDCharOperator))
             {
-              String operator = (String)getToken();
-              if(operator.equals(BeginBaseFontCharOperator)
-                || operator.equals(BeginCIDCharOperator))
+              /*
+                NOTE: The first element on each line is the input code of the template font;
+                the second element is the code or name of the character.
+              */
+              for(
+                int itemIndex = 0;
+                itemIndex < itemCount;
+                itemIndex++
+                )
               {
-                /*
-                  NOTE: The first element on each line is the input code of the template font;
-                  the second element is the code or name of the character.
-                */
-                for(
-                  int itemIndex = 0;
-                  itemIndex < itemCount;
-                  itemIndex++
-                  )
-                {
-                  moveNext();
-                  ByteArray inputCode = new ByteArray(parseInputCode());
-                  moveNext();
-                  codes.put(inputCode, parseUnicode());
-                }
+                moveNext();
+                ByteArray inputCode = new ByteArray(parseInputCode());
+                moveNext();
+                codes.put(inputCode, parseUnicode());
               }
-              else if(operator.equals(BeginBaseFontRangeOperator)
-                || operator.equals(BeginCIDRangeOperator))
+            }
+            else if(operator.equals(BeginBaseFontRangeOperator)
+              || operator.equals(BeginCIDRangeOperator))
+            {
+              /*
+                NOTE: The first and second elements in each line are the beginning and
+                ending valid input codes for the template font; the third element is
+                the beginning character code for the range.
+              */
+              for(
+                int itemIndex = 0;
+                itemIndex < itemCount;
+                itemIndex++
+                )
               {
-                /*
-                  NOTE: The first and second elements in each line are the beginning and
-                  ending valid input codes for the template font; the third element is
-                  the beginning character code for the range.
-                */
-                for(
-                  int itemIndex = 0;
-                  itemIndex < itemCount;
-                  itemIndex++
-                  )
+                // 1. Beginning input code.
+                moveNext();
+                byte[] beginInputCode = parseInputCode();
+                // 2. Ending input code.
+                moveNext();
+                byte[] endInputCode = parseInputCode();
+                // 3. Character codes.
+                moveNext();
+                switch(getTokenType())
                 {
-                  // 1. Beginning input code.
-                  moveNext();
-                  byte[] beginInputCode = parseInputCode();
-                  // 2. Ending input code.
-                  moveNext();
-                  byte[] endInputCode = parseInputCode();
-                  // 3. Character codes.
-                  moveNext();
-                  switch(getTokenType())
+                  case ArrayBegin:
                   {
-                    case ArrayBegin:
+                    byte[] inputCode = beginInputCode;
+                    while(moveNext()
+                      && getTokenType() != TokenTypeEnum.ArrayEnd)
                     {
-                      byte[] inputCode = beginInputCode;
-                      while(moveNext()
-                        && getTokenType() != TokenTypeEnum.ArrayEnd)
-                      {
-                        codes.put(new ByteArray(inputCode), parseUnicode());
-                        OperationUtils.increment(inputCode);
-                      }
-                      break;
+                      codes.put(new ByteArray(inputCode), parseUnicode());
+                      OperationUtils.increment(inputCode);
                     }
-                    default:
+                    break;
+                  }
+                  default:
+                  {
+                    byte[] inputCode = beginInputCode;
+                    int charCode = parseUnicode();
+                    int endCharCode = charCode + (ConvertUtils.byteArrayToInt(endInputCode) - ConvertUtils.byteArrayToInt(beginInputCode));
+                    while(true)
                     {
-                      byte[] inputCode = beginInputCode;
-                      int charCode = parseUnicode();
-                      int endCharCode = charCode + (ConvertUtils.byteArrayToInt(endInputCode) - ConvertUtils.byteArrayToInt(beginInputCode));
-                      while(true)
-                      {
-                        codes.put(new ByteArray(inputCode), charCode);
-                        if(charCode == endCharCode)
-                          break;
+                      codes.put(new ByteArray(inputCode), charCode);
+                      if(charCode == endCharCode)
+                        break;
 
-                        OperationUtils.increment(inputCode);
-                        charCode++;
-                      }
-                      break;
+                      OperationUtils.increment(inputCode);
+                      charCode++;
                     }
+                    break;
                   }
                 }
               }
-              break;
             }
-            case Integer:
-            {
-              itemCount = (Integer)getToken();
-              break;
-            }
+            break;
+          }
+          case Integer:
+          {
+            itemCount = (Integer)getToken();
+            break;
           }
         }
       }
-      catch(FileFormatException fileFormatException)
-      {throw new RuntimeException(fileFormatException);}
     }
     return codes;
   }

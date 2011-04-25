@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it):
@@ -50,7 +50,7 @@ import org.pdfclown.objects.PdfName;
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @author Joshua Tauberer (http://razor.occams.info)
   @since 0.0.2
-  @version 0.1.0
+  @version 0.1.1, 04/25/11
 */
 @PDF(VersionEnum.PDF12)
 public final class FlateFilter
@@ -84,7 +84,7 @@ public final class FlateFilter
       return decodePredictor(outputStream.toByteArray(), parameters);
     }
     catch(IOException e)
-    {throw new RuntimeException("Decoding failed.",e);}
+    {throw new RuntimeException(e);}
   }
 
   @Override
@@ -104,7 +104,7 @@ public final class FlateFilter
       return outputStream.toByteArray();
     }
     catch(IOException e)
-    {throw new RuntimeException("Encoding failed.",e);}
+    {throw new RuntimeException(e);}
   }
   // </public>
 

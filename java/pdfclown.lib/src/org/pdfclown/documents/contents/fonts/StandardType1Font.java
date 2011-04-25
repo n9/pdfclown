@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,12 @@
 
 package org.pdfclown.documents.contents.fonts;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.EnumSet;
+import java.util.Hashtable;
+import java.util.Map;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -33,17 +39,11 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.ByteArray;
 import org.pdfclown.util.ConvertUtils;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.EnumSet;
-import java.util.Hashtable;
-import java.util.Map;
-
 /**
   Standard Type 1 font [PDF:1.6:5.5.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/25/11
 */
 @PDF(VersionEnum.PDF10)
 public final class StandardType1Font
@@ -250,7 +250,7 @@ public final class StandardType1Font
         {fontMetricsStream.close();}
       }
       catch(Exception e)
-      { /* Ignore */}
+      {/* NOOP */}
     }
   }
   // </private>

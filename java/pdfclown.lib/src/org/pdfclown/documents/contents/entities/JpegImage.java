@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,6 +41,7 @@ import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfStream;
 
+import java.io.EOFException;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +50,7 @@ import java.util.List;
   JPEG image object [ISO 10918-1;JFIF:1.02].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/25/11
 */
 public final class JpegImage
   extends Image
@@ -166,7 +167,7 @@ public final class JpegImage
         }
       }
     }
-    catch(Exception e)
+    catch(EOFException e)
     {throw new RuntimeException(e);}
   }
   // </private>

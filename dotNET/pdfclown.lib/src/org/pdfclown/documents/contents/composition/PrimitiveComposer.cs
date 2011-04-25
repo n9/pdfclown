@@ -882,10 +882,8 @@ namespace org.pdfclown.documents.contents.composition
           // Add the text!
           Add(new objects::ShowSimpleText(font.Encode(value)));
         }
-        catch(Exception e)
-        {throw new Exception("Failed to show text.", e);}
         finally
-        {End(); /* Ends the text object. */}
+        {End();} // Ends the text object.
       }
       else
       {
@@ -959,15 +957,11 @@ namespace org.pdfclown.documents.contents.composition
             // Add the text!
             Add(new objects::ShowSimpleText(font.Encode(value)));
           }
-          catch (Exception e)
-          {throw new Exception("Failed to show text.", e);}
           finally
-          {End(); /* Ends the text object. */}
+          {End();} // Ends the text object.
         }
-        catch(Exception e)
-        {throw new Exception("Failed to show text.", e);}
         finally
-        {End(); /* Ends the local state. */}
+        {End();} // Ends the local state.
       }
       return frame;
     }
@@ -1195,10 +1189,8 @@ namespace org.pdfclown.documents.contents.composition
           );
         ShowXObject(name);
       }
-      catch (Exception e)
-      {throw new Exception("Failed to show the xobject.",e);}
       finally
-      {End(); /* Ends the local state. */}
+      {End();} // Ends the local state.
     }
 
     /**

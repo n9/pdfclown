@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -65,7 +65,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 04/25/11
 */
 public final class ContentScanner
 {
@@ -129,7 +129,7 @@ public final class ContentScanner
         try
         {clone = (GraphicsState)super.clone();}
         catch(CloneNotSupportedException e)
-        {throw new RuntimeException(e); /* NOTE: It should never happen. */}
+        {throw new RuntimeException(e);} // NOTE: It should never happen.
 
         // Deep copy.
         /* NOTE: Mutable objects are to be cloned. */
@@ -663,7 +663,7 @@ public final class ContentScanner
     // <fields>
     protected Rectangle2D box;
 
-    private TDataObject baseDataObject;
+    private final TDataObject baseDataObject;
     // </fields>
 
     // <constructors>
@@ -727,7 +727,7 @@ public final class ContentScanner
   public static final class TextWrapper
     extends GraphicsObjectWrapper<Text>
   {
-    private List<TextStringWrapper> textStrings;
+    private final List<TextStringWrapper> textStrings;
 
     private TextWrapper(
       ContentScanner scanner
@@ -789,7 +789,7 @@ public final class ContentScanner
     implements ITextString
   {
     private TextStyle style;
-    private List<TextChar> textChars;
+    private final List<TextChar> textChars;
 
     TextStringWrapper(
       ContentScanner scanner
@@ -879,8 +879,8 @@ public final class ContentScanner
   public static final class XObjectWrapper
     extends GraphicsObjectWrapper<XObject>
   {
-    private PdfName name;
-    private org.pdfclown.documents.contents.xObjects.XObject xObject;
+    private final PdfName name;
+    private final org.pdfclown.documents.contents.xObjects.XObject xObject;
 
     private XObjectWrapper(
       ContentScanner scanner
@@ -939,11 +939,11 @@ public final class ContentScanner
   /**
     Object collection at this level.
   */
-  private List<ContentObject> objects;
+  private final List<ContentObject> objects;
   /**
     Parent level.
   */
-  private ContentScanner parentLevel;
+  private final ContentScanner parentLevel;
   /**
     Current graphics state.
   */
@@ -1048,10 +1048,10 @@ public final class ContentScanner
   public ContentObject getCurrent(
     )
   {
-    try
-    {return objects.get(index);}
-    catch(Exception e)
-    {return null;}
+    if(index < 0 || index >= objects.size())
+      return null;
+
+    return objects.get(index);
   }
 
   /**
@@ -1335,10 +1335,9 @@ public final class ContentScanner
       this.renderObject = renderObject;
 
       // Scan this level for rendering!
-      moveStart(); while(moveNext());
+      moveStart();
+      while(moveNext());
     }
-    catch(Exception e)
-    {throw new RuntimeException("Rendering failed.", e);}
     finally
     {
       this.renderContext = null;

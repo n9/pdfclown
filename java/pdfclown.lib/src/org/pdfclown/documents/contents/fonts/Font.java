@@ -26,6 +26,8 @@
 package org.pdfclown.documents.contents.fonts;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Hashtable;
 import java.util.Map;
@@ -53,7 +55,7 @@ import org.pdfclown.util.NotImplementedException;
   Abstract font [PDF:1.6:5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/25/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Font
@@ -167,7 +169,7 @@ public abstract class Font
           )
         );
     }
-    catch(Exception e)
+    catch(FileNotFoundException e)
     {throw new RuntimeException(e);}
   }
 
@@ -415,8 +417,8 @@ public abstract class Font
       }
       encodedStream.close();
     }
-    catch(Exception exception)
-    {throw new RuntimeException(exception);}
+    catch(IOException e)
+    {throw new RuntimeException(e);}
 
     return encodedStream.toByteArray();
   }
@@ -552,15 +554,25 @@ public abstract class Font
     char textChar2
     )
   {
-    try
-    {
-      return glyphKernings.get(
-        glyphIndexes.get((int)textChar1) << 16 // Left-hand glyph index.
-          + glyphIndexes.get((int)textChar2) // Right-hand glyph index.
-        );
-    }
-    catch(Exception e)
-    {return 0;}
+    if(glyphKernings == null)
+      return 0;
+
+    Integer textChar1Index = glyphIndexes.get((int)textChar1);
+    if(textChar1Index == null)
+      return 0;
+
+    Integer textChar2Index = glyphIndexes.get((int)textChar2);
+    if(textChar2Index == null)
+      return 0;
+
+    Integer kerning = glyphKernings.get(
+      textChar1Index << 16 // Left-hand glyph index.
+        + textChar2Index // Right-hand glyph index.
+      );
+    if(kerning == null)
+      return 0;
+
+    return kerning;
   }
 
   /**
@@ -573,22 +585,18 @@ public abstract class Font
     )
   {
     int kerning = 0;
-    // Are kerning pairs available?
-    if(glyphKernings != null)
+    char textChars[] = text.toCharArray();
+    for(
+      int index = 0,
+        length = text.length() - 1;
+      index < length;
+      index++
+      )
     {
-      char textChars[] = text.toCharArray();
-      for(
-        int index = 0,
-          length = text.length() - 1;
-        index < length;
-        index++
-        )
-      {
-        kerning += getKerning(
-          textChars[index],
-          textChars[index + 1]
-          );
-      }
+      kerning += getKerning(
+        textChars[index],
+        textChars[index + 1]
+        );
     }
     return kerning;
   }
@@ -638,11 +646,12 @@ public abstract class Font
     char textChar
     )
   {
-    Integer glyphWidth = glyphWidths.get(glyphIndexes.get((int)textChar));
-    if(glyphWidth == null)
-      return defaultGlyphWidth;
-    else
-      return glyphWidth;
+    Integer glyphIndex = glyphIndexes.get((int)textChar);
+    if(glyphIndex == null)
+      return 0;
+
+    Integer glyphWidth = glyphWidths.get(glyphIndex);
+    return glyphWidth != null ? glyphWidth : defaultGlyphWidth;
   }
 
   /**
@@ -669,7 +678,6 @@ public abstract class Font
     int width = 0;
     for(char textChar : text.toCharArray())
     {width += getWidth(textChar);}
-
     return width;
   }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,12 +25,12 @@
 
 using System;
 
-namespace org.pdfclown.tokens
+namespace org.pdfclown.util.parsers
 {
   /**
-    <summary> Exception thrown in case of bad file format detection.</summary>
+    <summary>Exception thrown in case of unexpected condition while parsing.</summary>
   */
-  public class FileFormatException
+  public class ParseException
     : Exception
   {
     #region dynamic
@@ -39,32 +39,46 @@ namespace org.pdfclown.tokens
     #endregion
 
     #region constructors
-    public FileFormatException(
+    public ParseException(
+      string message
+      ) : this(message, -1)
+    {}
+
+    public ParseException(
       string message,
       long position
-      ) : base(
-        message
-        )
+      ) : base(message)
     {this.position = position;}
 
-    public FileFormatException(
+    public ParseException(
+      Exception cause
+      ) : this(null, cause)
+    {}
+
+    public ParseException(
+      string message,
+      Exception cause
+      ) : this(message, cause, -1)
+    {}
+
+    public ParseException(
       string message,
       Exception cause,
       long position
-      ) : base(
-        message,
-        cause
-        )
+      ) : base(message, cause)
     {this.position = position;}
     #endregion
 
     #region interface
     #region public
     /**
-      Gets the file pointer position before which the exception has occurred.
+      <summary>Gets the offset where error happened.</summary>
     */
     public long Position
-    {get{return position;}}
+    {
+      get
+      {return position;}
+    }
     #endregion
     #endregion
     #endregion

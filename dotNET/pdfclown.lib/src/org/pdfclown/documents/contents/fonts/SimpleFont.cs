@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -90,12 +90,7 @@ namespace org.pdfclown.documents.contents.fonts
           if(charName.Equals(".notdef"))
           {codes.Remove(charCode);}
           else
-          {
-            try
-            {codes[charCode] = GlyphMapping.NameToCode(charName);}
-            catch
-            {codes[charCode] = (int)charCodeData[0];} // NOTE: This is an extreme remedy to non-standard character name lookups.
-          }
+          {codes[charCode] = GlyphMapping.NameToCode(charName);}
           charCodeData[0]++;
         }
       }

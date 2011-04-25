@@ -302,29 +302,24 @@ namespace org.pdfclown.tokens
       FileParser parser
       )
     {
-      try
-      {
-        // 1. Header.
-        stream.Write(TrailerChunk);
+      // 1. Header.
+      stream.Write(TrailerChunk);
 
-        // 2. Body.
-        // Update its entries:
-        PdfDictionary trailer = file.Trailer;
-        // * Size
-        trailer[PdfName.Size] = new PdfInteger(xrefSize);
-        // * Prev
-        if(parser == null)
-        {trailer.Remove(PdfName.Prev);} // [FIX:0.0.4:5] It (wrongly) kept the 'Prev' entry of multiple-section xref tables.
-        else
-        {trailer[PdfName.Prev] = new PdfInteger((int)parser.RetrieveXRefOffset());}
-        // Serialize its contents!
-        trailer.WriteTo(stream); stream.Write(Chunk.LineFeed);
+      // 2. Body.
+      // Update its entries:
+      PdfDictionary trailer = file.Trailer;
+      // * Size
+      trailer[PdfName.Size] = new PdfInteger(xrefSize);
+      // * Prev
+      if(parser == null)
+      {trailer.Remove(PdfName.Prev);} // [FIX:0.0.4:5] It (wrongly) kept the 'Prev' entry of multiple-section xref tables.
+      else
+      {trailer[PdfName.Prev] = new PdfInteger((int)parser.RetrieveXRefOffset());}
+      // Serialize its contents!
+      trailer.WriteTo(stream); stream.Write(Chunk.LineFeed);
 
-        // 3. Tail.
-        WriteTail(startxref);
-      }
-      catch(Exception e)
-      {throw new Exception("Trailer writing failed.",e);}
+      // 3. Tail.
+      WriteTail(startxref);
     }
     #endregion
     #endregion

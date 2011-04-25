@@ -26,6 +26,7 @@
 package org.pdfclown.documents.interaction.actions;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
@@ -40,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/25/11
 */
 @PDF(VersionEnum.PDF11)
 public final class GoToURI
@@ -82,17 +83,14 @@ public final class GoToURI
   public URI getURI(
     )
   {
-    /*
-      NOTE: 'URI' entry MUST exist.
-    */
     try
     {
       return new URI(
         (String)((PdfString)getBaseDataObject().get(PdfName.URI)).getValue()
         );
     }
-    catch(Exception exception)
-    {throw new RuntimeException(exception);}
+    catch(URISyntaxException e)
+    {throw new RuntimeException(e);}
   }
 
   /**

@@ -44,7 +44,7 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfStream;
-import org.pdfclown.tokens.FileFormatException;
+import org.pdfclown.util.parsers.ParseException;
 
 /**
   PDF content stream's object model inspector.
@@ -284,8 +284,8 @@ public class PdfInspectorSample
     // Open the PDF file!
     try
     {this.file = new File(file.getAbsolutePath());}
-    catch(FileFormatException e)
-    {throw new RuntimeException(file.getAbsolutePath() + " file has a bad file format.",e);}
+    catch(ParseException e)
+    {throw new RuntimeException(file.getAbsolutePath() + " file parsing failed.",e);}
     catch(Exception e)
     {throw new RuntimeException(file.getAbsolutePath() + " file access error.",e);}
 

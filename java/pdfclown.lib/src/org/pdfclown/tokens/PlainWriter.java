@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF file writer implementing classic cross-reference table [PDF:1.6:3.4.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/17/11
+  @version 0.1.1, 04/25/11
 */
 final class PlainWriter
   extends Writer
@@ -318,29 +318,24 @@ final class PlainWriter
     FileParser parser
     )
   {
-    try
-    {
-      // 1. Header.
-      stream.write(TrailerChunk);
+    // 1. Header.
+    stream.write(TrailerChunk);
 
-      // 2. Body.
-      // Update its entries:
-      PdfDictionary trailer = file.getTrailer();
-      // * Size
-      trailer.put(PdfName.Size,new PdfInteger(xrefSize));
-      // * Prev
-      if(parser == null)
-      {trailer.remove(PdfName.Prev);} // [FIX:0.0.4:5] It (wrongly) kept the 'Prev' entry of multiple-section xref tables.
-      else
-      {trailer.put(PdfName.Prev,new PdfInteger((int)parser.retrieveXRefOffset()));}
-      // Serialize its contents!
-      trailer.writeTo(stream); stream.write(Chunk.LineFeed);
+    // 2. Body.
+    // Update its entries:
+    PdfDictionary trailer = file.getTrailer();
+    // * Size
+    trailer.put(PdfName.Size,new PdfInteger(xrefSize));
+    // * Prev
+    if(parser == null)
+    {trailer.remove(PdfName.Prev);} // [FIX:0.0.4:5] It (wrongly) kept the 'Prev' entry of multiple-section xref tables.
+    else
+    {trailer.put(PdfName.Prev,new PdfInteger((int)parser.retrieveXRefOffset()));}
+    // Serialize its contents!
+    trailer.writeTo(stream); stream.write(Chunk.LineFeed);
 
-      // 3. Tail.
-      writeTail(startxref);
-    }
-    catch(Exception e)
-    {throw new RuntimeException(e);}
+    // 3. Tail.
+    writeTail(startxref);
   }
   // </private>
   // </interface>

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,11 @@
 
 package org.pdfclown.documents.contents.fonts;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Map;
+
 import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.objects.PdfDataObject;
@@ -32,16 +37,12 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.ByteArray;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Map;
-
 /**
   Character map [PDF:1.6:5.6.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 04/25/11
 */
 final class CMap
 {
@@ -62,7 +63,7 @@ final class CMap
 
   /**
     Gets the character map extracted from the given encoding object.
-  
+
     @param encodingObject Encoding object.
   */
   public static Map<ByteArray,Integer> get(
@@ -71,7 +72,7 @@ final class CMap
   {
     if(encodingObject == null)
       return null;
-    
+
     if(encodingObject instanceof PdfName) // Predefined CMap.
       return get((PdfName)encodingObject);
     else if(encodingObject instanceof PdfStream) // Embedded CMap file.
@@ -94,7 +95,7 @@ final class CMap
     Gets the character map corresponding to the given name.
 
     @param name Predefined character map name.
-    @return null, in case no name matching occurs.
+    @return <code>null</code>, in case no name matching occurs.
   */
   public static Map<ByteArray,Integer> get(
     PdfName name
@@ -105,36 +106,22 @@ final class CMap
     Gets the character map corresponding to the given name.
 
     @param name Predefined character map name.
-    @return null, in case no name matching occurs.
+    @return <code>null</code>, in case no name matching occurs.
   */
   public static Map<ByteArray,Integer> get(
     String name
     )
   {
-    Map<ByteArray,Integer> cmap = null;
+    Map<ByteArray,Integer> cmap;
     {
-      BufferedReader cmapStream = null;
-      try
-      {
-        cmapStream = new BufferedReader(
-          new InputStreamReader(
-            CMap.class.getResourceAsStream("/fonts/cmap/" + name)
-            )
-          );
-        cmap = get(new Buffer(cmapStream));
-      }
-      catch(Exception e)
-      { /* Ignore. */ }
-      finally
-      {
-        try
-        {
-          if(cmapStream != null)
-          {cmapStream.close();}
-        }
-        catch(Exception e)
-        { /* Ignore. */ }
-      }
+      InputStream cmapResourceStream = CMap.class.getResourceAsStream("/fonts/cmap/" + name);
+      if(cmapResourceStream == null)
+        return null;
+
+      BufferedReader cmapStream = new BufferedReader(
+        new InputStreamReader(cmapResourceStream)
+        );
+      cmap = get(new Buffer(cmapStream));
     }
     return cmap;
   }

@@ -25,6 +25,8 @@
 
 package org.pdfclown.objects;
 
+import java.io.UnsupportedEncodingException;
+
 import org.pdfclown.tokens.CharsetName;
 
 /**
@@ -35,7 +37,7 @@ import org.pdfclown.tokens.CharsetName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 04/25/11
 */
 public final class PdfTextString
   extends PdfString
@@ -117,8 +119,8 @@ public final class PdfTextString
       {buffer = valueBytes;}
       return new String(buffer, encoding);
     }
-    catch(Exception e)
-    {throw new RuntimeException(e); /* (should NEVER happen). */}
+    catch(UnsupportedEncodingException e)
+    {throw new RuntimeException(e);} // NOTE: It should NEVER happen.
   }
   // </public>
 
@@ -155,7 +157,7 @@ public final class PdfTextString
           buffer[0] = (byte)254; buffer[1] = (byte)255;
           System.arraycopy(valueBytes, 0, buffer, 2, valueBytes.length);
         }
-        catch(Exception e)
+        catch(UnsupportedEncodingException e)
         {throw new RuntimeException(e);}
         setRawValue(buffer);
       }

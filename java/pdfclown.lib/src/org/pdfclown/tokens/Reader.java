@@ -36,13 +36,14 @@ import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.util.parsers.ParseException;
 import org.pdfclown.util.parsers.PostScriptParser.TokenTypeEnum;
 
 /**
   PDF file reader.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/17/11
+  @version 0.1.1, 04/25/11
 */
 public final class Reader
   implements Closeable
@@ -111,7 +112,7 @@ public final class Reader
     Retrieves the file information.
   */
   public FileInfo readInfo(
-    ) throws FileFormatException
+    )
   {
 //TODO:hybrid xref table/stream
     Version version = Version.get(parser.retrieveVersion());
@@ -141,7 +142,7 @@ public final class Reader
                 && parser.getToken().equals(Keyword.Trailer)) // XRef-table section ended.
               break;
             else if(parser.getTokenType() != TokenTypeEnum.Integer)
-              throw new FileFormatException("Neither object number of the first object in this xref subsection nor end of xref section found.",parser.getPosition());
+              throw new ParseException("Neither object number of the first object in this xref subsection nor end of xref section found.",parser.getPosition());
 
             // Get the object number of the first object in this xref-table subsection!
             int startObjectNumber = (Integer)parser.getToken();
@@ -149,7 +150,7 @@ public final class Reader
             // 2. Last object number.
             parser.moveNext();
             if(parser.getTokenType() != TokenTypeEnum.Integer)
-              throw new FileFormatException("Number of entries in this xref subsection not found.",parser.getPosition());
+              throw new ParseException("Number of entries in this xref subsection not found.",parser.getPosition());
 
             // Get the object number of the last object in this xref-table subsection!
             int endObjectNumber = (Integer)parser.getToken() + startObjectNumber;
@@ -181,7 +182,7 @@ public final class Reader
                   else if(usageToken.equals(Keyword.FreeXrefEntry))
                     usage = XRefEntry.UsageEnum.Free;
                   else
-                    throw new FileFormatException("Invalid xref entry.",parser.getPosition());
+                    throw new ParseException("Invalid xref entry.",parser.getPosition());
                 }
 
                 // Entry initialization.

@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -94,11 +94,8 @@ namespace org.pdfclown.documents.contents.fonts
           codes[name] = code;
         }
       }
-      catch(Exception e)
-      {throw e;}
       finally
       {
-        // Close the glyph list!
         if(glyphListStream != null)
         {glyphListStream.Close();}
       }

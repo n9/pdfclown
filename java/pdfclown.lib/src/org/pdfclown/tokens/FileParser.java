@@ -36,6 +36,7 @@ import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfStream;
+import org.pdfclown.util.parsers.ParseException;
 
 
 /**
@@ -43,7 +44,7 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/25/11
 */
 public final class FileParser
   extends BaseParser
@@ -98,7 +99,7 @@ public final class FileParser
 
   @Override
   public boolean moveNext(
-    ) throws FileFormatException
+    )
   {
     boolean moved = super.moveNext();
     if(moved)
@@ -142,7 +143,7 @@ public final class FileParser
 
   @Override
   public PdfDataObject parsePdfObject(
-    ) throws FileFormatException
+    )
   {
     switch(getTokenType())
     {
@@ -183,7 +184,7 @@ public final class FileParser
         try
         {stream.read(data);}
         catch(EOFException e)
-        {throw new FileFormatException("Unexpected EOF (malformed stream object).",e,stream.getPosition());}
+        {throw new ParseException("Unexpected EOF (malformed stream object).",e,stream.getPosition());}
 
         moveNext(); // Postcondition (last token should be 'endstream' keyword).
 
@@ -214,7 +215,7 @@ public final class FileParser
     Retrieves the PDF version of the file [PDF:1.6:3.4.1].
   */
   public String retrieveVersion(
-    ) throws FileFormatException
+    )
   {
     IInputStream stream = getStream();
     stream.seek(0);
@@ -222,9 +223,9 @@ public final class FileParser
     try
     {header = stream.readString(10);}
     catch(EOFException e)
-    {throw new FileFormatException("Unexpected EOF looking for version data.",e,stream.getPosition());}
+    {throw new ParseException(e);}
     if(!header.startsWith(Keyword.BOF))
-      throw new FileFormatException("PDF header not found.",stream.getPosition());
+      throw new ParseException("PDF header not found.",stream.getPosition());
 
     return header.substring(Keyword.BOF.length(),Keyword.BOF.length() + 3);
   }
@@ -233,7 +234,7 @@ public final class FileParser
     Retrieves the starting position of the last xref-table section.
   */
   public long retrieveXRefOffset(
-    ) throws FileFormatException
+    )
   {return retrieveXRefOffset(getStream().getLength());}
 
   /**
@@ -243,7 +244,7 @@ public final class FileParser
   */
   public long retrieveXRefOffset(
     long offset
-    ) throws FileFormatException
+    )
   {
     final int chunkSize = 1024; // [PDF:1.6:H.3.18].
 
@@ -260,9 +261,9 @@ public final class FileParser
     try
     {index = stream.readString(chunkSize).lastIndexOf(Keyword.StartXRef);}
     catch(EOFException e)
-    {throw new FileFormatException("Unexpected EOF looking for '" + Keyword.StartXRef + "' keyword.", e, stream.getPosition());}
+    {throw new ParseException(e);}
     if(index < 0)
-      throw new FileFormatException("'" + Keyword.StartXRef + "' keyword not found.", stream.getPosition());
+      throw new ParseException("'" + Keyword.StartXRef + "' keyword not found.", stream.getPosition());
 
     // Go past the 'startxref' keyword!
     stream.seek(position + index); moveNext();
@@ -270,7 +271,7 @@ public final class FileParser
     // Get the xref offset!
     moveNext();
     if(getTokenType() != TokenTypeEnum.Integer)
-      throw new FileFormatException("'" + Keyword.StartXRef + "' value invalid.", stream.getPosition());
+      throw new ParseException("'" + Keyword.StartXRef + "' value invalid.", stream.getPosition());
 
     return (Integer)getToken();
   }

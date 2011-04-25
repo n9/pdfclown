@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -91,15 +91,15 @@ namespace org.pdfclown.documents.contents.fonts
       )
     {
       Metrics = new FontMetrics();
-      Load_FontHeader();
-      Load_CharMetrics();
-      Load_KerningData();
+      LoadFontHeader();
+      LoadCharMetrics();
+      LoadKerningData();
     }
 
     /**
       <summary>Loads the font header [AFM:4.1:3,4,4.1,4.2].</summary>
     */
-    private void Load_FontHeader(
+    private void LoadFontHeader(
       )
     {
       string line;
@@ -163,7 +163,7 @@ endParsing:
     /**
       <summary>Loads individual character metrics [AFM:4.1:3,4,4.4,8].</summary>
     */
-    private void Load_CharMetrics(
+    private void LoadCharMetrics(
       )
     {
       GlyphIndexes = new Dictionary<int,int>();
@@ -210,7 +210,7 @@ endParsing:
     /**
       <summary>Loads kerning data [AFM:4.1:3,4,4.5,9].</summary>
     */
-    private void Load_KerningData(
+    private void LoadKerningData(
       )
     {
       GlyphKernings = new Dictionary<int,int>();

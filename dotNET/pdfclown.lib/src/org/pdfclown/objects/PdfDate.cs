@@ -56,17 +56,17 @@ namespace org.pdfclown.objects
         // Year (YYYY).
         dateBuilder.Append(value.Substring(2, 4)); // NOTE: Skips the "D:" prefix; Year is mandatory.
         // Month (MM).
-        dateBuilder.Append(length < 7 ? "01" : value.Substring(6, 2));
+        dateBuilder.Append(length < 8 ? "01" : value.Substring(6, 2));
         // Day (DD).
-        dateBuilder.Append(length < 9 ? "01" : value.Substring(8, 2));
+        dateBuilder.Append(length < 10 ? "01" : value.Substring(8, 2));
         // Hour (HH).
-        dateBuilder.Append(length < 11 ? "00" : value.Substring(10, 2));
+        dateBuilder.Append(length < 12 ? "00" : value.Substring(10, 2));
         // Minute (mm).
-        dateBuilder.Append(length < 13 ? "00" : value.Substring(12, 2));
+        dateBuilder.Append(length < 14 ? "00" : value.Substring(12, 2));
         // Second (SS).
-        dateBuilder.Append(length < 15 ? "00" : value.Substring(14, 2));
+        dateBuilder.Append(length < 16 ? "00" : value.Substring(14, 2));
         // Local time / Universal Time relationship (O).
-        dateBuilder.Append(length < 16 || value.Substring(16, 1).Equals("Z") ? "+" : value.Substring(16, 1));
+        dateBuilder.Append(length < 17 || value.Substring(16, 1).Equals("Z") ? "+" : value.Substring(16, 1));
         // UT Hour offset (HH').
         dateBuilder.Append(length < 19 ? "00" : value.Substring(17, 2));
         // UT Minute offset (mm').

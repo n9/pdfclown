@@ -76,7 +76,6 @@
     <Compile Include="src\org\pdfclown\documents\contents\fonts\CompositeFont.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\fonts\Encoding.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\fonts\Font.cs" />
-    <Compile Include="src\org\pdfclown\documents\contents\fonts\FontFileFormatException.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\fonts\GlyphMapping.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\fonts\MacRomanEncoding.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\fonts\MMType1Font.cs" />
@@ -307,7 +306,6 @@
     <Compile Include="src\org\pdfclown\objects\PdfString.cs" />
     <Compile Include="src\org\pdfclown\objects\PdfTextString.cs" />
     <Compile Include="src\org\pdfclown\objects\Rectangle.cs" />
-    <Compile Include="src\org\pdfclown\tokens\FileFormatException.cs" />
     <Compile Include="src\org\pdfclown\tokens\namespace.cs" />
     <Compile Include="src\org\pdfclown\tokens\Reader.cs" />
     <Compile Include="src\org\pdfclown\tokens\Writer.cs" />
@@ -396,6 +394,7 @@
     <Compile Include="src\org\pdfclown\objects\PdfSimpleObject.cs" />
     <Compile Include="src\org\pdfclown\util\math\geom\Quad.cs" />
     <Compile Include="src\org\pdfclown\documents\interchange\metadata\Metadata.cs" />
+    <Compile Include="src\org\pdfclown\util\parsers\ParseException.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
@@ -483,5 +482,6 @@
     <Folder Include="src\org\pdfclown\documents\functions\" />
     <Folder Include="src\org\pdfclown\util\parsers\" />
     <Folder Include="src\org\pdfclown\util\math\geom\" />
+    <Folder Include="src\org\pdfclown\tokens\" />
   </ItemGroup>
 </Project>

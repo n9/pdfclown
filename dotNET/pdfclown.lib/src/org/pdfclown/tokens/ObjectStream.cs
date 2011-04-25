@@ -81,13 +81,8 @@ namespace org.pdfclown.tokens
         {
           if(dataObject == null)
           {
-            try
-            {
-              parser.Seek(offset); parser.MoveNext();
-              dataObject = parser.ParsePdfObject();
-            }
-            catch(FileFormatException e)
-            {throw new Exception("Failed to parse a compressed object.",e);}
+            parser.Seek(offset); parser.MoveNext();
+            dataObject = parser.ParsePdfObject();
           }
           return dataObject;
         }
@@ -280,15 +275,9 @@ namespace org.pdfclown.tokens
             index++
             )
           {
-            try
-            {
-              int objectNumber = ((PdfInteger)parser.ParsePdfObject(1)).IntValue;
-              int objectOffset = baseOffset + ((PdfInteger)parser.ParsePdfObject(1)).IntValue;
-
-              entries[objectNumber] = new ObjectEntry(objectOffset, parser);
-            }
-            catch(FileFormatException e)
-            {throw new Exception("Failed to parse offset " + index,e);}
+            int objectNumber = ((PdfInteger)parser.ParsePdfObject(1)).IntValue;
+            int objectOffset = baseOffset + ((PdfInteger)parser.ParsePdfObject(1)).IntValue;
+            entries[objectNumber] = new ObjectEntry(objectOffset, parser);
           }
         }
         return entries;

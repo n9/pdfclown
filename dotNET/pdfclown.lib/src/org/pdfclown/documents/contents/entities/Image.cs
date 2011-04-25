@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -99,8 +99,10 @@ namespace org.pdfclown.documents.contents.entities
     */
     public int BitsPerComponent
     {
-      get{return bitsPerComponent;}
-      protected set{bitsPerComponent = value;}
+      get
+      {return bitsPerComponent;}
+      protected set
+      {bitsPerComponent = value;}
     }
 
     /**
@@ -108,8 +110,10 @@ namespace org.pdfclown.documents.contents.entities
     */
     public int Height
     {
-      get{return height;}
-      protected set{height = value;}
+      get
+      {return height;}
+      protected set
+      {height = value;}
     }
 
     /**
@@ -117,8 +121,10 @@ namespace org.pdfclown.documents.contents.entities
     */
     public int Width
     {
-      get{return width;}
-      protected set{width = value;}
+      get
+      {return width;}
+      protected set
+      {width = value;}
     }
     #endregion
 
@@ -127,7 +133,10 @@ namespace org.pdfclown.documents.contents.entities
       <summary>Gets the underlying stream.</summary>
     */
     protected System.IO.Stream Stream
-    {get{return stream;}}
+    {
+      get
+      {return stream;}
+    }
     #endregion
     #endregion
     #endregion

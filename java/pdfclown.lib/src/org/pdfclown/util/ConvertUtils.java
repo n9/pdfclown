@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,7 +36,7 @@ import java.nio.ByteOrder;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 04/25/11
 */
 public final class ConvertUtils
 {
@@ -79,7 +79,7 @@ public final class ConvertUtils
     byte[] data,
     int index,
     ByteOrder byteOrder
-    )
+    ) throws ArrayIndexOutOfBoundsException
   {return byteArrayToNumber(data, index, 4, byteOrder);}
 
   public static int byteArrayToNumber(
@@ -87,7 +87,7 @@ public final class ConvertUtils
     int index,
     int length,
     ByteOrder byteOrder
-    )
+    ) throws ArrayIndexOutOfBoundsException
   {
     int value;
     {

@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,6 +28,7 @@ using org.pdfclown.documents;
 using org.pdfclown.files;
 using org.pdfclown.objects;
 using org.pdfclown.util.io;
+using org.pdfclown.util.parsers;
 
 using System;
 using System.IO;
@@ -124,27 +125,30 @@ namespace org.pdfclown.documents.contents.fonts
     #region interface
     #region public
     /**
-    * <summary>Gets whether the given data represents a valid Open Font.</summary>
+      <summary>Gets whether the given data represents a valid Open Font.</summary>
     */
     public static bool IsOpenFont(
       bytes::IInputStream fontData
       )
     {
       long position = fontData.Position;
+      fontData.Position = 0;
       try
-      {
-        fontData.Position = 0;
-        GetOutlineFormat(fontData.ReadInt()); // NOTE: An exception is expected to be thrown in case of wrong file format.
-        return true;
-      }
-      catch
+      {GetOutlineFormat(fontData.ReadInt());}
+      catch(NotSupportedException)
       {return false;}
       finally
       {fontData.Position = position;}
+      return true;
     }
     #endregion
 
     #region private
+    /**
+      <summary>Gets the outline format corresponding to the specified version code.</summary>
+      <param name="versionCode">OFF version.</param>
+      <exception cref="NotSupportedException">If versionCode is unknown.</exception>
+    */
     private static OutlineFormatEnum GetOutlineFormat(
       int versionCode
       )
@@ -205,51 +209,21 @@ namespace org.pdfclown.documents.contents.fonts
     private void Load(
       )
     {
+      LoadTableInfo();
+
+      FontName = GetName(NameID_FontPostscriptName);
+
       Metrics = new FontMetrics();
-
-      // 1. Offset Table.
-      FontData.Seek(0);
-      // Get the outline format!
-      this.OutlineFormat = GetOutlineFormat(FontData.ReadInt());
-      // Get the number of tables!
-      int tableCount = FontData.ReadUnsignedShort();
-      tableOffsets = new Dictionary<string,int>(tableCount);
-
-      // 2. Table Directory.
-      // Skip to the beginning of the table directory!
-      FontData.Skip(6);
-      // Collecting the table offsets...
-      for(
-        int index = 0;
-        index < tableCount;
-        index++
-        )
-      {
-        // Get the table tag!
-        String tag = ReadAsciiString(4);
-        // Skip to the table offset!
-        FontData.Skip(4);
-        // Get the table offset!
-        int offset = FontData.ReadInt();
-        // Collect the table offset!
-        tableOffsets[tag] = offset;
-
-        // Skip to the next entry!
-        FontData.Skip(4);
-      }
-
-      FontName = Load_GetName(NameID_FontPostscriptName);
-
-      Load_Tables();
-      Load_CMap();
-      Load_GlyphWidths();
-      Load_GlyphKerning();
+      LoadTables();
+      LoadCMap();
+      LoadGlyphWidths();
+      LoadGlyphKerning();
     }
 
     /**
       <summary>Loads the character to glyph index mapping table.</summary>
     */
-    private void Load_CMap(
+    private void LoadCMap(
       )
     {
       /*
@@ -265,9 +239,9 @@ namespace org.pdfclown.documents.contents.fonts
       */
       // Character To Glyph Index Mapping Table ('cmap' table).
       // Retrieve the location info!
-      int tableOffset = tableOffsets["cmap"];
-      if(tableOffset == 0)
-        throw new FontFileFormatException("'cmap' table does NOT exist.");
+      int tableOffset;
+      if(!tableOffsets.TryGetValue("cmap", out tableOffset))
+        throw new ParseException("'cmap' table does NOT exist.");
 
       int cmap10Offset = 0;
       int cmap31Offset = 0;
@@ -329,7 +303,7 @@ namespace org.pdfclown.documents.contents.fonts
         FontData.Seek(tableOffset + cmap10Offset);
       }
       else
-        throw new FontFileFormatException("CMAP table unavailable.");
+        throw new ParseException("CMAP table unavailable.");
 
       int format;
       format = FontData.ReadUnsignedShort();
@@ -337,16 +311,16 @@ namespace org.pdfclown.documents.contents.fonts
       switch(format)
       {
         case 0: // Byte encoding table.
-          Load_CMap_Format0();
+          LoadCMapFormat0();
           break;
         case 4: // Segment mapping to delta values.
-          Load_CMap_Format4();
+          LoadCMapFormat4();
           break;
         case 6: // Trimmed table mapping.
-          Load_CMap_Format6();
+          LoadCMapFormat6();
           break;
         default:
-          throw new FontFileFormatException("Cmap table format " + format + " NOT supported.");
+          throw new ParseException("Cmap table format " + format + " NOT supported.");
       }
     }
 
@@ -354,7 +328,7 @@ namespace org.pdfclown.documents.contents.fonts
       <summary>Loads format-0 cmap subtable (Byte encoding table, i.e. Apple standard
       character-to-glyph index mapping table).</summary>
     */
-    private void Load_CMap_Format0(
+    private void LoadCMapFormat0(
       )
     {
       /*
@@ -386,7 +360,7 @@ namespace org.pdfclown.documents.contents.fonts
       character to glyph index mapping table for fonts that support Unicode ranges other than the
       range [U+D800 - U+DFFF] (defined as Surrogates Area, in Unicode v 3.0)).</summary>
     */
-    private void Load_CMap_Format4(
+    private void LoadCMapFormat4(
       )
     {
       /*
@@ -540,7 +514,7 @@ namespace org.pdfclown.documents.contents.fonts
     /**
       <summary>Loads format-6 cmap subtable (Trimmed table mapping).</summary>
     */
-    private void Load_CMap_Format6(
+    private void LoadCMapFormat6(
       )
     {
       // Skip to the first character code!
@@ -565,15 +539,15 @@ namespace org.pdfclown.documents.contents.fonts
       <summary>Gets a name.</summary>
       <param name="id">Name identifier.</param>
     */
-    private string Load_GetName(
+    private string GetName(
       int id
       )
     {
       // Naming Table ('name' table).
       // Retrieve the location info!
-      int tableOffset = tableOffsets["name"];
-      if(tableOffset == 0)
-        throw new FontFileFormatException("'name' table does NOT exist.");
+      int tableOffset;
+      if(!tableOffsets.TryGetValue("name", out tableOffset))
+        throw new ParseException("'name' table does NOT exist.");
 
       // Go to the number of name records!
       FontData.Seek(tableOffset + 2);
@@ -623,16 +597,14 @@ namespace org.pdfclown.documents.contents.fonts
     /**
       <summary>Loads the glyph kerning.</summary>
     */
-    private void Load_GlyphKerning(
+    private void LoadGlyphKerning(
       )
     {
       // Kerning ('kern' table).
       // Retrieve the location info!
       int tableOffset;
-      try
-      {tableOffset = tableOffsets["kern"];}
-      catch
-      {return;}
+      if(!tableOffsets.TryGetValue("kern", out tableOffset))
+        return; // NOTE: Kerning table is not mandatory.
 
       // Go to the table count!
       FontData.Seek(tableOffset + 2);
@@ -689,14 +661,14 @@ namespace org.pdfclown.documents.contents.fonts
     /**
       <summary>Loads the glyph widths.</summary>
     */
-    private void Load_GlyphWidths(
+    private void LoadGlyphWidths(
       )
     {
       // Horizontal Metrics ('hmtx' table).
       // Retrieve the location info!
-      int tableOffset = tableOffsets["hmtx"];
-      if(tableOffset == 0)
-        throw new FontFileFormatException("'hmtx' table does NOT exist.");
+      int tableOffset;
+      if(!tableOffsets.TryGetValue("hmtx", out tableOffset))
+        throw new ParseException("'hmtx' table does NOT exist.");
 
       // Go to the glyph horizontal-metrics entries!
       FontData.Seek(tableOffset);
@@ -714,16 +686,51 @@ namespace org.pdfclown.documents.contents.fonts
       }
     }
 
+    private void LoadTableInfo(
+      )
+    {
+      // 1. Offset Table.
+      FontData.Seek(0);
+      // Get the outline format!
+      this.OutlineFormat = GetOutlineFormat(FontData.ReadInt());
+      // Get the number of tables!
+      int tableCount = FontData.ReadUnsignedShort();
+
+      // 2. Table Directory.
+      // Skip to the beginning of the table directory!
+      FontData.Skip(6);
+      // Collecting the table offsets...
+      tableOffsets = new Dictionary<string,int>(tableCount);
+      for(
+        int index = 0;
+        index < tableCount;
+        index++
+        )
+      {
+        // Get the table tag!
+        String tag = ReadAsciiString(4);
+        // Skip to the table offset!
+        FontData.Skip(4);
+        // Get the table offset!
+        int offset = FontData.ReadInt();
+        // Collect the table offset!
+        tableOffsets[tag] = offset;
+
+        // Skip to the next entry!
+        FontData.Skip(4);
+      }
+    }
+
     /**
       <summary>Loads general tables.</summary>
     */
-    private void Load_Tables(
+    private void LoadTables(
       )
     {
       // Font Header ('head' table).
-      int tableOffset = tableOffsets["head"];
-      if(tableOffset == 0)
-        throw new FontFileFormatException("'head' table does NOT exist.");
+      int tableOffset;
+      if(!tableOffsets.TryGetValue("head", out tableOffset))
+        throw new ParseException("'head' table does NOT exist.");
 
       // Go to the font flags!
       FontData.Seek(tableOffset + 16);
@@ -738,8 +745,8 @@ namespace org.pdfclown.documents.contents.fonts
       Metrics.YMax = FontData.ReadShort();
       Metrics.MacStyle = FontData.ReadUnsignedShort();
 
-      // Font Header ('head' table).
-      if(tableOffsets.TryGetValue("OS/2",out tableOffset))
+      // Font Header ('OS/2' table).
+      if(tableOffsets.TryGetValue("OS/2", out tableOffset))
       {
         FontData.Seek(tableOffset);
         int version = FontData.ReadUnsignedShort();
@@ -766,8 +773,8 @@ namespace org.pdfclown.documents.contents.fonts
       }
 
       // Horizontal Header ('hhea' table).
-      if(!tableOffsets.TryGetValue("hhea",out tableOffset))
-        throw new FontFileFormatException("'hhea' table does NOT exist.");
+      if(!tableOffsets.TryGetValue("hhea", out tableOffset))
+        throw new ParseException("'hhea' table does NOT exist.");
 
       // Go to the ascender!
       FontData.Seek(tableOffset + 4);
@@ -785,8 +792,8 @@ namespace org.pdfclown.documents.contents.fonts
       Metrics.NumberOfHMetrics = FontData.ReadUnsignedShort();
 
       // PostScript ('post' table).
-      if(!tableOffsets.TryGetValue("post",out tableOffset))
-        throw new FontFileFormatException("'post' table does NOT exist.");
+      if(!tableOffsets.TryGetValue("post", out tableOffset))
+        throw new ParseException("'post' table does NOT exist.");
 
       // Go to the italic angle!
       FontData.Seek(tableOffset + 4);

@@ -50,7 +50,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/16/11
+  @version 0.1.1, 04/25/11
 */
 public final class TextExtractor
 {
@@ -708,11 +708,7 @@ public final class TextExtractor
       {textStrings.add(textString = new TextString());}
 
       textStyle = rawTextString.getStyle();
-      float spaceWidth = 0;
-      try
-      {spaceWidth = textStyle.getFont().getWidth(' ', textStyle.getFontSize());}
-      catch(Exception e)
-      { /* NOOP */ }
+      float spaceWidth = textStyle.getFont().getWidth(' ', textStyle.getFontSize());
       if(spaceWidth == 0)
       {spaceWidth = textStyle.getFontSize() * .25f;} // NOTE: as a rule of thumb, space width is estimated according to the font size.
       for(TextChar textChar : rawTextString.getTextChars())

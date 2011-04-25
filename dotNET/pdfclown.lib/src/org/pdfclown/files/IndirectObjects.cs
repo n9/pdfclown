@@ -382,7 +382,8 @@ namespace org.pdfclown.files
       {
         RemoveAt(
           ((PdfIndirectObject)obj).Reference.ObjectNumber
-          ); return true;
+          );
+        return true;
       }
       catch
       {return false;}

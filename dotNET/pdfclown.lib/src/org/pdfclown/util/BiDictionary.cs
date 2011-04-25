@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -95,12 +95,7 @@ namespace org.pdfclown.util
       catch(Exception exception)
       {
         dictionary.Remove(key); // Reverts the entry addition.
-        if(exception is ArgumentNullException)
-          throw new ArgumentNullException("Value cannot be null.","value");
-        else if(exception is ArgumentException)
-          throw new ArgumentException("Value already exists.","value");
-        else
-          throw exception;
+        throw exception;
       }
     }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,7 +44,7 @@ import org.pdfclown.util.ByteArray;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 04/25/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class SimpleFont
@@ -68,10 +68,10 @@ public abstract class SimpleFont
   {return (PdfDictionary)getBaseDataObject().resolve(PdfName.FontDescriptor);}
 
   protected abstract void loadEncoding();
-  
+
   /**
     Loads the encoding differences into the given collection.
-    
+
     @param encodingDictionary Encoding dictionary.
     @param codes Encoding to alter applying differences.
    */
@@ -83,7 +83,7 @@ public abstract class SimpleFont
     PdfArray differenceObjects = (PdfArray)encodingDictionary.resolve(PdfName.Differences);
     if(differenceObjects == null)
       return;
-  
+
     /*
       NOTE: Each code is the first index in a sequence of character codes to be changed.
       The first character name after the code becomes the name corresponding to that code.
@@ -102,12 +102,7 @@ public abstract class SimpleFont
         if(charName.equals(".notdef"))
         {codes.remove(charCode);}
         else
-        {
-          try
-          {codes.put(charCode,GlyphMapping.nameToCode(charName));}
-          catch (Exception e)
-          {codes.put(charCode,(int)charCodeData[0]);} // NOTE: This is an extreme remedy to non-standard character name lookups.
-        }
+        {codes.put(charCode,GlyphMapping.nameToCode(charName));}
         charCodeData[0]++;
       }
     }

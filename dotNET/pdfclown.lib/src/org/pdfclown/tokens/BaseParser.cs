@@ -65,7 +65,7 @@ namespace org.pdfclown.tokens
               */
               try
               {Token = PdfDate.ToDate(literalToken);}
-              catch
+              catch(ParseException)
               {/* NOOP: gently degrade to a common literal. */}
             }
           } break;

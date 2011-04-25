@@ -25,6 +25,8 @@
 
 package org.pdfclown.documents.fileSpecs;
 
+import java.io.FileNotFoundException;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.Buffer;
@@ -43,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/25/11
 */
 @PDF(VersionEnum.PDF13)
 public final class EmbeddedFile
@@ -67,7 +69,7 @@ public final class EmbeddedFile
           )
         );
     }
-    catch(Exception e)
+    catch(FileNotFoundException e)
     {throw new RuntimeException(e);}
   }
 

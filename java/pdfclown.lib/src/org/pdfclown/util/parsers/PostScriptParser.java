@@ -30,7 +30,6 @@ import java.io.EOFException;
 import java.io.IOException;
 
 import org.pdfclown.bytes.IInputStream;
-import org.pdfclown.tokens.FileFormatException;
 import org.pdfclown.tokens.Keyword;
 import org.pdfclown.tokens.Symbol;
 
@@ -39,7 +38,7 @@ import org.pdfclown.tokens.Symbol;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/25/11
 */
 public class PostScriptParser
   implements Closeable
@@ -161,7 +160,7 @@ public class PostScriptParser
   */
   public Object getToken(
     int offset
-    ) throws FileFormatException
+    )
   {moveNext(offset); return getToken();}
 
   /**
@@ -184,7 +183,7 @@ public class PostScriptParser
   */
   public boolean moveNext(
     int offset
-    ) throws FileFormatException
+    )
   {
     for(
       int index = 0;
@@ -207,7 +206,7 @@ public class PostScriptParser
     @return Whether a new token was found.
   */
   public boolean moveNext(
-    ) throws FileFormatException
+    )
   {
     StringBuilder buffer = null;
     token = null;
@@ -217,9 +216,8 @@ public class PostScriptParser
     try
     {
       do
-      {
-        c = stream.readUnsignedByte();
-      } while(isWhitespace(c)); // Keep goin' till there's a white-space character...
+      {c = stream.readUnsignedByte();}
+      while(isWhitespace(c)); // Keep goin' till there's a white-space character...
     }
     catch(EOFException e)
     {return false;}
@@ -300,7 +298,7 @@ public class PostScriptParser
         try
         {c = stream.readUnsignedByte();}
         catch(EOFException e)
-        {throw new FileFormatException("Unexpected EOF (isolated opening angle-bracket character).", e, stream.getPosition());}
+        {throw new ParseException("Unexpected EOF (isolated opening angle-bracket character).", e);}
         // Is it a dictionary (2nd angle bracket)?
         if(c == Symbol.OpenAngleBracket)
         {
@@ -321,16 +319,16 @@ public class PostScriptParser
           }
         }
         catch(EOFException e)
-        {throw new FileFormatException("Unexpected EOF (malformed hex string).", e, stream.getPosition());}
+        {throw new ParseException("Unexpected EOF (malformed hex string).", e);}
       } break;
       case Symbol.CloseAngleBracket: // Dictionary (end).
       {
         try
         {c = stream.readUnsignedByte();}
         catch(EOFException e)
-        {throw new FileFormatException("Unexpected EOF (malformed dictionary).", e, stream.getPosition());}
+        {throw new ParseException("Unexpected EOF (malformed dictionary).", e);}
         if(c != Symbol.CloseAngleBracket)
-          throw new FileFormatException("Malformed dictionary.", stream.getPosition());
+          throw new ParseException("Malformed dictionary.", stream.getPosition());
 
         tokenType = TokenTypeEnum.DictionaryEnd;
       } break;
@@ -421,7 +419,7 @@ public class PostScriptParser
           }
         }
         catch(EOFException e)
-        {throw new FileFormatException("Unexpected EOF (malformed literal string).", e, stream.getPosition());}
+        {throw new ParseException("Unexpected EOF (malformed literal string).", e);}
       } break;
       case Symbol.Percent: // Comment.
       {

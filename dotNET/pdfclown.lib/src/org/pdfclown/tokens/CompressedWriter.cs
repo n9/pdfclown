@@ -54,62 +54,57 @@ namespace org.pdfclown.tokens
     protected override void WriteIncremental(
       )
     {
-      try
+      // 1. Original content (head, body and previous trailer).
+      FileParser parser = file.Reader.Parser;
+      stream.Write(parser.Stream);
+
+      // 2. Body update (modified indirect objects insertion).
+      XRefEntry xrefStreamEntry;
       {
-        // 1. Original content (head, body and previous trailer).
-        FileParser parser = file.Reader.Parser;
-        stream.Write(parser.Stream);
+        // 2.1. Content indirect objects.
+        IndirectObjects indirectObjects = file.IndirectObjects;
 
-        // 2. Body update (modified indirect objects insertion).
-        XRefEntry xrefStreamEntry;
+        // Create the xref stream indirect object!
+        /*
+          NOTE: Incremental xref table comprises multiple sections each one composed by multiple subsections;
+          this update adds a new section.
+        */
+        /*
+          NOTE: This xref stream indirect object is purposely temporary (i.e. not registered into the file's
+          indirect objects collection).
+        */
+        XRefStream xrefStream;
+        PdfIndirectObject xrefStreamIndirectObject = new PdfIndirectObject(
+          file,
+          xrefStream = new XRefStream(file),
+          xrefStreamEntry = new XRefEntry(indirectObjects.Count, 0, 0, XRefEntry.UsageEnum.InUse)
+          );
+
+        XRefEntry prevFreeEntry = null;
+        foreach(PdfIndirectObject indirectObject in indirectObjects.ModifiedObjects.Values)
         {
-          // 2.1. Content indirect objects.
-          IndirectObjects indirectObjects = file.IndirectObjects;
-
-          // Create the xref stream indirect object!
-          /*
-            NOTE: Incremental xref table comprises multiple sections each one composed by multiple subsections;
-            this update adds a new section.
-          */
-          /*
-            NOTE: This xref stream indirect object is purposely temporary (i.e. not registered into the file's
-            indirect objects collection).
-          */
-          XRefStream xrefStream;
-          PdfIndirectObject xrefStreamIndirectObject = new PdfIndirectObject(
-            file,
-            xrefStream = new XRefStream(file),
-            xrefStreamEntry = new XRefEntry(indirectObjects.Count, 0, 0, XRefEntry.UsageEnum.InUse)
-            );
-
-          XRefEntry prevFreeEntry = null;
-          foreach(PdfIndirectObject indirectObject in indirectObjects.ModifiedObjects.Values)
-          {
-            prevFreeEntry = AddXRefEntry(
-              indirectObject.XrefEntry,
-              indirectObject,
-              xrefStream,
-              prevFreeEntry
-              );
-          }
-          if(prevFreeEntry != null)
-          {prevFreeEntry.Offset = 0;} // Linking back to the first free object. NOTE: The first entry in the table (object number 0) is always free.
-
-          // 2.2. XRef stream.
-          xrefStream.Header[PdfName.Prev] = new PdfInteger((int)parser.RetrieveXRefOffset());
-          AddXRefEntry(
-            xrefStreamEntry,
-            xrefStreamIndirectObject,
+          prevFreeEntry = AddXRefEntry(
+            indirectObject.XrefEntry,
+            indirectObject,
             xrefStream,
-            null
+            prevFreeEntry
             );
         }
+        if(prevFreeEntry != null)
+        {prevFreeEntry.Offset = 0;} // Linking back to the first free object. NOTE: The first entry in the table (object number 0) is always free.
 
-        // 3. Tail.
-        WriteTail(xrefStreamEntry.Offset);
+        // 2.2. XRef stream.
+        xrefStream.Header[PdfName.Prev] = new PdfInteger((int)parser.RetrieveXRefOffset());
+        AddXRefEntry(
+          xrefStreamEntry,
+          xrefStreamIndirectObject,
+          xrefStream,
+          null
+          );
       }
-      catch(Exception e)
-      {throw new Exception("Incremental writing failed.",e);}
+
+      // 3. Tail.
+      WriteTail(xrefStreamEntry.Offset);
     }
 
     protected override void WriteLinearized(
@@ -119,81 +114,76 @@ namespace org.pdfclown.tokens
     protected override void WriteStandard(
       )
     {
-      try
+      // 1. Header [PDF:1.6:3.4.1].
+      WriteHeader();
+
+      // 2. Body [PDF:1.6:3.4.2,3,7].
+      XRefEntry xrefStreamEntry;
       {
-        // 1. Header [PDF:1.6:3.4.1].
-        WriteHeader();
+        // 2.1. Content indirect objects.
+        IndirectObjects indirectObjects = file.IndirectObjects;
 
-        // 2. Body [PDF:1.6:3.4.2,3,7].
-        XRefEntry xrefStreamEntry;
+        // Create the xref stream indirect object!
+        /*
+          NOTE: A standard xref stream comprises just one section composed by just one subsection.
+          The xref stream is generated on-the-fly and kept volatile not to interfere with the existing
+          file structure.
+        */
+        /*
+          NOTE: This xref stream indirect object is purposely temporary (i.e. not registered into the file's
+          indirect objects collection).
+        */
+        XRefStream xrefStream;
+        PdfIndirectObject xrefStreamIndirectObject = new PdfIndirectObject(
+          file,
+          xrefStream = new XRefStream(file),
+          xrefStreamEntry = new XRefEntry(indirectObjects.Count, 0, 0, XRefEntry.UsageEnum.InUse)
+          );
+
+        XRefEntry prevFreeEntry = null;
+        foreach(PdfIndirectObject indirectObject in indirectObjects)
         {
-          // 2.1. Content indirect objects.
-          IndirectObjects indirectObjects = file.IndirectObjects;
-
-          // Create the xref stream indirect object!
-          /*
-            NOTE: A standard xref stream comprises just one section composed by just one subsection.
-            The xref stream is generated on-the-fly and kept volatile not to interfere with the existing
-            file structure.
-          */
-          /*
-            NOTE: This xref stream indirect object is purposely temporary (i.e. not registered into the file's
-            indirect objects collection).
-          */
-          XRefStream xrefStream;
-          PdfIndirectObject xrefStreamIndirectObject = new PdfIndirectObject(
-            file,
-            xrefStream = new XRefStream(file),
-            xrefStreamEntry = new XRefEntry(indirectObjects.Count, 0, 0, XRefEntry.UsageEnum.InUse)
-            );
-
-          XRefEntry prevFreeEntry = null;
-          foreach(PdfIndirectObject indirectObject in indirectObjects)
+          PdfIndirectObject actualIndirectObject;
+          if(indirectObject.DataObject is XRefStream)
           {
-            PdfIndirectObject actualIndirectObject;
-            if(indirectObject.DataObject is XRefStream)
-            {
-              /*
-                NOTE: Existing xref streams MUST be suppressed,
-                temporarily replacing them with free entries.
-              */
-              actualIndirectObject = new PdfIndirectObject(
-                file,
-                null,
-                new XRefEntry(
-                  indirectObject.Reference.ObjectNumber,
-                  XRefEntry.GenerationUnreusable,
-                  0,
-                  XRefEntry.UsageEnum.Free
-                  )
-                );
-            }
-            else
-            {actualIndirectObject = indirectObject;}
-
-            prevFreeEntry = AddXRefEntry(
-              (XRefEntry)actualIndirectObject.XrefEntry.Clone(), // NOTE: Xref entry is cloned to preserve the original one.
-              actualIndirectObject,
-              xrefStream,
-              prevFreeEntry
+            /*
+              NOTE: Existing xref streams MUST be suppressed,
+              temporarily replacing them with free entries.
+            */
+            actualIndirectObject = new PdfIndirectObject(
+              file,
+              null,
+              new XRefEntry(
+                indirectObject.Reference.ObjectNumber,
+                XRefEntry.GenerationUnreusable,
+                0,
+                XRefEntry.UsageEnum.Free
+                )
               );
           }
-          prevFreeEntry.Offset = 0; // Linking back to the first free object. NOTE: The first entry in the table (object number 0) is always free.
+          else
+          {actualIndirectObject = indirectObject;}
 
-          // 2.2. XRef stream.
-          AddXRefEntry(
-            xrefStreamEntry,
-            xrefStreamIndirectObject,
+          prevFreeEntry = AddXRefEntry(
+            (XRefEntry)actualIndirectObject.XrefEntry.Clone(), // NOTE: Xref entry is cloned to preserve the original one.
+            actualIndirectObject,
             xrefStream,
-            null
+            prevFreeEntry
             );
         }
+        prevFreeEntry.Offset = 0; // Linking back to the first free object. NOTE: The first entry in the table (object number 0) is always free.
 
-        // 3. Tail.
-        WriteTail(xrefStreamEntry.Offset);
+        // 2.2. XRef stream.
+        AddXRefEntry(
+          xrefStreamEntry,
+          xrefStreamIndirectObject,
+          xrefStream,
+          null
+          );
       }
-      catch(Exception e)
-      {throw new Exception("Standard writing failed.",e);}
+
+      // 3. Tail.
+      WriteTail(xrefStreamEntry.Offset);
     }
     #endregion
 

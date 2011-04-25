@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -75,13 +75,8 @@ namespace org.pdfclown.documents.contents.objects
         {
           if(element is PdfString)
           {
-            try
-            {
-              byte[] elementValue = ((PdfString)element).RawValue;
-              textStream.Write(elementValue,0,elementValue.Length);
-            }
-            catch(Exception exception)
-            {throw new Exception("Assignment failed.",exception);}
+            byte[] elementValue = ((PdfString)element).RawValue;
+            textStream.Write(elementValue,0,elementValue.Length);
           }
         }
         return textStream.ToArray();

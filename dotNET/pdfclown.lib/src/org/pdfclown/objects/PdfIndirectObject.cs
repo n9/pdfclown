@@ -225,35 +225,30 @@ namespace org.pdfclown.objects
       {
         if(dataObject == null)
         {
-          try
+          switch(xrefEntry.Usage)
           {
-            switch(xrefEntry.Usage)
+            // Free entry (no data object at all).
+            case XRefEntry.UsageEnum.Free:
+              break;
+            // In-use entry (late-bound data object).
+            case XRefEntry.UsageEnum.InUse:
             {
-              // Free entry (no data object at all).
-              case XRefEntry.UsageEnum.Free:
-                break;
-              // In-use entry (late-bound data object).
-              case XRefEntry.UsageEnum.InUse:
-              {
-                FileParser parser = file.Reader.Parser;
-                // Retrieve the associated data object among the original objects!
-                parser.Seek(xrefEntry.Offset);
-                // Get the indirect data object!
-                dataObject = Include(parser.ParsePdfObject(4)); // NOTE: Skips the indirect-object header.
-                break;
-              }
-              case XRefEntry.UsageEnum.InUseCompressed:
-              {
-                // Get the object stream where its data object is stored!
-                ObjectStream objectStream = (ObjectStream)file.IndirectObjects[xrefEntry.StreamNumber].DataObject;
-                // Get the indirect data object!
-                dataObject = Include(objectStream[xrefEntry.Number]);
-                break;
-              }
+              FileParser parser = file.Reader.Parser;
+              // Retrieve the associated data object among the original objects!
+              parser.Seek(xrefEntry.Offset);
+              // Get the indirect data object!
+              dataObject = Include(parser.ParsePdfObject(4)); // NOTE: Skips the indirect-object header.
+              break;
+            }
+            case XRefEntry.UsageEnum.InUseCompressed:
+            {
+              // Get the object stream where its data object is stored!
+              ObjectStream objectStream = (ObjectStream)file.IndirectObjects[xrefEntry.StreamNumber].DataObject;
+              // Get the indirect data object!
+              dataObject = Include(objectStream[xrefEntry.Number]);
+              break;
             }
           }
-          catch(Exception e)
-          {throw new Exception("Data object resolution failed.",e);}
         }
         return dataObject;
       }

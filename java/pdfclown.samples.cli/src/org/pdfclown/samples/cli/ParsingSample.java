@@ -26,7 +26,7 @@ import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
-import org.pdfclown.tokens.FileFormatException;
+import org.pdfclown.util.parsers.ParseException;
 
 /**
   This sample demonstrates <b>how to inspect the structure of a PDF document</b>.
@@ -35,7 +35,7 @@ import org.pdfclown.tokens.FileFormatException;
   to exploit all the available access functionalities.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/19/11
+  @version 0.1.1, 04/25/11
 */
 public class ParsingSample
   extends Sample
@@ -50,8 +50,8 @@ public class ParsingSample
     File file;
     try
     {file = new File(filePath);}
-    catch(FileFormatException e)
-    {throw new RuntimeException(filePath + " file has a bad file format.",e);}
+    catch(ParseException e)
+    {throw new RuntimeException(filePath + " file parsing failed.",e);}
     catch(Exception e)
     {throw new RuntimeException(filePath + " file access error.",e);}
 

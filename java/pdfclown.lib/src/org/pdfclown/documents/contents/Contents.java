@@ -57,7 +57,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/25/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Contents
@@ -134,21 +134,12 @@ public final class Contents
     public byte readByte(
       ) throws EOFException
     {
-      while(true)
-      {
-        try
-        {return stream.readByte();}
-        catch(Exception e)
-        {
-          if(stream == null || e instanceof EOFException)
-          {
-            if(!moveNextStream())
-              throw new EOFException();
-          }
-          else
-            throw new RuntimeException(e);
-        }
-      }
+      if((stream == null
+        || stream.getPosition() >= stream.getLength())
+        && !moveNextStream())
+          throw new EOFException();
+
+      return stream.readByte();
     }
 
     @Override
@@ -182,21 +173,12 @@ public final class Contents
     public int readUnsignedByte(
       ) throws EOFException
     {
-      while(true)
-      {
-        try
-        {return stream.readUnsignedByte();}
-        catch(Exception e)
-        {
-          if(stream == null || e instanceof EOFException)
-          {
-            if(!moveNextStream())
-              throw new EOFException();
-          }
-          else
-            throw new RuntimeException(e);
-        }
-      }
+      if((stream == null
+        || stream.getPosition() >= stream.getLength())
+        && !moveNextStream())
+          throw new EOFException();
+
+      return stream.readUnsignedByte();
     }
 
     @Override
@@ -595,11 +577,8 @@ public final class Contents
   private void load(
     )
   {
-    final ContentParser parser = new ContentParser(new ContentStream(getBaseDataObject()));
-    try
-    {items = parser.parseContentObjects();}
-    catch(Exception e)
-    {throw new RuntimeException(e);}
+    ContentParser parser = new ContentParser(new ContentStream(getBaseDataObject()));
+    items = parser.parseContentObjects();
   }
   // </private>
   // </interface>
