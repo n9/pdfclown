@@ -43,6 +43,7 @@ import org.pdfclown.documents.contents.TextStyle;
 import org.pdfclown.documents.contents.objects.ContainerObject;
 import org.pdfclown.documents.contents.objects.ContentObject;
 import org.pdfclown.documents.contents.objects.Text;
+import org.pdfclown.documents.contents.objects.XObject;
 import org.pdfclown.util.math.Interval;
 
 /**
@@ -50,7 +51,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 04/28/11
 */
 public final class TextExtractor
 {
@@ -619,6 +620,9 @@ public final class TextExtractor
     List<ContentScanner.TextStringWrapper> extractedTextStrings
     )
   {
+    if(level == null)
+      return;
+
     while(level.moveNext())
     {
       ContentObject content = level.getCurrent();
@@ -627,6 +631,14 @@ public final class TextExtractor
         // Collect the text strings!
         extractedTextStrings.addAll(
           ((ContentScanner.TextWrapper)level.getCurrentWrapper()).getTextStrings()
+          );
+      }
+      else if(content instanceof XObject)
+      {
+        // Scan the external level!
+        extract(
+          ((XObject)content).getScanner(level),
+          extractedTextStrings
           );
       }
       else if(content instanceof ContainerObject)

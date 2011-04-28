@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,8 +29,10 @@ import java.util.List;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
+import org.pdfclown.documents.contents.ContentScanner;
 import org.pdfclown.documents.contents.IContentContext;
 import org.pdfclown.documents.contents.XObjectResources;
+import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 
@@ -39,7 +41,7 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 04/28/11
 */
 @PDF(VersionEnum.PDF10)
 public final class PaintXObject
@@ -77,6 +79,21 @@ public final class PaintXObject
   public PdfName getName(
     )
   {return (PdfName)operands.get(0);}
+
+  /**
+    Gets the scanner for the contents of the painted external object.
+
+    @param context Scanning context.
+  */
+  public ContentScanner getScanner(
+    ContentScanner context
+    )
+  {
+    org.pdfclown.documents.contents.xObjects.XObject xObject = getXObject(context.getContentContext());
+    return xObject instanceof FormXObject
+      ? new ContentScanner((FormXObject)xObject, context)
+      : null;
+  }
 
   /**
     Gets the {@link org.pdfclown.documents.contents.xObjects.XObject external object} resource

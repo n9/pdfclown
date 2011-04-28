@@ -27,6 +27,7 @@ using org.pdfclown.bytes;
 using colors = org.pdfclown.documents.contents.colorSpaces;
 using fonts = org.pdfclown.documents.contents.fonts;
 using org.pdfclown.documents.contents.objects;
+using xObjects = org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.files;
 using org.pdfclown.objects;
 
@@ -52,6 +53,23 @@ namespace org.pdfclown.documents.contents
   */
   public sealed class ContentScanner
   {
+    #region delegates
+    /**
+      <summary>Handles the scan start notification.</summary>
+      <param name="scanner">Content scanner started.</param>
+    */
+    public delegate void OnStartEventHandler(
+      ContentScanner scanner
+      );
+    #endregion
+
+    #region events
+    /**
+      <summary>Notifies the scan start.</summary>
+    */
+    public event OnStartEventHandler OnStart;
+    #endregion
+
     #region types
     /**
       <summary>Graphics state [PDF:1.6:4.3].</summary>
@@ -792,7 +810,7 @@ namespace org.pdfclown.documents.contents
       : GraphicsObjectWrapper<XObject>
     {
       private PdfName name;
-      private org.pdfclown.documents.contents.xObjects.XObject xObject;
+      private xObjects::XObject xObject;
 
       internal XObjectWrapper(
         ContentScanner scanner
@@ -819,7 +837,7 @@ namespace org.pdfclown.documents.contents
       /**
         <summary>Gets the external object.</summary>
       */
-      public org.pdfclown.documents.contents.xObjects.XObject XObject
+      public xObjects::XObject XObject
       {get{return xObject;}}
     }
     #endregion
@@ -873,6 +891,7 @@ namespace org.pdfclown.documents.contents
 
     #region constructors
     /**
+      <summary>Instantiates a top-level content scanner.</summary>
       <param name="contents">Content objects collection to scan.</param>
     */
     public ContentScanner(
@@ -886,6 +905,7 @@ namespace org.pdfclown.documents.contents
     }
 
     /**
+      <summary>Instantiates a top-level content scanner.</summary>
       <param name="contentContext">Content context containing the content objects collection to scan.</param>
     */
     public ContentScanner(
@@ -894,6 +914,33 @@ namespace org.pdfclown.documents.contents
     {}
 
     /**
+      <summary>Instantiates a child-level content scanner for <see cref="org.pdfclown.documents.contents.xObjects.FormXObject">external form</see>.</summary>
+      <param name="formXObject">External form.</param>
+      <param name="parentLevel">Parent scan level.</param>
+    */
+    public ContentScanner(
+      xObjects::FormXObject formXObject,
+      ContentScanner parentLevel
+      )
+    {
+      this.parentLevel = parentLevel;
+      this.objects = this.contents = formXObject.Contents;
+
+      OnStart += delegate(
+        ContentScanner scanner
+        )
+      {
+        // Adjust the initial graphics state to the external form context!
+        scanner.State.Ctm.Multiply(formXObject.Matrix);
+        /*
+          TODO: On rendering, clip according to the form dictionary's BBox entry!
+        */
+      };
+      MoveStart();
+    }
+
+    /**
+      <summary>Instantiates a child-level content scanner.</summary>
       <param name="parentLevel">Parent scan level.</param>
     */
     private ContentScanner(
@@ -1101,6 +1148,9 @@ namespace org.pdfclown.documents.contents
         else
         {parentLevel.state.CopyTo(state);}
       }
+
+      NotifyStart();
+
       Refresh();
     }
 
@@ -1108,13 +1158,19 @@ namespace org.pdfclown.documents.contents
       <summary>Gets the current parent object.</summary>
     */
     public CompositeObject Parent
-    {get{return (parentLevel == null ? null : (CompositeObject)parentLevel.Current);}}
+    {
+      get
+      {return (parentLevel == null ? null : (CompositeObject)parentLevel.Current);}
+    }
 
     /**
       <summary>Gets the parent scan level.</summary>
     */
     public ContentScanner ParentLevel
-    {get{return parentLevel;}}
+    {
+      get
+      {return parentLevel;}
+    }
 
     /**
       <summary>Removes the content object at the current position.</summary>
@@ -1227,6 +1283,20 @@ namespace org.pdfclown.documents.contents
       get
       {return state;}
     }
+    #endregion
+
+    #region protected
+    #pragma warning disable 0628
+    /**
+      <summary>Notifies the scan start to listeners.</summary>
+    */
+    protected void NotifyStart(
+      )
+    {
+      if(OnStart != null)
+      {OnStart(this);}
+    }
+    #pragma warning restore 0628
     #endregion
 
     #region private

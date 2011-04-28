@@ -26,6 +26,7 @@
 package org.pdfclown.documents.contents.xObjects;
 
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 
@@ -53,7 +54,7 @@ import org.pdfclown.util.math.geom.Dimension;
   Form external object [PDF:1.6:4.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/28/11
 */
 @PDF(VersionEnum.PDF10)
 public final class FormXObject
@@ -73,8 +74,6 @@ public final class FormXObject
 
   /**
     Creates a new form within the given document context, using custom resources.
-
-    @since 0.0.5
   */
   public FormXObject(
     Document context,
@@ -111,11 +110,8 @@ public final class FormXObject
     )
   {throw new NotImplementedException();}
 
-  /**
-    @since 0.0.5
-  */
   @Override
-  public double[] getMatrix(
+  public AffineTransform getMatrix(
     )
   {
     /*
@@ -124,25 +120,16 @@ public final class FormXObject
     */
     PdfArray matrix = (PdfArray)getBaseDataObject().getHeader().resolve(PdfName.Matrix);
     if(matrix == null)
-      return new double[]
-        {
-          1, // a.
-          0, // b.
-          0, // c.
-          1, // d.
-          0, // e.
-          0 // f.
-        };
+      return new AffineTransform();
     else
-      return new double[]
-        {
-          ((PdfNumber<?>)matrix.get(0)).getNumberValue(), // a.
-          ((PdfNumber<?>)matrix.get(1)).getNumberValue(), // b.
-          ((PdfNumber<?>)matrix.get(2)).getNumberValue(), // c.
-          ((PdfNumber<?>)matrix.get(3)).getNumberValue(), // d.
-          ((PdfNumber<?>)matrix.get(4)).getNumberValue(), // e.
-          ((PdfNumber<?>)matrix.get(5)).getNumberValue() // f.
-        };
+      return new AffineTransform(
+        ((PdfNumber<?>)matrix.get(0)).getNumberValue(),
+        ((PdfNumber<?>)matrix.get(1)).getNumberValue(),
+        ((PdfNumber<?>)matrix.get(2)).getNumberValue(),
+        ((PdfNumber<?>)matrix.get(3)).getNumberValue(),
+        ((PdfNumber<?>)matrix.get(4)).getNumberValue(),
+        ((PdfNumber<?>)matrix.get(5)).getNumberValue()
+        );
   }
 
   /**

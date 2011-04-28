@@ -40,6 +40,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace org.pdfclown.documents.contents.composition
 {
@@ -1149,10 +1150,10 @@ namespace org.pdfclown.documents.contents.composition
       {size.Height = size.Width * xObjectSize.Height / xObjectSize.Width;}
 
       // Scaling.
-      double[] matrix = xObject.GetMatrix();
+      Matrix matrix = xObject.Matrix;
       double scaleX, scaleY;
-      scaleX = size.Width / (xObjectSize.Width * matrix[0]);
-      scaleY = size.Height / (xObjectSize.Height * matrix[3]);
+      scaleX = size.Width / (xObjectSize.Width * matrix.Elements[0]);
+      scaleY = size.Height / (xObjectSize.Height * matrix.Elements[3]);
 
       // Alignment.
       float locationOffsetX, locationOffsetY;

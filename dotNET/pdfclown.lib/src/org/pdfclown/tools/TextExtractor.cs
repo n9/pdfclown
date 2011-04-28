@@ -593,6 +593,9 @@ namespace org.pdfclown.tools
       IList<ContentScanner.TextStringWrapper> extractedTextStrings
       )
     {
+      if(level == null)
+        return;
+
       while(level.MoveNext())
       {
         ContentObject content = level.Current;
@@ -601,6 +604,14 @@ namespace org.pdfclown.tools
           // Collect the text strings!
           foreach(ContentScanner.TextStringWrapper textString in ((ContentScanner.TextWrapper)level.CurrentWrapper).TextStrings)
           {extractedTextStrings.Add(textString);}
+        }
+        else if(content is XObject)
+        {
+          // Scan the external level!
+          Extract(
+            ((XObject)content).GetScanner(level),
+            extractedTextStrings
+            );
         }
         else if(content is ContainerObject)
         {

@@ -26,6 +26,7 @@
 package org.pdfclown.documents.contents.composition;
 
 import java.awt.Dimension;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -99,7 +100,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 04/28/11
 */
 public final class PrimitiveComposer
 {
@@ -1295,10 +1296,10 @@ public final class PrimitiveComposer
     {size.setSize(size.getWidth(),size.getWidth() * xObjectSize.getHeight() / xObjectSize.getWidth());}
 
     // Scaling.
-    double[] matrix = xObject.getMatrix();
+    AffineTransform matrix = xObject.getMatrix();
     double scaleX, scaleY;
-    scaleX = size.getWidth() / (xObjectSize.getWidth() * matrix[0]);
-    scaleY = size.getHeight() / (xObjectSize.getHeight() * matrix[3]);
+    scaleX = size.getWidth() / (xObjectSize.getWidth() * matrix.getScaleX());
+    scaleY = size.getHeight() / (xObjectSize.getHeight() * matrix.getScaleY());
 
     // Alignment.
     float locationOffsetX, locationOffsetY;

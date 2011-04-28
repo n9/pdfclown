@@ -216,7 +216,8 @@ namespace org.pdfclown.util.parsers
 
             buffer.Append((char)c);
           }
-          stream.Skip(-1); // Restores the first byte after the current token.
+          if(c > -1)
+          {stream.Skip(-1);} // Restores the first byte after the current token.
         } break;
         case '0':
         case '1':
@@ -239,7 +240,7 @@ namespace org.pdfclown.util.parsers
 
           // Building the number...
           buffer = new StringBuilder();
-          do
+          while(true)
           {
             buffer.Append((char)c);
             c = stream.ReadByte();
@@ -249,9 +250,9 @@ namespace org.pdfclown.util.parsers
               tokenType = TokenTypeEnum.Real;
             else if(c < '0' || c > '9')
               break;
-          } while(true);
-
-          stream.Skip(-1); // Restores the first byte after the current token.
+          }
+          if(c > -1)
+          {stream.Skip(-1);} // Restores the first byte after the current token.
         } break;
         case Symbol.OpenSquareBracket: // Array (begin).
           tokenType = TokenTypeEnum.ArrayBegin;
@@ -411,7 +412,8 @@ namespace org.pdfclown.util.parsers
             if(c == -1)
               break;
           } while(!IsDelimiter(c) && !IsWhitespace(c));
-          stream.Skip(-1); // Restores the first byte after the current token.
+          if(c > -1)
+          {stream.Skip(-1);} // Restores the first byte after the current token.
         } break;
       }
 

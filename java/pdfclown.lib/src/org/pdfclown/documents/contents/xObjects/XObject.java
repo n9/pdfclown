@@ -25,6 +25,7 @@
 
 package org.pdfclown.documents.contents.xObjects;
 
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 
 import org.pdfclown.PDF;
@@ -40,7 +41,7 @@ import org.pdfclown.objects.PdfStream;
   Abstract external object [PDF:1.6:4.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/28/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class XObject
@@ -118,24 +119,18 @@ public abstract class XObject
   // <public>
   /**
     Gets the mapping from external-object space to user space.
-
-    @since 0.0.5
   */
-  public abstract double[] getMatrix(
+  public abstract AffineTransform getMatrix(
     );
 
   /**
     Gets the external object size.
-
-    @since 0.0.5
   */
   public abstract Dimension2D getSize(
     );
 
   /**
     Sets the external object size.
-
-    @since 0.0.5
   */
   public abstract void setSize(
     Dimension2D value

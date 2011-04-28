@@ -48,6 +48,7 @@ import org.pdfclown.documents.contents.objects.InlineImage;
 import org.pdfclown.documents.contents.objects.ShowText;
 import org.pdfclown.documents.contents.objects.Text;
 import org.pdfclown.documents.contents.objects.XObject;
+import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.geom.Dimension;
@@ -65,11 +66,28 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 04/28/11
 */
 public final class ContentScanner
 {
   // <class>
+  // <interfaces>
+  /**
+    Content scanner listener.
+  */
+  public interface IListener
+  {
+    /**
+      Notifies the scan start.
+
+      @param scanner Content scanner started.
+    */
+    void onStart(
+      ContentScanner scanner
+      );
+  }
+  // </interfaces>
+
   // <classes>
   /**
     Graphics state [PDF:1.6:4.3].
@@ -961,10 +979,17 @@ public final class ContentScanner
     Device-space size of the rendering canvas.
   */
   private Dimension2D renderSize;
+
+  /**
+    Scan listeners.
+  */
+  List<IListener> listeners = new ArrayList<IListener>();
   // </fields>
 
   // <constructors>
   /**
+    Instantiates a top-level content scanner.
+
     @param contents Content objects collection to scan.
   */
   public ContentScanner(
@@ -978,6 +1003,8 @@ public final class ContentScanner
   }
 
   /**
+    Instantiates a top-level content scanner.
+
     @param contentContext Content context containing the content objects collection to scan.
   */
   public ContentScanner(
@@ -986,6 +1013,39 @@ public final class ContentScanner
   {this(contentContext.getContents());}
 
   /**
+    Instantiates a child-level content scanner for {@link FormXObject external form}.
+
+    @param formXObject External form.
+    @param parentLevel Parent scan level.
+  */
+  public ContentScanner(
+    final FormXObject formXObject,
+    ContentScanner parentLevel
+    )
+  {
+    this.parentLevel = parentLevel;
+    this.objects = this.contents = formXObject.getContents();
+
+    addListener(new IListener()
+      {
+        @Override
+        public void onStart(
+          ContentScanner scanner
+          )
+        {
+          // Adjust the initial graphics state to the external form context!
+          scanner.getState().getCtm().concatenate(formXObject.getMatrix());
+          /*
+            TODO: On rendering, clip according to the form dictionary's BBox entry!
+          */
+        }
+      });
+    moveStart();
+  }
+
+  /**
+    Instantiates a child-level content scanner.
+
     @param parentLevel Parent scan level.
   */
   private ContentScanner(
@@ -1002,6 +1062,16 @@ public final class ContentScanner
 
   // <interface>
   // <public>
+  /**
+    Adds the specified listener.
+
+    @param listener Listener to add.
+  */
+  public void addListener(
+    IListener listener
+    )
+  {listeners.add(listener);}
+
   /**
     Gets the size of the current imageable area.
     <p>It can be either the <i>user-space area</i> (dry scanning)
@@ -1267,6 +1337,9 @@ public final class ContentScanner
       else
       {parentLevel.state.copyTo(state);}
     }
+
+    notifyStart();
+
     refresh();
   }
 
@@ -1283,6 +1356,17 @@ public final class ContentScanner
 
     return removedObject;
   }
+
+  /**
+    Removes the specified listener.
+
+    @param listener Listener to remove.
+    @return Whether the specified listener has been removed.
+  */
+  public boolean removeListener(
+    IListener listener
+    )
+  {return listeners.remove(listener);}
 
   /**
     Renders the contents into the specified context.
@@ -1361,6 +1445,18 @@ public final class ContentScanner
     return replacedObject;
   }
   // </public>
+
+  // <protected>
+  /**
+    Notifies the scan start to listeners.
+  */
+  protected void notifyStart(
+    )
+  {
+    for(IListener listener : listeners)
+    {listener.onStart(this);}
+  }
+  // </protected>
 
   // <private>
   /**

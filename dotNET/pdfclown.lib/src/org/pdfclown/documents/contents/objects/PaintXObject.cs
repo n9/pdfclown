@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.bytes;
+using org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.objects;
 
 using System.Collections.Generic;
@@ -59,6 +60,20 @@ namespace org.pdfclown.documents.contents.objects
 
     #region interface
     #region public
+    /**
+      <summary>Gets the scanner for the contents of the painted external object.</summary>
+      <param name="context">Scanning context.</param>
+    */
+    public ContentScanner GetScanner(
+      ContentScanner context
+      )
+    {
+      org.pdfclown.documents.contents.xObjects.XObject xObject = GetXObject(context.ContentContext);
+      return xObject is FormXObject
+        ? new ContentScanner((FormXObject)xObject, context)
+        : null;
+    }
+
     /**
       <summary>Gets the <see cref="org.pdfclown.documents.contents.xObjects.XObject">external object</see>
       resource to be painted.</summary>

@@ -32,6 +32,7 @@ using org.pdfclown.objects;
 
 using System;
 using drawing = System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace org.pdfclown.documents.contents.xObjects
 {
@@ -85,34 +86,27 @@ namespace org.pdfclown.documents.contents.xObjects
       )
     {throw new NotImplementedException();}
 
-    public override double[] GetMatrix(
-      )
+    public override Matrix Matrix
     {
-      /*
-        NOTE: Form-space-to-user-space matrix is identity [1 0 0 1 0 0] by default,
-        but may be adjusted by setting the Matrix entry in the form dictionary [PDF:1.6:4.9].
-      */
-      PdfArray matrix = (PdfArray)BaseDataObject.Header.Resolve(PdfName.Matrix);
-      if(matrix == null)
-        return new double[]
-          {
-            1, // a.
-            0, // b.
-            0, // c.
-            1, // d.
-            0, // e.
-            0 // f.
-          };
-      else
-        return new double[]
-          {
-            ((IPdfNumber)matrix[0]).RawValue, // a.
-            ((IPdfNumber)matrix[1]).RawValue, // b.
-            ((IPdfNumber)matrix[2]).RawValue, // c.
-            ((IPdfNumber)matrix[3]).RawValue, // d.
-            ((IPdfNumber)matrix[4]).RawValue, // e.
-            ((IPdfNumber)matrix[5]).RawValue // f.
-          };
+      get
+      {
+        /*
+          NOTE: Form-space-to-user-space matrix is identity [1 0 0 1 0 0] by default,
+          but may be adjusted by setting the Matrix entry in the form dictionary [PDF:1.6:4.9].
+        */
+        PdfArray matrix = (PdfArray)BaseDataObject.Header.Resolve(PdfName.Matrix);
+        if(matrix == null)
+          return new Matrix();
+        else
+          return new Matrix(
+            ((IPdfNumber)matrix[0]).RawValue,
+            ((IPdfNumber)matrix[1]).RawValue,
+            ((IPdfNumber)matrix[2]).RawValue,
+            ((IPdfNumber)matrix[3]).RawValue,
+            ((IPdfNumber)matrix[4]).RawValue,
+            ((IPdfNumber)matrix[5]).RawValue
+            );
+      }
     }
 
     public override drawing::SizeF Size

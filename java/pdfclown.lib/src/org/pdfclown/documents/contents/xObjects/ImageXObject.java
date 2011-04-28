@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,10 @@
 
 package org.pdfclown.documents.contents.xObjects;
 
+import java.awt.Dimension;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Dimension2D;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -35,14 +39,11 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.NotImplementedException;
 
-import java.awt.Dimension;
-import java.awt.geom.Dimension2D;
-
 /**
   Image external object [PDF:1.6:4.8.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 04/28/11
 */
 @PDF(VersionEnum.PDF10)
 public final class ImageXObject
@@ -102,34 +103,27 @@ public final class ImageXObject
     )
   {return ((PdfName)getBaseDataObject().getHeader().get(PdfName.ColorSpace)).getRawValue();}
 
-  /**
-    @since 0.0.5
-  */
   @Override
-  public double[] getMatrix(
+  public AffineTransform getMatrix(
     )
   {
     Dimension2D size = getSize();
-
     /*
       NOTE: Image-space-to-user-space matrix is [1/w 0 0 1/h 0 0],
       where w and h are the width and height of the image in samples [PDF:1.6:4.8.3].
     */
-    return new double[]
-      {
-        1 / size.getWidth(), // a.
-        0, // b.
-        0, // c.
-        1 / size.getHeight(), // d.
-        0, // e.
-        0 // f.
-      };
+    return new AffineTransform(
+      1 / size.getWidth(), // a.
+      0, // b.
+      0, // c.
+      1 / size.getHeight(), // d.
+      0, // e.
+      0 // f.
+      );
   }
 
   /**
     Gets the size of the image (in samples).
-
-    @since 0.0.5
   */
   @Override
   public Dimension2D getSize(
@@ -143,9 +137,6 @@ public final class ImageXObject
       );
   }
 
-  /**
-    @since 0.0.5
-  */
   @Override
   public void setSize(
     Dimension2D value

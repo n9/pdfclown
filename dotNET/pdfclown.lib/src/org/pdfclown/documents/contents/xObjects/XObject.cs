@@ -29,6 +29,7 @@ using org.pdfclown.objects;
 
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace org.pdfclown.documents.contents.xObjects
 {
@@ -103,10 +104,12 @@ namespace org.pdfclown.documents.contents.xObjects
     #region interface
     #region public
     /**
-      Gets the mapping from external-object space to user space.
+      <summary>Gets the mapping from external-object space to user space.</summary>
     */
-    public abstract double[] GetMatrix(
-      );
+    public abstract Matrix Matrix
+    {
+      get;
+    }
 
     /**
       <summary>Gets/Sets the external object size.</summary>

@@ -38,7 +38,7 @@ import org.pdfclown.tokens.Symbol;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 04/28/11
 */
 public class PostScriptParser
   implements Closeable
@@ -245,10 +245,10 @@ public class PostScriptParser
 
             buffer.append((char)c);
           }
+          stream.skip(-1); // Restores the first byte after the current token.
         }
         catch(EOFException e)
         {/* NOOP */}
-        stream.skip(-1); // Restores the first byte after the current token.
       } break;
       case '0':
       case '1':
@@ -273,7 +273,7 @@ public class PostScriptParser
         buffer = new StringBuilder();
         try
         {
-          do
+          while(true)
           {
             buffer.append((char)c);
             c = stream.readUnsignedByte();
@@ -281,11 +281,11 @@ public class PostScriptParser
             {tokenType = TokenTypeEnum.Real;}
             else if(c < '0' || c > '9')
               break;
-          } while(true);
+          }
+          stream.skip(-1); // Restores the first byte after the current token.
         }
         catch(EOFException e)
         {/* NOOP */}
-        stream.skip(-1); // Restores the first byte after the current token.
       } break;
       case Symbol.OpenSquareBracket: // Array (begin).
         tokenType = TokenTypeEnum.ArrayBegin;
@@ -452,10 +452,10 @@ public class PostScriptParser
             buffer.append((char)c);
             c = stream.readUnsignedByte();
           } while(!isDelimiter(c) && !isWhitespace(c));
+          stream.skip(-1); // Restores the first byte after the current token.
         }
         catch(EOFException e)
         {/* NOOP */}
-        stream.skip(-1); // Restores the first byte after the current token.
       } break;
     }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -61,15 +61,35 @@ namespace org.pdfclown.documents.contents.objects
     public org.pdfclown.documents.contents.xObjects.XObject GetResource(
       IContentContext context
       )
-    {return ((PaintXObject)Objects[0]).GetXObject(context);}
-    
+    {return Operation.GetXObject(context);}
+
+    /**
+      <summary>Gets the scanner for this object's contents.</summary>
+      <param name="context">Scanning context.</param>
+    */
+    public ContentScanner GetScanner(
+      ContentScanner context
+      )
+    {return Operation.GetScanner(context);}
+
     /**
       <summary>Gets the <see cref="org.pdfclown.documents.contents.xObjects.XObject">external object</see> resource name.</summary>
       <seealso cref="GetResource(IContentContext)"/>
       <seealso cref="org.pdfclown.documents.contents.XObjectResources"/>
     */
     public PdfName Name
-    {get{return ((PaintXObject)Objects[0]).Name;}}
+    {
+      get
+      {return Operation.Name;}
+    }
+    #endregion
+
+    #region private
+    private PaintXObject Operation
+    {
+      get
+      {return (PaintXObject)Objects[0];}
+    }
     #endregion
     #endregion
     #endregion

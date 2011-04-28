@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -27,6 +27,7 @@ package org.pdfclown.documents.contents.objects;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
+import org.pdfclown.documents.contents.ContentScanner;
 import org.pdfclown.documents.contents.IContentContext;
 import org.pdfclown.documents.contents.XObjectResources;
 import org.pdfclown.objects.PdfName;
@@ -36,7 +37,7 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 04/28/11
 */
 @PDF(VersionEnum.PDF10)
 public final class XObject
@@ -71,7 +72,7 @@ public final class XObject
   */
   public PdfName getName(
     )
-  {return ((PaintXObject)getObjects().get(0)).getName();}
+  {return getOperation().getName();}
 
   /**
     Gets the {@link org.pdfclown.documents.contents.xObjects.XObject external object} resource.
@@ -81,8 +82,24 @@ public final class XObject
   public org.pdfclown.documents.contents.xObjects.XObject getResource(
     IContentContext context
     )
-  {return ((PaintXObject)getObjects().get(0)).getXObject(context);}
+  {return getOperation().getXObject(context);}
+
+  /**
+    Gets the scanner for this object's contents.
+
+    @param context Scanning context.
+  */
+  public ContentScanner getScanner(
+    ContentScanner context
+    )
+  {return getOperation().getScanner(context);}
   // </public>
+
+  // <private>
+  private PaintXObject getOperation(
+    )
+  {return ((PaintXObject)getObjects().get(0));}
+  // </private>
   // </interface>
   // </dynamic>
   // </class>

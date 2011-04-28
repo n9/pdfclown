@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,6 +29,7 @@ using org.pdfclown.objects;
 
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace org.pdfclown.documents.contents.xObjects
 {
@@ -89,24 +90,25 @@ namespace org.pdfclown.documents.contents.xObjects
       {return ((PdfName)BaseDataObject.Header[PdfName.ColorSpace]).RawValue;}
     }
 
-    public override double[] GetMatrix(
-      )
+    public override Matrix Matrix
     {
-      SizeF size = Size;
+      get
+      {
+        SizeF size = Size;
 
-      /*
-        NOTE: Image-space-to-user-space matrix is [1/w 0 0 1/h 0 0],
-        where w and h are the width and height of the image in samples [PDF:1.6:4.8.3].
-      */
-      return new double[]
-        {
-          1d / size.Width, // a.
-          0, // b.
-          0, // c.
-          1d / size.Height, // d.
-          0, // e.
-          0 // f.
-        };
+        /*
+          NOTE: Image-space-to-user-space matrix is [1/w 0 0 1/h 0 0],
+          where w and h are the width and height of the image in samples [PDF:1.6:4.8.3].
+        */
+        return new Matrix(
+          1f / size.Width,
+          0,
+          0,
+          1f / size.Height,
+          0,
+          0
+          );
+      }
     }
 
     /**
