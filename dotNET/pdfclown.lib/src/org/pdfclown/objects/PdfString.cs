@@ -96,9 +96,9 @@ namespace org.pdfclown.objects
     {}
 
     public PdfString(
-      byte[] value
+      byte[] rawValue
       )
-    {RawValue = value;}
+    {RawValue = rawValue;}
 
     public PdfString(
       string value
@@ -106,12 +106,12 @@ namespace org.pdfclown.objects
     {Value = value;}
 
     public PdfString(
-      byte[] value,
+      byte[] rawValue,
       SerializationModeEnum serializationMode
       )
     {
       SerializationMode = serializationMode;
-      RawValue = value;
+      RawValue = rawValue;
     }
 
     public PdfString(

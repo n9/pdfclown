@@ -37,7 +37,7 @@ import org.pdfclown.tokens.CharsetName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 04/28/11
 */
 public final class PdfTextString
   extends PdfString
@@ -73,9 +73,9 @@ public final class PdfTextString
   {}
 
   public PdfTextString(
-    byte[] value
+    byte[] rawValue
     )
-  {super(value);}
+  {super(rawValue);}
 
   public PdfTextString(
     String value
@@ -83,10 +83,10 @@ public final class PdfTextString
   {super(value);}
 
   public PdfTextString(
-    byte[] value,
+    byte[] rawValue,
     SerializationModeEnum serializationMode
     )
-  {super(value, serializationMode);}
+  {super(rawValue, serializationMode);}
 
   public PdfTextString(
     String value,
@@ -130,7 +130,7 @@ public final class PdfTextString
     byte[] value
     )
   {
-    if(value.length > 2
+    if(value.length >= 2
       && value[0] == (byte)254
       && value[1] == (byte)255) // Multi-byte (Unicode).
     {encoding = CharsetName.UTF16BE;}

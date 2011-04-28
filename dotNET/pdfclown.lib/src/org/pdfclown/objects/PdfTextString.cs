@@ -68,8 +68,8 @@ namespace org.pdfclown.objects
     {}
 
     public PdfTextString(
-      byte[] value
-      ) : base(value)
+      byte[] rawValue
+      ) : base(rawValue)
     {}
 
     public PdfTextString(
@@ -78,9 +78,9 @@ namespace org.pdfclown.objects
     {}
 
     public PdfTextString(
-      byte[] value,
+      byte[] rawValue,
       SerializationModeEnum serializationMode
-      ) : base(value, serializationMode)
+      ) : base(rawValue, serializationMode)
     {}
 
     public PdfTextString(
@@ -102,7 +102,7 @@ namespace org.pdfclown.objects
     {
       protected set
       {
-        if(value.Length > 2
+        if(value.Length >= 2
           && value[0] == (byte)254
           && value[1] == (byte)255) // Multi-byte (Unicode).
         {encoding = tokens.Encoding.UTF16BE;}

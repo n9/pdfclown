@@ -45,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 04/28/11
 */
 public class PdfString
   extends PdfSimpleObject<byte[]>
@@ -100,9 +100,9 @@ public class PdfString
   {}
 
   public PdfString(
-    byte[] value
+    byte[] rawValue
     )
-  {setRawValue(value);}
+  {setRawValue(rawValue);}
 
   public PdfString(
     String value
@@ -110,12 +110,12 @@ public class PdfString
   {setValue(value);}
 
   public PdfString(
-    byte[] value,
+    byte[] rawValue,
     SerializationModeEnum serializationMode
     )
   {
     setSerializationMode(serializationMode);
-    setRawValue(value);
+    setRawValue(rawValue);
   }
 
   public PdfString(
