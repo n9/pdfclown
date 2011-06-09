@@ -50,7 +50,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Function<TDataObject extends PdfDataObject>
@@ -132,7 +132,7 @@ public abstract class Function<TDataObject extends PdfDataObject>
     Document context,
     TDataObject baseDataObject
     )
-  {super(context.getFile(), baseDataObject);}
+  {super(context, baseDataObject);}
 
   protected Function(
     PdfDirectObject baseObject

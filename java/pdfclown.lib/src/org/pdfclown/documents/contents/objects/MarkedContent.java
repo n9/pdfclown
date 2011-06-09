@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,13 +31,15 @@ import java.util.List;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.tokens.Encoding;
+import org.pdfclown.tokens.Symbol;
 
 /**
   Marked-content sequence [PDF:1.6:10.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF12)
 public final class MarkedContent
@@ -47,6 +49,8 @@ public final class MarkedContent
   // <static>
   // <fields>
   public static final String EndOperator = EndMarkedContent.Operator;
+
+  private static final byte[] EndChunk = Encoding.encode(EndOperator + Symbol.LineFeed);
   // </fields>
   // </static>
 
@@ -94,7 +98,7 @@ public final class MarkedContent
   {
     header.writeTo(stream);
     super.writeTo(stream);
-    stream.write(EndOperator);
+    stream.write(EndChunk);
   }
   // </public>
   // </interface>

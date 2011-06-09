@@ -54,6 +54,11 @@ namespace org.pdfclown.samples.cli
       info.Subject = "Sample about " + subject + " using PDF Clown";
     }
 
+    protected string GetIndentation(
+      int level
+      )
+    {return new String(' ',level);}
+
     protected string InputPath
     {
       get

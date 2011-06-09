@@ -44,10 +44,7 @@ namespace org.pdfclown.documents
     #region constructors
     public DocumentActions(
       Document context
-      ) : base(
-        context.File,
-        new PdfDictionary()
-        )
+      ) : base(context, new PdfDictionary())
     {}
 
     internal DocumentActions(

@@ -42,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF12)
 public final class Names
@@ -54,7 +54,7 @@ public final class Names
   public Names(
     Document context
     )
-  {super(context.getFile(), new PdfDictionary());}
+  {super(context, new PdfDictionary());}
 
   Names(
     PdfDirectObject baseObject

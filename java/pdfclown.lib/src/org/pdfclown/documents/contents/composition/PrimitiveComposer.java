@@ -38,6 +38,8 @@ import org.pdfclown.documents.contents.FontResources;
 import org.pdfclown.documents.contents.IContentContext;
 import org.pdfclown.documents.contents.LineCapEnum;
 import org.pdfclown.documents.contents.LineJoinEnum;
+import org.pdfclown.documents.contents.PropertyList;
+import org.pdfclown.documents.contents.PropertyListResources;
 import org.pdfclown.documents.contents.Resources;
 import org.pdfclown.documents.contents.TextRenderModeEnum;
 import org.pdfclown.documents.contents.XObjectResources;
@@ -47,6 +49,7 @@ import org.pdfclown.documents.contents.colorSpaces.DeviceCMYKColorSpace;
 import org.pdfclown.documents.contents.colorSpaces.DeviceGrayColorSpace;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColorSpace;
 import org.pdfclown.documents.contents.fonts.Font;
+import org.pdfclown.documents.contents.layers.LayerEntity;
 import org.pdfclown.documents.contents.objects.BeginMarkedContent;
 import org.pdfclown.documents.contents.objects.BeginSubpath;
 import org.pdfclown.documents.contents.objects.CloseSubpath;
@@ -91,16 +94,16 @@ import org.pdfclown.util.math.geom.Quad;
 
 /**
   Content stream primitive composer.
-  <p>It provides the basic (primitive) operations described by the PDF specification
-  for graphics content composition.</p>
+  <p>It provides the basic (primitive) operations described by the PDF specification for graphics
+  content composition.</p>
   <h3>Remarks</h3>
-  <p>This class leverages the object-oriented content stream modelling infrastructure,
-  which encompasses 1st-level content stream objects (operations),
-  2nd-level content stream objects (graphics objects) and full graphics state support.</p>
+  <p>This class leverages the object-oriented content stream modelling infrastructure, which
+  encompasses 1st-level content stream objects (operations), 2nd-level content stream objects
+  (graphics objects) and full graphics state support.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 04/28/11
+  @version 0.1.1, 06/08/11
 */
 public final class PrimitiveComposer
 {
@@ -149,14 +152,13 @@ public final class PrimitiveComposer
     <p>The transformation is applied to the current transformation matrix (CTM) by concatenation,
     i.e. it doesn't replace it.</p>
 
-    @see #setMatrix(float,float,float,float,float,float)
-
     @param a Item 0,0 of the matrix.
     @param b Item 0,1 of the matrix.
     @param c Item 1,0 of the matrix.
     @param d Item 1,1 of the matrix.
     @param e Item 2,0 of the matrix.
     @param f Item 2,1 of the matrix.
+    @see #setMatrix(float,float,float,float,float,float)
   */
   public void applyMatrix(
     double a,
@@ -171,9 +173,8 @@ public final class PrimitiveComposer
   /**
     Adds a composite object beginning it.
 
+    @return Added composite object.
     @see #end()
-
-    @return The added composite object.
   */
   public CompositeObject begin(
     CompositeObject object
@@ -188,11 +189,34 @@ public final class PrimitiveComposer
   }
 
   /**
+    Begins a new layered-content sequence [PDF:1.6:4.10.2].
+
+    @param {@link LayerEntity} enclosing the layered content.
+    @return Added layered-content sequence.
+    @see #end()
+  */
+  public MarkedContent beginLayer(
+    LayerEntity layer
+    )
+  {return beginLayer(getPropertyListName(layer.getMembership()));}
+
+  /**
+    Begins a new layered-content sequence [PDF:1.6:4.10.2].
+
+    @param layerName Resource identifier of the {@link LayerEntity} enclosing the layered content.
+    @return Added layered-content sequence.
+    @see #end()
+  */
+  public MarkedContent beginLayer(
+    PdfName layerName
+    )
+  {return beginMarkedContent(PdfName.OC, layerName);}
+
+  /**
     Begins a new nested graphics state context [PDF:1.6:4.3.1].
 
+    @return Added local graphics state object.
     @see #end()
-
-    @return The added local graphics state object.
   */
   public LocalGraphicsState beginLocalState(
     )
@@ -201,17 +225,46 @@ public final class PrimitiveComposer
   /**
     Begins a new marked-content sequence [PDF:1.6:10.5].
 
+    @param tag Marker indicating the role or significance of the marked content.
+    @return Added marked-content sequence.
     @see #end()
-
-    @return The added marked-content sequence.
   */
   public MarkedContent beginMarkedContent(
     PdfName tag
     )
+  {return beginMarkedContent(tag, (PdfName)null);}
+
+  /**
+    Begins a new marked-content sequence [PDF:1.6:10.5].
+
+    @param tag Marker indicating the role or significance of the marked content.
+    @param propertyList {@link PropertyList} describing the marked content.
+    @return Added marked-content sequence.
+    @see #end()
+  */
+  public MarkedContent beginMarkedContent(
+    PdfName tag,
+    PropertyList propertyList
+    )
+  {return beginMarkedContent(tag, getPropertyListName(propertyList));}
+
+  /**
+    Begins a new marked-content sequence [PDF:1.6:10.5].
+
+    @param tag Marker indicating the role or significance of the marked content.
+    @param propertyListName Resource identifier of the {@link PropertyList} describing the marked
+      content.
+    @return Added marked-content sequence.
+    @see #end()
+  */
+  public MarkedContent beginMarkedContent(
+    PdfName tag,
+    PdfName propertyListName
+    )
   {
     return (MarkedContent)begin(
       new MarkedContent(
-        new BeginMarkedContent(tag)
+        new BeginMarkedContent(tag, propertyListName)
         )
       );
   }
@@ -229,8 +282,8 @@ public final class PrimitiveComposer
   }
 
   /**
-    Closes the current subpath by appending a straight line segment
-    from the current point to the starting point of the subpath [PDF:1.6:4.4.1].
+    Closes the current subpath by appending a straight line segment from the current point to the
+    starting point of the subpath [PDF:1.6:4.4.1].
   */
   public void closePath(
     )
@@ -239,10 +292,10 @@ public final class PrimitiveComposer
   /**
     Draws a circular arc.
 
-    @see #stroke()
     @param location Arc location.
     @param startAngle Starting angle.
     @param endAngle Ending angle.
+    @see #stroke()
   */
   public void drawArc(
     RectangularShape location,
@@ -254,12 +307,13 @@ public final class PrimitiveComposer
   /**
     Draws an arc.
 
-    @see #stroke()
     @param location Arc location.
     @param startAngle Starting angle.
     @param endAngle Ending angle.
     @param branchWidth Distance between the spiral branches. '0' value degrades to a circular arc.
-    @param branchRatio Linear coefficient applied to the branch width. '1' value degrades to a constant branch width.
+    @param branchRatio Linear coefficient applied to the branch width. '1' value degrades to a
+      constant branch width.
+    @see #stroke()
   */
   public void drawArc(
     RectangularShape location,
@@ -273,10 +327,10 @@ public final class PrimitiveComposer
   /**
     Draws a cubic Bezier curve from the current point [PDF:1.6:4.4.1].
 
-    @see #stroke()
     @param endPoint Ending point.
     @param startControl Starting control point.
     @param endControl Ending control point.
+    @see #stroke()
   */
   public void drawCurve(
     Point2D endPoint,
@@ -300,11 +354,11 @@ public final class PrimitiveComposer
   /**
     Draws a cubic Bezier curve [PDF:1.6:4.4.1].
 
-    @see #stroke()
     @param startPoint Starting point.
     @param endPoint Ending point.
     @param startControl Starting control point.
     @param endControl Ending control point.
+    @see #stroke()
   */
   public void drawCurve(
     Point2D startPoint,
@@ -320,10 +374,10 @@ public final class PrimitiveComposer
   /**
     Draws an ellipse.
 
+    @param location Ellipse location.
     @see #fill()
     @see #fillStroke()
     @see #stroke()
-    @param location Ellipse location.
   */
   public void drawEllipse(
     RectangularShape location
@@ -333,8 +387,8 @@ public final class PrimitiveComposer
   /**
     Draws a line from the current point [PDF:1.6:4.4.1].
 
-    @see #stroke()
     @param endPoint Ending point.
+    @see #stroke()
   */
   public void drawLine(
     Point2D endPoint
@@ -351,9 +405,9 @@ public final class PrimitiveComposer
   /**
     Draws a line [PDF:1.6:4.4.1].
 
-    @see #stroke()
     @param startPoint Starting point.
     @param endPoint Ending point.
+    @see #stroke()
   */
   public void drawLine(
     Point2D startPoint,
@@ -369,10 +423,10 @@ public final class PrimitiveComposer
     <h3>Remarks</h3>
     <p>A polygon is the same as a multiple line except that it's a closed path.</p>
 
+    @param points Points.
     @see #fill()
     @see #fillStroke()
     @see #stroke()
-    @param points Points.
   */
   public void drawPolygon(
     Point2D[] points
@@ -385,8 +439,8 @@ public final class PrimitiveComposer
   /**
     Draws a multiple line.
 
-    @see #stroke()
     @param points Points.
+    @see #stroke()
   */
   public void drawPolyline(
     Point2D[] points
@@ -405,11 +459,10 @@ public final class PrimitiveComposer
   /**
     Draws a rectangle [PDF:1.6:4.4.1].
 
+    @param location Rectangle location.
     @see #fill()
     @see #fillStroke()
     @see #stroke()
-
-    @param location Rectangle location.
   */
   public void drawRectangle(
     RectangularShape location
@@ -419,12 +472,11 @@ public final class PrimitiveComposer
   /**
     Draws a rounded rectangle.
 
+    @param location Rectangle location.
+    @param radius Vertex radius, '0' value degrades to squared vertices.
     @see #fill()
     @see #fillStroke()
     @see #stroke()
-
-    @param location Rectangle location.
-    @param radius Vertex radius, '0' value degrades to squared vertices.
   */
   public void drawRectangle(
     RectangularShape location,
@@ -513,12 +565,12 @@ public final class PrimitiveComposer
   /**
     Draws a spiral.
 
-    @see #stroke()
     @param center Spiral center.
     @param startAngle Starting angle.
     @param endAngle Ending angle.
     @param branchWidth Distance between the spiral branches.
     @param branchRatio Linear coefficient applied to the branch width.
+    @see #stroke()
   */
   public void drawSpiral(
     Point2D center,
@@ -592,9 +644,8 @@ public final class PrimitiveComposer
   /**
     Applies a rotation to the coordinate system from user space to device space [PDF:1.6:4.2.2].
 
-    @see #applyMatrix(float,float,float,float,float,float)
-
     @param angle Rotational counterclockwise angle.
+    @see #applyMatrix(float,float,float,float,float,float)
   */
   public void rotate(
     float angle
@@ -609,10 +660,9 @@ public final class PrimitiveComposer
   /**
     Applies a rotation to the coordinate system from user space to device space [PDF:1.6:4.2.2].
 
-    @see #applyMatrix(float,float,float,float,float,float)
-
     @param angle Rotational counterclockwise angle.
     @param origin Rotational pivot point; it becomes the new coordinates origin.
+    @see #applyMatrix(float,float,float,float,float,float)
   */
   public void rotate(
     float angle,
@@ -636,10 +686,9 @@ public final class PrimitiveComposer
   /**
     Applies a scaling to the coordinate system from user space to device space [PDF:1.6:4.2.2].
 
-    @see #applyMatrix(float,float,float,float,float,float)
-
     @param ratioX Horizontal scaling ratio.
     @param ratioY Vertical scaling ratio.
+    @see #applyMatrix(float,float,float,float,float,float)
   */
   public void scale(
     float ratioX,
@@ -784,14 +833,13 @@ public final class PrimitiveComposer
     <h3>Remarks</h3>
     <p>The transformation replaces the current transformation matrix (CTM).</p>
 
-    @see #applyMatrix(float,float,float,float,float,float)
-
     @param a Item 0,0 of the matrix.
     @param b Item 0,1 of the matrix.
     @param c Item 1,0 of the matrix.
     @param d Item 1,1 of the matrix.
     @param e Item 2,0 of the matrix.
     @param f Item 2,1 of the matrix.
+    @see #applyMatrix(float,float,float,float,float,float)
   */
   public void setMatrix(
     float a,
@@ -1158,8 +1206,6 @@ public final class PrimitiveComposer
     dictionary: if it isn't available, it's automatically added. If you need to
     avoid such a behavior, use {@link #showXObject(PdfName) #showXObject(PdfName)}.</p>
 
-    @since 0.0.5
-
     @param value External object.
   */
   public void showXObject(
@@ -1192,8 +1238,6 @@ public final class PrimitiveComposer
     dictionary: if it isn't available, it's automatically added. If you need to
     avoid such a behavior, use {@link #showXObject(PdfName,Point2D) #showXObject(PdfName,Point2D)}.</p>
 
-    @since 0.0.5
-
     @param value External object.
     @param location Position at which showing the external object.
   */
@@ -1210,8 +1254,6 @@ public final class PrimitiveComposer
 
   /**
     Shows the specified external object at the specified position [PDF:1.6:4.7].
-
-    @since 0.0.5
 
     @param name Resource identifier of the external object.
     @param location Position at which showing the external object.
@@ -1238,9 +1280,8 @@ public final class PrimitiveComposer
     <h3>Remarks</h3>
     <p>The <code>value</code> is checked for presence in the current resource
     dictionary: if it isn't available, it's automatically added. If you need to
-    avoid such a behavior, use {@link #showXObject(PdfName,Point2D,Dimension2D) #showXObject(PdfName,Point2D,Dimension2D)}.</p>
-
-    @since 0.0.5
+    avoid such a behavior, use {@link #showXObject(PdfName,Point2D,Dimension2D)
+    showXObject(PdfName,Point2D,Dimension2D)}.</p>
 
     @param value External object.
     @param location Position at which showing the external object.
@@ -1345,9 +1386,8 @@ public final class PrimitiveComposer
     <h3>Remarks</h3>
     <p>The <code>value</code> is checked for presence in the current resource
     dictionary: if it isn't available, it's automatically added. If you need to
-    avoid such a behavior, use {@link #showXObject(PdfName,Point2D,Dimension2D,AlignmentXEnum,AlignmentYEnum,float) #showXObject(PdfName,Point2D,Dimension2D,AlignmentXEnum,AlignmentYEnum,float)}.</p>
-
-    @since 0.0.5
+    avoid such a behavior, use {@link #showXObject(PdfName,Point2D,Dimension2D,AlignmentXEnum,
+    AlignmentYEnum,float) showXObject(PdfName,...)}.</p>
 
     @param value External object.
     @param location Position at which showing the external object.
@@ -1388,10 +1428,9 @@ public final class PrimitiveComposer
     Applies a translation to the coordinate system from user space
     to device space [PDF:1.6:4.2.2].
 
-    @see #applyMatrix(float,float,float,float,float,float)
-
     @param distanceX Horizontal distance.
     @param distanceY Vertical distance.
+    @see #applyMatrix(float,float,float,float,float,float)
   */
   public void translate(
     float distanceX,
@@ -1540,6 +1579,20 @@ public final class PrimitiveComposer
     }
   }
 
+  private PdfName getColorSpaceName(
+    ColorSpace<?> value
+    )
+  {
+    if(value instanceof DeviceGrayColorSpace)
+    {return PdfName.DeviceGray;}
+    else if(value instanceof DeviceRGBColorSpace)
+    {return PdfName.DeviceRGB;}
+    else if(value instanceof DeviceCMYKColorSpace)
+    {return PdfName.DeviceCMYK;}
+    else
+      throw new NotImplementedException("colorSpace MUST be converted to its associated name; you need to implement a method in PdfDictionary that, given a PdfDirectObject, returns its associated key.");
+  }
+
   private PdfName getFontName(
     Font value
     )
@@ -1566,7 +1619,35 @@ public final class PrimitiveComposer
       while(fonts.containsKey(name));
       fonts.put(name,value);
     }
+    return name;
+  }
 
+  private PdfName getPropertyListName(
+    PropertyList value
+    )
+  {
+    // Ensuring that the property list exists within the context resources...
+    Resources resources = scanner.getContentContext().getResources();
+    PropertyListResources propertyLists = resources.getPropertyLists();
+    // No property list resources collection?
+    if(propertyLists == null)
+    {
+      // Create the property list resources collection!
+      propertyLists = new PropertyListResources(scanner.getContents().getDocument());
+      resources.setPropertyLists(propertyLists);
+    }
+    // Get the key associated to the property list!
+    PdfName name = propertyLists.getBaseDataObject().getKey(value.getBaseObject());
+    // No key found?
+    if(name == null)
+    {
+      // Insert the property list within the resources!
+      int propertyListIndex = propertyLists.size();
+      do
+      {name = new PdfName(String.valueOf(++propertyListIndex));}
+      while(propertyLists.containsKey(name));
+      propertyLists.put(name,value);
+    }
     return name;
   }
 
@@ -1596,22 +1677,7 @@ public final class PrimitiveComposer
       while(xObjects.containsKey(name));
       xObjects.put(name,value);
     }
-
     return name;
-  }
-
-  private PdfName getColorSpaceName(
-    ColorSpace<?> value
-    )
-  {
-    if(value instanceof DeviceGrayColorSpace)
-    {return PdfName.DeviceGray;}
-    else if(value instanceof DeviceRGBColorSpace)
-    {return PdfName.DeviceRGB;}
-    else if(value instanceof DeviceCMYKColorSpace)
-    {return PdfName.DeviceCMYK;}
-    else
-      throw new NotImplementedException("colorSpace MUST be converted to its associated name; you need to implement a method in PdfDictionary that, given a PdfDirectObject, returns its associated key.");
   }
 
   /**
@@ -1632,8 +1698,8 @@ public final class PrimitiveComposer
   }
 
   /**
-    Applies a scaling to the coordinate system from text space to user space
-    [PDF:1.6:4.2.2].
+    Applies a scaling to the coordinate system from text space to user space [PDF:1.6:4.2.2].
+
     @param ratioX Horizontal scaling ratio.
     @param ratioY Vertical scaling ratio.
   */
@@ -1667,8 +1733,7 @@ public final class PrimitiveComposer
   {add(new SetTextMatrix(a,b,c,d,e,f));}
 
   /**
-    Applies a translation to the coordinate system from text space
-    to user space [PDF:1.6:4.2.2].
+    Applies a translation to the coordinate system from text space to user space [PDF:1.6:4.2.2].
 
     @param distanceX Horizontal distance.
     @param distanceY Vertical distance.
@@ -1680,8 +1745,8 @@ public final class PrimitiveComposer
   {setTextMatrix(1, 0, 0, 1, distanceX, distanceY);}
 
   /**
-    Applies a translation to the coordinate system from text space to user space,
-    relative to the start of the current line [PDF:1.6:5.3.1].
+    Applies a translation to the coordinate system from text space to user space, relative to the
+    start of the current line [PDF:1.6:5.3.1].
 
     @param offsetX Horizontal offset.
     @param offsetY Vertical offset.
@@ -1701,8 +1766,8 @@ public final class PrimitiveComposer
   }
 
   /**
-    Applies a translation to the coordinate system from text space to user space,
-    moving to the start of the next line [PDF:1.6:5.3.1].
+    Applies a translation to the coordinate system from text space to user space, moving to the
+    start of the next line [PDF:1.6:5.3.1].
   */
   @SuppressWarnings("unused")
   private void translateTextToNextLine(

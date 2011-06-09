@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -24,6 +24,10 @@
 */
 
 package org.pdfclown.documents.interaction.forms.styles;
+
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
@@ -54,16 +58,12 @@ import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.util.math.geom.Dimension;
 
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 /**
   Default field appearance style.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 06/08/11
 */
 public final class DefaultStyle
   extends FieldStyle
@@ -357,8 +357,8 @@ public final class DefaultStyle
       composer.fillStroke();
       composer.end();
 
-      String caption = (String)field.getValue();
-      if(caption != null)
+      String title = (String)field.getValue();
+      if(title != null)
       {
         BlockComposer blockComposer = new BlockComposer(composer);
         blockComposer.begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Middle);
@@ -372,7 +372,7 @@ public final class DefaultStyle
             ),
           (float)(size.getHeight() * 0.5)
           );
-        blockComposer.showText(caption);
+        blockComposer.showText(title);
         blockComposer.end();
       }
 

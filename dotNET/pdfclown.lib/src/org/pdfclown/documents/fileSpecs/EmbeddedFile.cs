@@ -71,7 +71,7 @@ namespace org.pdfclown.documents.fileSpecs
       Document context,
       bytes::IInputStream stream
       ) : base(
-        context.File,
+        context,
         new PdfStream(
           new PdfDictionary(
             new PdfName[]{PdfName.Type},

@@ -54,6 +54,7 @@ namespace org.pdfclown.objects
 
     private PdfObject parent;
     private bool updated;
+    private bool virtual_;
     #endregion
 
     #region constructors
@@ -114,6 +115,37 @@ namespace org.pdfclown.objects
     {
       get
       {return Root;}
+    }
+
+    /**
+      Gets the value corresponding to the given key, forcing its instantiation in case of missing
+      entry.
+  
+      @param key Key whose associated value is to be returned.
+      @param valueClass Class to use for instantiating the value in case of missing entry.
+      @since 0.1.1
+    */
+    public PdfDirectObject Ensure<T>(
+      PdfName key
+      ) where T : PdfDirectObject, new()
+    {
+      PdfDirectObject value = this[key];
+      if(value == null)
+      {
+        /*
+          NOTE: The null-object placeholder MUST NOT perturb the existing structure; therefore:
+            - it MUST be marked as virtual in order not to unnecessarily serialize it;
+            - it MUST be put into this dictionary without affecting its update status.
+        */
+        try
+        {
+          entries[key] = value = (PdfDirectObject)Include(new T());
+          value.Virtual = true;
+        }
+        catch(Exception e)
+        {throw new Exception(typeof(T).Name + " failed to instantiate.", e);}
+      }
+      return value;
     }
 
     public override bool Equals(
@@ -211,6 +243,9 @@ namespace org.pdfclown.objects
       // Entries.
       foreach(KeyValuePair<PdfName,PdfDirectObject> entry in entries)
       {
+        if(entry.Value.Virtual)
+          continue;
+
         // Entry...
         // ...key.
         entry.Key.WriteTo(stream); stream.Write(Chunk.Space);
@@ -365,6 +400,14 @@ namespace org.pdfclown.objects
       {return updated;}
       set
       {updated = value;}
+    }
+
+    protected internal override bool Virtual
+    {
+      get
+      {return virtual_;}
+      set
+      {virtual_ = value;}
     }
     #endregion
     #endregion

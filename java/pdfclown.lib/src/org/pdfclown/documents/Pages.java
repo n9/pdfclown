@@ -50,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
   Document pages collection [PDF:1.6:3.6.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Pages
@@ -70,7 +70,7 @@ public final class Pages
     )
   {
     super(
-      context.getFile(),
+      context,
       new PdfDictionary(
         new PdfName[]
         {
@@ -369,9 +369,6 @@ public final class Pages
   {
     return new Iterator<Page>()
     {
-      // <class>
-      // <dynamic>
-      // <fields>
       /**
         Index of the next item.
       */
@@ -397,11 +394,7 @@ public final class Pages
         Current child tree nodes.
       */
       private PdfArray kids = (PdfArray)File.resolve(parent.get(PdfName.Kids));
-      // </fields>
 
-      // <interface>
-      // <public>
-      // <Iterator>
       @Override
       public boolean hasNext(
         )
@@ -414,20 +407,6 @@ public final class Pages
         if(!hasNext())
           throw new NoSuchElementException();
 
-        return getNext();
-      }
-
-      @Override
-      public void remove(
-        )
-      {throw new UnsupportedOperationException();}
-      // </Iterator>
-      // </public>
-
-      // <private>
-      private Page getNext(
-        )
-      {
         /*
           NOTE: As stated in [PDF:1.6:3.6.2], page retrieval is a matter of diving
           inside a B-tree.
@@ -482,10 +461,11 @@ public final class Pages
           }
         }
       }
-      // </private>
-      // </interface>
-      // </dynamic>
-      // </class>
+
+      @Override
+      public void remove(
+        )
+      {throw new UnsupportedOperationException();}
     };
   }
   // </Iterable>

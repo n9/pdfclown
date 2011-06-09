@@ -317,7 +317,7 @@ namespace org.pdfclown.documents.interaction.navigation.page
     public Transition(
       Document context
       ) : base(
-        context.File,
+        context,
         new PdfDictionary(
           new PdfName[]{PdfName.Type},
           new PdfDirectObject[]{PdfName.Trans}

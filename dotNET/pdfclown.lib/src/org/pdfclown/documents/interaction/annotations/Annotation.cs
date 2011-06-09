@@ -25,7 +25,9 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
+using org.pdfclown.documents.contents;
 using org.pdfclown.documents.contents.colorSpaces;
+using org.pdfclown.documents.contents.layers;
 using org.pdfclown.documents.interaction.actions;
 using org.pdfclown.files;
 using org.pdfclown.objects;
@@ -40,7 +42,8 @@ namespace org.pdfclown.documents.interaction.annotations
   */
   [PDF(VersionEnum.PDF10)]
   public class Annotation
-    : PdfObjectWrapper<PdfDictionary>
+    : PdfObjectWrapper<PdfDictionary>,
+      ILayerable
   {
     #region types
     /**
@@ -170,7 +173,7 @@ namespace org.pdfclown.documents.interaction.annotations
       RectangleF box,
       Page page
       ) : base(
-        context.File,
+        context,
         new PdfDictionary(
           new PdfName[]
           {
@@ -460,6 +463,18 @@ namespace org.pdfclown.documents.interaction.annotations
       }
     }
 
+    #region ILayerable
+    [PDF(VersionEnum.PDF15)]
+    public LayerEntity Layer
+    {
+      get
+      {return (LayerEntity)PropertyList.Wrap(BaseDataObject[PdfName.OC]);}
+      set
+      {BaseDataObject[PdfName.OC] = value.BaseObject;}
+    }
+    #endregion
+    #endregion
+
     #region private
     private float GetPageHeight(
       )
@@ -469,7 +484,6 @@ namespace org.pdfclown.documents.interaction.annotations
           ? page.Box.Height
           : Document.GetSize().Height);
     }
-    #endregion
     #endregion
     #endregion
     #endregion

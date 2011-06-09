@@ -47,7 +47,7 @@ import org.pdfclown.util.NotImplementedException;
   Collection of bookmarks [PDF:1.6:8.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Bookmarks
@@ -62,7 +62,7 @@ public final class Bookmarks
     )
   {
     super(
-      context.getFile(),
+      context,
       new PdfDictionary(
         new PdfName[]
         {

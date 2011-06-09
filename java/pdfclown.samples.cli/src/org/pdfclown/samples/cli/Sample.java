@@ -66,6 +66,16 @@ public abstract class Sample
     info.setSubject("Sample about " + subject + " using PDF Clown");
   }
 
+  protected String getIndentation(
+    int level
+    )
+  {
+    StringBuilder indentationBuilder = new StringBuilder();
+    for(int i = 0; i < level; i++)
+    {indentationBuilder.append(' ');}
+    return indentationBuilder.toString();
+  }
+
   /**
     Prompts a message to the user.
 

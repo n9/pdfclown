@@ -151,7 +151,7 @@ namespace org.pdfclown.files
 
       indirectObjects = new IndirectObjects(this, info.XrefEntries);
       document = new Document(trailer[PdfName.Root]);
-      document.Configuration.XrefMode = (PdfName.XRef.Equals(trailer[PdfName.Type]) ? Document.Config.XRefModeEnum.Compressed : Document.Config.XRefModeEnum.Plain);
+      document.Configuration.XrefMode = (PdfName.XRef.Equals(trailer[PdfName.Type]) ? Document.ConfigurationImpl.XRefModeEnum.Compressed : Document.ConfigurationImpl.XRefModeEnum.Plain);
     }
     #endregion
 

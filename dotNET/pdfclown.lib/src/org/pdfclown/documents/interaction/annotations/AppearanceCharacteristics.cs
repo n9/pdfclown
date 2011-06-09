@@ -202,10 +202,7 @@ namespace org.pdfclown.documents.interaction.annotations
       #region constructors
       public IconFitObject(
         Document context
-        ) : base(
-          context.File,
-          new PdfDictionary()
-          )
+        ) : base(context, new PdfDictionary())
       {}
 
       public IconFitObject(
@@ -395,10 +392,7 @@ namespace org.pdfclown.documents.interaction.annotations
     #region constructors
     public AppearanceCharacteristics(
       Document context
-      ) : base(
-        context.File,
-        new PdfDictionary()
-        )
+      ) : base(context, new PdfDictionary())
     {}
 
     public AppearanceCharacteristics(

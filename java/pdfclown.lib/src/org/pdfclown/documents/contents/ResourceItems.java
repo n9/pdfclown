@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class ResourceItems<TValue extends PdfObjectWrapper<?>>
@@ -57,7 +57,7 @@ public abstract class ResourceItems<TValue extends PdfObjectWrapper<?>>
   protected ResourceItems(
     Document context
     )
-  {super(context.getFile(), new PdfDictionary());}
+  {super(context, new PdfDictionary());}
 
   ResourceItems(
     PdfDirectObject baseObject

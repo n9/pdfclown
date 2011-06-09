@@ -45,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF13)
 public final class EmbeddedFile
@@ -93,7 +93,7 @@ public final class EmbeddedFile
     )
   {
     super(
-      context.getFile(),
+      context,
       new PdfStream(
         new PdfDictionary(
           new PdfName[]{PdfName.Type},

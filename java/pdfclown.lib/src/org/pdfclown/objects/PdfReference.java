@@ -35,7 +35,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF indirect reference object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 public final class PdfReference
   extends PdfDirectObject
@@ -215,10 +215,21 @@ public final class PdfReference
   {return false;}
 
   @Override
+  protected boolean isVirtual(
+    )
+  {return false;}
+
+  @Override
   protected void setUpdated(
     boolean value
     )
   {/* NOOP: As references are immutable, no update can be done. */}
+
+  @Override
+  protected void setVirtual(
+    boolean value
+    )
+  {/* NOOP */}
   // </protected>
 
   // <internal>

@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF11)
 public final class GoToEmbedded
@@ -198,11 +198,7 @@ public final class GoToEmbedded
       TargetObject target
       )
     {
-      super(
-        context.getFile(),
-        new PdfDictionary()
-        );
-
+      super(context, new PdfDictionary());
       setRelation(relation);
       setEmbeddedFileName(embeddedFileName);
       setAnnotationPageRef(annotationPageRef);

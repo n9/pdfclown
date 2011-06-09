@@ -111,11 +111,17 @@ namespace org.pdfclown.objects
       #region public
       #region IEnumerator<KeyValuePair<PdfString,TValue>>
       KeyValuePair<PdfString,TValue> IEnumerator<KeyValuePair<PdfString,TValue>>.Current
-      {get{return current.Value;}}
+      {
+        get
+        {return current.Value;}
+      }
 
       #region IEnumerator
       public object Current
-      {get{return ((IEnumerator<KeyValuePair<PdfString,TValue>>)this).Current;}}
+      {
+        get
+        {return ((IEnumerator<KeyValuePair<PdfString,TValue>>)this).Current;}
+      }
 
       public bool MoveNext(
         )
@@ -312,7 +318,7 @@ namespace org.pdfclown.objects
     public NameTree(
       Document context
       ) : base(
-        context.File,
+        context,
         new PdfDictionary(
           new PdfName[]
           {PdfName.Names},

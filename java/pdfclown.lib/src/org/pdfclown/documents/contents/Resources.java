@@ -38,7 +38,7 @@ import org.pdfclown.util.NotImplementedException;
   Resources collection [PDF:1.6:3.7.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Resources
@@ -63,7 +63,7 @@ public final class Resources
   public Resources(
     Document context
     )
-  {super(context.getFile(), new PdfDictionary());}
+  {super(context, new PdfDictionary());}
 
   private Resources(
     PdfDirectObject baseObject

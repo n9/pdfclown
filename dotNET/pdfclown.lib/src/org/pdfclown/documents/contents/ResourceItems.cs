@@ -46,10 +46,7 @@ namespace org.pdfclown.documents.contents
     #region constructors
     protected ResourceItems(
       Document context
-      ) : base(
-        context.File,
-        new PdfDictionary()
-        )
+      ) : base(context, new PdfDictionary())
     {}
 
     internal ResourceItems(

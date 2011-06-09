@@ -39,7 +39,7 @@ import org.pdfclown.tokens.XRefEntry.UsageEnum;
   PDF indirect object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 06/08/11
 */
 public final class PdfIndirectObject
   extends PdfObject
@@ -297,6 +297,11 @@ public final class PdfIndirectObject
   {return updated;} //FIXME: In case of dataObject instanceof PdfStream, body buffer update is NOT notified!!!
 
   @Override
+  protected boolean isVirtual(
+    )
+  {return false;}
+
+  @Override
   protected void setUpdated(
     boolean value
     )
@@ -312,6 +317,12 @@ public final class PdfIndirectObject
     }
     updated = value;
   }
+
+  @Override
+  protected void setVirtual(
+    boolean value
+    )
+  {/* NOOP */}
   // </protected>
 
   // <internal>

@@ -43,10 +43,7 @@ namespace org.pdfclown.documents.interchange.metadata
     #region constructors
     public Information(
       Document context
-      ) : base(
-        context.File,
-        new PdfDictionary()
-        )
+      ) : base(context, new PdfDictionary())
     {
       string assemblyTitle = ((AssemblyTitleAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyTitleAttribute))).Title;
       string assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();

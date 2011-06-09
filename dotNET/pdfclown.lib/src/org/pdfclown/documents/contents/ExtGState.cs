@@ -60,7 +60,7 @@ namespace org.pdfclown.documents.contents
     public ExtGState(
       Document context,
       PdfDictionary baseDataObject
-      ) : base(context.File, baseDataObject)
+      ) : base(context, baseDataObject)
     {}
 
     internal ExtGState(
@@ -107,9 +107,7 @@ namespace org.pdfclown.documents.contents
       get
       {
         PdfArray fontObject = (PdfArray)BaseDataObject[PdfName.Font];
-        return fontObject == null
-          ? null
-          : Font.Wrap((PdfReference)fontObject[0]);
+        return fontObject != null ? Font.Wrap(fontObject[0]) : null;
       }
     }
 
@@ -119,9 +117,7 @@ namespace org.pdfclown.documents.contents
       get
       {
         PdfArray fontObject = (PdfArray)BaseDataObject[PdfName.Font];
-        return (fontObject == null
-          ? (float?)null
-          : ((IPdfNumber)fontObject[1]).RawValue);
+        return fontObject != null ? ((IPdfNumber)fontObject[1]).RawValue : (float?)null;
       }
     }
 
@@ -131,9 +127,7 @@ namespace org.pdfclown.documents.contents
       get
       {
         PdfInteger lineCapObject = (PdfInteger)BaseDataObject[PdfName.LC];
-        return (lineCapObject == null
-          ? (LineCapEnum?)null
-          : (LineCapEnum)lineCapObject.RawValue);
+        return lineCapObject != null ? (LineCapEnum)lineCapObject.RawValue : (LineCapEnum?)null;
       }
     }
 
@@ -169,9 +163,7 @@ namespace org.pdfclown.documents.contents
       get
       {
         PdfInteger lineJoinObject = (PdfInteger)BaseDataObject[PdfName.LJ];
-        return (lineJoinObject == null
-          ? (LineJoinEnum?)null
-          : (LineJoinEnum)lineJoinObject.RawValue);
+        return lineJoinObject != null ? (LineJoinEnum)lineJoinObject.RawValue : (LineJoinEnum?)null;
       }
     }
 
@@ -181,9 +173,7 @@ namespace org.pdfclown.documents.contents
       get
       {
         IPdfNumber lineWidthObject = (IPdfNumber)BaseDataObject[PdfName.LW];
-        return (lineWidthObject == null
-          ? (float?)null
-          : lineWidthObject.RawValue);
+        return lineWidthObject != null ? lineWidthObject.RawValue : (float?)null;
       }
     }
 
@@ -193,9 +183,7 @@ namespace org.pdfclown.documents.contents
       get
       {
         IPdfNumber miterLimitObject = (IPdfNumber)BaseDataObject[PdfName.ML];
-        return (miterLimitObject == null
-          ? (float?)null
-          : miterLimitObject.RawValue);
+        return miterLimitObject != null ? miterLimitObject.RawValue : (float?)null;
       }
     }
   }

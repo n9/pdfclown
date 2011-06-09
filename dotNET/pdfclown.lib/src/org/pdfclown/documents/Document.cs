@@ -25,6 +25,7 @@
 
 using org.pdfclown;
 using org.pdfclown.documents.contents;
+using org.pdfclown.documents.contents.layers;
 using org.pdfclown.documents.interaction.forms;
 using org.pdfclown.documents.interaction.navigation.document;
 using org.pdfclown.documents.interchange.metadata;
@@ -51,7 +52,7 @@ namespace org.pdfclown.documents
     /**
       <summary>Document configuration.</summary>
     */
-    public sealed class Config
+    public sealed class ConfigurationImpl
     {
       /**
         <summary>Version compatibility mode.</summary>
@@ -98,7 +99,7 @@ namespace org.pdfclown.documents
 
       private Document document;
 
-      internal Config(
+      internal ConfigurationImpl(
         Document document
         )
       {this.document = document;}
@@ -141,7 +142,7 @@ namespace org.pdfclown.documents
       OneColumn,
       TwoColumns
     };
-    
+
     public enum PageModeEnum
     {
       /**
@@ -164,7 +165,7 @@ namespace org.pdfclown.documents
         <summary>Optional content group panel visible.</summary>
       */
       [PDF(VersionEnum.PDF15)]
-      OCG,
+      Layers,
       /**
         <summary>Attachments panel visible.</summary>
       */
@@ -193,7 +194,7 @@ namespace org.pdfclown.documents
     #region fields
     internal Dictionary<PdfReference,object> Cache = new Dictionary<PdfReference,object>();
 
-    private Config configuration;
+    private ConfigurationImpl configuration;
     #endregion
 
     #region constructors
@@ -207,7 +208,7 @@ namespace org.pdfclown.documents
           ) // Document catalog [PDF:1.6:3.6.1].
         )
     {
-      configuration = new Config(this);
+      configuration = new ConfigurationImpl(this);
 
       /*
         NOTE: Here it is just a minimal initialization;
@@ -229,7 +230,7 @@ namespace org.pdfclown.documents
     internal Document(
       PdfDirectObject baseObject // Catalog.
       ) : base(baseObject)
-    {configuration = new Config(this);}
+    {configuration = new ConfigurationImpl(this);}
     #endregion
 
     #region interface
@@ -271,7 +272,7 @@ namespace org.pdfclown.documents
     /**
       <summary>Gets the configuration of this document.</summary>
     */
-    public Config Configuration
+    public ConfigurationImpl Configuration
     {
       get
       {return configuration;}
@@ -377,6 +378,24 @@ namespace org.pdfclown.documents
     }
 
     /**
+      <summary>Gets/Sets the optional content properties.</summary>
+    */
+    [PDF(VersionEnum.PDF15)]
+    public LayerDefinition Layer
+    {
+      get
+      {
+        PdfDirectObject ocPropertiesObject = BaseDataObject[PdfName.OCProperties];
+        return ocPropertiesObject != null ? new LayerDefinition(ocPropertiesObject) : null;
+      }
+      set
+      {
+        CheckCompatibility("Layer");
+        BaseDataObject[PdfName.OCProperties] = value.BaseObject;
+      }
+    }
+
+    /**
       <summary>Gets/Sets the name dictionary [PDF:1.6:3.6.3].</summary>
     */
     [PDF(VersionEnum.PDF12)]
@@ -397,30 +416,9 @@ namespace org.pdfclown.documents
     public PageLayoutEnum PageLayout
     {
       get
-      {
-        PdfName value = (PdfName)BaseDataObject[PdfName.PageLayout];
-        if(value.Equals(PdfName.OneColumn))
-          return PageLayoutEnum.OneColumn;
-        else if(value.Equals(PdfName.TwoColumnLeft))
-          return PageLayoutEnum.TwoColumns;
-        else
-          return PageLayoutEnum.SinglePage;
-      }
+      {return PageLayoutEnumExtension.ToEnum((PdfName)BaseDataObject[PdfName.PageLayout]);}
       set
-      {
-        switch(value)
-        {
-          case PageLayoutEnum.SinglePage:
-            BaseDataObject[PdfName.PageLayout] = PdfName.SinglePage;
-            break;
-          case PageLayoutEnum.OneColumn:
-            BaseDataObject[PdfName.PageLayout] = PdfName.OneColumn;
-            break;
-          case PageLayoutEnum.TwoColumns:
-            BaseDataObject[PdfName.PageLayout] = PdfName.TwoColumnLeft;
-            break;
-        }
-      }
+      {BaseDataObject[PdfName.PageLayout] = value.GetName();}
     }
 
     /**
@@ -429,52 +427,9 @@ namespace org.pdfclown.documents
     public PageModeEnum PageMode
     {
       get
-      {
-        PdfName value = (PdfName)BaseDataObject[PdfName.PageMode];
-        if(value == null
-          || value.Equals(PdfName.UseNone))
-          return PageModeEnum.Simple;
-        else if(value.Equals(PdfName.UseOutlines))
-          return PageModeEnum.Bookmarks;
-        else if(value.Equals(PdfName.UseThumbs))
-          return PageModeEnum.Thumbnails;
-        else if(value.Equals(PdfName.FullScreen))
-          return PageModeEnum.FullScreen;
-        else if(value.Equals(PdfName.UseOC))
-          return PageModeEnum.OCG;
-        else if(value.Equals(PdfName.UseAttachments))
-          return PageModeEnum.Attachments;
-        else
-          throw new NotSupportedException("Page mode unknown: " + value);
-      }
+      {return PageModeEnumExtension.ToEnum((PdfName)BaseDataObject[PdfName.PageMode]);}
       set
-      {
-        PdfName valueObject;
-        switch(value)
-        {
-          case PageModeEnum.Simple:
-            valueObject = PdfName.UseNone;
-            break;
-          case PageModeEnum.Bookmarks:
-            valueObject = PdfName.UseOutlines;
-            break;
-          case PageModeEnum.Thumbnails:
-            valueObject = PdfName.UseThumbs;
-            break;
-          case PageModeEnum.FullScreen:
-            valueObject = PdfName.FullScreen;
-            break;
-          case PageModeEnum.OCG:
-            valueObject = PdfName.UseOC;
-            break;
-          case PageModeEnum.Attachments:
-            valueObject = PdfName.UseAttachments;
-            break;
-          default:
-            throw new NotSupportedException("Page mode unknown: " + value);
-        }
-        BaseDataObject[PdfName.PageMode] = valueObject;
-      }
+      {BaseDataObject[PdfName.PageMode] = value.GetName();}
     }
 
     /**
@@ -613,5 +568,85 @@ namespace org.pdfclown.documents
     #endregion
     #endregion
     #endregion
+  }
+
+  internal static class PageLayoutEnumExtension
+  {
+    public static PdfName GetName(
+      this Document.PageLayoutEnum pageLayout
+      )
+    {
+      switch(pageLayout)
+      {
+        case Document.PageLayoutEnum.SinglePage:
+          return PdfName.SinglePage;
+        case Document.PageLayoutEnum.OneColumn:
+          return PdfName.OneColumn;
+        case Document.PageLayoutEnum.TwoColumns:
+          return PdfName.TwoColumnLeft;
+        default:
+          throw new NotImplementedException();
+      }
+    }
+
+    public static Document.PageLayoutEnum ToEnum(
+      PdfName name
+      )
+    {
+      if(name == null || name.Equals(PdfName.SinglePage))
+        return Document.PageLayoutEnum.SinglePage;
+      else if(name.Equals(PdfName.OneColumn))
+        return Document.PageLayoutEnum.OneColumn;
+      else if(name.Equals(PdfName.TwoColumnLeft))
+        return Document.PageLayoutEnum.TwoColumns;
+      else
+        throw new NotSupportedException("Page layout unknown: " + name);
+    }
+  }
+
+  internal static class PageModeEnumExtension
+  {
+    public static PdfName GetName(
+      this Document.PageModeEnum pageMode
+      )
+    {
+      switch(pageMode)
+      {
+        case Document.PageModeEnum.Simple:
+          return PdfName.UseNone;
+        case Document.PageModeEnum.Bookmarks:
+          return PdfName.UseOutlines;
+        case Document.PageModeEnum.Thumbnails:
+          return PdfName.UseThumbs;
+        case Document.PageModeEnum.FullScreen:
+          return PdfName.FullScreen;
+        case Document.PageModeEnum.Layers:
+          return PdfName.UseOC;
+        case Document.PageModeEnum.Attachments:
+          return PdfName.UseAttachments;
+        default:
+          throw new NotImplementedException();
+      }
+    }
+
+    public static Document.PageModeEnum ToEnum(
+      PdfName name
+      )
+    {
+      if(name == null || name.Equals(PdfName.UseNone))
+        return Document.PageModeEnum.Simple;
+      else if(name.Equals(PdfName.UseOutlines))
+        return Document.PageModeEnum.Bookmarks;
+      else if(name.Equals(PdfName.UseThumbs))
+        return Document.PageModeEnum.Thumbnails;
+      else if(name.Equals(PdfName.FullScreen))
+        return Document.PageModeEnum.FullScreen;
+      else if(name.Equals(PdfName.UseOC))
+        return Document.PageModeEnum.Layers;
+      else if(name.Equals(PdfName.UseAttachments))
+        return Document.PageModeEnum.Attachments;
+      else
+        throw new NotSupportedException("Page mode unknown: " + name);
+    }
   }
 }

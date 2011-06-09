@@ -60,41 +60,30 @@ namespace org.pdfclown.documents.interaction.annotations
         Page page,
         PointF start,
         PointF end
-        ) : base(
-          page.File,
-          new PdfArray()
-          )
-      {
-        this.page = page;
-
-        PdfArray baseDataObject = BaseDataObject;
-        double pageHeight = page.Box.Height;
-        baseDataObject.Add(new PdfReal(start.X));
-        baseDataObject.Add(new PdfReal(pageHeight - start.Y));
-        baseDataObject.Add(new PdfReal(end.X));
-        baseDataObject.Add(new PdfReal(pageHeight - end.Y));
-      }
+        ) : this(page, start, null, end)
+      {}
 
       public LineObject(
         Page page,
         PointF start,
-        PointF knee,
+        PointF? knee,
         PointF end
-        ) : base(
-          page.File,
-          new PdfArray()
-          )
+        ) : base(page.Document, new PdfArray())
       {
         this.page = page;
-
         PdfArray baseDataObject = BaseDataObject;
-        double pageHeight = page.Box.Height;
-        baseDataObject.Add(new PdfReal(start.X));
-        baseDataObject.Add(new PdfReal(pageHeight - start.Y));
-        baseDataObject.Add(new PdfReal(knee.X));
-        baseDataObject.Add(new PdfReal(pageHeight - knee.Y));
-        baseDataObject.Add(new PdfReal(end.X));
-        baseDataObject.Add(new PdfReal(pageHeight - end.Y));
+        {
+          double pageHeight = page.Box.Height;
+          baseDataObject.Add(new PdfReal(start.X));
+          baseDataObject.Add(new PdfReal(pageHeight - start.Y));
+          if(knee.HasValue)
+          {
+            baseDataObject.Add(new PdfReal(knee.Value.X));
+            baseDataObject.Add(new PdfReal(pageHeight - knee.Value.Y));
+          }
+          baseDataObject.Add(new PdfReal(end.X));
+          baseDataObject.Add(new PdfReal(pageHeight - end.Y));
+        }
       }
 
       internal LineObject(

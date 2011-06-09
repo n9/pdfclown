@@ -47,7 +47,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
     public Bookmarks(
       Document context
       ) : base(
-        context.File,
+        context,
         new PdfDictionary(
           new PdfName[2]
           {

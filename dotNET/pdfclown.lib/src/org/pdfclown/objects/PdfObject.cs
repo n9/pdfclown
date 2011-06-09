@@ -142,6 +142,7 @@ namespace org.pdfclown.objects
         return;
 
       Updated = true;
+      Virtual = false;
 
       // Propagate the update to the ascendants!
       if(Parent != null)
@@ -152,6 +153,15 @@ namespace org.pdfclown.objects
       <summary>Gets/Sets whether the initial state of this object has been modified.</summary>
     */
     protected internal abstract bool Updated
+    {
+      get;
+      set;
+    }
+
+    /**
+      <summary>Gets/Sets whether this object acts like a null-object placeholder.</summary>
+    */
+    protected internal abstract bool Virtual
     {
       get;
       set;

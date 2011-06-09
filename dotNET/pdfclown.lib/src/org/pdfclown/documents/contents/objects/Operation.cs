@@ -25,6 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.objects;
+using org.pdfclown.tokens;
 
 using System;
 using System.Collections.Generic;
@@ -279,9 +280,9 @@ namespace org.pdfclown.documents.contents.objects
       if(operands != null)
       {
         foreach(PdfDirectObject operand in operands)
-        {operand.WriteTo(stream); stream.Write(" ");}
+        {operand.WriteTo(stream); stream.Write(Chunk.Space);}
       }
-      stream.Write(operator_); stream.Write("\n");
+      stream.Write(operator_); stream.Write(Chunk.LineFeed);
     }
     #endregion
     #endregion

@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF13)
 public final class CalloutNote
@@ -75,21 +75,7 @@ public final class CalloutNote
       Point2D start,
       Point2D end
       )
-    {
-      super(
-        page.getFile(),
-        new PdfArray()
-        );
-
-      this.page = page;
-
-      PdfArray baseDataObject = getBaseDataObject();
-      double pageHeight = page.getBox().getHeight();
-      baseDataObject.add(new PdfReal(start.getX()));
-      baseDataObject.add(new PdfReal(pageHeight - start.getY()));
-      baseDataObject.add(new PdfReal(end.getX()));
-      baseDataObject.add(new PdfReal(pageHeight - end.getY()));
-    }
+    {this(page, start, null, end);}
 
     public LineObject(
       Page page,
@@ -98,21 +84,21 @@ public final class CalloutNote
       Point2D end
       )
     {
-      super(
-        page.getFile(),
-        new PdfArray()
-        );
-
+      super(page.getDocument(), new PdfArray());
       this.page = page;
-
       PdfArray baseDataObject = getBaseDataObject();
-      double pageHeight = page.getBox().getHeight();
-      baseDataObject.add(new PdfReal(start.getX()));
-      baseDataObject.add(new PdfReal(pageHeight - start.getY()));
-      baseDataObject.add(new PdfReal(knee.getX()));
-      baseDataObject.add(new PdfReal(pageHeight - knee.getY()));
-      baseDataObject.add(new PdfReal(end.getX()));
-      baseDataObject.add(new PdfReal(pageHeight - end.getY()));
+      {
+        double pageHeight = page.getBox().getHeight();
+        baseDataObject.add(new PdfReal(start.getX()));
+        baseDataObject.add(new PdfReal(pageHeight - start.getY()));
+        if(knee != null)
+        {
+          baseDataObject.add(new PdfReal(knee.getX()));
+          baseDataObject.add(new PdfReal(pageHeight - knee.getY()));
+        }
+        baseDataObject.add(new PdfReal(end.getX()));
+        baseDataObject.add(new PdfReal(pageHeight - end.getY()));
+      }
     }
 
     private LineObject(

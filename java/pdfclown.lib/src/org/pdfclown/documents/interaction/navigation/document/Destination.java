@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
   </ul>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Destination
@@ -199,52 +199,48 @@ public abstract class Destination
     Float[] viewParams
     )
   {
-    super(
-      context.getFile(),
-      new PdfArray()
-      );
-
-    PdfArray destinationObject = getBaseDataObject();
-
-    destinationObject.add(pageObject);
-
-    switch(mode)
+    super(context, new PdfArray());
+    PdfArray baseDataObject = getBaseDataObject();
     {
-      case Fit:
-        destinationObject.add(PdfName.Fit);
-        break;
-      case FitBoundingBox:
-        destinationObject.add(PdfName.FitB);
-        break;
-      case FitBoundingBoxHorizontal:
-        destinationObject.add(PdfName.FitBH);
-        destinationObject.add(PdfReal.get(viewParams[0]));
-        break;
-      case FitBoundingBoxVertical:
-        destinationObject.add(PdfName.FitBV);
-        destinationObject.add(PdfReal.get(viewParams[0]));
-        break;
-      case FitHorizontal:
-        destinationObject.add(PdfName.FitH);
-        destinationObject.add(PdfReal.get(viewParams[0]));
-        break;
-      case FitRectangle:
-        destinationObject.add(PdfName.FitR);
-        destinationObject.add(PdfReal.get(viewParams[0]));
-        destinationObject.add(PdfReal.get(viewParams[1]));
-        destinationObject.add(PdfReal.get(viewParams[2]));
-        destinationObject.add(PdfReal.get(viewParams[3]));
-        break;
-      case FitVertical:
-        destinationObject.add(PdfName.FitV);
-        destinationObject.add(PdfReal.get(viewParams[0]));
-        break;
-      case XYZ:
-        destinationObject.add(PdfName.XYZ);
-        destinationObject.add(PdfReal.get(viewParams[0]));
-        destinationObject.add(PdfReal.get(viewParams[1]));
-        destinationObject.add(PdfReal.get(viewParams[2]));
-        break;
+      baseDataObject.add(pageObject);
+      switch(mode)
+      {
+        case Fit:
+          baseDataObject.add(PdfName.Fit);
+          break;
+        case FitBoundingBox:
+          baseDataObject.add(PdfName.FitB);
+          break;
+        case FitBoundingBoxHorizontal:
+          baseDataObject.add(PdfName.FitBH);
+          baseDataObject.add(PdfReal.get(viewParams[0]));
+          break;
+        case FitBoundingBoxVertical:
+          baseDataObject.add(PdfName.FitBV);
+          baseDataObject.add(PdfReal.get(viewParams[0]));
+          break;
+        case FitHorizontal:
+          baseDataObject.add(PdfName.FitH);
+          baseDataObject.add(PdfReal.get(viewParams[0]));
+          break;
+        case FitRectangle:
+          baseDataObject.add(PdfName.FitR);
+          baseDataObject.add(PdfReal.get(viewParams[0]));
+          baseDataObject.add(PdfReal.get(viewParams[1]));
+          baseDataObject.add(PdfReal.get(viewParams[2]));
+          baseDataObject.add(PdfReal.get(viewParams[3]));
+          break;
+        case FitVertical:
+          baseDataObject.add(PdfName.FitV);
+          baseDataObject.add(PdfReal.get(viewParams[0]));
+          break;
+        case XYZ:
+          baseDataObject.add(PdfName.XYZ);
+          baseDataObject.add(PdfReal.get(viewParams[0]));
+          baseDataObject.add(PdfReal.get(viewParams[1]));
+          baseDataObject.add(PdfReal.get(viewParams[2]));
+          break;
+      }
     }
   }
 

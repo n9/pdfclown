@@ -310,6 +310,14 @@ namespace org.pdfclown.objects
         updated = value;
       }
     }
+
+    protected internal override bool Virtual
+    {
+      get
+      {return false;}
+      set
+      {/* NOOP */}
+    }
     #endregion
 
     #region internal

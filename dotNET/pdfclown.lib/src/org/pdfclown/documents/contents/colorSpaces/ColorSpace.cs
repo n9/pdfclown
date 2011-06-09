@@ -99,7 +99,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     protected ColorSpace(
       Document context,
       PdfDirectObject baseDataObject
-      ) : base(context.File, baseDataObject)
+      ) : base(context, baseDataObject)
     {}
 
     protected ColorSpace(

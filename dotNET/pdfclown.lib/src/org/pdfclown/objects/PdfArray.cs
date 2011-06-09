@@ -37,7 +37,8 @@ using text = System.Text;
 namespace org.pdfclown.objects
 {
   /**
-    <summary>PDF array object [PDF:1.6:3.2.5].</summary>
+    <summary>PDF array object, that is a one-dimensional collection of (possibly-heterogeneous)
+    objects arranged sequentially [PDF:1.7:3.2.5].</summary>
   */
   public sealed class PdfArray
     : PdfDirectObject,
@@ -56,6 +57,7 @@ namespace org.pdfclown.objects
 
     private PdfObject parent;
     private bool updated;
+    private bool virtual_;
     #endregion
 
     #region constructors
@@ -111,6 +113,44 @@ namespace org.pdfclown.objects
       {return Root;}
     }
 
+    /**
+      <summary>Gets the value corresponding to the given index, forcing its instantiation in case
+      of missing item.</summary>
+      <param name="index">Index of item to return.</param>
+      <param name="valueClass Class to use for instantiating the value in case of missing entry.
+      @since 0.1.1
+    */
+    public PdfDirectObject Ensure<T>(
+      int index
+      ) where T : PdfDirectObject, new()
+    {
+      PdfDirectObject item;
+      if(index == Count
+        || (item = this[index]) == null
+        || !item.GetType().Equals(typeof(T)))
+      {
+        /*
+          NOTE: The null-object placeholder MUST NOT perturb the existing structure; therefore:
+            - it MUST be marked as virtual in order not to unnecessarily serialize it;
+            - it MUST be put into this array without affecting its update status.
+        */
+        try
+        {
+          item = (PdfDirectObject)Include(new T());
+          if(index == Count)
+          {items.Add(item);}
+          else if(item == null)
+          {items[index] = item;}
+          else
+          {items.Insert(index, item);}
+          item.Virtual = true;
+        }
+        catch(Exception e)
+        {throw new Exception(typeof(T).Name + " failed to instantiate.", e);}
+      }
+      return item;
+    }
+
     public override bool Equals(
       object obj
       )
@@ -135,7 +175,7 @@ namespace org.pdfclown.objects
     /**
       <summary>Gets the dereferenced value corresponding to the given index.</summary>
       <remarks>This method takes care to resolve the value returned by <see cref="this[int]">this[int]</see>.</remarks>
-      <param name="index">Index of element to return.</param>
+      <param name="index">Index of item to return.</param>
     */
     public PdfDataObject Resolve(
       int index
@@ -172,7 +212,12 @@ namespace org.pdfclown.objects
       stream.Write(BeginArrayChunk);
       // Elements.
       foreach(PdfDirectObject item in items)
-      {PdfDirectObject.WriteTo(stream,item); stream.Write(Chunk.Space);}
+      {
+        if(item.Virtual)
+          continue;
+
+        PdfDirectObject.WriteTo(stream,item); stream.Write(Chunk.Space);
+      }
       // End.
       stream.Write(EndArrayChunk);
     }
@@ -289,6 +334,14 @@ namespace org.pdfclown.objects
       {return updated;}
       set
       {updated = value;}
+    }
+
+    protected internal override bool Virtual
+    {
+      get
+      {return virtual_;}
+      set
+      {virtual_ = value;}
     }
     #endregion
     #endregion

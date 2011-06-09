@@ -25,6 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.objects;
+using org.pdfclown.tokens;
 
 using System.Collections.Generic;
 
@@ -40,6 +41,8 @@ namespace org.pdfclown.documents.contents.objects
     #region static
     #region fields
     public static readonly string EndOperatorKeyword = EndMarkedContent.OperatorKeyword;
+
+    private static readonly byte[] EndChunk = Encoding.Encode(EndOperatorKeyword + Symbol.LineFeed);
     #endregion
     #endregion
 
@@ -80,7 +83,7 @@ namespace org.pdfclown.documents.contents.objects
     {
       header.WriteTo(stream);
       base.WriteTo(stream);
-      stream.Write(EndOperatorKeyword);
+      stream.Write(EndChunk);
     }
     #endregion
     #endregion

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,13 +32,14 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.objects.PdfDirectObject;
+import org.pdfclown.tokens.Chunk;
 
 /**
   Content stream instruction [PDF:1.6:3.7.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.2
-  @version 0.1.0
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Operation
@@ -265,9 +266,9 @@ public abstract class Operation
     if(operands != null)
     {
       for(PdfDirectObject operand : operands)
-      {operand.writeTo(stream); stream.write(" ");}
+      {operand.writeTo(stream); stream.write(Chunk.Space);}
     }
-    stream.write(operator); stream.write("\n");
+    stream.write(operator); stream.write(Chunk.LineFeed);
   }
   // </public>
   // </interface>

@@ -271,6 +271,14 @@ namespace org.pdfclown.objects
       set
       {/* NOOP: State update is delegated to its inner objects. */}
     }
+
+    protected internal override bool Virtual
+    {
+      get
+      {return false;}
+      set
+      {/* NOOP */}
+    }
     #endregion
     #endregion
     #endregion

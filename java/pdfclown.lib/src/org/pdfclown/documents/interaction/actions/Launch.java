@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF11)
 public final class Launch
@@ -129,11 +129,7 @@ public final class Launch
       String fileName
       )
     {
-      super(
-        context.getFile(),
-        new PdfDictionary()
-        );
-
+      super(context, new PdfDictionary());
       setFileName(fileName);
     }
 
@@ -143,11 +139,7 @@ public final class Launch
       OperationEnum operation
       )
     {
-      this(
-        context,
-        fileName
-        );
-
+      this(context, fileName);
       setOperation(operation);
     }
 
@@ -157,11 +149,7 @@ public final class Launch
       String parameterString
       )
     {
-      this(
-        context,
-        fileName
-        );
-
+      this(context, fileName);
       setParameterString(parameterString);
     }
 

@@ -102,10 +102,7 @@ namespace org.pdfclown.documents.interaction.viewer
     #region constructors
     public ViewerPreferences(
       Document context
-      ) : base(
-        context.File,
-        new PdfDictionary()
-        )
+      ) : base(context, new PdfDictionary())
     {}
 
     internal ViewerPreferences(

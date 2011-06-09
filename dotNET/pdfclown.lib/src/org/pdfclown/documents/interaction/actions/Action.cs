@@ -114,7 +114,7 @@ namespace org.pdfclown.documents.interaction.actions
       else if(actionType.Equals(PdfName.JavaScript))
         return new JavaScript(baseObject,name);
       else if(actionType.Equals(PdfName.SetOCGState))
-        return new SetOcgState(baseObject);
+        return new SetLayerState(baseObject);
       else if(actionType.Equals(PdfName.Rendition))
         return new Rendition(baseObject);
       else if(actionType.Equals(PdfName.Trans))
@@ -137,7 +137,7 @@ namespace org.pdfclown.documents.interaction.actions
       Document context,
       PdfName actionType
       ) : base(
-        context.File,
+        context,
         new PdfDictionary(
           new PdfName[]
           {

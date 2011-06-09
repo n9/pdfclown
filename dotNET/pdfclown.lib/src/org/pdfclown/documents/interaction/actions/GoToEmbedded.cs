@@ -171,10 +171,7 @@ namespace org.pdfclown.documents.interaction.actions
         object annotationPageRef,
         object annotationRef,
         TargetObject target
-        ) : base(
-          context.File,
-          new PdfDictionary()
-          )
+        ) : base(context, new PdfDictionary())
       {
         Relation = relation;
         EmbeddedFileName = embeddedFileName;

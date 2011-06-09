@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF11)
 public final class Border
@@ -140,12 +140,7 @@ public final class Border
   public Border(
     Document context
     )
-  {
-    super(
-      context.getFile(),
-      new PdfDictionary()
-      );
-  }
+  {super(context, new PdfDictionary());}
 
   public Border(
     Document context,
@@ -155,7 +150,6 @@ public final class Border
     )
   {
     this(context);
-
     setWidth(width);
     setStyle(style);
     setPattern(pattern);

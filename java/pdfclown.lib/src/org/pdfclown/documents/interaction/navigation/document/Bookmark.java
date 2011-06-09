@@ -48,7 +48,7 @@ import org.pdfclown.util.NotImplementedException;
   Outline item [PDF:1.6:8.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Bookmark
@@ -145,11 +145,7 @@ public final class Bookmark
     String title
     )
   {
-    super(
-      context.getFile(),
-      new PdfDictionary()
-      );
-
+    super(context, new PdfDictionary());
     setTitle(title);
   }
 
@@ -160,7 +156,6 @@ public final class Bookmark
     )
   {
     this(context,title);
-
     setDestination(destination);
   }
 
@@ -171,7 +166,6 @@ public final class Bookmark
     )
   {
     this(context,title);
-
     setAction(action);
   }
 

@@ -111,30 +111,21 @@ namespace org.pdfclown.documents.interaction.actions
       public WinParametersObject(
         Document context,
         string fileName
-        ) : base(
-          context.File,
-          new PdfDictionary()
-          )
+        ) : base(context, new PdfDictionary())
       {FileName = fileName;}
 
       public WinParametersObject(
         Document context,
         string fileName,
         OperationEnum operation
-        ) : this(
-          context,
-          fileName
-          )
+        ) : this(context, fileName)
       {Operation = operation;}
 
       public WinParametersObject(
         Document context,
         string fileName,
         string parameterString
-        ) : this(
-          context,
-          fileName
-          )
+        ) : this(context, fileName)
       {ParameterString = parameterString;}
 
       internal WinParametersObject(

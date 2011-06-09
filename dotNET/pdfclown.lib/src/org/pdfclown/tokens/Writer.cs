@@ -63,9 +63,9 @@ namespace org.pdfclown.tokens
       // Which cross-reference table mode?
       switch(file.Document.Configuration.XrefMode)
       {
-        case Document.Config.XRefModeEnum.Plain:
+        case Document.ConfigurationImpl.XRefModeEnum.Plain:
           return new PlainWriter(file, stream);
-        case Document.Config.XRefModeEnum.Compressed:
+        case Document.ConfigurationImpl.XRefModeEnum.Compressed:
           return new CompressedWriter(file, stream);
         default:
           throw new NotSupportedException();

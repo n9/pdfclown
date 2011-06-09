@@ -44,7 +44,7 @@ namespace org.pdfclown.documents.fileSpecs
     public FileSpec(
       Document context
       ) : base(
-        context.File,
+        context,
         new PdfDictionary(
           new PdfName[]
           {PdfName.Type},

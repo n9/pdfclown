@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class ContentMarker
@@ -53,18 +53,21 @@ public abstract class ContentMarker
   protected ContentMarker(
     PdfName tag
     )
-  {
-    super(null, tag);
-    operator = getSimpleOperator();
-  }
+  {this(tag, null);}
 
   protected ContentMarker(
     PdfName tag,
     PdfDirectObject properties
     )
   {
-    super(null, tag, properties);
-    operator = getPropertyListOperator();
+    super(null, tag);
+    if(properties != null)
+    {
+      operands.add(properties);
+      operator = getPropertyListOperator();
+    }
+    else
+    {operator = getSimpleOperator();}
   }
 
   protected ContentMarker(

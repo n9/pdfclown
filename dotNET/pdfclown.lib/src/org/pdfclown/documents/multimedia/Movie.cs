@@ -48,10 +48,7 @@ namespace org.pdfclown.documents.multimedia
     public Movie(
       Document context,
       FileSpec fileSpec
-      ) : base(
-        context.File,
-        new PdfDictionary()
-        )
+      ) : base(context, new PdfDictionary())
     {FileSpec = fileSpec;}
 
     internal Movie(

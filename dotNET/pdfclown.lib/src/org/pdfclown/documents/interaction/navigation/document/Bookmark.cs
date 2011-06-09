@@ -65,10 +65,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
     public Bookmark(
       Document context,
       string title
-      ) : base(
-        context.File,
-        new PdfDictionary()
-        )
+      ) : base(context, new PdfDictionary())
     {Title = title;}
 
     public Bookmark(

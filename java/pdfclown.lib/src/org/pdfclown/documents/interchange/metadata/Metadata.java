@@ -57,7 +57,7 @@ import org.xml.sax.SAXException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF14)
 public final class Metadata
@@ -71,7 +71,7 @@ public final class Metadata
     )
   {
     super(
-      context.getFile(),
+      context,
       new PdfStream(
         new PdfDictionary(
           new PdfName[]

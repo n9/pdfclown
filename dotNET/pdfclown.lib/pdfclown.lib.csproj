@@ -200,7 +200,6 @@
     <Compile Include="src\org\pdfclown\documents\interaction\actions\PlaySound.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\actions\Rendition.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\actions\ResetForm.cs" />
-    <Compile Include="src\org\pdfclown\documents\interaction\actions\SetOcgState.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\actions\SubmitForm.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\actions\ToggleVisibility.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\Annotation.cs" />
@@ -394,6 +393,21 @@
     <Compile Include="src\org\pdfclown\util\math\geom\Quad.cs" />
     <Compile Include="src\org\pdfclown\documents\interchange\metadata\Metadata.cs" />
     <Compile Include="src\org\pdfclown\util\parsers\ParseException.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\ILayerable.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\ILayerConfiguration.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\ILayerNode.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\Layer.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\LayerConfiguration.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\LayerDefinition.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\LayerEntity.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\LayerGroup.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\LayerMembership.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\Layers.cs" />
+    <Compile Include="src\org\pdfclown\objects\Array.cs" />
+    <Compile Include="src\org\pdfclown\objects\IPdfObjectWrapper.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\SetLayerState.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\BaseStateEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\ListModeEnum.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
@@ -482,5 +496,6 @@
     <Folder Include="src\org\pdfclown\util\parsers\" />
     <Folder Include="src\org\pdfclown\util\math\geom\" />
     <Folder Include="src\org\pdfclown\tokens\" />
+    <Folder Include="src\org\pdfclown\documents\contents\layers\" />
   </ItemGroup>
 </Project>

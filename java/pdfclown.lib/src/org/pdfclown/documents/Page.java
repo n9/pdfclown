@@ -68,7 +68,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Page
@@ -171,7 +171,7 @@ public final class Page
     )
   {
     super(
-      context.getFile(),
+      context,
       new PdfDictionary(
         new PdfName[]
         {
@@ -199,7 +199,7 @@ public final class Page
     )
   {
     super(
-      context.getFile(),
+      context,
       new PdfDictionary(
         new PdfName[]
         {

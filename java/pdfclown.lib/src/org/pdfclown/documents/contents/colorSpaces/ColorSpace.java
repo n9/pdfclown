@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
   Color space [PDF:1.6:4.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 public abstract class ColorSpace<TDataObject extends PdfDirectObject>
   extends PdfObjectWrapper<TDataObject>
@@ -109,7 +109,7 @@ public abstract class ColorSpace<TDataObject extends PdfDirectObject>
     Document context,
     TDataObject baseDataObject
     )
-  {super(context.getFile(), baseDataObject);}
+  {super(context, baseDataObject);}
 
   protected ColorSpace(
     PdfDirectObject baseObject

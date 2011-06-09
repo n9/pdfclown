@@ -42,10 +42,7 @@ namespace org.pdfclown.documents.interaction.annotations
     #region constructors
     public Appearance(
       Document context
-      ) : base(
-        context.File,
-        new PdfDictionary()
-        )
+      ) : base(context, new PdfDictionary())
     {}
 
     public Appearance(

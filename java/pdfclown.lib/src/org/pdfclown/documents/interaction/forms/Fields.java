@@ -51,7 +51,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF12)
 public final class Fields
@@ -64,12 +64,7 @@ public final class Fields
   public Fields(
     Document context
     )
-  {
-    super(
-      context.getFile(),
-      new PdfArray()
-      );
-  }
+  {super(context, new PdfArray());}
 
   Fields(
     PdfDirectObject baseObject

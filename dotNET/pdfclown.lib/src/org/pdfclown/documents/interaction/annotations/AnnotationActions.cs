@@ -49,10 +49,7 @@ namespace org.pdfclown.documents.interaction.annotations
     #region constructors
     public AnnotationActions(
       Annotation parent
-      ) : base(
-        parent.File,
-        new PdfDictionary()
-        )
+      ) : base(parent.Document, new PdfDictionary())
     {this.parent = parent;}
 
     internal AnnotationActions(

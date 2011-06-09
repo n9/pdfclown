@@ -50,10 +50,7 @@ namespace org.pdfclown.documents.interaction.forms
     #region constructors
     public ChoiceItems(
       Document context
-      ) : base(
-        context.File,
-        new PdfArray()
-        )
+      ) : base(context, new PdfArray())
     {}
 
     public ChoiceItems(

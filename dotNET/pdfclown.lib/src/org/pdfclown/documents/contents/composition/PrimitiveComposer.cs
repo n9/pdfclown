@@ -26,6 +26,7 @@
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
 using org.pdfclown.documents.contents;
+using org.pdfclown.documents.contents.layers;
 using colors = org.pdfclown.documents.contents.colorSpaces;
 using fonts = org.pdfclown.documents.contents.fonts;
 using objects = org.pdfclown.documents.contents.objects;
@@ -47,12 +48,12 @@ namespace org.pdfclown.documents.contents.composition
   /**
     <summary>
       <para>Content stream primitive composer.</para>
-      <para>It provides the basic (primitive) operations described by the PDF specification
-      for graphics content composition.</para>
+      <para>It provides the basic (primitive) operations described by the PDF specification for
+      graphics content composition.</para>
     </summary>
-    <remarks>This class leverages the object-oriented content stream modelling infrastructure,
-    which encompasses 1st-level content stream objects (operations),
-    2nd-level content stream objects (graphics objects) and full graphics state support.</remarks>
+    <remarks>This class leverages the object-oriented content stream modelling infrastructure, which
+    encompasses 1st-level content stream objects (operations), 2nd-level content stream objects
+    (graphics objects) and full graphics state support.</remarks>
   */
   public sealed class PrimitiveComposer
   {
@@ -102,6 +103,7 @@ namespace org.pdfclown.documents.contents.composition
       <param name="d">Item 1,1 of the matrix.</param>
       <param name="e">Item 2,0 of the matrix.</param>
       <param name="f">Item 2,1 of the matrix.</param>
+      <seealso cref="SetMatrix(float,float,float,float,float,float)"/>
     */
     public void ApplyMatrix(
       double a,
@@ -115,7 +117,8 @@ namespace org.pdfclown.documents.contents.composition
 
     /**
       <summary>Adds a composite object beginning it.</summary>
-      <returns>The added composite object.</returns>
+      <returns>Added composite object.</returns>
+      <seealso cref="End()"/>
     */
     public objects.CompositeObject Begin(
       objects.CompositeObject obj
@@ -130,8 +133,32 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
+      <summary>Begins a new layered-content sequence [PDF:1.6:4.10.2].</summary>
+      <param name="layer"><see cref="LayerEntity"/> enclosing the layered content.</param>
+      <returns>Added layered-content sequence.</returns>
+      <seealso cref="End()"/>
+    */
+    public objects::MarkedContent BeginLayer(
+      LayerEntity layer
+      )
+    {return BeginLayer(GetPropertyListName(layer.Membership));}
+
+    /**
+      <summary>Begins a new layered-content sequence [PDF:1.6:4.10.2].</summary>
+      <param name="layerName">Resource identifier of the {@link LayerEntity} enclosing the layered
+      content.</param>
+      <returns>Added layered-content sequence.</returns>
+      <seealso cref="End()"/>
+    */
+    public objects::MarkedContent BeginLayer(
+      PdfName layerName
+      )
+    {return BeginMarkedContent(PdfName.OC, layerName);}
+
+    /**
       <summary>Begins a new nested graphics state context [PDF:1.6:4.3.1].</summary>
-      <returns>The added local graphics state object.</returns>
+      <returns>Added local graphics state object.</returns>
+      <seealso cref="End()"/>
     */
     public objects::LocalGraphicsState BeginLocalState(
       )
@@ -139,21 +166,51 @@ namespace org.pdfclown.documents.contents.composition
 
     /**
       <summary>Begins a new marked-content sequence [PDF:1.6:10.5].</summary>
-      <returns>The added marked-content sequence.</returns>
+      <param name="tag">Marker indicating the role or significance of the marked content.</param>
+      <returns>Added marked-content sequence.</returns>
+      <seealso cref="End()"/>
     */
     public objects::MarkedContent BeginMarkedContent(
       PdfName tag
       )
+    {return BeginMarkedContent(tag, (PdfName)null);}
+
+    /**
+      <summary>Begins a new marked-content sequence [PDF:1.6:10.5].</summary>
+      <param name="tag">Marker indicating the role or significance of the marked content.</param>
+      <param name="propertyList"><see cref="PropertyList"/> describing the marked content.</param>
+      <returns>Added marked-content sequence.</returns>
+      <seealso cref="End()"/>
+    */
+    public objects::MarkedContent BeginMarkedContent(
+      PdfName tag,
+      PropertyList propertyList
+      )
+    {return BeginMarkedContent(tag, GetPropertyListName(propertyList));}
+
+    /**
+      <summary>Begins a new marked-content sequence [PDF:1.6:10.5].</summary>
+      <param name="tag">Marker indicating the role or significance of the marked content.</param>
+      <param name="propertyListName">Resource identifier of the <see cref="PropertyList"/> describing
+      the marked content.</param>
+      <returns>Added marked-content sequence.</returns>
+      <seealso cref="End()"/>
+    */
+    public objects::MarkedContent BeginMarkedContent(
+      PdfName tag,
+      PdfName propertyListName
+      )
     {
       return (objects::MarkedContent)Begin(
         new objects::MarkedContent(
-          new objects::BeginMarkedContent(tag)
+          new objects::BeginMarkedContent(tag, propertyListName)
           )
         );
     }
 
     /**
-      <summary>Modifies the current clipping path by intersecting it with the current path [PDF:1.6:4.4.1].</summary>
+      <summary>Modifies the current clipping path by intersecting it with the current path
+      [PDF:1.6:4.4.1].</summary>
       <remarks>It can be validly called only just before painting the current path.</remarks>
     */
     public void Clip(
@@ -164,8 +221,8 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
-      <summary>Closes the current subpath by appending a straight line segment
-      from the current point to the starting point of the subpath [PDF:1.6:4.4.1].</summary>
+      <summary>Closes the current subpath by appending a straight line segment from the current point
+      to the starting point of the subpath [PDF:1.6:4.4.1].</summary>
     */
     public void ClosePath(
       )
@@ -176,6 +233,7 @@ namespace org.pdfclown.documents.contents.composition
       <param name="location">Arc location.</param>
       <param name="startAngle">Starting angle.</param>
       <param name="endAngle">Ending angle.</param>
+      <seealso cref="Stroke()"/>
     */
     public void DrawArc(
       RectangleF location,
@@ -189,8 +247,11 @@ namespace org.pdfclown.documents.contents.composition
       <param name="location">Arc location.</param>
       <param name="startAngle">Starting angle.</param>
       <param name="endAngle">Ending angle.</param>
-      <param name="branchWidth">Distance between the spiral branches. '0' value degrades to a circular arc.</param>
-      <param name="branchRatio">Linear coefficient applied to the branch width. '1' value degrades to a constant branch width.</param>
+      <param name="branchWidth">Distance between the spiral branches. '0' value degrades to a circular
+      arc.</param>
+      <param name="branchRatio">Linear coefficient applied to the branch width. '1' value degrades to
+      a constant branch width.</param>
+      <seealso cref="Stroke()"/>
     */
     public void DrawArc(
       RectangleF location,
@@ -206,6 +267,7 @@ namespace org.pdfclown.documents.contents.composition
       <param name="endPoint">Ending point.</param>
       <param name="startControl">Starting control point.</param>
       <param name="endControl">Ending control point.</param>
+      <seealso cref="Stroke()"/>
     */
     public void DrawCurve(
       PointF endPoint,
@@ -232,6 +294,7 @@ namespace org.pdfclown.documents.contents.composition
       <param name="endPoint">Ending point.</param>
       <param name="startControl">Starting control point.</param>
       <param name="endControl">Ending control point.</param>
+      <seealso cref="Stroke()"/>
     */
     public void DrawCurve(
       PointF startPoint,
@@ -247,6 +310,9 @@ namespace org.pdfclown.documents.contents.composition
     /**
       <summary>Draws an ellipse.</summary>
       <param name="location">Ellipse location.</param>
+      <seealso cref="Fill()"/>
+      <seealso cref="FillStroke()"/>
+      <seealso cref="Stroke()"/>
     */
     public void DrawEllipse(
       RectangleF location
@@ -256,6 +322,7 @@ namespace org.pdfclown.documents.contents.composition
     /**
       <summary>Draws a line from the current point [PDF:1.6:4.4.1].</summary>
       <param name="endPoint">Ending point.</param>
+      <seealso cref="Stroke()"/>
     */
     public void DrawLine(
       PointF endPoint
@@ -273,6 +340,7 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Draws a line [PDF:1.6:4.4.1].</summary>
       <param name="startPoint">Starting point.</param>
       <param name="endPoint">Ending point.</param>
+      <seealso cref="Stroke()"/>
     */
     public void DrawLine(
       PointF startPoint,
@@ -287,6 +355,9 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Draws a polygon.</summary>
       <remarks>A polygon is the same as a multiple line except that it's a closed path.</remarks>
       <param name="points">Points.</param>
+      <seealso cref="Fill()"/>
+      <seealso cref="FillStroke()"/>
+      <seealso cref="Stroke()"/>
     */
     public void DrawPolygon(
       PointF[] points
@@ -299,6 +370,7 @@ namespace org.pdfclown.documents.contents.composition
     /**
       <summary>Draws a multiple line.</summary>
       <param name="points">Points.</param>
+      <seealso cref="Stroke()"/>
     */
     public void DrawPolyline(
       PointF[] points
@@ -317,6 +389,9 @@ namespace org.pdfclown.documents.contents.composition
     /**
       <summary>Draws a rectangle [PDF:1.6:4.4.1].</summary>
       <param name="location">Rectangle location.</param>
+      <seealso cref="Fill()"/>
+      <seealso cref="FillStroke()"/>
+      <seealso cref="Stroke()"/>
     */
     public void DrawRectangle(
       RectangleF location
@@ -327,6 +402,9 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Draws a rounded rectangle.</summary>
       <param name="location">Rectangle location.</param>
       <param name="radius">Vertex radius, '0' value degrades to squared vertices.</param>
+      <seealso cref="Fill()"/>
+      <seealso cref="FillStroke()"/>
+      <seealso cref="Stroke()"/>
     */
     public void DrawRectangle(
       RectangleF location,
@@ -419,6 +497,7 @@ namespace org.pdfclown.documents.contents.composition
       <param name="endAngle">Ending angle.</param>
       <param name="branchWidth">Distance between the spiral branches.</param>
       <param name="branchRatio">Linear coefficient applied to the branch width.</param>
+      <seealso cref="Stroke()"/>
     */
     public void DrawSpiral(
       PointF center,
@@ -439,6 +518,7 @@ namespace org.pdfclown.documents.contents.composition
 
     /**
       <summary>Ends the current (innermostly-nested) composite object.</summary>
+      <seealso cref="Begin(CompositeObject)"/>
     */
     public void End(
       )
@@ -449,6 +529,7 @@ namespace org.pdfclown.documents.contents.composition
 
     /**
       <summary>Fills the path using the current color [PDF:1.6:4.4.2].</summary>
+      <seealso cref="SetFillColor(Color)"/>
     */
     public void Fill(
       )
@@ -456,6 +537,8 @@ namespace org.pdfclown.documents.contents.composition
 
     /**
       <summary>Fills and then strokes the path using the current colors [PDF:1.6:4.4.2].</summary>
+      <seealso cref="SetFillColor(Color)"/>
+      <seealso cref="SetStrokeColor(Color)"/>
     */
     public void FillStroke(
       )
@@ -473,20 +556,26 @@ namespace org.pdfclown.documents.contents.composition
     */
     public ContentScanner Scanner
     {
-      get{return scanner;}
-      set{scanner = value;}
+      get
+      {return scanner;}
+      set
+      {scanner = value;}
     }
 
     /**
       <summary>Gets the current graphics state [PDF:1.6:4.3].</summary>
     */
     public ContentScanner.GraphicsState State
-    {get{return scanner.State;}}
+    {
+      get
+      {return scanner.State;}
+    }
 
     /**
       <summary>Applies a rotation to the coordinate system from user space to device space
       [PDF:1.6:4.2.2].</summary>
       <param name="angle">Rotational counterclockwise angle.</param>
+      <seealso cref="ApplyMatrix(float,float,float,float,float,float)"/>
     */
     public void Rotate(
       float angle
@@ -499,9 +588,11 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
-      <summary>Applies a rotation to the coordinate system from user space to device space [PDF:1.6:4.2.2].</summary>
+      <summary>Applies a rotation to the coordinate system from user space to device space
+      [PDF:1.6:4.2.2].</summary>
       <param name="angle">Rotational counterclockwise angle.</param>
       <param name="origin">Rotational pivot point; it becomes the new coordinates origin.</param>
+      <seealso cref="ApplyMatrix(float,float,float,float,float,float)"/>
     */
     public void Rotate(
       float angle,
@@ -527,6 +618,7 @@ namespace org.pdfclown.documents.contents.composition
       [PDF:1.6:4.2.2].</summary>
       <param name="ratioX">Horizontal scaling ratio.</param>
       <param name="ratioY">Vertical scaling ratio.</param>
+      <seealso cref="ApplyMatrix(float,float,float,float,float,float)"/>
     */
     public void Scale(
       float ratioX,
@@ -544,6 +636,7 @@ namespace org.pdfclown.documents.contents.composition
 
     /**
       <summary>Sets the nonstroking color value [PDF:1.6:4.5.7].</summary>
+      <seealso cref="SetStrokeColor(Color)"/>
     */
     public void SetFillColor(
       colors::Color value
@@ -583,9 +676,9 @@ namespace org.pdfclown.documents.contents.composition
 
     /**
       <summary>Sets the font [PDF:1.6:5.2].</summary>
-      <remarks>The <paramref cref="value"/> is checked for presence in the
-      current resource dictionary: if it isn't available, it's automatically added.
-      If you need to avoid such a behavior, use <see cref="SetFont(PdfName,float)"/>.</remarks>
+      <remarks>The <paramref cref="value"/> is checked for presence in the current resource
+      dictionary: if it isn't available, it's automatically added. If you need to avoid such a
+      behavior, use <see cref="SetFont(PdfName,float)"/>.</remarks>
       <param name="value">Font.</param>
       <param name="size">Scaling factor (points).</param>
     */
@@ -660,14 +753,15 @@ namespace org.pdfclown.documents.contents.composition
     {Add(new objects::SetLineWidth(value));}
 
     /**
-      <summary>Sets the transformation of the coordinate system from user space
-      to device space [PDF:1.6:4.3.3].</summary>
+      <summary>Sets the transformation of the coordinate system from user space to device space
+      [PDF:1.6:4.3.3].</summary>
       <param name="a">Item 0,0 of the matrix.</param>
       <param name="b">Item 0,1 of the matrix.</param>
       <param name="c">Item 1,0 of the matrix.</param>
       <param name="d">Item 1,1 of the matrix.</param>
       <param name="e">Item 2,0 of the matrix.</param>
       <param name="f">Item 2,1 of the matrix.</param>
+      <seealso cref="ApplyMatrix(float,float,float,float,float,float)"/>
     */
     public void SetMatrix(
       float a,
@@ -694,6 +788,7 @@ namespace org.pdfclown.documents.contents.composition
 
     /**
       <summary>Sets the stroking color value [PDF:1.6:4.5.7].</summary>
+      <seealso cref="SetFillColor(Color)"/>
     */
     public void SetStrokeColor(
       colors::Color value
@@ -739,8 +834,7 @@ namespace org.pdfclown.documents.contents.composition
     {Add(new objects::SetWordSpace(value));}
 
     /**
-      <summary>Shows the specified text on the page at the current location
-      [PDF:1.6:5.3.2].</summary>
+      <summary>Shows the specified text on the page at the current location [PDF:1.6:5.3.2].</summary>
       <param name="value">Text to show.</param>
       <returns>Bounding box vertices in default user space units.</returns>
     */
@@ -755,7 +849,8 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
-      <summary>Shows the link associated to the specified text on the page at the current location.</summary>
+      <summary>Shows the link associated to the specified text on the page at the current location.
+      </summary>
       <param name="value">Text to show.</param>
       <param name="action">Action to apply when the link is activated.</param>
       <returns>Link.</returns>
@@ -773,8 +868,8 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
-      <summary>Shows the specified text on the page at the specified location
-      [PDF:1.6:5.3.2].</summary>
+      <summary>Shows the specified text on the page at the specified location [PDF:1.6:5.3.2].
+      </summary>
       <param name="value">Text to show.</param>
       <param name="location">Position at which showing the text.</param>
       <returns>Bounding box vertices in default user space units.</returns>
@@ -794,7 +889,8 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
-      <summary>Shows the link associated to the specified text on the page at the specified location.</summary>
+      <summary>Shows the link associated to the specified text on the page at the specified location.
+      </summary>
       <param name="value">Text to show.</param>
       <param name="location">Position at which showing the text.</param>
       <param name="action">Action to apply when the link is activated.</param>
@@ -817,8 +913,8 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
-      <summary>Shows the specified text on the page at the specified location
-      [PDF:1.6:5.3.2].</summary>
+      <summary>Shows the specified text on the page at the specified location [PDF:1.6:5.3.2].
+      </summary>
       <param name="value">Text to show.</param>
       <param name="location">Anchor position at which showing the text.</param>
       <param name="alignmentX">Horizontal alignment.</param>
@@ -968,7 +1064,8 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
-      <summary>Shows the link associated to the specified text on the page at the specified location.</summary>
+      <summary>Shows the link associated to the specified text on the page at the specified location.
+      </summary>
       <param name="value">Text to show.</param>
       <param name="location">Anchor position at which showing the text.</param>
       <param name="alignmentX">Horizontal alignment.</param>
@@ -1016,9 +1113,9 @@ namespace org.pdfclown.documents.contents.composition
 
     /**
       <summary>Shows the specified external object [PDF:1.6:4.7].</summary>
-      <remarks>The <paramref cref="value"/> is checked for presence in the
-      current resource dictionary: if it isn't available, it's automatically added.
-      If you need to avoid such a behavior, use <see cref="ShowXObject(PdfName)"/>.</remarks>
+      <remarks>The <paramref cref="value"/> is checked for presence in the current resource
+      dictionary: if it isn't available, it's automatically added. If you need to avoid such a
+      behavior, use <see cref="ShowXObject(PdfName)"/>.</remarks>
       <param name="value">External object.</param>
     */
     public void ShowXObject(
@@ -1027,8 +1124,7 @@ namespace org.pdfclown.documents.contents.composition
     {ShowXObject(GetXObjectName(value));}
 
     /**
-      <summary>Shows the specified external object at the specified position
-      [PDF:1.6:4.7].</summary>
+      <summary>Shows the specified external object at the specified position [PDF:1.6:4.7].</summary>
       <param name="name">Resource identifier of the external object.</param>
       <param name="location">Position at which showing the external object.</param>
     */
@@ -1045,11 +1141,10 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
-      <summary>Shows the specified external object at the specified position
-      [PDF:1.6:4.7].</summary>
-      <remarks>The <paramref cref="value"/> is checked for presence in the
-      current resource dictionary: if it isn't available, it's automatically added.
-      If you need to avoid such a behavior, use <see cref="ShowXObject(PdfName,PointF)"/>.</remarks>
+      <summary>Shows the specified external object at the specified position [PDF:1.6:4.7].</summary>
+      <remarks>The <paramref cref="value"/> is checked for presence in the current resource
+      dictionary: if it isn't available, it's automatically added. If you need to avoid such a
+      behavior, use <see cref="ShowXObject(PdfName,PointF)"/>.</remarks>
       <param name="value">External object.</param>
       <param name="location">Position at which showing the external object.</param>
     */
@@ -1065,8 +1160,7 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
-      <summary>Shows the specified external object at the specified position
-      [PDF:1.6:4.7].</summary>
+      <summary>Shows the specified external object at the specified position [PDF:1.6:4.7].</summary>
       <param name="name">Resource identifier of the external object.</param>
       <param name="location">Position at which showing the external object.</param>
       <param name="size">Size of the external object.</param>
@@ -1088,11 +1182,10 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
-      <summary>Shows the specified external object at the specified position
-      [PDF:1.6:4.7].</summary>
-      <remarks>The <paramref cref="value"/> is checked for presence in the
-      current resource dictionary: if it isn't available, it's automatically added.
-      If you need to avoid such a behavior, use <see cref="ShowXObject(PdfName,PointF,SizeF)"/>.</remarks>
+      <summary>Shows the specified external object at the specified position [PDF:1.6:4.7].</summary>
+      <remarks>The <paramref cref="value"/> is checked for presence in the current resource
+      dictionary: if it isn't available, it's automatically added. If you need to avoid such a
+      behavior, use <see cref="ShowXObject(PdfName,PointF,SizeF)"/>.</remarks>
       <param name="value">External object.</param>
       <param name="location">Position at which showing the external object.</param>
       <param name="size">Size of the external object.</param>
@@ -1111,8 +1204,7 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
-      <summary>Shows the specified external object at the specified position
-      [PDF:1.6:4.7].</summary>
+      <summary>Shows the specified external object at the specified position [PDF:1.6:4.7].</summary>
       <param name="name">Resource identifier of the external object.</param>
       <param name="location">Position at which showing the external object.</param>
       <param name="size">Size of the external object.</param>
@@ -1195,11 +1287,11 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
-      <summary>Shows the specified external object at the specified position
-      [PDF:1.6:4.7].</summary>
-      <remarks>The <paramref cref="value"/> is checked for presence in the
-      current resource dictionary: if it isn't available, it's automatically added.
-      If you need to avoid such a behavior, use <see cref="ShowXObject(PdfName,PointF,SizeF,AlignmentXEnum,AlignmentYEnum,double)"/>.</remarks>
+      <summary>Shows the specified external object at the specified position [PDF:1.6:4.7].</summary>
+      <remarks>The <paramref cref="value"/> is checked for presence in the current resource
+      dictionary: if it isn't available, it's automatically added. If you need to avoid such a
+      behavior, use <see cref="ShowXObject(PdfName,PointF,SizeF,AlignmentXEnum,AlignmentYEnum,double)"/>.
+      </remarks>
       <param name="value">External object.</param>
       <param name="location">Position at which showing the external object.</param>
       <param name="size">Size of the external object.</param>
@@ -1228,16 +1320,18 @@ namespace org.pdfclown.documents.contents.composition
 
     /**
       <summary>Strokes the path using the current color [PDF:1.6:4.4.2].</summary>
+      <seealso cref="SetStrokeColor(Color)"/>
     */
     public void Stroke(
       )
     {Add(objects::PaintPath.Stroke);}
 
     /**
-      <summary>Applies a translation to the coordinate system from user space
-      to device space [PDF:1.6:4.2.2].</summary>
+      <summary>Applies a translation to the coordinate system from user space to device space
+      [PDF:1.6:4.2.2].</summary>
       <param name="distanceX">Horizontal distance.</param>
       <param name="distanceY">Vertical distance.</param>
+      <seealso cref="ApplyMatrix(float,float,float,float,float,float)"/>
     */
     public void Translate(
       float distanceX,
@@ -1265,6 +1359,7 @@ namespace org.pdfclown.documents.contents.composition
 
     /**
       <summary>Begins a text object [PDF:1.6:5.3].</summary>
+      <seealso cref="End()"/>
     */
     private objects::Text BeginText(
       )
@@ -1383,6 +1478,20 @@ namespace org.pdfclown.documents.contents.composition
       }
     }
 
+    private PdfName GetColorSpaceName(
+      colors::ColorSpace value
+      )
+    {
+      if(value is colors::DeviceGrayColorSpace)
+      {return PdfName.DeviceGray;}
+      else if(value is colors::DeviceRGBColorSpace)
+      {return PdfName.DeviceRGB;}
+      else if(value is colors::DeviceCMYKColorSpace)
+      {return PdfName.DeviceCMYK;}
+      else
+        throw new NotImplementedException("colorSpace MUST be converted to its associated name; you need to implement a method in PdfDictionary that, given a PdfDirectObject, returns its associated key.");
+    }
+
     private PdfName GetFontName(
       fonts::Font value
       )
@@ -1409,7 +1518,35 @@ namespace org.pdfclown.documents.contents.composition
         while(fonts.ContainsKey(name));
         fonts[name] = value;
       }
+      return name;
+    }
 
+    private PdfName GetPropertyListName(
+      PropertyList value
+      )
+    {
+      // Ensuring that the property list exists within the context resources...
+      Resources resources = scanner.ContentContext.Resources;
+      PropertyListResources propertyLists = resources.PropertyLists;
+      // No property list resources collection?
+      if(propertyLists == null)
+      {
+        // Create the property list resources collection!
+        propertyLists = new PropertyListResources(scanner.Contents.Document);
+        resources.PropertyLists = propertyLists;
+      }
+      // Get the key associated to the property list!
+      PdfName name = propertyLists.BaseDataObject.GetKey(value.BaseObject);
+      // No key found?
+      if(name == null)
+      {
+        // Insert the property list within the resources!
+        int propertyListIndex = propertyLists.Count;
+        do
+        {name = new PdfName((++propertyListIndex).ToString());}
+        while(propertyLists.ContainsKey(name));
+        propertyLists[name] = (PropertyList)value;
+      }
       return name;
     }
 
@@ -1439,22 +1576,7 @@ namespace org.pdfclown.documents.contents.composition
         while(xObjects.ContainsKey(name));
         xObjects[name] = value;
       }
-
       return name;
-    }
-
-    private PdfName GetColorSpaceName(
-      colors::ColorSpace value
-      )
-    {
-      if(value is colors::DeviceGrayColorSpace)
-      {return PdfName.DeviceGray;}
-      else if(value is colors::DeviceRGBColorSpace)
-      {return PdfName.DeviceRGB;}
-      else if(value is colors::DeviceCMYKColorSpace)
-      {return PdfName.DeviceCMYK;}
-      else
-        throw new NotImplementedException("colorSpace MUST be converted to its associated name; you need to implement a method in PdfDictionary that, given a PdfDirectObject, returns its associated key.");
     }
 
     /**
@@ -1507,8 +1629,8 @@ namespace org.pdfclown.documents.contents.composition
     {Add(new objects::SetTextMatrix(a,b,c,d,e,f));}
 
     /**
-      <summary>Applies a translation to the coordinate system from text space
-      to user space [PDF:1.6:4.2.2].</summary>
+      <summary>Applies a translation to the coordinate system from text space to user space
+      [PDF:1.6:4.2.2].</summary>
       <param name="distanceX">Horizontal distance.</param>
       <param name="distanceY">Vertical distance.</param>
     */

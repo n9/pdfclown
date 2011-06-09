@@ -44,7 +44,7 @@ namespace org.pdfclown.documents.interchange.metadata
     public Metadata(
       Document context
       ) : base(
-        context.File,
+        context,
         new PdfStream(
           new PdfDictionary(
             new PdfName[]

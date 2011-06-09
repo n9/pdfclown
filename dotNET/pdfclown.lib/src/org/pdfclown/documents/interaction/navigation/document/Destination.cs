@@ -181,60 +181,57 @@ namespace org.pdfclown.documents.interaction.navigation.document
       <param name="pageObject">Page reference. It may be either an actual page reference (PdfReference)
         or a page index (PdfInteger).</param>
       <param name="mode">Destination mode.</param>
-      <param name="viewParams">View parameters. Their actual composition depends on the <code>mode</code> value
-        (see ModeEnum for more info).</param>
+      <param name="viewParams">View parameters. Their actual composition depends on the <code>mode</code>
+        value (see ModeEnum for more info).</param>
     */
     protected Destination(
       Document context,
       PdfDirectObject pageObject,
       ModeEnum mode,
       float?[] viewParams
-      ) : base(
-        context.File,
-        new PdfArray()
-        )
+      ) : base(context, new PdfArray())
     {
-      PdfArray destinationObject = BaseDataObject;
-
-      destinationObject.Add(pageObject);
-
-      switch(mode)
+      PdfArray baseDataObject = BaseDataObject;
       {
-        case ModeEnum.Fit:
-          destinationObject.Add(PdfName.Fit);
-          break;
-        case ModeEnum.FitBoundingBox:
-          destinationObject.Add(PdfName.FitB);
-          break;
-        case ModeEnum.FitBoundingBoxHorizontal:
-          destinationObject.Add(PdfName.FitBH);
-          destinationObject.Add(PdfReal.Get(viewParams[0]));
-          break;
-        case ModeEnum.FitBoundingBoxVertical:
-          destinationObject.Add(PdfName.FitBV);
-          destinationObject.Add(PdfReal.Get(viewParams[0]));
-          break;
-        case ModeEnum.FitHorizontal:
-          destinationObject.Add(PdfName.FitH);
-          destinationObject.Add(PdfReal.Get(viewParams[0]));
-          break;
-        case ModeEnum.FitRectangle:
-          destinationObject.Add(PdfName.FitR);
-          destinationObject.Add(PdfReal.Get(viewParams[0]));
-          destinationObject.Add(PdfReal.Get(viewParams[1]));
-          destinationObject.Add(PdfReal.Get(viewParams[2]));
-          destinationObject.Add(PdfReal.Get(viewParams[3]));
-          break;
-        case ModeEnum.FitVertical:
-          destinationObject.Add(PdfName.FitV);
-          destinationObject.Add(PdfReal.Get(viewParams[0]));
-          break;
-        case ModeEnum.XYZ:
-          destinationObject.Add(PdfName.XYZ);
-          destinationObject.Add(PdfReal.Get(viewParams[0]));
-          destinationObject.Add(PdfReal.Get(viewParams[1]));
-          destinationObject.Add(PdfReal.Get(viewParams[2]));
-          break;
+        baseDataObject.Add(pageObject);
+        switch(mode)
+        {
+          case ModeEnum.Fit:
+            baseDataObject.Add(PdfName.Fit);
+            break;
+          case ModeEnum.FitBoundingBox:
+            baseDataObject.Add(PdfName.FitB);
+            break;
+          case ModeEnum.FitBoundingBoxHorizontal:
+            baseDataObject.Add(PdfName.FitBH);
+            baseDataObject.Add(PdfReal.Get(viewParams[0]));
+            break;
+          case ModeEnum.FitBoundingBoxVertical:
+            baseDataObject.Add(PdfName.FitBV);
+            baseDataObject.Add(PdfReal.Get(viewParams[0]));
+            break;
+          case ModeEnum.FitHorizontal:
+            baseDataObject.Add(PdfName.FitH);
+            baseDataObject.Add(PdfReal.Get(viewParams[0]));
+            break;
+          case ModeEnum.FitRectangle:
+            baseDataObject.Add(PdfName.FitR);
+            baseDataObject.Add(PdfReal.Get(viewParams[0]));
+            baseDataObject.Add(PdfReal.Get(viewParams[1]));
+            baseDataObject.Add(PdfReal.Get(viewParams[2]));
+            baseDataObject.Add(PdfReal.Get(viewParams[3]));
+            break;
+          case ModeEnum.FitVertical:
+            baseDataObject.Add(PdfName.FitV);
+            baseDataObject.Add(PdfReal.Get(viewParams[0]));
+            break;
+          case ModeEnum.XYZ:
+            baseDataObject.Add(PdfName.XYZ);
+            baseDataObject.Add(PdfReal.Get(viewParams[0]));
+            baseDataObject.Add(PdfReal.Get(viewParams[1]));
+            baseDataObject.Add(PdfReal.Get(viewParams[2]));
+            break;
+        }
       }
     }
 

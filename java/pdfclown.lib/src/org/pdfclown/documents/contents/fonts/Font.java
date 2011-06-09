@@ -55,7 +55,7 @@ import org.pdfclown.util.NotImplementedException;
   Abstract font [PDF:1.6:5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Font
@@ -322,7 +322,7 @@ public abstract class Font
     )
   {
     super(
-      context.getFile(),
+      context,
       new PdfDictionary(
         new PdfName[]{PdfName.Type},
         new PdfDirectObject[]{PdfName.Font}

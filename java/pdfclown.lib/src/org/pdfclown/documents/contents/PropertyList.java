@@ -28,8 +28,12 @@ package org.pdfclown.documents.contents;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
+import org.pdfclown.documents.contents.layers.Layer;
+import org.pdfclown.documents.contents.layers.LayerMembership;
+import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
+import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.util.NotImplementedException;
 
@@ -39,10 +43,10 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF12)
-public final class PropertyList
+public class PropertyList
   extends PdfObjectWrapper<PdfDictionary>
 {
   // <class>
@@ -58,7 +62,18 @@ public final class PropertyList
   public static PropertyList wrap(
     PdfDirectObject baseObject
     )
-  {return baseObject != null ? new PropertyList(baseObject) : null;}
+  {
+    if(baseObject == null)
+      return null;
+
+    PdfName type = (PdfName)((PdfDictionary)File.resolve(baseObject)).get(PdfName.Type);
+    if(Layer.TypeName.equals(type))
+      return new Layer(baseObject);
+    else if(LayerMembership.TypeName.equals(type))
+      return new LayerMembership(baseObject);
+    else
+      return new PropertyList(baseObject);
+  }
   // </public>
   // </interface>
   // </static>
@@ -69,9 +84,9 @@ public final class PropertyList
     Document context,
     PdfDictionary baseDataObject
     )
-  {super(context.getFile(), baseDataObject);}
+  {super(context, baseDataObject);}
 
-  PropertyList(
+  public PropertyList(
     PdfDirectObject baseObject
     )
   {super(baseObject);}

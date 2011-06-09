@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF12)
 public final class FieldActions
@@ -53,12 +53,7 @@ public final class FieldActions
   public FieldActions(
     Document context
     )
-  {
-    super(
-      context.getFile(),
-      new PdfDictionary()
-      );
-  }
+  {super(context, new PdfDictionary());}
 
   public FieldActions(
     PdfDirectObject baseObject

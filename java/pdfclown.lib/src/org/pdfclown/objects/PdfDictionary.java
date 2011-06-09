@@ -42,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 public final class PdfDictionary
   extends PdfDirectObject
@@ -62,6 +62,7 @@ public final class PdfDictionary
 
   private PdfObject parent;
   private boolean updated;
+  private boolean virtual;
   // </fields>
 
   // <constructors>
@@ -134,6 +135,38 @@ public final class PdfDictionary
     )
   {throw new NotImplementedException();}
 
+  /**
+    Gets the value corresponding to the given key, forcing its instantiation in case of missing
+    entry.
+
+    @param key Key whose associated value is to be returned.
+    @param valueClass Class to use for instantiating the value in case of missing entry.
+    @since 0.1.1
+  */
+  public <T extends PdfDirectObject> PdfDirectObject ensure(
+    PdfName key,
+    Class<T> valueClass
+    )
+  {
+    PdfDirectObject value = get(key);
+    if(value == null)
+    {
+      /*
+        NOTE: The null-object placeholder MUST NOT perturb the existing structure; therefore:
+          - it MUST be marked as virtual in order not to unnecessarily serialize it;
+          - it MUST be put into this dictionary without affecting its update status.
+      */
+      try
+      {
+        entries.put(key, value = (PdfDirectObject)include(valueClass.newInstance()));
+        value.setVirtual(true);
+      }
+      catch(Exception e)
+      {throw new RuntimeException(valueClass.getSimpleName() + " failed to instantiate.", e);}
+    }
+    return value;
+  }
+
   @Override
   public PdfIndirectObject getContainer(
     )
@@ -178,16 +211,14 @@ public final class PdfDictionary
 
   /**
     Gets the dereferenced value corresponding to the given key.
-    <h3>Remarks</h3>
     <p>This method takes care to resolve the value returned by {@link #get(Object)}.</p>
 
     @param key Key whose associated value is to be returned.
     @return null, if the map contains no mapping for this key.
-
     @since 0.0.8
-   */
+  */
   public PdfDataObject resolve(
-    Object key
+    PdfName key
     )
   {return File.resolve(get(key));}
 
@@ -224,6 +255,9 @@ public final class PdfDictionary
     // Entries.
     for(Map.Entry<PdfName,PdfDirectObject> entry : entries.entrySet())
     {
+      if(entry.getValue().isVirtual())
+        continue;
+
       // Entry...
       // ...key.
       entry.getKey().writeTo(stream); stream.write(Chunk.Space);
@@ -348,10 +382,21 @@ public final class PdfDictionary
   {return updated;}
 
   @Override
+  protected boolean isVirtual(
+    )
+  {return virtual;}
+
+  @Override
   protected void setUpdated(
     boolean value
     )
   {updated = value;}
+
+  @Override
+  protected void setVirtual(
+    boolean value
+    )
+  {virtual = value;}
   // </protected>
 
   // <internal>

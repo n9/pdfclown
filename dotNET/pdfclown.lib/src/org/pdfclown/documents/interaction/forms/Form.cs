@@ -45,7 +45,7 @@ namespace org.pdfclown.documents.interaction.forms
     public Form(
       Document context
       ) : base(
-        context.File,
+        context,
         new PdfDictionary(
           new PdfName[]
           {PdfName.Fields},

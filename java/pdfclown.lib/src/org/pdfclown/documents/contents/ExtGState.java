@@ -37,7 +37,6 @@ import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.objects.PdfReference;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -45,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF12)
 public final class ExtGState
@@ -76,7 +75,7 @@ public final class ExtGState
     Document context,
     PdfDictionary baseDataObject
     )
-  {super(context.getFile(), baseDataObject);}
+  {super(context, baseDataObject);}
 
   ExtGState(
     PdfDirectObject baseObject
@@ -122,9 +121,7 @@ public final class ExtGState
     )
   {
     PdfArray fontObject = (PdfArray)getBaseDataObject().get(PdfName.Font);
-    return fontObject == null
-      ? null
-      : Font.wrap((PdfReference)fontObject.get(0));
+    return fontObject != null ? Font.wrap(fontObject.get(0)) : null;
   }
 
   @PDF(VersionEnum.PDF13)
@@ -132,9 +129,7 @@ public final class ExtGState
     )
   {
     PdfArray fontObject = (PdfArray)getBaseDataObject().get(PdfName.Font);
-    return fontObject == null
-      ? null
-      : ((PdfNumber<?>)fontObject.get(1)).getNumberValue();
+    return fontObject != null ? ((PdfNumber<?>)fontObject.get(1)).getNumberValue() : null;
   }
 
   @PDF(VersionEnum.PDF13)
@@ -142,9 +137,7 @@ public final class ExtGState
     )
   {
     PdfInteger lineCapObject = (PdfInteger)getBaseDataObject().get(PdfName.LC);
-    return lineCapObject == null
-      ? null
-      : LineCapEnum.valueOf(lineCapObject.getRawValue());
+    return lineCapObject != null ? LineCapEnum.valueOf(lineCapObject.getRawValue()) : null;
   }
 
   @PDF(VersionEnum.PDF13)
@@ -176,9 +169,7 @@ public final class ExtGState
     )
   {
     PdfInteger lineJoinObject = (PdfInteger)getBaseDataObject().get(PdfName.LJ);
-    return lineJoinObject == null
-      ? null
-      : LineJoinEnum.valueOf(lineJoinObject.getRawValue());
+    return lineJoinObject != null ? LineJoinEnum.valueOf(lineJoinObject.getRawValue()) : null;
   }
 
   @PDF(VersionEnum.PDF13)
@@ -186,9 +177,7 @@ public final class ExtGState
     )
   {
     PdfNumber<?> lineWidthObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.LW);
-    return lineWidthObject == null
-      ? null
-      : lineWidthObject.getNumberValue();
+    return lineWidthObject != null ? lineWidthObject.getNumberValue() : null;
   }
 
   @PDF(VersionEnum.PDF13)
@@ -196,9 +185,7 @@ public final class ExtGState
     )
   {
     PdfNumber<?> miterLimitObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.ML);
-    return miterLimitObject == null
-      ? null
-      : miterLimitObject.getNumberValue();
+    return miterLimitObject != null ? miterLimitObject.getNumberValue() : null;
   }
   // </public>
   // </interface>

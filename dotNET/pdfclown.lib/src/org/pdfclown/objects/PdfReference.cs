@@ -217,6 +217,14 @@ namespace org.pdfclown.objects
       set
       {/* NOOP: As references are immutable, no update can be done. */}
     }
+
+    protected internal override bool Virtual
+    {
+      get
+      {return false;}
+      set
+      {/* NOOP */}
+    }
     #endregion
     #endregion
     #endregion

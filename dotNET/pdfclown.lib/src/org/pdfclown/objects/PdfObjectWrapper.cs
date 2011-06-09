@@ -38,6 +38,7 @@ namespace org.pdfclown.objects
     <summary>Base high-level representation of a weakly-typed PDF object.</summary>
   */
   public abstract class PdfObjectWrapper
+    : IPdfObjectWrapper
   {
     #region dynamic
     #region fields
@@ -63,18 +64,6 @@ namespace org.pdfclown.objects
     #region interface
     #region public
     /**
-      <summary>Gets the underlying reference object, if available;
-      otherwise, behaves like <see cref="BaseDataObject">BaseDataObject</see>.</summary>
-    */
-    public virtual PdfDirectObject BaseObject
-    {
-      get
-      {return baseObject;}
-      protected set
-      {baseObject = value;}
-    }
-
-    /**
       <summary>Gets a clone of the object, registered inside the given document context.</summary>
       <param name="context">Which document the clone has to be registered in.</param>
     */
@@ -94,9 +83,7 @@ namespace org.pdfclown.objects
 
     /**
       <summary>Removes the object from its document context.</summary>
-      <remarks>
-        <para>The object is no more usable after this method returns.</para>
-      </remarks>
+      <remarks>The object is no more usable after this method returns.</remarks>
       <returns>Whether the object was actually decontextualized (only indirect objects can be
       decontextualize).</returns>
     */
@@ -130,6 +117,16 @@ namespace org.pdfclown.objects
       get
       {return container.File;}
     }
+
+    #region IPdfObjectWrapper
+    public virtual PdfDirectObject BaseObject
+    {
+      get
+      {return baseObject;}
+      protected set
+      {baseObject = value;}
+    }
+    #endregion
     #endregion
 
     #region protected
@@ -152,8 +149,8 @@ namespace org.pdfclown.objects
       /*
         TODO: Caching!
       */
-      Document.Config.CompatibilityModeEnum compatibilityMode = Document.Configuration.CompatibilityMode;
-      if(compatibilityMode == Document.Config.CompatibilityModeEnum.Passthrough) // No check required.
+      Document.ConfigurationImpl.CompatibilityModeEnum compatibilityMode = Document.Configuration.CompatibilityMode;
+      if(compatibilityMode == Document.ConfigurationImpl.CompatibilityModeEnum.Passthrough) // No check required.
         return;
 
       if(feature is Enum)
@@ -216,11 +213,11 @@ namespace org.pdfclown.objects
       // The feature version is NOT compatible: how to solve the conflict?
       switch(compatibilityMode)
       {
-        case Document.Config.CompatibilityModeEnum.Loose: // Accepts the feature version.
+        case Document.ConfigurationImpl.CompatibilityModeEnum.Loose: // Accepts the feature version.
           // Synchronize the document version!
           Document.Version = featureVersion;
           break;
-        case  Document.Config.CompatibilityModeEnum.Strict: // Refuses the feature version.
+        case  Document.ConfigurationImpl.CompatibilityModeEnum.Strict: // Refuses the feature version.
           // Throw a violation to the document version!
           throw new Exception("Incompatible feature (version " + featureVersion + " was required against document version " + Document.Version);
         default:
@@ -256,6 +253,17 @@ namespace org.pdfclown.objects
     #endregion
 
     #region constructors
+    /**
+      <summary>Creates a new wrapper into the specified document context.</summary>
+      <param name="context">Document context into which the specified data object has to be registered.</param>
+      <param name="baseDataObject">PDF data object backing this wrapper.</param>
+    */
+    protected PdfObjectWrapper(
+      Document context,
+      TDataObject baseDataObject
+      ) : this(context.File, baseDataObject)
+    {}
+
     /**
       <summary>Creates a new wrapper into the specified file context.</summary>
       <param name="context">File context into which the specified data object has to be registered.</param>

@@ -303,8 +303,8 @@ namespace org.pdfclown.documents.interaction.forms.styles
         composer.FillStroke();
         composer.End();
 
-        string caption = (string)field.Value;
-        if(caption != null)
+        string title = (string)field.Value;
+        if(title != null)
         {
           BlockComposer blockComposer = new BlockComposer(composer);
           blockComposer.Begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Middle);
@@ -318,7 +318,7 @@ namespace org.pdfclown.documents.interaction.forms.styles
               ),
             size.Height * 0.5f
             );
-          blockComposer.ShowText(caption);
+          blockComposer.ShowText(title);
           blockComposer.End();
         }
 

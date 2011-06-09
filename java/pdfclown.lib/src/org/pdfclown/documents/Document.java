@@ -38,6 +38,7 @@ import org.pdfclown.PDF;
 import org.pdfclown.Version;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.contents.Resources;
+import org.pdfclown.documents.contents.layers.LayerDefinition;
 import org.pdfclown.documents.interaction.forms.Form;
 import org.pdfclown.documents.interaction.navigation.document.Bookmarks;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
@@ -60,7 +61,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF document [PDF:1.6:3.6.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/17/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Document
@@ -167,9 +168,35 @@ public final class Document
 
   public enum PageLayoutEnum
   {
-    SinglePage,
-    OneColumn,
-    TwoColumns
+    SinglePage(PdfName.SinglePage),
+    OneColumn(PdfName.OneColumn),
+    TwoColumns(PdfName.TwoColumnLeft);
+
+    public static PageLayoutEnum valueOf(
+      PdfName name
+      )
+    {
+      if(name == null)
+        return PageLayoutEnum.SinglePage;
+
+      for(PageLayoutEnum value : values())
+      {
+        if(value.getName().equals(name))
+          return value;
+      }
+      throw new UnsupportedOperationException("Page layout unknown: " + name);
+    }
+
+    private PdfName name;
+
+    private PageLayoutEnum(
+      PdfName name
+      )
+    {this.name = name;}
+
+    public PdfName getName(
+      )
+    {return name;}
   }
 
   public enum PageModeEnum
@@ -177,29 +204,55 @@ public final class Document
     /**
       Neither document outline nor thumbnail images visible.
     */
-    Simple,
+    Simple(PdfName.UseNone),
     /**
       Document outline visible.
     */
-    Bookmarks,
+    Bookmarks(PdfName.UseOutlines),
     /**
       Thumbnail images visible.
     */
-    Thumbnails,
+    Thumbnails(PdfName.UseThumbs),
     /**
       Full-screen mode, with no menu bar, window controls, or any other window visible.
     */
-    FullScreen,
+    FullScreen(PdfName.FullScreen),
     /**
       Optional content group panel visible.
     */
     @PDF(VersionEnum.PDF15)
-    OCG,
+    Layers(PdfName.UseOC),
     /**
       Attachments panel visible.
     */
     @PDF(VersionEnum.PDF16)
-    Attachments
+    Attachments(PdfName.UseAttachments);
+
+    public static PageModeEnum valueOf(
+      PdfName name
+      )
+    {
+      if(name == null)
+        return PageModeEnum.Simple;
+
+      for(PageModeEnum value : values())
+      {
+        if(value.getName().equals(name))
+          return value;
+      }
+      throw new UnsupportedOperationException("Page mode unknown: " + name);
+    }
+
+    private PdfName name;
+
+    private PageModeEnum(
+      PdfName name
+      )
+    {this.name = name;}
+
+    public PdfName getName(
+      )
+    {return name;}
   }
   // </classes>
 
@@ -368,43 +421,29 @@ public final class Document
   }
 
   /**
+    Gets the optional content properties.
+  */
+  @PDF(VersionEnum.PDF15)
+  public LayerDefinition getLayer(
+    )
+  {
+    PdfDirectObject ocPropertiesObject = getBaseDataObject().get(PdfName.OCProperties);
+    return ocPropertiesObject != null ? new LayerDefinition(ocPropertiesObject) : null;
+  }
+
+  /**
     Gets the page layout to be used when the document is opened.
   */
   public PageLayoutEnum getPageLayout(
     )
-  {
-    PdfName value = (PdfName)getBaseDataObject().get(PdfName.PageLayout);
-    if(value.equals(PdfName.OneColumn))
-      return PageLayoutEnum.OneColumn;
-    else if(value.equals(PdfName.TwoColumnLeft))
-      return PageLayoutEnum.TwoColumns;
-    else
-      return PageLayoutEnum.SinglePage;
-  }
+  {return PageLayoutEnum.valueOf((PdfName)getBaseDataObject().get(PdfName.PageLayout));}
 
   /**
     Gets the page mode, that is how the document should be displayed when is opened.
   */
   public PageModeEnum getPageMode(
     )
-  {
-    PdfName value = (PdfName)getBaseDataObject().get(PdfName.PageMode);
-    if(value == null
-      || value.equals(PdfName.UseNone))
-      return PageModeEnum.Simple;
-    else if(value.equals(PdfName.UseOutlines))
-      return PageModeEnum.Bookmarks;
-    else if(value.equals(PdfName.UseThumbs))
-      return PageModeEnum.Thumbnails;
-    else if(value.equals(PdfName.FullScreen))
-      return PageModeEnum.FullScreen;
-    else if(value.equals(PdfName.UseOC))
-      return PageModeEnum.OCG;
-    else if(value.equals(PdfName.UseAttachments))
-      return PageModeEnum.Attachments;
-    else
-      throw new UnsupportedOperationException("Page mode unknown: " + value);
-  }
+  {return PageModeEnum.valueOf((PdfName)getBaseDataObject().get(PdfName.PageMode));}
 
   /**
     Gets the page collection [PDF:1.6:3.6.2].
@@ -586,25 +625,23 @@ public final class Document
   {getBaseDataObject().put(PdfName.Names,value.getBaseObject());}
 
   /**
+    @see #getLayer()
+  */
+  public void setLayer(
+    LayerDefinition value
+    )
+  {
+    checkCompatibility("layer");
+    getBaseDataObject().put(PdfName.OCProperties, value.getBaseObject());
+  }
+
+  /**
     @see #getPageLayout()
   */
   public void setPageLayout(
     PageLayoutEnum value
     )
-  {
-    switch(value)
-    {
-      case SinglePage:
-        getBaseDataObject().put(PdfName.PageLayout,PdfName.SinglePage);
-        break;
-      case OneColumn:
-        getBaseDataObject().put(PdfName.PageLayout,PdfName.OneColumn);
-        break;
-      case TwoColumns:
-        getBaseDataObject().put(PdfName.PageLayout,PdfName.TwoColumnLeft);
-        break;
-    }
-  }
+  {getBaseDataObject().put(PdfName.PageLayout, value.getName());}
 
   /**
     @see #getPageMode()
@@ -612,33 +649,7 @@ public final class Document
   public void setPageMode(
     PageModeEnum value
     )
-  {
-    PdfName valueObject;
-    switch(value)
-    {
-      case Simple:
-        valueObject = PdfName.UseNone;
-        break;
-      case Bookmarks:
-        valueObject = PdfName.UseOutlines;
-        break;
-      case Thumbnails:
-        valueObject = PdfName.UseThumbs;
-        break;
-      case FullScreen:
-        valueObject = PdfName.FullScreen;
-        break;
-      case OCG:
-        valueObject = PdfName.UseOC;
-        break;
-      case Attachments:
-        valueObject = PdfName.UseAttachments;
-        break;
-      default:
-        throw new UnsupportedOperationException("Page mode unknown: " + value);
-    }
-    getBaseDataObject().put(PdfName.PageMode, valueObject);
-  }
+  {getBaseDataObject().put(PdfName.PageMode, value.getName());}
 
   /**
     @see #getPages()

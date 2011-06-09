@@ -393,14 +393,8 @@ namespace org.pdfclown.files
     public IEnumerator<PdfIndirectObject> GetEnumerator(
       )
     {
-      for(
-        int index = 0;
-        index < this.Count;
-        index++
-        )
-      {
-        yield return this[index];
-      }
+      for(int index = 0; index < this.Count; index++)
+      {yield return this[index];}
     }
 
     #region IEnumerable

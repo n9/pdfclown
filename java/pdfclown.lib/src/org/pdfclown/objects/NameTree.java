@@ -42,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
@@ -173,7 +173,7 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
     )
   {
     super(
-      context.getFile(),
+      context,
       new PdfDictionary(
         new PdfName[]
         {PdfName.Names},

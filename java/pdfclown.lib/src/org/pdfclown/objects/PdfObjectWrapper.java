@@ -58,9 +58,10 @@ import org.pdfclown.util.NotImplementedException;
   backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 06/08/11
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
+  implements IPdfObjectWrapper
 {
   // <class>
   // <dynamic>
@@ -71,6 +72,18 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   // </fields>
 
   // <constructors>
+  /**
+    Creates a new wrapper into the specified document context.
+
+    @param context Document context into which the specified data object has to be registered.
+    @param baseDataObject PDF data object backing this wrapper.
+  */
+  protected PdfObjectWrapper(
+    Document context,
+    TDataObject baseDataObject
+    )
+  {this(context.getFile(), baseDataObject);}
+
   /**
     Creates a new wrapper into the specified file context.
 
@@ -138,14 +151,6 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   {return baseDataObject;}
 
   /**
-    Gets the underlying reference object, if available;
-    otherwise, behaves like {@link #getBaseDataObject() getBaseDataObject()}.
-  */
-  public PdfDirectObject getBaseObject(
-    )
-  {return baseObject;}
-
-  /**
     Gets the indirect object containing the base object.
     <h3>Remarks</h3>
     <p>It's used for update purposes.</p>
@@ -195,6 +200,13 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
 
     dictionary.put(PdfName.Metadata, value.getBaseObject());
   }
+
+  // <IPdfObjectWrapper>
+  @Override
+  public PdfDirectObject getBaseObject(
+    )
+  {return baseObject;}
+  // </IPdfObjectWrapper>
   // </public>
 
   // <protected>

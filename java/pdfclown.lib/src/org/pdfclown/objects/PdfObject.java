@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
   Abstract PDF object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 06/08/11
 */
 public abstract class PdfObject
   implements Cloneable
@@ -136,9 +136,22 @@ public abstract class PdfObject
     );
 
   /**
+    Gets whether this object acts like a null-object placeholder.
+  */
+  protected abstract boolean isVirtual(
+    );
+
+  /**
     @see #isUpdated()
   */
   protected abstract void setUpdated(
+    boolean value
+    );
+
+  /**
+    @see #isVirtual()
+  */
+  protected abstract void setVirtual(
     boolean value
     );
 
@@ -152,6 +165,7 @@ public abstract class PdfObject
       return;
 
     setUpdated(true);
+    setVirtual(false);
 
     // Propagate the update to the ascendants!
     if(getParent() != null)

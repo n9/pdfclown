@@ -111,7 +111,7 @@ namespace org.pdfclown.documents.functions
     protected Function(
       Document context,
       PdfDataObject baseDataObject
-      ) : base(context.File, baseDataObject)
+      ) : base(context, baseDataObject)
     {}
 
     protected Function(

@@ -31,7 +31,7 @@ import org.pdfclown.files.File;
   Abstract PDF simple object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 public abstract class PdfSimpleObject<TValue>
   extends PdfDirectObject
@@ -151,6 +151,11 @@ public abstract class PdfSimpleObject<TValue>
     )
   {return false;} // NOTE: Simple objects are immutable.
 
+  @Override
+  protected boolean isVirtual(
+    )
+  {return false;}
+
   /**
     @see #getRawValue()
   */
@@ -173,6 +178,12 @@ public abstract class PdfSimpleObject<TValue>
     Object value
     )
   {this.value = (TValue)value;}
+
+  @Override
+  protected void setVirtual(
+    boolean value
+    )
+  {/* NOOP */}
   // </protected>
   // </interface>
   // </dynamic>

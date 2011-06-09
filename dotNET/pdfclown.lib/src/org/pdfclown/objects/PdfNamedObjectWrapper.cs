@@ -23,6 +23,7 @@
   this list of conditions.
 */
 
+using org.pdfclown.documents;
 using org.pdfclown.files;
 
 namespace org.pdfclown.objects
@@ -50,9 +51,9 @@ namespace org.pdfclown.objects
 
     #region constructors
     protected PdfNamedObjectWrapper(
-      File context,
+      Document context,
       TDataObject baseDataObject
-      ) : this(context.Register(baseDataObject), null)
+      ) : this(context.File.Register(baseDataObject), null)
     {}
 
     /**
@@ -74,8 +75,10 @@ namespace org.pdfclown.objects
     */
     public PdfString Name
     {
-      get{return name;}
-      internal set{name = value;}
+      get
+      {return name;}
+      internal set
+      {name = value;}
     }
 
     /**

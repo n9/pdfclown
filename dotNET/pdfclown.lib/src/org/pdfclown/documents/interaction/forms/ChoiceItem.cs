@@ -57,7 +57,7 @@ namespace org.pdfclown.documents.interaction.forms
       string value,
       string text
       ) : base(
-        context.File,
+        context,
         new PdfArray(
           new PdfDirectObject[]
           {

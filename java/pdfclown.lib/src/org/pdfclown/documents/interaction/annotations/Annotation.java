@@ -33,7 +33,10 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
+import org.pdfclown.documents.contents.PropertyList;
 import org.pdfclown.documents.contents.colorSpaces.DeviceColor;
+import org.pdfclown.documents.contents.layers.ILayerable;
+import org.pdfclown.documents.contents.layers.LayerEntity;
 import org.pdfclown.documents.interaction.actions.Action;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
@@ -51,11 +54,12 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/16/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF10)
 public class Annotation
   extends PdfObjectWrapper<PdfDictionary>
+  implements ILayerable
 {
   // <class>
   // <classes>
@@ -258,7 +262,7 @@ public class Annotation
     )
   {
     super(
-      context.getFile(),
+      context,
       new PdfDictionary(
         new PdfName[]
         {
@@ -276,7 +280,6 @@ public class Annotation
         }
         )
       );
-
     {
       setBox(box);
 
@@ -603,6 +606,20 @@ public class Annotation
     {flags.add(FlagsEnum.Hidden);}
     setFlags(flags);
   }
+
+  // <ILayerable>
+  @Override
+  @PDF(VersionEnum.PDF15)
+  public LayerEntity getLayer(
+    )
+  {return (LayerEntity)PropertyList.wrap(getBaseDataObject().get(PdfName.OC));}
+
+  @Override
+  public void setLayer(
+    LayerEntity value
+    )
+  {getBaseDataObject().put(PdfName.OC, value.getBaseObject());}
+  // </ILayerable>
   // </public>
 
   // <private>

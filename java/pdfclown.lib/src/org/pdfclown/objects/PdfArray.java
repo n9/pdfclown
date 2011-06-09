@@ -39,11 +39,12 @@ import org.pdfclown.tokens.Keyword;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-  PDF array object [PDF:1.6:3.2.5].
+  PDF array object, that is a one-dimensional collection of (possibly-heterogeneous) objects
+  arranged sequentially [PDF:1.7:3.2.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 public final class PdfArray
   extends PdfDirectObject
@@ -63,6 +64,7 @@ public final class PdfArray
 
   private PdfObject parent;
   private boolean updated;
+  private boolean virtual;
   // </fields>
 
   // <constructors>
@@ -119,6 +121,46 @@ public final class PdfArray
     )
   {throw new NotImplementedException();}
 
+  /**
+    Gets the value corresponding to the given index, forcing its instantiation in case of missing
+    item.
+
+    @param index Index of item to return.
+    @param itemClass Class to use for instantiating the item in case of missing entry.
+    @since 0.1.1
+  */
+  public <T extends PdfDirectObject> PdfDirectObject ensure(
+    int index,
+    Class<T> itemClass
+    )
+  {
+    PdfDirectObject item;
+    if(index == size()
+      || (item = get(index)) == null
+      || !item.getClass().equals(itemClass))
+    {
+      /*
+        NOTE: The null-object placeholder MUST NOT perturb the existing structure; therefore:
+          - it MUST be marked as virtual in order not to unnecessarily serialize it;
+          - it MUST be put into this array without affecting its update status.
+      */
+      try
+      {
+        item = (PdfDirectObject)include(itemClass.newInstance());
+        if(index == size())
+        {items.add(item);}
+        else if(item == null)
+        {items.set(index, item);}
+        else
+        {items.add(index, item);}
+        item.setVirtual(true);
+      }
+      catch(Exception e)
+      {throw new RuntimeException(itemClass.getSimpleName() + " failed to instantiate.", e);}
+    }
+    return item;
+  }
+
   @Override
   public PdfIndirectObject getContainer(
     )
@@ -136,11 +178,9 @@ public final class PdfArray
 
   /**
     Gets the dereferenced value corresponding to the given index.
-    <h3>Remarks</h3>
     <p>This method takes care to resolve the value returned by {@link #get(int)}.</p>
 
-    @param index Index of element to return.
-
+    @param index Index of item to return.
     @since 0.0.8
    */
   public PdfDataObject resolve(
@@ -174,7 +214,12 @@ public final class PdfArray
     stream.write(BeginArrayChunk);
     // Items.
     for(PdfDirectObject item : items)
-    {PdfDirectObject.writeTo(stream,item); stream.write(Chunk.Space);}
+    {
+      if(item.isVirtual())
+        continue;
+
+      PdfDirectObject.writeTo(stream,item); stream.write(Chunk.Space);
+    }
     // End.
     stream.write(EndArrayChunk);
   }
@@ -390,10 +435,21 @@ public final class PdfArray
   {return updated;}
 
   @Override
+  protected boolean isVirtual(
+    )
+  {return virtual;}
+
+  @Override
   protected void setUpdated(
     boolean value
     )
   {updated = value;}
+
+  @Override
+  protected void setVirtual(
+    boolean value
+    )
+  {virtual = value;}
   // </protected>
 
   // <internal>

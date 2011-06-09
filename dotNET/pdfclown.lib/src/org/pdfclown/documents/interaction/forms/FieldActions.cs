@@ -44,10 +44,7 @@ namespace org.pdfclown.documents.interaction.forms
     #region constructors
     public FieldActions(
       Document context
-      ) : base(
-        context.File,
-        new PdfDictionary()
-        )
+      ) : base(context, new PdfDictionary())
     {}
 
     public FieldActions(

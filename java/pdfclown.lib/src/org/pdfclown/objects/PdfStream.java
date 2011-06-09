@@ -40,7 +40,7 @@ import org.pdfclown.tokens.Symbol;
   PDF stream object [PDF:1.6:3.2.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 public class PdfStream
   extends PdfDataObject
@@ -269,10 +269,21 @@ public class PdfStream
   {return header.isUpdated();}
 
   @Override
+  protected boolean isVirtual(
+    )
+  {return false;}
+
+  @Override
   protected void setUpdated(
     boolean value
     )
   {/* NOOP: State update is delegated to its inner objects. */}
+
+  @Override
+  protected void setVirtual(
+    boolean value
+    )
+  {/* NOOP */}
   // </protected>
 
   // <internal>

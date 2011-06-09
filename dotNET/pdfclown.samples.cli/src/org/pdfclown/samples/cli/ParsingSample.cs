@@ -137,8 +137,7 @@ namespace org.pdfclown.samples.cli
       int level
       )
     {
-      string indentation = new String(' ',level);
-
+      string indentation = GetIndentation(level);
       foreach(ContentObject obj in objects)
       {
         /*

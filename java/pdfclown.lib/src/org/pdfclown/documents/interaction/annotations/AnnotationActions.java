@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF12)
 public class AnnotationActions
@@ -64,11 +64,7 @@ public class AnnotationActions
     Annotation parent
     )
   {
-    super(
-      parent.getFile(),
-      new PdfDictionary()
-      );
-
+    super(parent.getDocument(), new PdfDictionary());
     this.parent = parent;
   }
 
@@ -78,7 +74,6 @@ public class AnnotationActions
     )
   {
     super(baseObject);
-
     this.parent = parent;
   }
   // </constructors>

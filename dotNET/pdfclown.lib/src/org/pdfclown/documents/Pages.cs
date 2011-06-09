@@ -43,11 +43,9 @@ namespace org.pdfclown.documents
       IList<Page>
   {
     #region types
-    public class Enumerator
+    private class Enumerator
       : IEnumerator<Page>
     {
-      #region dynamic
-      #region fields
       /**
         <summary>Collection size.</summary>
       */
@@ -79,9 +77,7 @@ namespace org.pdfclown.documents
         <summary>Current parent tree node.</summary>
       */
       private PdfDictionary parent;
-      #endregion
 
-      #region constructors
       internal Enumerator(
         Pages pages
         )
@@ -90,17 +86,18 @@ namespace org.pdfclown.documents
         parent = pages.BaseDataObject;
         kids = (PdfArray)File.Resolve(parent[PdfName.Kids]);
       }
-      #endregion
 
-      #region interface
-      #region public
-      #region IEnumerator<Page>
       Page IEnumerator<Page>.Current
-      {get{return current;}}
+      {
+        get
+        {return current;}
+      }
 
-      #region IEnumerator
       public object Current
-      {get{return ((IEnumerator<Page>)this).Current;}}
+      {
+        get
+        {return ((IEnumerator<Page>)this).Current;}
+      }
 
       public bool MoveNext(
         )
@@ -108,28 +105,6 @@ namespace org.pdfclown.documents
         if(index == count)
           return false;
 
-        current = GetNext();
-
-        return true;
-      }
-
-      public void Reset(
-        )
-      {throw new NotSupportedException();}
-      #endregion
-
-      #region IDisposable
-      public void Dispose(
-        )
-      {}
-      #endregion
-      #endregion
-      #endregion
-
-      #region private
-      private Page GetNext(
-        )
-      {
         /*
           NOTE: As stated in [PDF:1.6:3.6.2], page retrieval is a matter of diving
           inside a B-tree.
@@ -169,7 +144,8 @@ namespace org.pdfclown.documents
               index++; // Absolute page index.
               levelIndex++; // Current level node index.
 
-              return Page.Wrap(kidReference);
+              current = Page.Wrap(kidReference);
+              return true;
             }
             else // Page tree node.
             {
@@ -184,9 +160,14 @@ namespace org.pdfclown.documents
           }
         }
       }
-      #endregion
-      #endregion
-      #endregion
+
+      public void Reset(
+        )
+      {throw new NotSupportedException();}
+
+      public void Dispose(
+        )
+      {}
     }
     #endregion
 
@@ -200,7 +181,7 @@ namespace org.pdfclown.documents
     internal Pages(
       Document context
       ) : base(
-        context.File,
+        context,
         new PdfDictionary(
           new PdfName[3]
           {
@@ -226,12 +207,10 @@ namespace org.pdfclown.documents
 
     #region interface
     #region public
-    #region PdfObjectWrapper<PdfDictionary>
     public override object Clone(
       Document context
       )
     {throw new NotImplementedException();}
-    #endregion
 
     #region IExtList<Page>
     public IList<Page> GetRange(

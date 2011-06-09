@@ -55,7 +55,7 @@ namespace org.pdfclown.documents.contents
     #region constructors
     public Resources(
       Document context
-      ) : base(context.File, new PdfDictionary())
+      ) : base(context, new PdfDictionary())
     {}
 
     private Resources(

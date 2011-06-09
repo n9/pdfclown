@@ -251,7 +251,7 @@ namespace org.pdfclown.documents.contents.fonts
     protected Font(
       Document context
       ) : base(
-        context.File,
+        context,
         new PdfDictionary(
           new PdfName[1]{PdfName.Type},
           new PdfDirectObject[1]{PdfName.Font}

@@ -47,10 +47,7 @@ namespace org.pdfclown.documents.interaction.forms
     #region constructors
     public Fields(
       Document context
-      ) : base(
-        context.File,
-        new PdfArray()
-        )
+      ) : base(context, new PdfArray())
     {}
 
     internal Fields(

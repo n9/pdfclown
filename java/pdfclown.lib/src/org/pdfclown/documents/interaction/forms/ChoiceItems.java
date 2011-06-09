@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF12)
 public final class ChoiceItems
@@ -60,12 +60,7 @@ public final class ChoiceItems
   public ChoiceItems(
     Document context
     )
-  {
-    super(
-      context.getFile(),
-      new PdfArray()
-      );
-  }
+  {super(context, new PdfArray());}
 
   public ChoiceItems(
     PdfDirectObject baseObject

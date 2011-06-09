@@ -122,10 +122,7 @@ namespace org.pdfclown.documents.interaction.annotations
     #region constructors
     public Border(
       Document context
-      ) : base(
-        context.File,
-        new PdfDictionary()
-        )
+      ) : base(context, new PdfDictionary())
     {}
 
     public Border(

@@ -42,14 +42,22 @@ namespace org.pdfclown.documents.contents.objects
     #region constructors
     protected ContentMarker(
       PdfName tag
-      ) : base(null, tag)
-    {operator_ = SimpleOperator;}
+      ) : this(tag, null)
+    {}
 
     protected ContentMarker(
       PdfName tag,
       PdfDirectObject properties
-      ) : base(null, tag, properties)
-    {operator_ = PropertyListOperator;}
+      ) : base(null, tag)
+    {
+      if(properties != null)
+      {
+        operands.Add(properties);
+        operator_ = PropertyListOperator;
+      }
+      else
+      {operator_ = SimpleOperator;}
+    }
 
     protected ContentMarker(
       string operator_,

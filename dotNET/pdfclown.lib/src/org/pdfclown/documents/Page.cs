@@ -131,7 +131,7 @@ namespace org.pdfclown.documents
     public Page(
       Document context
       ) : base(
-        context.File,
+        context,
         new PdfDictionary(
           new PdfName[2]
           {
@@ -157,7 +157,7 @@ namespace org.pdfclown.documents
       drawing::Size size,
       Resources resources
       ) : base(
-        context.File,
+        context,
         new PdfDictionary(
           new PdfName[4]
           {

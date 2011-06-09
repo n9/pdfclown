@@ -46,10 +46,7 @@ namespace org.pdfclown.documents.fileSpecs
     #region constructors
     public RelatedFiles(
       Document context
-      ) : base(
-        context.File,
-        new PdfArray()
-        )
+      ) : base(context, new PdfArray())
     {}
 
     internal RelatedFiles(

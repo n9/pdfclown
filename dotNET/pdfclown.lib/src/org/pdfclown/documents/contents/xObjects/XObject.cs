@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.documents;
+using org.pdfclown.documents.contents.layers;
 using org.pdfclown.files;
 using org.pdfclown.objects;
 
@@ -34,11 +35,13 @@ using System.Drawing.Drawing2D;
 namespace org.pdfclown.documents.contents.xObjects
 {
   /**
-    <summary>Abstract external object [PDF:1.6:4.7].</summary>
+    <summary>External graphics object whose contents are defined by a self-contained content stream,
+    separate from the content stream in which it is used [PDF:1.6:4.7].</summary>
   */
   [PDF(VersionEnum.PDF10)]
   public abstract class XObject
-    : PdfObjectWrapper<PdfStream>
+    : PdfObjectWrapper<PdfStream>,
+      ILayerable
   {
     #region static
     #region interface
@@ -74,10 +77,7 @@ namespace org.pdfclown.documents.contents.xObjects
     */
     protected XObject(
       Document context
-      ) : this(
-        context,
-        new PdfStream()
-        )
+      ) : this(context, new PdfStream())
     {}
 
     /**
@@ -86,10 +86,7 @@ namespace org.pdfclown.documents.contents.xObjects
     protected XObject(
       Document context,
       PdfStream baseDataObject
-      ) : base(
-        context.File,
-        baseDataObject
-        )
+      ) : base(context, baseDataObject)
     {baseDataObject.Header[PdfName.Type] = PdfName.XObject;}
 
     /**
@@ -119,6 +116,16 @@ namespace org.pdfclown.documents.contents.xObjects
       get;
       set;
     }
+
+    #region ILayerable
+    public LayerEntity Layer
+    {
+      get
+      {return (LayerEntity)PropertyList.Wrap(BaseDataObject.Header[PdfName.OC]);}
+      set
+      {BaseDataObject.Header[PdfName.OC] = value.BaseObject;}
+    }
+    #endregion
     #endregion
     #endregion
     #endregion

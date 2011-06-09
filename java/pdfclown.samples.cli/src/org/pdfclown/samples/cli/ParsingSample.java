@@ -174,14 +174,7 @@ public class ParsingSample
     int level
     )
   {
-    String indentation;
-    {
-      StringBuffer buffer = new StringBuffer();
-      for(int i = 0; i < level; i++)
-      {buffer.append(' ');}
-      indentation = buffer.toString();
-    }
-
+    String indentation = getIndentation(level);
     for(ContentObject object : objects)
     {
       /*

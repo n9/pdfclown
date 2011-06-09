@@ -25,7 +25,7 @@
 
 package org.pdfclown.objects;
 
-import org.pdfclown.files.File;
+import org.pdfclown.documents.Document;
 
 /**
   High-level representation of a strongly-typed PDF object
@@ -40,7 +40,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 public abstract class PdfNamedObjectWrapper<TDataObject extends PdfDataObject>
   extends PdfObjectWrapper<TDataObject>
@@ -53,10 +53,10 @@ public abstract class PdfNamedObjectWrapper<TDataObject extends PdfDataObject>
 
   // <constructors>
   protected PdfNamedObjectWrapper(
-    File context,
+    Document context,
     TDataObject baseDataObject
     )
-  {this(context.register(baseDataObject), null);}
+  {this(context.getFile().register(baseDataObject), null);}
 
   /**
     @param baseObject Base PDF object. MUST be a {@link PdfReference}

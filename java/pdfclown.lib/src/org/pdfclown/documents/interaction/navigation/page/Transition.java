@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF11)
 public final class Transition
@@ -368,7 +368,7 @@ public final class Transition
     )
   {
     super(
-      context.getFile(),
+      context,
       new PdfDictionary(
         new PdfName[]{PdfName.Type},
         new PdfDirectObject[]{PdfName.Trans}
@@ -380,34 +380,14 @@ public final class Transition
     Document context,
     StyleEnum style
     )
-  {
-    this(
-      context,
-      style,
-      null,
-      null,
-      null,
-      null,
-      null
-      );
-  }
+  {this(context, style, null, null, null, null, null);}
 
   public Transition(
     Document context,
     StyleEnum style,
     Float duration
     )
-  {
-    this(
-      context,
-      style,
-      duration,
-      null,
-      null,
-      null,
-      null
-      );
-  }
+  {this(context, style, duration, null, null, null, null);}
 
   public Transition(
     Document context,
@@ -420,7 +400,6 @@ public final class Transition
     )
   {
     this(context);
-
     setStyle(style);
     setDuration(duration);
     setOrientation(orientation);

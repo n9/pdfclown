@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF11)
 public class Action
@@ -125,7 +125,7 @@ public class Action
     else if(actionType.equals(PdfName.JavaScript))
       return new JavaScript(baseObject,name);
     else if(actionType.equals(PdfName.SetOCGState))
-      return new SetOcgState(baseObject);
+      return new SetLayerState(baseObject);
     else if(actionType.equals(PdfName.Rendition))
       return new Rendition(baseObject);
     else if(actionType.equals(PdfName.Trans))
@@ -150,7 +150,7 @@ public class Action
     )
   {
     super(
-      context.getFile(),
+      context,
       new PdfDictionary(
         new PdfName[]
         {

@@ -25,6 +25,8 @@
 
 using org.pdfclown.documents;
 using org.pdfclown.documents.contents.fonts;
+using org.pdfclown.documents.contents.layers;
+using org.pdfclown.files;
 using org.pdfclown.objects;
 
 using System;
@@ -36,7 +38,7 @@ namespace org.pdfclown.documents.contents
     creating the marked content [PDF:1.6:10.5.1].</summary>
   */
   [PDF(VersionEnum.PDF12)]
-  public sealed class PropertyList
+  public class PropertyList
     : PdfObjectWrapper<PdfDictionary>
   {
     #region static
@@ -50,7 +52,18 @@ namespace org.pdfclown.documents.contents
     public static PropertyList Wrap(
       PdfDirectObject baseObject
       )
-    {return baseObject != null ? new PropertyList(baseObject) : null;}
+    {
+      if(baseObject == null)
+        return null;
+
+      PdfName type = (PdfName)((PdfDictionary)File.Resolve(baseObject))[PdfName.Type];
+      if(Layer.TypeName.Equals(type))
+        return new Layer(baseObject);
+      else if(LayerMembership.TypeName.Equals(type))
+        return new LayerMembership(baseObject);
+      else
+        return new PropertyList(baseObject);
+    }
     #endregion
     #endregion
     #endregion
@@ -60,7 +73,7 @@ namespace org.pdfclown.documents.contents
     public PropertyList(
       Document context,
       PdfDictionary baseDataObject
-      ) : base(context.File, baseDataObject)
+      ) : base(context, baseDataObject)
     {}
 
     internal PropertyList(

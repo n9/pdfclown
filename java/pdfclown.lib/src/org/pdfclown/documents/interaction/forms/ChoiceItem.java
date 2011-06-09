@@ -39,7 +39,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 06/08/11
 */
 @PDF(VersionEnum.PDF12)
 public final class ChoiceItem
@@ -62,7 +62,7 @@ public final class ChoiceItem
     )
   {
     super(
-      context.getFile(),
+      context,
       new PdfArray(
         new PdfDirectObject[]
         {
@@ -79,7 +79,6 @@ public final class ChoiceItem
     )
   {
     super(baseObject);
-
     setItems(items);
   }
   // </constructors>
