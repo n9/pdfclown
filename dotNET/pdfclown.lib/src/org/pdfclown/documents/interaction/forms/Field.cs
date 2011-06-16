@@ -424,9 +424,7 @@ namespace org.pdfclown.documents.interaction.forms
         if(entry != null)
           return entry;
 
-        dictionary = (PdfDictionary)File.Resolve(
-          dictionary[PdfName.Parent]
-          );
+        dictionary = (PdfDictionary)dictionary.Resolve(PdfName.Parent);
         if(dictionary == null)
         {
           if(key.Equals(PdfName.Ff))

@@ -74,7 +74,7 @@ namespace org.pdfclown.documents.interaction.forms
     {
       get
       {
-        PdfArray items = (PdfArray)File.Resolve(BaseDataObject[PdfName.Opt]);
+        PdfArray items = (PdfArray)BaseDataObject.Resolve(PdfName.Opt);
         return items != null ? new ChoiceItems(items) :null;
       }
       set

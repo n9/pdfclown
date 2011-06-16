@@ -37,7 +37,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.FileInputStream;
 import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.documents.Document;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
@@ -478,9 +477,7 @@ public abstract class Font
   public EnumSet<FlagsEnum> getFlags(
     )
   {
-    PdfInteger flagsObject = (PdfInteger)File.resolve(
-      getDescriptor().get(PdfName.Flags)
-      );
+    PdfInteger flagsObject = (PdfInteger)getDescriptor().resolve(PdfName.Flags);
     if(flagsObject == null)
       return EnumSet.noneOf(FlagsEnum.class);
 

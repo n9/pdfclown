@@ -142,7 +142,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
       {
         PdfReference oldLastBookmarkReference = (PdfReference)BaseDataObject[PdfName.Last];
         BaseDataObject[PdfName.Last] // Added bookmark is the last in the collection...
-          = ((PdfDictionary)File.Resolve(oldLastBookmarkReference))[PdfName.Next] // ...and the next of the previously-last bookmark.
+          = ((PdfDictionary)oldLastBookmarkReference.DataObject)[PdfName.Next] // ...and the next of the previously-last bookmark.
           = bookmark.BaseObject;
         bookmark.BaseDataObject[PdfName.Prev] = oldLastBookmarkReference;
 

@@ -281,8 +281,8 @@ namespace org.pdfclown.documents
         */
         PdfReference ancestorKidReference = (PdfReference)BaseObject;
         PdfReference parentReference = (PdfReference)BaseDataObject[PdfName.Parent];
-        PdfDictionary parent = (PdfDictionary)File.Resolve(parentReference);
-        PdfArray kids = (PdfArray)File.Resolve(parent[PdfName.Kids]);
+        PdfDictionary parent = (PdfDictionary)parentReference.DataObject;
+        PdfArray kids = (PdfArray)parent.Resolve(PdfName.Kids);
         int index = 0;
         for(
           int i = 0;
@@ -305,13 +305,13 @@ namespace org.pdfclown.documents
             ancestorKidReference = parentReference;
             // Move up one level!
             parentReference = (PdfReference)parent[PdfName.Parent];
-            parent = (PdfDictionary)File.Resolve(parentReference);
-            kids = (PdfArray)File.Resolve(parent[PdfName.Kids]);
+            parent = (PdfDictionary)parentReference.DataObject;
+            kids = (PdfArray)parent.Resolve(PdfName.Kids);
             i = -1;
           }
           else // Intermediate node.
           {
-            PdfDictionary kid = (PdfDictionary)File.Resolve(kidReference);
+            PdfDictionary kid = (PdfDictionary)kidReference.DataObject;
             if(kid[PdfName.Type].Equals(PdfName.Page))
               index++;
             else
@@ -477,9 +477,7 @@ namespace org.pdfclown.documents
         if(entry != null)
           return entry;
 
-        dictionary = (PdfDictionary)File.Resolve(
-          dictionary[PdfName.Parent]
-          );
+        dictionary = (PdfDictionary)dictionary.Resolve(PdfName.Parent);
         if(dictionary == null)
         {
           // Isn't the page attached to the page tree?

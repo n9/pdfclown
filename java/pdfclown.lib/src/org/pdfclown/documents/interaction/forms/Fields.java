@@ -36,7 +36,6 @@ import java.util.Set;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
@@ -226,9 +225,7 @@ TODO:put the field into the correct position, based on the full name (key)!!!
     for(PdfDirectObject fieldObject : fieldObjects)
     {
       PdfReference fieldReference = (PdfReference)fieldObject;
-      PdfArray kidReferences = (PdfArray)File.resolve(
-        ((PdfDictionary)fieldReference.getDataObject()).get(PdfName.Kids)
-        );
+      PdfArray kidReferences = (PdfArray)((PdfDictionary)fieldReference.getDataObject()).resolve(PdfName.Kids);
       PdfDictionary kidObject;
       if(kidReferences == null)
       {kidObject = null;}

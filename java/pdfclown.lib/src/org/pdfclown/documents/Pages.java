@@ -130,7 +130,7 @@ public final class Pages
     */
     int pageOffset = 0;
     PdfDictionary parent = getBaseDataObject();
-    PdfArray kids = (PdfArray)File.resolve(parent.get(PdfName.Kids));
+    PdfArray kids = (PdfArray)parent.resolve(PdfName.Kids);
     for(
       int i = 0;
       i < kids.size();
@@ -138,7 +138,7 @@ public final class Pages
       )
     {
       PdfReference kidReference = (PdfReference)kids.get(i);
-      PdfDictionary kid = (PdfDictionary)File.resolve(kidReference);
+      PdfDictionary kid = (PdfDictionary)kidReference.getDataObject();
       // Is current kid a page object?
       if(kid.get(PdfName.Type).equals(PdfName.Page)) // Page object.
       {
@@ -161,7 +161,7 @@ public final class Pages
         {
           // Go down one level!
           parent = kid;
-          kids = (PdfArray)File.resolve(parent.get(PdfName.Kids));
+          kids = (PdfArray)parent.resolve(PdfName.Kids);
           i = -1;
         }
         else // Horizontal scan (go past).
@@ -393,7 +393,7 @@ public final class Pages
       /**
         Current child tree nodes.
       */
-      private PdfArray kids = (PdfArray)File.resolve(parent.get(PdfName.Kids));
+      private PdfArray kids = (PdfArray)parent.resolve(PdfName.Kids);
 
       @Override
       public boolean hasNext(
@@ -432,13 +432,13 @@ public final class Pages
             // Restore node index at the current level!
             levelIndex = levelIndexes.pop() + 1; // Next node (partially scanned level).
             // Move upward!
-            parent = (PdfDictionary)File.resolve(parent.get(PdfName.Parent));
-            kids = (PdfArray)File.resolve(parent.get(PdfName.Kids));
+            parent = (PdfDictionary)parent.resolve(PdfName.Parent);
+            kids = (PdfArray)parent.resolve(PdfName.Kids);
           }
           else // Page subtree incomplete.
           {
             PdfReference kidReference = (PdfReference)kids.get(levelIndex);
-            PdfDictionary kid = (PdfDictionary)File.resolve(kidReference);
+            PdfDictionary kid = (PdfDictionary)kidReference.getDataObject();
             // Is current kid a page object?
             if(kid.get(PdfName.Type).equals(PdfName.Page)) // Page object.
             {
@@ -455,7 +455,7 @@ public final class Pages
               levelIndexes.push(levelIndex);
               // Move downward!
               parent = kid;
-              kids = (PdfArray)File.resolve(parent.get(PdfName.Kids));
+              kids = (PdfArray)parent.resolve(PdfName.Kids);
               levelIndex = 0; // First node (new level).
             }
           }

@@ -283,7 +283,7 @@ public class Annotation
     {
       setBox(box);
 
-      PdfArray pageAnnotsObject = (PdfArray)File.resolve(page.getBaseDataObject().get(PdfName.Annots));
+      PdfArray pageAnnotsObject = (PdfArray)page.getBaseDataObject().resolve(PdfName.Annots);
       if(pageAnnotsObject == null)
       {page.getBaseDataObject().put(PdfName.Annots,pageAnnotsObject = new PdfArray());}
       pageAnnotsObject.add(getBaseObject());

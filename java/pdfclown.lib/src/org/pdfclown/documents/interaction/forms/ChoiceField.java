@@ -31,7 +31,6 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interaction.annotations.Widget;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -83,7 +82,7 @@ public abstract class ChoiceField
   public ChoiceItems getItems(
     )
   {
-    PdfArray items = (PdfArray)File.resolve(getBaseDataObject().get(PdfName.Opt));
+    PdfArray items = (PdfArray)getBaseDataObject().resolve(PdfName.Opt);
     return items != null ? new ChoiceItems(items) : null;
   }
 

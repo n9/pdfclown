@@ -376,7 +376,7 @@ namespace org.pdfclown.documents.contents.fonts
     {
       get
       {
-        PdfInteger flagsObject = (PdfInteger)File.Resolve(Descriptor[PdfName.Flags]);
+        PdfInteger flagsObject = (PdfInteger)Descriptor.Resolve(PdfName.Flags);
         if(flagsObject == null)
           return (FlagsEnum)Enum.ToObject(typeof(FlagsEnum),null);
 

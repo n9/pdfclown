@@ -40,7 +40,7 @@ namespace org.pdfclown.documents.contents.fonts
 {
   /**
     <summary>Composite font, also called Type 0 font [PDF:1.6:5.6].</summary>
-    <remarks>Do not confuse it with <see cref="Type0Font">'Type 0 CIDFont'</see>: the latter is
+    <remarks>Do not confuse it with <see cref="Type0Font">Type 0 CIDFont</see>: the latter is
     a composite font descendant describing glyphs based on Adobe Type 1 font format.</remarks>
   */
   [PDF(VersionEnum.PDF12)]

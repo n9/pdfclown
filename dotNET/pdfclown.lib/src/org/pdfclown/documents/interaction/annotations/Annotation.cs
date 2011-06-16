@@ -194,7 +194,7 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       Box = box;
 
-      PdfArray pageAnnotsObject = (PdfArray)File.Resolve(page.BaseDataObject[PdfName.Annots]);
+      PdfArray pageAnnotsObject = (PdfArray)page.BaseDataObject.Resolve(PdfName.Annots);
       if(pageAnnotsObject == null)
       {page.BaseDataObject[PdfName.Annots] = pageAnnotsObject = new PdfArray();}
       pageAnnotsObject.Add(BaseObject);

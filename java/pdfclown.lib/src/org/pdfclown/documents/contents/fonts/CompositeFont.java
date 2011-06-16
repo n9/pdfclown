@@ -53,7 +53,7 @@ import org.pdfclown.util.NotImplementedException;
 
 /**
   Composite font, also called Type 0 font [PDF:1.6:5.6].
-  <p>Do not confuse it with {@link Type0Font 'Type 0 CIDFont'}: the latter is
+  <p>Do not confuse it with {@link Type0Font Type 0 CIDFont}: the latter is
   a composite font descendant describing glyphs based on Adobe Type 1 font format.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)

@@ -389,7 +389,7 @@ namespace org.pdfclown.objects
           PdfArray names = (PdfArray)parent.Resolve(PdfName.Names);
           if(names == null) // Intermediate node.
           {
-            PdfArray kids = (PdfArray)File.Resolve(parent[PdfName.Kids]);
+            PdfArray kids = (PdfArray)parent.Resolve(PdfName.Kids);
             int low = 0, high = kids.Count - 1;
             while(true)
             {
@@ -597,17 +597,17 @@ namespace org.pdfclown.objects
       PdfDictionary node
       )
     {
-      PdfArray children = (PdfArray)File.Resolve(node[PdfName.Names]);
+      PdfArray children = (PdfArray)node.Resolve(PdfName.Names);
       if(children == null) // Intermediate node.
       {
-        children = (PdfArray)File.Resolve(node[PdfName.Kids]);
+        children = (PdfArray)node.Resolve(PdfName.Kids);
         int low = 0, high = children.Count - 1;
         while(true)
         {
           bool matched = false;
           int mid = (low + high) / 2;
-          PdfDictionary kid = (PdfDictionary)File.Resolve(children[mid]);
-          PdfArray limits = (PdfArray)File.Resolve(kid[PdfName.Limits]);
+          PdfDictionary kid = (PdfDictionary)children.Resolve(mid);
+          PdfArray limits = (PdfArray)kid.Resolve(PdfName.Limits);
           if(key.CompareTo(limits[0]) < 0) // Before the lower limit.
           {high = mid - 1;}
           else if(key.CompareTo(limits[1]) > 0) // After the upper limit.
@@ -630,8 +630,8 @@ namespace org.pdfclown.objects
                 kidChildrenTypeName
                 );
               // Is the key before the splitted node?
-              if(key.CompareTo(((PdfArray)File.Resolve(kid[PdfName.Limits]))[0]) < 0)
-              {kid = (PdfDictionary)File.Resolve(children[mid]);}
+              if(key.CompareTo(((PdfArray)kid.Resolve(PdfName.Limits))[0]) < 0)
+              {kid = (PdfDictionary)children.Resolve(mid);}
             }
 
             Add(key, value, overwrite, kid);
@@ -771,7 +771,7 @@ namespace org.pdfclown.objects
         )
       {
         childrenTypeName = ChildrenTypeNames[index];
-        children = (PdfArray)File.Resolve(node[childrenTypeName]);
+        children = (PdfArray)node.Resolve(childrenTypeName);
         if(children == null)
           continue;
 
@@ -789,10 +789,10 @@ namespace org.pdfclown.objects
       PdfDictionary node
       )
     {
-      PdfArray children = (PdfArray)File.Resolve(node[PdfName.Names]);
+      PdfArray children = (PdfArray)node.Resolve(PdfName.Names);
       if(children == null) // Intermediate node.
       {
-        children = (PdfArray)File.Resolve(node[PdfName.Kids]);
+        children = (PdfArray)node.Resolve(PdfName.Kids);
 
         int count = 0;
         foreach(PdfDirectObject child in children)
@@ -818,8 +818,8 @@ namespace org.pdfclown.objects
       )
     {
       // Get the full node!
-      PdfDictionary fullNode = (PdfDictionary)File.Resolve(nodes[fullNodeIndex]);
-      PdfArray fullNodeChildren = (PdfArray)File.Resolve(fullNode[childrenTypeName]);
+      PdfDictionary fullNode = (PdfDictionary)nodes.Resolve(fullNodeIndex);
+      PdfArray fullNodeChildren = (PdfArray)fullNode.Resolve(childrenTypeName);
 
       // Create a new (sibling) node!
       PdfDictionary newNode = new PdfDictionary();
@@ -867,8 +867,8 @@ namespace org.pdfclown.objects
         node[PdfName.Limits] = new PdfArray(
           new PdfDirectObject[]
           {
-            ((PdfArray)((PdfDictionary)File.Resolve(children[0]))[PdfName.Limits])[0],
-            ((PdfArray)((PdfDictionary)File.Resolve(children[children.Count-1]))[PdfName.Limits])[1]
+            ((PdfArray)((PdfDictionary)children.Resolve(0))[PdfName.Limits])[0],
+            ((PdfArray)((PdfDictionary)children.Resolve(children.Count-1))[PdfName.Limits])[1]
           }
           );
       }

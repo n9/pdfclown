@@ -496,15 +496,9 @@ namespace org.pdfclown.documents
     public Resources Resources
     {
       get
-      {
-        PdfReference pagesReference = (PdfReference)BaseDataObject[PdfName.Pages];
-        return Resources.Wrap(((PdfDictionary)File.Resolve(pagesReference))[PdfName.Resources]);
-      }
+      {return Resources.Wrap(((PdfDictionary)BaseDataObject.Resolve(PdfName.Pages))[PdfName.Resources]);}
       set
-      {
-        PdfReference pages = (PdfReference)BaseDataObject[PdfName.Pages];
-        ((PdfDictionary)File.Resolve(pages))[PdfName.Resources] = value.BaseObject;
-      }
+      {((PdfDictionary)BaseDataObject.Resolve(PdfName.Pages))[PdfName.Resources] = value.BaseObject;}
     }
 
     /**

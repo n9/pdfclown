@@ -67,26 +67,28 @@ public class BaseParser
   public boolean moveNext(
     )
   {
-    boolean moved = super.moveNext();
-    if(moved)
+    boolean moved;
+    while(moved = super.moveNext())
     {
-      switch(getTokenType())
+      TokenTypeEnum tokenType = getTokenType();
+      if(tokenType == TokenTypeEnum.Comment)
+        continue; // Comments are ignored.
+
+      if(tokenType == TokenTypeEnum.Literal)
       {
-        case Literal:
+        String literalToken = (String)getToken();
+        if(literalToken.startsWith(Keyword.DatePrefix)) // Date.
         {
-          String literalToken = (String)getToken();
-          if(literalToken.startsWith(Keyword.DatePrefix)) // Date.
-          {
-            /*
-              NOTE: Dates are a weak extension to the PostScript language.
-            */
-            try
-            {setToken(PdfDate.toDate(literalToken));}
-            catch(ParseException e)
-            {/* NOOP: gently degrade to a common literal. */}
-          }
-        } break;
+          /*
+            NOTE: Dates are a weak extension to the PostScript language.
+          */
+          try
+          {setToken(PdfDate.toDate(literalToken));}
+          catch(ParseException e)
+          {/* NOOP: gently degrade to a common literal. */}
+        }
       }
+      break;
     }
     return moved;
   }
@@ -97,69 +99,63 @@ public class BaseParser
   public PdfDataObject parsePdfObject(
     )
   {
-    do
+    switch(getTokenType())
     {
-      switch(getTokenType())
+      case Integer:
+        return new PdfInteger((Integer)getToken());
+      case Name:
+        return new PdfName((String)getToken(),true);
+      case DictionaryBegin:
       {
-        case Integer:
-          return new PdfInteger((Integer)getToken());
-        case Name:
-          return new PdfName((String)getToken(),true);
-        case DictionaryBegin:
+        PdfDictionary dictionary = new PdfDictionary();
+        while(true)
         {
-          PdfDictionary dictionary = new PdfDictionary();
-          while(true)
-          {
-            // Key.
-            moveNext(); if(getTokenType() == TokenTypeEnum.DictionaryEnd) break;
-            PdfName key = (PdfName)parsePdfObject();
-            // Value.
-            moveNext();
-            PdfDirectObject value = (PdfDirectObject)parsePdfObject();
-            // Add the current entry to the dictionary!
-            dictionary.put(key,value);
-          }
-          dictionary.ready();
-          return dictionary;
+          // Key.
+          moveNext(); if(getTokenType() == TokenTypeEnum.DictionaryEnd) break;
+          PdfName key = (PdfName)parsePdfObject();
+          // Value.
+          moveNext();
+          PdfDirectObject value = (PdfDirectObject)parsePdfObject();
+          // Add the current entry to the dictionary!
+          dictionary.put(key,value);
         }
-        case ArrayBegin:
-        {
-          PdfArray array = new PdfArray();
-          while(true)
-          {
-            // Value.
-            moveNext(); if(getTokenType() == TokenTypeEnum.ArrayEnd) break;
-            // Add the current item to the array!
-            array.add((PdfDirectObject)parsePdfObject());
-          }
-          array.ready();
-          return array;
-        }
-        case Literal:
-          if(getToken() instanceof Date)
-            return new PdfDate((Date)getToken());
-          else
-            return new PdfTextString(
-              Encoding.encode((String)getToken())
-              );
-        case Hex:
-          return new PdfTextString(
-            (String)getToken(),
-            PdfString.SerializationModeEnum.Hex
-            );
-        case Real:
-          return new PdfReal((Float)getToken());
-        case Boolean:
-          return PdfBoolean.get((Boolean)getToken());
-        case Null:
-          return null;
-        case Comment:
-          break; // NOOP: Comments are simply ignored.
-        default:
-          throw new UnsupportedOperationException("Unknown type: " + getToken());
+        dictionary.ready();
+        return dictionary;
       }
-    } while(moveNext());
-    return null;
+      case ArrayBegin:
+      {
+        PdfArray array = new PdfArray();
+        while(true)
+        {
+          // Value.
+          moveNext(); if(getTokenType() == TokenTypeEnum.ArrayEnd) break;
+          // Add the current item to the array!
+          array.add((PdfDirectObject)parsePdfObject());
+        }
+        array.ready();
+        return array;
+      }
+      case Literal:
+        if(getToken() instanceof Date)
+          return new PdfDate((Date)getToken());
+        else
+          return new PdfTextString(
+            Encoding.encode((String)getToken())
+            );
+      case Hex:
+        return new PdfTextString(
+          (String)getToken(),
+          PdfString.SerializationModeEnum.Hex
+          );
+      case Real:
+        return new PdfReal((Float)getToken());
+      case Boolean:
+        return PdfBoolean.get((Boolean)getToken());
+      case Null:
+        return null;
+      default:
+        throw new UnsupportedOperationException("Unknown type: " + getToken());
+    }
   }
 
   /**

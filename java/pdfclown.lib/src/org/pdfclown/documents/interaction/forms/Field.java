@@ -505,9 +505,7 @@ public abstract class Field
       if(entry != null)
         return entry;
 
-      dictionary = (PdfDictionary)File.resolve(
-        dictionary.get(PdfName.Parent)
-        );
+      dictionary = (PdfDictionary)dictionary.resolve(PdfName.Parent);
       if(dictionary == null)
       {
         if(key.equals(PdfName.Ff))

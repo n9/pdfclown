@@ -113,17 +113,18 @@ namespace org.pdfclown.documents.contents.tokens
       string operator_ = null;
       List<PdfDirectObject> operands = new List<PdfDirectObject>();
       // Parsing the operation parts...
-      while(true)
+      do
       {
-        // Did we reach the operator keyword?
-        if(TokenType == TokenTypeEnum.Keyword)
+        switch(TokenType)
         {
-          operator_ = (string)Token;
-          break;
+          case TokenTypeEnum.Keyword:
+            operator_ = (string)Token;
+            break;
+          default:
+            operands.Add((PdfDirectObject)ParsePdfObject());
+            break;
         }
-
-        operands.Add((PdfDirectObject)ParsePdfObject()); MoveNext();
-      }
+      } while(operator_ == null && MoveNext());
       return Operation.Get(operator_,operands);
     }
 

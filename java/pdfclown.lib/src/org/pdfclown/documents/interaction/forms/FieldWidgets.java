@@ -37,7 +37,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interaction.annotations.DualWidget;
 import org.pdfclown.documents.interaction.annotations.Widget;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
@@ -443,7 +442,7 @@ public final class FieldWidgets
               PdfReference widgetReference = getFile().register(widgetDictionary);
 
               // Remove the field from the page annotations (as the widget annotation is decoupled from it)!
-              PdfArray pageAnnotationsArray = (PdfArray)File.resolve(((PdfDictionary)File.resolve(fieldDictionary.get(PdfName.P))).get(PdfName.Annots));
+              PdfArray pageAnnotationsArray = (PdfArray)((PdfDictionary)fieldDictionary.resolve(PdfName.P)).resolve(PdfName.Annots);
               pageAnnotationsArray.remove(field.getBaseObject());
 
               // Add the widget to the page annotations!

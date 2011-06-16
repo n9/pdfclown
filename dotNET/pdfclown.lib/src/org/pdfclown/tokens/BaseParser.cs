@@ -50,26 +50,28 @@ namespace org.pdfclown.tokens
     public override bool MoveNext(
       )
     {
-      bool moved = base.MoveNext();
-      if(moved)
+      bool moved;
+      while(moved = base.MoveNext())
       {
-        switch(TokenType)
+        TokenTypeEnum tokenType = TokenType;
+        if(tokenType == TokenTypeEnum.Comment)
+          continue; // Comments are ignored.
+
+        if(tokenType == TokenTypeEnum.Literal)
         {
-          case TokenTypeEnum.Literal:
+          string literalToken = (string)Token;
+          if(literalToken.StartsWith(Keyword.DatePrefix)) // Date.
           {
-            string literalToken = (string)Token;
-            if(literalToken.StartsWith(Keyword.DatePrefix)) // Date.
-            {
-              /*
-                NOTE: Dates are a weak extension to the PostScript language.
-              */
-              try
-              {Token = PdfDate.ToDate(literalToken);}
-              catch(ParseException)
-              {/* NOOP: gently degrade to a common literal. */}
-            }
-          } break;
+            /*
+              NOTE: Dates are a weak extension to the PostScript language.
+            */
+            try
+            {Token = PdfDate.ToDate(literalToken);}
+            catch(ParseException)
+            {/* NOOP: gently degrade to a common literal. */}
+          }
         }
+        break;
       }
       return moved;
     }
@@ -80,70 +82,63 @@ namespace org.pdfclown.tokens
     public virtual PdfDataObject ParsePdfObject(
       )
     {
-      do
+      switch(TokenType)
       {
-        switch(TokenType)
+        case TokenTypeEnum.Integer:
+          return new PdfInteger((int)Token);
+        case TokenTypeEnum.Name:
+          return new PdfName((string)Token,true);
+        case TokenTypeEnum.DictionaryBegin:
         {
-          case TokenTypeEnum.Integer:
-            return new PdfInteger((int)Token);
-          case TokenTypeEnum.Name:
-            return new PdfName((string)Token,true);
-          case TokenTypeEnum.DictionaryBegin:
+          PdfDictionary dictionary = new PdfDictionary();
+          while(true)
           {
-            PdfDictionary dictionary = new PdfDictionary();
-            while(true)
-            {
-              // Key.
-              MoveNext(); if(TokenType == TokenTypeEnum.DictionaryEnd) break;
-              PdfName key = (PdfName)ParsePdfObject();
-              // Value.
-              MoveNext();
-              PdfDirectObject value = (PdfDirectObject)ParsePdfObject();
-              // Add the current entry to the dictionary!
-              dictionary[key] = value;
-            }
-            dictionary.Ready();
-            return dictionary;
+            // Key.
+            MoveNext(); if(TokenType == TokenTypeEnum.DictionaryEnd) break;
+            PdfName key = (PdfName)ParsePdfObject();
+            // Value.
+            MoveNext();
+            PdfDirectObject value = (PdfDirectObject)ParsePdfObject();
+            // Add the current entry to the dictionary!
+            dictionary[key] = value;
           }
-          case TokenTypeEnum.ArrayBegin:
-          {
-            PdfArray array = new PdfArray();
-            while(true)
-            {
-              // Value.
-              MoveNext(); if(TokenType == TokenTypeEnum.ArrayEnd) break;
-              // Add the current item to the array!
-              array.Add((PdfDirectObject)ParsePdfObject());
-            }
-            array.Ready();
-            return array;
-          }
-          case TokenTypeEnum.Literal:
-            if(Token is DateTime)
-              return new PdfDate((DateTime)Token);
-            else
-              return new PdfTextString(
-                Encoding.Encode((string)Token)
-                );
-          case TokenTypeEnum.Hex:
-            return new PdfTextString(
-              (string)Token,
-              PdfString.SerializationModeEnum.Hex
-              );
-          case TokenTypeEnum.Real:
-            return new PdfReal((float)Token);
-          case TokenTypeEnum.Boolean:
-            return PdfBoolean.Get((bool)Token);
-          case TokenTypeEnum.Null:
-            return null;
-          case TokenTypeEnum.Comment:
-            // NOOP: Comments are simply ignored and skipped.
-            break;
-          default:
-            throw new Exception("Unknown type: " + TokenType);
+          dictionary.Ready();
+          return dictionary;
         }
-      } while(MoveNext());
-      return null;
+        case TokenTypeEnum.ArrayBegin:
+        {
+          PdfArray array = new PdfArray();
+          while(true)
+          {
+            // Value.
+            MoveNext(); if(TokenType == TokenTypeEnum.ArrayEnd) break;
+            // Add the current item to the array!
+            array.Add((PdfDirectObject)ParsePdfObject());
+          }
+          array.Ready();
+          return array;
+        }
+        case TokenTypeEnum.Literal:
+          if(Token is DateTime)
+            return new PdfDate((DateTime)Token);
+          else
+            return new PdfTextString(
+              Encoding.Encode((string)Token)
+              );
+        case TokenTypeEnum.Hex:
+          return new PdfTextString(
+            (string)Token,
+            PdfString.SerializationModeEnum.Hex
+            );
+        case TokenTypeEnum.Real:
+          return new PdfReal((float)Token);
+        case TokenTypeEnum.Boolean:
+          return PdfBoolean.Get((bool)Token);
+        case TokenTypeEnum.Null:
+          return null;
+        default:
+          throw new Exception("Unknown type: " + TokenType);
+      }
     }
 
     /**

@@ -188,7 +188,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
           NOTE: the Title entry can be used as a flag to distinguish bookmark
           (outline item) dictionaries from outline (root) dictionaries.
         */
-        if(((PdfDictionary)File.Resolve(reference)).ContainsKey(PdfName.Title)) // Bookmark.
+        if(((PdfDictionary)reference.DataObject).ContainsKey(PdfName.Title)) // Bookmark.
           return new Bookmark(reference);
         else // Outline root.
           return null; // NO parent bookmark.

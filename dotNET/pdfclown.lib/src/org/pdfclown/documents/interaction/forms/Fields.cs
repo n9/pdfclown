@@ -242,9 +242,7 @@ namespace org.pdfclown.documents.interaction.forms
       foreach(PdfDirectObject fieldObject in fieldObjects)
       {
         PdfReference fieldReference = (PdfReference)fieldObject;
-        PdfArray kidReferences = (PdfArray)File.Resolve(
-          ((PdfDictionary)fieldReference.DataObject)[PdfName.Kids]
-          );
+        PdfArray kidReferences = (PdfArray)((PdfDictionary)fieldReference.DataObject).Resolve(PdfName.Kids);
         PdfDictionary kidObject;
         if(kidReferences == null)
         {kidObject = null;}

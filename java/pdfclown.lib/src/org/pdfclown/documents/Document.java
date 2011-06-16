@@ -475,10 +475,7 @@ public final class Document
   */
   public Resources getResources(
     )
-  {
-    PdfReference pagesReference = (PdfReference)getBaseDataObject().get(PdfName.Pages);
-    return Resources.wrap(((PdfDictionary)File.resolve(pagesReference)).get(PdfName.Resources));
-  }
+  {return Resources.wrap(((PdfDictionary)getBaseDataObject().resolve(PdfName.Pages)).get(PdfName.Resources));}
 
   /**
     Gets the document size, that is the maximum page dimensions across the whole document.
@@ -684,10 +681,7 @@ public final class Document
   public void setResources(
     Resources value
     )
-  {
-    PdfReference pages = (PdfReference)getBaseDataObject().get(PdfName.Pages);
-    ((PdfDictionary)File.resolve(pages)).put(PdfName.Resources, value.getBaseObject());
-  }
+  {((PdfDictionary)getBaseDataObject().resolve(PdfName.Pages)).put(PdfName.Resources, value.getBaseObject());}
 
   /**
     @see #getVersion()

@@ -312,8 +312,8 @@ public final class Page
     */
     PdfReference ancestorKidReference = (PdfReference)getBaseObject();
     PdfReference parentReference = (PdfReference)getBaseDataObject().get(PdfName.Parent);
-    PdfDictionary parent = (PdfDictionary)File.resolve(parentReference);
-    PdfArray kids = (PdfArray)File.resolve(parent.get(PdfName.Kids));
+    PdfDictionary parent = (PdfDictionary)parentReference.getDataObject();
+    PdfArray kids = (PdfArray)parent.resolve(PdfName.Kids);
     int index = 0;
     for(
       int i = 0;
@@ -336,13 +336,13 @@ public final class Page
         ancestorKidReference = parentReference;
         // Move up one level!
         parentReference = (PdfReference)parent.get(PdfName.Parent);
-        parent = (PdfDictionary)File.resolve(parentReference);
-        kids = (PdfArray)File.resolve(parent.get(PdfName.Kids));
+        parent = (PdfDictionary)parentReference.getDataObject();
+        kids = (PdfArray)parent.resolve(PdfName.Kids);
         i = -1;
       }
       else // Intermediate node.
       {
-        PdfDictionary kid = (PdfDictionary)File.resolve(kidReference);
+        PdfDictionary kid = (PdfDictionary)kidReference.getDataObject();
         if(kid.get(PdfName.Type).equals(PdfName.Page))
           index++;
         else
@@ -583,9 +583,7 @@ public final class Page
       if(entry != null)
         return entry;
 
-      dictionary = (PdfDictionary)File.resolve(
-        dictionary.get(PdfName.Parent)
-        );
+      dictionary = (PdfDictionary)dictionary.resolve(PdfName.Parent);
       if(dictionary == null)
       {
         // Isn't the page attached to the page tree?

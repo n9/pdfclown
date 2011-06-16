@@ -146,17 +146,18 @@ public final class ContentParser
     String operator = null;
     final List<PdfDirectObject> operands = new ArrayList<PdfDirectObject>();
     // Parsing the operation parts...
-    while(true)
+    do
     {
-      // Did we reach the operator keyword?
-      if(getTokenType() == TokenTypeEnum.Keyword)
+      switch(getTokenType())
       {
-        operator = (String)getToken();
-        break;
+        case Keyword:
+          operator = (String)getToken();
+          break;
+        default:
+          operands.add(parsePdfObject());
+          break;
       }
-
-      operands.add(parsePdfObject()); moveNext();
-    }
+    } while(operator == null && moveNext());
     return Operation.get(operator,operands);
   }
 

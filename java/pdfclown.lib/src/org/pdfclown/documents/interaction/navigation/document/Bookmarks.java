@@ -118,7 +118,7 @@ public final class Bookmarks
     PdfReference bookmarkObject = (PdfReference)getBaseDataObject().get(PdfName.First);
     while(index > 0)
     {
-      bookmarkObject = (PdfReference)((PdfDictionary)File.resolve(bookmarkObject)).get(PdfName.Next);
+      bookmarkObject = (PdfReference)((PdfDictionary)bookmarkObject.getDataObject()).get(PdfName.Next);
       // Did we go past the collection range?
       if(bookmarkObject == null)
         throw new IndexOutOfBoundsException();
@@ -196,7 +196,7 @@ public final class Bookmarks
     {
       PdfReference oldLastBookmarkReference = (PdfReference)getBaseDataObject().get(PdfName.Last);
       getBaseDataObject().put(PdfName.Last,bookmark.getBaseObject()); // Added bookmark is the last in the collection...
-      ((PdfDictionary)File.resolve(oldLastBookmarkReference)).put(PdfName.Next,bookmark.getBaseObject()); // ...and the next of the previously-last bookmark.
+      ((PdfDictionary)oldLastBookmarkReference.getDataObject()).put(PdfName.Next,bookmark.getBaseObject()); // ...and the next of the previously-last bookmark.
       bookmark.getBaseDataObject().put(PdfName.Prev,oldLastBookmarkReference);
       /*
         NOTE: The Count entry is a relative number (whose sign represents
