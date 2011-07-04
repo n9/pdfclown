@@ -52,6 +52,10 @@ namespace org.pdfclown.bytes
     #endregion
 
     #region dynamic
+    #region events
+    public event EventHandler OnChange;
+    #endregion
+
     #region fields
     /**
       <summary>Inner buffer where data are stored.</summary>
@@ -67,6 +71,8 @@ namespace org.pdfclown.bytes
     private int position = 0;
 
     private ByteOrderEnum byteOrder = ByteOrderEnum.BigEndian;
+
+    private bool dirty;
     #endregion
 
     #region constructors
@@ -108,6 +114,7 @@ namespace org.pdfclown.bytes
     {
       EnsureCapacity(1);
       this.data[this.length++] = data;
+      NotifyChange();
       return this;
     }
 
@@ -125,6 +132,7 @@ namespace org.pdfclown.bytes
       EnsureCapacity(length);
       Array.Copy(data, offset, this.data, this.length, length);
       this.length += length;
+      NotifyChange();
       return this;
     }
 
@@ -151,7 +159,14 @@ namespace org.pdfclown.bytes
     }
 
     public int Capacity
-    {get{return data.Length;}}
+    {
+      get
+      {return data.Length;}
+    }
+
+    public void Clean(
+      )
+    {dirty = false;}
 
     public IBuffer Clone(
       )
@@ -178,6 +193,13 @@ namespace org.pdfclown.bytes
       // Shift left the trailing data block to override the deleted data!
       Array.Copy(this.data, index + length, this.data, index, this.length - (index + length));
       this.length -= length;
+      NotifyChange();
+    }
+
+    public bool Dirty
+    {
+      get
+      {return dirty;}
     }
 
     public byte[] Encode(
@@ -226,6 +248,7 @@ namespace org.pdfclown.bytes
       // Insert additional data!
       Array.Copy(data, offset, this.data, index, length);
       this.length += length;
+      NotifyChange();
     }
 
     public void Insert(
@@ -240,11 +263,36 @@ namespace org.pdfclown.bytes
       )
     {Insert(index, data.ToByteArray());}
 
+    event EventHandler IBuffer.OnChange
+    {
+      add
+      {
+        if (OnChange != null)
+        {
+          lock (OnChange)
+          {OnChange += value;}
+        }
+        else
+        {OnChange = new EventHandler(value);}
+      }
+      remove
+      {
+        if (OnChange != null)
+        {
+          lock (OnChange)
+          {OnChange -= value;}
+        }
+      }
+    }
+
     public void Replace(
       int index,
       byte[] data
       )
-    {Array.Copy(data, 0, this.data, index, data.Length);}
+    {
+      Array.Copy(data, 0, this.data, index, data.Length);
+      NotifyChange();
+    }
 
     public void Replace(
       int index,
@@ -252,7 +300,10 @@ namespace org.pdfclown.bytes
       int offset,
       int length
       )
-    {Array.Copy(data, offset, this.data, index, data.Length);}
+    {
+      Array.Copy(data, offset, this.data, index, data.Length);
+      NotifyChange();
+    }
 
     public void Replace(
       int index,
@@ -269,7 +320,10 @@ namespace org.pdfclown.bytes
     public void SetLength(
       int value
       )
-    {length = value;}
+    {
+      length = value;
+      NotifyChange();
+    }
 
     public void WriteTo(
       IOutputStream stream
@@ -481,6 +535,16 @@ namespace org.pdfclown.bytes
         ];
       Array.Copy(this.data, 0, data, 0, this.length);
       this.data = data;
+    }
+
+    private void NotifyChange(
+      )
+    {
+      if(dirty || OnChange == null)
+        return;
+
+      dirty = true;
+      OnChange(this, null);
     }
     #endregion
     #endregion

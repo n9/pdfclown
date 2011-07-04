@@ -148,68 +148,6 @@ namespace org.pdfclown.documents.interaction.annotations
       #endregion
       #endregion
     }
-
-    /**
-      <summary>Text justification [PDF:1.6:8.4.5].</summary>
-    */
-    public enum JustificationEnum
-    {
-      /**
-        <summary>Left.</summary>
-      */
-      Left,
-      /**
-        <summary>Center.</summary>
-      */
-      Center,
-      /**
-        <summary>Right.</summary>
-      */
-      Right
-    };
-    #endregion
-
-    #region static
-    #region fields
-    private static readonly Dictionary<JustificationEnum,PdfInteger> JustificationEnumCodes;
-    #endregion
-
-    #region constructors
-    static CalloutNote()
-    {
-      JustificationEnumCodes = new Dictionary<JustificationEnum,PdfInteger>();
-      JustificationEnumCodes[JustificationEnum.Left] = new PdfInteger(0);
-      JustificationEnumCodes[JustificationEnum.Center] = new PdfInteger(1);
-      JustificationEnumCodes[JustificationEnum.Right] = new PdfInteger(2);
-    }
-    #endregion
-
-    #region interface
-    #region private
-    /**
-      <summary>Gets the code corresponding to the given value.</summary>
-    */
-    private static PdfInteger ToCode(
-      JustificationEnum value
-      )
-    {return JustificationEnumCodes[value];}
-
-    /**
-      <summary>Gets the justification corresponding to the given value.</summary>
-    */
-    private static JustificationEnum ToJustificationEnum(
-      PdfInteger value
-      )
-    {
-      foreach(KeyValuePair<JustificationEnum,PdfInteger> justification in JustificationEnumCodes)
-      {
-        if(justification.Value.Equals(value))
-          return justification.Key;
-      }
-      return JustificationEnum.Left;
-    }
-    #endregion
-    #endregion
     #endregion
 
     #region dynamic
@@ -245,9 +183,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public JustificationEnum Justification
     {
       get
-      {return ToJustificationEnum((PdfInteger)BaseDataObject[PdfName.Q]);}
+      {return JustificationEnumExtension.ToEnum((PdfInteger)BaseDataObject[PdfName.Q]);}
       set
-      {BaseDataObject[PdfName.Q] = ToCode(value);}
+      {BaseDataObject[PdfName.Q] = value.ToCode();}
     }
 
     /**

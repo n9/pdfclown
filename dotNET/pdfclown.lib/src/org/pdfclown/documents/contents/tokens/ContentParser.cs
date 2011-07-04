@@ -45,6 +45,11 @@ namespace org.pdfclown.documents.contents.tokens
       bytes::IInputStream stream
       ) : base(stream)
     {}
+
+    public ContentParser(
+      byte[] data
+      ) : base(data)
+    {}
     #endregion
 
     #region interface

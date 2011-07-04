@@ -109,18 +109,20 @@ namespace org.pdfclown.objects
     }
 
     /**
-      <summary>Notifies the completion of the initialization process.</summary>
-    */
-    public void Ready(
-      )
-    {Updated = false;} // Cleans the update flag.
-
-    /**
       <summary>Gets the top-most ancestor of this object.</summary>
     */
     public abstract PdfIndirectObject Root
     {
       get;
+    }
+
+    /**
+      <summary>Gets/Sets whether the detection of object state changes is enabled.</summary>
+    */
+    public abstract bool Updateable
+    {
+      get;
+      set;
     }
 
     /**
@@ -138,7 +140,7 @@ namespace org.pdfclown.objects
     protected void Update(
       )
     {
-      if(Updated)
+      if(!Updateable || Updated)
         return;
 
       Updated = true;

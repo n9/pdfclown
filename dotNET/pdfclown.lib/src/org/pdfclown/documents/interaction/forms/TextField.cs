@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,13 +23,21 @@
   this list of conditions.
 */
 
-using org.pdfclown.bytes;
+using bytes = org.pdfclown.bytes;
 using org.pdfclown.documents;
+using org.pdfclown.documents.contents;
+using org.pdfclown.documents.contents.composition;
+using fonts = org.pdfclown.documents.contents.fonts;
+using org.pdfclown.documents.contents.objects;
+using org.pdfclown.documents.contents.tokens;
+using org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.files;
 using org.pdfclown.objects;
 
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace org.pdfclown.documents.interaction.forms
 {
@@ -106,6 +114,17 @@ namespace org.pdfclown.documents.interaction.forms
     }
 
     /**
+      <summary>Gets/Sets the justification to be used in displaying this field's text.</summary>
+    */
+    public JustificationEnum Justification
+    {
+      get
+      {return JustificationEnumExtension.ToEnum((PdfInteger)BaseDataObject[PdfName.Q]);}
+      set
+      {BaseDataObject[PdfName.Q] = value.ToCode();}
+    }
+
+    /**
       <summary>Gets/Sets the maximum length of the field's text, in characters.</summary>
     */
     public int MaxLength
@@ -147,7 +166,189 @@ namespace org.pdfclown.documents.interaction.forms
       get
       {return base.Value;}
       set
-      {BaseDataObject[PdfName.V] = new PdfTextString((string)value);}
+      {
+        BaseDataObject[PdfName.V] = new PdfTextString((string)value);
+        RefreshAppearance();
+      }
+    }
+    #endregion
+
+    #region private
+    private void RefreshAppearance(
+      )
+    {
+      Widget widget = Widgets[0];
+      Appearance appearance = widget.Appearance;
+      if(appearance == null)
+      {widget.Appearance = appearance = new Appearance(Document);}
+
+      FormXObject normalAppearance = appearance.Normal[null];
+      if(normalAppearance == null)
+      {
+        appearance.Normal[null] = normalAppearance = new FormXObject(Document);
+        RectangleF widgetBox = widget.Box;
+        normalAppearance.Size = new SizeF(widgetBox.Width, widgetBox.Height);
+      }
+
+      PdfName fontName = null;
+      float fontSize = 0;
+      {
+        PdfString defaultAppearanceState = DefaultAppearanceState;
+        if(defaultAppearanceState == null)
+        {
+          // Retrieving the font to define the default appearance...
+          fonts::Font defaultFont = null;
+          PdfName defaultFontName = null;
+          {
+            Resources normalAppearanceResources = normalAppearance.Resources;
+            if(normalAppearanceResources == null)
+            {Document.Form.Resources = normalAppearanceResources = new Resources(Document);}
+
+            FontResources normalAppearanceFontResources = normalAppearanceResources.Fonts;
+            if(normalAppearanceFontResources == null)
+            {normalAppearanceResources.Fonts = normalAppearanceFontResources = new FontResources(Document);}
+
+            foreach(KeyValuePair<PdfName,fonts::Font> entry in normalAppearanceFontResources)
+            {
+              if(!entry.Value.Symbolic)
+              {
+                defaultFont = entry.Value;
+                defaultFontName = entry.Key;
+                break;
+              }
+            }
+            if(defaultFontName == null)
+            {
+              Resources formResources = Document.Form.Resources;
+              if(formResources == null)
+              {Document.Form.Resources = formResources = new Resources(Document);}
+
+              FontResources formFontResources = formResources.Fonts;
+              if(formFontResources == null)
+              {formResources.Fonts = formFontResources = new FontResources(Document);}
+
+              foreach(KeyValuePair<PdfName,fonts::Font> entry in formFontResources)
+              {
+                if(!entry.Value.Symbolic)
+                {
+                  defaultFont = entry.Value;
+                  defaultFontName = entry.Key;
+                  break;
+                }
+              }
+              if(defaultFontName == null)
+              {
+                //TODO:manage name collision!
+                formFontResources[
+                  defaultFontName = new PdfName("default")
+                  ] = defaultFont = new fonts::StandardType1Font(
+                    Document,
+                    fonts::StandardType1Font.FamilyEnum.Helvetica,
+                    false,
+                    false
+                    );
+              }
+              normalAppearanceFontResources[defaultFontName] = defaultFont;
+            }
+          }
+          bytes::Buffer buffer = new bytes::Buffer();
+          new SetFont(defaultFontName, IsMultiline ? 10 : 0).WriteTo(buffer);
+          widget.BaseDataObject[PdfName.DA] = defaultAppearanceState = new PdfString(buffer.ToByteArray());
+        }
+
+        // Retrieving the font to use...
+        ContentParser parser = new ContentParser(defaultAppearanceState.ToByteArray());
+        foreach(ContentObject content in parser.ParseContentObjects())
+        {
+          if(content is SetFont)
+          {
+            SetFont setFontOperation = (SetFont)content;
+            fontName = setFontOperation.Name;
+            fontSize = setFontOperation.Size;
+            break;
+          }
+        }
+      }
+
+      // Refreshing the field appearance...
+      BlockComposer composer = new BlockComposer(new PrimitiveComposer(normalAppearance));
+      ContentScanner scanner = composer.Scanner;
+      ContentScanner currentLevel = scanner;
+      Stack<ContentScanner> levelStack = new Stack<ContentScanner>();
+      bool textShown = false;
+      while(true)
+      {
+        if(!currentLevel.MoveNext())
+        {
+          if(levelStack.Count == 0)
+            break;
+
+          currentLevel = levelStack.Pop();
+          continue;
+        }
+
+        ContentObject content = currentLevel.Current;
+        if(content is MarkedContent)
+        {
+          MarkedContent markedContent = (MarkedContent)content;
+          if(PdfName.Tx.Equals(((BeginMarkedContent)markedContent.Header).Tag))
+          {
+            // Remove old text representation!
+            markedContent.Objects.Clear();
+            // Add new text representation!
+            composer.BaseComposer.Scanner = currentLevel.ChildLevel; // Ensures the composer places new contents within the marked content block.
+            ShowText(composer, fontName, fontSize);
+            textShown = true;
+          }
+        }
+        else if(content is Text)
+        {currentLevel.Remove();}
+        else if(currentLevel.ChildLevel != null)
+        {
+          levelStack.Push(currentLevel);
+          currentLevel = currentLevel.ChildLevel;
+        }
+      }
+      if(!textShown)
+      {
+        PrimitiveComposer baseComposer = composer.BaseComposer;
+        baseComposer.BeginMarkedContent(PdfName.Tx);
+        ShowText(composer, fontName, fontSize);
+        baseComposer.End();
+      }
+      composer.BaseComposer.Flush();
+    }
+
+    private void ShowText(
+      BlockComposer composer,
+      PdfName fontName,
+      float fontSize
+      )
+    {
+      PrimitiveComposer baseComposer = composer.BaseComposer;
+      ContentScanner scanner = baseComposer.Scanner;
+      RectangleF textBox = scanner.ContentContext.Box;
+      textBox.X += 2;
+      textBox.Y += 2;
+      textBox.Width -= 4;
+      textBox.Height -= 4;
+      composer.Begin(
+        textBox,
+        Justification.ToAlignmentX(),
+        IsMultiline ? AlignmentYEnum.Top : AlignmentYEnum.Middle
+        );
+      if(scanner.State.Font == null)
+      {
+        /*
+          NOTE: A zero value for size means that the font is to be auto-sized: its size is computed as
+          a function of the height of the annotation rectangle.
+        */
+        if(fontSize == 0)
+        {fontSize = (float)(textBox.Height * 0.9);}
+        baseComposer.SetFont(fontName, fontSize);
+      }
+      composer.ShowText((string)Value);
+      composer.End();
     }
     #endregion
     #endregion

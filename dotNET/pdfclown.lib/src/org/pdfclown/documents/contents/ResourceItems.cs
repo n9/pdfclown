@@ -83,7 +83,10 @@ namespace org.pdfclown.documents.contents
     {return BaseDataObject.ContainsKey(key);}
 
     public ICollection<PdfName> Keys
-    {get{return BaseDataObject.Keys;}}
+    {
+      get
+      {return BaseDataObject.Keys;}
+    }
 
     public bool Remove(
       PdfName key
@@ -145,10 +148,16 @@ namespace org.pdfclown.documents.contents
     {throw new NotImplementedException();}
 
     public int Count
-    {get{return BaseDataObject.Count;}}
+    {
+      get
+      {return BaseDataObject.Count;}
+    }
 
     public bool IsReadOnly
-    {get{return false;}}
+    {
+      get
+      {return false;}
+    }
 
     public bool Remove(
       KeyValuePair<PdfName,TValue> entry

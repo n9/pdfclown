@@ -170,7 +170,6 @@ namespace org.pdfclown.files
           XRefEntry.UsageEnum.InUse
           )
         );
-
       return indirectObject;
     }
 
@@ -196,12 +195,12 @@ namespace org.pdfclown.files
       // Hasn't the external indirect object been imported yet?
       if(!importedObjects.TryGetValue(obj.GetHashCode(),out indirectObject))
       {
-        // Register the clone of the data object corresponding to the external indirect object!
-        indirectObject = Add((PdfDataObject)obj.DataObject.Clone(file));
         // Keep track of the imported indirect object!
-        importedObjects.Add(obj.GetHashCode(),indirectObject);
+        importedObjects.Add(
+          obj.GetHashCode(),
+          indirectObject = Add((PdfDataObject)obj.DataObject.Clone(file)) // Registers the clone of the data object corresponding to the external indirect object.
+          );
       }
-
       return indirectObject;
     }
 
@@ -209,15 +208,14 @@ namespace org.pdfclown.files
       )
     {
       /*
-      NOTE: Semantics of the indirect objects collection imply that the collection is considered
-      empty in any case no in-use object is available.
+        NOTE: Semantics of the indirect objects collection imply that the collection is considered
+        empty in any case no in-use object is available.
       */
       foreach(PdfIndirectObject obj in this)
       {
         if(obj.IsInUse())
           return false;
       }
-
       return true;
     }
 

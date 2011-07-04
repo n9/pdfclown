@@ -27,6 +27,7 @@ package org.pdfclown.documents.contents;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 07/05/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class ResourceItems<TValue extends PdfObjectWrapper<?>>
@@ -52,6 +53,40 @@ public abstract class ResourceItems<TValue extends PdfObjectWrapper<?>>
   implements Map<PdfName,TValue>
 {
   // <class>
+  // <classes>
+  private static final class Entry<TValue extends PdfObjectWrapper<?>>
+    implements Map.Entry<PdfName,TValue>
+  {
+    private final PdfName key;
+    private final TValue value;
+
+    private Entry(
+      PdfName key,
+      TValue value
+      )
+    {
+      this.key = key;
+      this.value = value;
+    }
+
+    @Override
+    public PdfName getKey(
+      )
+    {return key;}
+
+    @Override
+    public TValue getValue(
+      )
+    {return value;}
+
+    @Override
+    public TValue setValue(
+      TValue value
+      )
+    {throw new UnsupportedOperationException();}
+  }
+  // </classes>
+
   // <dynamic>
   // <constructors>
   protected ResourceItems(
@@ -103,7 +138,18 @@ public abstract class ResourceItems<TValue extends PdfObjectWrapper<?>>
   @Override
   public Set<Map.Entry<PdfName,TValue>> entrySet(
     )
-  {throw new NotImplementedException();}
+  {
+    Set<Map.Entry<PdfName,TValue>> entries;
+    {
+      // Get the low-level objects!
+      Set<Map.Entry<PdfName,PdfDirectObject>> entryObjects = getBaseDataObject().entrySet();
+      // Populating the high-level collection...
+      entries = new HashSet<Map.Entry<PdfName,TValue>>(entryObjects.size());
+      for(Map.Entry<PdfName,PdfDirectObject> entryObject : entryObjects)
+      {entries.add(new Entry<TValue>(entryObject.getKey(), wrap(entryObject.getValue())));}
+    }
+    return entries;
+  }
 
   @Override
   public TValue get(

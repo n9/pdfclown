@@ -39,7 +39,7 @@ import org.pdfclown.tokens.XRefEntry.UsageEnum;
   PDF indirect object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 07/05/11
 */
 public final class PdfIndirectObject
   extends PdfObject
@@ -62,6 +62,7 @@ public final class PdfIndirectObject
   private final XRefEntry xrefEntry;
 
   private boolean updated;
+  private boolean updateable = true;
   // </fields>
 
   // <constructors>
@@ -177,6 +178,17 @@ public final class PdfIndirectObject
   public boolean isOriginal(
     )
   {return original;}
+
+  @Override
+  public boolean isUpdateable(
+    )
+  {return updateable;}
+
+  @Override
+  public void setUpdateable(
+    boolean value
+    )
+  {updateable = value;}
 
   /**
     Removes the {@link #getDataObject() data object} from its object stream [PDF:1.6:3.4.6].
@@ -294,7 +306,7 @@ public final class PdfIndirectObject
   @Override
   protected boolean isUpdated(
     )
-  {return updated;} //FIXME: In case of dataObject instanceof PdfStream, body buffer update is NOT notified!!!
+  {return updated;}
 
   @Override
   protected boolean isVirtual(

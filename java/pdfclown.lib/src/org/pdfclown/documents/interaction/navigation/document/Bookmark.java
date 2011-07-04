@@ -33,7 +33,6 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
 import org.pdfclown.documents.interaction.ILink;
 import org.pdfclown.documents.interaction.actions.Action;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
@@ -48,7 +47,7 @@ import org.pdfclown.util.NotImplementedException;
   Outline item [PDF:1.6:8.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 07/05/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Bookmark
@@ -228,7 +227,7 @@ public final class Bookmark
       NOTE: the Title entry can be used as a flag to distinguish bookmark
       (outline item) dictionaries from outline (root) dictionaries.
     */
-    if(((PdfDictionary)File.resolve(reference)).containsKey(PdfName.Title)) // Bookmark.
+    if(((PdfDictionary)reference.getDataObject()).containsKey(PdfName.Title)) // Bookmark.
       return new Bookmark(reference);
     else // Outline root.
       return null; // NO parent bookmark.

@@ -35,7 +35,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF indirect reference object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 07/05/11
 */
 public final class PdfReference
   extends PdfDirectObject
@@ -145,9 +145,20 @@ public final class PdfReference
   {return null;} // NOTE: As references are immutable, no root can be associated.
 
   @Override
+  public boolean isUpdateable(
+    )
+  {return false;}
+
+  @Override
   public int hashCode(
     )
   {return getIndirectObject().hashCode();}
+
+  @Override
+  public void setUpdateable(
+    boolean value
+    )
+  {/* NOOP: As references are immutable, no update can be done. */}
 
   @Override
   public String toString(

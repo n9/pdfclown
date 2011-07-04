@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,25 +25,47 @@
 
 package org.pdfclown.documents.interaction.forms;
 
+import java.awt.geom.Rectangle2D;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.Stack;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
+import org.pdfclown.bytes.Buffer;
 import org.pdfclown.documents.Document;
+import org.pdfclown.documents.contents.ContentScanner;
+import org.pdfclown.documents.contents.FontResources;
+import org.pdfclown.documents.contents.Resources;
+import org.pdfclown.documents.contents.composition.AlignmentYEnum;
+import org.pdfclown.documents.contents.composition.BlockComposer;
+import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.fonts.Font;
+import org.pdfclown.documents.contents.fonts.StandardType1Font;
+import org.pdfclown.documents.contents.objects.ContentObject;
+import org.pdfclown.documents.contents.objects.MarkedContent;
+import org.pdfclown.documents.contents.objects.SetFont;
+import org.pdfclown.documents.contents.objects.Text;
+import org.pdfclown.documents.contents.tokens.ContentParser;
+import org.pdfclown.documents.contents.xObjects.FormXObject;
+import org.pdfclown.documents.interaction.JustificationEnum;
+import org.pdfclown.documents.interaction.annotations.Appearance;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.NotImplementedException;
-
-import java.util.EnumSet;
+import org.pdfclown.util.math.geom.Dimension;
 
 /**
   Text field [PDF:1.6:8.6.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 07/05/11
 */
 @PDF(VersionEnum.PDF12)
 public final class TextField
@@ -85,7 +107,14 @@ public final class TextField
   {throw new NotImplementedException();}
 
   /**
-    Gets the maximum length of the field's text, in characters.
+    Gets the justification to be used in displaying this field's text.
+  */
+  public JustificationEnum getJustification(
+    )
+  {return JustificationEnum.get((PdfInteger)getBaseDataObject().get(PdfName.Q));}
+
+  /**
+    Gets the maximum length of this field's text, in characters.
   */
   public int getMaxLength(
     )
@@ -119,6 +148,14 @@ public final class TextField
   public boolean isSpellChecked(
     )
   {return !getFlags().contains(FlagsEnum.DoNotSpellCheck);}
+
+  /**
+    @see #getJustification()
+  */
+  public void setJustification(
+    JustificationEnum value
+    )
+  {getBaseDataObject().put(PdfName.Q, value.getCode());}
 
   /**
     @see #getMaxLength()
@@ -177,8 +214,196 @@ public final class TextField
   public void setValue(
     Object value
     )
-  {getBaseDataObject().put(PdfName.V,new PdfTextString((String)value));}
+  {
+    getBaseDataObject().put(PdfName.V,new PdfTextString((String)value));
+    refreshAppearance();
+  }
   // </public>
+
+  // <private>
+  private void refreshAppearance(
+    )
+  {
+    Widget widget = getWidgets().get(0);
+    Appearance appearance = widget.getAppearance();
+    if(appearance == null)
+    {widget.setAppearance(appearance = new Appearance(getDocument()));}
+
+    FormXObject normalAppearance = appearance.getNormal().get(null);
+    if(normalAppearance == null)
+    {
+      appearance.getNormal().put(null, normalAppearance = new FormXObject(getDocument()));
+      Rectangle2D widgetBox = widget.getBox();
+      normalAppearance.setSize(new Dimension(widgetBox.getWidth(), widgetBox.getHeight()));
+    }
+
+    PdfName fontName = null;
+    float fontSize = 0;
+    {
+      PdfString defaultAppearanceState = getDefaultAppearanceState();
+      if(defaultAppearanceState == null)
+      {
+        // Retrieving the font to define the default appearance...
+        Font defaultFont = null;
+        PdfName defaultFontName = null;
+        {
+          Resources normalAppearanceResources = normalAppearance.getResources();
+          if(normalAppearanceResources == null)
+          {getDocument().getForm().setResources(normalAppearanceResources = new Resources(getDocument()));}
+          
+          FontResources normalAppearanceFontResources = normalAppearanceResources.getFonts();
+          if(normalAppearanceFontResources == null)
+          {normalAppearanceResources.setFonts(normalAppearanceFontResources = new FontResources(getDocument()));}
+          
+          for(Map.Entry<PdfName,Font> entry : normalAppearanceFontResources.entrySet())
+          {
+            if(!entry.getValue().isSymbolic())
+            {
+              defaultFont = entry.getValue();
+              defaultFontName = entry.getKey();
+              break;
+            }
+          }
+          if(defaultFontName == null)
+          {
+            Resources formResources = getDocument().getForm().getResources();
+            if(formResources == null)
+            {getDocument().getForm().setResources(formResources = new Resources(getDocument()));}
+            
+            FontResources formFontResources = formResources.getFonts();
+            if(formFontResources == null)
+            {formResources.setFonts(formFontResources = new FontResources(getDocument()));}
+            
+            for(Map.Entry<PdfName,Font> entry : formFontResources.entrySet())
+            {
+              if(!entry.getValue().isSymbolic())
+              {
+                defaultFont = entry.getValue();
+                defaultFontName = entry.getKey();
+                break;
+              }
+            }
+            if(defaultFontName == null)
+            {
+              //TODO:manage name collision!
+              formFontResources.put(
+                defaultFontName = new PdfName("default"),
+                defaultFont = new StandardType1Font(
+                  getDocument(),
+                  StandardType1Font.FamilyEnum.Helvetica,
+                  false,
+                  false
+                  )
+                );
+            }
+            normalAppearanceFontResources.put(defaultFontName, defaultFont);
+          }
+        }
+        Buffer buffer = new Buffer();
+        new SetFont(defaultFontName, isMultiline() ? 10 : 0).writeTo(buffer);
+        widget.getBaseDataObject().put(
+          PdfName.DA,
+          defaultAppearanceState = new PdfString(buffer.toByteArray())
+          );
+      }
+
+      // Retrieving the font to use...
+      ContentParser parser = new ContentParser(defaultAppearanceState.toByteArray());
+      for(ContentObject content : parser.parseContentObjects())
+      {
+        if(content instanceof SetFont)
+        {
+          SetFont setFontOperation = (SetFont)content;
+          fontName = setFontOperation.getName();
+          fontSize = setFontOperation.getSize();
+          break;
+        }
+      }
+    }
+
+    // Refreshing the field appearance...
+    BlockComposer composer = new BlockComposer(new PrimitiveComposer(normalAppearance));
+    ContentScanner scanner = composer.getScanner();
+    ContentScanner currentLevel = scanner;
+    Stack<ContentScanner> levelStack = new Stack<ContentScanner>();
+    boolean textShown = false;
+    while(true)
+    {
+      if(!currentLevel.moveNext())
+      {
+        if(levelStack.isEmpty())
+          break;
+
+        currentLevel = levelStack.pop();
+        continue;
+      }
+
+      ContentObject content = currentLevel.getCurrent();
+      if(content instanceof MarkedContent)
+      {
+        MarkedContent markedContent = (MarkedContent)content;
+        if(PdfName.Tx.equals(markedContent.getHeader().getTag()))
+        {
+          // Remove old text representation!
+          markedContent.getObjects().clear();
+          // Add new text representation!
+          composer.getBaseComposer().setScanner(currentLevel.getChildLevel()); // Ensures the composer places new contents within the marked content block.
+          showText(composer, fontName, fontSize);
+          textShown = true;
+        }
+      }
+      else if(content instanceof Text)
+      {currentLevel.remove();}
+      else if(currentLevel.getChildLevel() != null)
+      {
+        levelStack.push(currentLevel);
+        currentLevel = currentLevel.getChildLevel();
+      }
+    }
+    if(!textShown)
+    {
+      PrimitiveComposer baseComposer = composer.getBaseComposer();
+      baseComposer.beginMarkedContent(PdfName.Tx);
+      showText(composer, fontName, fontSize);
+      baseComposer.end();
+    }
+    composer.getBaseComposer().flush();
+  }
+
+  private void showText(
+    BlockComposer composer,
+    PdfName fontName,
+    float fontSize
+    )
+  {
+    PrimitiveComposer baseComposer = composer.getBaseComposer();
+    ContentScanner scanner = baseComposer.getScanner();
+    Rectangle2D textBox = scanner.getContentContext().getBox();
+    textBox.setRect(
+      textBox.getX() + 2,
+      textBox.getY() + 2,
+      textBox.getWidth() - 4,
+      textBox.getHeight() - 4
+      );
+    composer.begin(
+      textBox,
+      getJustification().toAlignmentX(),
+      isMultiline() ? AlignmentYEnum.Top : AlignmentYEnum.Middle
+      );
+    if(scanner.getState().getFont() == null)
+    {
+      /*
+        NOTE: A zero value for size means that the font is to be auto-sized: its size is computed as
+        a function of the height of the annotation rectangle.
+      */
+      if(fontSize == 0)
+      {fontSize = (float)(textBox.getHeight() * 0.9);}
+      baseComposer.setFont(fontName, fontSize);
+    }
+    composer.showText((String)getValue());
+    composer.end();
+  }
+  // </private>
   // </interface>
   // </dynamic>
   // </class>

@@ -1,5 +1,11 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.geom.Point2D;
+import java.util.Arrays;
+import java.util.Date;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
@@ -7,6 +13,7 @@ import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.fileSpecs.EmbeddedFile;
 import org.pdfclown.documents.fileSpecs.FileSpec;
+import org.pdfclown.documents.interaction.JustificationEnum;
 import org.pdfclown.documents.interaction.annotations.CalloutNote;
 import org.pdfclown.documents.interaction.annotations.Caret;
 import org.pdfclown.documents.interaction.annotations.Ellipse;
@@ -17,18 +24,12 @@ import org.pdfclown.documents.interaction.annotations.RubberStamp;
 import org.pdfclown.documents.interaction.annotations.Scribble;
 import org.pdfclown.files.File;
 
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.geom.Point2D;
-import java.util.Arrays;
-import java.util.Date;
-
 /**
   This sample demonstrates <b>how to insert annotations</b> into a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 07/05/11
 */
 public class AnnotationSample
   extends Sample
@@ -49,7 +50,7 @@ public class AnnotationSample
 
     // 3. Serialize the PDF file!
     serialize(file,false);
-    
+
     return true;
   }
 
@@ -88,7 +89,7 @@ public class AnnotationSample
       new Rectangle(50, 100, 200, 24),
       "Callout note annotation"
       );
-    calloutNote.setJustification(CalloutNote.JustificationEnum.Right);
+    calloutNote.setJustification(JustificationEnum.Right);
     calloutNote.setLine(
       new CalloutNote.LineObject(
         page,
@@ -115,7 +116,7 @@ public class AnnotationSample
     attachment.setIconType(FileAttachment.IconTypeEnum.PaperClip);
 
     composer.beginLocalState();
-    
+
     // Arrow line.
     composer.showText("Line annotation:", new Point(35,185));
     composer.setFont(font,10);
@@ -142,7 +143,7 @@ public class AnnotationSample
     line.setLeaderLineExtensionLength(10);
     line.setText("Dimension line annotation");
     line.setCaptionVisible(true);
-    
+
     composer.end();
 
     // Scribble.

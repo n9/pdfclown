@@ -5,6 +5,7 @@ using org.pdfclown.documents.contents.entities;
 using org.pdfclown.documents.contents.fonts;
 using org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.documents.fileSpecs;
+using org.pdfclown.documents.interaction;
 using annotations = org.pdfclown.documents.interaction.annotations;
 using files = org.pdfclown.files;
 
@@ -74,7 +75,7 @@ namespace org.pdfclown.samples.cli
         new Rectangle(50, 100, 200, 24),
         "Callout note annotation"
         );
-      calloutNote.Justification = annotations::CalloutNote.JustificationEnum.Right;
+      calloutNote.Justification = JustificationEnum.Right;
       calloutNote.Line = new annotations::CalloutNote.LineObject(
         page,
         new Point(150,650),

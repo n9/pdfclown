@@ -51,7 +51,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 07/05/11
 */
 @PDF(VersionEnum.PDF12)
 public final class FieldWidgets
@@ -69,7 +69,7 @@ public final class FieldWidgets
   // <fields>
   private final Field field;
 
-  private final boolean isDual;
+  private final boolean dual;
   // </fields>
 
   // <constructors>
@@ -81,7 +81,7 @@ public final class FieldWidgets
     super(baseObject);
 
     this.field = field;
-    isDual = (field instanceof CheckBox
+    dual = (field instanceof CheckBox
       || field instanceof RadioButton);
   }
   // </constructors>
@@ -471,7 +471,7 @@ public final class FieldWidgets
     PdfDirectObject baseObject
     )
   {
-    return isDual
+    return dual
       ? new DualWidget(baseObject)
       : new Widget(baseObject);
   }

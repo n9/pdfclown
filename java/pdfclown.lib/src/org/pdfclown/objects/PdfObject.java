@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
   Abstract PDF object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 07/05/11
 */
 public abstract class PdfObject
   implements Cloneable
@@ -106,11 +106,17 @@ public abstract class PdfObject
     );
 
   /**
-    Notifies the completion of the initialization process.
+    Gets whether the detection of object state changes is enabled.
   */
-  public void ready(
-    )
-  {setUpdated(false);} // Cleans the update flag.
+  public abstract boolean isUpdateable(
+    );
+
+  /**
+    @see #isUpdateable()
+  */
+  public abstract void setUpdateable(
+    boolean value
+    );
 
   /**
     Serializes this object to the specified stream.
@@ -161,7 +167,7 @@ public abstract class PdfObject
   protected final void update(
     )
   {
-    if(isUpdated())
+    if(!isUpdateable() || isUpdated())
       return;
 
     setUpdated(true);

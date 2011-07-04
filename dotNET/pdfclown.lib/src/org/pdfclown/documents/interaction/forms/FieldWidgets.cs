@@ -53,7 +53,7 @@ namespace org.pdfclown.documents.interaction.forms
     #region fields
     private Field field;
 
-    private bool isDual;
+    private bool dual;
     #endregion
 
     #region constructors
@@ -63,7 +63,7 @@ namespace org.pdfclown.documents.interaction.forms
       ) : base(baseObject)
     {
       this.field = field;
-      isDual = (field is CheckBox
+      dual = (field is CheckBox
         || field is RadioButton);
     }
     #endregion
@@ -275,7 +275,7 @@ namespace org.pdfclown.documents.interaction.forms
       PdfDirectObject baseObject
       )
     {
-      return isDual
+      return dual
         ? new DualWidget(baseObject)
         : new Widget(baseObject);
     }

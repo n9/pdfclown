@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,7 +38,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 07/05/11
 */
 @PDF(VersionEnum.PDF12)
 public final class CheckBox
@@ -56,11 +56,7 @@ public final class CheckBox
     boolean checked
     )
   {
-    super(
-      name,
-      widget
-      );
-
+    super(name, widget);
     setChecked(checked);
   }
 
@@ -82,9 +78,7 @@ public final class CheckBox
     )
   {
     PdfName value = (PdfName)getBaseDataObject().get(PdfName.V);
-
-    return !(value == null
-      || value.equals(PdfName.Off));
+    return !(value == null || value.equals(PdfName.Off));
   }
 
   public void setChecked(
@@ -100,7 +94,7 @@ public final class CheckBox
   public void setValue(
     Object value
     )
-  {setChecked(!value.equals("Off"));}
+  {setChecked(!(value == null || value.equals(PdfName.Off.getValue())));}
   // </public>
   // </interface>
   // </dynamic>

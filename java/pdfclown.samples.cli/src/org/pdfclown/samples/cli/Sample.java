@@ -22,7 +22,7 @@ import org.pdfclown.files.SerializationModeEnum;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 07/05/11
 */
 public abstract class Sample
 {
@@ -96,7 +96,7 @@ public abstract class Sample
     String message
     )
   {
-    System.out.print("\n" + message);
+    System.out.print(message);
     Scanner in = new Scanner(System.in);
     try
     {return in.nextLine();}

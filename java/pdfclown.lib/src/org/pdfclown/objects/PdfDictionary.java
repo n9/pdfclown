@@ -42,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 07/05/11
 */
 public final class PdfDictionary
   extends PdfDirectObject
@@ -62,6 +62,7 @@ public final class PdfDictionary
 
   private PdfObject parent;
   private boolean updated;
+  private boolean updateable = true;
   private boolean virtual;
   // </fields>
 
@@ -82,18 +83,14 @@ public final class PdfDictionary
   {
     this(values.length);
 
+    setUpdateable(false);
     for(
       int index = 0;
       index < values.length;
       index++
       )
-    {
-      put(
-        keys[index],
-        values[index]
-        );
-    }
-    ready();
+    {put(keys[index], values[index]);}
+    setUpdateable(true);
   }
 
   public PdfDictionary(
@@ -102,9 +99,10 @@ public final class PdfDictionary
   {
     this(entries.size());
 
+    setUpdateable(false);
     for(Entry<PdfName,PdfDirectObject> entry : entries.entrySet())
     {put(entry.getKey(), (PdfDirectObject)include(entry.getValue()));}
-    ready();
+    setUpdateable(true);
   }
   // </constructors>
 
@@ -209,6 +207,11 @@ public final class PdfDictionary
     )
   {return parent != null ? parent.getRoot() : null;}
 
+  @Override
+  public boolean isUpdateable(
+    )
+  {return updateable;}
+
   /**
     Gets the dereferenced value corresponding to the given key.
     <p>This method takes care to resolve the value returned by {@link #get(Object)}.</p>
@@ -221,6 +224,12 @@ public final class PdfDictionary
     PdfName key
     )
   {return File.resolve(get(key));}
+
+  @Override
+  public void setUpdateable(
+    boolean value
+    )
+  {updateable = value;}
 
   @Override
   public String toString(

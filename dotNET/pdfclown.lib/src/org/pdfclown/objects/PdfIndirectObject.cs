@@ -53,6 +53,7 @@ namespace org.pdfclown.objects
     private PdfReference reference;
     private XRefEntry xrefEntry;
 
+    private bool updateable = true;
     private bool updated;
     #endregion
 
@@ -195,6 +196,14 @@ namespace org.pdfclown.objects
       xrefEntry.Offset = -1; // Offset unknown (to set on file serialization -- see CompressedWriter).
     }
 
+    public override bool Updateable
+    {
+      get
+      {return updateable;}
+      set
+      {updateable = value;}
+    }
+
     public override void WriteTo(
       IOutputStream stream
       )
@@ -295,7 +304,7 @@ namespace org.pdfclown.objects
     protected internal override bool Updated
     {
       get
-      {return updated;} //FIXME: In case of dataObject instanceof PdfStream, body buffer update is NOT notified!!!
+      {return updated;}
       set
       {
         if(value && original)

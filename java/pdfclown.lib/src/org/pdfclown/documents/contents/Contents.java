@@ -57,7 +57,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 07/05/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Contents
@@ -381,7 +381,7 @@ public final class Contents
     {
       PdfArray streams = (PdfArray)baseDataObject;
       // No stream available?
-      if(streams.size() == 0) // No stream.
+      if(streams.isEmpty()) // No stream.
       {
         // Add first stream!
         stream = new PdfStream();

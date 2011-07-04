@@ -53,6 +53,8 @@ namespace org.pdfclown.objects
     private PdfDictionary header;
 
     private PdfObject parent;
+    private bool updateable = true;
+    private bool updated;
     #endregion
 
     #region constructors
@@ -85,7 +87,14 @@ namespace org.pdfclown.objects
       )
     {
       this.header = (PdfDictionary)Include(header);
+
       this.body = body;
+      body.Clean();
+      body.OnChange += delegate(
+        object sender,
+        EventArgs args
+        )
+      {Update();};
     }
     #endregion
 
@@ -142,16 +151,17 @@ namespace org.pdfclown.objects
         PdfDataObject filterObject = header.Resolve(PdfName.Filter);
         if(filterObject != null) // Stream encoded.
         {
+          header.Updateable = false;
           /*
             NOTE: If the stream is encoded, we must decode it before continuing.
           */
           PdfDataObject decodeParms = header.Resolve(PdfName.DecodeParms);
-          if(filterObject is PdfName) // PdfName.
+          if(filterObject is PdfName) // Single filter.
           {
             PdfDictionary filterDecodeParms = (PdfDictionary)decodeParms;
             body.Decode(Filter.Get((PdfName)filterObject), filterDecodeParms);
           }
-          else // MUST be PdfArray.
+          else // Multiple filters.
           {
             IEnumerator<PdfDirectObject> filterObjIterator = ((PdfArray)filterObject).GetEnumerator();
             IEnumerator<PdfDirectObject> decodeParmsIterator = (decodeParms != null ? ((PdfArray)decodeParms).GetEnumerator() : null);
@@ -170,6 +180,7 @@ namespace org.pdfclown.objects
           }
           // Update 'Filter' entry!
           header[PdfName.Filter] = null; // The stream is free from encodings.
+          header.Updateable = true;
         }
       }
       return body;
@@ -198,10 +209,20 @@ namespace org.pdfclown.objects
       {return (PdfIndirectObject)parent;} // NOTE: Stream root is by-definition its parent.
     }
 
+    public override bool Updateable
+    {
+      get
+      {return updateable;}
+      set
+      {updateable = value;}
+    }
+
     public override void WriteTo(
       IOutputStream stream
       )
     {
+      header.Updateable = false;
+
       bool unencodedBody;
       byte[] bodyData;
       int bodyLength;
@@ -260,6 +281,8 @@ namespace org.pdfclown.objects
       stream.Write(BeginStreamBodyChunk);
       stream.Write(bodyData);
       stream.Write(EndStreamBodyChunk);
+
+      header.Updateable = true;
     }
     #endregion
 
@@ -267,9 +290,9 @@ namespace org.pdfclown.objects
     protected internal override bool Updated
     {
       get
-      {return header.Updated;}
+      {return updated;}
       set
-      {/* NOOP: State update is delegated to its inner objects. */}
+      {updated = value;}
     }
 
     protected internal override bool Virtual

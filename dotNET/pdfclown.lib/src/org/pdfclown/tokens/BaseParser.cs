@@ -43,6 +43,11 @@ namespace org.pdfclown.tokens
       IInputStream stream
       ) : base(stream)
     {}
+
+    protected BaseParser(
+      byte[] data
+      ) : base(data)
+    {}
     #endregion
 
     #region interface
@@ -91,6 +96,7 @@ namespace org.pdfclown.tokens
         case TokenTypeEnum.DictionaryBegin:
         {
           PdfDictionary dictionary = new PdfDictionary();
+          dictionary.Updateable = false;
           while(true)
           {
             // Key.
@@ -102,12 +108,13 @@ namespace org.pdfclown.tokens
             // Add the current entry to the dictionary!
             dictionary[key] = value;
           }
-          dictionary.Ready();
+          dictionary.Updateable = true;
           return dictionary;
         }
         case TokenTypeEnum.ArrayBegin:
         {
           PdfArray array = new PdfArray();
+          array.Updateable = false;
           while(true)
           {
             // Value.
@@ -115,7 +122,7 @@ namespace org.pdfclown.tokens
             // Add the current item to the array!
             array.Add((PdfDirectObject)ParsePdfObject());
           }
-          array.Ready();
+          array.Updateable = true;
           return array;
         }
         case TokenTypeEnum.Literal:

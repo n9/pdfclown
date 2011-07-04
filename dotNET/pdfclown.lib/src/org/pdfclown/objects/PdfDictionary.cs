@@ -53,6 +53,7 @@ namespace org.pdfclown.objects
     private IDictionary<PdfName,PdfDirectObject> entries;
 
     private PdfObject parent;
+    private bool updateable = true;
     private bool updated;
     private bool virtual_;
     #endregion
@@ -72,22 +73,24 @@ namespace org.pdfclown.objects
       PdfDirectObject[] values
       ) : this(values.Length)
     {
+      Updateable = false;
       for(
         int index = 0;
         index < values.Length;
         index++
         )
       {this[keys[index]] = values[index];}
-      Ready();
+      Updateable = true;
     }
 
     public PdfDictionary(
       IDictionary<PdfName,PdfDirectObject> entries
       ) : this(entries.Count)
     {
+      Updateable = false;
       foreach(KeyValuePair<PdfName,PdfDirectObject> entry in entries)
       {this[entry.Key] = (PdfDirectObject)Include(entry.Value);}
-      Ready();
+      Updateable = true;
     }
     #endregion
 
@@ -232,6 +235,14 @@ namespace org.pdfclown.objects
         buffer.Append(">>");
       }
       return buffer.ToString();
+    }
+
+    public override bool Updateable
+    {
+      get
+      {return updateable;}
+      set
+      {updateable = value;}
     }
 
     public override void WriteTo(

@@ -89,7 +89,7 @@ namespace org.pdfclown.samples.cli
       string message
       )
     {
-      Console.Write("\n" + message);
+      Console.Write(message);
       try
       {return Console.ReadLine();}
       catch

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,8 @@
 
 using org.pdfclown.bytes.filters;
 using org.pdfclown.objects;
+
+using System;
 
 namespace org.pdfclown.bytes
 {
@@ -107,6 +109,12 @@ namespace org.pdfclown.bytes
     }
 
     /**
+      <summary>Cleans the dirtiness of this buffer.</summary>
+    */
+    void Clean(
+      );
+
+    /**
       <summary>Gets a clone of the buffer.</summary>
       <returns>Deep copy of the buffer.</returns>
     */
@@ -132,6 +140,14 @@ namespace org.pdfclown.bytes
       int index,
       int length
       );
+
+    /**
+      <summary>Gets whether this buffer has changed.</summary>
+    */
+    bool Dirty
+    {
+      get;
+    }
 
     /**
       <summary>Applies the specified filter to encode the buffer.</summary>
@@ -218,6 +234,11 @@ namespace org.pdfclown.bytes
       int index,
       IInputStream data
       );
+
+    /**
+      <summary>Notifies the dirtiness of the observed buffer.</summary>
+    */
+    event EventHandler OnChange;
 
     /**
       <summary>Replaces the buffer contents with a byte array.</summary>

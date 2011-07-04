@@ -127,6 +127,11 @@ namespace org.pdfclown.util.parsers
       IInputStream stream
       )
     {this.stream = stream;}
+
+    public PostScriptParser(
+      byte[] data
+      )
+    {this.stream = new org.pdfclown.bytes.Buffer(data);}
     #endregion
 
     #region interface

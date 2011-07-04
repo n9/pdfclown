@@ -29,6 +29,7 @@ import java.io.Closeable;
 import java.io.EOFException;
 import java.io.IOException;
 
+import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.tokens.Keyword;
 import org.pdfclown.tokens.Symbol;
@@ -38,7 +39,7 @@ import org.pdfclown.tokens.Symbol;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 04/28/11
+  @version 0.1.1, 07/05/11
 */
 public class PostScriptParser
   implements Closeable
@@ -129,6 +130,11 @@ public class PostScriptParser
     IInputStream stream
     )
   {this.stream = stream;}
+
+  public PostScriptParser(
+    byte[] data
+    )
+  {this.stream = new Buffer(data);}
   // </constructors>
 
   // <interface>

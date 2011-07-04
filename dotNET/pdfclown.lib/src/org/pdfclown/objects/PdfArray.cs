@@ -56,6 +56,7 @@ namespace org.pdfclown.objects
     private List<PdfDirectObject> items;
 
     private PdfObject parent;
+    private bool updateable = true;
     private bool updated;
     private bool virtual_;
     #endregion
@@ -74,16 +75,18 @@ namespace org.pdfclown.objects
       params PdfDirectObject[] items
       ) : this(items.Length)
     {
+      Updateable = false;
       this.AddAll(items);
-      Ready();
+      Updateable = true;
     }
 
     public PdfArray(
       IList<PdfDirectObject> items
       ) : this(items.Count)
     {
+      Updateable = false;
       this.AddAll(items);
-      Ready();
+      Updateable = true;
     }
     #endregion
 
@@ -202,6 +205,14 @@ namespace org.pdfclown.objects
         buffer.Append("]");
       }
       return buffer.ToString();
+    }
+
+    public override bool Updateable
+    {
+      get
+      {return updateable;}
+      set
+      {updateable = value;}
     }
 
     public override void WriteTo(

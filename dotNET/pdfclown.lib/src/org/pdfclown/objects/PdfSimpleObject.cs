@@ -140,6 +140,14 @@ namespace org.pdfclown.objects
       )
     {return Value.ToString();}
 
+    public override bool Updateable
+    {
+      get
+      {return false;} // NOTE: Simple objects are immutable.
+      set
+      {/* NOOP: As simple objects are immutable, no update can be done. */}
+    }
+
     /**
       <summary>Gets/Sets the high-level representation of the value.</summary>
     */

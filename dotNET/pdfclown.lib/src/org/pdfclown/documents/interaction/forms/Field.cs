@@ -232,7 +232,8 @@ namespace org.pdfclown.documents.interaction.forms
     {throw new NotImplementedException();}
 
     /**
-      <summary>Gets the field default value.</summary>
+      <summary>Gets the default value to which this field reverts when a <see cref="ResetForm">reset
+      -form</see> action} is executed.</summary>
     */
     public object DefaultValue
     {
@@ -410,6 +411,12 @@ namespace org.pdfclown.documents.interaction.forms
     #endregion
 
     #region protected
+    protected PdfString DefaultAppearanceState
+    {
+      get
+      {return (PdfString)GetInheritableAttribute(PdfName.DA);}
+    }
+
     protected PdfDirectObject GetInheritableAttribute(
       PdfName key
       )

@@ -47,7 +47,7 @@ import org.pdfclown.util.parsers.PostScriptParser;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 07/05/11
 */
 public class BaseParser
   extends PostScriptParser
@@ -59,6 +59,11 @@ public class BaseParser
     IInputStream stream
     )
   {super(stream);}
+
+  protected BaseParser(
+    byte[] data
+    )
+  {super(data);}
   // </constructors>
 
   // <interface>
@@ -108,6 +113,7 @@ public class BaseParser
       case DictionaryBegin:
       {
         PdfDictionary dictionary = new PdfDictionary();
+        dictionary.setUpdateable(false);
         while(true)
         {
           // Key.
@@ -119,12 +125,13 @@ public class BaseParser
           // Add the current entry to the dictionary!
           dictionary.put(key,value);
         }
-        dictionary.ready();
+        dictionary.setUpdateable(true);
         return dictionary;
       }
       case ArrayBegin:
       {
         PdfArray array = new PdfArray();
+        array.setUpdateable(false);
         while(true)
         {
           // Value.
@@ -132,7 +139,7 @@ public class BaseParser
           // Add the current item to the array!
           array.add((PdfDirectObject)parsePdfObject());
         }
-        array.ready();
+        array.setUpdateable(true);
         return array;
       }
       case Literal:

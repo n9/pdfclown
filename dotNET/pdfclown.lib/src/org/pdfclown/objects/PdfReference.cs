@@ -159,6 +159,14 @@ namespace org.pdfclown.objects
       )
     {return IndirectReference;}
 
+    public override bool Updateable
+    {
+      get
+      {return false;}
+      set
+      {/* NOOP: As references are immutable, no update can be done. */}
+    }
+
     public override void WriteTo(
       IOutputStream stream
       )

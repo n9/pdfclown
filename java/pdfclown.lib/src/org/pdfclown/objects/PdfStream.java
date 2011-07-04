@@ -40,7 +40,7 @@ import org.pdfclown.tokens.Symbol;
   PDF stream object [PDF:1.6:3.2.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 07/05/11
 */
 public class PdfStream
   extends PdfDataObject
@@ -59,6 +59,8 @@ public class PdfStream
   private PdfDictionary header;
 
   private PdfObject parent;
+  private boolean updated;
+  private boolean updateable = true;
   // </fields>
 
   // <constructors>
@@ -97,7 +99,17 @@ public class PdfStream
     )
   {
     this.header = (PdfDictionary)include(header);
+
     this.body = body;
+    body.clean();
+    body.addListener(new IBuffer.IListener()
+    {
+      @Override
+      public void onChange(
+        IBuffer buffer
+        )
+      {update();}
+    });
   }
   // </constructors>
 
@@ -148,16 +160,17 @@ public class PdfStream
       PdfDataObject filterObject = header.resolve(PdfName.Filter);
       if(filterObject != null) // Stream encoded.
       {
+        header.setUpdateable(false);
         /*
           NOTE: If the stream is encoded, we must decode it before continuing.
         */
         PdfDataObject decodeParms = header.resolve(PdfName.DecodeParms);
-        if(filterObject instanceof PdfName) // PdfName.
+        if(filterObject instanceof PdfName) // Single filter.
         {
           PdfDictionary filterDecodeParms = (PdfDictionary)decodeParms;
           body.decode(Filter.get((PdfName)filterObject), filterDecodeParms);
         }
-        else // MUST be PdfArray.
+        else // Multiple filters.
         {
           Iterator<PdfDirectObject> filterObjIterator = ((PdfArray)filterObject).iterator();
           Iterator<PdfDirectObject> decodeParmsIterator = (decodeParms != null ? ((PdfArray)decodeParms).iterator() : null);
@@ -169,6 +182,7 @@ public class PdfStream
         }
         // Update 'Filter' entry!
         header.put(PdfName.Filter,null); // The stream is free from encodings.
+        header.setUpdateable(true);
       }
     }
     return body;
@@ -197,10 +211,23 @@ public class PdfStream
   {return (PdfIndirectObject)parent;} // NOTE: Stream root is by-definition its parent.
 
   @Override
+  public boolean isUpdateable(
+    )
+  {return updateable;}
+
+  @Override
+  public void setUpdateable(
+    boolean value
+    )
+  {updateable = value;}
+
+  @Override
   public void writeTo(
     IOutputStream stream
     )
   {
+    header.setUpdateable(false);
+
     boolean unencodedBody;
     byte[] bodyData;
     int bodyLength;
@@ -259,6 +286,8 @@ public class PdfStream
     stream.write(BeginStreamBodyChunk);
     stream.write(bodyData);
     stream.write(EndStreamBodyChunk);
+
+    header.setUpdateable(true);
   }
   // </public>
 
@@ -266,7 +295,7 @@ public class PdfStream
   @Override
   protected boolean isUpdated(
     )
-  {return header.isUpdated();}
+  {return updated;}
 
   @Override
   protected boolean isVirtual(
@@ -277,7 +306,7 @@ public class PdfStream
   protected void setUpdated(
     boolean value
     )
-  {/* NOOP: State update is delegated to its inner objects. */}
+  {updated = value;}
 
   @Override
   protected void setVirtual(

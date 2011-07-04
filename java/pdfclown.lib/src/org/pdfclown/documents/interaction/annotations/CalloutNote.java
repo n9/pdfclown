@@ -32,6 +32,7 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
+import org.pdfclown.documents.interaction.JustificationEnum;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
@@ -49,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 07/05/11
 */
 @PDF(VersionEnum.PDF13)
 public final class CalloutNote
@@ -159,71 +160,6 @@ public final class CalloutNote
     // </dynamic>
     // </class>
   }
-
-  /**
-    Text justification [PDF:1.6:8.4.5].
-  */
-  public enum JustificationEnum
-  {
-    // <class>
-    // <static>
-    // <fields>
-    /**
-      Left.
-    */
-    Left(new PdfInteger(0)),
-    /**
-      Center.
-    */
-    Center(new PdfInteger(1)),
-    /**
-      Right.
-    */
-    Right(new PdfInteger(2));
-    // </fields>
-
-    // <interface>
-    // <public>
-    /**
-      Gets the highlighting mode corresponding to the given value.
-    */
-    public static JustificationEnum get(
-      PdfInteger value
-      )
-    {
-      for(JustificationEnum justification : JustificationEnum.values())
-      {
-        if(justification.getCode().equals(value))
-          return justification;
-      }
-      return null;
-    }
-    // </public>
-    // </interface>
-    // </static>
-
-    // <dynamic>
-    // <fields>
-    private final PdfInteger code;
-    // </fields>
-
-    // <constructors>
-    private JustificationEnum(
-      PdfInteger code
-      )
-    {this.code = code;}
-    // </constructors>
-
-    // <interface>
-    // <public>
-    public PdfInteger getCode(
-      )
-    {return code;}
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
-  }
   // </classes>
 
   // <dynamic>
@@ -263,10 +199,7 @@ public final class CalloutNote
   */
   public JustificationEnum getJustification(
     )
-  {
-    PdfInteger justificationObject = (PdfInteger)getBaseDataObject().get(PdfName.Q);
-    return justificationObject != null ? JustificationEnum.get(justificationObject) : JustificationEnum.Left;
-  }
+  {return JustificationEnum.get((PdfInteger)getBaseDataObject().get(PdfName.Q));}
 
   /**
     Gets the callout line attached to the free text annotation.

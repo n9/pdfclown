@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,12 +33,36 @@ import org.pdfclown.objects.PdfDictionary;
   <p>Its pivotal concept is the array index.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 07/05/11
 */
 public interface IBuffer
   extends IInputStream,
     IOutputStream
 {
+  /**
+    Buffer listener.
+  */
+  public interface IListener
+  {
+    /**
+      Notifies the dirtiness of the observed buffer.
+
+      @param buffer Buffer become dirty.
+    */
+    void onChange(
+      IBuffer buffer
+      );
+  }
+
+  /**
+    Adds the specified listener.
+
+    @param listener Listener to add.
+  */
+  void addListener(
+    IListener listener
+    );
+
   /**
     Appends a byte to the buffer.
 
@@ -91,6 +115,12 @@ public interface IBuffer
   */
   IBuffer append(
     IInputStream data
+    );
+
+  /**
+    Cleans the dirtiness of this buffer.
+  */
+  void clean(
     );
 
   /**
@@ -223,6 +253,22 @@ public interface IBuffer
   void insert(
     int index,
     IInputStream data
+    );
+
+  /**
+    Gets whether this buffer has changed.
+  */
+  boolean isDirty(
+    );
+
+  /**
+    Removes the specified listener.
+
+    @param listener Listener to remove.
+    @return Whether the specified listener has been removed.
+  */
+  boolean removeListener(
+    IListener listener
     );
 
   /**

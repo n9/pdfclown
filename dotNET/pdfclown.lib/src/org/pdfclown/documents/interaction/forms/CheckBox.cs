@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -48,10 +48,7 @@ namespace org.pdfclown.documents.interaction.forms
       string name,
       Widget widget,
       bool checked_
-      ) : base(
-        name,
-        widget
-        )
+      ) : base(name, widget)
     {Checked = checked_;}
 
     public CheckBox(
@@ -67,9 +64,7 @@ namespace org.pdfclown.documents.interaction.forms
       get
       {
         PdfName value = (PdfName)BaseDataObject[PdfName.V];
-
-        return !(value == null
-          || value.Equals(PdfName.Off));
+        return !(value == null || value.Equals(PdfName.Off));
       }
       set
       {
@@ -89,7 +84,7 @@ namespace org.pdfclown.documents.interaction.forms
       get
       {return base.Value;}
       set
-      {Checked = !value.Equals("Off");}
+      {Checked = !(value == null || value.Equals(PdfName.Off.Value));}
     }
     #endregion
     #endregion

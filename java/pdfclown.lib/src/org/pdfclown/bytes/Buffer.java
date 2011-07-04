@@ -30,6 +30,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.pdfclown.bytes.filters.Filter;
 import org.pdfclown.objects.PdfDictionary;
@@ -40,7 +42,7 @@ import org.pdfclown.util.ConvertUtils;
   Byte buffer.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 07/05/11
 */
 public final class Buffer
   implements IBuffer
@@ -71,6 +73,9 @@ public final class Buffer
   private int position = 0;
 
   private ByteOrder byteOrder = ByteOrder.BIG_ENDIAN;
+
+  private boolean dirty;
+  private List<IListener> listeners;
   // </fields>
 
   // <constructors>
@@ -151,12 +156,24 @@ public final class Buffer
   // <public>
   // <IBuffer>
   @Override
+  public void addListener(
+    IListener listener
+    )
+  {
+    if(listeners == null)
+    {listeners = new ArrayList<IBuffer.IListener>();}
+
+    listeners.add(listener);
+  }
+
+  @Override
   public IBuffer append(
     byte data
     )
   {
     ensureCapacity(1);
     this.data[this.length++] = data;
+    notifyChange();
     return this;
   }
 
@@ -176,6 +193,7 @@ public final class Buffer
     ensureCapacity(length);
     System.arraycopy(data, offset, this.data, this.length, length);
     this.length += length;
+    notifyChange();
     return this;
   }
 
@@ -190,6 +208,11 @@ public final class Buffer
     IInputStream data
     )
   {return append(data.toByteArray(), 0, (int)data.getLength());}
+
+  @Override
+  public void clean(
+    )
+  {dirty = false;}
 
   @Override
   public Buffer clone(
@@ -219,6 +242,7 @@ public final class Buffer
     // Shift left the trailing data block to override the deleted data!
     System.arraycopy(this.data, index + length, this.data, index, this.length - (index + length));
     this.length -= length;
+    notifyChange();
   }
 
   @Override
@@ -278,6 +302,7 @@ public final class Buffer
     // Insert additional data!
     System.arraycopy(data, offset, this.data, index, length);
     this.length += length;
+    notifyChange();
   }
 
   @Override
@@ -295,11 +320,25 @@ public final class Buffer
   {insert(index, data.toByteArray());}
 
   @Override
+  public boolean removeListener(
+    IListener listener
+    )
+  {
+    if(listeners == null)
+      return false;
+
+    return listeners.remove(listener);
+  }
+
+  @Override
   public void replace(
     int index,
     byte[] data
     )
-  {System.arraycopy(data, 0, this.data, index, data.length);}
+  {
+    System.arraycopy(data, 0, this.data, index, data.length);
+    notifyChange();
+  }
 
   @Override
   public void replace(
@@ -308,7 +347,10 @@ public final class Buffer
     int offset,
     int length
     )
-  {System.arraycopy(data, offset, this.data, index, data.length);}
+  {
+    System.arraycopy(data, offset, this.data, index, data.length);
+    notifyChange();
+  }
 
   @Override
   public void replace(
@@ -328,7 +370,10 @@ public final class Buffer
   public void setLength(
     int value
     )
-  {length = value;}
+  {
+    length = value;
+    notifyChange();
+  }
 
   @Override
   public void writeTo(
@@ -348,6 +393,11 @@ public final class Buffer
   {return position;}
 
   /* int hashCode() uses inherited implementation. */
+
+  @Override
+  public boolean isDirty(
+    )
+  {return dirty;}
 
   @Override
   public void read(
@@ -548,10 +598,22 @@ public final class Buffer
   // </public>
 
   // <protected>
+  @Override
+  protected void finalize(
+    ) throws Throwable
+  {
+    try
+    {close();}
+    finally
+    {super.finalize();}
+  }
+  // </protected>
+
+  // <private>
   /**
     Check whether the buffer capacity has sufficient room for adding data.
   */
-  protected void ensureCapacity(
+  private void ensureCapacity(
     int additionalLength
     )
   {
@@ -572,16 +634,17 @@ public final class Buffer
     this.data = data;
   }
 
-  @Override
-  protected void finalize(
-    ) throws Throwable
+  private void notifyChange(
+    )
   {
-    try
-    {close();}
-    finally
-    {super.finalize();}
+    if(dirty || listeners == null)
+      return;
+
+    dirty = true;
+    for(IListener listener : listeners)
+    {listener.onChange(this);}
   }
-  // </protected>
+  // </private>
   // </interface>
   // </dynamic>
   // </class>

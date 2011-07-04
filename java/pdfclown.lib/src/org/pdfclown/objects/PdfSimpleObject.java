@@ -31,7 +31,7 @@ import org.pdfclown.files.File;
   Abstract PDF simple object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 07/05/11
 */
 public abstract class PdfSimpleObject<TValue>
   extends PdfDirectObject
@@ -134,10 +134,15 @@ public abstract class PdfSimpleObject<TValue>
   {return getRawValue().hashCode();}
 
   @Override
-  final void setParent(
-    PdfObject value
+  public final boolean isUpdateable(
     )
-  {/* NOOP: As simple objects are immutable, no parent can be associated. */}
+  {return false;} // NOTE: Simple objects are immutable.
+
+  @Override
+  public final void setUpdateable(
+    boolean value
+    )
+  {/* NOOP: As simple objects are immutable, no update can be done. */}
 
   @Override
   public String toString(
@@ -185,6 +190,14 @@ public abstract class PdfSimpleObject<TValue>
     )
   {/* NOOP */}
   // </protected>
+
+  // <internal>
+  @Override
+  final void setParent(
+    PdfObject value
+    )
+  {/* NOOP: As simple objects are immutable, no parent can be associated. */}
+  // </internal>
   // </interface>
   // </dynamic>
   // </class>

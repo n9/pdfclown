@@ -31,6 +31,7 @@ import java.util.Stack;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
+import org.pdfclown.documents.interaction.actions.ResetForm;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
@@ -49,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 07/05/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Field
@@ -306,7 +307,8 @@ public abstract class Field
   }
 
   /**
-    Gets the field default value.
+    Gets the default value to which this field reverts when a {@link ResetForm reset-form action} is
+    executed.
   */
   public Object getDefaultValue(
     )
@@ -491,6 +493,10 @@ public abstract class Field
   // </public>
 
   // <protected>
+  protected PdfString getDefaultAppearanceState(
+    )
+  {return (PdfString)getInheritableAttribute(PdfName.DA);}
+
   protected PdfDirectObject getInheritableAttribute(
     PdfName key
     )

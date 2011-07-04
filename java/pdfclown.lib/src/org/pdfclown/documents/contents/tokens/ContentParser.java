@@ -66,7 +66,7 @@ import org.pdfclown.util.parsers.ParseException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 07/05/11
 */
 public final class ContentParser
   extends BaseParser
@@ -78,6 +78,11 @@ public final class ContentParser
     IInputStream stream
     )
   {super(stream);}
+
+  public ContentParser(
+    byte[] data
+    )
+  {super(data);}
   // </constructors>
 
   // <interface>
