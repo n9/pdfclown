@@ -43,7 +43,7 @@ namespace org.pdfclown.tokens
     #region static
     #region fields
     private static readonly byte[] BOFChunk = Encoding.Encode(Keyword.BOF);
-    private static readonly byte[] EOFChunk = Encoding.Encode(Symbol.LineFeed + Keyword.EOF);
+    private static readonly byte[] EOFChunk = Encoding.Encode(Symbol.LineFeed + Keyword.EOF + Symbol.CarriageReturn + Symbol.LineFeed);
     private static readonly byte[] HeaderBinaryHintChunk = new byte[]{(byte)Symbol.LineFeed,(byte)Symbol.Percent,(byte)0x80,(byte)0x80,(byte)0x80,(byte)0x80,(byte)Symbol.LineFeed}; // NOTE: Arbitrary binary characters (code >= 128) for ensuring proper behavior of file transfer applications [PDF:1.6:3.4.1].
     private static readonly byte[] StartXRefChunk = Encoding.Encode(Keyword.StartXRef + Symbol.LineFeed);
     #endregion

@@ -33,7 +33,7 @@ import org.pdfclown.files.SerializationModeEnum;
   PDF file writer.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 07/21/11
 */
 public abstract class Writer
 {
@@ -41,7 +41,7 @@ public abstract class Writer
   // <static>
   // <fields>
   private static final byte[] BOFChunk = Encoding.encode(Keyword.BOF);
-  private static final byte[] EOFChunk = Encoding.encode(Symbol.LineFeed + Keyword.EOF);
+  private static final byte[] EOFChunk = Encoding.encode(Symbol.LineFeed + Keyword.EOF + Symbol.CarriageReturn + Symbol.LineFeed);
   private static final byte[] HeaderBinaryHintChunk = new byte[]{(byte)Symbol.LineFeed,(byte)Symbol.Percent,(byte)0x80,(byte)0x80,(byte)0x80,(byte)0x80,(byte)Symbol.LineFeed}; // NOTE: Arbitrary binary characters (code >= 128) for ensuring proper behavior of file transfer applications [PDF:1.6:3.4.1].
   private static final byte[] StartXRefChunk = Encoding.encode(Keyword.StartXRef + Symbol.LineFeed);
   // </fields>
