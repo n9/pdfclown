@@ -409,6 +409,7 @@
     <Compile Include="src\org\pdfclown\documents\contents\layers\BaseStateEnum.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\layers\ListModeEnum.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\JustificationEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\namespace.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">

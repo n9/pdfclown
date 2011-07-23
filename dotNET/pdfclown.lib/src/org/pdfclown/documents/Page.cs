@@ -216,6 +216,67 @@ namespace org.pdfclown.documents
       {BaseDataObject[PdfName.Annots] = value.BaseObject;}
     }
 
+    /**
+      <summary>Gets/Sets the extent of the page's meaningful content (including potential white space)
+      as intended by the page's creator [PDF:1.7:10.10.1].</summary>
+      <remarks>The default value is the page's crop box.</remarks>
+    */
+    [PDF(VersionEnum.PDF13)]
+    public drawing::RectangleF ArtBox
+    {
+      get
+      {
+        PdfDirectObject artBoxObject = GetInheritableAttribute(PdfName.ArtBox);
+        return artBoxObject != null ? new Rectangle(artBoxObject).ToRectangleF() : CropBox;
+      }
+      set
+      {BaseDataObject[PdfName.ArtBox] = new Rectangle(value).BaseDataObject;}
+    }
+
+    /**
+      <summary>Gets/Sets the region to which the contents of the page should be clipped when output
+      in a production environment [PDF:1.7:10.10.1].</summary>
+      <remarks>
+        <para>This may include any extra bleed area needed to accommodate the physical limitations of
+        cutting, folding, and trimming equipment. The actual printed page may include printing marks
+        that fall outside the bleed box.</para>
+        <para>The default value is the page's crop box.</para>
+      </remarks>
+    */
+    [PDF(VersionEnum.PDF13)]
+    public drawing::RectangleF BleedBox
+    {
+      get
+      {
+        PdfDirectObject bleedBoxObject = GetInheritableAttribute(PdfName.BleedBox);
+        return bleedBoxObject != null ? new Rectangle(bleedBoxObject).ToRectangleF() : CropBox;
+      }
+      set
+      {BaseDataObject[PdfName.BleedBox] = new Rectangle(value).BaseDataObject;}
+    }
+
+    /**
+      <summary>Gets/Sets the region to which the contents of the page are to be clipped (cropped)
+      when displayed or printed [PDF:1.7:10.10.1].</summary>
+      <remarks>
+        <para>Unlike the other boxes, the crop box has no defined meaning in terms of physical page
+        geometry or intended use; it merely imposes clipping on the page contents. However, in the
+        absence of additional information, the crop box determines how the page's contents are to be
+        positioned on the output medium.</para>
+        <para>The default value is the page's media box.</para>
+      </remarks>
+    */
+    public drawing::RectangleF CropBox
+    {
+      get
+      {
+        PdfDirectObject cropBoxObject = GetInheritableAttribute(PdfName.CropBox);
+        return cropBoxObject != null ? new Rectangle(cropBoxObject).ToRectangleF() : Box;
+      }
+      set
+      {BaseDataObject[PdfName.CropBox] = new Rectangle(value).BaseDataObject;}
+    }
+
     public override object Clone(
       Document context
       )
@@ -362,6 +423,27 @@ namespace org.pdfclown.documents
       }
       set
       {BaseDataObject[PdfName.Trans] = value.BaseObject;}
+    }
+
+    /**
+      <summary>Gets/Sets the intended dimensions of the finished page after trimming
+      [PDF:1.7:10.10.1].</summary>
+      <remarks>
+        <para>It may be smaller than the media box to allow for production-related content, such as
+        printing instructions, cut marks, or color bars.</para>
+        <para>The default value is the page's crop box.</para>
+      </remarks>
+    */
+    [PDF(VersionEnum.PDF13)]
+    public drawing::RectangleF TrimBox
+    {
+      get
+      {
+        PdfDirectObject trimBoxObject = GetInheritableAttribute(PdfName.TrimBox);
+        return trimBoxObject != null ? new Rectangle(trimBoxObject).ToRectangleF() : CropBox;
+      }
+      set
+      {BaseDataObject[PdfName.TrimBox] = new Rectangle(value).BaseDataObject;}
     }
 
     #region IContentContext

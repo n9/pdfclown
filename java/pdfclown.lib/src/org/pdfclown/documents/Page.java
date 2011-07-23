@@ -68,7 +68,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 07/23/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Page
@@ -284,6 +284,51 @@ public final class Page
   }
 
   /**
+    Gets the extent of the page's meaningful content (including potential white space) as intended
+    by the page's creator [PDF:1.7:10.10.1].
+    <p>The default value is the page's crop box.</p>
+  */
+  @PDF(VersionEnum.PDF13)
+  public Rectangle2D getArtBox(
+    )
+  {
+    PdfDirectObject artBoxObject = getInheritableAttribute(PdfName.ArtBox);
+    return artBoxObject != null ? new Rectangle(artBoxObject).toRectangle2D() : getCropBox();
+  }
+
+  /**
+    Gets the region to which the contents of the page should be clipped when output in a production
+    environment [PDF:1.7:10.10.1].
+    <p>This may include any extra bleed area needed to accommodate the physical limitations of
+    cutting, folding, and trimming equipment. The actual printed page may include printing marks
+    that fall outside the bleed box.</p>
+    <p>The default value is the page's crop box.</p>
+  */
+  @PDF(VersionEnum.PDF13)
+  public Rectangle2D getBleedBox(
+    )
+  {
+    PdfDirectObject bleedBoxObject = getInheritableAttribute(PdfName.BleedBox);
+    return bleedBoxObject != null ? new Rectangle(bleedBoxObject).toRectangle2D() : getCropBox();
+  }
+
+  /**
+    Gets the region to which the contents of the page are to be clipped (cropped) when displayed or
+    printed [PDF:1.7:10.10.1].
+    <p>Unlike the other boxes, the crop box has no defined meaning in terms of physical page
+    geometry or intended use; it merely imposes clipping on the page contents. However, in the
+    absence of additional information, the crop box determines how the page's contents are to be
+    positioned on the output medium.</p>
+    <p>The default value is the page's media box.</p>
+  */
+  public Rectangle2D getCropBox(
+    )
+  {
+    PdfDirectObject cropBoxObject = getInheritableAttribute(PdfName.CropBox);
+    return cropBoxObject != null ? new Rectangle(cropBoxObject).toRectangle2D() : getBox();
+  }
+
+  /**
     Gets the page's display duration.
     <p>The page's display duration (also called its advance timing)
     is the maximum length of time, in seconds, that the page is displayed
@@ -381,6 +426,20 @@ public final class Page
   }
 
   /**
+    Gets the intended dimensions of the finished page after trimming [PDF:1.7:10.10.1].
+    <p>It may be smaller than the media box to allow for production-related content, such as
+    printing instructions, cut marks, or color bars.</p>
+    <p>The default value is the page's crop box.</p>
+  */
+  @PDF(VersionEnum.PDF13)
+  public Rectangle2D getTrimBox(
+    )
+  {
+    PdfDirectObject trimBoxObject = getInheritableAttribute(PdfName.TrimBox);
+    return trimBoxObject != null ? new Rectangle(trimBoxObject).toRectangle2D() : getCropBox();
+  }
+
+  /**
     @see #getActions()
   */
   public void setActions(
@@ -397,12 +456,36 @@ public final class Page
   {getBaseDataObject().put(PdfName.Annots, value.getBaseObject());}
 
   /**
+    @see #getArtBox()
+  */
+  public void setArtBox(
+    Rectangle2D value
+    )
+  {getBaseDataObject().put(PdfName.ArtBox, new Rectangle(value).getBaseDataObject());}
+
+  /**
+    @see #getBleedBox()
+  */
+  public void setBleedBox(
+    Rectangle2D value
+    )
+  {getBaseDataObject().put(PdfName.BleedBox, new Rectangle(value).getBaseDataObject());}
+
+  /**
     @see #getBox()
   */
   public void setBox(
     Rectangle2D value
     )
   {getBaseDataObject().put(PdfName.MediaBox, new Rectangle(value).getBaseDataObject());}
+
+  /**
+    @see #getCropBox()
+  */
+  public void setCropBox(
+    Rectangle2D value
+    )
+  {getBaseDataObject().put(PdfName.CropBox, new Rectangle(value).getBaseDataObject());}
 
   /**
     @see #getDuration()
@@ -447,6 +530,14 @@ public final class Page
     Transition value
     )
   {getBaseDataObject().put(PdfName.Trans, value.getBaseObject());}
+
+  /**
+    @see #getTrimBox()
+  */
+  public void setTrimBox(
+    Rectangle2D value
+    )
+  {getBaseDataObject().put(PdfName.TrimBox, new Rectangle(value).getBaseDataObject());}
 
   // <IContentContext>
   @Override

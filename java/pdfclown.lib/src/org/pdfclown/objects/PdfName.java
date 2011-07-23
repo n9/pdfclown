@@ -35,7 +35,7 @@ import org.pdfclown.tokens.Keyword;
   PDF name object [PDF:1.6:3.2.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 07/23/11
 */
 public final class PdfName
   extends PdfSimpleObject<String>
@@ -75,6 +75,7 @@ public final class PdfName
   public static final PdfName AnyOn = new PdfName("AnyOn");
   public static final PdfName AP = new PdfName("AP");
   public static final PdfName Approved = new PdfName("Approved");
+  public static final PdfName ArtBox = new PdfName("ArtBox");
   public static final PdfName AS = new PdfName("AS");
   public static final PdfName Ascent = new PdfName("Ascent");
   public static final PdfName ASCII85Decode = new PdfName("ASCII85Decode");
@@ -92,6 +93,7 @@ public final class PdfName
   public static final PdfName BitsPerSample = new PdfName("BitsPerSample");
   public static final PdfName Bl = new PdfName("Bl");
   public static final PdfName BlackPoint = new PdfName("BlackPoint");
+  public static final PdfName BleedBox = new PdfName("BleedBox");
   public static final PdfName Blinds = new PdfName("Blinds");
   public static final PdfName Border = new PdfName("Border");
   public static final PdfName Bounds = new PdfName("Bounds");
@@ -135,6 +137,7 @@ public final class PdfName
   public static final PdfName CreationDate = new PdfName("CreationDate");
   public static final PdfName Creator = new PdfName("Creator");
   public static final PdfName CreatorInfo = new PdfName("CreatorInfo");
+  public static final PdfName CropBox = new PdfName("CropBox");
   public static final PdfName Crypt = new PdfName("Crypt");
   public static final PdfName CS = new PdfName("CS");
   public static final PdfName D = new PdfName("D");
@@ -424,6 +427,7 @@ public final class PdfName
   public static final PdfName ToUnicode = new PdfName("ToUnicode");
   public static final PdfName TP = new PdfName("TP");
   public static final PdfName Trans = new PdfName("Trans");
+  public static final PdfName TrimBox = new PdfName("TrimBox");
   public static final PdfName TrueType = new PdfName("TrueType");
   public static final PdfName TwoColumnLeft = new PdfName("TwoColumnLeft");
   public static final PdfName Tx = new PdfName("Tx");

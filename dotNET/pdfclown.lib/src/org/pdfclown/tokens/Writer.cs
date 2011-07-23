@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -169,7 +169,7 @@ namespace org.pdfclown.tokens
       );
 
     /**
-      <summary>Serializes the end of the file [PDF:3.4.4].</summary>
+      <summary>Serializes the end of the file [PDF:1.6:3.4.4].</summary>
       <param name="startxref">Byte offset from the beginning of the file to the beginning
         of the last cross-reference section.</param>
     */

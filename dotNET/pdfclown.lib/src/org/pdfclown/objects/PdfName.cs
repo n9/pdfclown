@@ -73,6 +73,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName AnyOn = new PdfName("AnyOn");
     public static readonly PdfName AP = new PdfName("AP");
     public static readonly PdfName Approved = new PdfName("Approved");
+    public static readonly PdfName ArtBox = new PdfName("ArtBox");
     public static readonly PdfName AS = new PdfName("AS");
     public static readonly PdfName Ascent = new PdfName("Ascent");
     public static readonly PdfName ASCII85Decode = new PdfName("ASCII85Decode");
@@ -90,6 +91,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName BitsPerSample = new PdfName("BitsPerSample");
     public static readonly PdfName Bl = new PdfName("Bl");
     public static readonly PdfName BlackPoint = new PdfName("BlackPoint");
+    public static readonly PdfName BleedBox = new PdfName("BleedBox");
     public static readonly PdfName Blinds = new PdfName("Blinds");
     public static readonly PdfName Border = new PdfName("Border");
     public static readonly PdfName Bounds = new PdfName("Bounds");
@@ -133,6 +135,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName CreationDate = new PdfName("CreationDate");
     public static readonly PdfName Creator = new PdfName("Creator");
     public static readonly PdfName CreatorInfo = new PdfName("CreatorInfo");
+    public static readonly PdfName CropBox = new PdfName("CropBox");
     public static readonly PdfName Crypt = new PdfName("Crypt");
     public static readonly PdfName CS = new PdfName("CS");
     public static readonly PdfName D = new PdfName("D");
@@ -422,6 +425,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName ToUnicode = new PdfName("ToUnicode");
     public static readonly PdfName TP = new PdfName("TP");
     public static readonly PdfName Trans = new PdfName("Trans");
+    public static readonly PdfName TrimBox = new PdfName("TrimBox");
     public static readonly PdfName TrueType = new PdfName("TrueType");
     public static readonly PdfName TwoColumnLeft = new PdfName("TwoColumnLeft");
     public static readonly PdfName Tx = new PdfName("Tx");
