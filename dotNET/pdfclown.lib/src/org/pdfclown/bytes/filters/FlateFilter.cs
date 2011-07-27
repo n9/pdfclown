@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it):
@@ -34,8 +34,6 @@ using System;
 using System.IO;
 using System.IO.Compression;
 
-using Zip = ICSharpCode.SharpZipLib.Zip.Compression;
-
 namespace org.pdfclown.bytes.filters
 {
   /**
@@ -61,30 +59,11 @@ namespace org.pdfclown.bytes.filters
       PdfDictionary parameters
       )
     {
-/* TODO:IMPL This chunk of code is the canonical implementation using System.IO.Compression; it's going to substitute the current SharpZipLib-based implementation (see below).
       MemoryStream outputStream = new MemoryStream();
-      {
-        MemoryStream inputStream = new MemoryStream(data,offset,length);
-        DeflateStream inputFilter = new DeflateStream(
-          inputStream,
-          CompressionMode.Decompress
-          );
-        inputStream.Position = 2; // Skips zlib's 2-byte header [RFC 1950] [FIX:0.0.8:JCT].
-        Transform(inputFilter,outputStream);
-      }
-      return outputStream.ToArray();
-*/
-
-      /*
-        NOTE: This is an alternative implementation using ICSharpCode.SharpZipLib instead of
-        System.IO.Compression. It should be eventually replaced by the canonical implementation above.
-      */
-
-      Zip.Streams.InflaterInputStream inputFilter = new Zip.Streams.InflaterInputStream(
-        new MemoryStream(data, offset, length)
-        );
-      MemoryStream outputStream = new MemoryStream();
-      Transform(inputFilter, outputStream);
+      MemoryStream inputStream = new MemoryStream(data, offset, length);
+      DeflateStream inputFilter = new DeflateStream(inputStream, CompressionMode.Decompress);
+      inputStream.Position = 2; // Skips zlib's 2-byte header [RFC 1950] [FIX:0.0.8:JCT].
+      Transform(inputFilter,outputStream);
       return DecodePredictor(outputStream.ToArray(), parameters);
     }
 
@@ -95,31 +74,12 @@ namespace org.pdfclown.bytes.filters
       PdfDictionary parameters
       )
     {
-/* TODO:IMPL See Decode(...) commented block on the same issue.
       MemoryStream inputStream = new MemoryStream(data, offset, length);
       MemoryStream outputStream = new MemoryStream();
-      DeflateStream outputFilter = new DeflateStream(
-        outputStream,
-        CompressionMode.Compress,
-        true
-        );
-      // Add zlib's 2-byte header [RFC 1950]!
+      DeflateStream outputFilter = new DeflateStream(outputStream, CompressionMode.Compress, true);
+      // Add zlib's 2-byte header [RFC 1950] [FIX:0.0.8:JCT]!
       outputStream.WriteByte(0x78); // CMF = {CINFO (bits 7-4) = 7; CM (bits 3-0) = 8} = 0x78.
       outputStream.WriteByte(0xDA); // FLG = {FLEVEL (bits 7-6) = 3; FDICT (bit 5) = 0; FCHECK (bits 4-0) = {31 - ((CMF * 256 + FLG - FCHECK) Mod 31)} = 26} = 0xDA.
-      Transform(inputStream, outputFilter);
-      return outputStream.ToArray();
-*/
-
-      /*
-        NOTE: This is an alternative implementation using ICSharpCode.SharpZipLib instead of
-        System.IO.Compression. It should be eventually replaced by the canonical implementation above.
-      */
-      MemoryStream inputStream = new MemoryStream(data, offset, length);
-      MemoryStream outputStream = new MemoryStream();
-      Zip.Streams.DeflaterOutputStream outputFilter = new Zip.Streams.DeflaterOutputStream(
-        outputStream,
-        new Zip.Deflater(Zip.Deflater.BEST_COMPRESSION)
-        );
       Transform(inputStream, outputFilter);
       return outputStream.ToArray();
     }
