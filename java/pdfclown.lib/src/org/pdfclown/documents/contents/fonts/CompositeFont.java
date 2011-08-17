@@ -597,19 +597,11 @@ public abstract class CompositeFont
         new PdfInteger(100)
         );
       // FontFile.
-  //TODO:IMPL distinguish between truetype (FontDescriptor.FontFile2) and opentype (FontDescriptor.FontFile3 and FontStream.subtype=OpenType)!!!
-      PdfReference fontFileReference = getFile().register(
-        new PdfStream(
-          new PdfDictionary(
-            new PdfName[]{PdfName.Subtype},
-            new PdfDirectObject[]{PdfName.OpenType}
-            ),
-          new Buffer(parser.fontData.toByteArray())
-          )
-        );
       fontDescriptor.put(
-        PdfName.FontFile3,
-        fontFileReference
+        PdfName.FontFile2,
+        getFile().register(
+          new PdfStream(new Buffer(parser.fontData.toByteArray()))
+          )
         );
     }
     return getFile().register(fontDescriptor);

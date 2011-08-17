@@ -489,17 +489,9 @@ namespace org.pdfclown.documents.contents.fonts
         */
         fontDescriptor[PdfName.StemV] = new PdfInteger(100);
         // FontFile.
-    //TODO:IMPL distinguish between truetype (FontDescriptor.FontFile2) and opentype (FontDescriptor.FontFile3 and FontStream.subtype=OpenType)!!!
-        PdfReference fontFileReference = File.Register(
-          new PdfStream(
-            new PdfDictionary(
-              new PdfName[]{PdfName.Subtype},
-              new PdfDirectObject[]{PdfName.OpenType}
-              ),
-            new bytes::Buffer(parser.FontData.ToByteArray())
-            )
+        fontDescriptor[PdfName.FontFile2] = File.Register(
+          new PdfStream(new bytes::Buffer(parser.FontData.ToByteArray()))
           );
-        fontDescriptor[PdfName.FontFile3] = fontFileReference;
       }
       return File.Register(fontDescriptor);
     }
