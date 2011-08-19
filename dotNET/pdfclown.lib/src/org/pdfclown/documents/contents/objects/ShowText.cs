@@ -154,9 +154,9 @@ namespace org.pdfclown.documents.contents.objects
               float charHeight = font.GetHeight(textChar,fontSize);
               drawing::RectangleF charBox = new drawing::RectangleF(
                 trm.Elements[4],
-                contextHeight - trm.Elements[5] - font.GetAscent(fontSize) * tm.Elements[3],
-                charWidth * tm.Elements[0],
-                charHeight * tm.Elements[3]
+                contextHeight - trm.Elements[5] - font.GetAscent(fontSize) * trm.Elements[3],
+                charWidth * trm.Elements[0],
+                charHeight * trm.Elements[3]
                 );
               textScanner.ScanChar(textChar,charBox);
             }

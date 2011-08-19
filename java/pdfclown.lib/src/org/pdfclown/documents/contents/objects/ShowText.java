@@ -190,9 +190,9 @@ public abstract class ShowText
             float charHeight = font.getHeight(textChar,fontSize);
             Rectangle2D charBox = new Rectangle2D.Double(
               trm.getTranslateX(),
-              contextHeight - trm.getTranslateY() - font.getAscent(fontSize) * tm.getScaleY(),
-              charWidth * tm.getScaleX(),
-              charHeight * tm.getScaleY()
+              contextHeight - trm.getTranslateY() - font.getAscent(fontSize) * trm.getScaleY(),
+              charWidth * trm.getScaleX(),
+              charHeight * trm.getScaleY()
               );
             textScanner.scanChar(textChar,charBox);
           }
