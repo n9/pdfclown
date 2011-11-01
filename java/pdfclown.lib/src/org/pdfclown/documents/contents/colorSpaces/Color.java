@@ -35,7 +35,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
   Color value [PDF:1.6:4.5.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 public abstract class Color<TDataObject extends PdfDataObject>
   extends PdfObjectWrapper<TDataObject>
@@ -54,8 +54,8 @@ public abstract class Color<TDataObject extends PdfDataObject>
     implementation of this method; currently this implementation focuses on
     device colors only.
   */
-  protected static float normalizeComponent(
-    float value
+  protected static double normalizeComponent(
+    double value
     )
   {
     if(value < 0)

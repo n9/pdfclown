@@ -1,5 +1,8 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
@@ -10,9 +13,6 @@ import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.files.File;
 import org.pdfclown.tools.PageStamper;
 
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-
 /**
   This sample demonstrates <b>how to stamp the page number</b> on alternated corners
   of an existing PDF document's pages.
@@ -22,7 +22,7 @@ import java.awt.geom.Point2D;
   etc.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class PageNumberingSample
   extends Sample
@@ -35,7 +35,6 @@ public class PageNumberingSample
     File file;
     {
       String filePath = promptPdfFileChoice("Please select a PDF file");
-
       try
       {file = new File(filePath);}
       catch(Exception e)
@@ -46,12 +45,9 @@ public class PageNumberingSample
     // 2. Stamp the document!
     stamp(document);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Page numbering","numbering a document's pages");
-
     // 3. Serialize the PDF file!
-    serialize(file);
-    
+    serialize(file, true, "Page numbering", "numbering a document's pages");
+
     return true;
   }
 

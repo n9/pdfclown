@@ -43,7 +43,6 @@ namespace org.pdfclown.tokens
     : PdfStream,
       IDictionary<int,PdfDataObject>
   {
-//TODO:collection extension (Extends entry)
     #region types
     private sealed class ObjectEntry
     {
@@ -103,6 +102,10 @@ namespace org.pdfclown.tokens
 
     #region constructors
     public ObjectStream(
+      ) : base(new PdfDictionary(new PdfName[]{PdfName.Type}, new PdfDirectObject[]{PdfName.ObjStm}))
+    {}
+
+    public ObjectStream(
       PdfDictionary header,
       IBuffer body
       ) : base(header, body)
@@ -112,25 +115,27 @@ namespace org.pdfclown.tokens
     #region interface
     #region public
     /**
-      <summary>Gets the reference to an object stream, of which this object stream is considered
-      an extension.</summary>
-      <remarks>Both streams are considered part of a collection of object streams.
-      A given collection consists of a set of streams whose links form a directed acyclic graph.</remarks>
+      <summary>Gets/Sets the object stream extended by this one.</summary>
+      <remarks>Both streams are considered part of a collection of object streams  whose links form
+      a directed acyclic graph.</remarks>
     */
-    public PdfReference LinkedStreamReference
+    public ObjectStream BaseStream
     {
       get
-      {return (PdfReference)Header[PdfName.Extends];}
+      {return (ObjectStream)Header.Resolve(PdfName.Extends);}
+      set
+      {Header[PdfName.Extends] = value.Reference;}
     }
 
     public override void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      File context
       )
     {
       if(entries != null)
       {Flush(stream);}
 
-      base.WriteTo(stream);
+      base.WriteTo(stream, context);
     }
 
     #region IDictionary
@@ -266,18 +271,23 @@ namespace org.pdfclown.tokens
         if(entries == null)
         {
           entries = new Dictionary<int,ObjectEntry>();
-          parser = new FileParser(Body, File);
-          int baseOffset = ((PdfInteger)Header[PdfName.First]).IntValue;
-          for(
-            int index = 0,
-              length = ((PdfInteger)Header[PdfName.N]).IntValue;
-            index < length;
-            index++
-            )
+
+          IBuffer body = Body;
+          if(body.Length > 0)
           {
-            int objectNumber = ((PdfInteger)parser.ParsePdfObject(1)).IntValue;
-            int objectOffset = baseOffset + ((PdfInteger)parser.ParsePdfObject(1)).IntValue;
-            entries[objectNumber] = new ObjectEntry(objectOffset, parser);
+            parser = new FileParser(Body, File);
+            int baseOffset = ((PdfInteger)Header[PdfName.First]).IntValue;
+            for(
+              int index = 0,
+                length = ((PdfInteger)Header[PdfName.N]).IntValue;
+              index < length;
+              index++
+              )
+            {
+              int objectNumber = ((PdfInteger)parser.ParsePdfObject(1)).IntValue;
+              int objectOffset = baseOffset + ((PdfInteger)parser.ParsePdfObject(1)).IntValue;
+              entries[objectNumber] = new ObjectEntry(objectOffset, parser);
+            }
           }
         }
         return entries;
@@ -299,6 +309,7 @@ namespace org.pdfclown.tokens
         IBuffer dataBuffer = new bytes.Buffer();
         IndirectObjects indirectObjects = File.IndirectObjects;
         int objectIndex = -1;
+        File context = File;
         foreach(KeyValuePair<int,ObjectEntry> entry in Entries)
         {
           int objectNumber = entry.Key;
@@ -308,8 +319,8 @@ namespace org.pdfclown.tokens
           xrefEntry.Offset = ++objectIndex;
 
           /*
-            NOTE: The entry offset MUST be updated only after its serialization, in order not to interfere
-            with its possible data-object retrieval from the old serialization.
+            NOTE: The entry offset MUST be updated only after its serialization, in order not to
+            interfere with its possible data-object retrieval from the old serialization.
           */
           int entryValueOffset = (int)dataBuffer.Length;
 
@@ -319,7 +330,7 @@ namespace org.pdfclown.tokens
             .Append(entryValueOffset.ToString()).Append(Chunk.Space); // Byte offset (relative to the first one).
 
           // Data.
-          entry.Value.DataObject.WriteTo(dataBuffer);
+          entry.Value.DataObject.WriteTo(dataBuffer, context);
           entry.Value.offset = entryValueOffset;
         }
 

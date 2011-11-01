@@ -114,12 +114,6 @@ namespace org.pdfclown.objects
       )
     {throw new NotImplementedException();}
 
-    public override PdfIndirectObject Container
-    {
-      get
-      {return Root;}
-    }
-
     /**
       Gets the value corresponding to the given key, forcing its instantiation in case of missing
       entry.
@@ -209,12 +203,6 @@ namespace org.pdfclown.objects
       )
     {return File.Resolve(this[key]);}
 
-    public override PdfIndirectObject Root
-    {
-      get
-      {return parent != null ? parent.Root : null;}
-    }
-
     public override string ToString(
       )
     {
@@ -245,8 +233,17 @@ namespace org.pdfclown.objects
       {updateable = value;}
     }
 
+    public override bool Updated
+    {
+      get
+      {return updated;}
+      protected internal set
+      {updated = value;}
+    }
+
     public override void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      File context
       )
     {
       // Begin.
@@ -254,14 +251,15 @@ namespace org.pdfclown.objects
       // Entries.
       foreach(KeyValuePair<PdfName,PdfDirectObject> entry in entries)
       {
-        if(entry.Value.Virtual)
+        PdfDirectObject value = entry.Value;
+        if(value != null && value.Virtual)
           continue;
 
         // Entry...
         // ...key.
-        entry.Key.WriteTo(stream); stream.Write(Chunk.Space);
+        entry.Key.WriteTo(stream, context); stream.Write(Chunk.Space);
         // ...value.
-        PdfDirectObject.WriteTo(stream, entry.Value); stream.Write(Chunk.Space);
+        PdfDirectObject.WriteTo(stream, context, value); stream.Write(Chunk.Space);
       }
       // End.
       stream.Write(EndDictionaryChunk);
@@ -405,14 +403,6 @@ namespace org.pdfclown.objects
     #endregion
 
     #region protected
-    protected internal override bool Updated
-    {
-      get
-      {return updated;}
-      set
-      {updated = value;}
-    }
-
     protected internal override bool Virtual
     {
       get

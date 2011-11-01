@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,7 +30,7 @@ package org.pdfclown.documents.contents.composition;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8.3
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public final class Length
 {
@@ -50,44 +50,44 @@ public final class Length
   }
 
   private UnitModeEnum unitMode;
-  private float value;
+  private double value;
 
   public Length(
-    float value,
+    double value,
     UnitModeEnum unitMode
     )
   {
     this.value = value;
     this.unitMode = unitMode;
   }
-  
+
   /**
     Gets the <b>measurement mode</b> applied to the {@link #getValue() distance value}.
   */
   public UnitModeEnum getUnitMode(
     )
   {return unitMode;}
-  
+
   /**
     Gets the <b>distance value</b>.
     <p>According to the applied {@link #getUnitMode() unit mode}, this value can be
     either an <i>absolute measure</i> or a <i>ratio to be resolved through a base value</i>.</p>
-    
-    @see #getValue(float)
+
+    @see #getValue(double)
   */
-  public float getValue(
+  public double getValue(
     )
   {return value;}
-  
+
   /**
     Gets the <b>resolved distance value</b>.
     <p>This method ensures that relative distance values are transformed according
     to the specified base value.</p>
-    
+
     @param baseValue Value used to resolve relative values.
   */
-  public float getValue(
-    float baseValue
+  public double getValue(
+    double baseValue
     )
   {
     switch(unitMode)
@@ -100,14 +100,14 @@ public final class Length
         throw new UnsupportedOperationException(unitMode.getClass().getSimpleName() + " not supported.");
     }
   }
-  
+
   public void setUnitMode(
     UnitModeEnum value
     )
   {unitMode = value;}
-  
+
   public void setValue(
-    float value
+    double value
     )
   {this.value = value;}
 }

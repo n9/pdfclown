@@ -110,12 +110,6 @@ namespace org.pdfclown.objects
       )
     {throw new NotImplementedException();}
 
-    public override PdfIndirectObject Container
-    {
-      get
-      {return Root;}
-    }
-
     /**
       <summary>Gets the value corresponding to the given index, forcing its instantiation in case
       of missing item.</summary>
@@ -185,12 +179,6 @@ namespace org.pdfclown.objects
       )
     {return File.Resolve(this[index]);}
 
-    public override PdfIndirectObject Root
-    {
-      get
-      {return parent != null ? parent.Root : null;}
-    }
-
     public override string ToString(
       )
     {
@@ -215,8 +203,17 @@ namespace org.pdfclown.objects
       {updateable = value;}
     }
 
+    public override bool Updated
+    {
+      get
+      {return updated;}
+      protected internal set
+      {updated = value;}
+    }
+
     public override void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      File context
       )
     {
       // Begin.
@@ -224,10 +221,10 @@ namespace org.pdfclown.objects
       // Elements.
       foreach(PdfDirectObject item in items)
       {
-        if(item.Virtual)
+        if(item != null && item.Virtual)
           continue;
 
-        PdfDirectObject.WriteTo(stream,item); stream.Write(Chunk.Space);
+        PdfDirectObject.WriteTo(stream, context, item); stream.Write(Chunk.Space);
       }
       // End.
       stream.Write(EndArrayChunk);
@@ -339,14 +336,6 @@ namespace org.pdfclown.objects
     #endregion
 
     #region protected
-    protected internal override bool Updated
-    {
-      get
-      {return updated;}
-      set
-      {updated = value;}
-    }
-
     protected internal override bool Virtual
     {
       get

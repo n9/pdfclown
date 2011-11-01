@@ -50,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Field
@@ -67,9 +67,6 @@ public abstract class Field
   */
   public enum FlagsEnum
   {
-    // <class>
-    // <static>
-    // <fields>
     /**
       The user may not change the value of the field.
     */
@@ -155,10 +152,7 @@ public abstract class Field
       (Choice fields only) The new value is committed as soon as a selection is made with the pointing device.
     */
     CommitOnSelChange(0x4000000);
-    // </fields>
 
-    // <interface>
-    // <public>
     /**
       Converts an enumeration set into its corresponding bit mask representation.
     */
@@ -189,31 +183,17 @@ public abstract class Field
 
       return flags;
     }
-    // </public>
-    // </interface>
-    // </static>
 
-    // <dynamic>
-    // <fields>
     private final int code;
-    // </fields>
 
-    // <constructors>
     private FlagsEnum(
       int code
       )
     {this.code = code;}
-    // </constructors>
 
-    // <interface>
-    // <public>
     public int getCode(
       )
     {return code;}
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
   }
   // </classes>
 
@@ -234,9 +214,9 @@ public abstract class Field
       return null;
 
     PdfDictionary dataObject = (PdfDictionary)reference.getDataObject();
-    PdfName fieldType = (PdfName)dataObject.get(PdfName.FT);
-    PdfInteger fieldFlags = (PdfInteger)dataObject.get(PdfName.Ff);
-    int fieldFlagsValue = (fieldFlags == null ? 0 : fieldFlags.getRawValue());
+    PdfName fieldType = (PdfName)getInheritableAttribute(dataObject, PdfName.FT);
+    PdfInteger fieldFlags = (PdfInteger)getInheritableAttribute(dataObject, PdfName.Ff);
+    int fieldFlagsValue = (fieldFlags == null ? 0 : fieldFlags.getValue());
     if(fieldType.equals(PdfName.Btn)) // Button.
     {
       if((fieldFlagsValue & FlagsEnum.Pushbutton.getCode()) > 0) // Pushbutton.
@@ -261,6 +241,31 @@ public abstract class Field
       throw new UnsupportedOperationException("Unknown field type: " + fieldType);
   }
   // </public>
+
+  // <private>
+  private static PdfDirectObject getInheritableAttribute(
+    PdfDictionary dictionary,
+    PdfName key
+    )
+  {
+    /*
+      NOTE: It moves upward until it finds the inherited attribute.
+    */
+    do
+    {
+      PdfDirectObject entry = dictionary.get(key);
+      if(entry != null)
+        return entry;
+
+      dictionary = (PdfDictionary)dictionary.resolve(PdfName.Parent);
+    } while(dictionary != null);
+    // Default.
+    if(key.equals(PdfName.Ff))
+      return new PdfInteger(0);
+    else
+      return null;
+  }
+  // </private>
   // </interface>
   // </static>
 
@@ -360,7 +365,7 @@ public abstract class Field
   */
   public String getName(
     )
-  {return ((PdfTextString)getBaseDataObject().get(PdfName.T)).getValue();}
+  {return ((PdfTextString)getInheritableAttribute(PdfName.T)).getValue();} // NOTE: Despite the field name is not a canonical 'inheritable' attribute, sometimes it's not expressed at leaf level.
 
   /**
     Gets the field value.
@@ -500,27 +505,7 @@ public abstract class Field
   protected PdfDirectObject getInheritableAttribute(
     PdfName key
     )
-  {
-    /*
-      NOTE: It moves upward until it finds the inherited attribute.
-    */
-    PdfDictionary dictionary = getBaseDataObject();
-    while(true)
-    {
-      PdfDirectObject entry = dictionary.get(key);
-      if(entry != null)
-        return entry;
-
-      dictionary = (PdfDictionary)dictionary.resolve(PdfName.Parent);
-      if(dictionary == null)
-      {
-        if(key.equals(PdfName.Ff))
-          return new PdfInteger(0);
-
-        return null;
-      }
-    }
-  }
+  {return getInheritableAttribute(getBaseDataObject(), key);}
   // </protected>
   // </interface>
   // </dynamic>

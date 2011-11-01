@@ -17,7 +17,7 @@ import java.util.Scanner;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.1
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class SampleLoader
 {
@@ -124,8 +124,9 @@ public class SampleLoader
         {/* NOOP */}
       } while(sampleClass == null);
 
+      System.out.println("\n" + sampleClass.getSimpleName() + " running...");
+
       // Instantiate the sample!
-      System.out.println("\nInstantiating " + sampleClass.getSimpleName() + " sample...");
       Sample sample;
       try
       {
@@ -136,7 +137,6 @@ public class SampleLoader
       {throw new RuntimeException(sampleClass.getName() + " sample class has failed to instantiate.",e);}
 
       // Run the sample!
-      System.out.println("Running " + sampleClass.getSimpleName() + " sample...");
       try
       {
         if(sample.run())

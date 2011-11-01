@@ -26,12 +26,13 @@
 package org.pdfclown.objects;
 
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.files.File;
 
 /**
   PDF integer number object [PDF:1.6:3.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 11/01/11
 */
 public final class PdfInteger
   extends PdfNumber<Integer>
@@ -54,7 +55,8 @@ public final class PdfInteger
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    File context
     )
   {stream.write(Integer.toString(getRawValue()));}
   // </public>

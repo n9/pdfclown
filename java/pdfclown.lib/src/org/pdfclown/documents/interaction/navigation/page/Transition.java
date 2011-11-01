@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public final class Transition
@@ -385,18 +385,18 @@ public final class Transition
   public Transition(
     Document context,
     StyleEnum style,
-    Float duration
+    Double duration
     )
   {this(context, style, duration, null, null, null, null);}
 
   public Transition(
     Document context,
     StyleEnum style,
-    Float duration,
+    Double duration,
     OrientationEnum orientation,
     PageDirectionEnum pageDirection,
     DirectionEnum direction,
-    Float scale
+    Double scale
     )
   {
     this(context);
@@ -437,7 +437,7 @@ public final class Transition
   /**
     Gets the duration of the transition effect, in seconds.
   */
-  public float getDuration(
+  public double getDuration(
     )
   {
     PdfNumber<?> durationObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.D);
@@ -474,7 +474,7 @@ public final class Transition
     Gets the scale at which the changes are drawn.
   */
   @PDF(VersionEnum.PDF15)
-  public float getScale(
+  public double getScale(
     )
   {
     PdfNumber<?> scaleObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.SS);
@@ -512,7 +512,7 @@ public final class Transition
     @see #getDuration()
   */
   public void setDuration(
-    Float value
+    Double value
     )
   {
     if(value == null)
@@ -551,7 +551,7 @@ public final class Transition
     @see #getScale()
   */
   public void setScale(
-    Float value
+    Double value
     )
   {
     if(value == null)

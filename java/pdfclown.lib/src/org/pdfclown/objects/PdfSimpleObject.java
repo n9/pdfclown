@@ -31,7 +31,7 @@ import org.pdfclown.files.File;
   Abstract PDF simple object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 public abstract class PdfSimpleObject<TValue>
   extends PdfDirectObject
@@ -100,11 +100,6 @@ public abstract class PdfSimpleObject<TValue>
   }
 
   @Override
-  public final PdfIndirectObject getContainer(
-    )
-  {return null;} // NOTE: As simple objects are immutable, no container can be associated.
-
-  @Override
   public final PdfObject getParent(
     )
   {return null;} // NOTE: As simple objects are immutable, no parent can be associated.
@@ -115,11 +110,6 @@ public abstract class PdfSimpleObject<TValue>
   public TValue getRawValue(
     )
   {return value;}
-
-  @Override
-  public final PdfIndirectObject getRoot(
-    )
-  {return null;} // NOTE: As simple objects are immutable, no root can be associated.
 
   /**
     Gets the high-level representation of the value.
@@ -132,6 +122,11 @@ public abstract class PdfSimpleObject<TValue>
   public int hashCode(
     )
   {return getRawValue().hashCode();}
+
+  @Override
+  public final boolean isUpdated(
+    )
+  {return false;} // NOTE: Simple objects are immutable.
 
   @Override
   public final boolean isUpdateable(
@@ -151,11 +146,6 @@ public abstract class PdfSimpleObject<TValue>
   // </public>
 
   // <protected>
-  @Override
-  protected final boolean isUpdated(
-    )
-  {return false;} // NOTE: Simple objects are immutable.
-
   @Override
   protected boolean isVirtual(
     )

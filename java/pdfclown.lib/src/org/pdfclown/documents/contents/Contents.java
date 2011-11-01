@@ -49,7 +49,7 @@ import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-  <b>Content stream</b> [PDF:1.6:3.7.1].
+  Content stream [PDF:1.6:3.7.1].
   <p>During its loading, this content stream is parsed and its instructions
   are exposed as a list; in case of modifications, it's user responsability
   to call the {@link #flush()} method in order to serialize back the instructions
@@ -57,7 +57,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Contents
@@ -344,7 +344,7 @@ public final class Contents
 
   // <constructors>
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public Contents(
     PdfDirectObject baseObject,
@@ -411,8 +411,9 @@ public final class Contents
     // Delete old contents from the stream buffer!
     buffer.setLength(0);
     // Serializing the new contents into the stream buffer...
+    Document context = getDocument();
     for(ContentObject item : items)
-    {item.writeTo(buffer);}
+    {item.writeTo(buffer, context);}
   }
 
   public IContentContext getContentContext(

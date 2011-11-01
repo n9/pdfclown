@@ -24,7 +24,7 @@
 */
 
 using org.pdfclown.bytes;
-using org.pdfclown.documents.contents.xObjects;
+using xObjects = org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.objects;
 
 using System.Collections.Generic;
@@ -36,7 +36,8 @@ namespace org.pdfclown.documents.contents.objects
   */
   [PDF(VersionEnum.PDF10)]
   public sealed class PaintXObject
-    : Operation
+    : Operation,
+      IResourceReference<xObjects::XObject>
   {
     #region static
     #region fields
@@ -68,28 +69,28 @@ namespace org.pdfclown.documents.contents.objects
       ContentScanner context
       )
     {
-      org.pdfclown.documents.contents.xObjects.XObject xObject = GetXObject(context.ContentContext);
-      return xObject is FormXObject
-        ? new ContentScanner((FormXObject)xObject, context)
+      xObjects::XObject xObject = GetXObject(context.ContentContext);
+      return xObject is xObjects::FormXObject
+        ? new ContentScanner((xObjects::FormXObject)xObject, context)
         : null;
     }
 
     /**
-      <summary>Gets the <see cref="org.pdfclown.documents.contents.xObjects.XObject">external object</see>
-      resource to be painted.</summary>
+      <summary>Gets the <see cref="xObjects::XObject">external object</see> resource to be painted.
+      </summary>
       <param name="context">Content context.</param>
     */
-    public org.pdfclown.documents.contents.xObjects.XObject GetXObject(
+    public xObjects::XObject GetXObject(
+      IContentContext context
+      )
+    {return GetResource(context);}
+
+    #region IResourceReference
+    public xObjects::XObject GetResource(
       IContentContext context
       )
     {return context.Resources.XObjects[Name];}
 
-    /**
-      <summary>Gets/Sets the name of the <see cref="org.pdfclown.documents.contents.xObjects.XObject">external object</see>
-      resource to be painted.</summary>
-      <seealso cref="GetXObject(IContentContext)"/>
-      <seealso cref="XObjectResources"/>
-    */
     public PdfName Name
     {
       get
@@ -97,6 +98,7 @@ namespace org.pdfclown.documents.contents.objects
       set
       {operands[0] = value;}
     }
+    #endregion
     #endregion
     #endregion
   }

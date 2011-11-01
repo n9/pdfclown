@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,7 +30,7 @@ import java.util.List;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.contents.IContentContext;
-import org.pdfclown.documents.contents.ShadingResources;
+import org.pdfclown.documents.contents.colorSpaces.Shading;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 
@@ -39,11 +39,12 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF13)
 public final class PaintShading
   extends Operation
+  implements IResourceReference<Shading<?>>
 {
   // <class>
   // <static>
@@ -68,33 +69,33 @@ public final class PaintShading
   // <interface>
   // <public>
   /**
-    Gets the name of the {@link org.pdfclown.documents.contents.colorSpaces.Shading shading} resource
-    to be painted.
+    Gets the {@link Shading shading} resource to be painted.
 
-    @see #getShading(IContentContext)
-    @see ShadingResources
+    @param context Content context.
   */
+  public Shading<?> getShading(
+    IContentContext context
+    )
+  {return getResource(context);}
+
+  // <IResourceReference>
+  @Override
   public PdfName getName(
     )
   {return (PdfName)operands.get(0);}
 
-  /**
-    Gets the {@link org.pdfclown.documents.contents.colorSpaces.Shading shading} resource to be painted.
-
-    @param context Content context.
-  */
-  public org.pdfclown.documents.contents.colorSpaces.Shading<?> getShading(
+  @Override
+  public Shading<?> getResource(
     IContentContext context
     )
   {return context.getResources().getShadings().get(getName());}
 
-  /**
-    @see #getName()
-  */
+  @Override
   public void setName(
     PdfName value
     )
   {operands.set(0,value);}
+  // </IResourceReference>
   // </public>
   // </dynamic>
   // </class>

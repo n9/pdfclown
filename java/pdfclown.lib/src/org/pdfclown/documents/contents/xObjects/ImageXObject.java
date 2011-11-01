@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
   Image external object [PDF:1.6:4.8.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/28/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class ImageXObject
@@ -73,7 +73,7 @@ public final class ImageXObject
   }
 
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public ImageXObject(
     PdfDirectObject baseObject

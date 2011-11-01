@@ -22,9 +22,8 @@ namespace org.pdfclown.samples.cli
     public override bool Run(
       )
     {
+      // 1. Opening the PDF file...
       string filePath = PromptPdfFileChoice("Please select a PDF file");
-
-      // 1. Open the PDF file!
       File file = new File(filePath);
       Document document = file.Document;
 
@@ -39,11 +38,8 @@ namespace org.pdfclown.samples.cli
         contents.Flush();
       }
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Content removal","content removal from existing pages");
-
       // 3. Serialize the PDF file!
-      Serialize(file);
+      Serialize(file, true, "Content removal", "content removal from existing pages");
 
       return true;
     }

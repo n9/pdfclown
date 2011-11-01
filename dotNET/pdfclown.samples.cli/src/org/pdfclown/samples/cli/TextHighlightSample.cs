@@ -24,22 +24,24 @@ namespace org.pdfclown.samples.cli
     private class TextHighlighter
       : TextExtractor.IIntervalFilter
     {
-      private Match match;
+      private IEnumerator matchEnumerator;
       private Page page;
 
       public TextHighlighter(
         Page page,
-        Match match
+        MatchCollection matches
         )
       {
         this.page = page;
-        this.match = match;
+        this.matchEnumerator = matches.GetEnumerator();
       }
 
       public Interval<int> Current
       {
         get
-        {return new Interval<int>(match.Index, match.Index + match.Length);}
+        {
+          Match current = (Match)matchEnumerator.Current;
+          return new Interval<int>(current.Index, current.Index + current.Length);}
       }
 
       object IEnumerator.Current
@@ -54,7 +56,7 @@ namespace org.pdfclown.samples.cli
 
       public bool MoveNext(
         )
-      {return (match = match.NextMatch()).Success;}
+      {return matchEnumerator.MoveNext();}
 
       public void Process(
         Interval<int> interval,
@@ -99,9 +101,8 @@ namespace org.pdfclown.samples.cli
     public override bool Run(
       )
     {
+      // 1. Opening the PDF file...
       string filePath = PromptPdfFileChoice("Please select a PDF file");
-
-      // 1. Open the PDF file!
       File file = new File(filePath);
 
       // Define the text pattern to look for!
@@ -118,12 +119,12 @@ namespace org.pdfclown.samples.cli
         IDictionary<RectangleF?,IList<ITextString>> textStrings = textExtractor.Extract(page);
 
         // 2.2. Find the text pattern matches!
-        Match match = pattern.Match(TextExtractor.ToString(textStrings));
+        MatchCollection matches = pattern.Matches(TextExtractor.ToString(textStrings));
 
         // 2.3. Highlight the text pattern matches!
         textExtractor.Filter(
           textStrings,
-          new TextHighlighter(page, match)
+          new TextHighlighter(page, matches)
           );
       }
 

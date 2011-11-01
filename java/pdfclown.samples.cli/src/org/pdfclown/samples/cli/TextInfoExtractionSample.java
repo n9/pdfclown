@@ -1,5 +1,7 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.ContentScanner;
@@ -12,8 +14,6 @@ import org.pdfclown.documents.contents.objects.Text;
 import org.pdfclown.files.File;
 import org.pdfclown.tools.PageStamper;
 
-import java.awt.geom.Rectangle2D;
-
 /**
   This sample demonstrates <b>how to retrieve text content along with its graphic attributes</b>
   (font, font size, text color, text rendering mode, text bounding box...) from a PDF document;
@@ -21,36 +21,36 @@ import java.awt.geom.Rectangle2D;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class TextInfoExtractionSample
   extends Sample
 {
-  private DeviceRGBColor[] textCharBoxColors = new DeviceRGBColor[]
+  private final DeviceRGBColor[] textCharBoxColors = new DeviceRGBColor[]
     {
-      new DeviceRGBColor(200f/255,100f/255,100f/255),
-      new DeviceRGBColor(100f/255,200f/255,100f/255),
-      new DeviceRGBColor(100f/255,100f/255,200f/255)
+      new DeviceRGBColor(200 / 255, 100 / 255, 100 / 255),
+      new DeviceRGBColor(100 / 255, 200 / 255, 100 / 255),
+      new DeviceRGBColor(100 / 255, 100 / 255, 200 / 255)
     };
-  private DeviceRGBColor textStringBoxColor = DeviceRGBColor.Black;
+  private final DeviceRGBColor textStringBoxColor = DeviceRGBColor.Black;
 
   @Override
   public boolean run(
     )
   {
-    String filePath = promptPdfFileChoice("Please select a PDF file");
-
-    // 1. Open the PDF file!
+    // 1. Opening the PDF file...
     File file;
-    try
-    {file = new File(filePath);}
-    catch(Exception e)
-    {throw new RuntimeException(filePath + " file access error.",e);}
-
+    {
+      String filePath = promptPdfFileChoice("Please select a PDF file");
+      try
+      {file = new File(filePath);}
+      catch(Exception e)
+      {throw new RuntimeException(filePath + " file access error.",e);}
+    }
     Document document = file.getDocument();
-    
+
     PageStamper stamper = new PageStamper(); // NOTE: Page stamper is used to draw contents on existing pages.
-    
+
     // 2. Iterating through the document pages...
     for(Page page : document.getPages())
     {
@@ -68,7 +68,7 @@ public class TextInfoExtractionSample
 
     // 3. Decorated version serialization.
     serialize(file,false);
-    
+
     return true;
   }
 
@@ -102,7 +102,7 @@ public class TextInfoExtractionSample
               + "x:" + Math.round(textStringBox.getX()) + ","
               + "y:" + Math.round(textStringBox.getY()) + ","
               + "w:" + Math.round(textStringBox.getWidth()) + ","
-              + "h:" + Math.round(textStringBox.getHeight()) 
+              + "h:" + Math.round(textStringBox.getHeight())
               + "] [font size:" + Math.round(textString.getStyle().getFontSize()) + "]: " + textString.getText()
             );
 
@@ -119,7 +119,7 @@ public class TextInfoExtractionSample
             composer.drawRectangle(textChar.getBox());
             composer.stroke();
           }
-          
+
           // Drawing text string bounding box...
           composer.beginLocalState();
           composer.setLineDash(0, 5);

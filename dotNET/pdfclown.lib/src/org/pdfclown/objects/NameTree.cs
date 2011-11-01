@@ -718,32 +718,21 @@ namespace org.pdfclown.objects
       )
     {
       PdfDictionary node = (PdfDictionary)nodeReference.DataObject;
-      File.ResolvedObject<PdfArray> kidsObject = File.Resolve<PdfArray>(
-        node[PdfName.Kids],
-        nodeReference
-        );
+      PdfArray kidsObject = (PdfArray)node.Resolve(PdfName.Kids);
       if(kidsObject == null) // Leaf node.
       {
-        File.ResolvedObject<PdfArray> namesObject = File.Resolve<PdfArray>(
-          node[PdfName.Names],
-          nodeReference
-          );
+        PdfArray namesObject = (PdfArray)node.Resolve(PdfName.Names);
         for(
           int index = 0,
-            length = namesObject.DataObject.Count;
+            length = namesObject.Count;
           index < length;
           index += 2
           )
-        {
-          filler.Add(
-            namesObject.DataObject,
-            index
-            );
-        }
+        {filler.Add(namesObject,index);}
       }
       else // Intermediate node.
       {
-        foreach(PdfDirectObject kidObject in kidsObject.DataObject)
+        foreach(PdfDirectObject kidObject in kidsObject)
         {Fill(filler,(PdfReference)kidObject);}
       }
     }

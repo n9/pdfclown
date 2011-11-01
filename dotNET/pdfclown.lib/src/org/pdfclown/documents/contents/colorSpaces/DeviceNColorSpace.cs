@@ -81,7 +81,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     {
       get
       {
-        float[] components = new float[ComponentCount];
+        double[] components = new double[ComponentCount];
         for(
           int index = 0,
             length = components.Length;

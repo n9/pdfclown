@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,8 +31,24 @@ namespace org.pdfclown.objects
     <summary>PDF number interface.</summary>
   */
   public interface IPdfNumber
-    : IPdfSimpleObject<float>
-  {}
+    : IPdfSimpleObject<double>
+  {
+    /**
+      <summary>Gets the floating point representation of the value.</summary>
+    */
+    float FloatValue
+    {
+      get;
+    }
+
+    /**
+      <summary>Gets the integer representation of the value.</summary>
+    */
+    int IntValue
+    {
+      get;
+    }
+  }
 
   internal class PdfNumber
   {
@@ -69,7 +85,7 @@ namespace org.pdfclown.objects
       if(!(obj is IPdfNumber))
         throw new ArgumentException("obj MUST implement IPdfNumber");
 
-      float value = ((IPdfNumber)obj).RawValue;
+      double value = ((IPdfNumber)obj).RawValue;
       int intValue = (int)value;
 
       return value == intValue ? intValue.GetHashCode() : value.GetHashCode();

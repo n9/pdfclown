@@ -103,7 +103,7 @@ namespace org.pdfclown.documents.contents.composition
       <param name="d">Item 1,1 of the matrix.</param>
       <param name="e">Item 2,0 of the matrix.</param>
       <param name="f">Item 2,1 of the matrix.</param>
-      <seealso cref="SetMatrix(float,float,float,float,float,float)"/>
+      <seealso cref="SetMatrix(double,double,double,double,double,double)"/>
     */
     public void ApplyMatrix(
       double a,
@@ -237,8 +237,8 @@ namespace org.pdfclown.documents.contents.composition
     */
     public void DrawArc(
       RectangleF location,
-      float startAngle,
-      float endAngle
+      double startAngle,
+      double endAngle
       )
     {DrawArc(location,startAngle,endAngle,0,1);}
 
@@ -255,10 +255,10 @@ namespace org.pdfclown.documents.contents.composition
     */
     public void DrawArc(
       RectangleF location,
-      float startAngle,
-      float endAngle,
-      float branchWidth,
-      float branchRatio
+      double startAngle,
+      double endAngle,
+      double branchWidth,
+      double branchRatio
       )
     {DrawArc(location,startAngle,endAngle,branchWidth,branchRatio,true);}
 
@@ -275,7 +275,7 @@ namespace org.pdfclown.documents.contents.composition
       PointF endControl
       )
     {
-      float contextHeight = scanner.ContentContext.Box.Height;
+      double contextHeight = scanner.ContentContext.Box.Height;
       Add(
         new objects::DrawCurve(
           endPoint.X,
@@ -408,7 +408,7 @@ namespace org.pdfclown.documents.contents.composition
     */
     public void DrawRectangle(
       RectangleF location,
-      float radius
+      double radius
       )
     {
       if(radius == 0)
@@ -432,8 +432,8 @@ namespace org.pdfclown.documents.contents.composition
           double radians2 = radians + quadrantRadians;
           int sin2 = (int)Math.Sin(radians2);
           int cos2 = (int)Math.Cos(radians2);
-          float x1 = 0, x2 = 0, y1 = 0, y2 = 0;
-          float xArc = 0, yArc = 0;
+          double x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+          double xArc = 0, yArc = 0;
           if(cos2 == 0)
           {
             if(sin2 == 1)
@@ -501,10 +501,10 @@ namespace org.pdfclown.documents.contents.composition
     */
     public void DrawSpiral(
       PointF center,
-      float startAngle,
-      float endAngle,
-      float branchWidth,
-      float branchRatio
+      double startAngle,
+      double endAngle,
+      double branchWidth,
+      double branchRatio
       )
     {
       DrawArc(
@@ -575,10 +575,10 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Applies a rotation to the coordinate system from user space to device space
       [PDF:1.6:4.2.2].</summary>
       <param name="angle">Rotational counterclockwise angle.</param>
-      <seealso cref="ApplyMatrix(float,float,float,float,float,float)"/>
+      <seealso cref="ApplyMatrix(double,double,double,double,double,double)"/>
     */
     public void Rotate(
-      float angle
+      double angle
       )
     {
       double rad = angle * Math.PI / 180;
@@ -592,10 +592,10 @@ namespace org.pdfclown.documents.contents.composition
       [PDF:1.6:4.2.2].</summary>
       <param name="angle">Rotational counterclockwise angle.</param>
       <param name="origin">Rotational pivot point; it becomes the new coordinates origin.</param>
-      <seealso cref="ApplyMatrix(float,float,float,float,float,float)"/>
+      <seealso cref="ApplyMatrix(double,double,double,double,double,double)"/>
     */
     public void Rotate(
-      float angle,
+      double angle,
       PointF origin
       )
     {
@@ -618,11 +618,11 @@ namespace org.pdfclown.documents.contents.composition
       [PDF:1.6:4.2.2].</summary>
       <param name="ratioX">Horizontal scaling ratio.</param>
       <param name="ratioY">Vertical scaling ratio.</param>
-      <seealso cref="ApplyMatrix(float,float,float,float,float,float)"/>
+      <seealso cref="ApplyMatrix(double,double,double,double,double,double)"/>
     */
     public void Scale(
-      float ratioX,
-      float ratioY
+      double ratioX,
+      double ratioY
       )
     {ApplyMatrix(ratioX, 0, 0, ratioY, 0, 0);}
 
@@ -630,7 +630,7 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Sets the character spacing parameter [PDF:1.6:5.2.1].</summary>
     */
     public void SetCharSpace(
-      float value
+      double value
       )
     {Add(new objects::SetCharSpace(value));}
 
@@ -664,7 +664,7 @@ namespace org.pdfclown.documents.contents.composition
     */
     public void SetFont(
       PdfName name,
-      float size
+      double size
       )
     {
       // Doesn't the font exist in the context resources?
@@ -678,13 +678,13 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Sets the font [PDF:1.6:5.2].</summary>
       <remarks>The <paramref cref="value"/> is checked for presence in the current resource
       dictionary: if it isn't available, it's automatically added. If you need to avoid such a
-      behavior, use <see cref="SetFont(PdfName,float)"/>.</remarks>
+      behavior, use <see cref="SetFont(PdfName,double)"/>.</remarks>
       <param name="value">Font.</param>
       <param name="size">Scaling factor (points).</param>
     */
     public void SetFont(
       fonts::Font value,
-      float size
+      double size
       )
     {SetFont(GetFontName(value),size);}
 
@@ -692,7 +692,7 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Sets the text horizontal scaling [PDF:1.6:5.2.3].</summary>
     */
     public void SetTextScale(
-      float value
+      double value
       )
     {Add(new objects::SetTextScale(value));}
 
@@ -700,7 +700,7 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Sets the text leading [PDF:1.6:5.2.4].</summary>
     */
     public void SetTextLead(
-      float value
+      double value
       )
     {Add(new objects::SetTextLead(value));}
 
@@ -748,7 +748,7 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Sets the line width [PDF:1.6:4.3.2].</summary>
     */
     public void SetLineWidth(
-      float value
+      double value
       )
     {Add(new objects::SetLineWidth(value));}
 
@@ -761,15 +761,15 @@ namespace org.pdfclown.documents.contents.composition
       <param name="d">Item 1,1 of the matrix.</param>
       <param name="e">Item 2,0 of the matrix.</param>
       <param name="f">Item 2,1 of the matrix.</param>
-      <seealso cref="ApplyMatrix(float,float,float,float,float,float)"/>
+      <seealso cref="ApplyMatrix(double,double,double,double,double,double)"/>
     */
     public void SetMatrix(
-      float a,
-      float b,
-      float c,
-      float d,
-      float e,
-      float f
+      double a,
+      double b,
+      double c,
+      double d,
+      double e,
+      double f
       )
     {
       // Reset the CTM!
@@ -782,7 +782,7 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Sets the miter limit [PDF:1.6:4.3.2].</summary>
     */
     public void SetMiterLimit(
-      float value
+      double value
       )
     {Add(new objects::SetMiterLimit(value));}
 
@@ -821,7 +821,7 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Sets the text rise [PDF:1.6:5.2.6].</summary>
     */
     public void SetTextRise(
-      float value
+      double value
       )
     {Add(new objects::SetTextRise(value));}
 
@@ -829,7 +829,7 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Sets the word spacing [PDF:1.6:5.2.2].</summary>
     */
     public void SetWordSpace(
-      float value
+      double value
       )
     {Add(new objects::SetWordSpace(value));}
 
@@ -927,17 +927,17 @@ namespace org.pdfclown.documents.contents.composition
       PointF location,
       AlignmentXEnum alignmentX,
       AlignmentYEnum alignmentY,
-      float rotation
+      double rotation
       )
     {
       ContentScanner.GraphicsState state = scanner.State;
       fonts::Font font = state.Font;
-      float fontSize = state.FontSize;
-      float x = location.X;
-      float y = location.Y;
-      float width = font.GetKernedWidth(value,fontSize);
-      float height = font.GetLineHeight(fontSize);
-      float descent = font.GetDescent(fontSize);
+      double fontSize = state.FontSize;
+      double x = location.X;
+      double y = location.Y;
+      double width = font.GetKernedWidth(value,fontSize);
+      double height = font.GetLineHeight(fontSize);
+      double descent = font.GetDescent(fontSize);
       Quad frame;
       if(alignmentX == AlignmentXEnum.Left
         && alignmentY == AlignmentYEnum.Top)
@@ -970,10 +970,10 @@ namespace org.pdfclown.documents.contents.composition
 
           state = scanner.State;
           frame = new Quad(
-            state.TextToDeviceSpace(new PointF(0, descent), true),
-            state.TextToDeviceSpace(new PointF(width, descent), true),
-            state.TextToDeviceSpace(new PointF(width, height + descent), true),
-            state.TextToDeviceSpace(new PointF(0, height + descent), true)
+            state.TextToDeviceSpace(new PointF(0, (float)descent), true),
+            state.TextToDeviceSpace(new PointF((float)width, (float)descent), true),
+            state.TextToDeviceSpace(new PointF((float)width, (float)(height + descent)), true),
+            state.TextToDeviceSpace(new PointF(0, (float)(height + descent)), true)
             );
 
           // Add the text!
@@ -1045,10 +1045,10 @@ namespace org.pdfclown.documents.contents.composition
 
             state = scanner.State;
             frame = new Quad(
-              state.TextToDeviceSpace(new PointF(0, descent), true),
-              state.TextToDeviceSpace(new PointF(width, descent), true),
-              state.TextToDeviceSpace(new PointF(width, height + descent), true),
-              state.TextToDeviceSpace(new PointF(0, height + descent), true)
+              state.TextToDeviceSpace(new PointF(0, (float)descent), true),
+              state.TextToDeviceSpace(new PointF((float)width, (float)descent), true),
+              state.TextToDeviceSpace(new PointF((float)width, (float)(height + descent)), true),
+              state.TextToDeviceSpace(new PointF(0, (float)(height + descent)), true)
               );
 
             // Add the text!
@@ -1079,7 +1079,7 @@ namespace org.pdfclown.documents.contents.composition
       PointF location,
       AlignmentXEnum alignmentX,
       AlignmentYEnum alignmentY,
-      float rotation,
+      double rotation,
       actions::Action action
       )
     {
@@ -1218,7 +1218,7 @@ namespace org.pdfclown.documents.contents.composition
       SizeF size,
       AlignmentXEnum alignmentX,
       AlignmentYEnum alignmentY,
-      float rotation
+      double rotation
       )
     {
       XObject xObject = scanner.ContentContext.Resources.XObjects[name];
@@ -1251,18 +1251,30 @@ namespace org.pdfclown.documents.contents.composition
       float locationOffsetX, locationOffsetY;
       switch(alignmentX)
       {
-        case AlignmentXEnum.Left: locationOffsetX = 0; break;
-        case AlignmentXEnum.Right: locationOffsetX = size.Width; break;
+        case AlignmentXEnum.Left:
+          locationOffsetX = 0;
+          break;
+        case AlignmentXEnum.Right:
+          locationOffsetX = size.Width;
+          break;
         case AlignmentXEnum.Center:
         case AlignmentXEnum.Justify:
-        default: locationOffsetX = size.Width / 2; break;
+        default:
+          locationOffsetX = size.Width / 2;
+          break;
       }
       switch(alignmentY)
       {
-        case AlignmentYEnum.Top: locationOffsetY = size.Height; break;
-        case AlignmentYEnum.Bottom: locationOffsetY = 0; break;
+        case AlignmentYEnum.Top:
+          locationOffsetY = size.Height;
+          break;
+        case AlignmentYEnum.Bottom:
+          locationOffsetY = 0;
+          break;
         case AlignmentYEnum.Middle:
-        default: locationOffsetY = size.Height / 2; break;
+        default:
+          locationOffsetY = size.Height / 2;
+          break;
       }
 
       BeginLocalState();
@@ -1305,7 +1317,7 @@ namespace org.pdfclown.documents.contents.composition
       SizeF size,
       AlignmentXEnum alignmentX,
       AlignmentYEnum alignmentY,
-      float rotation
+      double rotation
       )
     {
       ShowXObject(
@@ -1331,11 +1343,11 @@ namespace org.pdfclown.documents.contents.composition
       [PDF:1.6:4.2.2].</summary>
       <param name="distanceX">Horizontal distance.</param>
       <param name="distanceY">Vertical distance.</param>
-      <seealso cref="ApplyMatrix(float,float,float,float,float,float)"/>
+      <seealso cref="ApplyMatrix(double,double,double,double,double,double)"/>
     */
     public void Translate(
-      float distanceX,
-      float distanceY
+      double distanceX,
+      double distanceY
       )
     {ApplyMatrix(1, 0, 0, 1, distanceX, distanceY);}
     #endregion
@@ -1368,10 +1380,10 @@ namespace org.pdfclown.documents.contents.composition
     //TODO: drawArc MUST seamlessly manage already-begun paths.
     private void DrawArc(
       RectangleF location,
-      float startAngle,
-      float endAngle,
-      float branchWidth,
-      float branchRatio,
+      double startAngle,
+      double endAngle,
+      double branchWidth,
+      double branchRatio,
       bool beginPath
       )
     {
@@ -1384,13 +1396,13 @@ namespace org.pdfclown.documents.contents.composition
 
       if(startAngle > endAngle)
       {
-        float swap = startAngle;
+        double swap = startAngle;
         startAngle = endAngle;
         endAngle = swap;
       }
 
-      float radiusX = location.Width / 2;
-      float radiusY = location.Height / 2;
+      double radiusX = location.Width / 2;
+      double radiusY = location.Height / 2;
 
       PointF center = new PointF(
         (float)(location.X + radiusX),
@@ -1471,8 +1483,8 @@ namespace org.pdfclown.documents.contents.composition
         {radians2 = endRadians;}
 
         double quadrantRatio = (radians2 - radians1) / quadrantRadians;
-        radiusX += (float)(branchWidth * quadrantRatio);
-        radiusY += (float)(branchWidth * quadrantRatio);
+        radiusX += branchWidth * quadrantRatio;
+        radiusY += branchWidth * quadrantRatio;
 
         branchWidth *= branchRatio;
       }
@@ -1585,7 +1597,7 @@ namespace org.pdfclown.documents.contents.composition
       <param name="angle">Rotational counterclockwise angle.</param>
     */
     private void RotateText(
-      float angle
+      double angle
       )
     {
       double rad = angle * Math.PI / 180;
@@ -1602,8 +1614,8 @@ namespace org.pdfclown.documents.contents.composition
       <param name="ratioY">Vertical scaling ratio.</param>
     */
     private void ScaleText(
-      float ratioX,
-      float ratioY
+      double ratioX,
+      double ratioY
       )
     {SetTextMatrix(ratioX, 0, 0, ratioY, 0, 0);}
 
@@ -1635,8 +1647,8 @@ namespace org.pdfclown.documents.contents.composition
       <param name="distanceY">Vertical distance.</param>
     */
     private void TranslateText(
-      float distanceX,
-      float distanceY
+      double distanceX,
+      double distanceY
       )
     {SetTextMatrix(1, 0, 0, 1, distanceX, distanceY);}
 
@@ -1647,8 +1659,8 @@ namespace org.pdfclown.documents.contents.composition
       <param name="offsetY">Vertical offset.</param>
     */
     private void TranslateTextRelative(
-      float offsetX,
-      float offsetY
+      double offsetX,
+      double offsetY
       )
     {
       Add(

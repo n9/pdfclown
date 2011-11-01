@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.bytes;
+using colorSpaces = org.pdfclown.documents.contents.colorSpaces;
 using org.pdfclown.objects;
 
 using System.Collections.Generic;
@@ -35,7 +36,8 @@ namespace org.pdfclown.documents.contents.objects
   */
   [PDF(VersionEnum.PDF13)]
   public sealed class Shading
-    : GraphicsObject
+    : GraphicsObject,
+      IResourceReference<colorSpaces::Shading>
   {
     #region static
     #region fields
@@ -54,24 +56,27 @@ namespace org.pdfclown.documents.contents.objects
 
     #region interface
     #region public
-    /**
-      <summary>Gets the <see cref="org.pdfclown.documents.contents.colorSpaces.Shading">shading</see> resource.</summary>
-      <param name="context">Content context.</param>
-    */
-    public org.pdfclown.documents.contents.colorSpaces.Shading GetResource(
+    #region IResourceReference
+    public colorSpaces::Shading GetResource(
       IContentContext context
       )
-    {return ((PaintShading)Objects[0]).GetShading(context);}
+    {return Operation.GetResource(context);}
 
-    /**
-      <summary>Gets the <see cref="org.pdfclown.documents.contents.colorSpaces.Shading">shading</see> resource name.</summary>
-      <seealso cref="GetResource(IContentContext)"/>
-      <seealso cref="ShadingResources"/>
-    */
     public PdfName Name
     {
       get
-      {return ((PaintShading)Objects[0]).Name;}
+      {return Operation.Name;}
+      set
+      {Operation.Name = value;}
+    }
+    #endregion
+    #endregion
+
+    #region private
+    private PaintShading Operation
+    {
+      get
+      {return (PaintShading)Objects[0];}
     }
     #endregion
     #endregion

@@ -23,21 +23,16 @@ namespace org.pdfclown.samples.cli
     public override bool Run(
       )
     {
+      // 1. Opening the PDF file...
       string filePath = PromptPdfFileChoice("Please select a PDF file");
-
-      // 1. Open the PDF file!
       File file = new File(filePath);
-      // Get the PDF document!
       Document document = file.Document;
 
       // 2. Stamp the document!
       Stamp(document);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Page numbering","numbering a document's pages");
-
       // 3. Serialize the PDF file!
-      Serialize(file);
+      Serialize(file, true, "Page numbering", "numbering a document's pages");
 
       return true;
     }

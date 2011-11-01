@@ -361,8 +361,9 @@ namespace org.pdfclown.documents.contents
       // Delete old contents from the stream buffer!
       buffer.SetLength(0);
       // Serializing the new contents into the stream buffer...
+      Document context = Document;
       foreach(ContentObject item in items)
-      {item.WriteTo(buffer);}
+      {item.WriteTo(buffer, context);}
     }
 
     public IContentContext ContentContext

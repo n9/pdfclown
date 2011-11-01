@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -95,13 +95,14 @@ namespace org.pdfclown.documents.contents.objects
     }
 
     public override void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      Document context
       )
     {
       stream.Write(BeginOperatorKeyword); stream.Write("\n");
-      Header.WriteTo(stream);
+      Header.WriteTo(stream, context);
       stream.Write(DataOperatorKeyword); stream.Write("\n");
-      Body.WriteTo(stream); stream.Write("\n"); // [FIX:0.0.4:3] Missed new-line symbol.
+      Body.WriteTo(stream, context); stream.Write("\n");
       stream.Write(EndOperatorKeyword);
     }
     #endregion

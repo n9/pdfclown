@@ -32,8 +32,8 @@ using System.Collections.Generic;
 namespace org.pdfclown.documents.functions
 {
   /**
-    <summary>Stitching function producing a single new 1-input function from the combination
-    of the subdomains of <see cref="Functions">several 1-input functions</see> [PDF:1.6:3.9.3].</summary>
+    <summary>Stitching function producing a single new 1-input function from the combination of the
+    subdomains of <see cref="Functions">several 1-input functions</see> [PDF:1.6:3.9.3].</summary>
   */
   [PDF(VersionEnum.PDF13)]
   public sealed class Type3Function
@@ -51,8 +51,8 @@ namespace org.pdfclown.documents.functions
 
     #region interface
     #region public
-    public override float[] Calculate(
-      float[] inputs
+    public override double[] Calculate(
+      double[] inputs
       )
     {
       // FIXME: Auto-generated method stub
@@ -68,11 +68,11 @@ namespace org.pdfclown.documents.functions
       <summary>Gets the <see cref="Domains">domain</see> partition bounds whose resulting intervals
       are respectively applied to each <see cref="Functions">function</see>.</summary>
     */
-    public IList<float> DomainBounds
+    public IList<double> DomainBounds
     {
       get
       {
-        IList<float> domainBounds = new List<float>();
+        IList<double> domainBounds = new List<double>();
         {
           PdfArray domainBoundsObject = (PdfArray)Dictionary.Resolve(PdfName.Bounds);
           foreach(PdfDirectObject domainBoundObject in domainBoundsObject)
@@ -86,10 +86,10 @@ namespace org.pdfclown.documents.functions
       <summary>Gets the mapping of each <see cref="DomainBounds">subdomain</see> into the domain
       of the corresponding <see cref="Functions">function</see>.</summary>
     */
-    public IList<Interval<float>> DomainEncodes
+    public IList<Interval<double>> DomainEncodes
     {
       get
-      {return GetIntervals<float>(PdfName.Encode, null);}
+      {return GetIntervals<double>(PdfName.Encode, null);}
     }
 
     /**

@@ -78,16 +78,15 @@ namespace org.pdfclown.objects
     }
 
     /**
-      <summary>
-        <para>Gets the indirect object containing the data associated to this object.</para>
-        <para>It generally corresponds to the <see cref="Root">root</see>, except for
-        <see cref="PdfReference">references</see>; in the latter case, data is contained
-        by an indirect object which is different from that containing the reference itself.</para>
-      </summary>
+      <summary>Gets the indirect object containing the data associated to this object.</summary>
     */
-    public abstract PdfIndirectObject Container
+    public virtual PdfIndirectObject Container
     {
-      get;
+      get
+      {
+        PdfObject parent = Parent;
+        return parent != null ? parent.Container : null;
+      }
     }
 
     /**
@@ -96,7 +95,19 @@ namespace org.pdfclown.objects
     public virtual File File
     {
       get
-      {return Container != null ? Container.File : null;}
+      {
+        PdfIndirectObject container = Container;
+        return container != null ? container.File : null;
+      }
+    }
+
+    /**
+      <summary>Gets the indirect object corresponding to this object.</summary>
+    */
+    public virtual PdfIndirectObject IndirectObject
+    {
+      get
+      {return Parent as PdfIndirectObject;}
     }
 
     /**
@@ -109,11 +120,15 @@ namespace org.pdfclown.objects
     }
 
     /**
-      <summary>Gets the top-most ancestor of this object.</summary>
+      <summary>Gets the indirect reference of this object.</summary>
     */
-    public abstract PdfIndirectObject Root
+    public virtual PdfReference Reference
     {
-      get;
+      get
+      {
+        PdfIndirectObject indirectObject = IndirectObject;
+        return indirectObject != null ? indirectObject.Reference : null;
+      }
     }
 
     /**
@@ -126,10 +141,22 @@ namespace org.pdfclown.objects
     }
 
     /**
+      <summary>Gets/Sets whether the initial state of this object has been modified.</summary>
+    */
+    public abstract bool Updated
+    {
+      get;
+      protected internal set;
+    }
+
+    /**
       <summary>Serializes this object to the specified stream.</summary>
+      <param name="stream">Target stream.</param>
+      <param name="context">File context.</param>
     */
     public abstract void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      File context
       );
     #endregion
 
@@ -149,15 +176,6 @@ namespace org.pdfclown.objects
       // Propagate the update to the ascendants!
       if(Parent != null)
       {Parent.Update();}
-    }
-
-    /**
-      <summary>Gets/Sets whether the initial state of this object has been modified.</summary>
-    */
-    protected internal abstract bool Updated
-    {
-      get;
-      set;
     }
 
     /**

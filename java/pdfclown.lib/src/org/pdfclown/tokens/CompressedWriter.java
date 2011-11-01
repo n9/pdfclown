@@ -25,6 +25,10 @@
 
 package org.pdfclown.tokens;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.files.File;
 import org.pdfclown.files.IndirectObjects;
@@ -37,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF file writer implementing compressed cross-reference stream [PDF:1.6:3.4.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 11/01/11
 */
 final class CompressedWriter
   extends Writer
@@ -58,7 +62,7 @@ final class CompressedWriter
   protected void writeIncremental(
     )
   {
-    // 1. Original content (head, body and previous trailer).
+    // 1. Original content (header, body and previous trailer).
     FileParser parser = file.getReader().getParser();
     stream.write(parser.getStream());
 
@@ -68,41 +72,58 @@ final class CompressedWriter
       // 2.1. Content indirect objects.
       IndirectObjects indirectObjects = file.getIndirectObjects();
 
-      // Create the xref stream indirect object!
+      // Create the xref stream!
       /*
-        NOTE: Incremental xref table comprises multiple sections each one composed by multiple subsections;
-        this update adds a new section.
+        NOTE: Incremental xref information structure comprises multiple sections; this update adds a
+        new section.
       */
-      /*
-        NOTE: This xref stream indirect object is purposely temporary (i.e. not registered into the file's
-        indirect objects collection).
-      */
-      XRefStream xrefStream;
-      PdfIndirectObject xrefStreamIndirectObject = new PdfIndirectObject(
-        file,
-        xrefStream = new XRefStream(file),
-        xrefStreamEntry = new XRefEntry(indirectObjects.size(), 0, 0, XRefEntry.UsageEnum.InUse)
-        );
+      XRefStream xrefStream = new XRefStream(file);
 
       XRefEntry prevFreeEntry = null;
-      for(PdfIndirectObject indirectObject : indirectObjects.getModifiedObjects().values())
+      /*
+        NOTE: Extension object streams are necessary to update original object streams whose entries
+        have been modified.
+      */
+      Map<Integer,ObjectStream> extensionObjectStreams = new HashMap<Integer,ObjectStream>();
+      for(PdfIndirectObject indirectObject : new ArrayList<PdfIndirectObject>(indirectObjects.getModifiedObjects().values()))
       {
         prevFreeEntry = addXRefEntry(
           indirectObject.getXrefEntry(),
           indirectObject,
           xrefStream,
-          prevFreeEntry
+          prevFreeEntry,
+          extensionObjectStreams
+          );
+      }
+      for(ObjectStream extensionObjectStream : extensionObjectStreams.values())
+      {
+        prevFreeEntry = addXRefEntry(
+          extensionObjectStream.getContainer().getXrefEntry(),
+          extensionObjectStream.getContainer(),
+          xrefStream,
+          prevFreeEntry,
+          null
           );
       }
       if(prevFreeEntry != null)
-      {prevFreeEntry.setOffset(0);} // Linking back to the first free object. NOTE: The first entry in the table (object number 0) is always free.
+      {prevFreeEntry.setOffset(0);} // Links back to the first free object. NOTE: The first entry in the table (object number 0) is always free.
 
       // 2.2. XRef stream.
+      /*
+        NOTE: This xref stream indirect object is purposely temporary (i.e. not registered into the
+        file's indirect objects collection).
+      */
+      new PdfIndirectObject(
+        file,
+        xrefStream,
+        xrefStreamEntry = new XRefEntry(indirectObjects.size(), 0)
+        );
       xrefStream.getHeader().put(PdfName.Prev,new PdfInteger((int)parser.retrieveXRefOffset()));
       addXRefEntry(
         xrefStreamEntry,
-        xrefStreamIndirectObject,
+        xrefStream.getContainer(),
         xrefStream,
+        null,
         null
         );
     }
@@ -131,61 +152,39 @@ final class CompressedWriter
 
       // Create the xref stream indirect object!
       /*
-        NOTE: A standard xref stream comprises just one section composed by just one subsection.
-        The xref stream is generated on-the-fly and kept volatile not to interfere with the existing
-        file structure.
+        NOTE: Standard xref information structure comprises just one section; the xref stream is
+        generated on-the-fly and kept volatile not to interfere with the existing file structure.
       */
       /*
-        NOTE: This xref stream indirect object is purposely temporary (i.e. not registered into the file's
-        indirect objects collection).
+        NOTE: This xref stream indirect object is purposely temporary (i.e. not registered into the
+        file's indirect objects collection).
       */
-      XRefStream xrefStream;
-      PdfIndirectObject xrefStreamIndirectObject = new PdfIndirectObject(
+      XRefStream xrefStream = new XRefStream(file);
+      new PdfIndirectObject(
         file,
-        xrefStream = new XRefStream(file),
-        xrefStreamEntry = new XRefEntry(indirectObjects.size(), 0, 0, XRefEntry.UsageEnum.InUse)
+        xrefStream,
+        xrefStreamEntry = new XRefEntry(indirectObjects.size(), 0)
         );
 
       XRefEntry prevFreeEntry = null;
       for(PdfIndirectObject indirectObject : indirectObjects)
       {
-        if(indirectObject.getDataObject() instanceof XRefStream)
-        {
-          /*
-            NOTE: Existing xref streams MUST be suppressed,
-            temporarily replacing them with free entries.
-          */
-          indirectObject = new PdfIndirectObject(
-            file,
-            null,
-            new XRefEntry(
-              indirectObject.getReference().getObjectNumber(),
-              XRefEntry.GenerationUnreusable,
-              0,
-              XRefEntry.UsageEnum.Free
-              )
-            );
-        }
-
-        try
-        {
-          prevFreeEntry = addXRefEntry(
-            indirectObject.getXrefEntry().clone(), // NOTE: Xref entry is cloned to preserve the original one.
-            indirectObject,
-            xrefStream,
-            prevFreeEntry
-            );
-        }
-        catch(CloneNotSupportedException e)
-        {throw new RuntimeException("XRef entry addition failed.", e);}
+        prevFreeEntry = addXRefEntry(
+          indirectObject.getXrefEntry(),
+          indirectObject,
+          xrefStream,
+          prevFreeEntry,
+          null
+          );
       }
-      prevFreeEntry.setOffset(0); // Linking back to the first free object. NOTE: The first entry in the table (object number 0) is always free.
+      prevFreeEntry.setOffset(0); // Links back to the first free object. NOTE: The first entry in the table (object number 0) is always free.
 
       // 2.2. XRef stream.
       addXRefEntry(
         xrefStreamEntry,
-        xrefStreamIndirectObject,
+        xrefStream.getContainer(),
         xrefStream,
+        null,
         null
         );
     }
@@ -203,13 +202,15 @@ final class CompressedWriter
     @param indirectObject Indirect object.
     @param xrefStream XRef stream.
     @param prevFreeEntry Previous free xref entry.
+    @param extensionObjectStreams Object streams used in incremental updates to extend modified ones.
     @return Current free xref entry.
   */
   private XRefEntry addXRefEntry(
     XRefEntry xrefEntry,
     PdfIndirectObject indirectObject,
     XRefStream xrefStream,
-    XRefEntry prevFreeEntry
+    XRefEntry prevFreeEntry,
+    Map<Integer,ObjectStream> extensionObjectStreams
     )
   {
     xrefStream.put(xrefEntry.getNumber(),xrefEntry);
@@ -217,13 +218,40 @@ final class CompressedWriter
     switch(xrefEntry.getUsage())
     {
       case InUse:
-        // Set entry content's offset!
-        xrefEntry.setOffset((int)stream.getLength());
+      {
+        int offset = (int)stream.getLength();
         // Add entry content!
-        indirectObject.writeTo(stream);
+        indirectObject.writeTo(stream, file);
+        // Set entry content's offset!
+        xrefEntry.setOffset(offset);
+      }
         break;
       case InUseCompressed:
-        /* NOOP: Serialization is delegated to the containing object stream. */
+        /*
+          NOTE: Serialization is delegated to the containing object stream.
+        */
+        if(extensionObjectStreams != null) // Incremental update.
+        {
+          int baseStreamNumber = xrefEntry.getStreamNumber();
+          PdfIndirectObject baseStreamIndirectObject = file.getIndirectObjects().get(baseStreamNumber);
+          if(baseStreamIndirectObject.isOriginal()) // Extension stream needed in order to preserve the original object stream.
+          {
+            // Get the extension object stream associated to the original object stream!
+            ObjectStream extensionObjectStream = extensionObjectStreams.get(baseStreamNumber);
+            if(extensionObjectStream == null)
+            {
+              file.register(extensionObjectStream = new ObjectStream());
+              // Link the extension to the base object stream!
+              extensionObjectStream.setBaseStream((ObjectStream)baseStreamIndirectObject.getDataObject());
+              extensionObjectStreams.put(baseStreamNumber, extensionObjectStream);
+            }
+            // Insert the data object into the extension object stream!
+            extensionObjectStream.put(xrefEntry.getNumber(), indirectObject.getDataObject());
+            // Update the data object's xref entry!
+            xrefEntry.setStreamNumber(extensionObjectStream.getReference().getObjectNumber());
+            xrefEntry.setOffset(XRefEntry.UndefinedOffset); // Internal object index unknown (to set on object stream serialization -- see ObjectStream).
+          }
+        }
         break;
       case Free:
         if(prevFreeEntry != null)

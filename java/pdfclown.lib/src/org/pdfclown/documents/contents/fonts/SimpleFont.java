@@ -44,7 +44,7 @@ import org.pdfclown.util.ByteArray;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class SimpleFont
@@ -102,7 +102,10 @@ public abstract class SimpleFont
         if(charName.equals(".notdef"))
         {codes.remove(charCode);}
         else
-        {codes.put(charCode,GlyphMapping.nameToCode(charName));}
+        {
+          Integer code = GlyphMapping.nameToCode(charName);
+          codes.put(charCode, code != null ? code : charCodeData[0]);
+        }
         charCodeData[0]++;
       }
     }

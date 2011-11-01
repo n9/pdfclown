@@ -34,11 +34,11 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 
 /**
-  Abstract go-to-nonlocal-destination action.
+  Abstract 'go to non-local destination' action.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public abstract class GoToNonLocal<T extends Destination>

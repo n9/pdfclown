@@ -49,7 +49,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF15)
 public class Layer
@@ -266,15 +266,15 @@ public class Layer
   /**
     Gets the range of magnifications at which the content in this layer is best viewed.
   */
-  public Interval<Float> getZoomRange(
+  public Interval<Double> getZoomRange(
     )
   {
     PdfDictionary zoomDictionary = getUsageEntry(PdfName.Zoom, PdfDictionary.class);
     PdfNumber<?> minObject = (PdfNumber<?>)zoomDictionary.resolve(PdfName.min);
     PdfNumber<?> maxObject = (PdfNumber<?>)zoomDictionary.resolve(PdfName.max);
-    return new Interval<Float>(
-      minObject != null ? minObject.getNumberValue() : 0f,
-      maxObject != null ? maxObject.getNumberValue() : Float.POSITIVE_INFINITY
+    return new Interval<Double>(
+      minObject != null ? minObject.getNumberValue() : 0,
+      maxObject != null ? maxObject.getNumberValue() : Double.POSITIVE_INFINITY
       );
   }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -39,8 +39,9 @@ namespace org.pdfclown.documents.interaction.forms.styles
     #region fields
     private Color backColor = DeviceRGBColor.White;
     private char checkSymbol = (char)52;
-    private float fontSize = 10;
+    private double fontSize = 10;
     private Color foreColor = DeviceRGBColor.Black;
+    private bool graphicsVisibile = false;
     private char radioSymbol = (char)108;
     #endregion
 
@@ -72,7 +73,7 @@ namespace org.pdfclown.documents.interaction.forms.styles
       {checkSymbol = value;}
     }
 
-    public float FontSize
+    public double FontSize
     {
       get
       {return fontSize;}
@@ -86,6 +87,14 @@ namespace org.pdfclown.documents.interaction.forms.styles
       {return foreColor;}
       set
       {foreColor = value;}
+    }
+
+    public bool GraphicsVisibile
+    {
+      get
+      {return graphicsVisibile;}
+      set
+      {graphicsVisibile = value;}
     }
 
     public char RadioSymbol

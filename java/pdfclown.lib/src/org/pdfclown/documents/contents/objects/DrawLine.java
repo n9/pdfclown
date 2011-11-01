@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class DrawLine
@@ -64,8 +64,8 @@ public final class DrawLine
     )
   {
     this(
-      (float)point.getX(),
-      (float)point.getY()
+      point.getX(),
+      point.getY()
       );
   }
 
@@ -74,25 +74,14 @@ public final class DrawLine
     @param pointY Final endpoint Y.
   */
   public DrawLine(
-    float pointX,
-    float pointY
+    double pointX,
+    double pointY
     )
   {
     super(
       Operator,
       new PdfReal(pointX),
       new PdfReal(pointY)
-      );
-  }
-
-  public DrawLine(
-    double pointX,
-    double pointY
-    )
-  {
-    this(
-      (float)pointX,
-      (float)pointY
       );
   }
 

@@ -36,7 +36,7 @@ import java.nio.ByteOrder;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 11/01/11
 */
 public final class ConvertUtils
 {
@@ -150,6 +150,16 @@ public final class ConvertUtils
       index++
       )
     {result[index] = (byte)(data >> 8 * (byteOrder == ByteOrder.LITTLE_ENDIAN ? index : length-index-1));}
+    return result;
+  }
+
+  public static float[] toFloatArray(
+    double[] array
+    )
+  {
+    float[] result = new float[array.length];
+    for(int index = 0, length = array.length; index < length; index++)
+    {result[index] = (float)array[index];}
     return result;
   }
   // </public>

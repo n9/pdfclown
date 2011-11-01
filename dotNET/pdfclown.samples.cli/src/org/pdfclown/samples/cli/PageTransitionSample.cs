@@ -22,11 +22,9 @@ namespace org.pdfclown.samples.cli
     public override bool Run(
       )
     {
+      // 1. Opening the PDF file...
       string filePath = PromptPdfFileChoice("Please select a PDF file");
-
-      // 1. Open the PDF file!
       File file = new File(filePath);
-      // Get the PDF document!
       Document document = file.Document;
 
       // 2. Applying the visual transitions...
@@ -39,17 +37,14 @@ namespace org.pdfclown.samples.cli
         page.Transition = new Transition(
           document,
           transitionStyles[random.Next(transitionStylesLength)], // NOTE: Random selection of the transition is done here just for demonstrative purposes; in real world, you would obviously choose only the appropriate enumeration constant among those available.
-          .5f // Transition duration (half a second).
+          .5 // Transition duration (half a second).
           );
         // Set the display time of the page on presentation!
         page.Duration = 2; // Page display duration (2 seconds).
       }
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Transition","applying visual transitions to pages");
-
       // 3. Serialize the PDF file!
-      Serialize(file);
+      Serialize(file, true, "Transition", "applying visual transitions to pages");
 
       return true;
     }

@@ -16,7 +16,7 @@ import org.pdfclown.tools.TextExtractor;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class AdvancedTextExtractionSample
   extends Sample
@@ -25,15 +25,15 @@ public class AdvancedTextExtractionSample
   public boolean run(
     )
   {
-    String filePath = promptPdfFileChoice("Please select a PDF file");
-
-    // 1. Open the PDF file!
+    // 1. Opening the PDF file...
     File file;
-    try
-    {file = new File(filePath);}
-    catch(Exception e)
-    {throw new RuntimeException(filePath + " file access error.",e);}
-
+    {
+      String filePath = promptPdfFileChoice("Please select a PDF file");
+      try
+      {file = new File(filePath);}
+      catch(Exception e)
+      {throw new RuntimeException(filePath + " file access error.",e);}
+    }
     Document document = file.getDocument();
 
     // 2. Text extraction from the document pages.

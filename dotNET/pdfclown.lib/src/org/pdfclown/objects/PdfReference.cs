@@ -149,12 +149,6 @@ namespace org.pdfclown.objects
       {/* NOOP: As references are immutable, no parent can be associated. */}
     }
 
-    public override PdfIndirectObject Root
-    {
-      get
-      {return null;} // NOTE: As references are immutable, no root can be associated.
-    }
-
     public override string ToString(
       )
     {return IndirectReference;}
@@ -167,8 +161,17 @@ namespace org.pdfclown.objects
       {/* NOOP: As references are immutable, no update can be done. */}
     }
 
+    public override bool Updated
+    {
+      get
+      {return false;}
+      protected internal set
+      {/* NOOP: As references are immutable, no update can be done. */}
+    }
+
     public override void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      File context
       )
     {stream.Write(IndirectReference);}
 
@@ -198,7 +201,7 @@ namespace org.pdfclown.objects
       )
     {IndirectObject.Delete();}
 
-    public PdfIndirectObject IndirectObject
+    public override PdfIndirectObject IndirectObject
     {
       get
       {
@@ -209,7 +212,7 @@ namespace org.pdfclown.objects
       }
     }
 
-    public PdfReference Reference
+    public override PdfReference Reference
     {
       get
       {return this;}
@@ -218,14 +221,6 @@ namespace org.pdfclown.objects
     #endregion
 
     #region protected
-    protected internal override bool Updated
-    {
-      get
-      {return false;}
-      set
-      {/* NOOP: As references are immutable, no update can be done. */}
-    }
-
     protected internal override bool Virtual
     {
       get

@@ -85,8 +85,8 @@ namespace org.pdfclown.documents.interaction.annotations
         {
           vertices.Add(
             new PointF(
-              ((IPdfNumber)verticesObject[index]).RawValue,
-              pageHeight - ((IPdfNumber)verticesObject[index+1]).RawValue
+              ((IPdfNumber)verticesObject[index]).FloatValue,
+              pageHeight - ((IPdfNumber)verticesObject[index+1]).FloatValue
               )
             );
         }

@@ -27,11 +27,8 @@ namespace org.pdfclown.samples.cli
       // 2. Content creation.
       Populate(document);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Transformation","graphics object transformation");
-
       // 3. Serialize the PDF file!
-      Serialize(file,false);
+      Serialize(file, false, "Transformation", "graphics object transformation");
 
       return true;
     }

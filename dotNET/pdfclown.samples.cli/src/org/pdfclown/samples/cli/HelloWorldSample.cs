@@ -27,11 +27,8 @@ namespace org.pdfclown.samples.cli
       // 3. Insert the contents into the document!
       Populate(document);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Hello world","a simple 'hello world'");
-
       // 4. Serialize the PDF file!
-      Serialize(file,false);
+      Serialize(file, false, "Hello world", "a simple 'hello world'");
 
       return true;
     }

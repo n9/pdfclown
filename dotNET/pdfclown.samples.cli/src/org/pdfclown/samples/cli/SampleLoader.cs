@@ -111,13 +111,11 @@ namespace org.pdfclown.samples.cli
           {/* NOOP */}
         } while(sampleType == null);
 
-        Console.WriteLine("\nInstantiating {0} sample...", sampleType.Name);
+        Console.WriteLine("\n{0} running...", sampleType.Name);
 
         // Instantiate the sample!
         Sample sample = (Sample)Activator.CreateInstance(sampleType);
-        sample.Initialize(inputPath,outputPath);
-
-        Console.WriteLine("Running {0} sample...", sampleType.Name);
+        sample.Initialize(inputPath, outputPath);
 
         // Run the sample!
         try

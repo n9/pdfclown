@@ -35,7 +35,7 @@ import org.pdfclown.util.parsers.ParseException;
   to exploit all the available access functionalities.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 11/01/11
 */
 public class ParsingSample
   extends Sample
@@ -44,17 +44,17 @@ public class ParsingSample
   public boolean run(
     )
   {
-    String filePath = promptPdfFileChoice("Please select a PDF file");
-
-    // 1. Open the PDF file!
+    // 1. Opening the PDF file...
     File file;
-    try
-    {file = new File(filePath);}
-    catch(ParseException e)
-    {throw new RuntimeException(filePath + " file parsing failed.",e);}
-    catch(Exception e)
-    {throw new RuntimeException(filePath + " file access error.",e);}
-
+    {
+      String filePath = promptPdfFileChoice("Please select a PDF file");
+      try
+      {file = new File(filePath);}
+      catch(ParseException e)
+      {throw new RuntimeException(filePath + " file parsing failed.",e);}
+      catch(Exception e)
+      {throw new RuntimeException(filePath + " file access error.",e);}
+    }
     Document document = file.getDocument();
 
     // 2. Document parsing.

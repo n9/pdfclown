@@ -46,7 +46,7 @@ namespace org.pdfclown.documents.contents.objects
     #region dynamic
     #region constructors
     public SetMiterLimit(
-      float value
+      double value
       ) : base(OperatorKeyword, new PdfReal(value))
     {}
 
@@ -63,7 +63,7 @@ namespace org.pdfclown.documents.contents.objects
       )
     {state.MiterLimit = Value;}
 
-    public float Value
+    public double Value
     {
       get
       {return ((IPdfNumber)operands[0]).RawValue;}

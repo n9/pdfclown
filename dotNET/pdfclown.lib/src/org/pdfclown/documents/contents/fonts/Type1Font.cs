@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -77,7 +77,7 @@ namespace org.pdfclown.documents.contents.fonts
     #endregion
 
     #region protected
-    protected virtual Dictionary<ByteArray,int> GetNativeEncoding(
+    protected virtual IDictionary<ByteArray,int> GetNativeEncoding(
       )
     {
       PdfDictionary descriptor = Descriptor;
@@ -92,7 +92,22 @@ namespace org.pdfclown.documents.contents.fonts
         PdfStream fontFileStream = (PdfStream)descriptor.Resolve(PdfName.FontFile3);
         PdfName fontFileSubtype = (PdfName)fontFileStream.Header[PdfName.Subtype];
         if(fontFileSubtype.Equals(PdfName.Type1C)) // CFF.
-        {throw new NotImplementedException("Embedded CFF font file.");}
+        {
+          CffParser parser = new CffParser(fontFileStream.Body);
+          IDictionary<ByteArray,int> codes = new Dictionary<ByteArray,int>();
+          foreach(KeyValuePair<int,int> glyphIndexEntry in parser.glyphIndexes)
+          {
+            /*
+              FIXME: Custom (non-unicode) encodings require name handling to match encoding
+              differences; this method (getNativeEncoding) should therefore return a glyphindex-to-
+              character-name map instead.
+              Constraining native codes into target byte-arrayed encodings is wrong -- that should
+              be only the final stage.
+             */
+            codes[new ByteArray(new byte[]{ConvertUtils.IntToByteArray(glyphIndexEntry.Value)[3]})] = glyphIndexEntry.Key;
+          }
+          return codes;
+        }
         else if(fontFileSubtype.Equals(PdfName.OpenType)) // OpenFont/CFF.
         {throw new NotImplementedException("Embedded OpenFont/CFF font file.");}
         else
@@ -108,7 +123,7 @@ namespace org.pdfclown.documents.contents.fonts
       // Encoding.
       if(this.codes == null)
       {
-        Dictionary<ByteArray,int> codes;
+        IDictionary<ByteArray,int> codes;
         PdfDataObject encodingObject = BaseDataObject.Resolve(PdfName.Encoding);
         if(encodingObject == null) // Native encoding.
         {codes = GetNativeEncoding();}

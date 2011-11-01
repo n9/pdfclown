@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.bytes;
+using org.pdfclown.files;
 
 using System;
 using System.Globalization;
@@ -428,6 +429,9 @@ namespace org.pdfclown.objects
     public static readonly PdfName TrimBox = new PdfName("TrimBox");
     public static readonly PdfName TrueType = new PdfName("TrueType");
     public static readonly PdfName TwoColumnLeft = new PdfName("TwoColumnLeft");
+    public static readonly PdfName TwoColumnRight = new PdfName("TwoColumnRight");
+    public static readonly PdfName TwoPageLeft = new PdfName("TwoPageLeft");
+    public static readonly PdfName TwoPageRight = new PdfName("TwoPageRight");
     public static readonly PdfName Tx = new PdfName("Tx");
     public static readonly PdfName Type = new PdfName("Type");
     public static readonly PdfName Type0 = new PdfName("Type0");
@@ -585,7 +589,8 @@ namespace org.pdfclown.objects
     }
 
     public override void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      File context
       )
     {stream.Write(NamePrefixChunk); stream.Write(RawValue);}
     #endregion

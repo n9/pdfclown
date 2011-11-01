@@ -26,6 +26,7 @@
 package org.pdfclown.objects;
 
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.files.File;
 import org.pdfclown.tokens.Keyword;
 import org.pdfclown.util.NotImplementedException;
 
@@ -33,7 +34,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF boolean object [PDF:1.6:3.2.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 public final class PdfBoolean
   extends PdfSimpleObject<Boolean>
@@ -80,7 +81,8 @@ public final class PdfBoolean
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    File context
     )
   {stream.write(getRawValue() ? Keyword.True : Keyword.False);}
   // </public>

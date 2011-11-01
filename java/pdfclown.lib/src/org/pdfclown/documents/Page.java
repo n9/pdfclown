@@ -68,7 +68,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 07/23/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Page
@@ -337,7 +337,7 @@ public final class Page
     <p>By default, the viewer does not advance automatically.</p>
   */
   @PDF(VersionEnum.PDF11)
-  public float getDuration(
+  public double getDuration(
     )
   {
     PdfNumber<?> durationObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.Dur);
@@ -491,9 +491,9 @@ public final class Page
     @see #getDuration()
   */
   public void setDuration(
-    float value
+    double value
     )
-  {getBaseDataObject().put(PdfName.Dur,new PdfReal(value));}
+  {getBaseDataObject().put(PdfName.Dur, value == 0 ? null : new PdfReal(value));}
 
   /**
     @see #getRotation()
@@ -501,7 +501,7 @@ public final class Page
   public void setRotation(
     RotationEnum value
     )
-  {getBaseDataObject().put(PdfName.Rotate,value.getCode());}
+  {getBaseDataObject().put(PdfName.Rotate, value.getCode());}
 
   /**
     @see #getSize()
@@ -565,9 +565,7 @@ public final class Page
     )
   {
     PdfInteger rotationObject = (PdfInteger)getInheritableAttribute(PdfName.Rotate);
-    return (rotationObject == null
-      ? RotationEnum.Downward
-      : RotationEnum.get(rotationObject));
+    return RotationEnum.valueOf(rotationObject);
   }
 
   @Override

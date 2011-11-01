@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
   Document information [PDF:1.6:10.2.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Information
@@ -70,7 +70,7 @@ public final class Information
   }
 
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public Information(
     PdfDirectObject baseObject
@@ -125,22 +125,34 @@ public final class Information
   public void setAuthor(
     String value
     )
-  {getBaseDataObject().put(PdfName.Author, PdfTextString.get(value));}
+  {
+    onChange();
+    getBaseDataObject().put(PdfName.Author, PdfTextString.get(value));
+  }
 
   public void setCreationDate(
     Date value
     )
-  {getBaseDataObject().put(PdfName.CreationDate, PdfDate.get(value));}
+  {
+    onChange();
+    getBaseDataObject().put(PdfName.CreationDate, PdfDate.get(value));
+  }
 
   public void setCreator(
     String value
     )
-  {getBaseDataObject().put(PdfName.Creator, PdfTextString.get(value));}
+  {
+    onChange();
+    getBaseDataObject().put(PdfName.Creator, PdfTextString.get(value));
+  }
 
   public void setKeywords(
     String value
     )
-  {getBaseDataObject().put(PdfName.Keywords, PdfTextString.get(value));}
+  {
+    onChange();
+    getBaseDataObject().put(PdfName.Keywords, PdfTextString.get(value));
+  }
 
   public void setModificationDate(
     Date value
@@ -150,17 +162,26 @@ public final class Information
   public void setProducer(
     String value
     )
-  {getBaseDataObject().put(PdfName.Producer, PdfTextString.get(value));}
+  {
+    onChange();
+    getBaseDataObject().put(PdfName.Producer, PdfTextString.get(value));
+  }
 
   public void setSubject(
     String value
     )
-  {getBaseDataObject().put(PdfName.Subject, PdfTextString.get(value));}
+  {
+    onChange();
+    getBaseDataObject().put(PdfName.Subject, PdfTextString.get(value));
+  }
 
   public void setTitle(
     String value
     )
-  {getBaseDataObject().put(PdfName.Title, PdfTextString.get(value));}
+  {
+    onChange();
+    getBaseDataObject().put(PdfName.Title, PdfTextString.get(value));
+  }
   // </public>
 
   // <private>
@@ -168,6 +189,14 @@ public final class Information
     PdfName key
     )
   {return PdfSimpleObject.getValue(getBaseDataObject().get(key));}
+
+  //TODO: Listen to baseDataObject's onChange notification?
+  private void onChange(
+    )
+  {
+    if(!getBaseDataObject().isUpdated())
+    {setModificationDate(new Date());}
+  }
   // </private>
   // </interface>
   // </class>

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents.contents;
+using org.pdfclown.util;
 
 using System.Collections.Generic;
 using System.Drawing;
@@ -101,15 +102,18 @@ namespace org.pdfclown.documents.contents.objects
     {
       Pen stroke = new Pen(
         state.StrokeColorSpace.GetPaint(state.StrokeColor),
-        state.LineWidth
+        (float)state.LineWidth
         );
       {
+        LineDash lineDash = state.LineDash;
+        double[] dashArray = lineDash.DashArray;
+
         LineCap lineCap = state.LineCap.ToGdi();
         stroke.SetLineCap(lineCap, lineCap, lineCap.ToDashCap());
         stroke.LineJoin = state.LineJoin.ToGdi();
-        stroke.MiterLimit = state.MiterLimit;
-        stroke.DashPattern = state.LineDash.DashArray;
-        stroke.DashOffset = state.LineDash.DashPhase;
+        stroke.MiterLimit = (float)state.MiterLimit;
+        stroke.DashPattern = (dashArray != null && dashArray.Length > 0 ? ConvertUtils.ToFloatArray(dashArray) : null);
+        stroke.DashOffset = (float)lineDash.DashPhase;
       }
       return stroke;
     }
@@ -119,10 +123,10 @@ namespace org.pdfclown.documents.contents.objects
 
     #region dynamic
     #region fields
-    private bool closed;
-    private bool filled;
-    private WindModeEnum fillMode;
-    private bool stroked;
+    private readonly bool closed;
+    private readonly bool filled;
+    private readonly WindModeEnum fillMode;
+    private readonly bool stroked;
     #endregion
 
     #region constructors

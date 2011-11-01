@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,7 +40,7 @@ import org.pdfclown.util.NotImplementedException;
   DeviceN color value [PDF:1.6:4.5.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF13)
 public final class DeviceNColor
@@ -68,11 +68,11 @@ public final class DeviceNColor
 
   // <private>
   private static List<? extends PdfDirectObject> getComponentValues(
-    float... components
+    double... components
     )
   {// TODO:normalize parameters!
     List<PdfDirectObject> componentValues = new ArrayList<PdfDirectObject>();
-    for(float component : components)
+    for(double component : components)
     {componentValues.add(new PdfReal((component)));}
     return componentValues;
   }
@@ -83,7 +83,7 @@ public final class DeviceNColor
   // <dynamic>
   // <constructors>
   public DeviceNColor(
-    float... components
+    double... components
     )
   {this(getComponentValues(components));}
 

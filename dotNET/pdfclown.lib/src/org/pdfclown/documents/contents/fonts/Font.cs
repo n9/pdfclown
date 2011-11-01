@@ -130,10 +130,10 @@ namespace org.pdfclown.documents.contents.fonts
       <summary>Gets the scaling factor to be applied to unscaled metrics to get actual
       measures.</summary>
     */
-    public static float GetScalingFactor(
-      float size
+    public static double GetScalingFactor(
+      double size
       )
-    {return 0.001f * size;}
+    {return 0.001 * size;}
 
     /**
       <summary>Wraps a font reference into a font object.</summary>
@@ -205,10 +205,13 @@ namespace org.pdfclown.documents.contents.fonts
     #region dynamic
     #region fields
     /*
-      NOTE: In order to avoid nomenclature ambiguities, these terms are used consistently within the code:
-      * unicode: character encoded according to the Unicode standard;
-      * character code: codepoint corresponding to a character expressed inside a string object of a content stream;
-      * glyph index: identifier of the graphical representation of a character.
+      NOTE: In order to avoid nomenclature ambiguities, these terms are used consistently within the
+      code:
+      * character code: internal codepoint corresponding to a character expressed inside a string
+        object of a content stream;
+      * unicode: external codepoint corresponding to a character expressed according to the Unicode
+        standard encoding;
+      * glyph index: internal identifier of the graphical representation of a character.
     */
     /**
       <summary>Unicodes by character code.</summary>
@@ -237,6 +240,10 @@ namespace org.pdfclown.documents.contents.fonts
       <summary>Whether the font encoding is custom (that is non-Unicode).</summary>
     */
     protected bool symbolic = true;
+    /**
+      <summary>Used unicodes.</summary>
+    */
+    protected HashSet<int> usedCodes;
 
     /**
       <summary>Maximum character code byte size.</summary>
@@ -277,7 +284,7 @@ namespace org.pdfclown.documents.contents.fonts
       <summary>Gets the unscaled vertical offset from the baseline to the ascender line (ascent).
       The value is a positive number.</summary>
     */
-    public virtual float Ascent
+    public virtual double Ascent
     {
       get
       {return ((IPdfNumber)Descriptor[PdfName.Ascent]).RawValue;}
@@ -336,7 +343,7 @@ namespace org.pdfclown.documents.contents.fonts
       <summary>Gets the unscaled vertical offset from the baseline to the descender line (descent).
       The value is a negative number.</summary>
     */
-    public virtual float Descent
+    public virtual double Descent
     {
       get
       {return ((IPdfNumber)Descriptor[PdfName.Descent]).RawValue;}
@@ -351,10 +358,12 @@ namespace org.pdfclown.documents.contents.fonts
       )
     {
       io::MemoryStream encodedStream = new io::MemoryStream();
-      foreach(char textChar in text)
+      for(int index = 0, length = text.Length; index < length; index++)
       {
-        byte[] charCode = codes.GetKey((int)textChar).Data;
-        encodedStream.Write(charCode,0,charCode.Length);
+        int textCode = text[index];
+        byte[] charCode = codes.GetKey(textCode).Data;
+        encodedStream.Write(charCode, 0, charCode.Length);
+        usedCodes.Add(textCode);
       }
       encodedStream.Close();
       return encodedStream.ToArray();
@@ -389,8 +398,8 @@ namespace org.pdfclown.documents.contents.fonts
       scaled to the given font size. The value is a positive number.</summary>
       <param name="size">Font size.</param>
     */
-    public float GetAscent(
-      float size
+    public double GetAscent(
+      double size
       )
     {return Ascent * GetScalingFactor(size);}
 
@@ -399,8 +408,8 @@ namespace org.pdfclown.documents.contents.fonts
       scaled to the given font size. The value is a negative number.</summary>
       <param name="size">Font size.</param>
     */
-    public float GetDescent(
-      float size
+    public double GetDescent(
+      double size
       )
     {return Descent * GetScalingFactor(size);}
 
@@ -412,7 +421,7 @@ namespace org.pdfclown.documents.contents.fonts
       <summary>Gets the unscaled height of the given character.</summary>
       <param name="textChar">Character whose height has to be calculated.</param>
     */
-    public float GetHeight(
+    public double GetHeight(
       char textChar
       )
     {return LineHeight;}
@@ -422,9 +431,9 @@ namespace org.pdfclown.documents.contents.fonts
       <param name="textChar">Character whose height has to be calculated.</param>
       <param name="size">Font size.</param>
     */
-    public float GetHeight(
+    public double GetHeight(
       char textChar,
-      float size
+      double size
       )
     {return GetHeight(textChar) * GetScalingFactor(size);}
 
@@ -432,7 +441,7 @@ namespace org.pdfclown.documents.contents.fonts
       <summary>Gets the unscaled height of the given text.</summary>
       <param name="text">Text whose height has to be calculated.</param>
     */
-    public float GetHeight(
+    public double GetHeight(
       string text
       )
     {return LineHeight;}
@@ -442,9 +451,9 @@ namespace org.pdfclown.documents.contents.fonts
       <param name="text">Text whose height has to be calculated.</param>
       <param name="size">Font size.</param>
     */
-    public float GetHeight(
+    public double GetHeight(
       string text,
-      float size
+      double size
       )
     {return GetHeight(text) * GetScalingFactor(size);}
 
@@ -453,9 +462,9 @@ namespace org.pdfclown.documents.contents.fonts
       <param name="text">Text whose width has to be calculated.</param>
       <param name="size">Font size.</param>
     */
-    public float GetKernedWidth(
+    public double GetKernedWidth(
       string text,
-      float size
+      double size
       )
     {return (GetWidth(text) + GetKerning(text)) * GetScalingFactor(size);}
 
@@ -520,9 +529,9 @@ namespace org.pdfclown.documents.contents.fonts
       <param name="text">Text whose kerning has to be calculated.</param>
       <param name="size">Font size.</param>
     */
-    public float GetKerning(
+    public double GetKerning(
       string text,
-      float size
+      double size
       )
     {return GetKerning(text) * GetScalingFactor(size);}
 
@@ -530,8 +539,8 @@ namespace org.pdfclown.documents.contents.fonts
       <summary>Gets the line height, scaled to the given font size.</summary>
       <param name="size">Font size.</param>
     */
-    public float GetLineHeight(
-      float size
+    public double GetLineHeight(
+      double size
       )
     {return LineHeight * GetScalingFactor(size);}
 
@@ -556,9 +565,9 @@ namespace org.pdfclown.documents.contents.fonts
       <param name="textChar">Character whose height has to be calculated.</param>
       <param name="size">Font size.</param>
     */
-    public float GetWidth(
+    public double GetWidth(
       char textChar,
-      float size
+      double size
       )
     {return GetWidth(textChar) * GetScalingFactor(size);}
 
@@ -582,16 +591,16 @@ namespace org.pdfclown.documents.contents.fonts
       <param name="text">Text whose width has to be calculated.</param>
       <param name="size">Font size.</param>
     */
-    public float GetWidth(
+    public double GetWidth(
       string text,
-      float size
+      double size
       )
     {return GetWidth(text) * GetScalingFactor(size);}
 
     /**
       <summary>Gets the unscaled line height.</summary>
     */
-    public float LineHeight
+    public double LineHeight
     {
       get
       {return Ascent - Descent;}
@@ -660,6 +669,8 @@ namespace org.pdfclown.documents.contents.fonts
     private void Initialize(
       )
     {
+      usedCodes = new HashSet<int>();
+
       // Put the newly-instantiated font into the common cache!
       /*
         NOTE: Font structures are reified as complex objects, both IO- and CPU-intensive to load.

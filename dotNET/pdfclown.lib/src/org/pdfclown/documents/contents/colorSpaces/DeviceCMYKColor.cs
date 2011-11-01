@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -69,10 +69,10 @@ namespace org.pdfclown.documents.contents.colorSpaces
     #region dynamic
     #region constructors
     public DeviceCMYKColor(
-      float c,
-      float m,
-      float y,
-      float k
+      double c,
+      double m,
+      double y,
+      double k
       ) : this(
         new List<PdfDirectObject>(
           new PdfDirectObject[]
@@ -100,7 +100,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     /**
       <summary>Gets/Sets the cyan component.</summary>
     */
-    public float C
+    public double C
     {
       get
       {return GetComponentValue(0);}
@@ -116,7 +116,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     /**
       <summary>Gets/Sets the black (key) component.</summary>
     */
-    public float K
+    public double K
     {
       get
       {return GetComponentValue(3);}
@@ -127,7 +127,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     /**
       <summary>Gets/Sets the magenta component.</summary>
     */
-    public float M
+    public double M
     {
       get
       {return GetComponentValue(1);}
@@ -138,7 +138,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     /**
       <summary>Gets/Sets the yellow component.</summary>
     */
-    public float Y
+    public double Y
     {
       get
       {return GetComponentValue(2);}

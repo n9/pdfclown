@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,7 +31,6 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.contents.ContentScanner;
 import org.pdfclown.documents.contents.ExtGState;
-import org.pdfclown.documents.contents.ExtGStateResources;
 import org.pdfclown.documents.contents.IContentContext;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -41,11 +40,12 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF12)
 public final class SetExtGState
   extends Operation
+  implements IResourceReference<ExtGState>
 {
   // <class>
   // <static>
@@ -69,25 +69,6 @@ public final class SetExtGState
 
   // <interface>
   // <public>
-  @Override
-  public void scan(
-    ContentScanner.GraphicsState state
-    )
-  {
-    ExtGState extGState = state.getScanner().getContentContext().getResources().getExtGStates().get(getName());
-    extGState.applyTo(state);
-  }
-
-  /**
-    Gets the name of the {@link ExtGState graphics state parameters} resource to be set.
-
-    @see #getExtGState(IContentContext)
-    @see ExtGStateResources
-  */
-  public PdfName getName(
-    )
-  {return (PdfName)operands.get(0);}
-
   /**
     Gets the {@link ExtGState graphics state parameters} resource to be set.
 
@@ -96,15 +77,35 @@ public final class SetExtGState
   public ExtGState getExtGState(
     IContentContext context
     )
+  {return getResource(context);}
+
+  @Override
+  public void scan(
+    ContentScanner.GraphicsState state
+    )
+  {
+    ExtGState extGState = getExtGState(state.getScanner().getContentContext());
+    extGState.applyTo(state);
+  }
+
+  // <IResourceReference>
+  @Override
+  public PdfName getName(
+    )
+  {return (PdfName)operands.get(0);}
+
+  @Override
+  public ExtGState getResource(
+    IContentContext context
+    )
   {return context.getResources().getExtGStates().get(getName());}
 
-  /**
-    @see #getName()
-  */
+  @Override
   public void setName(
     PdfName value
     )
   {operands.set(0,value);}
+  // </IResourceReference>
   // </public>
   // </interface>
   // </dynamic>

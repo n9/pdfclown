@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -56,7 +56,7 @@ import org.pdfclown.documents.contents.xObjects.XObject;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public final class EAN13Barcode
   extends Barcode
@@ -105,7 +105,7 @@ public final class EAN13Barcode
   /** Digit glyph width. */
   private static final int DigitGlyphWidth;
   /** Digit glyph horizontal positions. */
-  private static final float[] DigitGlyphXs;
+  private static final double[] DigitGlyphXs;
 
   /** Guard bar index positions. */
   private static int[] GuardBarIndexes =
@@ -170,7 +170,7 @@ public final class EAN13Barcode
       Digit glyph horizontal positions.
     */
     {
-      float[] elementWidths =
+      double[] elementWidths =
       {
         DigitWidth,
         3,
@@ -180,7 +180,7 @@ public final class EAN13Barcode
         3
       };
       int[] digitIndexes = {0,2,3,4,5,6,7,9,10,11,12,13,14};
-      DigitGlyphXs = new float[13];
+      DigitGlyphXs = new double[13];
       int digitXIndex = 0;
       for(
         int index = 0,
@@ -229,14 +229,14 @@ public final class EAN13Barcode
         false,
         false
         );
-      float fontSize = (DigitGlyphWidth / font.getWidth(code.substring(0,1), 1));
+      double fontSize = DigitGlyphWidth / font.getWidth(code.substring(0,1), 1);
 
       // 1. Bars.
       {
-        float elementX = DigitWidth;
+        double elementX = DigitWidth;
         int[] elementWidths = getElementWidths();
 
-        float guardBarIndentY = DigitHeight / 2;
+        double guardBarIndentY = DigitHeight / 2;
         boolean isBar = true;
         for(
           int elementIndex = 0;
@@ -244,7 +244,7 @@ public final class EAN13Barcode
           elementIndex++
           )
         {
-          float elementWidth = elementWidths[elementIndex];
+          double elementWidth = elementWidths[elementIndex];
           // Dark element?
           /*
             NOTE: EAN symbol elements alternate bars to spaces.
@@ -275,7 +275,7 @@ public final class EAN13Barcode
       // 2. Digits.
       {
         composer.setFont(font,fontSize);
-        float digitY = BarHeight + (DigitHeight - (font.getAscent(fontSize))) / 2;
+        double digitY = BarHeight + (DigitHeight - (font.getAscent(fontSize))) / 2;
         // Showing the digits...
         for(
           int digitIndex = 0;
@@ -284,7 +284,7 @@ public final class EAN13Barcode
           )
         {
           String digit = code.substring(digitIndex, digitIndex+1);
-          float pX = DigitGlyphXs[digitIndex] // Digit position.
+          double pX = DigitGlyphXs[digitIndex] // Digit position.
             - font.getWidth(digit,fontSize) / 2; // Centering.
           // Show the current digit!
           composer.showText(

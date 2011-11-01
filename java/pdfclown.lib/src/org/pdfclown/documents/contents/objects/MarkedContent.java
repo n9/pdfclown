@@ -31,6 +31,7 @@ import java.util.List;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.documents.Document;
 import org.pdfclown.tokens.Encoding;
 import org.pdfclown.tokens.Symbol;
 
@@ -39,7 +40,7 @@ import org.pdfclown.tokens.Symbol;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF12)
 public final class MarkedContent
@@ -93,11 +94,12 @@ public final class MarkedContent
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    Document context
     )
   {
-    header.writeTo(stream);
-    super.writeTo(stream);
+    header.writeTo(stream, context);
+    super.writeTo(stream, context);
     stream.write(EndChunk);
   }
   // </public>

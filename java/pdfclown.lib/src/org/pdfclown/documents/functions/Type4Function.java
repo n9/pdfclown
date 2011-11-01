@@ -33,12 +33,12 @@ import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-  <b>PostScript calculator function</b> represented as a stream containing <i>code
-  written in a small subset of the PostScript language</i> [PDF:1.6:3.9.4].
+  PostScript calculator function represented as a stream containing code written in a small subset
+  of the PostScript language [PDF:1.6:3.9.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF13)
 public final class Type4Function
@@ -58,8 +58,8 @@ public final class Type4Function
   // <interface>
   // <public>
   @Override
-  public float[] calculate(
-    float[] inputs
+  public double[] calculate(
+    double[] inputs
     )
   {
     // FIXME: Auto-generated method stub

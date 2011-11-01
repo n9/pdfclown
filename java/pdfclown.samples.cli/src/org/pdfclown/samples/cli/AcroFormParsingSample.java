@@ -1,22 +1,22 @@
 package org.pdfclown.samples.cli;
 
-import org.pdfclown.documents.Document;
-import org.pdfclown.documents.Page;
-import org.pdfclown.documents.interaction.annotations.Widget;
-import org.pdfclown.documents.interaction.forms.Form;
-import org.pdfclown.documents.interaction.forms.Field;
-import org.pdfclown.files.File;
-
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.pdfclown.documents.Document;
+import org.pdfclown.documents.Page;
+import org.pdfclown.documents.interaction.annotations.Widget;
+import org.pdfclown.documents.interaction.forms.Field;
+import org.pdfclown.documents.interaction.forms.Form;
+import org.pdfclown.files.File;
 
 /**
   This sample demonstrates <b>how to inspect the AcroForm fields</b> of a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class AcroFormParsingSample
   extends Sample
@@ -25,15 +25,15 @@ public class AcroFormParsingSample
   public boolean run(
     )
   {
-    String filePath = promptPdfFileChoice("Please select a PDF file");
-
-    // 1. Open the PDF file!
+    // 1. Opening the PDF file...
     File file;
-    try
-    {file = new File(filePath);}
-    catch(Exception e)
-    {throw new RuntimeException(filePath + " file access error.",e);}
-
+    {
+      String filePath = promptPdfFileChoice("Please select a PDF file");
+      try
+      {file = new File(filePath);}
+      catch(Exception e)
+      {throw new RuntimeException(filePath + " file access error.",e);}
+    }
     Document document = file.getDocument();
 
     // 2. Get the acroform!
@@ -43,13 +43,13 @@ public class AcroFormParsingSample
     else
     {
       System.out.println("\nIterating through the fields collection...\n");
-  
+
       // 3. Showing the acroform fields...
       HashMap<String,Integer> objCounters = new HashMap<String,Integer>();
       for(Field field : form.getFields().values())
       {
         System.out.println("* Field '" + field.getFullName() + "' (" + field.getBaseObject() + ")");
-  
+
         String typeName = field.getClass().getSimpleName();
         System.out.println("    Type: " + typeName);
         System.out.println("    Value: " + field.getValue());
@@ -61,14 +61,14 @@ public class AcroFormParsingSample
           System.out.println("    Widget " + (++widgetIndex) + ":");
           Page widgetPage = widget.getPage();
           System.out.println("      Page: " + (widgetPage == null ? "undefined" : (widgetPage.getIndex() + 1) + " (" + widgetPage.getBaseObject() + ")"));
-    
+
           Rectangle2D widgetBox = widget.getBox();
           System.out.println("      Coordinates: {x:" + Math.round(widgetBox.getX()) + "; y:" + Math.round(widgetBox.getY()) + "; width:" + Math.round(widgetBox.getWidth()) + "; height:" + Math.round(widgetBox.getHeight()) + "}");
         }
 
         objCounters.put(typeName, (objCounters.containsKey(typeName) ? objCounters.get(typeName) : 0) + 1);
       }
-  
+
       int fieldCount = form.getFields().size();
       if(fieldCount == 0)
       {System.out.println("No field available.");}

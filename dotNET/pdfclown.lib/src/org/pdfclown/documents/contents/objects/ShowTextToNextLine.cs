@@ -73,8 +73,8 @@ namespace org.pdfclown.documents.contents.objects
     */
     public ShowTextToNextLine(
       byte[] text,
-      float wordSpace,
-      float charSpace
+      double wordSpace,
+      double charSpace
       ) : base(
         SpaceOperatorKeyword,
         new PdfReal(wordSpace),
@@ -98,14 +98,14 @@ namespace org.pdfclown.documents.contents.objects
     /**
       <summary>Gets/Sets the character spacing.</summary>
     */
-    public float? CharSpace
+    public double? CharSpace
     {
       get
       {
         if(operator_.Equals(SimpleOperatorKeyword))
           return null;
         else
-          return (float)((IPdfNumber)operands[1]).Value;
+          return ((IPdfNumber)operands[1]).RawValue;
       }
       set
       {
@@ -133,14 +133,14 @@ namespace org.pdfclown.documents.contents.objects
     /**
       <summary>Gets/Sets the word spacing.</summary>
     */
-    public float? WordSpace
+    public double? WordSpace
     {
       get
       {
         if(operator_.Equals(SimpleOperatorKeyword))
           return null;
         else
-          return (float)((IPdfNumber)operands[0]).Value;
+          return ((IPdfNumber)operands[0]).RawValue;
       }
       set
       {

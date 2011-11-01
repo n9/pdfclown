@@ -63,7 +63,10 @@ namespace org.pdfclown.documents.interchange.metadata
       get
       {return (string)Get(PdfName.Author);}
       set
-      {BaseDataObject[PdfName.Author] = PdfTextString.Get(value);}
+      {
+        OnChange();
+        BaseDataObject[PdfName.Author] = PdfTextString.Get(value);
+      }
     }
 
     public override object Clone(
@@ -76,7 +79,10 @@ namespace org.pdfclown.documents.interchange.metadata
       get
       {return (DateTime?)Get(PdfName.CreationDate);}
       set
-      {BaseDataObject[PdfName.CreationDate] = PdfDate.Get(value);}
+      {
+        OnChange();
+        BaseDataObject[PdfName.CreationDate] = PdfDate.Get(value);
+      }
     }
 
     public string Creator
@@ -84,7 +90,10 @@ namespace org.pdfclown.documents.interchange.metadata
       get
       {return (string)Get(PdfName.Creator);}
       set
-      {BaseDataObject[PdfName.Creator] = PdfTextString.Get(value);}
+      {
+        OnChange();
+        BaseDataObject[PdfName.Creator] = PdfTextString.Get(value);
+      }
     }
 
     [PDF(VersionEnum.PDF11)]
@@ -93,7 +102,10 @@ namespace org.pdfclown.documents.interchange.metadata
       get
       {return (string)Get(PdfName.Keywords);}
       set
-      {BaseDataObject[PdfName.Keywords] = PdfTextString.Get(value);}
+      {
+        OnChange();
+        BaseDataObject[PdfName.Keywords] = PdfTextString.Get(value);
+      }
     }
 
     [PDF(VersionEnum.PDF11)]
@@ -110,7 +122,10 @@ namespace org.pdfclown.documents.interchange.metadata
       get
       {return (string)Get(PdfName.Producer);}
       set
-      {BaseDataObject[PdfName.Producer] = PdfTextString.Get(value);}
+      {
+        OnChange();
+        BaseDataObject[PdfName.Producer] = PdfTextString.Get(value);
+      }
     }
 
     [PDF(VersionEnum.PDF11)]
@@ -119,7 +134,10 @@ namespace org.pdfclown.documents.interchange.metadata
       get
       {return (string)Get(PdfName.Subject);}
       set
-      {BaseDataObject[PdfName.Subject] = PdfTextString.Get(value);}
+      {
+        OnChange();
+        BaseDataObject[PdfName.Subject] = PdfTextString.Get(value);
+      }
     }
 
     [PDF(VersionEnum.PDF11)]
@@ -128,7 +146,10 @@ namespace org.pdfclown.documents.interchange.metadata
       get
       {return (string)Get(PdfName.Title);}
       set
-      {BaseDataObject[PdfName.Title] = PdfTextString.Get(value);}
+      {
+        OnChange();
+        BaseDataObject[PdfName.Title] = PdfTextString.Get(value);
+      }
     }
     #endregion
 
@@ -137,6 +158,14 @@ namespace org.pdfclown.documents.interchange.metadata
       PdfName key
       )
     {return PdfSimpleObject<object>.GetValue(BaseDataObject[key]);}
+
+    //TODO: Listen to baseDataObject's onChange notification?
+    private void OnChange(
+      )
+    {
+      if(!BaseDataObject.Updated)
+      {ModificationDate = DateTime.Now;}
+    }
     #endregion
     #endregion
     #endregion

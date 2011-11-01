@@ -15,7 +15,7 @@ import org.pdfclown.objects.PdfName;
   through their resource names.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 public class ImageSubstitutionSample
   extends Sample
@@ -28,7 +28,6 @@ public class ImageSubstitutionSample
     File file;
     {
       String filePath = promptPdfFileChoice("Please select a PDF file");
-
       try
       {file = new File(filePath);}
       catch(Exception e)
@@ -39,11 +38,8 @@ public class ImageSubstitutionSample
     // 2. Replace the images!
     replaceImages(document);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Image substitution","substituting a document's images");
-
     // 3. Serialize the PDF file!
-    serialize(file);
+    serialize(file, true, "Image substitution", "substituting a document's images");
 
     return true;
   }

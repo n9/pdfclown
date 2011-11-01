@@ -1,5 +1,8 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.Dimension;
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.composition.AlignmentXEnum;
@@ -9,14 +12,11 @@ import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.files.File;
 
-import java.awt.Dimension;
-import java.awt.geom.Rectangle2D;
-
 /**
   This sample demonstrates the PDF Clown's <b>support to Unicode-compliant fonts</b>.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class UnicodeSample
   extends Sample
@@ -34,12 +34,9 @@ public class UnicodeSample
     // 2. Insert the contents into the document!
     populate(document);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Unicode","using Unicode fonts");
-
     // 3. Serialize the PDF file!
-    serialize(file,false);
-    
+    serialize(file, false, "Unicode", "using Unicode fonts");
+
     return true;
   }
 

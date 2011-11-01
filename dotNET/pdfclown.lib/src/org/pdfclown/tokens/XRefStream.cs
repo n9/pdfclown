@@ -134,13 +134,14 @@ namespace org.pdfclown.tokens
     }
 
     public override void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      File context
       )
     {
       if(entries != null)
       {Flush(stream);}
 
-      base.WriteTo(stream);
+      base.WriteTo(stream, context);
     }
 
     #region IDictionary
@@ -396,7 +397,7 @@ namespace org.pdfclown.tokens
           if(entryNumber - prevObjectNumber != 1) // Current subsection terminated.
           {
             if(indexArray.Count > 0)
-            {indexArray.Add(new PdfInteger(prevObjectNumber-((PdfInteger)indexArray[indexArray.Count-1]).IntValue+1));} // Number of entries in the previous subsection.
+            {indexArray.Add(new PdfInteger(prevObjectNumber - ((PdfInteger)indexArray[indexArray.Count - 1]).IntValue + 1));} // Number of entries in the previous subsection.
             indexArray.Add(new PdfInteger(entryNumber)); // First object number in the next subsection.
           }
           prevObjectNumber = entryNumber;
@@ -405,24 +406,24 @@ namespace org.pdfclown.tokens
           {
             case XRefEntry.UsageEnum.Free:
               body.Append((byte)FreeEntryType);
-              body.Append(NumberToByteArray(entry.Offset,entryFieldSizes[1]));
-              body.Append(NumberToByteArray(entry.Generation,entryFieldSizes[2]));
+              body.Append(NumberToByteArray(entry.Offset, entryFieldSizes[1]));
+              body.Append(NumberToByteArray(entry.Generation, entryFieldSizes[2]));
               break;
             case XRefEntry.UsageEnum.InUse:
               body.Append((byte)InUseEntryType);
-              body.Append(NumberToByteArray(entry.Offset,entryFieldSizes[1]));
-              body.Append(NumberToByteArray(entry.Generation,entryFieldSizes[2]));
+              body.Append(NumberToByteArray(entry.Offset, entryFieldSizes[1]));
+              body.Append(NumberToByteArray(entry.Generation, entryFieldSizes[2]));
               break;
             case XRefEntry.UsageEnum.InUseCompressed:
               body.Append((byte)InUseCompressedEntryType);
-              body.Append(NumberToByteArray(entry.StreamNumber,entryFieldSizes[1]));
-              body.Append(NumberToByteArray(entry.Offset,entryFieldSizes[2]));
+              body.Append(NumberToByteArray(entry.StreamNumber, entryFieldSizes[1]));
+              body.Append(NumberToByteArray(entry.Offset, entryFieldSizes[2]));
               break;
             default:
               throw new NotSupportedException();
           }
         }
-        indexArray.Add(new PdfInteger(prevObjectNumber-((PdfInteger)indexArray[indexArray.Count-1]).IntValue+1)); // Number of entries in the previous subsection.
+        indexArray.Add(new PdfInteger(prevObjectNumber - ((PdfInteger)indexArray[indexArray.Count - 1]).IntValue + 1)); // Number of entries in the previous subsection.
       }
 
       // 2. Header.

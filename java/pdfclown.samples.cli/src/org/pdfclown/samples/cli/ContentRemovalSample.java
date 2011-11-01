@@ -1,5 +1,7 @@
 package org.pdfclown.samples.cli;
 
+import java.util.List;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.Contents;
@@ -7,8 +9,6 @@ import org.pdfclown.documents.contents.objects.ContainerObject;
 import org.pdfclown.documents.contents.objects.ContentObject;
 import org.pdfclown.documents.contents.objects.Text;
 import org.pdfclown.files.File;
-
-import java.util.List;
 
 /**
   This sample is a rough stub that demonstrates a basic way to remove all the text
@@ -18,7 +18,7 @@ import java.util.List;
   for removal through ContentScanner class.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class ContentRemovalSample
   extends Sample
@@ -27,15 +27,15 @@ public class ContentRemovalSample
   public boolean run(
     )
   {
-    String filePath = promptPdfFileChoice("Please select a PDF file");
-
-    // 1. Open the PDF file!
+    // 1. Opening the PDF file...
     File file;
-    try
-    {file = new File(filePath);}
-    catch(Exception e)
-    {throw new RuntimeException(filePath + " file access error.",e);}
-
+    {
+      String filePath = promptPdfFileChoice("Please select a PDF file");
+      try
+      {file = new File(filePath);}
+      catch(Exception e)
+      {throw new RuntimeException(filePath + " file access error.",e);}
+    }
     Document document = file.getDocument();
 
     // 2. Content removal.
@@ -49,12 +49,9 @@ public class ContentRemovalSample
       contents.flush();
     }
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Content removal","content removal from existing pages");
-
     // 3. Serialize the PDF file!
-    serialize(file);
-    
+    serialize(file, true, "Content removal", "content removal from existing pages");
+
     return true;
   }
 

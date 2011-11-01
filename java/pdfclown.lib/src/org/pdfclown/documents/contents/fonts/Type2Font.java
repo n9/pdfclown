@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,12 +31,12 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDirectObject;
 
 /**
-  Composite font associated to a Type 2 CIDFont [PDF:1.6:5.6.3],
-  containing glyph descriptions based on the TrueType font format.
+  Composite font associated to a Type 2 CIDFont, containing glyph descriptions based on the TrueType
+  font format [PDF:1.6:5.6.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF12)
 public final class Type2Font

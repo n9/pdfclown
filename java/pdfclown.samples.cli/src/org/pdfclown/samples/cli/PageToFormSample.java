@@ -1,5 +1,10 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.Dimension;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.composition.AlignmentXEnum;
@@ -10,11 +15,6 @@ import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.contents.xObjects.XObject;
 import org.pdfclown.files.File;
 
-import java.awt.Dimension;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 /**
   This sample demonstrates <b>how to reuse a PDF page as a form</b> (precisely: form XObject [PDF:1.6:4.9]).
   <h3>Remarks</h3>
@@ -23,7 +23,7 @@ import java.awt.geom.Rectangle2D;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.5
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class PageToFormSample
   extends Sample
@@ -36,7 +36,6 @@ public class PageToFormSample
     File formFile;
     {
       String filePath = promptPdfFileChoice("Please select a PDF file to use as form");
-
       try
       {formFile = new File(filePath);}
       catch(Exception e)
@@ -53,12 +52,9 @@ public class PageToFormSample
     // 4. Insert the contents into the new document!
     populate(document,form);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Page-to-form","converting a page to a reusable form");
-
     // 5. Serialize the PDF file!
-    serialize(file,false);
-    
+    serialize(file, false, "Page-to-form", "converting a page to a reusable form");
+
     return true;
   }
 

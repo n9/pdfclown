@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -103,26 +103,26 @@ namespace org.pdfclown.documents.contents.objects
       */
 
       IContentContext context = state.Scanner.ContentContext;
-      float contextHeight = context.Box.Height;
+      double contextHeight = context.Box.Height;
       Font font = state.Font;
-      float fontSize = state.FontSize;
-      float scale = state.Scale / 100;
-      float scaledFactor = Font.GetScalingFactor(fontSize) * scale;
-      float wordSpace = state.WordSpace * scale;
-      float charSpace = state.CharSpace * scale;
+      double fontSize = state.FontSize;
+      double scale = state.Scale / 100;
+      double scaledFactor = Font.GetScalingFactor(fontSize) * scale;
+      double wordSpace = state.WordSpace * scale;
+      double charSpace = state.CharSpace * scale;
       Matrix ctm = state.Ctm.Clone();
       Matrix tm = state.Tm;
       if(this is ShowTextToNextLine)
       {
         ShowTextToNextLine showTextToNextLine = (ShowTextToNextLine)this;
-        float? newWordSpace = showTextToNextLine.WordSpace;
+        double? newWordSpace = showTextToNextLine.WordSpace;
         if(newWordSpace != null)
         {
           if(textScanner == null)
           {state.WordSpace = newWordSpace.Value;}
           wordSpace = newWordSpace.Value * scale;
         }
-        float? newCharSpace = showTextToNextLine.CharSpace;
+        double? newCharSpace = showTextToNextLine.CharSpace;
         if(newCharSpace != null)
         {
           if(textScanner == null)
@@ -130,7 +130,7 @@ namespace org.pdfclown.documents.contents.objects
           charSpace = newCharSpace.Value * scale;
         }
         tm = state.Tlm.Clone();
-        tm.Translate(0, state.Lead);
+        tm.Translate(0, (float)state.Lead);
       }
       else
       {tm = state.Tm.Clone();}
@@ -142,7 +142,7 @@ namespace org.pdfclown.documents.contents.objects
           string textString = font.Decode((byte[])textElement);
           foreach(char textChar in textString)
           {
-            float charWidth = font.GetWidth(textChar) * scaledFactor;
+            double charWidth = font.GetWidth(textChar) * scaledFactor;
 
             if(textScanner != null)
             {
@@ -151,12 +151,12 @@ namespace org.pdfclown.documents.contents.objects
                 during a text-showing operation.
               */
               Matrix trm = ctm.Clone(); trm.Multiply(tm);
-              float charHeight = font.GetHeight(textChar,fontSize);
+              double charHeight = font.GetHeight(textChar,fontSize);
               drawing::RectangleF charBox = new drawing::RectangleF(
                 trm.Elements[4],
-                contextHeight - trm.Elements[5] - font.GetAscent(fontSize) * trm.Elements[3],
-                charWidth * trm.Elements[0],
-                charHeight * trm.Elements[3]
+                (float)(contextHeight - trm.Elements[5] - font.GetAscent(fontSize) * trm.Elements[3]),
+                (float)charWidth * trm.Elements[0],
+                (float)charHeight * trm.Elements[3]
                 );
               textScanner.ScanChar(textChar,charBox);
             }
@@ -165,11 +165,11 @@ namespace org.pdfclown.documents.contents.objects
               NOTE: After the glyph is painted, the text matrix is updated
               according to the glyph displacement and any applicable spacing parameter.
             */
-            tm.Translate(charWidth + charSpace + (textChar == ' ' ? wordSpace : 0), 0);
+            tm.Translate((float)(charWidth + charSpace + (textChar == ' ' ? wordSpace : 0)), 0);
           }
         }
         else // Text position adjustment.
-        {tm.Translate(-Convert.ToSingle(textElement) * scaledFactor, 0);}
+        {tm.Translate((float)(-Convert.ToSingle(textElement) * scaledFactor), 0);}
       }
 
       if(textScanner == null)

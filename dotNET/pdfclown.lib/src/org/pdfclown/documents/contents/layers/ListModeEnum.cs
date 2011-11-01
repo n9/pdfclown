@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.objects;
+using org.pdfclown.util;
 
 using System;
 
@@ -46,31 +47,32 @@ namespace org.pdfclown.documents.contents.layers
 
   internal static class ListModeEnumExtension
   {
-    public static PdfName GetName(
-      this ListModeEnum mode
-      )
+    private static readonly BiDictionary<ListModeEnum,PdfName> codes;
+
+    static ListModeEnumExtension()
     {
-      switch(mode)
-      {
-        case ListModeEnum.AllPages:
-          return PdfName.AllPages;
-        case ListModeEnum.VisiblePages:
-          return PdfName.VisiblePages;
-        default:
-          throw new NotImplementedException();
-      }
+      codes = new BiDictionary<ListModeEnum,PdfName>();
+      codes[ListModeEnum.AllPages] = PdfName.AllPages;
+      codes[ListModeEnum.VisiblePages] = PdfName.VisiblePages;
     }
 
-    public static ListModeEnum ToEnum(
+    public static ListModeEnum Get(
       PdfName name
       )
     {
-      if(name == null || name.Equals(PdfName.AllPages))
+      if(name == null)
         return ListModeEnum.AllPages;
-      else if(name.Equals(PdfName.VisiblePages))
-        return ListModeEnum.VisiblePages;
-      else
+
+      ListModeEnum? listMode = codes.GetKey(name);
+      if(!listMode.HasValue)
         throw new NotSupportedException("List mode unknown: " + name);
+
+      return listMode.Value;
     }
+
+    public static PdfName GetName(
+      this ListModeEnum listMode
+      )
+    {return codes[listMode];}
   }
 }

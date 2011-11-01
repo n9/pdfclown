@@ -6,9 +6,9 @@ import org.pdfclown.documents.fileSpecs.FileSpec;
 import org.pdfclown.documents.interaction.actions.Action;
 import org.pdfclown.documents.interaction.actions.GoToDestination;
 import org.pdfclown.documents.interaction.actions.GoToEmbedded;
+import org.pdfclown.documents.interaction.actions.GoToEmbedded.TargetObject;
 import org.pdfclown.documents.interaction.actions.GoToNonLocal;
 import org.pdfclown.documents.interaction.actions.GoToURI;
-import org.pdfclown.documents.interaction.actions.GoToEmbedded.TargetObject;
 import org.pdfclown.documents.interaction.navigation.document.Bookmark;
 import org.pdfclown.documents.interaction.navigation.document.Bookmarks;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
@@ -19,7 +19,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
   This sample demonstrates <b>how to inspect the bookmarks</b> of a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class BookmarksParsingSample
   extends Sample
@@ -28,15 +28,15 @@ public class BookmarksParsingSample
   public boolean run(
     )
   {
-    String filePath = promptPdfFileChoice("Please select a PDF file");
-
-    // 1. Open the PDF file!
+    // 1. Opening the PDF file...
     File file;
-    try
-    {file = new File(filePath);}
-    catch(Exception e)
-    {throw new RuntimeException(filePath + " file access error.",e);}
-
+    {
+      String filePath = promptPdfFileChoice("Please select a PDF file");
+      try
+      {file = new File(filePath);}
+      catch(Exception e)
+      {throw new RuntimeException(filePath + " file access error.",e);}
+    }
     Document document = file.getDocument();
 
     // 2. Get the bookmarks collection!

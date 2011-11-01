@@ -30,7 +30,6 @@ import java.util.List;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
-import org.pdfclown.documents.contents.FontResources;
 import org.pdfclown.documents.contents.IContentContext;
 import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.objects.PdfDirectObject;
@@ -43,11 +42,12 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class SetFont
   extends Operation
+  implements IResourceReference<Font>
 {
   // <class>
   // <static>
@@ -60,7 +60,7 @@ public final class SetFont
   // <constructors>
   public SetFont(
     PdfName name,
-    float size
+    double size
     )
   {super(Operator, name, new PdfReal(size));}
 
@@ -73,16 +73,6 @@ public final class SetFont
   // <interface>
   // <public>
   /**
-    Gets the name of the {@link Font font} resource to be set.
-
-    @see #getFont(IContentContext)
-    @see FontResources
-  */
-  public PdfName getName(
-    )
-  {return (PdfName)operands.get(0);}
-
-  /**
     Gets the {@link Font font} resource to be set.
 
     @param context Content context.
@@ -90,12 +80,12 @@ public final class SetFont
   public Font getFont(
     IContentContext context
     )
-  {return context.getResources().getFonts().get(getName());}
+  {return getResource(context);}
 
   /**
     Gets the font size to be set.
   */
-  public float getSize(
+  public double getSize(
     )
   {return ((PdfNumber<?>)operands.get(1)).getNumberValue();}
 
@@ -104,25 +94,36 @@ public final class SetFont
     GraphicsState state
     )
   {
-    state.setFont(state.getScanner().getContentContext().getResources().getFonts().get(getName()));
+    state.setFont(getFont(state.getScanner().getContentContext()));
     state.setFontSize(getSize());
   }
-
-  /**
-    @see #getName()
-  */
-  public void setName(
-    PdfName value
-    )
-  {operands.set(0,value);}
 
   /**
     @see #getSize()
   */
   public void setSize(
-    float value
+    double value
     )
   {operands.set(1, new PdfReal(value));}
+
+  // <IResourceReference>
+  @Override
+  public PdfName getName(
+    )
+  {return (PdfName)operands.get(0);}
+
+  @Override
+  public Font getResource(
+    IContentContext context
+    )
+  {return context.getResources().getFonts().get(getName());}
+
+  @Override
+  public void setName(
+    PdfName value
+    )
+  {operands.set(0,value);}
+  // </IResourceReference>
   // </public>
   // </interface>
   // </dynamic>

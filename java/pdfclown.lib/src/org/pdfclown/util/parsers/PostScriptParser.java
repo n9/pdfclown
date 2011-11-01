@@ -39,7 +39,7 @@ import org.pdfclown.tokens.Symbol;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 public class PostScriptParser
   implements Closeable
@@ -494,7 +494,7 @@ public class PostScriptParser
           token = Integer.parseInt(buffer.toString());
           break;
         case Real:
-          token = Float.parseFloat(buffer.toString());
+          token = Double.parseDouble(buffer.toString());
           break;
       }
     }

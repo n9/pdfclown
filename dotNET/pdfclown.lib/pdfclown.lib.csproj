@@ -410,6 +410,8 @@
     <Compile Include="src\org\pdfclown\documents\contents\layers\ListModeEnum.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\JustificationEnum.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\layers\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\CffParser.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\IResourceReference.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />
@@ -487,6 +489,22 @@
     <EmbeddedResource Include="..\..\main\res\pkg\fonts\cmap\Identity-V">
       <Link>res\fonts\cmap\Identity-V</Link>
       <LogicalName>fonts.cmap.Identity-V</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\cff\ExpertCharset">
+      <Link>res\fonts\cff\ExpertCharset</Link>
+      <LogicalName>fonts.cff.ExpertCharset</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\cff\ExpertSubsetCharset">
+      <Link>res\fonts\cff\ExpertSubsetCharset</Link>
+      <LogicalName>fonts.cff.ExpertSubsetCharset</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\cff\ISOAdobeCharset">
+      <Link>res\fonts\cff\ISOAdobeCharset</Link>
+      <LogicalName>fonts.cff.ISOAdobeCharset</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\main\res\pkg\fonts\cff\StandardStrings">
+      <Link>res\fonts\cff\StandardStrings</Link>
+      <LogicalName>fonts.cff.StandardStrings</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

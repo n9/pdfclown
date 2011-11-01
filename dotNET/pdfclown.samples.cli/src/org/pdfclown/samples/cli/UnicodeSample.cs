@@ -30,11 +30,8 @@ namespace org.pdfclown.samples.cli
       // 2. Insert the contents into the document!
       Populate(document);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Unicode","using Unicode fonts");
-
       // 3. Serialize the PDF file!
-      Serialize(file,false);
+      Serialize(file, false, "Unicode", "using Unicode fonts");
 
       return true;
     }

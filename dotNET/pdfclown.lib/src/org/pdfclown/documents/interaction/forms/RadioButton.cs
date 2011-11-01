@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -104,6 +104,11 @@ namespace org.pdfclown.documents.interaction.forms
       {return base.Value;}
       set
       {
+        /*
+          NOTE: The parent field's V entry holds a name object corresponding to the appearance state
+          of whichever child field is currently in the on state; the default value for this entry is
+          Off.
+        */
         PdfName selectedWidgetName = new PdfName((string)value);
         bool selected = false;
         // Selecting the current appearance state for each widget...

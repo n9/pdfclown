@@ -39,7 +39,7 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class ShowTextToNextLine
@@ -83,8 +83,8 @@ public final class ShowTextToNextLine
   */
   public ShowTextToNextLine(
     byte[] text,
-    float wordSpace,
-    float charSpace
+    double wordSpace,
+    double charSpace
     )
   {
     super(
@@ -112,7 +112,7 @@ public final class ShowTextToNextLine
   /**
     Gets the character spacing.
   */
-  public Float getCharSpace(
+  public Double getCharSpace(
     )
   {
     if(operator.equals(SimpleOperator))
@@ -133,7 +133,7 @@ public final class ShowTextToNextLine
   /**
     Gets the word spacing.
   */
-  public Float getWordSpace(
+  public Double getWordSpace(
     )
   {
     if(operator.equals(SimpleOperator))
@@ -146,7 +146,7 @@ public final class ShowTextToNextLine
     @see #getCharSpace()
   */
   public void setCharSpace(
-    Float value
+    Double value
     )
   {
     ensureSpaceOperation();
@@ -168,7 +168,7 @@ public final class ShowTextToNextLine
     @see #getWordSpace()
   */
   public void setWordSpace(
-    Float value
+    Double value
     )
   {
     ensureSpaceOperation();

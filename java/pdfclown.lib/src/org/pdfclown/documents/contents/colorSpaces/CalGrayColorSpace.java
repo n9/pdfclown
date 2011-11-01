@@ -38,11 +38,11 @@ import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-  <b>CIE-based A single-transformation-stage color space</b>,
-  where A represents a <i>calibrated achromatic single-component color value</i> [PDF:1.6:4.5.4].
+  CIE-based A single-transformation-stage color space, where A represents a calibrated achromatic
+  single-component color value [PDF:1.6:4.5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public final class CalGrayColorSpace
@@ -85,16 +85,14 @@ public final class CalGrayColorSpace
   {return CalGrayColor.Default;}
 
   @Override
-  public float[] getGamma(
+  public double[] getGamma(
     )
   {
     PdfNumber<?> gammaObject = (PdfNumber<?>)getDictionary().get(PdfName.Gamma);
 
     return (gammaObject == null
-      ? new float[]
-        {1}
-      : new float[]
-        {gammaObject.getNumberValue()}
+      ? new double[]{1}
+      : new double[]{gammaObject.getNumberValue()}
       );
   }
 

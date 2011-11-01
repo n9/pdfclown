@@ -32,11 +32,8 @@ namespace org.pdfclown.samples.cli
       // 2. Content creation.
       Populate(document);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Annotations","inserting annotations");
-
       // 3. Serialize the PDF file!
-      Serialize(file,false);
+      Serialize(file, false, "Annotations", "inserting annotations");
 
       return true;
     }

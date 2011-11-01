@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -59,7 +59,7 @@ namespace org.pdfclown.documents.contents.objects
       ContentScanner.GraphicsState state
       )
     {
-      state.Tlm.Translate(0, state.Lead);
+      state.Tlm.Translate(0, (float)state.Lead);
       state.Tm = state.Tlm.Clone();
     }
     #endregion

@@ -49,8 +49,8 @@ namespace org.pdfclown.documents.contents.colorSpaces
       implementation of this method; currently this implementation focuses on
       device colors only.
     */
-    protected static float NormalizeComponent(
-      float value
+    protected static double NormalizeComponent(
+      double value
       )
     {
       if(value < 0)

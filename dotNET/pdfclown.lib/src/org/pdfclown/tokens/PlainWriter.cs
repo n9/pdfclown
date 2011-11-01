@@ -121,7 +121,7 @@ namespace org.pdfclown.tokens
               stream.Length
               );
             // Add in-use entry content!
-            indirectObjectEntry.Value.WriteTo(stream);
+            indirectObjectEntry.Value.WriteTo(stream, file);
           }
           else // Free entry.
           {
@@ -197,7 +197,7 @@ namespace org.pdfclown.tokens
               stream.Length
               );
             // Add in-use entry content!
-            indirectObject.WriteTo(stream);
+            indirectObject.WriteTo(stream, file);
           }
           else // Free entry.
           {
@@ -316,7 +316,7 @@ namespace org.pdfclown.tokens
       else
       {trailer[PdfName.Prev] = new PdfInteger((int)parser.RetrieveXRefOffset());}
       // Serialize its contents!
-      trailer.WriteTo(stream); stream.Write(Chunk.LineFeed);
+      trailer.WriteTo(stream, file); stream.Write(Chunk.LineFeed);
 
       // 3. Tail.
       WriteTail(startxref);

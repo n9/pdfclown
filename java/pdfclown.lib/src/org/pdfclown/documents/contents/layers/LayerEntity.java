@@ -38,7 +38,7 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 public class LayerEntity
   extends PropertyList
@@ -46,7 +46,7 @@ public class LayerEntity
   // <class>
   // <classes>
   /**
-    Membership visibility policy.
+    Membership visibility policy [PDF:1.7:4.10.1].
   */
   public enum VisibilityPolicyEnum
   {

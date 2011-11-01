@@ -21,9 +21,8 @@ namespace org.pdfclown.samples.cli
     public override bool Run(
       )
     {
+      // 1. Opening the PDF file...
       string filePath = PromptPdfFileChoice("Please select a PDF file");
-
-      // 1. Open the PDF file!
       files::File file = new files::File(filePath);
 
       // 2. Iterating through the indirect object collection...

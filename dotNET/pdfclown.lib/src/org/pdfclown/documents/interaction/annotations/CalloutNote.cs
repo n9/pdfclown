@@ -183,9 +183,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public JustificationEnum Justification
     {
       get
-      {return JustificationEnumExtension.ToEnum((PdfInteger)BaseDataObject[PdfName.Q]);}
+      {return JustificationEnumExtension.Get((PdfInteger)BaseDataObject[PdfName.Q]);}
       set
-      {BaseDataObject[PdfName.Q] = value.ToCode();}
+      {BaseDataObject[PdfName.Q] = value.GetCode();}
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.bytes;
+using org.pdfclown.files;
 
 using System;
 using System.Globalization;
@@ -34,21 +35,21 @@ namespace org.pdfclown.objects
     <summary>PDF real number object [PDF:1.6:3.2.2].</summary>
   */
   public sealed class PdfReal
-    : PdfSimpleObject<float>,
+    : PdfSimpleObject<double>,
       IPdfNumber
   {
     #region static
     #region fields
-    private static readonly NumberFormatInfo formatter;
+    private static readonly NumberFormatInfo formatInfo;
     #endregion
 
     #region constructors
     static PdfReal(
       )
     {
-      formatter = new NumberFormatInfo();
-      formatter.NumberDecimalSeparator = ".";
-      formatter.NegativeSign = "-";
+      formatInfo = new NumberFormatInfo();
+      formatInfo.NumberDecimalSeparator = ".";
+      formatInfo.NegativeSign = "-";
     }
     #endregion
 
@@ -58,7 +59,7 @@ namespace org.pdfclown.objects
       <summary>Gets the object equivalent to the given value.</summary>
     */
     public static PdfReal Get(
-      float? value
+      double? value
       )
     {return value.HasValue ? new PdfReal(value.Value) : null;}
     #endregion
@@ -68,14 +69,9 @@ namespace org.pdfclown.objects
     #region dynamic
     #region constructors
     public PdfReal(
-      float value
+      double value
       )
     {RawValue = value;}
-
-    public PdfReal(
-      double value
-      ) : this((float)value)
-    {}
     #endregion
 
     #region interface
@@ -95,9 +91,24 @@ namespace org.pdfclown.objects
     {return PdfNumber.GetHashCode(this);}
 
     public override void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      File context
       )
-    {stream.Write(RawValue.ToString("0.#####", formatter));}
+    {stream.Write(RawValue.ToString(context.Configuration.RealFormat, formatInfo));}
+
+    #region IPdfNumber
+    public float FloatValue
+    {
+      get
+      {return (float)this.RawValue;}
+    }
+
+    public int IntValue
+    {
+      get
+      {return (int)this.RawValue;}
+    }
+    #endregion
     #endregion
     #endregion
     #endregion

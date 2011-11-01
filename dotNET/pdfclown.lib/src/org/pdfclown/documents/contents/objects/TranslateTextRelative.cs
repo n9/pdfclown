@@ -55,14 +55,14 @@ namespace org.pdfclown.documents.contents.objects
     #region dynamic
     #region constructors
     public TranslateTextRelative(
-      float offsetX,
-      float offsetY
+      double offsetX,
+      double offsetY
       ) : this(offsetX,offsetY,false)
     {}
 
     public TranslateTextRelative(
-      float offsetX,
-      float offsetY,
+      double offsetX,
+      double offsetY,
       bool leadSet
       ) : base(
         leadSet ? LeadOperatorKeyword : SimpleOperatorKeyword,
@@ -91,7 +91,7 @@ namespace org.pdfclown.documents.contents.objects
       {operator_ = (value ? LeadOperatorKeyword : SimpleOperatorKeyword);}
     }
 
-    public float OffsetX
+    public double OffsetX
     {
       get
       {return ((IPdfNumber)operands[0]).RawValue;}
@@ -99,7 +99,7 @@ namespace org.pdfclown.documents.contents.objects
       {operands[0] = new PdfReal(value);}
     }
 
-    public float OffsetY
+    public double OffsetY
     {
       get
       {return ((IPdfNumber)operands[1]).RawValue;}
@@ -111,7 +111,7 @@ namespace org.pdfclown.documents.contents.objects
       ContentScanner.GraphicsState state
       )
     {
-      state.Tlm.Translate(OffsetX, OffsetY);
+      state.Tlm.Translate((float)OffsetX, (float)OffsetY);
       state.Tm = state.Tlm.Clone();
       if(LeadSet)
       {state.Lead = OffsetY;}

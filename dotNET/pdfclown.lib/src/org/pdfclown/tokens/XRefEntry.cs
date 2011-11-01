@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -60,21 +60,37 @@ namespace org.pdfclown.tokens
       <summary>Unreusable generation [PDF:1.6:3.4.3].</summary>
     */
     public static readonly int GenerationUnreusable = 65535;
+
+    /**
+      <summary>Undefined offset.</summary>
+    */
+    public static readonly int UndefinedOffset = -1;
     #endregion
     #endregion
 
     #region dynamic
     #region fields
-    private int number; // Object number.
-    private int generation; // Object generation.
-    private int offset; // Indirect-object offset (in-use entry) | Next free-object object number (free entry) | Object index within the object stream (compressed entry).
-    private int streamNumber; // Object number of the object stream in which this object is stored [PDF:1.6:3.4.7].
-    private UsageEnum usage; // Entry usage.
+    private int number;
+    private int generation;
+    private int offset;
+    private int streamNumber;
+    private UsageEnum usage;
     #endregion
 
     #region constructors
     /**
-      <summary>Instantiates an ordinary (uncompressed) object entry.</summary>
+      <summary>Instantiates a new in-use ordinary (uncompressed) object entry.</summary>
+      <param name="number">Object number.</param>
+      <param name="generation">Generation number.</param>
+    */
+    public XRefEntry(
+      int number,
+      int generation
+      ) : this(number, generation, -1, UsageEnum.InUse)
+    {}
+
+    /**
+      <summary>Instantiates an original ordinary (uncompressed) object entry.</summary>
       <param name="number">Object number.</param>
       <param name="generation">Generation number.</param>
       <param name="offset">Indirect-object byte offset within the serialized file (in-use entry),
@@ -93,7 +109,8 @@ namespace org.pdfclown.tokens
       <summary>Instantiates a compressed object entry.</summary>
       <param name="number">Object number.</param>
       <param name="offset">Object index within its object stream.</param>
-      <param name="streamNumber">Object number of the object stream in which this object is stored.</param>
+      <param name="streamNumber">Object number of the object stream in which this object is stored.
+      </param>
     */
     public XRefEntry(
       int number,

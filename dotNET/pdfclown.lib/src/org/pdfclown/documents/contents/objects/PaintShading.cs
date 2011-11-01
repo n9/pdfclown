@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.bytes;
+using colorSpaces = org.pdfclown.documents.contents.colorSpaces;
 using org.pdfclown.objects;
 
 using System.Collections.Generic;
@@ -35,7 +36,8 @@ namespace org.pdfclown.documents.contents.objects
   */
   [PDF(VersionEnum.PDF13)]
   public sealed class PaintShading
-    : Operation
+    : Operation,
+      IResourceReference<colorSpaces::Shading>
   {
     #region static
     #region fields
@@ -59,21 +61,21 @@ namespace org.pdfclown.documents.contents.objects
     #region interface
     #region public
     /**
-      <summary>Gets the <see cref="org.pdfclown.documents.contents.colorSpaces.Shading">shading</see> resource
-      to be painted.</summary>
+      <summary>Gets the <see cref="colorSpaces::Shading">shading</see> resource to be painted.
+      </summary>
       <param name="context">Content context.</param>
     */
-    public org.pdfclown.documents.contents.colorSpaces.Shading GetShading(
+    public colorSpaces::Shading GetShading(
+      IContentContext context
+      )
+    {return GetResource(context);}
+
+    #region IResourceReference
+    public colorSpaces::Shading GetResource(
       IContentContext context
       )
     {return context.Resources.Shadings[Name];}
-    
-    /**
-      <summary>Gets the name of the <see cref="org.pdfclown.documents.contents.colorSpaces.Shading">shading</see>
-      resource to be painted.</summary>
-      <seealso cref="GetShading(IContentContext)"/>
-      <seealso cref="ShadingResources"/>
-    */
+
     public PdfName Name
     {
       get
@@ -81,6 +83,7 @@ namespace org.pdfclown.documents.contents.objects
       set
       {operands[0] = value;}
     }
+    #endregion
     #endregion
     #endregion
     #endregion

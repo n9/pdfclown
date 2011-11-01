@@ -39,7 +39,7 @@ import org.pdfclown.tokens.XRefEntry.UsageEnum;
   PDF indirect object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 public final class PdfIndirectObject
   extends PdfObject
@@ -67,15 +67,16 @@ public final class PdfIndirectObject
 
   // <constructors>
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
 
     @param file Associated file.
-    @param dataObject Data object associated to the indirect object.
-      It MUST be null if the indirect object is original (i.e. coming from an existing file) or
-      free.
-      It MUST be NOT null if the indirect object is new and in-use.
-    @param xrefEntry Cross-reference entry associated to the indirect object.
-      If the indirect object is new, its offset field MUST be set to 0 (zero).
+    @param dataObject Data object associated to the indirect object. It MUST be
+      <ul>
+        <li><code>null</code>, if the indirect object is original or free;</li>
+        <li>NOT <code>null</code>, if the indirect object is new and in-use.</li>
+      </ul>
+    @param xrefEntry Cross-reference entry associated to the indirect object. If the indirect object
+      is new, its offset field MUST be set to 0.
   */
   public PdfIndirectObject(
     File file,
@@ -87,7 +88,7 @@ public final class PdfIndirectObject
     this.dataObject = include(dataObject);
     this.xrefEntry = xrefEntry;
 
-    this.original = (xrefEntry.getOffset() != 0);
+    this.original = (xrefEntry.getOffset() >= 0);
     this.reference = new PdfReference(
       this,
       xrefEntry.getNumber(),
@@ -116,8 +117,8 @@ public final class PdfIndirectObject
       objectStream.put(xrefEntry.getNumber(),getDataObject());
       // Update its xref entry!
       xrefEntry.setUsage(UsageEnum.InUseCompressed);
-      xrefEntry.setStreamNumber(objectStream.getContainer().getReference().getObjectNumber());
-      xrefEntry.setOffset(-1); // Internal object index unknown (to set on object stream serialization -- see ObjectStream).
+      xrefEntry.setStreamNumber(objectStream.getReference().getObjectNumber());
+      xrefEntry.setOffset(XRefEntry.UndefinedOffset); // Internal object index unknown (to set on object stream serialization -- see ObjectStream).
     }
   }
 
@@ -135,11 +136,6 @@ public final class PdfIndirectObject
   public PdfObject getParent(
     )
   {return null;} // NOTE: As indirect objects are root objects, no parent can be associated.
-
-  @Override
-  public PdfIndirectObject getRoot(
-    )
-  {return null;} // NOTE: As indirect objects are root objects, no root can be associated.
 
   public XRefEntry getXrefEntry(
     )
@@ -159,21 +155,21 @@ public final class PdfIndirectObject
   }
 
   /**
-    Gets whether it's compressed within an object stream [PDF:1.6:3.4.6].
+    Gets whether this object is compressed within an object stream [PDF:1.6:3.4.6].
   */
   public boolean isCompressed(
     )
   {return xrefEntry.getUsage() == UsageEnum.InUseCompressed;}
 
   /**
-    Gets whether it contains a data object.
+    Gets whether this object contains a data object.
   */
   public boolean isInUse(
     )
   {return xrefEntry.getUsage() != UsageEnum.Free;}
 
   /**
-    Gets whether it hasn't been modified.
+    Gets whether this object comes intact from an existing file.
   */
   public boolean isOriginal(
     )
@@ -205,18 +201,19 @@ public final class PdfIndirectObject
     // Update its xref entry!
     xrefEntry.setUsage(UsageEnum.InUse);
     xrefEntry.setStreamNumber(-1); // No object stream.
-    xrefEntry.setOffset(-1); // Offset unknown (to set on file serialization -- see CompressedWriter).
+    xrefEntry.setOffset(XRefEntry.UndefinedOffset); // Offset unknown (to set on file serialization -- see CompressedWriter).
   }
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    File context
     )
   {
     // Header.
     stream.write(reference.getId()); stream.write(BeginIndirectObjectChunk);
     // Body.
-    getDataObject().writeTo(stream);
+    getDataObject().writeTo(stream, context);
     // Tail.
     stream.write(EndIndirectObjectChunk);
   }
@@ -236,7 +233,7 @@ public final class PdfIndirectObject
       return;
 
     /*
-      NOTE: It's expected that dropFile() is invoked by IndirectObjects remove() method;
+      NOTE: It's expected that dropFile() is invoked by IndirectObjects.remove() method;
       such an action is delegated because clients may invoke directly remove() method,
       skipping this method.
     */
@@ -251,11 +248,9 @@ public final class PdfIndirectObject
     {
       switch (xrefEntry.getUsage())
       {
-        // Free entry (no data object at all).
-        case Free:
+        case Free: // Free entry (no data object at all).
           break;
-        // In-use entry (late-bound data object).
-        case InUse:
+        case InUse: // In-use entry (late-bound data object).
         {
           FileParser parser = file.getReader().getParser();
           // Retrieve the associated data object among the original objects!
@@ -288,6 +283,11 @@ public final class PdfIndirectObject
   {return reference;}
 
   @Override
+  public boolean isUpdated(
+    )
+  {return updated;}
+
+  @Override
   public void setDataObject(
     PdfDataObject value
     )
@@ -303,11 +303,6 @@ public final class PdfIndirectObject
   // </public>
 
   // <protected>
-  @Override
-  protected boolean isUpdated(
-    )
-  {return updated;}
-
   @Override
   protected boolean isVirtual(
     )
@@ -339,7 +334,7 @@ public final class PdfIndirectObject
 
   // <internal>
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public void dropFile(
     )
@@ -349,7 +344,7 @@ public final class PdfIndirectObject
   }
 
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public void dropOriginal(
     )

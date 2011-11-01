@@ -47,7 +47,7 @@ import org.pdfclown.util.parsers.PostScriptParser;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 public class BaseParser
   extends PostScriptParser
@@ -155,7 +155,7 @@ public class BaseParser
           PdfString.SerializationModeEnum.Hex
           );
       case Real:
-        return new PdfReal((Float)getToken());
+        return new PdfReal((Double)getToken());
       case Boolean:
         return PdfBoolean.get((Boolean)getToken());
       case Null:

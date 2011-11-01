@@ -40,7 +40,7 @@ import org.pdfclown.util.NotImplementedException;
   Viewer preferences [PDF:1.6:8.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF12)
 public final class ViewerPreferences
@@ -118,7 +118,7 @@ public final class ViewerPreferences
   {super(context, new PdfDictionary());}
 
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public ViewerPreferences(
     PdfDirectObject baseObject

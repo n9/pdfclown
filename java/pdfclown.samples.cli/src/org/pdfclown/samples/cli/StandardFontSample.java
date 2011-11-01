@@ -1,5 +1,9 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+import java.util.EnumSet;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.composition.AlignmentXEnum;
@@ -7,10 +11,6 @@ import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.files.File;
-
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-import java.util.EnumSet;
 
 /**
   This sample demonstrates <b>how to use of standard Type 1 fonts</b>, which are the14 built-in fonts
@@ -20,7 +20,7 @@ import java.util.EnumSet;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class StandardFontSample
   extends Sample
@@ -39,12 +39,9 @@ public class StandardFontSample
     // 2. Content creation.
     populate(document);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Standard Type 1 fonts","applying standard Type 1 fonts");
-
     // 3. Serialize the PDF file!
-    serialize(file,false);
-    
+    serialize(file, false, "Standard Type 1 fonts", "applying standard Type 1 fonts");
+
     return true;
   }
 

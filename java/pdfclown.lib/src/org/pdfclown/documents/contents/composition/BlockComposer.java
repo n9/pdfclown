@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.ContentScanner;
 import org.pdfclown.documents.contents.composition.Length.UnitModeEnum;
 import org.pdfclown.documents.contents.fonts.Font;
@@ -48,7 +49,7 @@ import org.pdfclown.documents.contents.objects.SetWordSpace;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.3
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 /*
   TODO: Manage all the graphics parameters (especially
@@ -74,11 +75,12 @@ public final class BlockComposer
 
     @Override
     public void writeTo(
-      IOutputStream stream
+      IOutputStream stream,
+      Document context
       )
     {
       for(ContentObject object : objects)
-      {object.writeTo(stream);}
+      {object.writeTo(stream, context);}
     }
   }
 
@@ -98,16 +100,16 @@ public final class BlockComposer
     @SuppressWarnings("unused")
     public ContentPlaceholder container;
 
-    public float height;
+    public double height;
     /**
       Vertical location relative to the block frame.
     */
-    public float y;
-    public float width;
+    public double y;
+    public double width;
 
     Row(
       ContentPlaceholder container,
-      float y
+      double y
       )
     {
       this.container = container;
@@ -122,16 +124,16 @@ public final class BlockComposer
     */
     public ContainerObject container;
 
-    public float height;
+    public double height;
     @SuppressWarnings("unused")
-    public float width;
+    public double width;
 
     public int spaceCount;
 
     RowObject(
       ContainerObject container,
-      float height,
-      float width,
+      double height,
+      double width,
       int spaceCount
       )
     {
@@ -165,8 +167,8 @@ public final class BlockComposer
     within the same block.
   */
   // <fields>
-  private PrimitiveComposer baseComposer;
-  private ContentScanner scanner;
+  private final PrimitiveComposer baseComposer;
+  private final ContentScanner scanner;
 
   private AlignmentXEnum alignmentX;
   private AlignmentYEnum alignmentY;
@@ -333,7 +335,7 @@ public final class BlockComposer
     showBreak();
 
     currentRow.y += offset.getHeight();
-    currentRow.width = (float)offset.getWidth();
+    currentRow.width = offset.getWidth();
   }
 
   /**
@@ -382,8 +384,8 @@ public final class BlockComposer
 
     ContentScanner.GraphicsState state = baseComposer.getState();
     Font font = state.getFont();
-    float fontSize = state.getFontSize();
-    float lineHeight = font.getLineHeight(fontSize);
+    double fontSize = state.getFontSize();
+    double lineHeight = font.getLineHeight(fontSize);
 
     TextFitter textFitter = new TextFitter(
       text,
@@ -435,12 +437,12 @@ textShowing:
       // Does the text fit?
       if(textFitter.fit(
         index,
-        (float)(frame.getWidth() - currentRow.width) // Remaining row width.
+        frame.getWidth() - currentRow.width // Remaining row width.
         ))
       {
         // Get the fitting text!
         String textChunk = textFitter.getFittedText();
-        float textChunkWidth = textFitter.getFittedWidth();
+        double textChunkWidth = textFitter.getFittedWidth();
         Point2D textChunkLocation = new Point2D.Double(
           currentRow.width,
           currentRow.y
@@ -515,7 +517,7 @@ trailParsing:
   {
     rowEnded = false;
 
-    float rowY = (float)boundBox.height;
+    double rowY = boundBox.height;
     if(rowY > 0)
     {
       ContentScanner.GraphicsState state = baseComposer.getState();
@@ -560,9 +562,9 @@ trailParsing:
 
     rowEnded = true;
 
-    float[] objectXOffsets = new float[currentRow.objects.size()]; // Horizontal object displacements.
-    float wordSpace = 0; // Exceeding space among words.
-    float rowXOffset = 0; // Horizontal row offset.
+    double[] objectXOffsets = new double[currentRow.objects.size()]; // Horizontal object displacements.
+    double wordSpace = 0; // Exceeding space among words.
+    double rowXOffset = 0; // Horizontal row offset.
 
     List<RowObject> objects = currentRow.objects;
 
@@ -573,10 +575,10 @@ trailParsing:
       case Left:
         break;
       case Right:
-        rowXOffset = (float)frame.getWidth() - currentRow.width;
+        rowXOffset = frame.getWidth() - currentRow.width;
         break;
       case Center:
-        rowXOffset = ((float)frame.getWidth() - currentRow.width) / 2;
+        rowXOffset = (frame.getWidth() - currentRow.width) / 2;
         break;
       case Justify:
         // Are there NO spaces?
@@ -589,7 +591,7 @@ trailParsing:
         else // Spaces exist.
         {
           // Calculate the exceeding spacing among the words!
-          wordSpace = ((float)frame.getWidth() - currentRow.width) / currentRow.spaceCount;
+          wordSpace = (frame.getWidth() - currentRow.width) / currentRow.spaceCount;
           // Define the horizontal offsets for justified alignment.
           for(
             int index = 1,
@@ -620,7 +622,7 @@ trailParsing:
       RowObject object = objects.get(index);
 
       // Vertical alignment.
-      float objectYOffset = 0;
+      double objectYOffset = 0;
 //TODO:IMPL image support!!!
 //       switch(object.type)
 //       {
@@ -650,14 +652,14 @@ trailParsing:
     boundBox.height = currentRow.y + currentRow.height;
 
     // Update the actual block vertical location!
-    float xOffset;
+    double xOffset;
     switch(alignmentY)
     {
       case Bottom:
-        xOffset = (float)(frame.getHeight() - boundBox.height);
+        xOffset = frame.getHeight() - boundBox.height;
         break;
       case Middle:
-        xOffset = (float)(frame.getHeight() - boundBox.height) / 2;
+        xOffset = (frame.getHeight() - boundBox.height) / 2;
         break;
       case Top:
       default:

@@ -1,5 +1,8 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.ContentScanner;
@@ -10,9 +13,6 @@ import org.pdfclown.documents.contents.xObjects.ImageXObject;
 import org.pdfclown.documents.contents.xObjects.XObject;
 import org.pdfclown.files.File;
 
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Rectangle2D;
-
 /**
   This sample demonstrates <b>how to retrieve the precise position (page and coordinates)
   of each image</b> within a PDF document, using the page content scanning functionality.
@@ -21,7 +21,7 @@ import java.awt.geom.Rectangle2D;
   each single content object within a page.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class ContentScanningSample
   extends Sample
@@ -30,15 +30,15 @@ public class ContentScanningSample
   public boolean run(
     )
   {
-    String filePath = promptPdfFileChoice("Please select a PDF file");
-
-    // 1. Open the PDF file!
+    // 1. Opening the PDF file...
     File file;
-    try
-    {file = new File(filePath);}
-    catch(Exception e)
-    {throw new RuntimeException(filePath + " file access error.",e);}
-
+    {
+      String filePath = promptPdfFileChoice("Please select a PDF file");
+      try
+      {file = new File(filePath);}
+      catch(Exception e)
+      {throw new RuntimeException(filePath + " file access error.",e);}
+    }
     Document document = file.getDocument();
 
     // 2. Parsing the document...
@@ -50,7 +50,7 @@ public class ContentScanningSample
         page
         );
     }
-    
+
     return true;
   }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -60,11 +60,12 @@ namespace org.pdfclown.documents.contents.composition
       {get{return objects;}}
 
       public override void WriteTo(
-        IOutputStream stream
+        IOutputStream stream,
+        Document context
         )
       {
         foreach(ContentObject obj in objects)
-        {obj.WriteTo(stream);}
+        {obj.WriteTo(stream, context);}
       }
     }
 
@@ -83,16 +84,16 @@ namespace org.pdfclown.documents.contents.composition
       */
       public ContentPlaceholder Container;
 
-      public float Height;
+      public double Height;
       /**
         <summary>Vertical location relative to the block frame.</summary>
       */
-      public float Y;
-      public float Width;
+      public double Y;
+      public double Width;
 
       internal Row(
         ContentPlaceholder container,
-        float y
+        double y
         )
       {
         this.Container = container;
@@ -107,15 +108,15 @@ namespace org.pdfclown.documents.contents.composition
       */
       public ContainerObject Container;
 
-      public float Height;
-      public float Width;
+      public double Height;
+      public double Width;
 
       public int SpaceCount;
 
       internal RowObject(
         ContainerObject container,
-        float height,
-        float width,
+        double height,
+        double width,
         int spaceCount
         )
       {
@@ -149,8 +150,8 @@ namespace org.pdfclown.documents.contents.composition
       facilitate parameter reuse within the same block.
     */
     #region fields
-    private PrimitiveComposer baseComposer;
-    private ContentScanner scanner;
+    private readonly PrimitiveComposer baseComposer;
+    private readonly ContentScanner scanner;
 
     private AlignmentXEnum alignmentX;
     private AlignmentYEnum alignmentY;
@@ -345,8 +346,8 @@ namespace org.pdfclown.documents.contents.composition
 
       ContentScanner.GraphicsState state = baseComposer.State;
       fonts::Font font = state.Font;
-      float fontSize = state.FontSize;
-      float lineHeight = font.GetLineHeight(fontSize);
+      double fontSize = state.FontSize;
+      double lineHeight = font.GetLineHeight(fontSize);
 
       TextFitter textFitter = new TextFitter(
         text,
@@ -397,12 +398,12 @@ namespace org.pdfclown.documents.contents.composition
         // Does the text fit?
         if(textFitter.Fit(
           index,
-          frame.Width - currentRow.Width // Residual row width.
+          frame.Width - currentRow.Width // Remaining row width.
           ))
         {
           // Get the fitting text!
           string textChunk = textFitter.FittedText;
-          float textChunkWidth = textFitter.FittedWidth;
+          double textChunkWidth = textFitter.FittedWidth;
           PointF textChunkLocation = new PointF(
             (float)currentRow.Width,
             (float)currentRow.Y
@@ -476,7 +477,7 @@ namespace org.pdfclown.documents.contents.composition
     {
       rowEnded = false;
 
-      float rowY = boundBox.Height;
+      double rowY = boundBox.Height;
       if(rowY > 0)
       {
         ContentScanner.GraphicsState state = baseComposer.State;
@@ -521,9 +522,9 @@ namespace org.pdfclown.documents.contents.composition
 
       rowEnded = true;
 
-      float[] objectXOffsets = new float[currentRow.Objects.Count]; // Horizontal object displacements.
-      float wordSpace = 0; // Exceeding space among words.
-      float rowXOffset = 0; // Horizontal row offset.
+      double[] objectXOffsets = new double[currentRow.Objects.Count]; // Horizontal object displacements.
+      double wordSpace = 0; // Exceeding space among words.
+      double rowXOffset = 0; // Horizontal row offset.
 
       List<RowObject> objects = currentRow.Objects;
 
@@ -582,7 +583,7 @@ namespace org.pdfclown.documents.contents.composition
         RowObject obj = objects[index];
 
         // Vertical alignment.
-        float objectYOffset = 0;
+        double objectYOffset = 0;
         //TODO:IMPL image support!!!
 //         switch(obj.Type)
 //         {
@@ -609,10 +610,10 @@ namespace org.pdfclown.documents.contents.composition
       }
 
       // Update the actual block height!
-      boundBox.Height = currentRow.Y + currentRow.Height;
+      boundBox.Height = (float)(currentRow.Y + currentRow.Height);
 
       // Update the actual block vertical location!
-      float xOffset;
+      double xOffset;
       switch(alignmentY)
       {
         case AlignmentYEnum.Bottom:

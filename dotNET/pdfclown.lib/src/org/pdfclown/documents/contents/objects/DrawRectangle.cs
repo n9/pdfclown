@@ -49,10 +49,10 @@ namespace org.pdfclown.documents.contents.objects
     #region dynamic
     #region constructors
     public DrawRectangle(
-      float x,
-      float y,
-      float width,
-      float height
+      double x,
+      double y,
+      double width,
+      double height
       ) : base(
         OperatorKeyword,
         new List<PdfDirectObject>(
@@ -75,7 +75,7 @@ namespace org.pdfclown.documents.contents.objects
 
     #region interface
     #region public
-    public float Height
+    public double Height
     {
       get
       {return ((IPdfNumber)operands[3]).RawValue;}
@@ -90,18 +90,18 @@ namespace org.pdfclown.documents.contents.objects
       GraphicsPath pathObject = state.Scanner.RenderObject;
       if(pathObject != null)
       {
-        float x = X,
+        double x = X,
           y = Y,
           width = Width,
           height = Height;
         pathObject.AddRectangle(
-          new RectangleF(x, y, width, height)
+          new RectangleF((float)x, (float)y, (float)width, (float)height)
           );
         pathObject.CloseFigure();
       }
     }
 
-    public float Width
+    public double Width
     {
       get
       {return ((IPdfNumber)operands[2]).RawValue;}
@@ -109,7 +109,7 @@ namespace org.pdfclown.documents.contents.objects
       {operands[2] = new PdfReal(value);}
     }
 
-    public float X
+    public double X
     {
       get
       {return ((IPdfNumber)operands[0]).RawValue;}
@@ -117,7 +117,7 @@ namespace org.pdfclown.documents.contents.objects
       {operands[0] = new PdfReal(value);}
     }
 
-    public float Y
+    public double Y
     {
       get
       {return ((IPdfNumber)operands[1]).RawValue;}

@@ -46,7 +46,7 @@ namespace org.pdfclown.documents.contents.objects
     #region dynamic
     #region constructors
     public SetTextScale(
-      float value
+      double value
       ) : base(OperatorKeyword, new PdfReal(value))
     {}
 
@@ -64,9 +64,10 @@ namespace org.pdfclown.documents.contents.objects
     {state.Scale = Value;}
 
     /**
-      <summary>Gets the horizontal scale expressed as a percentage of the normal width (100).</summary>
+      <summary>Gets/Sets the horizontal scale expressed as a percentage of the normal width (100).
+      </summary>
     */
-    public float Value
+    public double Value
     {
       get
       {return ((IPdfNumber)operands[0]).RawValue;}

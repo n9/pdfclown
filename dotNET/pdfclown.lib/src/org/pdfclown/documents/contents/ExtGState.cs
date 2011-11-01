@@ -112,12 +112,12 @@ namespace org.pdfclown.documents.contents
     }
 
     [PDF(VersionEnum.PDF13)]
-    public float? FontSize
+    public double? FontSize
     {
       get
       {
         PdfArray fontObject = (PdfArray)BaseDataObject[PdfName.Font];
-        return fontObject != null ? ((IPdfNumber)fontObject[1]).RawValue : (float?)null;
+        return fontObject != null ? ((IPdfNumber)fontObject[1]).RawValue : (double?)null;
       }
     }
 
@@ -140,10 +140,10 @@ namespace org.pdfclown.documents.contents
         if(lineDashObject == null)
           return null;
 
-        float[] dashArray;
+        double[] dashArray;
         {
           PdfArray baseDashArray = (PdfArray)lineDashObject[0];
-          dashArray = new float[baseDashArray.Count];
+          dashArray = new double[baseDashArray.Count];
           for(
             int index = 0,
               length = dashArray.Length;
@@ -152,7 +152,7 @@ namespace org.pdfclown.documents.contents
             )
           {dashArray[index] = ((IPdfNumber)baseDashArray[index]).RawValue;}
         }
-        float dashPhase = ((IPdfNumber)lineDashObject[1]).RawValue;
+        double dashPhase = ((IPdfNumber)lineDashObject[1]).RawValue;
         return new LineDash(dashArray,dashPhase);
       }
     }
@@ -168,22 +168,22 @@ namespace org.pdfclown.documents.contents
     }
 
     [PDF(VersionEnum.PDF13)]
-    public float? LineWidth
+    public double? LineWidth
     {
       get
       {
         IPdfNumber lineWidthObject = (IPdfNumber)BaseDataObject[PdfName.LW];
-        return lineWidthObject != null ? lineWidthObject.RawValue : (float?)null;
+        return lineWidthObject != null ? lineWidthObject.RawValue : (double?)null;
       }
     }
 
     [PDF(VersionEnum.PDF13)]
-    public float? MiterLimit
+    public double? MiterLimit
     {
       get
       {
         IPdfNumber miterLimitObject = (IPdfNumber)BaseDataObject[PdfName.ML];
-        return miterLimitObject != null ? miterLimitObject.RawValue : (float?)null;
+        return miterLimitObject != null ? miterLimitObject.RawValue : (double?)null;
       }
     }
   }

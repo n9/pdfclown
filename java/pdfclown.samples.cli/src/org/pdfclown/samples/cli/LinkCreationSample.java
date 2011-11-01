@@ -1,5 +1,10 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.Rectangle;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.net.URI;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.Pages;
@@ -21,17 +26,12 @@ import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.documents.interaction.navigation.document.RemoteDestination;
 import org.pdfclown.files.File;
 
-import java.awt.Rectangle;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.net.URI;
-
 /**
   This sample demonstrates <b>how to apply links</b> to a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class LinkCreationSample
   extends Sample
@@ -47,15 +47,12 @@ public class LinkCreationSample
     // 2. Applying links...
     buildLinks(document);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Link annotations","applying link annotations");
-
     // 3. Serialize the PDF file!
-    serialize(file);
-    
+    serialize(file, true, "Link annotations", "applying link annotations");
+
     return true;
   }
-  
+
   private void buildLinks(
     Document document
     )
@@ -86,7 +83,7 @@ public class LinkCreationSample
     {
       blockComposer.begin(new Rectangle2D.Double(30,100,200,50),AlignmentXEnum.Left,AlignmentYEnum.Middle);
       composer.setFont(font,12);
-      blockComposer.showText("Goto-URI link");
+      blockComposer.showText("Go-to-URI link");
       composer.setFont(font,8);
       blockComposer.showText("\nIt allows you to navigate to a network resource.");
       composer.setFont(font,5);
@@ -151,7 +148,7 @@ public class LinkCreationSample
 
       blockComposer.begin(new Rectangle2D.Double(30,170,200,50),AlignmentXEnum.Left,AlignmentYEnum.Middle);
       composer.setFont(font,12);
-      blockComposer.showText("Embedded-goto link");
+      blockComposer.showText("Go-to-embedded link");
       composer.setFont(font,8);
       blockComposer.showText("\nIt allows you to navigate to a destination within an embedded PDF file.");
       composer.setFont(font,5);
@@ -186,7 +183,7 @@ public class LinkCreationSample
           document,
           1,
           Border.StyleEnum.Dashed,
-          new LineDash(new float[]{8,5,2,5})
+          new LineDash(new double[]{8,5,2,5})
           )
         );
     }

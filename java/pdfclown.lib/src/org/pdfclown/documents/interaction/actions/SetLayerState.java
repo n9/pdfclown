@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF15)
 public final class SetLayerState
@@ -65,7 +65,7 @@ public final class SetLayerState
       )
     {
       if(name == null)
-        throw new IllegalArgumentException("'name' param undefined.");
+        return null;
 
       for(StateModeEnum value : values())
       {

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -57,11 +57,11 @@ namespace org.pdfclown.documents.contents.colorSpaces
 
     #region private
     private static IList<PdfDirectObject> GetComponentValues(
-      params float[] components
+      params double[] components
       )
     {// TODO:normalize parameters!
       IList<PdfDirectObject> componentValues = new List<PdfDirectObject>();
-      foreach(float component in components)
+      foreach(double component in components)
       {componentValues.Add(new PdfReal((component)));}
       return componentValues;
     }
@@ -72,7 +72,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     #region dynamic
     #region constructors
     public DeviceNColor(
-      params float[]components
+      params double[]components
       ) : this(GetComponentValues(components))
     {}
 

@@ -23,6 +23,8 @@
   this list of conditions.
 */
 
+using org.pdfclown.util.parsers;
+
 using System;
 using System.Globalization;
 using System.Text;
@@ -46,11 +48,17 @@ namespace org.pdfclown.objects
       )
     {return value.HasValue ? new PdfDate(value.Value) : null;}
 
+    /**
+      <summary>Converts a PDF date literal into its corresponding date.</summary>
+      <exception cref="org.pdfclown.util.parsers.ParseException">Thrown when date literal parsing fails.</exception>
+    */
     public static DateTime ToDate(
       string value
       )
     {
+      // 1. Normalization.
       StringBuilder dateBuilder = new StringBuilder();
+      try
       {
         int length = value.Length;
         // Year (YYYY).
@@ -72,12 +80,20 @@ namespace org.pdfclown.objects
         // UT Minute offset (mm').
         dateBuilder.Append(":").Append(length < 22 ? "00" : value.Substring(20, 2));
       }
-      // Parse datetime value!
-      return DateTime.ParseExact(
-        dateBuilder.ToString(),
-        "yyyyMMddHHmmsszzz",
-        new CultureInfo("en-US")
-        );
+      catch(Exception exception)
+      {throw new ParseException("Failed to normalize the date string.", exception);}
+
+      // 2. Parsing.
+      try
+      {
+        return DateTime.ParseExact(
+          dateBuilder.ToString(),
+          "yyyyMMddHHmmsszzz",
+          new CultureInfo("en-US")
+          );
+      }
+      catch(Exception exception)
+      {throw new ParseException("Failed to parse the date string.", exception);}
     }
     #endregion
 

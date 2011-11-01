@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,14 +33,16 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.contents.ContentScanner;
 import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
+import org.pdfclown.documents.contents.LineDash;
 import org.pdfclown.documents.contents.WindModeEnum;
+import org.pdfclown.util.ConvertUtils;
 
 /**
   Path-painting operation [PDF:1.6:4.4.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class PaintPath
@@ -107,16 +109,16 @@ public final class PaintPath
     GraphicsState state
     )
   {
+    LineDash lineDash = state.getLineDash();
+    double[] dashArray = lineDash.getDashArray();
+
     return new BasicStroke(
-      state.getLineWidth(),
+      (float)state.getLineWidth(),
       state.getLineCap().toAwt(),
       state.getLineJoin().toAwt(),
-      state.getMiterLimit(),
-      (state.getLineDash().getDashArray() == null
-          || state.getLineDash().getDashArray().length == 0
-        ? null
-        : state.getLineDash().getDashArray()),
-      state.getLineDash().getDashPhase()
+      (float)state.getMiterLimit(),
+      dashArray != null && dashArray.length > 0 ? ConvertUtils.toFloatArray(dashArray) : null,
+      (float)lineDash.getDashPhase()
       );
   }
   // </private>
@@ -125,10 +127,10 @@ public final class PaintPath
 
   // <dynamic>
   // <fields>
-  private boolean closed;
-  private boolean filled;
-  private WindModeEnum fillMode;
-  private boolean stroked;
+  private final boolean closed;
+  private final boolean filled;
+  private final WindModeEnum fillMode;
+  private final boolean stroked;
   // </fields>
 
   // <constructors>

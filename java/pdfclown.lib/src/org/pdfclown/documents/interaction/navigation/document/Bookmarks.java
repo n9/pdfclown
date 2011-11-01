@@ -47,7 +47,7 @@ import org.pdfclown.util.NotImplementedException;
   Collection of bookmarks [PDF:1.6:8.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Bookmarks
@@ -79,7 +79,7 @@ public final class Bookmarks
   }
 
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public Bookmarks(
     PdfDirectObject baseObject

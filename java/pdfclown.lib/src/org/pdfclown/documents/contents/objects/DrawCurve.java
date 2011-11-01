@@ -45,7 +45,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class DrawCurve
@@ -100,12 +100,12 @@ public final class DrawCurve
     Creates a fully-explicit curve.
   */
   public DrawCurve(
-    float pointX,
-    float pointY,
-    float control1X,
-    float control1Y,
-    float control2X,
-    float control2Y
+    double pointX,
+    double pointY,
+    double control1X,
+    double control1Y,
+    double control2X,
+    double control2Y
     )
   {
     super(
@@ -116,28 +116,6 @@ public final class DrawCurve
       new PdfReal(control2Y),
       new PdfReal(pointX),
       new PdfReal(pointY)
-      );
-  }
-
-  /**
-    Creates a fully-explicit curve.
-  */
-  public DrawCurve(
-    double pointX,
-    double pointY,
-    double control1X,
-    double control1Y,
-    double control2X,
-    double control2Y
-    )
-  {
-    this(
-      (float)pointX,
-      (float)pointY,
-      (float)control1X,
-      (float)control1Y,
-      (float)control2X,
-      (float)control2Y
       );
   }
 

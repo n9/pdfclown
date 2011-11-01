@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,7 +29,7 @@ package org.pdfclown.tokens;
   Cross-reference table entry [PDF:1.6:3.4.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public final class XRefEntry
   implements Cloneable
@@ -62,21 +62,38 @@ public final class XRefEntry
     Unreusable generation [PDF:1.6:3.4.3].
   */
   public static final int GenerationUnreusable = 65535;
+
+  /**
+    Undefined offset.
+  */
+  public static final int UndefinedOffset = -1;
   // </fields>
   // </static>
 
   // <dynamic>
   // <fields>
-  private int number; // Object number.
-  private int generation; // Object generation.
-  private int offset; // Indirect-object offset (in-use entry) | Next free-object object number (free entry) | Object index within the object stream (compressed entry).
-  private int streamNumber; // Object number of the object stream in which this object is stored [PDF:1.6:3.4.7].
-  private UsageEnum usage; // Entry usage.
+  private int number; 
+  private int generation;
+  private int offset;
+  private int streamNumber;
+  private UsageEnum usage;
   // </fields>
 
   // <constructors>
   /**
-    Instantiates an ordinary (uncompressed) object entry.
+    Instantiates a new in-use ordinary (uncompressed) object entry.
+
+    @param number Object number.
+    @param generation Generation number.
+  */
+  public XRefEntry(
+    int number,
+    int generation
+    )
+  {this(number, generation, -1, UsageEnum.InUse);}
+
+  /**
+    Instantiates an original ordinary (uncompressed) object entry.
 
     @param number Object number.
     @param generation Generation number.
@@ -90,7 +107,7 @@ public final class XRefEntry
     int offset,
     UsageEnum usage
     )
-  {this(number,generation,offset,usage,-1);}
+  {this(number, generation, offset, usage, -1);}
 
   /**
     Instantiates a compressed object entry.
@@ -104,7 +121,7 @@ public final class XRefEntry
     int offset,
     int streamNumber
     )
-  {this(number,0,offset,UsageEnum.InUseCompressed,streamNumber);}
+  {this(number, 0, offset, UsageEnum.InUseCompressed, streamNumber);}
 
   private XRefEntry(
     int number,

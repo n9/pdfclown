@@ -19,7 +19,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 public class ActionSample
   extends Sample
@@ -32,7 +32,6 @@ public class ActionSample
     File file;
     {
       String filePath = promptPdfFileChoice("Please select a PDF file");
-
       try
       {file = new File(filePath);}
       catch(Exception e)
@@ -83,11 +82,8 @@ public class ActionSample
       {throw new RuntimeException(exception);}
     }
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Actions","applying actions");
-
-    // 3. Serialize the PDF file (again, boilerplate code -- see the SampleLoader class source code)!
-    serialize(file);
+    // 3. Serialize the PDF file!
+    serialize(file, true, "Actions", "applying actions");
 
     return true;
   }

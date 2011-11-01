@@ -22,35 +22,64 @@ namespace org.pdfclown.samples.cli
     public override bool Run(
       )
     {
+      // 1. Opening the PDF file...
       string filePath = PromptPdfFileChoice("Please select a PDF file");
-
-      // 1. Open the PDF file!
       File file = new File(filePath);
       Document document = file.Document;
 
       // 2. Get the acroform!
       Form form = document.Form;
       if(form == null)
-      {Console.WriteLine("\nNo acroform available (AcroForm dictionary not found).");}
+      {Console.WriteLine("\nNo acroform available.");}
       else
       {
-        Console.WriteLine("\nPlease insert a value for each field listed below (or type 'quit' to end this sample).\n");
-
         // 3. Filling the acroform fields...
-        foreach(Field field in form.Fields.Values)
+        int mode;
+        try
         {
-          Console.WriteLine("* " + field.GetType().Name + " '" + field.FullName + "' (" + field.BaseObject + "): ");
-          Console.WriteLine("    Current Value:" + field.Value);
-          string newValue = PromptChoice("    New Value:");
-          if(newValue != null && newValue.Equals("quit"))
-            break;
+          IDictionary<string,string> options = new Dictionary<string,string>();
+          options["0"] = "Automatic filling";
+          options["1"] = "Manual filling";
+          mode = Int32.Parse(PromptChoice(options));
+        }
+        catch
+        {mode = 0;}
+        switch(mode)
+        {
+          case 0: // Automatic filling.
+            Console.WriteLine("\nAcroform is being filled with random values...\n");
 
-          field.Value = newValue;
+            foreach(Field field in form.Fields.Values)
+            {
+              String value;
+              if(field is RadioButton)
+              {value = ((DualWidget)field.Widgets[0]).WidgetName;} // Selects the first widget in the group.
+              else if(field is ChoiceField)
+              {value = ((ChoiceField)field).Items[0].Value;} // Selects the first item in the list.
+              else
+              {value = field.Name;} // Arbitrary value (just to get something to fill with).
+              field.Value = value;
+            }
+            break;
+          case 1: // Manual filling.
+            Console.WriteLine("\nPlease insert a value for each field listed below (or type 'quit' to end this sample).\n");
+
+            foreach(Field field in form.Fields.Values)
+            {
+              Console.WriteLine("* " + field.GetType().Name + " '" + field.FullName + "' (" + field.BaseObject + "): ");
+              Console.WriteLine("    Current Value:" + field.Value);
+              string newValue = PromptChoice("    New Value:");
+              if(newValue != null && newValue.Equals("quit"))
+                break;
+
+              field.Value = newValue;
+            }
+            break;
         }
       }
 
       // 4. Serialize the PDF file!
-      Serialize(file,false);
+      Serialize(file, true);
 
       return true;
     }

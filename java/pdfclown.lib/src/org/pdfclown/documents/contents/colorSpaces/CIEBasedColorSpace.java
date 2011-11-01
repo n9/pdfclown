@@ -37,7 +37,7 @@ import org.pdfclown.objects.PdfNumber;
   Abstract CIE-based color space [PDF:1.6:4.5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public abstract class CIEBasedColorSpace
@@ -59,18 +59,18 @@ public abstract class CIEBasedColorSpace
   /**
     Gets the tristimulus value, in the CIE 1931 XYZ space, of the diffuse black point.
   */
-  public float[] getBlackPoint(
+  public double[] getBlackPoint(
     )
   {
     PdfArray blackPointObject = (PdfArray)getDictionary().get(PdfName.BlackPoint);
     return (blackPointObject == null
-      ? new float[]
+      ? new double[]
         {
           0,
           0,
           0
         }
-      : new float[]
+      : new double[]
         {
           ((PdfNumber<?>)blackPointObject.get(0)).getNumberValue(),
           ((PdfNumber<?>)blackPointObject.get(1)).getNumberValue(),
@@ -81,11 +81,11 @@ public abstract class CIEBasedColorSpace
   /**
     Gets the tristimulus value, in the CIE 1931 XYZ space, of the diffuse white point.
   */
-  public float[] getWhitePoint(
+  public double[] getWhitePoint(
     )
   {
     PdfArray whitePointObject = (PdfArray)getDictionary().get(PdfName.WhitePoint);
-    return new float[]
+    return new double[]
       {
         ((PdfNumber<?>)whitePointObject.get(0)).getNumberValue(),
         ((PdfNumber<?>)whitePointObject.get(1)).getNumberValue(),

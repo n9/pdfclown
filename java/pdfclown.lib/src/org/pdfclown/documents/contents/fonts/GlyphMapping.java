@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1. 04/25/11
+  @version 0.1.1, 11/01/11
 */
 final class GlyphMapping
 {
@@ -46,7 +46,7 @@ final class GlyphMapping
   static
   {load();}
 
-  public static int nameToCode(
+  public static Integer nameToCode(
     String name
     )
   {return codes.get(name);}

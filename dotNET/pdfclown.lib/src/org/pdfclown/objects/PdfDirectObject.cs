@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.bytes;
+using org.pdfclown.files;
 using org.pdfclown.tokens;
 
 using System;
@@ -59,13 +60,14 @@ namespace org.pdfclown.objects
     */
     internal static void WriteTo(
       IOutputStream stream,
+      File context,
       PdfDirectObject obj
       )
     {
       if(obj == null)
       {stream.Write(NullChunk);}
       else
-      {obj.WriteTo(stream);}
+      {obj.WriteTo(stream, context);}
     }
     #endregion
     #endregion

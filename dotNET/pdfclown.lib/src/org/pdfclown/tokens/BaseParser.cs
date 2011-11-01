@@ -138,7 +138,7 @@ namespace org.pdfclown.tokens
             PdfString.SerializationModeEnum.Hex
             );
         case TokenTypeEnum.Real:
-          return new PdfReal((float)Token);
+          return new PdfReal((double)Token);
         case TokenTypeEnum.Boolean:
           return PdfBoolean.Get((bool)Token);
         case TokenTypeEnum.Null:

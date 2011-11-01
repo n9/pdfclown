@@ -31,8 +31,8 @@ using System.Collections.Generic;
 namespace org.pdfclown.documents.functions
 {
   /**
-    <summary>PostScript calculator function represented as a stream containing code
-    written in a small subset of the PostScript language [PDF:1.6:3.9.4].</summary>
+    <summary>PostScript calculator function represented as a stream containing code written in a
+    small subset of the PostScript language [PDF:1.6:3.9.4].</summary>
   */
   [PDF(VersionEnum.PDF13)]
   public sealed class Type4Function
@@ -50,8 +50,8 @@ namespace org.pdfclown.documents.functions
 
     #region interface
     #region public
-    public override float[] Calculate(
-      float[] inputs
+    public override double[] Calculate(
+      double[] inputs
       )
     {
       // FIXME: Auto-generated method stub

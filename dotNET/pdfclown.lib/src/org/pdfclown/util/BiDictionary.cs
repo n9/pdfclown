@@ -127,19 +127,13 @@ namespace org.pdfclown.util
       get
       {
         /*
-          NOTE: This is an intentional violation of the official .NET Framework Class
-          Library prescription.
-          It's way too idiotic to throw an exception anytime a key is not found,
-          as a dictionary is somewhat fuzzier than a list: using lists you have just
-          1 boundary to keep in mind and an out-of-range exception is feasible,
-          whilst dictionaries have so many boundaries as their dictionary and using them
-          accordingly to the official fashion is a real nightmare!
-          My loose implementation prizes client coding smoothness and concision,
-          against cumbersome exception handling blocks or ugly TryGetValue()
-          invocations: unfound keys are treated happily returning a default (null) value.
-          If the user is interested in verifying whether such result represents
-          a non-existing key or an actual null object, it suffices to query
-          ContainsKey() method (a nice application of the KISS principle ;-)).
+          NOTE: This is an intentional violation of the official .NET Framework Class Library
+          prescription.
+          My loose implementation emphasizes coding smoothness and concision, against ugly
+          TryGetValue() invocations: unfound keys are happily dealt with returning a default (null)
+          value.
+          If the user is interested in verifying whether such result represents a non-existing key
+          or an actual null object, it suffices to query ContainsKey() method.
         */
         TValue value; dictionary.TryGetValue(key,out value); return value;
       }

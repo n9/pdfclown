@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -64,7 +64,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     #region dynamic
     #region constructors
     public SeparationColor(
-      float intensity
+      double intensity
       ) : this(
         new List<PdfDirectObject>(
           new PdfDirectObject[]
@@ -94,7 +94,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     /**
       <summary>Gets/Sets the color intensity.</summary>
     */
-    public float Intensity
+    public double Intensity
     {
       get
       {return GetComponentValue(0);}

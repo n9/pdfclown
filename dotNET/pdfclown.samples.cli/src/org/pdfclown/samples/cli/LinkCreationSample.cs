@@ -32,11 +32,8 @@ namespace org.pdfclown.samples.cli
       // 2. Applying links...
       BuildLinks(document);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Link annotations","applying link annotations");
-
       // 3. Serialize the PDF file!
-      Serialize(file);
+      Serialize(file, true, "Link annotations", "applying link annotations");
 
       return true;
     }
@@ -65,7 +62,7 @@ namespace org.pdfclown.samples.cli
       {
         blockComposer.Begin(new RectangleF(30,100,200,50),AlignmentXEnum.Left,AlignmentYEnum.Middle);
         composer.SetFont(font,12);
-        blockComposer.ShowText("Goto-URI link");
+        blockComposer.ShowText("Go-to-URI link");
         composer.SetFont(font,8);
         blockComposer.ShowText("\nIt allows you to navigate to a network resource.");
         composer.SetFont(font,5);
@@ -127,7 +124,7 @@ namespace org.pdfclown.samples.cli
 
         blockComposer.Begin(new RectangleF(30,170,200,50),AlignmentXEnum.Left,AlignmentYEnum.Middle);
         composer.SetFont(font,12);
-        blockComposer.ShowText("Embedded-goto link");
+        blockComposer.ShowText("Go-to-embedded link");
         composer.SetFont(font,8);
         blockComposer.ShowText("\nIt allows you to navigate to a destination within an embedded PDF file.");
         composer.SetFont(font,5);
@@ -161,7 +158,7 @@ namespace org.pdfclown.samples.cli
           document,
           1,
           annotations::Border.StyleEnum.Dashed,
-          new LineDash(new float[]{8,5,2,5})
+          new LineDash(new double[]{8,5,2,5})
           );
       }
 

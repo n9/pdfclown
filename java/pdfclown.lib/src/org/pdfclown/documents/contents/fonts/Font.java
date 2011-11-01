@@ -29,8 +29,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
@@ -54,7 +56,7 @@ import org.pdfclown.util.NotImplementedException;
   Abstract font [PDF:1.6:5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Font
@@ -198,10 +200,10 @@ public abstract class Font
   /**
     Gets the scaling factor to be applied to unscaled metrics to get actual measures.
   */
-  public static final float getScalingFactor(
-    float size
+  public static final double getScalingFactor(
+    double size
     )
-  {return 0.001f * size;}
+  {return 0.001 * size;}
 
   /**
     Wraps a font reference into a font object.
@@ -274,14 +276,16 @@ public abstract class Font
   // <dynamic>
   // <fields>
   /*
-    NOTE: In order to avoid nomenclature ambiguities, these terms are used consistently within the code:
-    * unicode: character encoded according to the Unicode standard;
-    * character code: codepoint corresponding to a character expressed inside a string object of a content stream;
-    * glyph index: identifier of the graphical representation of a character.
+    NOTE: In order to avoid nomenclature ambiguities, these terms are used consistently within the
+    code:
+    * character code: internal codepoint corresponding to a character expressed inside a string
+      object of a content stream;
+    * unicode: external codepoint corresponding to a character expressed according to the Unicode
+      standard encoding;
+    * glyph index: internal identifier of the graphical representation of a character.
   */
   /**
     Unicodes by character code.
-    <h3>Note</h3>
     <p>When this map is populated, {@link #symbolic} variable shall accordingly be set.</p>
   */
   protected BiMap<ByteArray,Integer> codes;
@@ -305,6 +309,10 @@ public abstract class Font
     Whether the font encoding is custom (that is non-Unicode).
   */
   protected boolean symbolic = true;
+  /**
+    Used unicodes.
+  */
+  protected Set<Integer> usedCodes;
 
   /**
     Maximum character code byte size.
@@ -409,10 +417,12 @@ public abstract class Font
     ByteArrayOutputStream encodedStream = new ByteArrayOutputStream();
     try
     {
-      for(char textChar : text.toCharArray())
+      for(int index = 0, length = text.length(); index < length; index++)
       {
-        byte[] charCode = codes.getKey((int)textChar).data;
+        int textCode = text.charAt(index);
+        byte[] charCode = codes.getKey(textCode).data;
         encodedStream.write(charCode);
+        usedCodes.add(textCode);
       }
       encodedStream.close();
     }
@@ -436,7 +446,7 @@ public abstract class Font
     Gets the unscaled vertical offset from the baseline to the ascender line (ascent).
     The value is a positive number.
   */
-  public float getAscent(
+  public double getAscent(
     )
   {return ((PdfNumber<?>)getDescriptor().get(PdfName.Ascent)).getNumberValue();}
 
@@ -447,8 +457,8 @@ public abstract class Font
 
     @param size Font size.
   */
-  public final float getAscent(
-    float size
+  public final double getAscent(
+    double size
     )
   {return getAscent() * getScalingFactor(size);}
 
@@ -456,7 +466,7 @@ public abstract class Font
     Gets the unscaled vertical offset from the baseline to the descender line (descent).
     The value is a negative number.
   */
-  public float getDescent(
+  public double getDescent(
     )
   {return ((PdfNumber<?>)getDescriptor().get(PdfName.Descent)).getNumberValue();}
 
@@ -466,8 +476,8 @@ public abstract class Font
 
     @param size Font size.
   */
-  public final float getDescent(
-    float size
+  public final double getDescent(
+    double size
     )
   {return getDescent() * getScalingFactor(size);}
 
@@ -489,7 +499,7 @@ public abstract class Font
 
     @param textChar Character whose height has to be calculated.
   */
-  public final float getHeight(
+  public final double getHeight(
     char textChar
     )
   {return getLineHeight();}
@@ -500,9 +510,9 @@ public abstract class Font
     @param textChar Character whose height has to be calculated.
     @param size Font size.
   */
-  public final float getHeight(
+  public final double getHeight(
     char textChar,
-    float size
+    double size
     )
   {return getHeight(textChar) * getScalingFactor(size);}
 
@@ -511,7 +521,7 @@ public abstract class Font
 
     @param text Text whose height has to be calculated.
   */
-  public final float getHeight(
+  public final double getHeight(
     String text
     )
   {return getLineHeight();}
@@ -522,9 +532,9 @@ public abstract class Font
     @param text Text whose height has to be calculated.
     @param size Font size.
   */
-  public final float getHeight(
+  public final double getHeight(
     String text,
-    float size
+    double size
     )
   {return getHeight(text) * getScalingFactor(size);}
 
@@ -534,9 +544,9 @@ public abstract class Font
     @param text Text whose width has to be calculated.
     @param size Font size.
   */
-  public final float getKernedWidth(
+  public final double getKernedWidth(
     String text,
-    float size
+    double size
     )
   {return (getWidth(text) + getKerning(text)) * getScalingFactor(size);}
 
@@ -604,16 +614,16 @@ public abstract class Font
     @param text Text whose kerning has to be calculated.
     @param size Font size.
   */
-  public final float getKerning(
+  public final double getKerning(
     String text,
-    float size
+    double size
     )
   {return getKerning(text) * getScalingFactor(size);}
 
   /**
     Gets the unscaled line height.
   */
-  public float getLineHeight(
+  public double getLineHeight(
     )
   {return getAscent() - getDescent();}
 
@@ -622,8 +632,8 @@ public abstract class Font
 
     @param size Font size.
   */
-  public final float getLineHeight(
-    float size
+  public final double getLineHeight(
+    double size
     )
   {return getLineHeight() * getScalingFactor(size);}
 
@@ -657,9 +667,9 @@ public abstract class Font
     @param textChar Character whose height has to be calculated.
     @param size Font size.
   */
-  public final float getWidth(
+  public final double getWidth(
     char textChar,
-    float size
+    double size
     )
   {return getWidth(textChar) * getScalingFactor(size);}
 
@@ -684,9 +694,9 @@ public abstract class Font
     @param text Text whose width has to be calculated.
     @param size Font size.
   */
-  public final float getWidth(
+  public final double getWidth(
     String text,
-    float size
+    double size
     )
   {return getWidth(text) * getScalingFactor(size);}
 
@@ -745,6 +755,8 @@ public abstract class Font
   private void initialize(
     )
   {
+    usedCodes = new HashSet<Integer>();
+
     // Put the newly instantiated font into the common cache!
     /*
       NOTE: Font structures are reified as complex objects, both IO- and CPU-intensive to load.

@@ -42,11 +42,11 @@ import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.Interval;
 
 /**
-  <b>CIE-based ABC double-transformation-stage color space</b>,
-  where A, B and C represent the <i>L*, a* and b* components of a CIE 1976 L*a*b* space</i> [PDF:1.6:4.5.4].
+  CIE-based ABC double-transformation-stage color space, where A, B and C represent the L*, a* and b*
+  components of a CIE 1976 L*a*b* space [PDF:1.6:4.5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public final class LabColorSpace
@@ -87,7 +87,7 @@ public final class LabColorSpace
   public LabColor getDefaultColor(
     )
   {
-    List<Interval<Float>> ranges = getRanges();
+    List<Interval<Double>> ranges = getRanges();
 
     return new LabColor(
       ranges.get(0).getLow(),
@@ -102,14 +102,14 @@ public final class LabColorSpace
     to the nearest valid value.</p>
   */
   //TODO:generalize to all the color spaces!
-  public List<Interval<Float>> getRanges(
+  public List<Interval<Double>> getRanges(
     )
   {
-    ArrayList<Interval<Float>> ranges = new ArrayList<Interval<Float>>();
+    ArrayList<Interval<Double>> ranges = new ArrayList<Interval<Double>>();
     {
       // 1. L* component.
       ranges.add(
-        new Interval<Float>(0f, 100f)
+        new Interval<Double>(0d, 100d)
         );
 
       PdfArray rangesObject = (PdfArray)getDictionary().get(PdfName.Range);
@@ -117,11 +117,11 @@ public final class LabColorSpace
       {
         // 2. a* component.
         ranges.add(
-          new Interval<Float>(-100f, 100f)
+          new Interval<Double>(-100d, 100d)
           );
         // 3. b* component.
         ranges.add(
-          new Interval<Float>(-100f, 100f)
+          new Interval<Double>(-100d, 100d)
           );
       }
       else
@@ -131,7 +131,7 @@ public final class LabColorSpace
         while(rangesObjectIterator.hasNext())
         {
           ranges.add(
-            new Interval<Float>(
+            new Interval<Double>(
               ((PdfNumber<?>)rangesObjectIterator.next()).getNumberValue(),
               ((PdfNumber<?>)rangesObjectIterator.next()).getNumberValue()
               )

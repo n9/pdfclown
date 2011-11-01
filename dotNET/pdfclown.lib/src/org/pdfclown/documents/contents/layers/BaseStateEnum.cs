@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.objects;
+using org.pdfclown.util;
 
 using System;
 
@@ -52,35 +53,33 @@ namespace org.pdfclown.documents.contents.layers
 
   internal static class BaseStateEnumExtension
   {
-    public static PdfName GetName(
-      this BaseStateEnum state
-      )
+    private static readonly BiDictionary<BaseStateEnum,PdfName> codes;
+
+    static BaseStateEnumExtension()
     {
-      switch(state)
-      {
-        case BaseStateEnum.On:
-          return PdfName.ON;
-        case BaseStateEnum.Off:
-          return PdfName.OFF;
-        case BaseStateEnum.Unchanged:
-          return PdfName.Unchanged;
-        default:
-          throw new NotImplementedException();
-      }
+      codes = new BiDictionary<BaseStateEnum,PdfName>();
+      codes[BaseStateEnum.On] = PdfName.ON;
+      codes[BaseStateEnum.Off] = PdfName.OFF;
+      codes[BaseStateEnum.Unchanged] = PdfName.Unchanged;
     }
 
-    public static BaseStateEnum ToEnum(
+    public static BaseStateEnum Get(
       PdfName name
       )
     {
-      if(name == null || name.Equals(PdfName.ON))
+      if(name == null)
         return BaseStateEnum.On;
-      else if(name.Equals(PdfName.OFF))
-        return BaseStateEnum.Off;
-      else if(name.Equals(PdfName.Unchanged))
-        return BaseStateEnum.Unchanged;
-      else
+
+      BaseStateEnum? baseState = codes.GetKey(name);
+      if(!baseState.HasValue)
         throw new NotSupportedException("Base state unknown: " + name);
+
+      return baseState.Value;
     }
+
+    public static PdfName GetName(
+      this BaseStateEnum baseState
+      )
+    {return codes[baseState];}
   }
 }

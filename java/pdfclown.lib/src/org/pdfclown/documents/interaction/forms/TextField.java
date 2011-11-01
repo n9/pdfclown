@@ -28,7 +28,6 @@ package org.pdfclown.documents.interaction.forms;
 import java.awt.geom.Rectangle2D;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.Stack;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
@@ -65,7 +64,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF12)
 public final class TextField
@@ -111,7 +110,7 @@ public final class TextField
   */
   public JustificationEnum getJustification(
     )
-  {return JustificationEnum.get((PdfInteger)getBaseDataObject().get(PdfName.Q));}
+  {return JustificationEnum.valueOf((PdfInteger)getBaseDataObject().get(PdfName.Q));}
 
   /**
     Gets the maximum length of this field's text, in characters.
@@ -238,7 +237,7 @@ public final class TextField
     }
 
     PdfName fontName = null;
-    float fontSize = 0;
+    double fontSize = 0;
     {
       PdfString defaultAppearanceState = getDefaultAppearanceState();
       if(defaultAppearanceState == null)
@@ -250,11 +249,11 @@ public final class TextField
           Resources normalAppearanceResources = normalAppearance.getResources();
           if(normalAppearanceResources == null)
           {getDocument().getForm().setResources(normalAppearanceResources = new Resources(getDocument()));}
-          
+
           FontResources normalAppearanceFontResources = normalAppearanceResources.getFonts();
           if(normalAppearanceFontResources == null)
           {normalAppearanceResources.setFonts(normalAppearanceFontResources = new FontResources(getDocument()));}
-          
+
           for(Map.Entry<PdfName,Font> entry : normalAppearanceFontResources.entrySet())
           {
             if(!entry.getValue().isSymbolic())
@@ -269,11 +268,11 @@ public final class TextField
             Resources formResources = getDocument().getForm().getResources();
             if(formResources == null)
             {getDocument().getForm().setResources(formResources = new Resources(getDocument()));}
-            
+
             FontResources formFontResources = formResources.getFonts();
             if(formFontResources == null)
             {formResources.setFonts(formFontResources = new FontResources(getDocument()));}
-            
+
             for(Map.Entry<PdfName,Font> entry : formFontResources.entrySet())
             {
               if(!entry.getValue().isSymbolic())
@@ -300,11 +299,8 @@ public final class TextField
           }
         }
         Buffer buffer = new Buffer();
-        new SetFont(defaultFontName, isMultiline() ? 10 : 0).writeTo(buffer);
-        widget.getBaseDataObject().put(
-          PdfName.DA,
-          defaultAppearanceState = new PdfString(buffer.toByteArray())
-          );
+        new SetFont(defaultFontName, isMultiline() ? 10 : 0).writeTo(buffer, getDocument());
+        widget.getBaseDataObject().put(PdfName.DA, defaultAppearanceState = new PdfString(buffer.toByteArray()));
       }
 
       // Retrieving the font to use...
@@ -319,22 +315,32 @@ public final class TextField
           break;
         }
       }
+
+      Resources normalAppearanceResources = normalAppearance.getResources();
+      if(normalAppearanceResources == null)
+      {getDocument().getForm().setResources(normalAppearanceResources = new Resources(getDocument()));}
+
+      FontResources normalAppearanceFontResources = normalAppearanceResources.getFonts();
+      if(normalAppearanceFontResources == null)
+      {normalAppearanceResources.setFonts(normalAppearanceFontResources = new FontResources(getDocument()));}
+
+      normalAppearanceFontResources.put(fontName, getDocument().getForm().getResources().getFonts().get(fontName));
     }
 
     // Refreshing the field appearance...
-    BlockComposer composer = new BlockComposer(new PrimitiveComposer(normalAppearance));
-    ContentScanner scanner = composer.getScanner();
-    ContentScanner currentLevel = scanner;
-    Stack<ContentScanner> levelStack = new Stack<ContentScanner>();
+    /*
+     * TODO: resources MUST be resolved both through the apperance stream resource dictionary and
+     * from the DR-entry acroform resource dictionary
+     */
+    PrimitiveComposer baseComposer = new PrimitiveComposer(normalAppearance);
+    BlockComposer composer = new BlockComposer(baseComposer);
+    ContentScanner currentLevel = composer.getScanner();
     boolean textShown = false;
-    while(true)
+    while(currentLevel != null)
     {
       if(!currentLevel.moveNext())
       {
-        if(levelStack.isEmpty())
-          break;
-
-        currentLevel = levelStack.pop();
+        currentLevel = currentLevel.getParentLevel();
         continue;
       }
 
@@ -347,7 +353,7 @@ public final class TextField
           // Remove old text representation!
           markedContent.getObjects().clear();
           // Add new text representation!
-          composer.getBaseComposer().setScanner(currentLevel.getChildLevel()); // Ensures the composer places new contents within the marked content block.
+          baseComposer.setScanner(currentLevel.getChildLevel()); // Ensures the composer places new contents within the marked content block.
           showText(composer, fontName, fontSize);
           textShown = true;
         }
@@ -355,25 +361,21 @@ public final class TextField
       else if(content instanceof Text)
       {currentLevel.remove();}
       else if(currentLevel.getChildLevel() != null)
-      {
-        levelStack.push(currentLevel);
-        currentLevel = currentLevel.getChildLevel();
-      }
+      {currentLevel = currentLevel.getChildLevel();}
     }
     if(!textShown)
     {
-      PrimitiveComposer baseComposer = composer.getBaseComposer();
       baseComposer.beginMarkedContent(PdfName.Tx);
       showText(composer, fontName, fontSize);
       baseComposer.end();
     }
-    composer.getBaseComposer().flush();
+    baseComposer.flush();
   }
 
   private void showText(
     BlockComposer composer,
     PdfName fontName,
-    float fontSize
+    double fontSize
     )
   {
     PrimitiveComposer baseComposer = composer.getBaseComposer();
@@ -397,7 +399,7 @@ public final class TextField
         a function of the height of the annotation rectangle.
       */
       if(fontSize == 0)
-      {fontSize = (float)(textBox.getHeight() * 0.9);}
+      {fontSize = textBox.getHeight() * 0.9;}
       baseComposer.setFont(fontName, fontSize);
     }
     composer.showText((String)getValue());

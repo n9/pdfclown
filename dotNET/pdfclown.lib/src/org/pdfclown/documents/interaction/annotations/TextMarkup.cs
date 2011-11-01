@@ -196,20 +196,20 @@ namespace org.pdfclown.documents.interaction.annotations
           markupBoxes.Add(
             new Quad(
               new PointF(
-                ((IPdfNumber)quadPointsObject[index]).RawValue,
-                pageHeight - ((IPdfNumber)quadPointsObject[index + 1]).RawValue
+                ((IPdfNumber)quadPointsObject[index]).FloatValue,
+                pageHeight - ((IPdfNumber)quadPointsObject[index + 1]).FloatValue
                 ),
               new PointF(
-                ((IPdfNumber)quadPointsObject[index + 2]).RawValue,
-                pageHeight - ((IPdfNumber)quadPointsObject[index + 3]).RawValue
+                ((IPdfNumber)quadPointsObject[index + 2]).FloatValue,
+                pageHeight - ((IPdfNumber)quadPointsObject[index + 3]).FloatValue
                 ),
               new PointF(
-                ((IPdfNumber)quadPointsObject[index + 6]).RawValue,
-                pageHeight - ((IPdfNumber)quadPointsObject[index + 7]).RawValue
+                ((IPdfNumber)quadPointsObject[index + 6]).FloatValue,
+                pageHeight - ((IPdfNumber)quadPointsObject[index + 7]).FloatValue
                 ),
               new PointF(
-                ((IPdfNumber)quadPointsObject[index + 4]).RawValue,
-                pageHeight - ((IPdfNumber)quadPointsObject[index + 5]).RawValue
+                ((IPdfNumber)quadPointsObject[index + 4]).FloatValue,
+                pageHeight - ((IPdfNumber)quadPointsObject[index + 5]).FloatValue
                 )
               )
             );

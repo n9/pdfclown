@@ -26,6 +26,7 @@
 using org.pdfclown.documents;
 using org.pdfclown.files;
 using org.pdfclown.objects;
+using org.pdfclown.util;
 
 using System;
 
@@ -188,45 +189,38 @@ namespace org.pdfclown.documents.interaction.navigation.document
       Document context,
       PdfDirectObject pageObject,
       ModeEnum mode,
-      float?[] viewParams
+      double?[] viewParams
       ) : base(context, new PdfArray())
     {
       PdfArray baseDataObject = BaseDataObject;
       {
         baseDataObject.Add(pageObject);
+        baseDataObject.Add(mode.GetName());
         switch(mode)
         {
           case ModeEnum.Fit:
-            baseDataObject.Add(PdfName.Fit);
             break;
           case ModeEnum.FitBoundingBox:
-            baseDataObject.Add(PdfName.FitB);
             break;
           case ModeEnum.FitBoundingBoxHorizontal:
-            baseDataObject.Add(PdfName.FitBH);
             baseDataObject.Add(PdfReal.Get(viewParams[0]));
             break;
           case ModeEnum.FitBoundingBoxVertical:
-            baseDataObject.Add(PdfName.FitBV);
             baseDataObject.Add(PdfReal.Get(viewParams[0]));
             break;
           case ModeEnum.FitHorizontal:
-            baseDataObject.Add(PdfName.FitH);
             baseDataObject.Add(PdfReal.Get(viewParams[0]));
             break;
           case ModeEnum.FitRectangle:
-            baseDataObject.Add(PdfName.FitR);
             baseDataObject.Add(PdfReal.Get(viewParams[0]));
             baseDataObject.Add(PdfReal.Get(viewParams[1]));
             baseDataObject.Add(PdfReal.Get(viewParams[2]));
             baseDataObject.Add(PdfReal.Get(viewParams[3]));
             break;
           case ModeEnum.FitVertical:
-            baseDataObject.Add(PdfName.FitV);
             baseDataObject.Add(PdfReal.Get(viewParams[0]));
             break;
           case ModeEnum.XYZ:
-            baseDataObject.Add(PdfName.XYZ);
             baseDataObject.Add(PdfReal.Get(viewParams[0]));
             baseDataObject.Add(PdfReal.Get(viewParams[1]));
             baseDataObject.Add(PdfReal.Get(viewParams[2]));
@@ -255,34 +249,55 @@ namespace org.pdfclown.documents.interaction.navigation.document
     public ModeEnum Mode
     {
       get
-      {
-        PdfName modeObject = (PdfName)BaseDataObject[1];
-        if(modeObject == PdfName.FitB)
-          return ModeEnum.FitBoundingBox;
-        else if(modeObject == PdfName.FitBH)
-          return ModeEnum.FitBoundingBoxHorizontal;
-        else if(modeObject == PdfName.FitBV)
-          return ModeEnum.FitBoundingBoxVertical;
-        else if(modeObject == PdfName.FitH)
-          return ModeEnum.FitHorizontal;
-        else if(modeObject == PdfName.FitR)
-          return ModeEnum.FitRectangle;
-        else if(modeObject == PdfName.FitV)
-          return ModeEnum.FitVertical;
-        else if(modeObject == PdfName.XYZ)
-          return ModeEnum.XYZ;
-        else
-          return ModeEnum.Fit;
-      }
+      {return ModeEnumExtension.Get((PdfName)BaseDataObject[1]).Value;}
     }
 
     /**
       <summary>Gets the target page reference.</summary>
     */
     public abstract object PageRef
-    {get;}
+    {
+      get;
+    }
     #endregion
     #endregion
     #endregion
+  }
+
+  internal static class ModeEnumExtension
+  {
+    private static readonly BiDictionary<Destination.ModeEnum,PdfName> codes;
+
+    static ModeEnumExtension()
+    {
+      codes = new BiDictionary<Destination.ModeEnum,PdfName>();
+      codes[Destination.ModeEnum.Fit] = PdfName.Fit;
+      codes[Destination.ModeEnum.FitBoundingBox] = PdfName.FitB;
+      codes[Destination.ModeEnum.FitBoundingBoxHorizontal] = PdfName.FitBH;
+      codes[Destination.ModeEnum.FitBoundingBoxVertical] = PdfName.FitBV;
+      codes[Destination.ModeEnum.FitHorizontal] = PdfName.FitH;
+      codes[Destination.ModeEnum.FitRectangle] = PdfName.FitR;
+      codes[Destination.ModeEnum.FitVertical] = PdfName.FitV;
+      codes[Destination.ModeEnum.XYZ] = PdfName.XYZ;
+    }
+
+    public static Destination.ModeEnum? Get(
+      PdfName name
+      )
+    {
+      if(name == null)
+        return null;
+
+      Destination.ModeEnum? mode = codes.GetKey(name);
+      if(!mode.HasValue)
+        throw new NotSupportedException("Mode unknown: " + name);
+
+      return mode;
+    }
+
+    public static PdfName GetName(
+      this Destination.ModeEnum mode
+      )
+    {return codes[mode];}
   }
 }

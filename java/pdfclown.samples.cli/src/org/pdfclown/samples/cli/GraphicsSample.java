@@ -27,7 +27,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/16/11
+  @version 0.1.1, 11/01/11
 */
 public class GraphicsSample
   extends Sample
@@ -50,11 +50,8 @@ public class GraphicsSample
     buildTextBlockPage(document);
     buildTextBlockPage2(document);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Composition elements","applying the composition elements");
-
     // 3. Serialize the PDF file!
-    serialize(file,false);
+    serialize(file, false, "Composition elements", "applying the composition elements");
 
     return true;
   }
@@ -905,7 +902,7 @@ public class GraphicsSample
         );
       blockComposer.begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Top);
       blockComposer.showText(
-        "Demonstrating how to set the block line space. Line space can be expressed either as an absolute value (in user-space units) or as a relative one (as a floating-point ratio); in the latter case the base value is represented by the current font's line height (so that, for example, 2 means \"a line space that's double the line height\")."
+        "Demonstrating how to set the block line space. Line space can be expressed either as an absolute value (in user-space units) or as a relative one (floating-point ratio); in the latter case the base value is represented by the current font's line height (so that, for example, 2 means \"a line space that's twice as the line height\")."
         );
       blockComposer.end();
 

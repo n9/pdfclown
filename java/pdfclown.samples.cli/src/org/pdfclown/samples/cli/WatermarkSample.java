@@ -1,5 +1,8 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
@@ -11,9 +14,6 @@ import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.files.File;
 import org.pdfclown.tools.PageStamper;
 
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-
 /**
   This sample demonstrates <b>how to insert watermark text</b> into an existing PDF document.
   <h3>Remarks</h3>
@@ -23,7 +23,7 @@ import java.awt.geom.Point2D;
   <p>The watermark is seamlessly inserted under each page content using the PageStamper class.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class WatermarkSample
   extends Sample
@@ -32,31 +32,26 @@ public class WatermarkSample
   public boolean run(
     )
   {
+    // 1. Opening the PDF file...
     File file;
     {
       String filePath = promptPdfFileChoice("Please select a PDF file");
-
-      // 1. Open the PDF file!
       try
       {file = new File(filePath);}
       catch(Exception e)
       {throw new RuntimeException(filePath + " file access error.",e);}
     }
-
     Document document = file.getDocument();
 
-    // 2. Create a watermark (form)!
+    // 2. Create a watermark!
     FormXObject watermark = createWatermark(document);
 
     // 3. Apply the watermark to the pages of the document!
     applyWatermark(watermark);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Watermark","how to place some content behind existing pages");
-
     // 4. Serialize the PDF file!
-    serialize(file);
-    
+    serialize(file, true, "Watermark", "how to place some content behind existing pages");
+
     return true;
   }
 

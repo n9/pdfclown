@@ -170,16 +170,17 @@ namespace org.pdfclown.documents.interaction.navigation.page
     private static readonly Dictionary<StyleEnum,PdfName> StyleEnumCodes;
 
     private static readonly DirectionEnum DefaultDirection = DirectionEnum.LeftToRight;
-    private static readonly float DefaultDuration = 1;
+    private static readonly double DefaultDuration = 1;
     private static readonly OrientationEnum DefaultOrientation = OrientationEnum.Horizontal;
     private static readonly PageDirectionEnum DefaultPageDirection = PageDirectionEnum.Inward;
-    private static readonly float DefaultScale = 1;
+    private static readonly double DefaultScale = 1;
     private static readonly StyleEnum DefaultStyle = StyleEnum.Replace;
     #endregion
 
     #region constructors
     static Transition()
     {
+      //TODO: transfer to extension methods!
       DirectionEnumCodes = new Dictionary<DirectionEnum,PdfDirectObject>();
       DirectionEnumCodes[DirectionEnum.LeftToRight] = new PdfInteger(0);
       DirectionEnumCodes[DirectionEnum.BottomToTop] = new PdfInteger(90);
@@ -342,7 +343,7 @@ namespace org.pdfclown.documents.interaction.navigation.page
     public Transition(
       Document context,
       StyleEnum style,
-      float duration
+      double duration
       ) : this(
         context,
         style,
@@ -357,11 +358,11 @@ namespace org.pdfclown.documents.interaction.navigation.page
     public Transition(
       Document context,
       StyleEnum style,
-      float duration,
+      double duration,
       OrientationEnum orientation,
       PageDirectionEnum pageDirection,
       DirectionEnum direction,
-      float scale
+      double scale
       ) : this(context)
     {
       Style = style;
@@ -404,7 +405,7 @@ namespace org.pdfclown.documents.interaction.navigation.page
     /**
       <summary>Gets/Sets the duration of the transition effect, in seconds.</summary>
     */
-    public float Duration
+    public double Duration
     {
       get
       {
@@ -458,7 +459,7 @@ namespace org.pdfclown.documents.interaction.navigation.page
       <summary>Gets/Sets the scale at which the changes are drawn.</summary>
     */
     [PDF(VersionEnum.PDF15)]
-    public float Scale
+    public double Scale
     {
       get
       {

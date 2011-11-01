@@ -36,7 +36,8 @@ namespace org.pdfclown.documents.contents.objects
   */
   [PDF(VersionEnum.PDF12)]
   public abstract class ContentMarker
-    : Operation
+    : Operation,
+      IResourceReference<PropertyList>
   {
     #region dynamic
     #region constructors
@@ -79,7 +80,7 @@ namespace org.pdfclown.documents.contents.objects
     {
       object properties = Properties;
       return properties is PdfName
-        ? context.Resources.PropertyLists[(PdfName)properties] // Resource resolution.
+        ? context.Resources.PropertyLists[(PdfName)properties]
         : (PropertyList)properties;
     }
 
@@ -139,6 +140,24 @@ namespace org.pdfclown.documents.contents.objects
       set
       {operands[0] = value;}
     }
+
+    #region IResourceReference
+    public PropertyList GetResource(
+      IContentContext context
+      )
+    {return GetProperties(context);}
+
+    public PdfName Name
+    {
+      get
+      {
+        object properties = Properties;
+        return (properties is PdfName ? (PdfName)properties : null);
+      }
+      set
+      {Properties = value;}
+    }
+    #endregion
     #endregion
 
     #region protected

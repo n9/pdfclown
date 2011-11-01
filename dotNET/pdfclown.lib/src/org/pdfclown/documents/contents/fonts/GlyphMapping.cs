@@ -41,7 +41,7 @@ namespace org.pdfclown.documents.contents.fonts
     <summary>Adobe standard glyph mapping (unicode-encoding against glyph-naming)
     [PDF:1.6:D;AGL:2.0].</summary>
   */
-  class GlyphMapping
+  internal class GlyphMapping
   {
     private static Dictionary<string,int> codes = new Dictionary<string,int>();
 
@@ -49,10 +49,10 @@ namespace org.pdfclown.documents.contents.fonts
       )
     {Load();}
 
-    public static int NameToCode(
+    public static int? NameToCode(
       string name
       )
-    {return codes[name];}
+    {int code; return codes.TryGetValue(name, out code) ? code : (int?)null;}
 
     /**
       <summary>Loads the glyph list mapping character names to character codes (unicode

@@ -16,7 +16,7 @@ import org.pdfclown.objects.PdfName;
   by PDF Clown (you don't need to work at the low level shown here!).</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 public class PrimitiveObjectSample
   extends Sample
@@ -29,7 +29,6 @@ public class PrimitiveObjectSample
     File file;
     {
       String filePath = promptPdfFileChoice("Please select a PDF file");
-
       try
       {file = new File(filePath);}
       catch(Exception e)
@@ -63,11 +62,8 @@ public class PrimitiveObjectSample
         );
     }
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Primitive objects","manipulating a document at primitive object level");
-
     // 3. Serialize the PDF file!
-    serialize(file);
+    serialize(file, true, "Primitive objects", "manipulating a document at primitive object level");
 
     return true;
   }

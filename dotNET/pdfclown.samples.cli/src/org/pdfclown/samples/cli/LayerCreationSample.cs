@@ -25,11 +25,8 @@ namespace org.pdfclown.samples.cli
       // 2. Content creation.
       Populate(document);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Layer","inserting layers");
-
       // 3. PDF file serialization.
-      Serialize(file,false);
+      Serialize(file, false, "Layer", "inserting layers");
 
       return true;
     }

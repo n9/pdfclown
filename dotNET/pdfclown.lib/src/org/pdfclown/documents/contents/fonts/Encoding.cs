@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,7 +33,7 @@ namespace org.pdfclown.documents.contents.fonts
   /**
     <summary>Predefined encodings [PDF:1.6:5.5.5,D].</summary>
   */
-  class Encoding
+  internal class Encoding
   {
     #region static
     #region fields
@@ -61,7 +61,7 @@ namespace org.pdfclown.documents.contents.fonts
 
     #region dynamic
     #region fields
-    private Dictionary<ByteArray,int> codes = new Dictionary<ByteArray,int>();
+    private readonly Dictionary<ByteArray,int> codes = new Dictionary<ByteArray,int>();
     #endregion
 
     #region interface
@@ -76,7 +76,7 @@ namespace org.pdfclown.documents.contents.fonts
       int charCode,
       string charName
       )
-    {codes[new ByteArray(new byte[]{(byte)charCode})] = GlyphMapping.NameToCode(charName);}
+    {codes[new ByteArray(new byte[]{(byte)charCode})] = GlyphMapping.NameToCode(charName).Value;}
     #endregion
     #endregion
     #endregion

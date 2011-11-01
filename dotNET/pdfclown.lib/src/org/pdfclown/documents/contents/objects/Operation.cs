@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -274,13 +274,15 @@ namespace org.pdfclown.documents.contents.objects
     }
 
     public override void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      Document context
       )
     {
       if(operands != null)
       {
+        files.File fileContext = context.File;
         foreach(PdfDirectObject operand in operands)
-        {operand.WriteTo(stream); stream.Write(Chunk.Space);}
+        {operand.WriteTo(stream, fileContext); stream.Write(Chunk.Space);}
       }
       stream.Write(operator_); stream.Write(Chunk.LineFeed);
     }

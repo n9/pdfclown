@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,9 +44,9 @@ namespace org.pdfclown.documents.contents.colorSpaces
       This method MUST be made internal and its color space MUST be passed as argument!
     */
     public LabColor(
-      float l,
-      float a,
-      float b
+      double l,
+      double a,
+      double b
       ) : this(
         new List<PdfDirectObject>(
           new PdfDirectObject[]
@@ -73,7 +73,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     /**
       <summary>Gets/Sets the second component (a*).</summary>
     */
-    public float A
+    public double A
     {
       get
       {return GetComponentValue(1);}
@@ -84,7 +84,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     /**
       <summary>Gets/Sets the third component (b*).</summary>
     */
-    public float B
+    public double B
     {
       get
       {return GetComponentValue(2);}
@@ -100,7 +100,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     /**
       <summary>Gets/Sets the first component (L*).</summary>
     */
-    public float L
+    public double L
     {
       get
       {return GetComponentValue(0);}

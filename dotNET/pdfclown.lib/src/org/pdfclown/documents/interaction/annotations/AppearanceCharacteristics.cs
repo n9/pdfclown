@@ -252,12 +252,12 @@ namespace org.pdfclown.documents.interaction.annotations
             BaseDataObject[PdfName.A] = alignmentObject;
           }
 
-          float objectValue;
+          double objectValue;
           switch(value)
           {
             case AlignmentXEnum.Left: objectValue = 0; break;
             case AlignmentXEnum.Right: objectValue = 1; break;
-            default: objectValue = 0.5f; break;
+            default: objectValue = 0.5; break;
           }
           alignmentObject[0] = new PdfReal(objectValue);
         }
@@ -302,12 +302,12 @@ namespace org.pdfclown.documents.interaction.annotations
             BaseDataObject[PdfName.A] = alignmentObject;
           }
 
-          float objectValue;
+          double objectValue;
           switch(value)
           {
             case AlignmentYEnum.Bottom: objectValue = 0; break;
             case AlignmentYEnum.Top: objectValue = 1; break;
-            default: objectValue = 0.5f; break;
+            default: objectValue = 0.5; break;
           }
           alignmentObject[1] = new PdfReal(objectValue);
         }

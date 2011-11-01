@@ -65,7 +65,7 @@ namespace org.pdfclown.documents.contents.fonts
     */
     protected void LoadEncodingDifferences(
       PdfDictionary encodingDictionary,
-      Dictionary<ByteArray,int> codes
+      IDictionary<ByteArray,int> codes
       )
     {
       PdfArray differenceObjects = (PdfArray)encodingDictionary.Resolve(PdfName.Differences);
@@ -90,7 +90,10 @@ namespace org.pdfclown.documents.contents.fonts
           if(charName.Equals(".notdef"))
           {codes.Remove(charCode);}
           else
-          {codes[charCode] = GlyphMapping.NameToCode(charName);}
+          {
+            int? code = GlyphMapping.NameToCode(charName);
+            codes[charCode] = (code ?? charCodeData[0]);
+          }
           charCodeData[0]++;
         }
       }

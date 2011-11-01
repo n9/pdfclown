@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -107,11 +107,12 @@ namespace org.pdfclown.documents.contents.objects
     {return "{" + objects.ToString() + "}";}
 
     public override void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      Document context
       )
     {
       foreach(ContentObject obj in objects)
-      {obj.WriteTo(stream);}
+      {obj.WriteTo(stream, context);}
     }
     #endregion
 

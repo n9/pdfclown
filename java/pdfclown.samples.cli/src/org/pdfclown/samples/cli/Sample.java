@@ -22,7 +22,7 @@ import org.pdfclown.files.SerializationModeEnum;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 public abstract class Sample
 {
@@ -45,27 +45,6 @@ public abstract class Sample
   // </public>
 
   // <protected>
-  protected void buildAccessories(
-    Document document,
-    String title,
-    String subject
-    )
-  {
-    // Viewer preferences.
-    ViewerPreferences view = new ViewerPreferences(document); // Instantiates viewer preferences inside the document context.
-    document.setViewerPreferences(view); // Assigns the viewer preferences object to the viewer preferences function.
-    view.setDisplayDocTitle(true);
-
-    // Document metadata.
-    Information info = new Information(document);
-    document.setInformation(info);
-    info.setAuthor("Stefano Chizzolini");
-    info.setCreationDate(new Date());
-    info.setCreator(getClass().getName());
-    info.setTitle("PDF Clown - " + title + " sample");
-    info.setSubject("Sample about " + subject + " using PDF Clown");
-  }
-
   protected String getIndentation(
     int level
     )
@@ -271,7 +250,23 @@ public abstract class Sample
     File file,
     boolean chooseMode
     )
-  {serialize(file, getClass().getSimpleName(), chooseMode);}
+  {serialize(file, chooseMode, null, null);}
+
+  /**
+    Serializes the given PDF Clown file object.
+
+    @param file File to serialize.
+    @param chooseMode Whether to allow user choice of serialization mode.
+    @param title Document title.
+    @param subject Document subject.
+  */
+  protected void serialize(
+    File file,
+    boolean chooseMode,
+    String title,
+    String subject
+    )
+  {serialize(file, getClass().getSimpleName(), chooseMode, title, subject);}
 
   /**
     Serializes the given PDF Clown file object.
@@ -279,13 +274,19 @@ public abstract class Sample
     @param file File to serialize.
     @param fileName Output file name.
     @param chooseMode Whether to allow user choice of serialization mode.
+    @param title Document title.
+    @param subject Document subject.
   */
   protected void serialize(
     File file,
     String fileName,
-    boolean chooseMode
+    boolean chooseMode,
+    String title,
+    String subject
     )
   {
+    applyDocumentSettings(file.getDocument(), title, subject);
+
     System.out.println();
     SerializationModeEnum serializationMode = SerializationModeEnum.Incremental;
     if(chooseMode)
@@ -293,7 +294,6 @@ public abstract class Sample
       Scanner in = new Scanner(System.in);
       System.out.println("[0] Standard serialization");
       System.out.println("[1] Incremental update");
-      // Get the user's choice.
       System.out.print("Please select a serialization mode: ");
       try
       {serializationMode = SerializationModeEnum.values()[Integer.parseInt(in.nextLine())];}
@@ -304,47 +304,17 @@ public abstract class Sample
     java.io.File outputFile = new java.io.File(outputPath + java.io.File.separator + fileName + "." + serializationMode + ".pdf");
 
     // Save the file!
+    /*
+      NOTE: You can also save to a generic target stream (see save() method overloads).
+    */
     try
-    {
-      file.save(
-        outputFile,
-        serializationMode
-        );
-    }
+    {file.save(outputFile, serializationMode);}
     catch(Exception e)
     {
       System.out.println("File writing failed: " + e.getMessage());
       e.printStackTrace();
     }
 
-// Alternatively, defining an appropriate target stream:
-/*
-    OutputStream outputStream;
-    BufferedOutputStream baseOutputStream;
-    try
-    {
-      outputFile.createNewFile();
-      baseOutputStream = new BufferedOutputStream(
-        new FileOutputStream(outputFile)
-        );
-      outputStream = new org.pdfclown.bytes.OutputStream(baseOutputStream);
-    }
-    catch(Exception e)
-    {throw new RuntimeException(outputFile.getPath() + " file couldn't be created.",e);}
-
-    try
-    {
-      file.save(
-        outputStream,
-        serializationMode
-        );
-
-      baseOutputStream.flush();
-      baseOutputStream.close();
-    }
-    catch(Exception e)
-    {throw new RuntimeException(outputFile.getPath() + " file writing has failed.",e);}
-*/
     System.out.println("\nOutput: " + outputFile.getPath());
   }
   // </protected>
@@ -359,6 +329,32 @@ public abstract class Sample
     this.outputPath = outputPath;
   }
   // </internal>
+
+  // <private>
+  private void applyDocumentSettings(
+    Document document,
+    String title,
+    String subject
+    )
+  {
+    if(title == null)
+      return;
+
+    // Viewer preferences.
+    ViewerPreferences view = new ViewerPreferences(document); // Instantiates viewer preferences inside the document context.
+    document.setViewerPreferences(view); // Assigns the viewer preferences object to the viewer preferences function.
+    view.setDisplayDocTitle(true);
+
+    // Document metadata.
+    Information info = new Information(document);
+    document.setInformation(info);
+    info.setAuthor("Stefano Chizzolini");
+    info.setCreationDate(new Date());
+    info.setCreator(getClass().getName());
+    info.setTitle("PDF Clown - " + title + " sample");
+    info.setSubject("Sample about " + subject + " using PDF Clown");
+  }
+  // </private>
   // </interface>
   // </dynamic>
   // </class>

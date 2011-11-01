@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
   Abstract PDF object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 public abstract class PdfObject
   implements Cloneable
@@ -79,19 +79,33 @@ public abstract class PdfObject
 
   /**
     Gets the indirect object containing the data associated to this object.
-    <p>It generally corresponds to the {@link #getRoot() root}, except for {@link PdfReference references};
-    in the latter case, data is contained by an indirect object which is different from that containing
-    the reference itself.</p>
   */
-  public abstract PdfIndirectObject getContainer(
-    );
+  public PdfIndirectObject getContainer(
+    )
+  {
+    PdfObject parent = getParent();
+    return parent != null ? parent.getContainer() : null;
+  }
 
   /**
     Gets the file containing this object.
   */
   public File getFile(
     )
-  {return getContainer() != null ? getContainer().getFile() : null;}
+  {
+    PdfIndirectObject container = getContainer();
+    return container != null ? container.getFile() : null;
+  }
+
+  /**
+    Gets the indirect object corresponding to this object.
+  */
+  public PdfIndirectObject getIndirectObject(
+    )
+  {
+    PdfObject parent = getParent();
+    return parent instanceof PdfIndirectObject ? (PdfIndirectObject)parent : null;
+  }
 
   /**
     Gets the parent of this object.
@@ -100,15 +114,25 @@ public abstract class PdfObject
     );
 
   /**
-    Gets the top-most ancestor of this object.
+    Gets the indirect reference of this object.
   */
-  public abstract PdfIndirectObject getRoot(
-    );
+  public PdfReference getReference(
+    )
+  {
+    PdfIndirectObject indirectObject = getIndirectObject();
+    return indirectObject != null ? indirectObject.getReference() : null;
+  }
 
   /**
     Gets whether the detection of object state changes is enabled.
   */
   public abstract boolean isUpdateable(
+    );
+
+  /**
+    Gets whether the initial state of this object has been modified.
+  */
+  public abstract boolean isUpdated(
     );
 
   /**
@@ -120,9 +144,13 @@ public abstract class PdfObject
 
   /**
     Serializes this object to the specified stream.
+
+    @param stream Target stream.
+    @param context File context.
   */
   public abstract void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    File context
     );
   // </public>
 
@@ -134,12 +162,6 @@ public abstract class PdfObject
   protected final Object clone(
     )
   {return clone(null);}
-
-  /**
-    Gets whether the initial state of this object has been modified.
-  */
-  protected abstract boolean isUpdated(
-    );
 
   /**
     Gets whether this object acts like a null-object placeholder.

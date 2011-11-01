@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,7 +40,7 @@ import org.pdfclown.util.NotImplementedException;
   Device Gray color value [PDF:1.6:4.5.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public final class DeviceGrayColor
@@ -79,7 +79,7 @@ public final class DeviceGrayColor
   // <dynamic>
   // <constructors>
   public DeviceGrayColor(
-    float g
+    double g
     )
   {
     this(
@@ -111,7 +111,7 @@ public final class DeviceGrayColor
   /**
     Gets the gray component.
   */
-  public float getG(
+  public double getG(
     )
   {return getComponentValue(0);}
 
@@ -119,7 +119,7 @@ public final class DeviceGrayColor
     @see #getG()
   */
   public void setG(
-    float value
+    double value
     )
   {setComponentValue(0, value);}
   // </public>

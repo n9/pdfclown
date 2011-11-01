@@ -38,11 +38,8 @@ namespace org.pdfclown.samples.cli
       BuildTextBlockPage(document);
       BuildTextBlockPage2(document);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Composition elements","applying the composition elements");
-
       // 3. Serialize the PDF file!
-      Serialize(file,false);
+      Serialize(file, false, "Composition elements", "applying the composition elements");
 
       return true;
     }
@@ -868,7 +865,7 @@ namespace org.pdfclown.samples.cli
           );
         blockComposer.Begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Top);
         blockComposer.ShowText(
-          "Demonstrating how to set the block line space. Line space can be expressed either as an absolute value (in user-space units) or as a relative one (as a floating-point ratio); in the latter case the base value is represented by the current font's line height (so that, for example, 2 means \"a line space that's double the line height\")."
+          "Demonstrating how to set the block line space. Line space can be expressed either as an absolute value (in user-space units) or as a relative one (floating-point ratio); in the latter case the base value is represented by the current font's line height (so that, for example, 2 means \"a line space that's twice as the line height\")."
           );
         blockComposer.End();
 

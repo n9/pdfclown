@@ -43,7 +43,7 @@ import org.pdfclown.util.parsers.PostScriptParser.TokenTypeEnum;
   PDF file reader.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 11/01/11
 */
 public final class Reader
   implements Closeable
@@ -88,7 +88,7 @@ public final class Reader
 
   // <constructors>
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public Reader(
     IInputStream stream,
@@ -166,36 +166,35 @@ public final class Reader
               {
                 // Skip to the next entry!
                 parser.moveNext(3);
+                continue;
               }
-              else // Undefined entry.
-              {
-                // Get the indirect object offset!
-                int offset = (Integer)parser.getToken(1);
-                // Get the object generation number!
-                int generation = (Integer)parser.getToken(1);
-                // Get the usage tag!
-                XRefEntry.UsageEnum usage;
-                {
-                  String usageToken = (String)parser.getToken(1);
-                  if(usageToken.equals(Keyword.InUseXrefEntry))
-                    usage = XRefEntry.UsageEnum.InUse;
-                  else if(usageToken.equals(Keyword.FreeXrefEntry))
-                    usage = XRefEntry.UsageEnum.Free;
-                  else
-                    throw new ParseException("Invalid xref entry.",parser.getPosition());
-                }
 
-                // Entry initialization.
-                xrefEntries.put(
-                  index,
-                  new XRefEntry(
-                    index,
-                    generation,
-                    offset,
-                    usage
-                    )
-                  );
+              // Get the indirect object offset!
+              int offset = (Integer)parser.getToken(1);
+              // Get the object generation number!
+              int generation = (Integer)parser.getToken(1);
+              // Get the usage tag!
+              XRefEntry.UsageEnum usage;
+              {
+                String usageToken = (String)parser.getToken(1);
+                if(usageToken.equals(Keyword.InUseXrefEntry))
+                  usage = XRefEntry.UsageEnum.InUse;
+                else if(usageToken.equals(Keyword.FreeXrefEntry))
+                  usage = XRefEntry.UsageEnum.Free;
+                else
+                  throw new ParseException("Invalid xref entry.", parser.getPosition());
               }
+
+              // Define entry!
+              xrefEntries.put(
+                index,
+                new XRefEntry(
+                  index,
+                  generation,
+                  offset,
+                  usage
+                  )
+                );
             }
           }
 
@@ -205,8 +204,15 @@ public final class Reader
         else // XRef-stream section.
         {
           XRefStream stream = (XRefStream)parser.parsePdfObject(3); // Gets the xref stream skipping the indirect-object header.
-          // Add the xref entries from the current xref stream!
-          xrefEntries.putAll(stream);
+          // XRef-stream subsection entries.
+          for(XRefEntry xrefEntry : stream.values())
+          {
+            if(xrefEntries.containsKey(xrefEntry.getNumber())) // Already-defined entry.
+              continue;
+
+            // Define entry!
+            xrefEntries.put(xrefEntry.getNumber(), xrefEntry);
+          }
 
           // Get the previous trailer!
           sectionTrailer = stream.getHeader();

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
   <p>The 'Key' component is renamed 'Black' to avoid semantic ambiguities.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public final class DeviceCMYKColor
@@ -80,10 +80,10 @@ public final class DeviceCMYKColor
   // <dynamic>
   // <constructors>
   public DeviceCMYKColor(
-    float c,
-    float m,
-    float y,
-    float k
+    double c,
+    double m,
+    double y,
+    double k
     )
   {
     this(
@@ -118,28 +118,28 @@ public final class DeviceCMYKColor
   /**
     Gets the cyan component.
   */
-  public float getC(
+  public double getC(
     )
   {return getComponentValue(0);}
 
   /**
     Gets the black (key) component.
   */
-  public float getK(
+  public double getK(
     )
   {return getComponentValue(3);}
 
   /**
     Gets the magenta component.
   */
-  public float getM(
+  public double getM(
     )
   {return getComponentValue(1);}
 
   /**
     Gets the yellow component.
   */
-  public float getY(
+  public double getY(
     )
   {return getComponentValue(2);}
 
@@ -147,7 +147,7 @@ public final class DeviceCMYKColor
     @see #getC()
   */
   public void setC(
-    float value
+    double value
     )
   {setComponentValue(0, value);}
 
@@ -155,7 +155,7 @@ public final class DeviceCMYKColor
     @see #getK()
   */
   public void setK(
-    float value
+    double value
     )
   {setComponentValue(3, value);}
 
@@ -163,7 +163,7 @@ public final class DeviceCMYKColor
     @see #getM()
   */
   public void setM(
-    float value
+    double value
     )
   {setComponentValue(1, value);}
 
@@ -171,7 +171,7 @@ public final class DeviceCMYKColor
     @see #getY()
   */
   public void setY(
-    float value
+    double value
     )
   {setComponentValue(2, value);}
   // </public>

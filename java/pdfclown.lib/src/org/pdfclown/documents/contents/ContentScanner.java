@@ -66,7 +66,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 04/28/11
+  @version 0.1.1, 11/01/11
 */
 public final class ContentScanner
 {
@@ -98,26 +98,26 @@ public final class ContentScanner
     // <class>
     // <dynamic>
     // <fields>
-    private float charSpace;
+    private double charSpace;
     private AffineTransform ctm;
     private Color<?> fillColor;
     private ColorSpace<?> fillColorSpace;
     private Font font;
-    private float fontSize;
-    private float lead;
+    private double fontSize;
+    private double lead;
     private LineCapEnum lineCap;
     private LineDash lineDash;
     private LineJoinEnum lineJoin;
-    private float lineWidth;
-    private float miterLimit;
+    private double lineWidth;
+    private double miterLimit;
     private TextRenderModeEnum renderMode;
-    private float rise;
-    private float scale;
+    private double rise;
+    private double scale;
     private Color<?> strokeColor;
     private ColorSpace<?> strokeColorSpace;
     private AffineTransform tlm;
     private AffineTransform tm;
-    private float wordSpace;
+    private double wordSpace;
 
     private ContentScanner scanner;
     // </fields>
@@ -201,7 +201,7 @@ public final class ContentScanner
     /**
       Gets the current character spacing [PDF:1.6:5.2.1].
     */
-    public float getCharSpace(
+    public double getCharSpace(
       )
     {return charSpace;}
 
@@ -236,7 +236,7 @@ public final class ContentScanner
     /**
       Gets the current font size [PDF:1.6:5.2].
     */
-    public float getFontSize(
+    public double getFontSize(
       )
     {return fontSize;}
 
@@ -295,7 +295,7 @@ public final class ContentScanner
     /**
       Gets the current leading [PDF:1.6:5.2.4].
     */
-    public float getLead(
+    public double getLead(
       )
     {return lead;}
 
@@ -323,14 +323,14 @@ public final class ContentScanner
     /**
       Gets the current line width [PDF:1.6:4.3.2].
     */
-    public float getLineWidth(
+    public double getLineWidth(
       )
     {return lineWidth;}
 
     /**
       Gets the current miter limit [PDF:1.6:4.3.2].
     */
-    public float getMiterLimit(
+    public double getMiterLimit(
       )
     {return miterLimit;}
 
@@ -344,14 +344,14 @@ public final class ContentScanner
     /**
       Gets the current text rise [PDF:1.6:5.2.6].
     */
-    public float getRise(
+    public double getRise(
       )
     {return rise;}
 
     /**
       Gets the current horizontal scaling [PDF:1.6:5.2.3].
     */
-    public float getScale(
+    public double getScale(
       )
     {return scale;}
 
@@ -393,7 +393,7 @@ public final class ContentScanner
     /**
       Gets the current word spacing [PDF:1.6:5.2.2].
     */
-    public float getWordSpace(
+    public double getWordSpace(
       )
     {return wordSpace;}
 
@@ -401,7 +401,7 @@ public final class ContentScanner
       @see #getCharSpace()
     */
     public void setCharSpace(
-      float value
+      double value
       )
     {charSpace = value;}
 
@@ -441,7 +441,7 @@ public final class ContentScanner
       @see #getFontSize()
     */
     public void setFontSize(
-      float value
+      double value
       )
     {fontSize = value;}
 
@@ -449,7 +449,7 @@ public final class ContentScanner
       @see #getLead()
     */
     public void setLead(
-      float value
+      double value
       )
     {lead = value;}
 
@@ -481,7 +481,7 @@ public final class ContentScanner
       @see #getLineWidth()
     */
     public void setLineWidth(
-      float value
+      double value
       )
     {lineWidth = value;}
 
@@ -489,7 +489,7 @@ public final class ContentScanner
       @see #getMiterLimit()
     */
     public void setMiterLimit(
-      float value
+      double value
       )
     {miterLimit = value;}
 
@@ -505,7 +505,7 @@ public final class ContentScanner
       @see #getRise()
     */
     public void setRise(
-      float value
+      double value
       )
     {rise = value;}
 
@@ -513,7 +513,7 @@ public final class ContentScanner
       @see #getScale()
     */
     public void setScale(
-      float value
+      double value
       )
     {scale = value;}
 
@@ -553,7 +553,7 @@ public final class ContentScanner
       @see #getWordSpace()
     */
     public void setWordSpace(
-      float value
+      double value
       )
     {wordSpace = value;}
 
@@ -820,7 +820,7 @@ public final class ContentScanner
         GraphicsState state = scanner.getState();
         style = new TextStyle(
           state.getFont(),
-          (float)(state.getFontSize() * state.getTm().getScaleY()),
+          state.getFontSize() * state.getTm().getScaleY(),
           state.getRenderMode(),
           state.getStrokeColor(),
           state.getStrokeColorSpace(),

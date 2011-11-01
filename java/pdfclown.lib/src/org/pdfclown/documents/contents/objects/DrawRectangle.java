@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class DrawRectangle
@@ -57,10 +57,10 @@ public final class DrawRectangle
   // <dynamic>
   // <constructors>
   public DrawRectangle(
-    float x,
-    float y,
-    float width,
-    float height
+    double x,
+    double y,
+    double width,
+    double height
     )
   {
     super(
@@ -73,21 +73,6 @@ public final class DrawRectangle
   }
 
   public DrawRectangle(
-    double x,
-    double y,
-    double width,
-    double height
-    )
-  {
-    this(
-      (float)x,
-      (float)y,
-      (float)width,
-      (float)height
-      );
-  }
-
-  public DrawRectangle(
     List<PdfDirectObject> operands
     )
   {super(Operator,operands);}
@@ -95,19 +80,19 @@ public final class DrawRectangle
 
   // <interface>
   // <public>
-  public float getHeight(
+  public double getHeight(
     )
   {return ((PdfNumber<?>)operands.get(3)).getNumberValue();}
 
-  public float getWidth(
+  public double getWidth(
     )
   {return ((PdfNumber<?>)operands.get(2)).getNumberValue();}
 
-  public float getX(
+  public double getX(
     )
   {return ((PdfNumber<?>)operands.get(0)).getNumberValue();}
 
-  public float getY(
+  public double getY(
     )
   {return ((PdfNumber<?>)operands.get(1)).getNumberValue();}
 
@@ -119,7 +104,7 @@ public final class DrawRectangle
     Path2D pathObject = (Path2D)state.getScanner().getRenderObject();
     if(pathObject != null)
     {
-      float x = getX(),
+      double x = getX(),
         y = getY(),
         width = getWidth(),
         height = getHeight();
@@ -132,22 +117,22 @@ public final class DrawRectangle
   }
 
   public void setHeight(
-    float value
+    double value
     )
   {operands.set(3, new PdfReal(value));}
 
   public void setWidth(
-    float value
+    double value
     )
   {operands.set(2, new PdfReal(value));}
 
   public void setX(
-    float value
+    double value
     )
   {operands.set(0, new PdfReal(value));}
 
   public void setY(
-    float value
+    double value
     )
   {operands.set(1, new PdfReal(value));}
   // </public>

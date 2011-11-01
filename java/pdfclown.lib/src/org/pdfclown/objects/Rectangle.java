@@ -34,16 +34,16 @@ import org.pdfclown.files.File;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-  <b>PDF rectangle object</b> [PDF:1.6:3.8.4].
+  PDF rectangle object [PDF:1.6:3.8.4].
   <p>Rectangles are described by two diagonally-opposite corners. Corner pairs which don't respect
-  the canonical form (lower-left and upper-right) are automatically normalized to provide a consistent
-  representation.</p>
-  <p><i>Coordinates are expressed within the PDF coordinate space</i> (lower-left origin and positively-oriented
-  axes).</p>
+  the canonical form (lower-left and upper-right) are automatically normalized to provide a
+  consistent representation.</p>
+  <p>Coordinates are expressed within the PDF coordinate space (lower-left origin and
+  positively-oriented axes).</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 public final class Rectangle
   extends PdfObjectWrapper<PdfArray>
@@ -135,75 +135,75 @@ public final class Rectangle
     )
   {throw new NotImplementedException();}
 
-  public float getBottom(
+  public double getBottom(
     )
   {return ((PdfNumber<?>)getBaseDataObject().get(1)).getNumberValue();}
 
-  public float getHeight(
+  public double getHeight(
     )
   {return getTop() - getBottom();}
 
-  public float getLeft(
+  public double getLeft(
     )
   {return ((PdfNumber<?>)getBaseDataObject().get(0)).getNumberValue();}
 
-  public float getRight(
+  public double getRight(
     )
   {return ((PdfNumber<?>)getBaseDataObject().get(2)).getNumberValue();}
 
-  public float getTop(
+  public double getTop(
     )
   {return ((PdfNumber<?>)getBaseDataObject().get(3)).getNumberValue();}
 
-  public float getWidth(
+  public double getWidth(
     )
   {return getRight() - getLeft();}
 
-  public float getX(
+  public double getX(
     )
   {return getLeft();}
 
-  public float getY(
+  public double getY(
     )
   {return getBottom();}
 
   public void setBottom(
-    float value
+    double value
     )
   {((PdfNumber<?>)getBaseDataObject().get(1)).setValue(value);}
 
   public void setHeight(
-    float value
+    double value
     )
   {setBottom(getTop() - value);}
 
   public void setLeft(
-    float value
+    double value
     )
   {((PdfNumber<?>)getBaseDataObject().get(0)).setValue(value);}
 
   public void setRight(
-    float value
+    double value
     )
   {((PdfNumber<?>)getBaseDataObject().get(2)).setValue(value);}
 
   public void setTop(
-    float value
+    double value
     )
   {((PdfNumber<?>)getBaseDataObject().get(3)).setValue(value);}
 
   public void setWidth(
-    float value
+    double value
     )
   {setRight(getLeft() + value);}
 
   public void setX(
-    float value
+    double value
     )
   {setLeft(value);}
 
   public void setY(
-    float value
+    double value
     )
   {setBottom(value);}
 

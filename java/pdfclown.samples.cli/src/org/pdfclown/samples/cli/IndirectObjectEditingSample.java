@@ -15,7 +15,7 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 public class IndirectObjectEditingSample
   extends Sample
@@ -28,7 +28,6 @@ public class IndirectObjectEditingSample
     File file;
     {
       String filePath = promptPdfFileChoice("Please select a PDF file");
-
       try
       {file = new File(filePath);}
       catch(Exception e)

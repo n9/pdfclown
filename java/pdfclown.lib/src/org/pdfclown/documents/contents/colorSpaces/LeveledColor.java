@@ -37,7 +37,7 @@ import org.pdfclown.objects.PdfReal;
   Color value defined by numeric-level components.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 11/01/11
 */
 public abstract class LeveledColor
   extends Color<PdfArray>
@@ -95,7 +95,7 @@ public abstract class LeveledColor
 
     @param index Component index.
   */
-  protected final float getComponentValue(
+  protected final double getComponentValue(
     int index
     )
   {return ((PdfNumber<?>)getComponents().get(index)).getNumberValue();}
@@ -105,7 +105,7 @@ public abstract class LeveledColor
   */
   protected final void setComponentValue(
     int index,
-    float value
+    double value
     )
   {getComponents().set(index, new PdfReal(normalizeComponent(value)));}
   // </protected>

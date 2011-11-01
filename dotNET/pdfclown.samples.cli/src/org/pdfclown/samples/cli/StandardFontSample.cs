@@ -30,11 +30,8 @@ namespace org.pdfclown.samples.cli
       // 2. Content creation.
       Populate(document);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Standard Type 1 fonts","applying standard Type 1 fonts");
-
       // 3. Serialize the PDF file!
-      Serialize(file,false);
+      Serialize(file, false, "Standard Type 1 fonts", "applying standard Type 1 fonts");
 
       return true;
     }

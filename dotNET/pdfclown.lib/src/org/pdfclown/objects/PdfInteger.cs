@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.bytes;
+using org.pdfclown.files;
 
 namespace org.pdfclown.objects
 {
@@ -58,28 +59,29 @@ namespace org.pdfclown.objects
       )
     {return PdfNumber.GetHashCode(this);}
 
+    public override void WriteTo(
+      IOutputStream stream,
+      File context
+      )
+    {stream.Write(RawValue.ToString());}
+
+    #region IPdfNumber
+    public float FloatValue
+    {
+      get
+      {return this.RawValue;}
+    }
+
     public int IntValue
     {
       get
       {return this.RawValue;}
     }
 
-    public override void WriteTo(
-      IOutputStream stream
-      )
-    {stream.Write(RawValue.ToString());}
-
-    #region IPdfNumber
-    float IPdfSimpleObject<float>.RawValue
+    double IPdfSimpleObject<double>.RawValue
     {
       get
       {return this.RawValue;}
-    }
-
-    object IPdfSimpleObject<float>.Value
-    {
-      get
-      {return this.Value;}
     }
     #endregion
     #endregion

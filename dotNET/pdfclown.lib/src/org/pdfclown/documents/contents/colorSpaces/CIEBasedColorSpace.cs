@@ -50,19 +50,19 @@ namespace org.pdfclown.documents.contents.colorSpaces
     /**
       <summary>Gets the tristimulus value, in the CIE 1931 XYZ space, of the diffuse black point.</summary>
     */
-    public float[] BlackPoint
+    public double[] BlackPoint
     {
       get
       {
         PdfArray blackPointObject = (PdfArray)Dictionary[PdfName.BlackPoint];
         return (blackPointObject == null
-          ? new float[]
+          ? new double[]
             {
               0,
               0,
               0
             }
-          : new float[]
+          : new double[]
             {
               ((IPdfNumber)blackPointObject[0]).RawValue,
               ((IPdfNumber)blackPointObject[1]).RawValue,
@@ -74,12 +74,12 @@ namespace org.pdfclown.documents.contents.colorSpaces
     /**
       <summary>Gets the tristimulus value, in the CIE 1931 XYZ space, of the diffuse white point.</summary>
     */
-    public float[] WhitePoint
+    public double[] WhitePoint
     {
       get
       {
         PdfArray whitePointObject = (PdfArray)Dictionary[PdfName.WhitePoint];
-        return new float[]
+        return new double[]
           {
             ((IPdfNumber)whitePointObject[0]).RawValue,
             ((IPdfNumber)whitePointObject[1]).RawValue,

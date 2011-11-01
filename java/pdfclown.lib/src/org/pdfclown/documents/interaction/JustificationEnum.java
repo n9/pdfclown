@@ -33,7 +33,7 @@ import org.pdfclown.objects.PdfInteger;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 public enum JustificationEnum
 {
@@ -57,9 +57,9 @@ public enum JustificationEnum
   // <interface>
   // <public>
   /**
-    Gets the highlighting mode corresponding to the given value.
+    Gets the justification corresponding to the given value.
   */
-  public static JustificationEnum get(
+  public static JustificationEnum valueOf(
     PdfInteger value
     )
   {
@@ -71,7 +71,7 @@ public enum JustificationEnum
       if(justification.getCode().equals(value))
         return justification;
     }
-    throw new IllegalArgumentException(value.toString() + " is NOT a valid justification code.");
+    throw new UnsupportedOperationException("Justification unknown: " + value);
   }
   // </public>
   // </interface>

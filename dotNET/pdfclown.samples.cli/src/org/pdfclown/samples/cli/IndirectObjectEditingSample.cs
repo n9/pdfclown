@@ -22,9 +22,8 @@ namespace org.pdfclown.samples.cli
     public override bool Run(
       )
     {
+      // 1. Opening the PDF file...
       string filePath = PromptPdfFileChoice("Please select a PDF file");
-
-      // 1. Open the PDF file!
       File file = new File(filePath);
 
       // 2. Iterating through the indirect objects to discover existing unicode mapping (ToUnicode) streams to edit...

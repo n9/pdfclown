@@ -61,19 +61,14 @@ namespace org.pdfclown.objects
     /**
       <param name="file">Associated file.</param>
       <param name="dataObject">
-        <para>Data object associated to the indirect object.</para>
+        <para>Data object associated to the indirect object. It MUST be</para>
         <list type="bullet">
-          <item>It MUST be null if the indirect object is original (i.e. coming from an existing file)
-          or free.</item>
-          <item>It MUST be NOT null if the indirect object is new and in-use.</item>
+          <item><code>null</code>, if the indirect object is original or free.</item>
+          <item>NOT <code>null</code>, if the indirect object is new and in-use.</item>
         </list>
       </param>
-      <param name="xrefEntry">
-        <para>Cross-reference entry associated to the indirect object.</para>
-        <list type="bullet">
-          <item>If the indirect object is new, its offset field MUST be set to 0 (zero).</item>
-        </list>
-      </param>
+      <param name="xrefEntry">Cross-reference entry associated to the indirect object. If the
+        indirect object is new, its offset field MUST be set to 0.</param>
     */
     internal PdfIndirectObject(
       File file,
@@ -85,7 +80,7 @@ namespace org.pdfclown.objects
       this.dataObject = Include(dataObject);
       this.xrefEntry = xrefEntry;
 
-      this.original = (xrefEntry.Offset != 0);
+      this.original = (xrefEntry.Offset >= 0);
       this.reference = new PdfReference(
         this,
         xrefEntry.Number,
@@ -114,8 +109,8 @@ namespace org.pdfclown.objects
         objectStream[xrefEntry.Number] = DataObject;
         // Update its xref entry!
         xrefEntry.Usage = XRefEntry.UsageEnum.InUseCompressed;
-        xrefEntry.StreamNumber = objectStream.Container.Reference.ObjectNumber;
-        xrefEntry.Offset = -1; // Internal object index unknown (to set on object stream serialization -- see ObjectStream).
+        xrefEntry.StreamNumber = objectStream.Reference.ObjectNumber;
+        xrefEntry.Offset = XRefEntry.UndefinedOffset; // Internal object index unknown (to set on object stream serialization -- see ObjectStream).
       }
     }
 
@@ -144,21 +139,22 @@ namespace org.pdfclown.objects
     }
 
     /**
-      <summary>Gets whether it's compressed within an object stream [PDF:1.6:3.4.6].</summary>
+      <summary>Gets whether this object is compressed within an object stream [PDF:1.6:3.4.6].
+      </summary>
     */
     public bool IsCompressed(
       )
     {return xrefEntry.Usage == XRefEntry.UsageEnum.InUseCompressed;}
 
     /**
-      <summary>Gets whether it contains a data object.</summary>
+      <summary>Gets whether this object contains a data object.</summary>
     */
     public bool IsInUse(
       )
     {return (xrefEntry.Usage == XRefEntry.UsageEnum.InUse);}
 
     /**
-      <summary>Gets whether it hasn't been modified.</summary>
+      <summary>Gets whether this object comes intact from an existing file.</summary>
     */
     public bool IsOriginal(
       )
@@ -170,12 +166,6 @@ namespace org.pdfclown.objects
       {return null;} // NOTE: As indirect objects are root objects, no parent can be associated.
       internal set
       {/* NOOP: As indirect objects are root objects, no parent can be associated. */}
-    }
-
-    public override PdfIndirectObject Root
-    {
-      get
-      {return null;} // NOTE: As indirect objects are root objects, no root can be associated.
     }
 
     /**
@@ -193,7 +183,7 @@ namespace org.pdfclown.objects
       // Update its xref entry!
       xrefEntry.Usage = XRefEntry.UsageEnum.InUse;
       xrefEntry.StreamNumber = -1; // No object stream.
-      xrefEntry.Offset = -1; // Offset unknown (to set on file serialization -- see CompressedWriter).
+      xrefEntry.Offset = XRefEntry.UndefinedOffset; // Offset unknown (to set on file serialization -- see CompressedWriter).
     }
 
     public override bool Updateable
@@ -204,14 +194,34 @@ namespace org.pdfclown.objects
       {updateable = value;}
     }
 
+    public override bool Updated
+    {
+      get
+      {return updated;}
+      protected internal set
+      {
+        if(value && original)
+        {
+          /*
+            NOTE: It's expected that DropOriginal() is invoked by IndirectObjects indexer;
+            such an action is delegated because clients may invoke directly the indexer skipping
+            this method.
+          */
+          file.IndirectObjects.Update(this);
+        }
+        updated = value;
+      }
+    }
+
     public override void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      File context
       )
     {
       // Header.
       stream.Write(reference.Id); stream.Write(BeginIndirectObjectChunk);
       // Body.
-      DataObject.WriteTo(stream);
+      DataObject.WriteTo(stream, context);
       // Tail.
       stream.Write(EndIndirectObjectChunk);
     }
@@ -286,13 +296,13 @@ namespace org.pdfclown.objects
       file.IndirectObjects.RemoveAt(xrefEntry.Number);
     }
 
-    public PdfIndirectObject IndirectObject
+    public override PdfIndirectObject IndirectObject
     {
       get
       {return this;}
     }
 
-    public PdfReference Reference
+    public override PdfReference Reference
     {
       get
       {return reference;}
@@ -301,25 +311,6 @@ namespace org.pdfclown.objects
     #endregion
 
     #region protected
-    protected internal override bool Updated
-    {
-      get
-      {return updated;}
-      set
-      {
-        if(value && original)
-        {
-          /*
-            NOTE: It's expected that DropOriginal() is invoked by IndirectObjects indexer;
-            such an action is delegated because clients may invoke directly the indexer skipping
-            this method.
-          */
-          file.IndirectObjects.Update(this);
-        }
-        updated = value;
-      }
-    }
-
     protected internal override bool Virtual
     {
       get

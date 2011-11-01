@@ -36,7 +36,8 @@ namespace org.pdfclown.documents.contents.objects
   */
   [PDF(VersionEnum.PDF10)]
   public sealed class SetFont
-    : Operation
+    : Operation,
+      IResourceReference<Font>
   {
     #region static
     #region fields
@@ -48,7 +49,7 @@ namespace org.pdfclown.documents.contents.objects
     #region constructors
     public SetFont(
       PdfName name,
-      float size
+      double size
       ) : base(OperatorKeyword, name, new PdfReal(size))
     {}
 
@@ -67,13 +68,33 @@ namespace org.pdfclown.documents.contents.objects
     public Font GetFont(
       IContentContext context
       )
-    {return context.Resources.Fonts[Name];}
+    {return GetResource(context);}
+
+    public override void Scan(
+      ContentScanner.GraphicsState state
+      )
+    {
+      state.Font = GetFont(state.Scanner.ContentContext);
+      state.FontSize = Size;
+    }
 
     /**
-      <summary>Gets the name of the <see cref="Font">font</see> resource to be set.</summary>
-      <seealso cref="GetFont(IContentContext)"/>
-      <seealso cref="FontResources"/>
+      <summary>Gets/Sets the font size to be set.</summary>
     */
+    public double Size
+    {
+      get
+      {return ((IPdfNumber)operands[1]).RawValue;}
+      set
+      {operands[1] = new PdfReal(value);}
+    }
+
+    #region IResourceReference
+    public Font GetResource(
+      IContentContext context
+      )
+    {return context.Resources.Fonts[Name];}
+
     public PdfName Name
     {
       get
@@ -81,25 +102,7 @@ namespace org.pdfclown.documents.contents.objects
       set
       {operands[0] = value;}
     }
-
-    public override void Scan(
-      ContentScanner.GraphicsState state
-      )
-    {
-      state.Font = state.Scanner.ContentContext.Resources.Fonts[Name];
-      state.FontSize = Size;
-    }
-
-    /**
-      <summary>Gets the font size to be set.</summary>
-    */
-    public float Size
-    {
-      get
-      {return ((IPdfNumber)operands[1]).RawValue;}
-      set
-      {operands[1] = new PdfReal(value);}
-    }
+    #endregion
     #endregion
     #endregion
     #endregion

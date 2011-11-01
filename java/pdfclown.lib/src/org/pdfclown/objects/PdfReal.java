@@ -25,42 +25,27 @@
 
 package org.pdfclown.objects;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.files.File;
 
 /**
   PDF real number object [PDF:1.6:3.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 11/01/11
 */
 public final class PdfReal
-  extends PdfNumber<Float>
+  extends PdfNumber<Double>
 {
   // <class>
   // <static>
-  // <fields>
-  protected static final DecimalFormat formatter;
-  // </fields>
-
-  // <constructors>
-  static
-  {
-    DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-    symbols.setDecimalSeparator('.');
-    formatter = new DecimalFormat("0.#####",symbols);
-  }
-  // </constructors>
-
   // <interface>
   // <public>
   /**
     Gets the object equivalent to the given value.
   */
   public static PdfReal get(
-    Float value
+    Double value
     )
   {return value == null ? null : new PdfReal(value);}
   // </public>
@@ -70,28 +55,24 @@ public final class PdfReal
   // <dynamic>
   // <constructors>
   public PdfReal(
-    float value
-    )
-  {setRawValue(value);}
-
-  public PdfReal(
     double value
     )
-  {this((float)value);}
+  {setRawValue(value);}
   // </constructors>
 
-  // <iterface>
+  // <interface>
   // <public>
   @Override
-  public Float getValue(
+  public Double getValue(
     )
-  {return super.getValue().floatValue();}
+  {return super.getValue().doubleValue();}
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    File context
     )
-  {stream.write(formatter.format(getRawValue()));}
+  {stream.write(context.getConfiguration().getRealFormat().format(getRawValue()));}
   // </public>
 
   // <protected>
@@ -99,7 +80,7 @@ public final class PdfReal
   protected void setValue(
     Object value
     )
-  {super.setValue(((Number)value).floatValue());}
+  {super.setValue(((Number)value).doubleValue());}
   // </protected>
   // </interface>
   // </class>

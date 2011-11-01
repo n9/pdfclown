@@ -1,5 +1,10 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.Dimension;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.Pages;
@@ -12,17 +17,12 @@ import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.contents.xObjects.XObject;
 import org.pdfclown.files.File;
 
-import java.awt.Dimension;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 /**
   This sample demonstrates <b>how to show bar codes</b> in a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class BarcodeSample
   extends Sample
@@ -40,12 +40,9 @@ public class BarcodeSample
     // 2. Content creation.
     populate(document);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Barcode","showing barcodes");
-
     // 3. Serialize the PDF file!
-    serialize(file,false);
-    
+    serialize(file, false, "Barcode", "showing barcodes");
+
     return true;
   }
   // </ISample>

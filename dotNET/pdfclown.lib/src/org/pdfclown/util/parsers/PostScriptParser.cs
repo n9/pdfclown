@@ -456,7 +456,7 @@ namespace org.pdfclown.util.parsers
               );
             break;
           case TokenTypeEnum.Real:
-            token = Single.Parse(
+            token = Double.Parse(
               buffer.ToString(),
               NumberStyles.Float,
               StandardNumberFormatInfo

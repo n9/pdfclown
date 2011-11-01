@@ -51,7 +51,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
     public LocalDestination(
       Page page,
       ModeEnum mode,
-      float?[] viewParams
+      double?[] viewParams
       ) : base(
         page.Document,
         page.BaseObject,

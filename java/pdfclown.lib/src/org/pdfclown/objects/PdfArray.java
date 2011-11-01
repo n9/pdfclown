@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 public final class PdfArray
   extends PdfDirectObject
@@ -165,24 +165,19 @@ public final class PdfArray
   }
 
   @Override
-  public PdfIndirectObject getContainer(
-    )
-  {return getRoot();}
-
-  @Override
   public PdfObject getParent(
     )
   {return parent;}
 
   @Override
-  public PdfIndirectObject getRoot(
-    )
-  {return parent != null ? parent.getRoot() : null;}
-
-  @Override
   public boolean isUpdateable(
     )
   {return updateable;}
+
+  @Override
+  public boolean isUpdated(
+    )
+  {return updated;}
 
   /**
     Gets the dereferenced value corresponding to the given index.
@@ -221,7 +216,8 @@ public final class PdfArray
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    File context
     )
   {
     // Begin.
@@ -229,10 +225,10 @@ public final class PdfArray
     // Items.
     for(PdfDirectObject item : items)
     {
-      if(item.isVirtual())
+      if(item != null && item.isVirtual())
         continue;
 
-      PdfDirectObject.writeTo(stream,item); stream.write(Chunk.Space);
+      PdfDirectObject.writeTo(stream, context, item); stream.write(Chunk.Space);
     }
     // End.
     stream.write(EndArrayChunk);
@@ -443,11 +439,6 @@ public final class PdfArray
   // </public>
 
   // <protected>
-  @Override
-  protected boolean isUpdated(
-    )
-  {return updated;}
-
   @Override
   protected boolean isVirtual(
     )

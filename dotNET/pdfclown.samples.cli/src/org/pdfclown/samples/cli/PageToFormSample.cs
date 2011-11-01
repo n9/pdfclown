@@ -34,11 +34,8 @@ namespace org.pdfclown.samples.cli
       // 4. Insert the contents into the new document!
       Populate(document,form);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Page-to-form","converting a page to a reusable form");
-
       // 5. Serialize the PDF file!
-      Serialize(file,false);
+      Serialize(file, false, "Page-to-form", "converting a page to a reusable form");
 
       return true;
     }

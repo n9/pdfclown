@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,9 @@
 
 package org.pdfclown.documents.contents.fonts;
 
+import java.util.Hashtable;
+import java.util.Map;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -38,14 +41,11 @@ import org.pdfclown.util.ByteArray;
 import org.pdfclown.util.ConvertUtils;
 import org.pdfclown.util.NotImplementedException;
 
-import java.util.Hashtable;
-import java.util.Map;
-
 /**
   Type 1 font [PDF:1.6:5.5.1;AFM:4.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 /*
   NOTE: Type 1 fonts encompass several formats:
@@ -100,7 +100,25 @@ public class Type1Font
       PdfStream fontFileStream = (PdfStream)descriptor.resolve(PdfName.FontFile3);
       PdfName fontFileSubtype = (PdfName)fontFileStream.getHeader().get(PdfName.Subtype);
       if(fontFileSubtype.equals(PdfName.Type1C)) // CFF.
-      {throw new NotImplementedException("Embedded CFF font file.");}
+      {
+        CffParser parser = new CffParser(fontFileStream.getBody());
+        Map<ByteArray,Integer> codes = new Hashtable<ByteArray,Integer>();
+        for(Map.Entry<Integer,Integer> glyphIndexEntry : parser.glyphIndexes.entrySet())
+        {
+          /*
+            FIXME: Custom (non-unicode) encodings require name handling to match encoding differences;
+            this method (getNativeEncoding) should therefore return a glyphindex-to-character-name map
+            instead.
+            Constraining native codes into target byte-arrayed encodings is wrong -- that should be
+            only the final stage.
+           */
+          codes.put(
+            new ByteArray(new byte[]{ConvertUtils.intToByteArray(glyphIndexEntry.getValue())[3]}),
+            glyphIndexEntry.getKey()
+            );
+        }
+        return codes;
+      }
       else if(fontFileSubtype.equals(PdfName.OpenType)) // OpenFont/CFF.
       {throw new NotImplementedException("Embedded OpenFont/CFF font file.");}
       else

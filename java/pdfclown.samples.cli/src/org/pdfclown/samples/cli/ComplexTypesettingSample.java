@@ -47,7 +47,7 @@ import org.pdfclown.files.File;
   content flow composition), to be made available in the next releases.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class ComplexTypesettingSample
   extends Sample
@@ -67,36 +67,25 @@ public class ComplexTypesettingSample
     // 2. Content creation.
     Date creationDate = new Date();
     // 2.1. Template.
-    FormXObject template = buildTemplate(
-      document,
-      creationDate
-      );
+    FormXObject template = buildTemplate(document, creationDate);
     // 2.2. Welcome page.
-    buildWelcomePage(
-      document,
-      template
-      );
+    buildWelcomePage(document, template);
     // 2.3. Free Software definition.
-    buildFreeSoftwareDefinitionPages(
-      document,
-      template
-      );
-    // 2.4. Accessories (bookmarks, preferences, metadata...).
-    buildAccessories(document);
+    buildFreeSoftwareDefinitionPages(document, template);
+    // 2.4. Bookmarks.
+    buildBookmarks(document);
 
     // 3. Serialization.
-    serialize(file,false);
+    serialize(file, false, "Complex Typesetting", "complex typesetting");
 
     return true;
   }
 
-  private void buildAccessories(
+  private void buildBookmarks(
     Document document
     )
   {
     Pages pages = document.getPages();
-
-    // Bookmarks.
     Bookmarks bookmarks = new Bookmarks(document);
     document.setBookmarks(bookmarks);
     document.setPageMode(PageModeEnum.Bookmarks);
@@ -119,7 +108,7 @@ public class ComplexTypesettingSample
       new LocalDestination(
         page,
         Destination.ModeEnum.XYZ,
-        new Float[]{0f,250f,2f}
+        new Double[]{0d, 250d, 2d}
         )
       );
     bookmarks.add(bookmark);
@@ -130,7 +119,7 @@ public class ComplexTypesettingSample
         new LocalDestination(
           page,
           Destination.ModeEnum.XYZ,
-          new Float[]{0f,(float)page.getSize().getHeight() - 250,1f}
+          new Double[]{0d, page.getSize().getHeight() - 250, 1d}
           )
         )
       );
@@ -142,7 +131,7 @@ public class ComplexTypesettingSample
         new LocalDestination(
           page,
           Destination.ModeEnum.FitHorizontal,
-          new Float[]{0f}
+          new Double[]{0d}
           )
         )
       );
@@ -156,12 +145,10 @@ public class ComplexTypesettingSample
           )
         );
       bookmark.setFlags(EnumSet.of(FlagsEnum.Bold, FlagsEnum.Italic));
-      bookmark.setColor(new DeviceRGBColor(.5f,.5f,1f));
+      bookmark.setColor(new DeviceRGBColor(.5, .5, 1));
     }
     catch(URISyntaxException e)
     {/* NOOP */}
-
-    buildAccessories(document,"Complex Typesetting","complex typesetting");
   }
 
   private void buildFreeSoftwareDefinitionPages(

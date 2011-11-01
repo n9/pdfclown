@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class TranslateTextRelative
@@ -64,14 +64,14 @@ public final class TranslateTextRelative
   // <dynamic>
   // <constructors>
   public TranslateTextRelative(
-    float offsetX,
-    float offsetY
+    double offsetX,
+    double offsetY
     )
   {this(offsetX,offsetY,false);}
 
   public TranslateTextRelative(
-    float offsetX,
-    float offsetY,
+    double offsetX,
+    double offsetY,
     boolean leadSet
     )
   {
@@ -91,11 +91,11 @@ public final class TranslateTextRelative
 
   // <interface>
   // <public>
-  public float getOffsetX(
+  public double getOffsetX(
     )
   {return ((PdfNumber<?>)operands.get(0)).getNumberValue();}
 
-  public float getOffsetY(
+  public double getOffsetY(
     )
   {return ((PdfNumber<?>)operands.get(1)).getNumberValue();}
 
@@ -126,12 +126,12 @@ public final class TranslateTextRelative
   {operator = (value ? LeadOperator : SimpleOperator);}
 
   public void setOffsetX(
-    float value
+    double value
     )
   {operands.set(0, new PdfReal(value));}
 
   public void setOffsetY(
-    float value
+    double value
     )
   {operands.set(1, new PdfReal(value));}
   // </public>

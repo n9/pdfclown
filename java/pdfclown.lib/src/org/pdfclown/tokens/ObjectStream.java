@@ -36,13 +36,14 @@ import java.util.Set;
 import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.IBuffer;
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.files.File;
 import org.pdfclown.files.IndirectObjects;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
+import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfStream;
 
 /**
@@ -53,13 +54,12 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 11/01/11
 */
 public final class ObjectStream
   extends PdfStream
   implements Map<Integer,PdfDataObject>
 {
-//TODO:collection extension (Extends entry)
   // <class>
   // <classes>
   private static final class Entry
@@ -141,6 +141,10 @@ public final class ObjectStream
 
   // <constructors>
   public ObjectStream(
+    )
+  {super(new PdfDictionary(new PdfName[]{PdfName.Type}, new PdfDirectObject[]{PdfName.ObjStm}));}
+
+  public ObjectStream(
     PdfDictionary header,
     IBuffer body
     )
@@ -150,25 +154,32 @@ public final class ObjectStream
   // <interface>
   // <public>
   /**
-    Gets the reference to an object stream, of which this object stream is
-    considered an extension.
-    <p>Both streams are considered part of a collection of object streams.
-    A given collection consists of a set of streams whose links form
-    a directed acyclic graph.</p>
+    Gets the object stream extended by this one.
+    <p>Both streams are considered part of a collection of object streams  whose links form a
+    directed acyclic graph.</p>
   */
-  public PdfReference getLinkedStreamReference(
+  public ObjectStream getBaseStream(
     )
-  {return (PdfReference)getHeader().get(PdfName.Extends);}
+  {return (ObjectStream)getHeader().resolve(PdfName.Extends);}
+
+  /**
+    @see #getBaseStream()
+  */
+  public void setBaseStream(
+    ObjectStream value
+    )
+  {getHeader().put(PdfName.Extends, value.getReference());}
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    File context
     )
   {
     if(entries != null)
     {flush(stream);}
 
-    super.writeTo(stream);
+    super.writeTo(stream, context);
   }
 
   // <Map>
@@ -216,8 +227,8 @@ public final class ObjectStream
   {return getEntries().keySet();}
 
   /**
-    For internal use only. If you need to <i>add a data object
-    into an object stream</i>, invoke {@link PdfIndirectObject#compress(PdfIndirectObject)} instead.
+    <span style="color:red">For internal use only.</span> If you need to <i>add a data object
+    into an object stream</i>, invoke {@link PdfIndirectObject#compress(ObjectStream)} instead.
   */
   @Override
   public PdfDataObject put(
@@ -241,8 +252,8 @@ public final class ObjectStream
   {throw new UnsupportedOperationException();}
 
   /**
-    For internal use only. If you need to <i>remove a compressed data object
-    from its object stream</i>, invoke {@link PdfIndirectObject#uncompress()} instead.
+    <span style="color:red">For internal use only.</span> If you need to <i>remove a compressed data
+    object from its object stream</i>, invoke {@link PdfIndirectObject#uncompress()} instead.
   */
   @Override
   public PdfDataObject remove(
@@ -291,6 +302,7 @@ public final class ObjectStream
       IBuffer dataBuffer = new Buffer();
       IndirectObjects indirectObjects = getFile().getIndirectObjects();
       int objectIndex = -1;
+      File context = getFile();
       for(Map.Entry<Integer,ObjectEntry> entry : getEntries().entrySet())
       {
         final int objectNumber = entry.getKey();
@@ -300,8 +312,8 @@ public final class ObjectStream
         xrefEntry.setOffset(++objectIndex);
 
         /*
-          NOTE: The entry offset MUST be updated only after its serialization, in order not to interfere
-          with its possible data-object retrieval from the old serialization.
+          NOTE: The entry offset MUST be updated only after its serialization, in order not to
+          interfere with its possible data-object retrieval from the old serialization.
         */
         int entryValueOffset = (int)dataBuffer.getLength();
 
@@ -311,7 +323,7 @@ public final class ObjectStream
           .append(Integer.toString(entryValueOffset)).append(Chunk.Space); // Byte offset (relative to the first one).
 
         // Data.
-        entry.getValue().getDataObject().writeTo(dataBuffer);
+        entry.getValue().getDataObject().writeTo(dataBuffer, context);
         entry.getValue().offset = entryValueOffset;
       }
 
@@ -347,18 +359,23 @@ public final class ObjectStream
     if(entries == null)
     {
       entries = new HashMap<Integer,ObjectEntry>();
-      parser = new FileParser(getBody(), getFile());
-      int baseOffset = ((PdfInteger)getHeader().get(PdfName.First)).getValue();
-      for(
-        int index = 0,
-          length = ((PdfInteger)getHeader().get(PdfName.N)).getValue();
-        index < length;
-        index++
-        )
+
+      final IBuffer body = getBody();
+      if(body.getLength() > 0)
       {
-        int objectNumber = ((PdfInteger)parser.parsePdfObject(1)).getValue();
-        int objectOffset = baseOffset + ((PdfInteger)parser.parsePdfObject(1)).getValue();
-        entries.put(objectNumber, new ObjectEntry(objectOffset));
+        parser = new FileParser(body, getFile());
+        int baseOffset = ((PdfInteger)getHeader().get(PdfName.First)).getValue();
+        for(
+          int index = 0,
+            length = ((PdfInteger)getHeader().get(PdfName.N)).getValue();
+          index < length;
+          index++
+          )
+        {
+          int objectNumber = ((PdfInteger)parser.parsePdfObject(1)).getValue();
+          int objectOffset = baseOffset + ((PdfInteger)parser.parsePdfObject(1)).getValue();
+          entries.put(objectNumber, new ObjectEntry(objectOffset));
+        }
       }
     }
     return entries;

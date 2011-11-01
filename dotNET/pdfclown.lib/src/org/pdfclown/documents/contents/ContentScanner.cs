@@ -79,26 +79,26 @@ namespace org.pdfclown.documents.contents
     {
       #region dynamic
       #region fields
-      private float charSpace;
+      private double charSpace;
       private Matrix ctm;
       private colors::Color fillColor;
       private colors::ColorSpace fillColorSpace;
       private fonts::Font font;
-      private float fontSize;
-      private float lead;
+      private double fontSize;
+      private double lead;
       private LineCapEnum lineCap;
       private LineDash lineDash;
       private LineJoinEnum lineJoin;
-      private float lineWidth;
-      private float miterLimit;
+      private double lineWidth;
+      private double miterLimit;
       private TextRenderModeEnum renderMode;
-      private float rise;
-      private float scale;
+      private double rise;
+      private double scale;
       private colors::Color strokeColor;
       private colors::ColorSpace strokeColorSpace;
       private Matrix tlm;
       private Matrix tm;
-      private float wordSpace;
+      private double wordSpace;
 
       private ContentScanner scanner;
       #endregion
@@ -177,7 +177,7 @@ namespace org.pdfclown.documents.contents
       /**
         <summary>Gets/Sets the current character spacing [PDF:1.6:5.2.1].</summary>
       */
-      public float CharSpace
+      public double CharSpace
       {
         get
         {return charSpace;}
@@ -232,7 +232,7 @@ namespace org.pdfclown.documents.contents
       /**
         <summary>Gets/Sets the current font size [PDF:1.6:5.2].</summary>
       */
-      public float FontSize
+      public double FontSize
       {
         get
         {return fontSize;}
@@ -293,7 +293,7 @@ namespace org.pdfclown.documents.contents
       /**
         <summary>Gets/Sets the current leading [PDF:1.6:5.2.4].</summary>
       */
-      public float Lead
+      public double Lead
       {
         get
         {return lead;}
@@ -337,7 +337,7 @@ namespace org.pdfclown.documents.contents
       /**
         <summary>Gets/Sets the current line width [PDF:1.6:4.3.2].</summary>
       */
-      public float LineWidth
+      public double LineWidth
       {
         get
         {return lineWidth;}
@@ -348,7 +348,7 @@ namespace org.pdfclown.documents.contents
       /**
         <summary>Gets/Sets the current miter limit [PDF:1.6:4.3.2].</summary>
       */
-      public float MiterLimit
+      public double MiterLimit
       {
         get
         {return miterLimit;}
@@ -370,7 +370,7 @@ namespace org.pdfclown.documents.contents
       /**
         <summary>Gets/Sets the current text rise [PDF:1.6:5.2.6].</summary>
       */
-      public float Rise
+      public double Rise
       {
         get
         {return rise;}
@@ -381,7 +381,7 @@ namespace org.pdfclown.documents.contents
       /**
         <summary>Gets/Sets the current horizontal scaling [PDF:1.6:5.2.3].</summary>
       */
-      public float Scale
+      public double Scale
       {
         get
         {return scale;}
@@ -494,7 +494,7 @@ namespace org.pdfclown.documents.contents
       /**
         <summary>Gets/Sets the current word spacing [PDF:1.6:5.2.2].</summary>
       */
-      public float WordSpace
+      public double WordSpace
       {
         get
         {return wordSpace;}

@@ -50,7 +50,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Function<TDataObject extends PdfDataObject>
@@ -148,8 +148,8 @@ public abstract class Function<TDataObject extends PdfDataObject>
 
     @param inputs Input values.
    */
-  public abstract float[] calculate(
-    float[] inputs
+  public abstract double[] calculate(
+    double[] inputs
     );
 
   /**
@@ -164,7 +164,7 @@ public abstract class Function<TDataObject extends PdfDataObject>
   {
     List<PdfDirectObject> outputs = new ArrayList<PdfDirectObject>();
     {
-      float[] inputValues = new float[inputs.size()];
+      double[] inputValues = new double[inputs.size()];
       for(
         int index = 0,
           length = inputValues.length;
@@ -172,7 +172,7 @@ public abstract class Function<TDataObject extends PdfDataObject>
         index++
         )
       {inputValues[index] = ((PdfNumber<?>)inputs.get(index)).getNumberValue();}
-      float[] outputValues = calculate(inputValues);
+      double[] outputValues = calculate(inputValues);
       for(
         int index = 0,
           length = outputValues.length;
@@ -188,7 +188,7 @@ public abstract class Function<TDataObject extends PdfDataObject>
     Gets the (inclusive) domains of the input values.
     <p>Input values outside the declared domains are clipped to the nearest boundary value.</p>
   */
-  public List<Interval<Float>> getDomains(
+  public List<Interval<Double>> getDomains(
     )
   {return getIntervals(PdfName.Domain, null);}
 
@@ -216,7 +216,7 @@ public abstract class Function<TDataObject extends PdfDataObject>
 
     @return <code>null</code> in case of unbounded ranges.
   */
-  public List<Interval<Float>> getRanges(
+  public List<Interval<Double>> getRanges(
     )
   {return getIntervals(PdfName.Range, null);}
   // </public>

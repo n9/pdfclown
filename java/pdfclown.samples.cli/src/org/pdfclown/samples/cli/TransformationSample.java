@@ -1,5 +1,10 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.Dimension;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.composition.AlignmentXEnum;
@@ -10,16 +15,11 @@ import org.pdfclown.documents.contents.entities.Image;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.files.File;
 
-import java.awt.Dimension;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 /**
   This sample demonstrates <b>how to spacially manipulate an image object</b> within a PDF page.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class TransformationSample
   extends Sample
@@ -37,12 +37,9 @@ public class TransformationSample
     // 2. Content creation.
     populate(document);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Transformation","graphics object transformation");
-
     // 3. Serialize the PDF file!
-    serialize(file,false);
-    
+    serialize(file, false, "Transformation", "graphics object transformation");
+
     return true;
   }
 

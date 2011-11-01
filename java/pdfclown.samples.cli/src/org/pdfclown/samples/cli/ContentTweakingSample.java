@@ -1,5 +1,7 @@
 package org.pdfclown.samples.cli;
 
+import java.util.List;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.Contents;
@@ -7,8 +9,6 @@ import org.pdfclown.documents.contents.objects.CompositeObject;
 import org.pdfclown.documents.contents.objects.ContentObject;
 import org.pdfclown.documents.contents.objects.SetLineWidth;
 import org.pdfclown.files.File;
-
-import java.util.List;
 
 /**
   This sample demonstrates <b>how to alter the graphic contents</b> (in this case: the line width)
@@ -19,7 +19,7 @@ import java.util.List;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class ContentTweakingSample
   extends Sample
@@ -28,17 +28,15 @@ public class ContentTweakingSample
   public boolean run(
     )
   {
+    // 1. Opening the PDF file...
     File file;
     {
       String filePath = promptPdfFileChoice("Please select a PDF file");
-
-      // 1. Open the PDF file!
       try
       {file = new File(filePath);}
       catch(Exception e)
       {throw new RuntimeException(filePath + " file access error.",e);}
     }
-
     Document document = file.getDocument();
 
     // 2. Content tweaking.
@@ -53,12 +51,9 @@ public class ContentTweakingSample
       contents.flush();
     }
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Content tweaking","content tweaking inside existing pages");
-
     // 3. Serialize the PDF file!
-    serialize(file);
-    
+    serialize(file, true, "Content tweaking", "content tweaking inside existing pages");
+
     return true;
   }
 

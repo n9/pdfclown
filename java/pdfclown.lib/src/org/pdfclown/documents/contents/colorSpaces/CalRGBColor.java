@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public final class CalRGBColor
@@ -60,9 +60,9 @@ public final class CalRGBColor
   // <dynamic>
   // <constructors>
   public CalRGBColor(
-    float r,
-    float g,
-    float b
+    double r,
+    double g,
+    double b
     )
   {
     this(
@@ -96,21 +96,21 @@ public final class CalRGBColor
   /**
     Gets the blue component.
   */
-  public float getB(
+  public double getB(
     )
   {return getComponentValue(2);}
 
   /**
     Gets the green component.
   */
-  public float getG(
+  public double getG(
     )
   {return getComponentValue(1);}
 
   /**
     Gets the red component.
   */
-  public float getR(
+  public double getR(
     )
   {return getComponentValue(0);}
 
@@ -118,7 +118,7 @@ public final class CalRGBColor
     @see #getB()
   */
   public void setB(
-    float value
+    double value
     )
   {setComponentValue(2, value);}
 
@@ -126,7 +126,7 @@ public final class CalRGBColor
     @see #getG()
   */
   public void setG(
-    float value
+    double value
     )
   {setComponentValue(1, value);}
 
@@ -134,7 +134,7 @@ public final class CalRGBColor
     @see #getR()
   */
   public void setR(
-    float value
+    double value
     )
   {setComponentValue(0, value);}
   // </public>

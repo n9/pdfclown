@@ -71,9 +71,9 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region static
     #region fields
-    private static readonly LineDash DefaultLineDash = new LineDash(new float[]{3});
+    private static readonly LineDash DefaultLineDash = new LineDash(new double[]{3});
     private static readonly StyleEnum DefaultStyle = StyleEnum.Solid;
-    private static readonly float DefaultWidth = 1;
+    private static readonly double DefaultWidth = 1;
 
     private static readonly Dictionary<StyleEnum,PdfName> StyleEnumCodes;
     #endregion
@@ -127,7 +127,7 @@ namespace org.pdfclown.documents.interaction.annotations
 
     public Border(
       Document context,
-      float width,
+      double width,
       StyleEnum style,
       LineDash pattern
       ) : this(context)
@@ -164,7 +164,7 @@ namespace org.pdfclown.documents.interaction.annotations
         if(dashObject == null)
           return DefaultLineDash;
 
-        float[] dashArray = new float[dashObject.Count];
+        double[] dashArray = new double[dashObject.Count];
         for(
           int dashIndex = 0,
             dashLength = dashArray.Length;
@@ -183,7 +183,7 @@ namespace org.pdfclown.documents.interaction.annotations
         {
           PdfArray dashObject = new PdfArray();
           {
-            float[] dashArray = value.DashArray;
+            double[] dashArray = value.DashArray;
             for(
               int dashIndex = 0,
                 dashLength = dashArray.Length;
@@ -217,7 +217,7 @@ namespace org.pdfclown.documents.interaction.annotations
     /**
       <summary>Gets/Sets the border width in points.</summary>
     */
-    public float Width
+    public double Width
     {
       get
       {

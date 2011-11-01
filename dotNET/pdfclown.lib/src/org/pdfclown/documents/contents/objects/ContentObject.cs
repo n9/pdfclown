@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -49,9 +49,11 @@ namespace org.pdfclown.documents.contents.objects
     /**
       <summary>Serializes this object to the specified stream.</summary>
       <param name="stream">Target stream.</param>
+      <param name="context">Document context.</param>
     */
     public abstract void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      Document context
       );
     #endregion
     #endregion

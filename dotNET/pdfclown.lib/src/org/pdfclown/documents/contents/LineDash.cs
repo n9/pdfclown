@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,8 +33,8 @@ namespace org.pdfclown.documents.contents
   {
     #region dynamic
     #region fields
-    private float[] dashArray;
-    private float dashPhase;
+    private readonly double[] dashArray;
+    private readonly double dashPhase;
     #endregion
 
     #region constructors
@@ -43,13 +43,13 @@ namespace org.pdfclown.documents.contents
     {}
 
     public LineDash(
-      float[] dashArray
+      double[] dashArray
       ) : this(dashArray,0)
     {}
 
     public LineDash(
-      float[] dashArray,
-      float dashPhase
+      double[] dashArray,
+      double dashPhase
       )
     {
       this.dashArray = dashArray;
@@ -59,13 +59,13 @@ namespace org.pdfclown.documents.contents
 
     #region interface
     #region public
-    public float[] DashArray
+    public double[] DashArray
     {
       get
       {return dashArray;}
     }
 
-    public float DashPhase
+    public double DashPhase
     {
       get
       {return dashPhase;}

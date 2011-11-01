@@ -46,7 +46,7 @@ namespace org.pdfclown.documents.contents.objects
     #region dynamic
     #region constructors
     public SetCharSpace(
-      float value
+      double value
       ) : base(
         OperatorKeyword,
         new List<PdfDirectObject>(
@@ -68,7 +68,7 @@ namespace org.pdfclown.documents.contents.objects
       )
     {state.CharSpace = Value;}
 
-    public float Value
+    public double Value
     {
       get
       {return ((IPdfNumber)operands[0]).RawValue;}

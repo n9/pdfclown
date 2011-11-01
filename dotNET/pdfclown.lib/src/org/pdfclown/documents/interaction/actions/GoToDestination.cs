@@ -33,7 +33,7 @@ using System;
 namespace org.pdfclown.documents.interaction.actions
 {
   /**
-    <summary>Abstract go-to-destination action.</summary>
+    <summary>Abstract 'go to destination' action.</summary>
   */
   [PDF(VersionEnum.PDF11)]
   public abstract class GoToDestination<T>

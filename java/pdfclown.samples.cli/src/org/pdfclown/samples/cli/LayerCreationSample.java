@@ -24,7 +24,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1
+  @version 0.1.1, 11/01/11
 */
 public class LayerCreationSample
   extends Sample
@@ -40,11 +40,8 @@ public class LayerCreationSample
     // 2. Content creation.
     populate(document);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Layer","inserting layers");
-
     // 3. PDF file serialization.
-    serialize(file,false);
+    serialize(file, false, "Layer", "inserting layers");
 
     return true;
   }

@@ -39,7 +39,7 @@ import org.pdfclown.util.parsers.ParseException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 11/01/11
 */
 final class OpenFontParser
 {
@@ -833,7 +833,7 @@ final class OpenFontParser
     fontData.seek(tableOffset + 4);
     metrics.italicAngle =
       fontData.readShort() // Fixed-point mantissa (16 bits).
-      + (float)fontData.readUnsignedShort() / 16384; // Fixed-point fraction (16 bits).
+      + fontData.readUnsignedShort() / 16384f; // Fixed-point fraction (16 bits).
     metrics.underlinePosition = fontData.readShort();
     metrics.underlineThickness = fontData.readShort();
     metrics.isFixedPitch = (fontData.readInt() != 0);

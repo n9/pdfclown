@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,8 @@ namespace org.pdfclown.documents.contents.objects
   */
   [PDF(VersionEnum.PDF12)]
   public sealed class SetExtGState
-    : Operation
+    : Operation,
+      IResourceReference<ExtGState>
   {
     #region static
     #region fields
@@ -59,19 +60,29 @@ namespace org.pdfclown.documents.contents.objects
     #region interface
     #region public
     /**
-      <summary>Gets the <see cref="ExtGState">graphics state parameters</see> resource to be set.</summary>
+      <summary>Gets the <see cref="ExtGState">graphics state parameters</see> resource to be set.
+      </summary>
       <param name="context">Content context.</param>
     */
     public ExtGState GetExtGState(
       IContentContext context
       )
+    {return GetResource(context);}
+
+    public override void Scan(
+      ContentScanner.GraphicsState state
+      )
+    {
+      ExtGState extGState = GetExtGState(state.Scanner.ContentContext);
+      extGState.ApplyTo(state);
+    }
+
+    #region IResourceReference
+    public ExtGState GetResource(
+      IContentContext context
+      )
     {return context.Resources.ExtGStates[Name];}
 
-    /**
-      <summary>Gets the name of the <see cref="ExtGState">graphics state parameters</see> resource to be set.</summary>
-      <seealso cref="GetExtGState(IContentContext)"/>
-      <seealso cref="ExtGStateResources"/>
-    */
     public PdfName Name
     {
       get
@@ -79,14 +90,7 @@ namespace org.pdfclown.documents.contents.objects
       set
       {operands[0] = value;}
     }
-
-    public override void Scan(
-      ContentScanner.GraphicsState state
-      )
-    {
-      ExtGState extGState = state.Scanner.ContentContext.Resources.ExtGStates[Name];
-      extGState.ApplyTo(state);
-    }
+    #endregion
     #endregion
     #endregion
     #endregion

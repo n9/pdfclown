@@ -158,9 +158,9 @@ namespace org.pdfclown.documents.interaction.forms
         return null;
 
       PdfDictionary dataObject = (PdfDictionary)reference.DataObject;
-      PdfName fieldType = (PdfName)dataObject[PdfName.FT];
-      PdfInteger fieldFlags = (PdfInteger)dataObject[PdfName.Ff];
-      FlagsEnum fieldFlagsValue = (FlagsEnum)(fieldFlags == null ? 0 : fieldFlags.RawValue);
+      PdfName fieldType = (PdfName)GetInheritableAttribute(dataObject, PdfName.FT);
+      PdfInteger fieldFlags = (PdfInteger)GetInheritableAttribute(dataObject, PdfName.Ff);
+      FlagsEnum fieldFlagsValue = (FlagsEnum)(fieldFlags == null ? 0 : fieldFlags.IntValue);
       if(fieldType.Equals(PdfName.Btn)) // Button.
       {
         if((fieldFlagsValue & FlagsEnum.Pushbutton) == FlagsEnum.Pushbutton) // Pushbutton.
@@ -183,6 +183,31 @@ namespace org.pdfclown.documents.interaction.forms
         return new SignatureField(reference);
       else // Unknown.
         throw new NotSupportedException("Unknown field type: " + fieldType);
+    }
+    #endregion
+
+    #region private
+    private static PdfDirectObject GetInheritableAttribute(
+      PdfDictionary dictionary,
+      PdfName key
+      )
+    {
+      /*
+        NOTE: It moves upwards until it finds the inherited attribute.
+      */
+      do
+      {
+        PdfDirectObject entry = dictionary[key];
+        if(entry != null)
+          return entry;
+
+        dictionary = (PdfDictionary)dictionary.Resolve(PdfName.Parent);
+      } while(dictionary != null);
+      // Default.
+      if(key.Equals(PdfName.Ff))
+        return new PdfInteger(0);
+      else
+        return null;
     }
     #endregion
     #endregion
@@ -323,7 +348,7 @@ namespace org.pdfclown.documents.interaction.forms
     public string Name
     {
       get
-      {return (string)((PdfTextString)BaseDataObject[PdfName.T]).Value;}
+      {return (string)((PdfTextString)GetInheritableAttribute(PdfName.T)).Value;} // NOTE: Despite the field name is not a canonical 'inheritable' attribute, sometimes it's not expressed at leaf level.
       set
       {BaseDataObject[PdfName.T] = new PdfTextString(value);}
     }
@@ -420,27 +445,7 @@ namespace org.pdfclown.documents.interaction.forms
     protected PdfDirectObject GetInheritableAttribute(
       PdfName key
       )
-    {
-      /*
-        NOTE: It moves upward until it finds the inherited attribute.
-      */
-      PdfDictionary dictionary = BaseDataObject;
-      while(true)
-      {
-        PdfDirectObject entry = dictionary[key];
-        if(entry != null)
-          return entry;
-
-        dictionary = (PdfDictionary)dictionary.Resolve(PdfName.Parent);
-        if(dictionary == null)
-        {
-          if(key.Equals(PdfName.Ff))
-            return new PdfInteger(0);
-
-          return null;
-        }
-      }
-    }
+    {return GetInheritableAttribute(BaseDataObject, key);}
     #endregion
     #endregion
     #endregion

@@ -317,7 +317,7 @@ namespace org.pdfclown.documents
       </remarks>
     */
     [PDF(VersionEnum.PDF11)]
-    public float Duration
+    public double Duration
     {
       get
       {
@@ -325,7 +325,7 @@ namespace org.pdfclown.documents
         return durationObject == null ? 0 : durationObject.RawValue;
       }
       set
-      {BaseDataObject[PdfName.Dur] = new PdfReal(value);}
+      {BaseDataObject[PdfName.Dur] = (value == 0 ? null : new PdfReal(value));}
     }
 
     /**
@@ -486,9 +486,7 @@ namespace org.pdfclown.documents
       get
       {
         PdfInteger rotationObject = (PdfInteger)GetInheritableAttribute(PdfName.Rotate);
-        return (rotationObject == null
-          ? RotationEnum.Downward
-          : RotationEnumExtension.Get(rotationObject));
+        return RotationEnumExtension.Get(rotationObject);
       }
       set
       {BaseDataObject[PdfName.Rotate] = new PdfInteger((int)value);}

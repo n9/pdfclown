@@ -25,6 +25,7 @@
 
 using org.pdfclown.files;
 using org.pdfclown.objects;
+using org.pdfclown.util;
 using org.pdfclown.util.math;
 
 using System;
@@ -147,7 +148,7 @@ namespace org.pdfclown.documents.contents.layers
     public StateEnum ExportState
     {
       get
-      {return StateEnumExtension.ToEnum((PdfName)GetUsageEntry<PdfDictionary>(PdfName.Export)[PdfName.ExportState]);}
+      {return StateEnumExtension.Get((PdfName)GetUsageEntry<PdfDictionary>(PdfName.Export)[PdfName.ExportState]);}
     }
 
     /**
@@ -235,7 +236,7 @@ namespace org.pdfclown.documents.contents.layers
     public StateEnum PrintState
     {
       get
-      {return StateEnumExtension.ToEnum((PdfName)GetUsageEntry<PdfDictionary>(PdfName.Print)[PdfName.PrintState]);}
+      {return StateEnumExtension.Get((PdfName)GetUsageEntry<PdfDictionary>(PdfName.Print)[PdfName.PrintState]);}
     }
 
     public override string ToString(
@@ -296,16 +297,16 @@ namespace org.pdfclown.documents.contents.layers
     /**
       <summary>Gets the range of magnifications at which the content in this layer is best viewed.</summary>
     */
-    public Interval<float> ZoomRange
+    public Interval<double> ZoomRange
     {
       get
       {
         PdfDictionary zoomDictionary = GetUsageEntry<PdfDictionary>(PdfName.Zoom);
         IPdfNumber minObject = (IPdfNumber)zoomDictionary.Resolve(PdfName.min);
         IPdfNumber maxObject = (IPdfNumber)zoomDictionary.Resolve(PdfName.max);
-        return new Interval<float>(
-          minObject != null ? minObject.RawValue : 0f,
-          maxObject != null ? maxObject.RawValue : float.PositiveInfinity
+        return new Interval<double>(
+          minObject != null ? minObject.RawValue : 0,
+          maxObject != null ? maxObject.RawValue : double.PositiveInfinity
           );
       }
     }
@@ -425,31 +426,32 @@ namespace org.pdfclown.documents.contents.layers
 
   internal static class StateEnumExtension
   {
-    public static PdfName GetName(
-      this Layer.StateEnum state
-      )
+    private static readonly BiDictionary<Layer.StateEnum,PdfName> codes;
+
+    static StateEnumExtension()
     {
-      switch(state)
-      {
-        case Layer.StateEnum.On:
-          return PdfName.ON;
-        case Layer.StateEnum.Off:
-          return PdfName.OFF;
-        default:
-          throw new NotImplementedException();
-      }
+      codes = new BiDictionary<Layer.StateEnum,PdfName>();
+      codes[Layer.StateEnum.On] = PdfName.ON;
+      codes[Layer.StateEnum.Off] = PdfName.OFF;
     }
 
-    public static Layer.StateEnum ToEnum(
+    public static Layer.StateEnum Get(
       PdfName name
       )
     {
-      if(name == null || name.Equals(PdfName.ON))
+      if(name == null)
         return Layer.StateEnum.On;
-      else if(name.Equals(PdfName.OFF))
-        return Layer.StateEnum.Off;
-      else
+
+      Layer.StateEnum? state = codes.GetKey(name);
+      if(!state.HasValue)
         throw new NotSupportedException("State unknown: " + name);
+
+      return state.Value;
     }
+
+    public static PdfName GetName(
+      this Layer.StateEnum state
+      )
+    {return codes[state];}
   }
 }

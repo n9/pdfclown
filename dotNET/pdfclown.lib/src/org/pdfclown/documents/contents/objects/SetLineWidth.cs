@@ -46,7 +46,7 @@ namespace org.pdfclown.documents.contents.objects
     #region dynamic
     #region constructors
     public SetLineWidth(
-      float value
+      double value
       ) : base(OperatorKeyword, new PdfReal(value))
     {}
 
@@ -63,7 +63,7 @@ namespace org.pdfclown.documents.contents.objects
       )
     {state.LineWidth = Value;}
 
-    public float Value
+    public double Value
     {
       get
       {return ((IPdfNumber)operands[0]).RawValue;}

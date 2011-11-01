@@ -42,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
@@ -519,32 +519,21 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
     )
   {
     PdfDictionary node = (PdfDictionary)nodeReference.getDataObject();
-    File.ResolvedObject<PdfArray> kidsObject = File.resolve(
-      node.get(PdfName.Kids),
-      nodeReference
-      );
+    PdfArray kidsObject = (PdfArray)node.resolve(PdfName.Kids);
     if(kidsObject == null) // Leaf node.
     {
-      File.ResolvedObject<PdfArray> namesObject = File.resolve(
-        node.get(PdfName.Names),
-        nodeReference
-        );
+      PdfArray namesObject = (PdfArray)node.resolve(PdfName.Names);
       for(
         int index = 0,
-          length = namesObject.dataObject.size();
+          length = namesObject.size();
         index < length;
         index += 2
         )
-      {
-        filler.add(
-          namesObject.dataObject,
-          index
-          );
-      }
+      {filler.add(namesObject,index);}
     }
     else // Intermediate node.
     {
-      for(PdfDirectObject kidObject : kidsObject.dataObject)
+      for(PdfDirectObject kidObject : kidsObject)
       {fill(filler,(PdfReference)kidObject);}
     }
   }

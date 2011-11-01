@@ -68,9 +68,34 @@ namespace org.pdfclown.documents.interaction.forms
       }
       set
       {
-        PdfName baseValue = (value ? PdfName.Yes : PdfName.Off);
+        PdfDictionary widgetDictionary = Widgets[0].BaseDataObject;
+        /*
+          NOTE: The appearance for the off state is optional but, if present, MUST be stored in the
+          appearance dictionary under the name Off. The recommended (but NOT required) name for the
+          on state is Yes.
+        */
+        PdfName baseValue = null;
+        if(value)
+        {
+          PdfDictionary appearanceDictionary = (PdfDictionary)widgetDictionary.Resolve(PdfName.AP);
+          if(appearanceDictionary != null)
+          {
+            foreach(PdfName appearanceKey in ((PdfDictionary)appearanceDictionary.Resolve(PdfName.N)).Keys)
+            {
+              if(!appearanceKey.Equals(PdfName.Off))
+              {
+                baseValue = appearanceKey;
+                break;
+              }
+            }
+          }
+          else
+          {baseValue = PdfName.Yes;}
+        }
+        else
+        {baseValue = PdfName.Off;}
         BaseDataObject[PdfName.V] = baseValue;
-        Widgets[0].BaseDataObject[PdfName.AS] = baseValue;
+        widgetDictionary[PdfName.AS] = baseValue;
       }
     }
 
@@ -84,7 +109,7 @@ namespace org.pdfclown.documents.interaction.forms
       get
       {return base.Value;}
       set
-      {Checked = !(value == null || value.Equals(PdfName.Off.Value));}
+      {Checked = !(value == null || value.Equals(String.Empty) || value.Equals(PdfName.Off.Value));}
     }
     #endregion
     #endregion

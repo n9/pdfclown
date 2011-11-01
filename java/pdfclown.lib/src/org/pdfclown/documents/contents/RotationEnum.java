@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public enum RotationEnum
 {
@@ -65,10 +65,13 @@ public enum RotationEnum
   /**
     Gets the direction corresponding to the given value.
   */
-  public static RotationEnum get(
+  public static RotationEnum valueOf(
     PdfInteger value
     )
   {
+    if(value == null)
+      return RotationEnum.Downward;
+
     int normalizedValue = (Math.round(value.getRawValue() / 90) % 4) * 90;
     if(normalizedValue < 0)
     {normalizedValue += 360 * Math.ceil(-normalizedValue / 360d);}

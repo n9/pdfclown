@@ -33,27 +33,6 @@ namespace org.pdfclown.samples.cli
     #endregion
 
     #region protected
-    protected void BuildAccessories(
-      Document document,
-      string title,
-      string subject
-      )
-    {
-      // Viewer preferences.
-      ViewerPreferences view = new ViewerPreferences(document); // Instantiates viewer preferences inside the document context.
-      document.ViewerPreferences = view; // Assigns the viewer preferences object to the viewer preferences function.
-      view.DisplayDocTitle = true;
-
-      // Document metadata.
-      Information info = new Information(document);
-      document.Information = info;
-      info.Author = "Stefano Chizzolini";
-      info.CreationDate = DateTime.Now;
-      info.Creator = GetType().FullName;
-      info.Title = "PDF Clown - " + title + " sample";
-      info.Subject = "Sample about " + subject + " using PDF Clown";
-    }
-
     protected string GetIndentation(
       int level
       )
@@ -230,27 +209,47 @@ namespace org.pdfclown.samples.cli
       files::File file,
       bool chooseMode
       )
-    {Serialize(file, GetType().Name, chooseMode);}
+    {Serialize(file, chooseMode, null, null);}
+
+    /**
+      <summary>Serializes the given PDF Clown file object.</summary>
+      <param name="file">File to serialize.</param>
+      <param name="chooseMode">Whether to allow user choice of serialization mode.</param>
+      <param name="title">Document title.</param>
+      <param name="subject">Document subject.</param>
+    */
+    protected void Serialize(
+      files::File file,
+      bool chooseMode,
+      string title,
+      string subject
+      )
+    {Serialize(file, GetType().Name, chooseMode, title, subject);}
 
     /**
       <summary>Serializes the given PDF Clown file object.</summary>
       <param name="file">File to serialize.</param>
       <param name="fileName">Output file name.</param>
       <param name="chooseMode">Whether to allow user choice of serialization mode.</param>
+      <param name="title">Document title.</param>
+      <param name="subject">Document subject.</param>
     */
     protected void Serialize(
       files::File file,
       string fileName,
-      bool chooseMode
+      bool chooseMode,
+      string title,
+      string subject
       )
     {
+      ApplyDocumentSettings(file.Document, title, subject);
+
       Console.WriteLine();
       files::SerializationModeEnum serializationMode = files::SerializationModeEnum.Incremental;
       if(chooseMode)
       {
         Console.WriteLine("[0] Standard serialization");
         Console.WriteLine("[1] Incremental update");
-        // Get the user's choice.
         Console.Write("Please select a serialization mode: ");
         try
         {serializationMode = (files::SerializationModeEnum)Int32.Parse(Console.ReadLine());}
@@ -261,33 +260,17 @@ namespace org.pdfclown.samples.cli
       string outputFilePath = outputPath + fileName + "." + serializationMode + ".pdf";
 
       // Save the file!
+      /*
+        NOTE: You can also save to a generic target stream (see Save() method overloads).
+      */
       try
-      {
-        file.Save(
-          outputFilePath,
-          serializationMode
-          );
-      }
+      {file.Save(outputFilePath, serializationMode);}
       catch(Exception e)
       {
         Console.WriteLine("File writing failed: " + e.Message);
         Console.WriteLine(e.StackTrace);
       }
 
-// Alternatively, defining an appropriate target stream:
-/*
-      FileStream outputStream = new System.IO.FileStream(
-        outputFilePath,
-        System.IO.FileMode.Create,
-        System.IO.FileAccess.Write
-        );
-      file.Save(
-        new bytes::Stream(outputStream),
-        serializationMode
-        );
-      outputStream.Flush();
-      outputStream.Close();
-*/
       Console.WriteLine("\nOutput: "+ outputFilePath);
     }
     #endregion
@@ -300,6 +283,32 @@ namespace org.pdfclown.samples.cli
     {
       this.inputPath = inputPath;
       this.outputPath = outputPath;
+    }
+    #endregion
+
+    #region private
+    private void ApplyDocumentSettings(
+      Document document,
+      string title,
+      string subject
+      )
+    {
+      if(title == null)
+        return;
+
+      // Viewer preferences.
+      ViewerPreferences view = new ViewerPreferences(document); // Instantiates viewer preferences inside the document context.
+      document.ViewerPreferences = view; // Assigns the viewer preferences object to the viewer preferences function.
+      view.DisplayDocTitle = true;
+
+      // Document metadata.
+      Information info = new Information(document);
+      document.Information = info;
+      info.Author = "Stefano Chizzolini";
+      info.CreationDate = DateTime.Now;
+      info.Creator = GetType().FullName;
+      info.Title = "PDF Clown - " + title + " sample";
+      info.Subject = "Sample about " + subject + " using PDF Clown";
     }
     #endregion
     #endregion

@@ -92,12 +92,6 @@ namespace org.pdfclown.objects
       )
     {return this;} // NOTE: Simple objects are immutable.
 
-    public sealed override PdfIndirectObject Container
-    {
-      get
-      {return null;} // NOTE: As simple objects are immutable, no container can be associated.
-    }
-
     public override bool Equals(
       object obj
       )
@@ -130,12 +124,6 @@ namespace org.pdfclown.objects
       {this.value = value;}
     }
 
-    public sealed override PdfIndirectObject Root
-    {
-      get
-      {return null;} // NOTE: As simple objects are immutable, no root can be associated.
-    }
-
     public override string ToString(
       )
     {return Value.ToString();}
@@ -145,6 +133,14 @@ namespace org.pdfclown.objects
       get
       {return false;} // NOTE: Simple objects are immutable.
       set
+      {/* NOOP: As simple objects are immutable, no update can be done. */}
+    }
+
+    public sealed override bool Updated
+    {
+      get
+      {return false;} // NOTE: Simple objects are immutable.
+      protected internal set
       {/* NOOP: As simple objects are immutable, no update can be done. */}
     }
 
@@ -161,14 +157,6 @@ namespace org.pdfclown.objects
     #endregion
 
     #region protected
-    protected internal sealed override bool Updated
-    {
-      get
-      {return false;} // NOTE: Simple objects are immutable.
-      set
-      {/* NOOP: As simple objects are immutable, no update can be done. */}
-    }
-    
     protected internal override bool Virtual
     {
       get

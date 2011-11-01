@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,7 +28,6 @@ package org.pdfclown.documents.contents.objects;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.contents.IContentContext;
-import org.pdfclown.documents.contents.ShadingResources;
 import org.pdfclown.objects.PdfName;
 
 /**
@@ -36,11 +35,12 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF13)
 public final class Shading
   extends GraphicsObject
+  implements IResourceReference<org.pdfclown.documents.contents.colorSpaces.Shading<?>>
 {
   // <class>
   // <static>
@@ -60,26 +60,31 @@ public final class Shading
 
   // <interface>
   // <public>
-  /**
-    Gets the {@link org.pdfclown.documents.contents.colorSpaces.Shading shading} resource name.
-
-    @see #getResource(IContentContext)
-    @see ShadingResources
-  */
+  // <IResourceReference>
+  @Override
   public PdfName getName(
     )
-  {return ((PaintShading)getObjects().get(0)).getName();}
+  {return getOperation().getName();}
 
-  /**
-    Gets the {@link org.pdfclown.documents.contents.colorSpaces.Shading shading} resource.
-
-    @param context Content context.
-  */
+  @Override
   public org.pdfclown.documents.contents.colorSpaces.Shading<?> getResource(
     IContentContext context
     )
-  {return ((PaintShading)getObjects().get(0)).getShading(context);}
+  {return getOperation().getResource(context);}
+
+  @Override
+  public void setName(
+    PdfName value
+    )
+  {getOperation().setName(value);}
+  // </IResourceReference>
   // </public>
+
+  // <private>
+  private PaintShading getOperation(
+    )
+  {return (PaintShading)getObjects().get(0);}
+  // </private>
   // </interface>
   // </dynamic>
   // </class>

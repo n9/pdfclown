@@ -43,7 +43,7 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 //TODO: define as IContentContext?
 @PDF(VersionEnum.PDF12)
@@ -238,14 +238,14 @@ public class TilingPattern
   /**
     Gets the horizontal spacing between pattern cells (expressed in the pattern coordinate system).
   */
-  public float getXStep(
+  public double getXStep(
     )
   {return ((PdfNumber<?>)getBaseDataObject().getHeader().get(PdfName.XStep)).getNumberValue();}
 
   /**
     Gets the vertical spacing between pattern cells (expressed in the pattern coordinate system).
   */
-  public float getYStep(
+  public double getYStep(
     )
   {return ((PdfNumber<?>)getBaseDataObject().getHeader().get(PdfName.YStep)).getNumberValue();}
   // </public>

@@ -37,7 +37,7 @@ namespace org.pdfclown.documents.contents.fonts
   /**
     <summary>Character map [PDF:1.6:5.6.4].</summary>
   */
-  sealed class CMap
+  internal sealed class CMap
   {
     #region static
     #region interface

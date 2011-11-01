@@ -40,12 +40,12 @@ import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.Interval;
 
 /**
-  <b>Stitching function</b> producing a single new 1-input function from the combination
-  of the subdomains of {@link #getFunctions() several 1-input functions} [PDF:1.6:3.9.3].
+  Stitching function producing a single new 1-input function from the combination of the subdomains
+  of {@link #getFunctions() several 1-input functions} [PDF:1.6:3.9.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF13)
 public final class Type3Function
@@ -65,8 +65,8 @@ public final class Type3Function
   // <interface>
   // <public>
   @Override
-  public float[] calculate(
-    float[] inputs
+  public double[] calculate(
+    double[] inputs
     )
   {
     // FIXME: Auto-generated method stub
@@ -83,10 +83,10 @@ public final class Type3Function
     Gets the <b>{@link Function#getDomains() domain} partition bounds</b> whose resulting intervals are respectively applied
     to each {@link #getFunctions() function}.
   */
-  public List<Float> getDomainBounds(
+  public List<Double> getDomainBounds(
     )
   {
-    List<Float> domainBounds = new ArrayList<Float>();
+    List<Double> domainBounds = new ArrayList<Double>();
     {
       PdfArray domainBoundsObject = (PdfArray)getDictionary().resolve(PdfName.Bounds);
       for(PdfDirectObject domainBoundObject : domainBoundsObject)
@@ -99,7 +99,7 @@ public final class Type3Function
     Gets the mapping of each {@link #getDomainBounds() subdomain} into the domain of the corresponding
     {@link #getFunctions() function}.
   */
-  public List<Interval<Float>> getDomainEncodes(
+  public List<Interval<Double>> getDomainEncodes(
     )
   {return getIntervals(PdfName.Encode, null);}
 

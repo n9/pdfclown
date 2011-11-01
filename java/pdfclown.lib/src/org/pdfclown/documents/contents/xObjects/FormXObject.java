@@ -54,7 +54,7 @@ import org.pdfclown.util.math.geom.Dimension;
   Form external object [PDF:1.6:4.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/28/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class FormXObject
@@ -94,7 +94,7 @@ public final class FormXObject
   }
 
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public FormXObject(
     PdfDirectObject baseObject

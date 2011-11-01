@@ -35,7 +35,7 @@ import org.pdfclown.util.parsers.ParseException;
   PDF date object [PDF:1.6:3.8.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 11/01/11
 */
 public final class PdfDate
   extends PdfString
@@ -62,15 +62,17 @@ public final class PdfDate
   {return value == null ? null : new PdfDate(value);}
 
   /**
-    Converts a PDF-formatted date value to a date value.
+    Converts a PDF date literal into its corresponding date.
 
-    @throws ParseException
+    @throws ParseException Thrown when date literal parsing fails.
   */
   public static Date toDate(
     String value
     ) throws ParseException
   {
+    // 1. Normalization.
     StringBuilder dateBuilder = new StringBuilder();
+    try
     {
       int length = value.length();
       // Year (YYYY).
@@ -92,10 +94,14 @@ public final class PdfDate
       // UT Minute offset (mm').
       dateBuilder.append(length < 22 ? "00" : value.substring(20, 22));
     }
+    catch(Exception exception)
+    {throw new ParseException("Failed to normalize the date string.", exception);}
+
+    // 2. Parsing.
     try
     {return formatter.parse(dateBuilder.toString());}
-    catch(java.text.ParseException e)
-    {throw new ParseException(e);}
+    catch(Exception exception)
+    {throw new ParseException("Failed to parse the date string.", exception);}
   }
   // </public>
   // </interface>

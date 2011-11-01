@@ -22,20 +22,16 @@ namespace org.pdfclown.samples.cli
     public override bool Run(
       )
     {
+      // 1. Opening the PDF file...
       string filePath = PromptPdfFileChoice("Please select a PDF file");
-
-      // 1. Open the PDF file!
       files::File file = new files::File(filePath);
       Document document = file.Document;
 
       // 2. Replace the images!
       ReplaceImages(document);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Image substitution","substituting a document's images");
-
       // 3. Serialize the PDF file!
-      Serialize(file);
+      Serialize(file, true, "Image substitution", "substituting a document's images");
 
       return true;
     }

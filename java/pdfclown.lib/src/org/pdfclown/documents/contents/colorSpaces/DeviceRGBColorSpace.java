@@ -40,7 +40,7 @@ import org.pdfclown.util.NotImplementedException;
   Device Red-Green-Blue color space [PDF:1.6:4.5.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public final class DeviceRGBColorSpace
@@ -102,9 +102,9 @@ public final class DeviceRGBColorSpace
   {
     DeviceRGBColor spaceColor = (DeviceRGBColor)color;
     return new java.awt.Color(
-      spaceColor.getR(),
-      spaceColor.getG(),
-      spaceColor.getB()
+      (float)spaceColor.getR(),
+      (float)spaceColor.getG(),
+      (float)spaceColor.getB()
       );
   }
   // </public>

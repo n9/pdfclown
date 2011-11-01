@@ -28,6 +28,8 @@ package org.pdfclown.files;
 import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Random;
 
 import org.pdfclown.Version;
@@ -41,7 +43,6 @@ import org.pdfclown.documents.Document.Configuration.XRefModeEnum;
 import org.pdfclown.objects.IPdfIndirectObject;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
-import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfReference;
@@ -49,31 +50,73 @@ import org.pdfclown.tokens.Reader;
 import org.pdfclown.tokens.Reader.FileInfo;
 import org.pdfclown.tokens.Writer;
 import org.pdfclown.util.NotImplementedException;
+import org.pdfclown.util.StringUtils;
 
 /**
   PDF file representation.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 11/01/11
 */
 public final class File
   implements Closeable
 {
   // <class>
   // <classes>
-  public static final class ResolvedObject<T extends PdfDataObject>
-  {
-    public final T dataObject;
-    public final PdfIndirectObject container;
+  /**
+    File configuration.
 
-    private ResolvedObject(
-      T dataObject,
-      PdfIndirectObject container
+    @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+    @since 0.1.1
+  */
+  public static final class Configuration
+  {
+    private DecimalFormat realFormat;
+
+    private final File file;
+
+    Configuration(
+      File file
+      )
+    {this.file = file;}
+
+    /**
+      Gets the file associated with this configuration.
+    */
+    public File getFile()
+    {return file;}
+
+    /**
+      Gets the format applied to real number serialization.
+    */
+    public DecimalFormat getRealFormat(
       )
     {
-      this.dataObject = dataObject;
-      this.container = container;
+      if(realFormat == null)
+      {setRealFormat(5);}
+      return realFormat;
+    }
+
+    /**
+      @see #getRealFormat()
+    */
+    public void setRealFormat(
+      DecimalFormat value
+      )
+    {realFormat = value;}
+
+    /**
+      @see #getRealFormat()
+      @param decimalPlacesCount Number of digits in decimal places.
+    */
+    public void setRealFormat(
+      int decimalPlacesCount
+      )
+    {
+      DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+      symbols.setDecimalSeparator('.');
+      setRealFormat(new DecimalFormat("0." + StringUtils.repeat("#", decimalPlacesCount), symbols));
     }
   }
   // </classes>
@@ -86,36 +129,15 @@ public final class File
   // <interface>
   // <public>
   /**
-    Forces a generic object to be expressed as its corresponding data object.
+    Ensures an indirect reference to be resolved into its corresponding data object.
   */
   public static PdfDataObject resolve(
     PdfObject object
     )
   {
-    if(object instanceof IPdfIndirectObject)
-      return ((IPdfIndirectObject)object).getDataObject();
-    else
-      return (PdfDataObject)object;
-  }
-
-  /**
-    Resolves a generic object.
-  */
-  @SuppressWarnings("unchecked")
-  public static <T extends PdfDataObject> ResolvedObject<T> resolve(
-    PdfObject object,
-    IPdfIndirectObject container
-    )
-  {
-    if(object == null)
-      return null;
-    else if(object instanceof IPdfIndirectObject)
-    {
-      IPdfIndirectObject indirectObject = (IPdfIndirectObject)object;
-      return new ResolvedObject<T>((T)indirectObject.getDataObject(),indirectObject.getIndirectObject());
-    }
-    else
-      return new ResolvedObject<T>((T)object,container.getIndirectObject());
+    return object instanceof IPdfIndirectObject
+      ? ((IPdfIndirectObject)object).getDataObject()
+      : (PdfDataObject)object;
   }
   // </public>
   // </interface>
@@ -123,6 +145,7 @@ public final class File
 
   // <dynamic>
   // <fields>
+  private final Configuration configuration = new Configuration(this);
   private final Document document;
   private final int hashCode = hashCodeGenerator.nextInt();
   private final IndirectObjects indirectObjects;
@@ -174,6 +197,13 @@ public final class File
 
   // <interface>
   // <public>
+  /**
+    Gets the file configuration.
+  */
+  public Configuration getConfiguration(
+    )
+  {return configuration;}
+
   /**
     Gets the high-level representation of the file content.
   */
@@ -229,7 +259,8 @@ public final class File
   {return indirectObjects.add(object).getReference();}
 
   /**
-    Serializes the file to the current file-system path using the {@link SerializationModeEnum#Standard standard serialization mode}.
+    Serializes the file to the current file-system path using the {@link
+    SerializationModeEnum#Standard standard serialization mode}.
   */
   public void save(
     ) throws IOException
@@ -248,10 +279,9 @@ public final class File
       throw new FileNotFoundException("No valid source path available.");
 
     /*
-      NOTE: The document file cannot be directly overwritten
-      as it's locked for reading by the open stream;
-      its update is therefore delayed to its disposal,
-      when the temporary file will overwrite it (see close() method).
+      NOTE: The document file cannot be directly overwritten as it's locked for reading by the open 
+      stream; its update is therefore delayed to its disposal, when the temporary file will overwrite
+      it (see close() method).
     */
     save(getTempPath(), mode);
   }
@@ -346,8 +376,7 @@ public final class File
       reader = null;
 
       /*
-        NOTE: If the temporary file exists (see save() method),
-        it must overwrite the document file.
+        NOTE: If the temporary file exists (see save() method), it must overwrite the document file.
       */
       java.io.File sourceFile = new java.io.File(getTempPath());
       if(sourceFile.exists())

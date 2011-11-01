@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,6 +32,7 @@ import java.util.List;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
 import org.pdfclown.tokens.Encoding;
 import org.pdfclown.tokens.Symbol;
@@ -41,7 +42,7 @@ import org.pdfclown.tokens.Symbol;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class LocalGraphicsState
@@ -97,11 +98,12 @@ public final class LocalGraphicsState
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    Document context
     )
   {
     stream.write(BeginChunk);
-    super.writeTo(stream);
+    super.writeTo(stream, context);
     stream.write(EndChunk);
   }
   // </public>

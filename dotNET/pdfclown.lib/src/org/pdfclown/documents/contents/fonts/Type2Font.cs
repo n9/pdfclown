@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,8 +30,8 @@ using System.Collections.Generic;
 namespace org.pdfclown.documents.contents.fonts
 {
   /**
-    <summary>Composite font associated to a Type 2 CIDFont [PDF:1.6:5.6.3],
-  containing glyph descriptions based on the TrueType font format.</summary>
+    <summary>Composite font associated to a Type 2 CIDFont, containing glyph descriptions based on
+    the TrueType font format [PDF:1.6:5.6.3].</summary>
   */
   /*
     NOTE: Type 0 CIDFonts encompass several formats:

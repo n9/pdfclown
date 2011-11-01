@@ -243,7 +243,7 @@ namespace org.pdfclown.documents.contents.layers
     public override VisibilityPolicyEnum VisibilityPolicy
     {
       get
-      {return VisibilityPolicyEnumExtension.ToEnum((PdfName)BaseDataObject[PdfName.P]);}
+      {return VisibilityPolicyEnumExtension.Get((PdfName)BaseDataObject[PdfName.P]);}
       set
       {BaseDataObject[PdfName.P] = value.GetName();}
     }

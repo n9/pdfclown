@@ -99,12 +99,12 @@ namespace org.pdfclown.documents.contents.xObjects
           return new Matrix();
         else
           return new Matrix(
-            ((IPdfNumber)matrix[0]).RawValue,
-            ((IPdfNumber)matrix[1]).RawValue,
-            ((IPdfNumber)matrix[2]).RawValue,
-            ((IPdfNumber)matrix[3]).RawValue,
-            ((IPdfNumber)matrix[4]).RawValue,
-            ((IPdfNumber)matrix[5]).RawValue
+            ((IPdfNumber)matrix[0]).FloatValue,
+            ((IPdfNumber)matrix[1]).FloatValue,
+            ((IPdfNumber)matrix[2]).FloatValue,
+            ((IPdfNumber)matrix[3]).FloatValue,
+            ((IPdfNumber)matrix[4]).FloatValue,
+            ((IPdfNumber)matrix[5]).FloatValue
             );
       }
     }
@@ -115,8 +115,8 @@ namespace org.pdfclown.documents.contents.xObjects
       {
         PdfArray box = (PdfArray)BaseDataObject.Header.Resolve(PdfName.BBox);
         return new drawing::SizeF(
-          ((IPdfNumber)box[2]).RawValue,
-          ((IPdfNumber)box[3]).RawValue
+          ((IPdfNumber)box[2]).FloatValue,
+          ((IPdfNumber)box[3]).FloatValue
           );
       }
       set

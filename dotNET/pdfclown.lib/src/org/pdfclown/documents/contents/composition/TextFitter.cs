@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -37,24 +37,24 @@ namespace org.pdfclown.documents.contents.composition
   {
     #region dynamic
     #region fields
-    private Font font;
-    private float fontSize;
-    private bool hyphenation;
-    private string text;
-    private float width;
+    private readonly Font font;
+    private readonly double fontSize;
+    private readonly bool hyphenation;
+    private readonly string text;
+    private double width;
 
     private int beginIndex = 0;
     private int endIndex = -1;
     private string fittedText;
-    private float fittedWidth;
+    private double fittedWidth;
     #endregion
 
     #region constructors
     internal TextFitter(
       string text,
-      float width,
+      double width,
       Font font,
-      float fontSize,
+      double fontSize,
       bool hyphenation
       )
     {
@@ -89,7 +89,7 @@ namespace org.pdfclown.documents.contents.composition
     */
     public bool Fit(
       int index,
-      float width
+      double width
       )
     {
       beginIndex = index;
@@ -134,7 +134,7 @@ namespace org.pdfclown.documents.contents.composition
           // Get the limit of the current word!
           int wordEndIndex = matchGroup.Index + matchGroup.Length;
           // Add the current word!
-          float wordWidth = font.GetKernedWidth(
+          double wordWidth = font.GetKernedWidth(
             matchGroup.Value,
             fontSize
             ); // Current word's width.
@@ -205,7 +205,7 @@ endFitting:
     /**
       <summary>Gets the fitted text's width.</summary>
     */
-    public float FittedWidth
+    public double FittedWidth
     {
       get
       {return fittedWidth;}
@@ -223,7 +223,7 @@ endFitting:
     /**
       <summary>Gets the size of the font used to fit the text.</summary>
     */
-    public float FontSize
+    public double FontSize
     {
       get
       {return fontSize;}
@@ -250,7 +250,7 @@ endFitting:
     /**
       <summary>Gets the available width.</summary>
     */
-    public float Width
+    public double Width
     {
       get
       {return width;}
@@ -261,7 +261,7 @@ endFitting:
     private  void Hyphenate(
       ref int index,
       ref int wordEndIndex,
-      float wordWidth,
+      double wordWidth,
       out string hyphen
       )
     {

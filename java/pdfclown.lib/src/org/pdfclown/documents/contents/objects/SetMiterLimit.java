@@ -39,7 +39,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class SetMiterLimit
@@ -55,7 +55,7 @@ public final class SetMiterLimit
   // <dynamic>
   // <constructors>
   public SetMiterLimit(
-    float value
+    double value
     )
   {super(Operator, new PdfReal(value));}
 
@@ -67,7 +67,7 @@ public final class SetMiterLimit
 
   // <interface>
   // <public>
-  public float getValue(
+  public double getValue(
     )
   {return ((PdfNumber<?>)operands.get(0)).getNumberValue();}
 
@@ -78,7 +78,7 @@ public final class SetMiterLimit
   {state.setMiterLimit(getValue());}
 
   public void setValue(
-    float value
+    double value
     )
   {operands.set(0, new PdfReal(value));}
   // </public>

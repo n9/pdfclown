@@ -34,11 +34,11 @@ namespace org.pdfclown.objects
   /**
     <summary>PDF rectangle object [PDF:1.6:3.8.4].</summary>
     <remarks>
-      <para>Rectangles are described by two diagonally-opposite corners. Corner pairs which don't respect
-      the canonical form (lower-left and upper-right) are automatically normalized to provide a consistent
-      representation.</para>
-      <para>Coordinates are expressed within the PDF coordinate space (lower-left origin and positively-oriented
-      axes).</para>
+      <para>Rectangles are described by two diagonally-opposite corners. Corner pairs which don't
+      respect the canonical form (lower-left and upper-right) are automatically normalized to
+      provide a consistent representation.</para>
+      <para>Coordinates are expressed within the PDF coordinate space (lower-left origin and
+      positively-oriented axes).</para>
     </remarks>
   */
   public sealed class Rectangle
@@ -118,7 +118,7 @@ namespace org.pdfclown.objects
 
     #region interface
     #region public
-    public float Bottom
+    public double Bottom
     {
       get
       {return ((IPdfNumber)BaseDataObject[1]).RawValue;}
@@ -131,7 +131,7 @@ namespace org.pdfclown.objects
       )
     {throw new NotImplementedException();}
 
-    public float Height
+    public double Height
     {
       get
       {return (Top - Bottom);}
@@ -139,7 +139,7 @@ namespace org.pdfclown.objects
       {Bottom = Top - value;}
     }
 
-    public float Left
+    public double Left
     {
       get
       {return ((IPdfNumber)BaseDataObject[0]).RawValue;}
@@ -147,7 +147,7 @@ namespace org.pdfclown.objects
       {BaseDataObject[0] = new PdfReal(value);}
     }
 
-    public float Right
+    public double Right
     {
       get
       {return ((IPdfNumber)BaseDataObject[2]).RawValue;}
@@ -155,7 +155,7 @@ namespace org.pdfclown.objects
       {BaseDataObject[2] = new PdfReal(value);}
     }
 
-    public float Top
+    public double Top
     {
       get
       {return ((IPdfNumber)BaseDataObject[3]).RawValue;}
@@ -165,9 +165,9 @@ namespace org.pdfclown.objects
 
     public RectangleF ToRectangleF(
       )
-    {return new RectangleF(X, Y, Width, Height);}
+    {return new RectangleF((float)X, (float)Y, (float)Width, (float)Height);}
 
-    public float Width
+    public double Width
     {
       get
       {return Right - Left;}
@@ -175,7 +175,7 @@ namespace org.pdfclown.objects
       {Right = Left + value;}
     }
 
-    public float X
+    public double X
     {
       get
       {return Left;}
@@ -183,7 +183,7 @@ namespace org.pdfclown.objects
       {Left = value;}
     }
 
-    public float Y
+    public double Y
     {
       get
       {return Bottom;}

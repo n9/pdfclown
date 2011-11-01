@@ -50,7 +50,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     /**
       <summary>Gets the gamma of this color space.</summary>
     */
-    public abstract float[] Gamma
+    public abstract double[] Gamma
     {
       get;
     }

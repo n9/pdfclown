@@ -54,7 +54,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
       Document context,
       int pageIndex,
       ModeEnum mode,
-      float?[] viewParams
+      double?[] viewParams
       ) : base(
         context,
         new PdfInteger(pageIndex),

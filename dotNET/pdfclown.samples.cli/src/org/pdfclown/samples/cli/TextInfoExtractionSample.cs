@@ -21,18 +21,17 @@ namespace org.pdfclown.samples.cli
   {
     private DeviceRGBColor[] textCharBoxColors = new DeviceRGBColor[]
       {
-        new DeviceRGBColor(200f/255,100f/255,100f/255),
-        new DeviceRGBColor(100f/255,200f/255,100f/255),
-        new DeviceRGBColor(100f/255,100f/255,200f/255)
+        new DeviceRGBColor(200 / 255, 100 / 255, 100 / 255),
+        new DeviceRGBColor(100 / 255, 200 / 255, 100 / 255),
+        new DeviceRGBColor(100 / 255, 100 / 255, 200 / 255)
       };
     private DeviceRGBColor textStringBoxColor = DeviceRGBColor.Black;
 
     public override bool Run(
       )
     {
+      // 1. Opening the PDF file...
       string filePath = PromptPdfFileChoice("Please select a PDF file");
-
-      // 1. Open the PDF file!
       File file = new File(filePath);
       Document document = file.Document;
 

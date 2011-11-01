@@ -1,5 +1,8 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.composition.AlignmentXEnum;
@@ -10,9 +13,6 @@ import org.pdfclown.documents.contents.entities.Image;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.files.File;
 
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Rectangle2D;
-
 /**
   This sample demonstrates <b>how to embed an image object</b> within a PDF content stream.
   <h3>Remarks</h3>
@@ -21,7 +21,7 @@ import java.awt.geom.Rectangle2D;
   (XObject); its main advantage is to allow content reuse.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class InlineObjectSample
   extends Sample
@@ -39,12 +39,9 @@ public class InlineObjectSample
     // 2. Content creation.
     populate(document);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Inline image","embedding an image within a content stream");
-
     // 3. Serialize the PDF file!
-    serialize(file,false);
-    
+    serialize(file, false, "Inline image", "embedding an image within a content stream");
+
     return true;
   }
 

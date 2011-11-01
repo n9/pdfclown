@@ -39,7 +39,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class SetTextScale
@@ -55,7 +55,7 @@ public final class SetTextScale
   // <dynamic>
   // <constructors>
   public SetTextScale(
-    float value
+    double value
     )
   {super(Operator, new PdfReal(value));}
 
@@ -70,7 +70,7 @@ public final class SetTextScale
   /**
     Gets the horizontal scale expressed as a percentage of the normal width (100).
   */
-  public float getValue(
+  public double getValue(
     )
   {return ((PdfNumber<?>)operands.get(0)).getNumberValue();}
 
@@ -81,7 +81,7 @@ public final class SetTextScale
   {state.setScale(getValue());}
 
   public void setValue(
-    float value
+    double value
     )
   {operands.set(0, new PdfReal(value));}
   // </public>

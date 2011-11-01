@@ -13,7 +13,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 public class PageTransitionSample
   extends Sample
@@ -26,7 +26,6 @@ public class PageTransitionSample
     File file;
     {
       String filePath = promptPdfFileChoice("Please select a PDF file");
-
       try
       {file = new File(filePath);}
       catch(Exception e)
@@ -44,18 +43,15 @@ public class PageTransitionSample
         new Transition(
           document,
           transitionStyles[(int)(Math.random()*(transitionStylesLength))], // NOTE: Random selection of the transition is done here just for demonstrative purposes; in real world, you would obviously choose only the appropriate enumeration constant among those available.
-          Float.valueOf(.5f) // Transition duration (half a second).
+          .5 // Transition duration (half a second).
           )
         );
       // Set the display time of the page on presentation!
       page.setDuration(2); // Page display duration (2 seconds).
     }
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Transition","applying visual transitions to pages");
-
     // 3. Serialize the PDF file!
-    serialize(file);
+    serialize(file, true, "Transition", "applying visual transitions to pages");
 
     return true;
   }

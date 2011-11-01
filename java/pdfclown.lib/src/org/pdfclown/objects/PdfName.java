@@ -29,13 +29,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.files.File;
 import org.pdfclown.tokens.Keyword;
 
 /**
   PDF name object [PDF:1.6:3.2.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 07/23/11
+  @version 0.1.1, 11/01/11
 */
 public final class PdfName
   extends PdfSimpleObject<String>
@@ -430,6 +431,9 @@ public final class PdfName
   public static final PdfName TrimBox = new PdfName("TrimBox");
   public static final PdfName TrueType = new PdfName("TrueType");
   public static final PdfName TwoColumnLeft = new PdfName("TwoColumnLeft");
+  public static final PdfName TwoColumnRight = new PdfName("TwoColumnRight");
+  public static final PdfName TwoPageLeft = new PdfName("TwoPageLeft");
+  public static final PdfName TwoPageRight = new PdfName("TwoPageRight");
   public static final PdfName Tx = new PdfName("Tx");
   public static final PdfName Type = new PdfName("Type");
   public static final PdfName Type0 = new PdfName("Type0");
@@ -487,7 +491,7 @@ public final class PdfName
   {this(value, false);}
 
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public PdfName(
     String value,
@@ -553,7 +557,8 @@ public final class PdfName
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    File context
     )
   {stream.write(NamePrefixChunk); stream.write(getRawValue());}
   // </public>

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public final class CalGrayColor
@@ -60,7 +60,7 @@ public final class CalGrayColor
   // <dynamic>
   // <constructors>
   public CalGrayColor(
-    float g
+    double g
     )
   {
     this(
@@ -92,7 +92,7 @@ public final class CalGrayColor
   /**
     Gets the gray component.
   */
-  public float getG(
+  public double getG(
     )
   {return getComponentValue(0);}
 
@@ -100,7 +100,7 @@ public final class CalGrayColor
     @see #getG()
   */
   public void setG(
-    float value
+    double value
     )
   {setComponentValue(0, value);}
   // </public>

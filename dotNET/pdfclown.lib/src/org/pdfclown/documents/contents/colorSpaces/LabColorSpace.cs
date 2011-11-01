@@ -34,8 +34,8 @@ using drawing = System.Drawing;
 namespace org.pdfclown.documents.contents.colorSpaces
 {
   /**
-    <summary>CIE-based ABC double-transformation-stage color space,
-    where A, B and C represent the L*, a* and b* components of a CIE 1976 L*a*b* space [PDF:1.6:4.5.4].</summary>
+    <summary>CIE-based ABC double-transformation-stage color space, where A, B and C represent the
+    L*, a* and b* components of a CIE 1976 L*a*b* space [PDF:1.6:4.5.4].</summary>
   */
   [PDF(VersionEnum.PDF11)]
   public sealed class LabColorSpace
@@ -68,7 +68,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     {
       get
       {
-        IList<Interval<float>> ranges = Ranges;
+        IList<Interval<double>> ranges = Ranges;
         return new LabColor(
           ranges[0].Low,
           ranges[1].Low,
@@ -97,15 +97,15 @@ namespace org.pdfclown.documents.contents.colorSpaces
       to the nearest valid value.</remarks>
     */
     //TODO:generalize to all the color spaces!
-    public IList<Interval<float>> Ranges
+    public IList<Interval<double>> Ranges
     {
       get
       {
-        IList<Interval<float>> ranges = new List<Interval<float>>();
+        IList<Interval<double>> ranges = new List<Interval<double>>();
         {
           // 1. L* component.
           ranges.Add(
-            new Interval<float>(0f, 100f)
+            new Interval<double>(0d, 100d)
             );
 
           PdfArray rangesObject = (PdfArray)Dictionary[PdfName.Range];
@@ -113,11 +113,11 @@ namespace org.pdfclown.documents.contents.colorSpaces
           {
             // 2. a* component.
             ranges.Add(
-              new Interval<float>(-100f, 100f)
+              new Interval<double>(-100d, 100d)
               );
             // 3. b* component.
             ranges.Add(
-              new Interval<float>(-100f, 100f)
+              new Interval<double>(-100d, 100d)
               );
           }
           else
@@ -131,7 +131,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
               )
             {
               ranges.Add(
-                new Interval<float>(
+                new Interval<double>(
                   ((IPdfNumber)rangesObject[index]).RawValue,
                   ((IPdfNumber)rangesObject[index+1]).RawValue
                   )

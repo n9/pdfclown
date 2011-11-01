@@ -63,8 +63,8 @@ namespace org.pdfclown.documents.contents.objects
       <param name="pointY">Final endpoint Y.</param>
     */
     public DrawLine(
-      float pointX,
-      float pointY
+      double pointX,
+      double pointY
       ) : base(
         OperatorKeyword,
         new List<PdfDirectObject>(
@@ -93,8 +93,8 @@ namespace org.pdfclown.documents.contents.objects
       get
       {
         return new PointF(
-          ((IPdfNumber)operands[0]).RawValue,
-          ((IPdfNumber)operands[1]).RawValue
+          ((IPdfNumber)operands[0]).FloatValue,
+          ((IPdfNumber)operands[1]).FloatValue
           );
       }
       set

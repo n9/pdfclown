@@ -1,5 +1,10 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.Dimension;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.composition.AlignmentXEnum;
@@ -9,17 +14,12 @@ import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.files.File;
 
-import java.awt.Dimension;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 /**
   This sample concentrates on proper <b>fitting of styled text</b> within a given PDF page area (block frame),
   from the beginning of "Alice in Wonderland", Chapter 1 ("Down the Rabbit-Hole").
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class TypesettingSample
   extends Sample
@@ -38,12 +38,9 @@ public class TypesettingSample
     // 2. Content creation.
     build(document);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Typesetting","demonstrating how to add style to contents");
-
     // 3. Serialize the PDF file!
-    serialize(file,false);
-    
+    serialize(file, false, "Typesetting", "demonstrating how to add style to contents");
+
     return true;
   }
 

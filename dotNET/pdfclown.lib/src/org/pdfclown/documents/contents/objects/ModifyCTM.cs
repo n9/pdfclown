@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -126,12 +126,12 @@ namespace org.pdfclown.documents.contents.objects
       get
       {
         return new Matrix(
-          ((IPdfNumber)operands[0]).RawValue, // a.
-          ((IPdfNumber)operands[1]).RawValue, // b.
-          ((IPdfNumber)operands[2]).RawValue, // c.
-          ((IPdfNumber)operands[3]).RawValue, // d.
-          ((IPdfNumber)operands[4]).RawValue, // e.
-          ((IPdfNumber)operands[5]).RawValue // f.
+          ((IPdfNumber)operands[0]).FloatValue, // a.
+          ((IPdfNumber)operands[1]).FloatValue, // b.
+          ((IPdfNumber)operands[2]).FloatValue, // c.
+          ((IPdfNumber)operands[3]).FloatValue, // d.
+          ((IPdfNumber)operands[4]).FloatValue, // e.
+          ((IPdfNumber)operands[5]).FloatValue // f.
           );
       }
     }

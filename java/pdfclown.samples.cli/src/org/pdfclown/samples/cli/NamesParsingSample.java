@@ -1,5 +1,7 @@
 package org.pdfclown.samples.cli;
 
+import java.util.Map;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.NamedDestinations;
 import org.pdfclown.documents.Names;
@@ -9,29 +11,27 @@ import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfString;
 
-import java.util.Map;
-
 /**
   This sample demonstrates <b>how to inspect the object names</b> within a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class NamesParsingSample extends Sample
 {
   @Override
   public boolean run()
   {
-    String filePath = promptPdfFileChoice("Please select a PDF file");
-
-    // 1. Open the PDF file!
+    // 1. Opening the PDF file...
     File file;
-    try
-    {file = new File(filePath);}
-    catch(Exception e)
-    {throw new RuntimeException(filePath + " file access error.",e);}
-
+    {
+      String filePath = promptPdfFileChoice("Please select a PDF file");
+      try
+      {file = new File(filePath);}
+      catch(Exception e)
+      {throw new RuntimeException(filePath + " file access error.",e);}
+    }
     Document document = file.getDocument();
 
     // 2. Named objects extraction.
@@ -71,7 +71,7 @@ public class NamesParsingSample extends Sample
         System.out.println("Named destinations count = " + namedDestinations.size());
       }
     }
-    
+
     return true;
   }
 }

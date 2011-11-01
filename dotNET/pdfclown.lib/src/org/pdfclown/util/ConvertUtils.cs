@@ -142,6 +142,16 @@ namespace org.pdfclown.util
       {result[index] = (byte)(data >> 8 * (byteOrder == ByteOrderEnum.LittleEndian ? index : length-index-1));}
       return result;
     }
+
+    public static float[] ToFloatArray(
+      double[] array
+      )
+    {
+      float[] result = new float[array.Length];
+      for(int index = 0, length = array.Length; index < length; index++)
+      {result[index] = (float)array[index];}
+      return result;
+    }
     #endregion
     #endregion
     #endregion

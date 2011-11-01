@@ -119,9 +119,9 @@ namespace org.pdfclown.documents.interaction.forms
     public JustificationEnum Justification
     {
       get
-      {return JustificationEnumExtension.ToEnum((PdfInteger)BaseDataObject[PdfName.Q]);}
+      {return JustificationEnumExtension.Get((PdfInteger)BaseDataObject[PdfName.Q]);}
       set
-      {BaseDataObject[PdfName.Q] = value.ToCode();}
+      {BaseDataObject[PdfName.Q] = value.GetCode();}
     }
 
     /**
@@ -191,7 +191,7 @@ namespace org.pdfclown.documents.interaction.forms
       }
 
       PdfName fontName = null;
-      float fontSize = 0;
+      double fontSize = 0;
       {
         PdfString defaultAppearanceState = DefaultAppearanceState;
         if(defaultAppearanceState == null)
@@ -252,7 +252,7 @@ namespace org.pdfclown.documents.interaction.forms
             }
           }
           bytes::Buffer buffer = new bytes::Buffer();
-          new SetFont(defaultFontName, IsMultiline ? 10 : 0).WriteTo(buffer);
+          new SetFont(defaultFontName, IsMultiline ? 10 : 0).WriteTo(buffer, Document);
           widget.BaseDataObject[PdfName.DA] = defaultAppearanceState = new PdfString(buffer.ToByteArray());
         }
 
@@ -268,22 +268,34 @@ namespace org.pdfclown.documents.interaction.forms
             break;
           }
         }
+
+        {
+          Resources normalAppearanceResources = normalAppearance.Resources;
+          if(normalAppearanceResources == null)
+          {Document.Form.Resources = normalAppearanceResources = new Resources(Document);}
+
+          FontResources normalAppearanceFontResources = normalAppearanceResources.Fonts;
+          if(normalAppearanceFontResources == null)
+          {normalAppearanceResources.Fonts = normalAppearanceFontResources = new FontResources(Document);}
+
+          normalAppearanceFontResources[fontName] = Document.Form.Resources.Fonts[fontName];
+        }
       }
 
       // Refreshing the field appearance...
-      BlockComposer composer = new BlockComposer(new PrimitiveComposer(normalAppearance));
-      ContentScanner scanner = composer.Scanner;
-      ContentScanner currentLevel = scanner;
-      Stack<ContentScanner> levelStack = new Stack<ContentScanner>();
+      /*
+       * TODO: resources MUST be resolved both through the apperance stream resource dictionary and
+       * from the DR-entry acroform resource dictionary
+       */
+      PrimitiveComposer baseComposer = new PrimitiveComposer(normalAppearance);
+      BlockComposer composer = new BlockComposer(baseComposer);
+      ContentScanner currentLevel = composer.Scanner;
       bool textShown = false;
-      while(true)
+      while(currentLevel != null)
       {
         if(!currentLevel.MoveNext())
         {
-          if(levelStack.Count == 0)
-            break;
-
-          currentLevel = levelStack.Pop();
+          currentLevel = currentLevel.ParentLevel;
           continue;
         }
 
@@ -296,7 +308,7 @@ namespace org.pdfclown.documents.interaction.forms
             // Remove old text representation!
             markedContent.Objects.Clear();
             // Add new text representation!
-            composer.BaseComposer.Scanner = currentLevel.ChildLevel; // Ensures the composer places new contents within the marked content block.
+            baseComposer.Scanner = currentLevel.ChildLevel; // Ensures the composer places new contents within the marked content block.
             ShowText(composer, fontName, fontSize);
             textShown = true;
           }
@@ -304,25 +316,21 @@ namespace org.pdfclown.documents.interaction.forms
         else if(content is Text)
         {currentLevel.Remove();}
         else if(currentLevel.ChildLevel != null)
-        {
-          levelStack.Push(currentLevel);
-          currentLevel = currentLevel.ChildLevel;
-        }
+        {currentLevel = currentLevel.ChildLevel;}
       }
       if(!textShown)
       {
-        PrimitiveComposer baseComposer = composer.BaseComposer;
         baseComposer.BeginMarkedContent(PdfName.Tx);
         ShowText(composer, fontName, fontSize);
         baseComposer.End();
       }
-      composer.BaseComposer.Flush();
+      baseComposer.Flush();
     }
 
     private void ShowText(
       BlockComposer composer,
       PdfName fontName,
-      float fontSize
+      double fontSize
       )
     {
       PrimitiveComposer baseComposer = composer.BaseComposer;
@@ -344,7 +352,7 @@ namespace org.pdfclown.documents.interaction.forms
           a function of the height of the annotation rectangle.
         */
         if(fontSize == 0)
-        {fontSize = (float)(textBox.Height * 0.9);}
+        {fontSize = textBox.Height * 0.9;}
         baseComposer.SetFont(fontName, fontSize);
       }
       composer.ShowText((string)Value);

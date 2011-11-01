@@ -31,6 +31,8 @@ import java.util.List;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.documents.Document;
+import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.tokens.Chunk;
 
@@ -39,7 +41,7 @@ import org.pdfclown.tokens.Chunk;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.2
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Operation
@@ -260,13 +262,15 @@ public abstract class Operation
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    Document context
     )
   {
     if(operands != null)
     {
+      File fileContext = context.getFile();
       for(PdfDirectObject operand : operands)
-      {operand.writeTo(stream); stream.write(Chunk.Space);}
+      {operand.writeTo(stream, fileContext); stream.write(Chunk.Space);}
     }
     stream.write(operator); stream.write(Chunk.LineFeed);
   }

@@ -53,22 +53,20 @@ namespace org.pdfclown.samples.cli
       BuildWelcomePage(document, template);
       // 2.3. Free Software definition.
       BuildFreeSoftwareDefinitionPages(document, template);
-      // 2.4. Accessories (bookmarks, preferences, metadata...).
-      BuildAccessories(document);
+      // 2.4. Bookmarks.
+      BuildBookmarks(document);
 
       // 3. Serialization.
-      Serialize(file,false);
+      Serialize(file, false, "Complex Typesetting", "complex typesetting");
 
       return true;
     }
 
-    private void BuildAccessories(
+    private void BuildBookmarks(
       Document document
       )
     {
       Pages pages = document.Pages;
-
-      // Bookmarks.
       Bookmarks bookmarks = new Bookmarks(document);
       document.Bookmarks = bookmarks;
       document.PageMode = Document.PageModeEnum.Bookmarks;
@@ -91,7 +89,7 @@ namespace org.pdfclown.samples.cli
         new LocalDestination(
           page,
           Destination.ModeEnum.XYZ,
-          new float?[]{0,250,2}
+          new double?[]{0, 250, 2}
           )
         );
       bookmarks.Add(bookmark);
@@ -102,7 +100,7 @@ namespace org.pdfclown.samples.cli
           new LocalDestination(
             page,
             Destination.ModeEnum.XYZ,
-            new float?[]{0,page.Size.Height - 250,1}
+            new double?[]{0, page.Size.Height - 250, 1}
             )
           )
         );
@@ -114,7 +112,7 @@ namespace org.pdfclown.samples.cli
           new LocalDestination(
             page,
             Destination.ModeEnum.FitHorizontal,
-            new float?[]{0}
+            new double?[]{0}
             )
           )
         );
@@ -126,9 +124,7 @@ namespace org.pdfclown.samples.cli
             )
           );
       bookmark.Flags = Bookmark.FlagsEnum.Bold | Bookmark.FlagsEnum.Italic;
-      bookmark.Color = new colorSpaces::DeviceRGBColor(.5f,.5f,1f);
-
-      BuildAccessories(document,"Complex Typesetting","complex typesetting");
+      bookmark.Color = new colorSpaces::DeviceRGBColor(.5, .5, 1);
     }
 
     private void BuildFreeSoftwareDefinitionPages(

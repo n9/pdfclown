@@ -35,7 +35,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF indirect reference object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 public final class PdfReference
   extends PdfDirectObject
@@ -65,7 +65,7 @@ public final class PdfReference
   }
 
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
 
     <p>This is a necessary hack because indirect objects are unreachable on parsing bootstrap
     (see File(IInputStream) constructor).</p>
@@ -140,9 +140,9 @@ public final class PdfReference
   {return null;} // NOTE: As references are immutable, no parent can be associated.
 
   @Override
-  public PdfIndirectObject getRoot(
+  public int hashCode(
     )
-  {return null;} // NOTE: As references are immutable, no root can be associated.
+  {return getIndirectObject().hashCode();}
 
   @Override
   public boolean isUpdateable(
@@ -150,9 +150,9 @@ public final class PdfReference
   {return false;}
 
   @Override
-  public int hashCode(
+  public boolean isUpdated(
     )
-  {return getIndirectObject().hashCode();}
+  {return false;}
 
   @Override
   public void setUpdateable(
@@ -167,7 +167,8 @@ public final class PdfReference
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    File context
     )
   {stream.write(getIndirectReference());}
 
@@ -220,11 +221,6 @@ public final class PdfReference
   // </public>
 
   // <protected>
-  @Override
-  protected boolean isUpdated(
-    )
-  {return false;}
-
   @Override
   protected boolean isVirtual(
     )

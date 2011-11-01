@@ -20,7 +20,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/16/11
+  @version 0.1.1, 11/01/11
 */
 public class TextFrameSample
   extends Sample
@@ -36,11 +36,8 @@ public class TextFrameSample
     // 2. Insert the contents into the document!
     populate(document);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Text frame","getting the actual bounding box of text shown");
-
     // 3. Serialize the PDF file!
-    serialize(file,false);
+    serialize(file, false, "Text frame", "getting the actual bounding box of text shown");
 
     return true;
   }
@@ -75,11 +72,11 @@ public class TextFrameSample
     }
     catch(Exception e)
     {}
-    composer.setFillColor(new DeviceRGBColor(115f/255,164f/255,232f/255));
-    blockComposer.showText("showText() methods return the actual bounding box of the shown text, allowing to precisely determine its location on the page.");
+    composer.setFillColor(new DeviceRGBColor(115d/255, 164d/255, 232d/255));
+    blockComposer.showText("PrimitiveComposer.showText(...) methods return the actual bounding box of the text shown, allowing to precisely determine its location on the page.");
     blockComposer.end();
 
-    composer.setStrokeColor(new DeviceRGBColor(115f/255,164f/255,232f/255));
+    composer.setStrokeColor(new DeviceRGBColor(115d/255, 164d/255, 232d/255));
 
     // 3. Inserting contents...
     // Set the font to use!

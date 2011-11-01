@@ -1,5 +1,9 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.Rectangle;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.composition.AlignmentXEnum;
@@ -12,7 +16,6 @@ import org.pdfclown.documents.interaction.annotations.DualWidget;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.documents.interaction.annotations.WidgetActions;
 import org.pdfclown.documents.interaction.forms.CheckBox;
-import org.pdfclown.documents.interaction.forms.ChoiceItem;
 import org.pdfclown.documents.interaction.forms.ChoiceItems;
 import org.pdfclown.documents.interaction.forms.ComboBox;
 import org.pdfclown.documents.interaction.forms.FieldActions;
@@ -25,16 +28,12 @@ import org.pdfclown.documents.interaction.forms.TextField;
 import org.pdfclown.documents.interaction.forms.styles.DefaultStyle;
 import org.pdfclown.files.File;
 
-import java.awt.Rectangle;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 /**
   This sample demonstrates <b>how to insert AcroForm fields</b> into a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class AcroFormCreationSample
   extends Sample
@@ -50,12 +49,9 @@ public class AcroFormCreationSample
     // 2. Content creation.
     populate(document);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"AcroForm","inserting AcroForm fields");
-
     // 3. Serialize the PDF file!
-    serialize(file,false);
-    
+    serialize(file, false, "AcroForm", "inserting AcroForm fields");
+
     return true;
   }
 
@@ -86,6 +82,7 @@ public class AcroFormCreationSample
     // 3. Define the appearance style to apply to the fields!
     DefaultStyle fieldStyle = new DefaultStyle();
     fieldStyle.setFontSize(12);
+    fieldStyle.setGraphicsVisibile(true);
 
     PrimitiveComposer composer = new PrimitiveComposer(page);
     composer.setFont(
@@ -259,24 +256,39 @@ public class AcroFormCreationSample
     {
       // Preparing the item list that we'll use for choice fields (a list box and a combo box (see below))...
       ChoiceItems items = new ChoiceItems(document);
-      items.add(new ChoiceItem("Joan Baez")); // NOTE: Explicitly-created item.
-      items.add("Tracy Chapman"); // NOTE: Implicitly-created item (syntactic sugar for lazy guys...).
+      items.add("Tori Amos");
+      items.add("Anouk");
+      items.add("Joan Baez");
+      items.add("Rachele Bastreghi");
+      items.add("Anna Calvi");
+      items.add("Tracy Chapman");
       items.add("Carmen Consoli");
+      items.add("Ani DiFranco");
       items.add("Cristina Dona'");
       items.add("PJ Harvey");
       items.add("Billie Holiday");
       items.add("Janis Joplin");
       items.add("Angelique Kidjo");
+      items.add("Patrizia Laquidara");
+      items.add("Annie Lennox");
+      items.add("Loreena McKennitt");
       items.add("Joni Mitchell");
       items.add("Alanis Morissette");
       items.add("Yael Naim");
+      items.add("Noa");
       items.add("Sinead O'Connor");
+      items.add("Dolores O'Riordan");
+      items.add("Nina Persson");
       items.add("Brisa Roche'");
+      items.add("Roberta Sammarelli");
+      items.add("Cristina Scabbia");
       items.add("Nina Simone");
       items.add("Skin");
+      items.add("Patti Smith");
       items.add("Fatima Spar");
       items.add("Paola Turci");
       items.add("Sarah Vaughan");
+      items.add("Nina Zilli");
 
       // 4.e1. List box.
       {

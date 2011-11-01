@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class SetLineDash
@@ -57,9 +57,9 @@ public final class SetLineDash
   // <dynamic>
   // <constructors>
   public SetLineDash(
-    float phase,
-    float unitsOn,
-    float unitsOff
+    double phase,
+    double unitsOn,
+    double unitsOff
     )
   {
     super(
@@ -91,7 +91,7 @@ public final class SetLineDash
   {
     // 1. Dash array.
     PdfArray baseDashArray = (PdfArray)operands.get(0);
-    float[] dashArray = new float[baseDashArray.size()];
+    double[] dashArray = new double[baseDashArray.size()];
     for(
       int index = 0,
         length = dashArray.length;
@@ -100,7 +100,7 @@ public final class SetLineDash
       )
     {dashArray[index] = ((PdfNumber<?>)baseDashArray.get(index)).getNumberValue();}
     // 2. Dash phase.
-    float dashPhase = ((PdfNumber<?>)operands.get(1)).getNumberValue();
+    double dashPhase = ((PdfNumber<?>)operands.get(1)).getNumberValue();
 
     return new LineDash(dashArray, dashPhase);
   }
@@ -110,7 +110,7 @@ public final class SetLineDash
     )
   {
     // 1. Dash array.
-    float[] dashArray = value.getDashArray();
+    double[] dashArray = value.getDashArray();
     PdfArray baseDashArray = new PdfArray(dashArray.length);
     for(
       int index = 0,

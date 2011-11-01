@@ -25,6 +25,7 @@
 
 using org.pdfclown.documents.contents.composition;
 using org.pdfclown.objects;
+using org.pdfclown.util;
 
 using System;
 using System.Collections.Generic;
@@ -52,16 +53,41 @@ namespace org.pdfclown.documents.interaction
 
   internal static class JustificationEnumExtension
   {
-    private static readonly Dictionary<JustificationEnum,PdfInteger> JustificationEnumCodes;
+    private static readonly BiDictionary<JustificationEnum,PdfInteger> codes;
 
     static JustificationEnumExtension(
       )
     {
-      JustificationEnumCodes = new Dictionary<JustificationEnum,PdfInteger>();
-      JustificationEnumCodes[JustificationEnum.Left] = new PdfInteger(0);
-      JustificationEnumCodes[JustificationEnum.Center] = new PdfInteger(1);
-      JustificationEnumCodes[JustificationEnum.Right] = new PdfInteger(2);
+      codes = new BiDictionary<JustificationEnum,PdfInteger>();
+      codes[JustificationEnum.Left] = new PdfInteger(0);
+      codes[JustificationEnum.Center] = new PdfInteger(1);
+      codes[JustificationEnum.Right] = new PdfInteger(2);
     }
+
+    /**
+      <summary>Gets the justification corresponding to the given value.</summary>
+    */
+    public static JustificationEnum Get(
+      PdfInteger value
+      )
+    {
+      if(value == null)
+        return JustificationEnum.Left;
+
+      JustificationEnum? justification = codes.GetKey(value);
+      if(!justification.HasValue)
+        throw new NotSupportedException("Justification unknown: " + value);
+
+      return justification.Value;
+    }
+
+    /**
+      <summary>Gets the code corresponding to the given value.</summary>
+    */
+    public static PdfInteger GetCode(
+      this JustificationEnum value
+      )
+    {return codes[value];}
 
     public static AlignmentXEnum ToAlignmentX(
       this JustificationEnum value
@@ -78,32 +104,6 @@ namespace org.pdfclown.documents.interaction
         default:
           throw new NotSupportedException();
       }
-    }
-
-    /**
-      <summary>Gets the code corresponding to the given value.</summary>
-    */
-    public static PdfInteger ToCode(
-      this JustificationEnum value
-      )
-    {return JustificationEnumCodes[value];}
-
-    /**
-      <summary>Gets the justification corresponding to the given value.</summary>
-    */
-    public static JustificationEnum ToEnum(
-      PdfInteger value
-      )
-    {
-      if(value == null)
-        return JustificationEnum.Left;
-
-      foreach(KeyValuePair<JustificationEnum,PdfInteger> justification in JustificationEnumCodes)
-      {
-        if(justification.Value.Equals(value))
-          return justification.Key;
-      }
-      throw new ArgumentException(value.ToString() + " is NOT a valid justification code.");
     }
   }
 }

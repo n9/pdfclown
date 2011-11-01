@@ -39,7 +39,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 03/22/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class SetTextRise
@@ -55,7 +55,7 @@ public final class SetTextRise
   // <dynamic>
   // <constructors>
   public SetTextRise(
-    float value
+    double value
     )
   {super(Operator, new PdfReal(value));}
 
@@ -70,7 +70,7 @@ public final class SetTextRise
   /**
     Gets the text rise, which is a number expressed in unscaled text space units.
   */
-  public float getValue(
+  public double getValue(
     )
   {return ((PdfNumber<?>)operands.get(0)).getNumberValue();}
 
@@ -81,7 +81,7 @@ public final class SetTextRise
   {state.setRise(getValue());}
 
   public void setValue(
-    float value
+    double value
     )
   {operands.set(0, new PdfReal(value));}
   // </public>

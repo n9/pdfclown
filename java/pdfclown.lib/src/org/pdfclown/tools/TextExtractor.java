@@ -51,7 +51,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/28/11
+  @version 0.1.1, 11/01/11
 */
 public final class TextExtractor
 {
@@ -248,7 +248,7 @@ public final class TextExtractor
   // <fields>
   private AreaModeEnum areaMode = AreaModeEnum.Containment;
   private List<Rectangle2D> areas;
-  private float areaTolerance = 0;
+  private double areaTolerance = 0;
   private boolean dehyphenated;
   private boolean sorted;
   // </fields>
@@ -544,7 +544,7 @@ public final class TextExtractor
     <p>This measure is useful to ensure that text whose boxes overlap with the area bounds
     is not excluded from the match.</p>
    */
-  public float getAreaTolerance(
+  public double getAreaTolerance(
     )
   {return areaTolerance;}
 
@@ -582,7 +582,7 @@ public final class TextExtractor
     @see #getAreaTolerance()
   */
   public void setAreaTolerance(
-    float value
+    double value
     )
   {areaTolerance = value;}
 
@@ -720,7 +720,7 @@ public final class TextExtractor
       {textStrings.add(textString = new TextString());}
 
       textStyle = rawTextString.getStyle();
-      float spaceWidth = textStyle.getFont().getWidth(' ', textStyle.getFontSize());
+      double spaceWidth = textStyle.getFont().getWidth(' ', textStyle.getFontSize());
       if(spaceWidth == 0)
       {spaceWidth = textStyle.getFontSize() * .25f;} // NOTE: as a rule of thumb, space width is estimated according to the font size.
       for(TextChar textChar : rawTextString.getTextChars())

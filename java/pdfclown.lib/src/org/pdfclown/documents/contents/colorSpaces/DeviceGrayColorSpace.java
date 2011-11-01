@@ -40,7 +40,7 @@ import org.pdfclown.util.NotImplementedException;
   Device Gray color space [PDF:1.6:4.5.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public final class DeviceGrayColorSpace
@@ -101,7 +101,7 @@ public final class DeviceGrayColorSpace
     )
   {
     DeviceGrayColor spaceColor = (DeviceGrayColor)color;
-    float g = spaceColor.getG();
+    float g = (float)spaceColor.getG();
     return new java.awt.Color(g, g, g);
   }
   // </public>

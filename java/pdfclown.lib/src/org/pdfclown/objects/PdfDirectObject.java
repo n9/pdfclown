@@ -26,6 +26,7 @@
 package org.pdfclown.objects;
 
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.files.File;
 import org.pdfclown.tokens.Encoding;
 import org.pdfclown.tokens.Keyword;
 
@@ -33,7 +34,7 @@ import org.pdfclown.tokens.Keyword;
   Abstract PDF direct object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 public abstract class PdfDirectObject
   extends PdfDataObject
@@ -62,13 +63,14 @@ public abstract class PdfDirectObject
   */
   static void writeTo(
     IOutputStream stream,
+    File context,
     PdfDirectObject object
     )
   {
     if(object == null)
     {stream.write(NullChunk);}
     else
-    {object.writeTo(stream);}
+    {object.writeTo(stream, context);}
   }
   // </internal>
   // </interface>

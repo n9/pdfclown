@@ -25,11 +25,8 @@ namespace org.pdfclown.samples.cli
       // 2. Populate the document!
       Populate(document);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Page Format","page formats");
-
       // 3. Serialize the PDF file!
-      Serialize(file,false);
+      Serialize(file, false, "Page Format", "page formats");
 
       return true;
     }

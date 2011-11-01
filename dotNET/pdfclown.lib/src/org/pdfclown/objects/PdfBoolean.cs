@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.bytes;
+using org.pdfclown.files;
 using org.pdfclown.tokens;
 
 using System;
@@ -75,7 +76,8 @@ namespace org.pdfclown.objects
     {throw new NotImplementedException();}
 
     public override void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      File context
       )
     {stream.Write(RawValue ? Keyword.True : Keyword.False);}
     #endregion

@@ -38,7 +38,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class RemoteDestination
@@ -64,7 +64,7 @@ public final class RemoteDestination
     Document context,
     int pageIndex,
     ModeEnum mode,
-    Float[] viewParams
+    Double[] viewParams
     )
   {
     super(

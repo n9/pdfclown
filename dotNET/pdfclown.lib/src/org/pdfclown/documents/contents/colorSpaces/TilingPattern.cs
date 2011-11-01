@@ -158,7 +158,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
           NOTE: 'BBox' entry MUST be defined.
         */
         org.pdfclown.objects.Rectangle box = new org.pdfclown.objects.Rectangle(BaseHeader[PdfName.BBox]);
-        return new RectangleF(box.X, box.Y, box.Width, box.Height);
+        return new RectangleF((float)box.X, (float)box.Y, (float)box.Width, (float)box.Height);
       }
     }
 
@@ -192,7 +192,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     /**
       <summary>Gets the horizontal spacing between pattern cells (expressed in the pattern coordinate system).</summary>
     */
-    public float XStep
+    public double XStep
     {
       get
       {return ((IPdfNumber)BaseHeader[PdfName.XStep]).RawValue;}
@@ -201,7 +201,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     /**
       <summary>Gets the vertical spacing between pattern cells (expressed in the pattern coordinate system).</summary>
     */
-    public float YStep
+    public double YStep
     {
       get
       {return ((IPdfNumber)BaseHeader[PdfName.YStep]).RawValue;}

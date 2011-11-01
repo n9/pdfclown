@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,6 +28,7 @@ package org.pdfclown.documents.contents.objects;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
 
 /**
@@ -35,7 +36,7 @@ import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class ContentObject
@@ -57,11 +58,13 @@ public abstract class ContentObject
 
   /**
     Serializes this object to the specified stream.
-    
+
     @param stream Target stream.
+    @param context Document context.
   */
   public abstract void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    Document context
     );
   // </public>
   // </interface>

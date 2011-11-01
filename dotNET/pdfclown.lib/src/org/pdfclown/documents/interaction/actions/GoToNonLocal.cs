@@ -34,7 +34,7 @@ using System;
 namespace org.pdfclown.documents.interaction.actions
 {
   /**
-    <summary>Abstract go-to-external-destination action.</summary>
+    <summary>Abstract 'go to non-local destination' action.</summary>
   */
   [PDF(VersionEnum.PDF11)]
   public abstract class GotoNonLocal<T>

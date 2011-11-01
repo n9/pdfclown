@@ -29,7 +29,6 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.contents.ContentScanner;
 import org.pdfclown.documents.contents.IContentContext;
-import org.pdfclown.documents.contents.XObjectResources;
 import org.pdfclown.objects.PdfName;
 
 /**
@@ -37,11 +36,12 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 04/28/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class XObject
   extends GraphicsObject
+  implements IResourceReference<org.pdfclown.documents.contents.xObjects.XObject>
 {
   // <class>
   // <static>
@@ -65,26 +65,6 @@ public final class XObject
   // <interface>
   // <public>
   /**
-    Gets the {@link org.pdfclown.documents.contents.xObjects.XObject external object} resource name.
-
-    @see #getResource(IContentContext)
-    @see XObjectResources
-  */
-  public PdfName getName(
-    )
-  {return getOperation().getName();}
-
-  /**
-    Gets the {@link org.pdfclown.documents.contents.xObjects.XObject external object} resource.
-
-    @param context Content context.
-  */
-  public org.pdfclown.documents.contents.xObjects.XObject getResource(
-    IContentContext context
-    )
-  {return getOperation().getXObject(context);}
-
-  /**
     Gets the scanner for this object's contents.
 
     @param context Scanning context.
@@ -93,12 +73,31 @@ public final class XObject
     ContentScanner context
     )
   {return getOperation().getScanner(context);}
+
+  // <IResourceReference>
+  @Override
+  public PdfName getName(
+    )
+  {return getOperation().getName();}
+
+  @Override
+  public org.pdfclown.documents.contents.xObjects.XObject getResource(
+    IContentContext context
+    )
+  {return getOperation().getResource(context);}
+
+  @Override
+  public void setName(
+    PdfName value
+    )
+  {getOperation().setName(value);}
+  // </IResourceReference>
   // </public>
 
   // <private>
   private PaintXObject getOperation(
     )
-  {return ((PaintXObject)getObjects().get(0));}
+  {return (PaintXObject)getObjects().get(0);}
   // </private>
   // </interface>
   // </dynamic>

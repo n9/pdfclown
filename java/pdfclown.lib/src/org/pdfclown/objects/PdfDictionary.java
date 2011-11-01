@@ -42,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 public final class PdfDictionary
   extends PdfDirectObject
@@ -165,11 +165,6 @@ public final class PdfDictionary
     return value;
   }
 
-  @Override
-  public PdfIndirectObject getContainer(
-    )
-  {return getRoot();}
-
   /**
     Gets the key associated to a given value.
   */
@@ -203,14 +198,14 @@ public final class PdfDictionary
   {return parent;}
 
   @Override
-  public PdfIndirectObject getRoot(
-    )
-  {return parent != null ? parent.getRoot() : null;}
-
-  @Override
   public boolean isUpdateable(
     )
   {return updateable;}
+
+  @Override
+  public boolean isUpdated(
+    )
+  {return updated;}
 
   /**
     Gets the dereferenced value corresponding to the given key.
@@ -256,7 +251,8 @@ public final class PdfDictionary
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    File context
     )
   {
     // Begin.
@@ -264,14 +260,15 @@ public final class PdfDictionary
     // Entries.
     for(Map.Entry<PdfName,PdfDirectObject> entry : entries.entrySet())
     {
-      if(entry.getValue().isVirtual())
+      PdfDirectObject value = entry.getValue();
+      if(value != null && value.isVirtual())
         continue;
 
       // Entry...
       // ...key.
-      entry.getKey().writeTo(stream); stream.write(Chunk.Space);
+      entry.getKey().writeTo(stream, context); stream.write(Chunk.Space);
       // ...value.
-      PdfDirectObject.writeTo(stream, entry.getValue()); stream.write(Chunk.Space);
+      PdfDirectObject.writeTo(stream, context, value); stream.write(Chunk.Space);
     }
     // End.
     stream.write(EndDictionaryChunk);
@@ -385,11 +382,6 @@ public final class PdfDictionary
   // </public>
 
   // <protected>
-  @Override
-  protected boolean isUpdated(
-    )
-  {return updated;}
-
   @Override
   protected boolean isVirtual(
     )

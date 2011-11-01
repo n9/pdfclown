@@ -27,6 +27,7 @@ using org.pdfclown.bytes;
 using org.pdfclown.documents;
 using org.pdfclown.documents.contents.layers;
 using org.pdfclown.objects;
+using org.pdfclown.util;
 
 using System;
 using System.Collections;
@@ -469,7 +470,7 @@ namespace org.pdfclown.documents.interaction.actions
           {
             if(mode.HasValue)
             {items.Add(new LayerState(mode.Value, layers, this));}
-            mode = StateModeEnumExtension.ToEnum((PdfName)baseObject);
+            mode = StateModeEnumExtension.Get((PdfName)baseObject);
             layers = new LayerState.LayersImpl();
           }
           else
@@ -518,37 +519,33 @@ namespace org.pdfclown.documents.interaction.actions
 
   internal static class StateModeEnumExtension
   {
-    public static PdfName GetName(
-      this SetLayerState.StateModeEnum state
-      )
+    private static readonly BiDictionary<SetLayerState.StateModeEnum,PdfName> codes;
+
+    static StateModeEnumExtension()
     {
-      switch(state)
-      {
-        case SetLayerState.StateModeEnum.On:
-          return PdfName.ON;
-        case SetLayerState.StateModeEnum.Off:
-          return PdfName.OFF;
-        case SetLayerState.StateModeEnum.Toggle:
-          return PdfName.Toggle;
-        default:
-          throw new NotImplementedException();
-      }
+      codes = new BiDictionary<SetLayerState.StateModeEnum,PdfName>();
+      codes[SetLayerState.StateModeEnum.On] = PdfName.ON;
+      codes[SetLayerState.StateModeEnum.Off] = PdfName.OFF;
+      codes[SetLayerState.StateModeEnum.Toggle] = PdfName.Toggle;
     }
 
-    public static SetLayerState.StateModeEnum ToEnum(
+    public static SetLayerState.StateModeEnum Get(
       PdfName name
       )
     {
       if(name == null)
         throw new ArgumentNullException("name");
-      else if(name.Equals(PdfName.ON))
-        return SetLayerState.StateModeEnum.On;
-      else if(name.Equals(PdfName.OFF))
-        return SetLayerState.StateModeEnum.Off;
-      else if(name.Equals(PdfName.Toggle))
-        return SetLayerState.StateModeEnum.Toggle;
-      else
+
+      SetLayerState.StateModeEnum? stateMode = codes.GetKey(name);
+      if(!stateMode.HasValue)
         throw new NotSupportedException("State mode unknown: " + name);
+
+      return stateMode.Value;
     }
+
+    public static PdfName GetName(
+      this SetLayerState.StateModeEnum stateMode
+      )
+    {return codes[stateMode];}
   }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,6 +29,7 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.IBuffer;
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.documents.Document;
 
 /**
   Inline image data (anonymous) operation [PDF:1.6:4.8.6].
@@ -37,7 +38,7 @@ import org.pdfclown.bytes.IOutputStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class InlineImageBody
@@ -78,7 +79,8 @@ public final class InlineImageBody
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    Document context
     )
   {stream.write(value);}
   // </public>

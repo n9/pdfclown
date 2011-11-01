@@ -103,7 +103,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 public final class PrimitiveComposer
 {
@@ -158,7 +158,7 @@ public final class PrimitiveComposer
     @param d Item 1,1 of the matrix.
     @param e Item 2,0 of the matrix.
     @param f Item 2,1 of the matrix.
-    @see #setMatrix(float,float,float,float,float,float)
+    @see #setMatrix(double,double,double,double,double,double)
   */
   public void applyMatrix(
     double a,
@@ -299,8 +299,8 @@ public final class PrimitiveComposer
   */
   public void drawArc(
     RectangularShape location,
-    float startAngle,
-    float endAngle
+    double startAngle,
+    double endAngle
     )
   {drawArc(location,startAngle,endAngle,0,1);}
 
@@ -317,10 +317,10 @@ public final class PrimitiveComposer
   */
   public void drawArc(
     RectangularShape location,
-    float startAngle,
-    float endAngle,
-    float branchWidth,
-    float branchRatio
+    double startAngle,
+    double endAngle,
+    double branchWidth,
+    double branchRatio
     )
   {drawArc(location,startAngle,endAngle,branchWidth,branchRatio,true);}
 
@@ -338,7 +338,7 @@ public final class PrimitiveComposer
     Point2D endControl
     )
   {
-    float contextHeight = (float)scanner.getContentContext().getBox().getHeight();
+    double contextHeight = scanner.getContentContext().getBox().getHeight();
     add(
       new DrawCurve(
         endPoint.getX(),
@@ -480,7 +480,7 @@ public final class PrimitiveComposer
   */
   public void drawRectangle(
     RectangularShape location,
-    float radius
+    double radius
     )
   {
     if(radius == 0)
@@ -505,7 +505,7 @@ public final class PrimitiveComposer
         int sin2 = (int)Math.sin(radians2);
         int cos2 = (int)Math.cos(radians2);
         double x1 = 0, x2 = 0, y1 = 0, y2 = 0;
-        float xArc = 0, yArc = 0;
+        double xArc = 0, yArc = 0;
         if(cos2 == 0)
         {
           if(sin2 == 1)
@@ -550,8 +550,8 @@ public final class PrimitiveComposer
           );
         drawArc(
           new Rectangle2D.Double(x2+xArc, y2+yArc, radius*2, radius*2),
-          (float)Math.toDegrees(radians),
-          (float)Math.toDegrees(radians2),
+          Math.toDegrees(radians),
+          Math.toDegrees(radians2),
           0,
           1,
           false
@@ -574,10 +574,10 @@ public final class PrimitiveComposer
   */
   public void drawSpiral(
     Point2D center,
-    float startAngle,
-    float endAngle,
-    float branchWidth,
-    float branchRatio
+    double startAngle,
+    double endAngle,
+    double branchWidth,
+    double branchRatio
     )
   {
     drawArc(
@@ -645,10 +645,10 @@ public final class PrimitiveComposer
     Applies a rotation to the coordinate system from user space to device space [PDF:1.6:4.2.2].
 
     @param angle Rotational counterclockwise angle.
-    @see #applyMatrix(float,float,float,float,float,float)
+    @see #applyMatrix(double,double,double,double,double,double)
   */
   public void rotate(
-    float angle
+    double angle
     )
   {
     double rad = angle * Math.PI / 180;
@@ -662,24 +662,24 @@ public final class PrimitiveComposer
 
     @param angle Rotational counterclockwise angle.
     @param origin Rotational pivot point; it becomes the new coordinates origin.
-    @see #applyMatrix(float,float,float,float,float,float)
+    @see #applyMatrix(double,double,double,double,double,double)
   */
   public void rotate(
-    float angle,
+    double angle,
     Point2D origin
     )
   {
     // Center to the new origin!
     translate(
-      (float)origin.getX(),
-      (float)(scanner.getContentContext().getBox().getHeight() - origin.getY())
+      origin.getX(),
+      scanner.getContentContext().getBox().getHeight() - origin.getY()
       );
     // Rotate on the new origin!
     rotate(angle);
     // Restore the standard vertical coordinates system!
     translate(
       0,
-      (float)-scanner.getContentContext().getBox().getHeight()
+      -scanner.getContentContext().getBox().getHeight()
       );
   }
 
@@ -688,11 +688,11 @@ public final class PrimitiveComposer
 
     @param ratioX Horizontal scaling ratio.
     @param ratioY Vertical scaling ratio.
-    @see #applyMatrix(float,float,float,float,float,float)
+    @see #applyMatrix(double,double,double,double,double,double)
   */
   public void scale(
-    float ratioX,
-    float ratioY
+    double ratioX,
+    double ratioY
     )
   {applyMatrix(ratioX, 0, 0, ratioY, 0, 0);}
 
@@ -700,7 +700,7 @@ public final class PrimitiveComposer
     Sets the character spacing parameter [PDF:1.6:5.2.1].
   */
   public void setCharSpace(
-    float value
+    double value
     )
   {add(new SetCharSpace(value));}
 
@@ -736,7 +736,7 @@ public final class PrimitiveComposer
   */
   public void setFont(
     PdfName name,
-    float size
+    double size
     )
   {
     // Doesn't the font exist in the context resources?
@@ -751,14 +751,14 @@ public final class PrimitiveComposer
     <h3>Remarks</h3>
     <p>The <code>value</code> is checked for presence in the current resource
     dictionary: if it isn't available, it's automatically added. If you need to
-    avoid such a behavior, use {@link #setFont(PdfName,float) setFont(PdfName,float)}.</p>
+    avoid such a behavior, use {@link #setFont(PdfName,double) setFont(PdfName,double)}.</p>
 
     @param value Font.
     @param size Scaling factor (points).
   */
   public void setFont(
     Font value,
-    float size
+    double size
     )
   {setFont(getFontName(value),size);}
 
@@ -766,7 +766,7 @@ public final class PrimitiveComposer
     Sets the text horizontal scaling [PDF:1.6:5.2.3].
   */
   public void setTextScale(
-    float value
+    double value
     )
   {add(new SetTextScale(value));}
 
@@ -774,7 +774,7 @@ public final class PrimitiveComposer
     Sets the text leading [PDF:1.6:5.2.4].
   */
   public void setTextLead(
-    float value
+    double value
     )
   {add(new SetTextLead(value));}
 
@@ -824,7 +824,7 @@ public final class PrimitiveComposer
     Sets the line width [PDF:1.6:4.3.2].
   */
   public void setLineWidth(
-    float value
+    double value
     )
   {add(new SetLineWidth(value));}
 
@@ -839,15 +839,15 @@ public final class PrimitiveComposer
     @param d Item 1,1 of the matrix.
     @param e Item 2,0 of the matrix.
     @param f Item 2,1 of the matrix.
-    @see #applyMatrix(float,float,float,float,float,float)
+    @see #applyMatrix(double,double,double,double,double,double)
   */
   public void setMatrix(
-    float a,
-    float b,
-    float c,
-    float d,
-    float e,
-    float f
+    double a,
+    double b,
+    double c,
+    double d,
+    double e,
+    double f
     )
   {
     // Reset the CTM!
@@ -860,7 +860,7 @@ public final class PrimitiveComposer
     Sets the miter limit [PDF:1.6:4.3.2].
   */
   public void setMiterLimit(
-    float value
+    double value
     )
   {add(new SetMiterLimit(value));}
 
@@ -908,7 +908,7 @@ public final class PrimitiveComposer
     Sets the text rise [PDF:1.6:5.2.6].
   */
   public void setTextRise(
-    float value
+    double value
     )
   {add(new SetTextRise(value));}
 
@@ -916,7 +916,7 @@ public final class PrimitiveComposer
     Sets the word spacing [PDF:1.6:5.2.2].
   */
   public void setWordSpace(
-    float value
+    double value
     )
   {add(new SetWordSpace(value));}
 
@@ -1015,17 +1015,17 @@ public final class PrimitiveComposer
     Point2D location,
     AlignmentXEnum alignmentX,
     AlignmentYEnum alignmentY,
-    float rotation
+    double rotation
     )
   {
     ContentScanner.GraphicsState state = scanner.getState();
     Font font = state.getFont();
-    float fontSize = state.getFontSize();
-    float x = (float)location.getX();
-    float y = (float)location.getY();
-    float width = font.getKernedWidth(value,fontSize);
-    float height = font.getLineHeight(fontSize);
-    float descent = font.getDescent(fontSize);
+    double fontSize = state.getFontSize();
+    double x = location.getX();
+    double y = location.getY();
+    double width = font.getKernedWidth(value,fontSize);
+    double height = font.getLineHeight(fontSize);
+    double descent = font.getDescent(fontSize);
     Quad frame;
     if(alignmentX == AlignmentXEnum.Left
       && alignmentY == AlignmentYEnum.Top)
@@ -1037,7 +1037,7 @@ public final class PrimitiveComposer
         {
           translateText(
             x,
-            (float)(scanner.getContentContext().getBox().getHeight() - y - font.getAscent(fontSize))
+            scanner.getContentContext().getBox().getHeight() - y - font.getAscent(fontSize)
             );
         }
         else
@@ -1166,7 +1166,7 @@ public final class PrimitiveComposer
     Point2D location,
     AlignmentXEnum alignmentX,
     AlignmentYEnum alignmentY,
-    float rotation,
+    double rotation,
     Action action
     )
   {
@@ -1316,7 +1316,7 @@ public final class PrimitiveComposer
     Dimension2D size,
     AlignmentXEnum alignmentX,
     AlignmentYEnum alignmentY,
-    float rotation
+    double rotation
     )
   {
     XObject xObject = scanner.getContentContext().getResources().getXObjects().get(name);
@@ -1343,29 +1343,41 @@ public final class PrimitiveComposer
     scaleY = size.getHeight() / (xObjectSize.getHeight() * matrix.getScaleY());
 
     // Alignment.
-    float locationOffsetX, locationOffsetY;
+    double locationOffsetX, locationOffsetY;
     switch(alignmentX)
     {
-      case Left: locationOffsetX = 0; break;
-      case Right: locationOffsetX = (float)size.getWidth(); break;
+      case Left:
+        locationOffsetX = 0;
+        break;
+      case Right:
+        locationOffsetX = size.getWidth();
+        break;
       case Center:
       case Justify:
-      default: locationOffsetX = (float)size.getWidth() / 2; break;
+      default:
+        locationOffsetX = size.getWidth() / 2;
+        break;
     }
     switch(alignmentY)
     {
-      case Top: locationOffsetY = (float)size.getHeight(); break;
-      case Bottom: locationOffsetY = 0; break;
+      case Top:
+        locationOffsetY = size.getHeight();
+        break;
+      case Bottom:
+        locationOffsetY = 0;
+        break;
       case Middle:
-      default: locationOffsetY = (float)size.getHeight() / 2; break;
+      default:
+        locationOffsetY = size.getHeight() / 2;
+        break;
     }
 
     beginLocalState();
     try
     {
       translate(
-        (float)location.getX(),
-        (float)(scanner.getContentContext().getBox().getHeight() - location.getY())
+        location.getX(),
+        scanner.getContentContext().getBox().getHeight() - location.getY()
         );
       if(rotation != 0)
       {rotate(rotation);}
@@ -1387,7 +1399,7 @@ public final class PrimitiveComposer
     <p>The <code>value</code> is checked for presence in the current resource
     dictionary: if it isn't available, it's automatically added. If you need to
     avoid such a behavior, use {@link #showXObject(PdfName,Point2D,Dimension2D,AlignmentXEnum,
-    AlignmentYEnum,float) showXObject(PdfName,...)}.</p>
+    AlignmentYEnum,double) showXObject(PdfName,...)}.</p>
 
     @param value External object.
     @param location Position at which showing the external object.
@@ -1402,7 +1414,7 @@ public final class PrimitiveComposer
     Dimension2D size,
     AlignmentXEnum alignmentX,
     AlignmentYEnum alignmentY,
-    float rotation
+    double rotation
     )
   {
     showXObject(
@@ -1430,11 +1442,11 @@ public final class PrimitiveComposer
 
     @param distanceX Horizontal distance.
     @param distanceY Vertical distance.
-    @see #applyMatrix(float,float,float,float,float,float)
+    @see #applyMatrix(double,double,double,double,double,double)
   */
   public void translate(
-    float distanceX,
-    float distanceY
+    double distanceX,
+    double distanceY
     )
   {applyMatrix(1, 0, 0, 1, distanceX, distanceY);}
   // </public>
@@ -1469,10 +1481,10 @@ public final class PrimitiveComposer
   //TODO: drawArc MUST seamlessly manage already-begun paths.
   private void drawArc(
     RectangularShape location,
-    float startAngle,
-    float endAngle,
-    float branchWidth,
-    float branchRatio,
+    double startAngle,
+    double endAngle,
+    double branchWidth,
+    double branchRatio,
     boolean beginPath
     )
   {
@@ -1485,13 +1497,13 @@ public final class PrimitiveComposer
 
     if(startAngle > endAngle)
     {
-      float swap = startAngle;
+      double swap = startAngle;
       startAngle = endAngle;
       endAngle = swap;
     }
 
-    float radiusX = (float)location.getWidth() / 2;
-    float radiusY = (float)location.getHeight() / 2;
+    double radiusX = location.getWidth() / 2;
+    double radiusY = location.getHeight() / 2;
 
     final Point2D center = new Point2D.Double(
       location.getX() + radiusX,
@@ -1687,7 +1699,7 @@ public final class PrimitiveComposer
   */
   @SuppressWarnings("unused")
   private void rotateText(
-    float angle
+    double angle
     )
   {
     double rad = angle * Math.PI / 180;
@@ -1705,8 +1717,8 @@ public final class PrimitiveComposer
   */
   @SuppressWarnings("unused")
   private void scaleText(
-    float ratioX,
-    float ratioY
+    double ratioX,
+    double ratioY
     )
   {setTextMatrix(ratioX, 0, 0, ratioY, 0, 0);}
 
@@ -1739,8 +1751,8 @@ public final class PrimitiveComposer
     @param distanceY Vertical distance.
   */
   private void translateText(
-    float distanceX,
-    float distanceY
+    double distanceX,
+    double distanceY
     )
   {setTextMatrix(1, 0, 0, 1, distanceX, distanceY);}
 
@@ -1753,8 +1765,8 @@ public final class PrimitiveComposer
   */
   @SuppressWarnings("unused")
   private void translateTextRelative(
-    float offsetX,
-    float offsetY
+    double offsetX,
+    double offsetY
     )
   {
     add(

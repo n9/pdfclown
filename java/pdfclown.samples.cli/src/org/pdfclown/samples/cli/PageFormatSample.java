@@ -1,25 +1,25 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+import java.util.EnumSet;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
-import org.pdfclown.documents.Pages;
 import org.pdfclown.documents.PageFormat;
+import org.pdfclown.documents.Pages;
 import org.pdfclown.documents.contents.composition.AlignmentXEnum;
 import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.files.File;
 
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-import java.util.EnumSet;
-
 /**
   This sample generates a series of PDF pages from the <b>default page formats available</b>,
   <i>varying both in size and orientation</i>.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class PageFormatSample
   extends Sample
@@ -35,12 +35,9 @@ public class PageFormatSample
     // 2. Populate the document!
     populate(document);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Page Format","page formats");
-
     // 3. Serialize the PDF file!
-    serialize(file,false);
-    
+    serialize(file, false, "Page Format", "page formats");
+
     return true;
   }
 

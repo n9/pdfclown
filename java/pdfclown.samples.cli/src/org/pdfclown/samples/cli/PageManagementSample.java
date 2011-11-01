@@ -19,7 +19,7 @@ import org.pdfclown.tools.PageManager;
   splits of groups of pages.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class PageManagementSample
   extends Sample
@@ -55,20 +55,19 @@ public class PageManagementSample
   public boolean run(
     )
   {
-    final String mainFilePath = promptPdfFileChoice("Please select a PDF file");
+    final ActionEnum action = promptAction();
 
-    // Open the PDF file!
+    // Opening the PDF file...
+    final String mainFilePath = promptPdfFileChoice("Please select a PDF file");
     final File mainFile;
     try
     {mainFile = new File(mainFilePath);}
     catch(Exception e)
     {throw new RuntimeException(mainFilePath + " file access error.",e);}
-
     final Document mainDocument = mainFile.getDocument();
     final Pages mainPages = mainDocument.getPages();
     final int mainPagesCount = mainPages.size();
 
-    final ActionEnum action = promptAction();
     switch(action)
     {
       case PageDataSizeCalculation:
@@ -315,7 +314,7 @@ public class PageManagementSample
     serialize(
       file,
       getClass().getSimpleName() + "_" + action.name() + (index != null ? "." + index : ""),
-      chooseMode
+      chooseMode, null, null
       );
   }
 }

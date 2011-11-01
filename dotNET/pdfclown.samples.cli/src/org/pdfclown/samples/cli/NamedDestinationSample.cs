@@ -21,30 +21,32 @@ namespace org.pdfclown.samples.cli
     public override bool Run(
       )
     {
+      // 1. Opening the PDF file...
       string filePath = PromptPdfFileChoice("Please select a PDF file");
-
-      // 1. Open the PDF file!
       File file = new File(filePath);
       Document document = file.Document;
       Pages pages = document.Pages;
 
       // 2. Inserting page destinations...
-      Names names = document.Names; if(names == null){document.Names = names = new Names(document);}
-      NamedDestinations destinations = names.Destinations; if(destinations == null){names.Destinations = destinations = new NamedDestinations(document);}
+      Names names = document.Names;
+      if(names == null)
+      {document.Names = names = new Names(document);}
+
+      NamedDestinations destinations = names.Destinations;
+      if(destinations == null)
+      {names.Destinations = destinations = new NamedDestinations(document);}
+
       destinations[new PdfString("First page")] = new LocalDestination(pages[0]);
       if(pages.Count > 1)
       {
-        destinations[new PdfString("Second page")] = new LocalDestination(pages[1], Destination.ModeEnum.FitHorizontal, new float?[]{0f});
+        destinations[new PdfString("Second page")] = new LocalDestination(pages[1], Destination.ModeEnum.FitHorizontal, new double?[]{0});
 
         if(pages.Count > 2)
-        {destinations[new PdfString("Third page")] = new LocalDestination(pages[2], Destination.ModeEnum.XYZ, new float?[]{50f,null,null});}
+        {destinations[new PdfString("Third page")] = new LocalDestination(pages[2], Destination.ModeEnum.XYZ, new double?[]{50,null,null});}
       }
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Named destinations","manipulating named destinations");
-
       // 3. Serialize the PDF file!
-      Serialize(file);
+      Serialize(file, true, "Named destinations", "manipulating named destinations");
 
       return true;
     }

@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
   </ul>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Destination
@@ -73,14 +73,14 @@ public abstract class Destination
         <li>zoom</li>
       </ol>
     */
-    XYZ,
+    XYZ(PdfName.XYZ),
     /**
       Display the page with its contents magnified just enough to fit
       the entire page within the window both horizontally and vertically.
 
       <p>No view parameters.</p>
     */
-    Fit,
+    Fit(PdfName.Fit),
     /**
       Display the page with the vertical coordinate <code>top</code> positioned
       at the top edge of the window and the contents of the page magnified
@@ -91,7 +91,7 @@ public abstract class Destination
         <li>top coordinate</li>
       </ol>
     */
-    FitHorizontal,
+    FitHorizontal(PdfName.FitH),
     /**
       Display the page with the horizontal coordinate <code>left</code> positioned
       at the left edge of the window and the contents of the page magnified
@@ -102,7 +102,7 @@ public abstract class Destination
         <li>left coordinate</li>
       </ol>
     */
-    FitVertical,
+    FitVertical(PdfName.FitV),
     /**
       Display the page with its contents magnified just enough to fit
       the rectangle specified by the given coordinates entirely
@@ -116,14 +116,14 @@ public abstract class Destination
         <li>top coordinate</li>
       </ol>
     */
-    FitRectangle,
+    FitRectangle(PdfName.FitR),
     /**
       Display the page with its contents magnified just enough to fit
       its bounding box entirely within the window both horizontally and vertically.
 
       <p>No view parameters.</p>
     */
-    FitBoundingBox,
+    FitBoundingBox(PdfName.FitB),
     /**
       Display the page with the vertical coordinate <code>top</code> positioned
       at the top edge of the window and the contents of the page magnified
@@ -134,7 +134,7 @@ public abstract class Destination
         <li>top coordinate</li>
       </ol>
     */
-    FitBoundingBoxHorizontal,
+    FitBoundingBoxHorizontal(PdfName.FitBH),
     /**
       Display the page with the horizontal coordinate <code>left</code> positioned
       at the left edge of the window and the contents of the page magnified
@@ -145,7 +145,33 @@ public abstract class Destination
         <li>left coordinate</li>
       </ol>
     */
-    FitBoundingBoxVertical
+    FitBoundingBoxVertical(PdfName.FitBV);
+
+    public static ModeEnum valueOf(
+      PdfName name
+      )
+    {
+      if(name == null)
+        return null;
+
+      for(ModeEnum value : values())
+      {
+        if(value.getName().equals(name))
+          return value;
+      }
+      throw new UnsupportedOperationException("Mode unknown: " + name);
+    }
+
+    private PdfName name;
+
+    private ModeEnum(
+      PdfName name
+      )
+    {this.name = name;}
+
+    public PdfName getName(
+      )
+    {return name;}
   }
   // </classes>
 
@@ -196,46 +222,39 @@ public abstract class Destination
     Document context,
     PdfDirectObject pageObject,
     ModeEnum mode,
-    Float[] viewParams
+    Double[] viewParams
     )
   {
     super(context, new PdfArray());
     PdfArray baseDataObject = getBaseDataObject();
     {
       baseDataObject.add(pageObject);
+      baseDataObject.add(mode.getName());
       switch(mode)
       {
         case Fit:
-          baseDataObject.add(PdfName.Fit);
           break;
         case FitBoundingBox:
-          baseDataObject.add(PdfName.FitB);
           break;
         case FitBoundingBoxHorizontal:
-          baseDataObject.add(PdfName.FitBH);
           baseDataObject.add(PdfReal.get(viewParams[0]));
           break;
         case FitBoundingBoxVertical:
-          baseDataObject.add(PdfName.FitBV);
           baseDataObject.add(PdfReal.get(viewParams[0]));
           break;
         case FitHorizontal:
-          baseDataObject.add(PdfName.FitH);
           baseDataObject.add(PdfReal.get(viewParams[0]));
           break;
         case FitRectangle:
-          baseDataObject.add(PdfName.FitR);
           baseDataObject.add(PdfReal.get(viewParams[0]));
           baseDataObject.add(PdfReal.get(viewParams[1]));
           baseDataObject.add(PdfReal.get(viewParams[2]));
           baseDataObject.add(PdfReal.get(viewParams[3]));
           break;
         case FitVertical:
-          baseDataObject.add(PdfName.FitV);
           baseDataObject.add(PdfReal.get(viewParams[0]));
           break;
         case XYZ:
-          baseDataObject.add(PdfName.XYZ);
           baseDataObject.add(PdfReal.get(viewParams[0]));
           baseDataObject.add(PdfReal.get(viewParams[1]));
           baseDataObject.add(PdfReal.get(viewParams[2]));
@@ -264,25 +283,7 @@ public abstract class Destination
   */
   public ModeEnum getMode(
     )
-  {
-    PdfName modeObject = (PdfName)getBaseDataObject().get(1);
-    if(modeObject.equals(PdfName.FitB))
-      return ModeEnum.FitBoundingBox;
-    else if(modeObject.equals(PdfName.FitBH))
-      return ModeEnum.FitBoundingBoxHorizontal;
-    else if(modeObject.equals(PdfName.FitBV))
-      return ModeEnum.FitBoundingBoxVertical;
-    else if(modeObject.equals(PdfName.FitH))
-      return ModeEnum.FitHorizontal;
-    else if(modeObject.equals(PdfName.FitR))
-      return ModeEnum.FitRectangle;
-    else if(modeObject.equals(PdfName.FitV))
-      return ModeEnum.FitVertical;
-    else if(modeObject.equals(PdfName.XYZ))
-      return ModeEnum.XYZ;
-    else
-      return ModeEnum.Fit;
-  }
+  {return ModeEnum.valueOf((PdfName)getBaseDataObject().get(1));}
 
   /**
     Gets the target page reference.

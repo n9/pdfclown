@@ -88,12 +88,12 @@ namespace org.pdfclown.documents.contents.objects
       <summary>Creates a fully-explicit curve.</summary>
     */
     public DrawCurve(
-      float pointX,
-      float pointY,
-      float control1X,
-      float control1Y,
-      float control2X,
-      float control2Y
+      double pointX,
+      double pointY,
+      double control1X,
+      double control1Y,
+      double control2X,
+      double control2Y
       ) : base(
         FullOperatorKeyword,
         new List<PdfDirectObject>(
@@ -155,8 +155,8 @@ namespace org.pdfclown.documents.contents.objects
           return null;
         else
           return new PointF(
-            ((IPdfNumber)operands[0]).RawValue,
-            ((IPdfNumber)operands[1]).RawValue
+            ((IPdfNumber)operands[0]).FloatValue,
+            ((IPdfNumber)operands[1]).FloatValue
             );
       }
       set
@@ -184,13 +184,13 @@ namespace org.pdfclown.documents.contents.objects
       {
         if(operator_.Equals(FinalOperatorKeyword))
           return new PointF(
-            ((IPdfNumber)operands[0]).RawValue,
-            ((IPdfNumber)operands[1]).RawValue
+            ((IPdfNumber)operands[0]).FloatValue,
+            ((IPdfNumber)operands[1]).FloatValue
             );
         else
           return new PointF(
-            ((IPdfNumber)operands[2]).RawValue,
-            ((IPdfNumber)operands[3]).RawValue
+            ((IPdfNumber)operands[2]).FloatValue,
+            ((IPdfNumber)operands[3]).FloatValue
             );
       }
       set
@@ -217,13 +217,13 @@ namespace org.pdfclown.documents.contents.objects
       {
         if(operator_.Equals(FullOperatorKeyword))
           return new PointF(
-            ((IPdfNumber)operands[4]).RawValue,
-            ((IPdfNumber)operands[5]).RawValue
+            ((IPdfNumber)operands[4]).FloatValue,
+            ((IPdfNumber)operands[5]).FloatValue
             );
         else
           return new PointF(
-            ((IPdfNumber)operands[2]).RawValue,
-            ((IPdfNumber)operands[3]).RawValue
+            ((IPdfNumber)operands[2]).FloatValue,
+            ((IPdfNumber)operands[3]).FloatValue
             );
       }
       set

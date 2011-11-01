@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,6 +33,7 @@ import java.util.List;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.ContentScanner;
 import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
 
@@ -41,7 +42,7 @@ import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class CompositeObject
@@ -125,11 +126,12 @@ public abstract class CompositeObject
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    Document context
     )
   {
     for(ContentObject object : objects)
-    {object.writeTo(stream);}
+    {object.writeTo(stream, context);}
   }
   // </public>
 

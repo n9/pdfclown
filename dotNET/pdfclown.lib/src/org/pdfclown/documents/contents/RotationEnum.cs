@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -62,6 +62,9 @@ namespace org.pdfclown.documents.contents
       PdfInteger value
       )
     {
+      if(value == null)
+        return RotationEnum.Downward;
+
       int normalizedValue = (int)(Math.Round(value.RawValue / 90d) % 4) * 90;
       if(normalizedValue < 0)
       {normalizedValue += 360 * (int)Math.Ceiling(-normalizedValue / 360d);}

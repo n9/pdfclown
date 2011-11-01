@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF12)
 public final class AppearanceCharacteristics
@@ -415,7 +415,7 @@ public final class AppearanceCharacteristics
         getBaseDataObject().put(PdfName.A, alignmentObject);
       }
 
-      float objectValue;
+      double objectValue;
       switch(value)
       {
         case Left:
@@ -425,7 +425,7 @@ public final class AppearanceCharacteristics
           objectValue = 1;
           break;
         default:
-          objectValue = 0.5f;
+          objectValue = 0.5;
           break;
       }
       alignmentObject.set(0, new PdfReal(objectValue));
@@ -456,7 +456,7 @@ public final class AppearanceCharacteristics
         getBaseDataObject().put(PdfName.A, alignmentObject);
       }
 
-      float objectValue;
+      double objectValue;
       switch(value)
       {
         case Bottom:
@@ -466,7 +466,7 @@ public final class AppearanceCharacteristics
           objectValue = 1;
           break;
         default:
-          objectValue = 0.5f;
+          objectValue = 0.5;
           break;
       }
       alignmentObject.set(1, new PdfReal(objectValue));

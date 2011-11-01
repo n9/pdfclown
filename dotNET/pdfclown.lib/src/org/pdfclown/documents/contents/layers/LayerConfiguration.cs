@@ -62,7 +62,7 @@ namespace org.pdfclown.documents.contents.layers
     public BaseStateEnum BaseState
     {
       get
-      {return BaseStateEnumExtension.ToEnum((PdfName)BaseDataObject[PdfName.BaseState]);}
+      {return BaseStateEnumExtension.Get((PdfName)BaseDataObject[PdfName.BaseState]);}
       set
       {BaseDataObject[PdfName.BaseState] = value.GetName();}
     }
@@ -86,7 +86,7 @@ namespace org.pdfclown.documents.contents.layers
     public ListModeEnum ListMode
     {
       get
-      {return ListModeEnumExtension.ToEnum((PdfName)BaseDataObject[PdfName.ListMode]);}
+      {return ListModeEnumExtension.Get((PdfName)BaseDataObject[PdfName.ListMode]);}
       set
       {BaseDataObject[PdfName.ListMode] = value.GetName();}
     }

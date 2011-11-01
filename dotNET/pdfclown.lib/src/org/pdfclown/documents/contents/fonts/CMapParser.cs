@@ -41,7 +41,7 @@ namespace org.pdfclown.documents.contents.fonts
   /**
     <summary>CMap parser [PDF:1.6:5.6.4;CMAP].</summary>
   */
-  sealed class CMapParser
+  internal sealed class CMapParser
     : PostScriptParser
   {
     #region static
@@ -193,7 +193,7 @@ namespace org.pdfclown.documents.contents.fonts
         case TokenTypeEnum.Integer: // Character code in plain format.
           return (int)Token;
         case TokenTypeEnum.Name: // Character name.
-          return GlyphMapping.NameToCode((string)Token);
+          return GlyphMapping.NameToCode((string)Token).Value;
         default:
           throw new Exception(
             "Hex string, integer or name expected instead of " + TokenType

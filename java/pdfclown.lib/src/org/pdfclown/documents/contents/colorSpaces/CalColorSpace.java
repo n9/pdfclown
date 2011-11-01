@@ -34,7 +34,7 @@ import org.pdfclown.objects.PdfDirectObject;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public abstract class CalColorSpace
@@ -56,7 +56,7 @@ public abstract class CalColorSpace
   /**
     Gets the gamma of this color space.
   */
-  public abstract float[] getGamma(
+  public abstract double[] getGamma(
     );
   // </public>
   // </interface>

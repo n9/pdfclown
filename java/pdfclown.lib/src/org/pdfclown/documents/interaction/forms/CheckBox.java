@@ -29,6 +29,7 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interaction.annotations.Widget;
+import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.NotImplementedException;
@@ -38,7 +39,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF12)
 public final class CheckBox
@@ -85,16 +86,41 @@ public final class CheckBox
     boolean value
     )
   {
-    PdfName baseValue = (value ? PdfName.Yes : PdfName.Off);
+    PdfDictionary widgetDictionary = getWidgets().get(0).getBaseDataObject();
+    /*
+      NOTE: The appearance for the off state is optional but, if present, MUST be stored in the
+      appearance dictionary under the name Off. The recommended (but NOT required) name for the on
+      state is Yes.
+    */
+    PdfName baseValue = null;
+    if(value)
+    {
+      PdfDictionary appearanceDictionary = (PdfDictionary)widgetDictionary.resolve(PdfName.AP);
+      if(appearanceDictionary != null)
+      {
+        for(PdfName appearanceKey : ((PdfDictionary)appearanceDictionary.resolve(PdfName.N)).keySet())
+        {
+          if(!appearanceKey.equals(PdfName.Off))
+          {
+            baseValue = appearanceKey;
+            break;
+          }
+        }
+      }
+      else
+      {baseValue = PdfName.Yes;}
+    }
+    else
+    {baseValue = PdfName.Off;}
     getBaseDataObject().put(PdfName.V,baseValue);
-    getWidgets().get(0).getBaseDataObject().put(PdfName.AS,baseValue);
+    widgetDictionary.put(PdfName.AS,baseValue);
   }
 
   @Override
   public void setValue(
     Object value
     )
-  {setChecked(!(value == null || value.equals(PdfName.Off.getValue())));}
+  {setChecked(!(value == null || value.equals("") || value.equals(PdfName.Off.getValue())));}
   // </public>
   // </interface>
   // </dynamic>

@@ -297,10 +297,10 @@ namespace org.pdfclown.documents.interaction.annotations
       {
         org.pdfclown.objects.Rectangle box = new org.pdfclown.objects.Rectangle(BaseDataObject[PdfName.Rect]);
         return new RectangleF(
-          box.Left,
-          GetPageHeight() - box.Top,
-          box.Width,
-          box.Height
+          (float)box.Left,
+          (float)(GetPageHeight() - box.Top),
+          (float)box.Width,
+          (float)box.Height
           );
       }
       set

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -48,10 +48,10 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     private UnitModeEnum unitMode;
-    private float value;
+    private double value;
 
     public Length(
-      float value,
+      double value,
       UnitModeEnum unitMode
       )
     {
@@ -65,8 +65,8 @@ namespace org.pdfclown.documents.contents.composition
       to the specified base value.</remarks>
       <param name="baseValue">Value used to resolve relative values.</param>
     */
-    public float GetValue(
-      float baseValue
+    public double GetValue(
+      double baseValue
       )
     {
       switch(unitMode)
@@ -96,7 +96,7 @@ namespace org.pdfclown.documents.contents.composition
       <remarks>According to the applied unit mode, this value can be
       either an absolute measure or a ratio to be resolved through a base value.</remarks>
     */
-    public float Value
+    public double Value
     {
       get
       {return value;}

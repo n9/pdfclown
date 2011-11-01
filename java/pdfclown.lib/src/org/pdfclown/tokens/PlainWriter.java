@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF file writer implementing classic cross-reference table [PDF:1.6:3.4.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 11/01/11
 */
 final class PlainWriter
   extends Writer
@@ -132,7 +132,7 @@ final class PlainWriter
             stream.getLength()
             );
           // Add in-use entry content!
-          indirectObjectEntry.getValue().writeTo(stream);
+          indirectObjectEntry.getValue().writeTo(stream, file);
         }
         else // Free entry.
         {
@@ -210,7 +210,7 @@ final class PlainWriter
             stream.getLength()
             );
           // Add in-use entry content!
-          indirectObject.writeTo(stream);
+          indirectObject.writeTo(stream, file);
         }
         else // Free entry.
         {
@@ -332,7 +332,7 @@ final class PlainWriter
     else
     {trailer.put(PdfName.Prev,new PdfInteger((int)parser.retrieveXRefOffset()));}
     // Serialize its contents!
-    trailer.writeTo(stream); stream.write(Chunk.LineFeed);
+    trailer.writeTo(stream, file); stream.write(Chunk.LineFeed);
 
     // 3. Tail.
     writeTail(startxref);

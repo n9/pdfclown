@@ -46,7 +46,7 @@ namespace org.pdfclown.documents.contents.objects
     #region dynamic
     #region constructors
     public SetTextRise(
-      float value
+      double value
       ) : base(OperatorKeyword, new PdfReal(value))
     {}
 
@@ -64,9 +64,10 @@ namespace org.pdfclown.documents.contents.objects
     {state.Rise = Value;}
 
     /**
-      <summary>Gets the text rise, which is a number expressed in unscaled text space units.</summary>
+      <summary>Gets/Sets the text rise, which is a number expressed in unscaled text space units.
+      </summary>
     */
-    public float Value
+    public double Value
     {
       get
       {return ((IPdfNumber)operands[0]).RawValue;}

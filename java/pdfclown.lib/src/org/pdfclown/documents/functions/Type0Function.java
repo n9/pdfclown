@@ -42,13 +42,13 @@ import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.Interval;
 
 /**
-  <b>Sampled function</b> using a <i>sequence of sample values to provide an approximation
-  for functions whose domains and ranges are bounded</i> [PDF:1.6:3.9.1].
+  Sampled function using a sequence of sample values to provide an approximation for functions whose
+  domains and ranges are bounded [PDF:1.6:3.9.1].
   <p>The samples are organized as an m-dimensional table in which each entry has n components.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF12)
 public final class Type0Function
@@ -105,8 +105,8 @@ public final class Type0Function
   // <interface>
   // <public>
   @Override
-  public float[] calculate(
-    float[] inputs
+  public double[] calculate(
+    double[] inputs
     )
   {
     // FIXME: Auto-generated method stub
@@ -157,7 +157,7 @@ public final class Type0Function
   /**
     Gets the linear mapping of sample values into the ranges of the function's output values.
   */
-  public List<Interval<Float>> getRangeDecodes(
+  public List<Interval<Double>> getRangeDecodes(
     )
   {return getIntervals(PdfName.Decode, null);}
 

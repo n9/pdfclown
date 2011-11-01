@@ -63,7 +63,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 public final class DefaultStyle
   extends FieldStyle
@@ -72,7 +72,7 @@ public final class DefaultStyle
   // <constructors>
   public DefaultStyle(
     )
-  {setBackColor(new DeviceRGBColor(.9f,.9f,.9f));}
+  {setBackColor(new DeviceRGBColor(.9,.9,.9));}
   // </constructors>
 
   // <interface>
@@ -120,8 +120,8 @@ public final class DefaultStyle
             },
             new PdfDirectObject[]
             {
-              new PdfArray(new PdfDirectObject[]{new PdfReal(0.9412),new PdfReal(0.9412),new PdfReal(0.9412)}),
-              new PdfArray(new PdfDirectObject[]{new PdfInteger(0),new PdfInteger(0),new PdfInteger(0)}),
+              new PdfArray(new PdfDirectObject[]{new PdfReal(0.9412), new PdfReal(0.9412), new PdfReal(0.9412)}),
+              new PdfArray(new PdfDirectObject[]{new PdfInteger(0), new PdfInteger(0), new PdfInteger(0)}),
               new PdfString("4")
             }
             )
@@ -162,19 +162,24 @@ public final class DefaultStyle
 //   appearance.getDown().put(PdfName.Off,offState);
 
       Rectangle2D widgetBox = widget.getBox();
-      Dimension2D size = new Dimension(widgetBox.getWidth(),widgetBox.getHeight());
-      Rectangle2D frame = new Rectangle2D.Double(0,0,size.getWidth(),size.getHeight());
+      Dimension2D size = new Dimension(widgetBox.getWidth(), widgetBox.getHeight());
+      double lineWidth = 1;
+      Rectangle2D frame = new Rectangle2D.Double(lineWidth / 2, lineWidth / 2, size.getWidth() - lineWidth, size.getHeight() - lineWidth);
       {
         onState.setSize(size);
 
         PrimitiveComposer composer = new PrimitiveComposer(onState);
 
-        composer.beginLocalState();
-        composer.setFillColor(getBackColor());
-        composer.setStrokeColor(getForeColor());
-        composer.drawRectangle(frame);
-        composer.fillStroke();
-        composer.end();
+        if(isGraphicsVisibile())
+        {
+          composer.beginLocalState();
+          composer.setLineWidth(lineWidth);
+          composer.setFillColor(getBackColor());
+          composer.setStrokeColor(getForeColor());
+          composer.drawRectangle(frame, 5);
+          composer.fillStroke();
+          composer.end();
+        }
 
         BlockComposer blockComposer = new BlockComposer(composer);
         blockComposer.begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Middle);
@@ -186,7 +191,7 @@ public final class DefaultStyle
             true,
             false
             ),
-          (float)(size.getHeight() * 0.8)
+          size.getHeight() * 0.8
           );
         blockComposer.showText(new String(new char[]{getCheckSymbol()}));
         blockComposer.end();
@@ -199,16 +204,20 @@ public final class DefaultStyle
       {
         offState.setSize(size);
 
-        PrimitiveComposer composer = new PrimitiveComposer(offState);
+        if(isGraphicsVisibile())
+        {
+          PrimitiveComposer composer = new PrimitiveComposer(offState);
 
-        composer.beginLocalState();
-        composer.setFillColor(getBackColor());
-        composer.setStrokeColor(getForeColor());
-        composer.drawRectangle(frame);
-        composer.fillStroke();
-        composer.end();
+          composer.beginLocalState();
+          composer.setLineWidth(lineWidth);
+          composer.setFillColor(getBackColor());
+          composer.setStrokeColor(getForeColor());
+          composer.drawRectangle(frame,5);
+          composer.fillStroke();
+          composer.end();
 
-        composer.flush();
+          composer.flush();
+        }
       }
     }
   }
@@ -237,8 +246,8 @@ public final class DefaultStyle
             },
             new PdfDirectObject[]
             {
-              new PdfArray(new PdfDirectObject[]{new PdfReal(0.9412),new PdfReal(0.9412),new PdfReal(0.9412)}),
-              new PdfArray(new PdfDirectObject[]{new PdfInteger(0),new PdfInteger(0),new PdfInteger(0)}),
+              new PdfArray(new PdfDirectObject[]{new PdfReal(0.9412), new PdfReal(0.9412), new PdfReal(0.9412)}),
+              new PdfArray(new PdfDirectObject[]{new PdfInteger(0), new PdfInteger(0), new PdfInteger(0)}),
               new PdfString("l")
             }
             )
@@ -279,18 +288,23 @@ public final class DefaultStyle
 
       Rectangle2D widgetBox = widget.getBox();
       Dimension2D size = new Dimension(widgetBox.getWidth(),widgetBox.getHeight());
-      Rectangle2D frame = new Rectangle2D.Double(1,1,size.getWidth()-2,size.getHeight()-2);
+      double lineWidth = 1;
+      Rectangle2D frame = new Rectangle2D.Double(lineWidth / 2, lineWidth / 2, size.getWidth() - lineWidth, size.getHeight() - lineWidth);
       {
         onState.setSize(size);
 
         PrimitiveComposer composer = new PrimitiveComposer(onState);
 
-        composer.beginLocalState();
-        composer.setFillColor(getBackColor());
-        composer.setStrokeColor(getForeColor());
-        composer.drawEllipse(frame);
-        composer.fillStroke();
-        composer.end();
+        if(isGraphicsVisibile())
+        {
+          composer.beginLocalState();
+          composer.setLineWidth(lineWidth);
+          composer.setFillColor(getBackColor());
+          composer.setStrokeColor(getForeColor());
+          composer.drawEllipse(frame);
+          composer.fillStroke();
+          composer.end();
+        }
 
         BlockComposer blockComposer = new BlockComposer(composer);
         blockComposer.begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Middle);
@@ -302,7 +316,7 @@ public final class DefaultStyle
             true,
             false
             ),
-          (float)(size.getHeight() * 0.8)
+          size.getHeight() * 0.8
           );
         blockComposer.showText(new String(new char[]{getRadioSymbol()}));
         blockComposer.end();
@@ -315,16 +329,20 @@ public final class DefaultStyle
       {
         offState.setSize(size);
 
-        PrimitiveComposer composer = new PrimitiveComposer(offState);
+        if(isGraphicsVisibile())
+        {
+          PrimitiveComposer composer = new PrimitiveComposer(offState);
 
-        composer.beginLocalState();
-        composer.setFillColor(getBackColor());
-        composer.setStrokeColor(getForeColor());
-        composer.drawEllipse(frame);
-        composer.fillStroke();
-        composer.end();
+          composer.beginLocalState();
+          composer.setLineWidth(lineWidth);
+          composer.setFillColor(getBackColor());
+          composer.setStrokeColor(getForeColor());
+          composer.drawEllipse(frame);
+          composer.fillStroke();
+          composer.end();
 
-        composer.flush();
+          composer.flush();
+        }
       }
     }
   }
@@ -347,15 +365,18 @@ public final class DefaultStyle
       normalAppearanceState.setSize(size);
       PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
-      composer.beginLocalState();
-      float lineWidth = 1;
-      composer.setLineWidth(lineWidth);
-      composer.setFillColor(getBackColor());
-      composer.setStrokeColor(getForeColor());
-      Rectangle2D frame = new Rectangle2D.Double(lineWidth/2,lineWidth/2,size.getWidth()-lineWidth,size.getHeight()-lineWidth);
-      composer.drawRectangle(frame,5);
-      composer.fillStroke();
-      composer.end();
+      double lineWidth = 1;
+      Rectangle2D frame = new Rectangle2D.Double(lineWidth / 2, lineWidth / 2, size.getWidth() - lineWidth, size.getHeight() - lineWidth);
+      if(isGraphicsVisibile())
+      {
+        composer.beginLocalState();
+        composer.setLineWidth(lineWidth);
+        composer.setFillColor(getBackColor());
+        composer.setStrokeColor(getForeColor());
+        composer.drawRectangle(frame, 5);
+        composer.fillStroke();
+        composer.end();
+      }
 
       String title = (String)field.getValue();
       if(title != null)
@@ -370,7 +391,7 @@ public final class DefaultStyle
             true,
             false
             ),
-          (float)(size.getHeight() * 0.5)
+          size.getHeight() * 0.5
           );
         blockComposer.showText(title);
         blockComposer.end();
@@ -404,15 +425,18 @@ public final class DefaultStyle
       normalAppearanceState.setSize(size);
       PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
-      composer.beginLocalState();
-      float lineWidth = 1;
-      composer.setLineWidth(lineWidth);
-      composer.setFillColor(getBackColor());
-      composer.setStrokeColor(getForeColor());
-      Rectangle2D frame = new Rectangle2D.Double(lineWidth/2,lineWidth/2,size.getWidth()-lineWidth,size.getHeight()-lineWidth);
-      composer.drawRectangle(frame,5);
-      composer.fillStroke();
-      composer.end();
+      double lineWidth = 1;
+      Rectangle2D frame = new Rectangle2D.Double(lineWidth / 2, lineWidth / 2, size.getWidth() - lineWidth, size.getHeight() - lineWidth);
+      if(isGraphicsVisibile())
+      {
+        composer.beginLocalState();
+        composer.setLineWidth(lineWidth);
+        composer.setFillColor(getBackColor());
+        composer.setStrokeColor(getForeColor());
+        composer.drawRectangle(frame, 5);
+        composer.fillStroke();
+        composer.end();
+      }
 
       composer.beginMarkedContent(PdfName.Tx);
       composer.setFont(
@@ -461,15 +485,18 @@ public final class DefaultStyle
       normalAppearanceState.setSize(size);
       PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
-      composer.beginLocalState();
-      float lineWidth = 1;
-      composer.setLineWidth(lineWidth);
-      composer.setFillColor(getBackColor());
-      composer.setStrokeColor(getForeColor());
-      Rectangle2D frame = new Rectangle2D.Double(lineWidth/2,lineWidth/2,size.getWidth()-lineWidth,size.getHeight()-lineWidth);
-      composer.drawRectangle(frame,5);
-      composer.fillStroke();
-      composer.end();
+      double lineWidth = 1;
+      Rectangle2D frame = new Rectangle2D.Double(lineWidth / 2, lineWidth / 2, size.getWidth() - lineWidth, size.getHeight() - lineWidth);
+      if(isGraphicsVisibile())
+      {
+        composer.beginLocalState();
+        composer.setLineWidth(lineWidth);
+        composer.setFillColor(getBackColor());
+        composer.setStrokeColor(getForeColor());
+        composer.drawRectangle(frame, 5);
+        composer.fillStroke();
+        composer.end();
+      }
 
       composer.beginMarkedContent(PdfName.Tx);
       composer.setFont(
@@ -522,8 +549,8 @@ public final class DefaultStyle
           },
           new PdfDirectObject[]
           {
-            new PdfArray(new PdfDirectObject[]{new PdfReal(.9),new PdfReal(.9),new PdfReal(.9)}),
-            new PdfArray(new PdfDirectObject[]{new PdfInteger(0),new PdfInteger(0),new PdfInteger(0)})
+            new PdfArray(new PdfDirectObject[]{new PdfReal(.9), new PdfReal(.9), new PdfReal(.9)}),
+            new PdfArray(new PdfDirectObject[]{new PdfInteger(0), new PdfInteger(0), new PdfInteger(0)})
           }
           )
         );
@@ -536,20 +563,25 @@ public final class DefaultStyle
       normalAppearanceState.setSize(size);
       PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
-      composer.beginLocalState();
-      float lineWidth = 1;
-      composer.setLineWidth(lineWidth);
-      composer.setFillColor(getBackColor());
-      composer.setStrokeColor(getForeColor());
-      Rectangle2D frame = new Rectangle2D.Double(lineWidth/2,lineWidth/2,size.getWidth()-lineWidth,size.getHeight()-lineWidth);
-      composer.drawRectangle(frame,5);
-      composer.fillStroke();
-      composer.end();
+      double lineWidth = 1;
+      Rectangle2D frame = new Rectangle2D.Double(lineWidth / 2, lineWidth / 2, size.getWidth() - lineWidth, size.getHeight() - lineWidth);
+      if(isGraphicsVisibile())
+      {
+        composer.beginLocalState();
+        composer.setLineWidth(lineWidth);
+        composer.setFillColor(getBackColor());
+        composer.setStrokeColor(getForeColor());
+        composer.drawRectangle(frame, 5);
+        composer.fillStroke();
+        composer.end();
+      }
 
       composer.beginLocalState();
-      composer.drawRectangle(frame,5);
-      composer.clip(); // Ensures that the visible content is clipped within the rounded frame.
-
+      if(isGraphicsVisibile())
+      {
+        composer.drawRectangle(frame, 5);
+        composer.clip(); // Ensures that the visible content is clipped within the rounded frame.
+      }
       composer.beginMarkedContent(PdfName.Tx);
       composer.setFont(
         new StandardType1Font(

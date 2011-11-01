@@ -24,11 +24,8 @@ namespace org.pdfclown.samples.cli
       // 2. Insert the contents into the document!
       Populate(document);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Text frame","getting the actual bounding box of text shown");
-
       // 3. Serialize the PDF file!
-      Serialize(file,false);
+      Serialize(file, false, "Text frame", "getting the actual bounding box of text shown");
 
       return true;
     }
@@ -48,7 +45,7 @@ namespace org.pdfclown.samples.cli
       PrimitiveComposer composer = new PrimitiveComposer(page);
 
       BlockComposer blockComposer = new BlockComposer(composer);
-      blockComposer.Begin(new RectangleF(300,400,200,100),AlignmentXEnum.Left,AlignmentYEnum.Middle);
+      blockComposer.Begin(new RectangleF(300, 400, 200, 100), AlignmentXEnum.Left, AlignmentYEnum.Middle);
       composer.SetFont(
         new fonts::StandardType1Font(
           document,
@@ -58,11 +55,11 @@ namespace org.pdfclown.samples.cli
           ),
         12
         );
-      composer.SetFillColor(new DeviceRGBColor(115f/255,164f/255,232f/255));
-      blockComposer.ShowText("showText() methods return the actual bounding box of the shown text, allowing to precisely determine its location on the page.");
+      composer.SetFillColor(new DeviceRGBColor(115d/255, 164d/255, 232d/255));
+      blockComposer.ShowText("PrimitiveComposer.ShowText(...) methods return the actual bounding box of the text shown, allowing to precisely determine its location on the page.");
       blockComposer.End();
 
-      composer.SetStrokeColor(new DeviceRGBColor(115f/255,164f/255,232f/255));
+      composer.SetStrokeColor(new DeviceRGBColor(115d/255, 164d/255, 232d/255));
 
       // 3. Inserting contents...
       // Set the font to use!
@@ -78,7 +75,7 @@ namespace org.pdfclown.samples.cli
       composer.DrawPolygon(
         composer.ShowText(
           "Text frame",
-          new PointF(150,360),
+          new PointF(150, 360),
           AlignmentXEnum.Left,
           AlignmentYEnum.Middle,
           45
@@ -96,7 +93,7 @@ namespace org.pdfclown.samples.cli
       composer.DrawPolygon(
         composer.ShowText(
           "Text frame",
-          new PointF(300,600),
+          new PointF(300, 600),
           AlignmentXEnum.Center,
           AlignmentYEnum.Middle,
           -25

@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -34,7 +34,7 @@ import org.pdfclown.VersionEnum;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class LineDash
@@ -42,8 +42,8 @@ public final class LineDash
   // <class>
   // <dynamic>
   // <fields>
-  private float[] dashArray;
-  private float dashPhase;
+  private final double[] dashArray;
+  private final double dashPhase;
   // </fields>
 
   // <constructors>
@@ -52,13 +52,13 @@ public final class LineDash
   {this(null);}
 
   public LineDash(
-    float[] dashArray
+    double[] dashArray
     )
   {this(dashArray,0);}
 
   public LineDash(
-    float[] dashArray,
-    float dashPhase
+    double[] dashArray,
+    double dashPhase
     )
   {
     this.dashArray = dashArray;
@@ -71,14 +71,14 @@ public final class LineDash
   /**
     Gets the lengths of alternating dashes and gaps.
   */
-  public float[] getDashArray(
+  public double[] getDashArray(
     )
   {return dashArray;}
 
   /**
     Gets the distance into the dash pattern at which to start the dash.
   */
-  public float getDashPhase(
+  public double getDashPhase(
     )
   {return dashPhase;}
   // </public>

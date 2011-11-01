@@ -127,8 +127,8 @@ namespace org.pdfclown.documents.functions
       to the specified input values.</summary>
       <param name="inputs">Input values.</param>
      */
-    public abstract float[] Calculate(
-      float[] inputs
+    public abstract double[] Calculate(
+      double[] inputs
       );
 
     /**
@@ -142,7 +142,7 @@ namespace org.pdfclown.documents.functions
     {
       IList<PdfDirectObject> outputs = new List<PdfDirectObject>();
       {
-        float[] inputValues = new float[inputs.Count];
+        double[] inputValues = new double[inputs.Count];
         for(
           int index = 0,
             length = inputValues.Length;
@@ -150,7 +150,7 @@ namespace org.pdfclown.documents.functions
           index++
           )
         {inputValues[index] = ((IPdfNumber)inputs[index]).RawValue;}
-        float[] outputValues = Calculate(inputValues);
+        double[] outputValues = Calculate(inputValues);
         for(
           int index = 0,
             length = outputValues.Length;
@@ -166,10 +166,10 @@ namespace org.pdfclown.documents.functions
       <summary>Gets the (inclusive) domains of the input values.</summary>
       <remarks>Input values outside the declared domains are clipped to the nearest boundary value.</remarks>
     */
-    public IList<Interval<float>> Domains
+    public IList<Interval<double>> Domains
     {
       get
-      {return GetIntervals<float>(PdfName.Domain, null);}
+      {return GetIntervals<double>(PdfName.Domain, null);}
     }
 
     /**
@@ -199,10 +199,10 @@ namespace org.pdfclown.documents.functions
       if this entry is absent, no clipping is done.</remarks>
       <returns><code>null</code> in case of unbounded ranges.</returns>
     */
-    public IList<Interval<float>> Ranges
+    public IList<Interval<double>> Ranges
     {
       get
-      {return GetIntervals<float>(PdfName.Range, null);}
+      {return GetIntervals<double>(PdfName.Range, null);}
     }
     #endregion
 

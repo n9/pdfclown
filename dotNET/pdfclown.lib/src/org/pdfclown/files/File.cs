@@ -43,20 +43,52 @@ namespace org.pdfclown.files
     : IDisposable
   {
     #region types
-    public sealed class ResolvedObject<T>
-      where T : PdfDataObject
+    /**
+      <summary>File configuration.</summary>
+    */
+    public sealed class ConfigurationImpl
     {
-      public readonly T DataObject;
-      public readonly PdfIndirectObject Container;
+      private string realFormat;
 
-      internal ResolvedObject(
-        T dataObject,
-        PdfIndirectObject container
+      private readonly File file;
+
+      internal ConfigurationImpl(
+        File file
         )
+      {this.file = file;}
+
+      /**
+        <summary>Gets the file associated with this configuration.</summary>
+      */
+      public File File
       {
-        this.DataObject = dataObject;
-        this.Container = container;
+        get
+        {return file;}
       }
+
+      /**
+        <summary>Gets/Sets the format applied to real number serialization.</summary>
+      */
+      public string RealFormat
+      {
+        get
+        {
+          if(realFormat == null)
+          {SetRealFormat(5);}
+          return realFormat;
+        }
+        set
+        {realFormat = value;}
+      }
+
+      /**
+        <param name="decimalPlacesCount">Number of digits in decimal places.</param>
+        <seealso cref="RealFormat"/>
+      */
+      public void SetRealFormat(
+        int decimalPlacesCount
+        )
+      {realFormat = "0." + new string('#', decimalPlacesCount);}
     }
     #endregion
 
@@ -68,36 +100,16 @@ namespace org.pdfclown.files
     #region interface
     #region public
     /**
-      <summary>Forces a generic object to be expressed as its corresponding
-      data object.</summary>
+      <summary>Ensures an indirect reference to be resolved into its corresponding data object.
+      </summary>
     */
     public static PdfDataObject Resolve(
       PdfObject obj
       )
     {
-      if(obj is IPdfIndirectObject)
-        return ((IPdfIndirectObject)obj).DataObject;
-      else
-        return (PdfDataObject)obj;
-    }
-
-    /**
-      <summary>Resolves a generic object.</summary>
-    */
-    public static ResolvedObject<T> Resolve<T>(
-      PdfObject obj,
-      IPdfIndirectObject container
-      ) where T : PdfDataObject
-    {
-      if(obj == null)
-        return null;
-      else if(obj is IPdfIndirectObject)
-      {
-        IPdfIndirectObject indirectObject = (IPdfIndirectObject)obj;
-        return new ResolvedObject<T>((T)indirectObject.DataObject,indirectObject.IndirectObject);
-      }
-      else
-        return new ResolvedObject<T>((T)obj,container.IndirectObject);
+      return obj is IPdfIndirectObject
+        ? ((IPdfIndirectObject)obj).DataObject
+        : (PdfDataObject)obj;
     }
     #endregion
     #endregion
@@ -105,19 +117,22 @@ namespace org.pdfclown.files
 
     #region dynamic
     #region fields
-    private Document document;
-    private int hashCode = hashCodeGenerator.Next();
-    private IndirectObjects indirectObjects;
+    private ConfigurationImpl configuration;
+    private readonly Document document;
+    private readonly int hashCode = hashCodeGenerator.Next();
+    private readonly IndirectObjects indirectObjects;
     private string path;
     private Reader reader;
-    private PdfDictionary trailer;
-    private Version version;
+    private readonly PdfDictionary trailer;
+    private readonly Version version;
     #endregion
 
     #region constructors
     public File(
       )
     {
+      Initialize();
+
       version = VersionEnum.PDF14.GetVersion();
       trailer = new PdfDictionary();
       indirectObjects = new IndirectObjects(this, null);
@@ -141,6 +156,8 @@ namespace org.pdfclown.files
       IInputStream stream
       )
     {
+      Initialize();
+
       reader = new Reader(stream, this);
 
       Reader.FileInfo info = reader.ReadInfo();
@@ -151,12 +168,23 @@ namespace org.pdfclown.files
 
       indirectObjects = new IndirectObjects(this, info.XrefEntries);
       document = new Document(trailer[PdfName.Root]);
-      document.Configuration.XrefMode = (PdfName.XRef.Equals(trailer[PdfName.Type]) ? Document.ConfigurationImpl.XRefModeEnum.Compressed : Document.ConfigurationImpl.XRefModeEnum.Plain);
+      document.Configuration.XrefMode = (PdfName.XRef.Equals(trailer[PdfName.Type])
+        ? Document.ConfigurationImpl.XRefModeEnum.Compressed
+        : Document.ConfigurationImpl.XRefModeEnum.Plain);
     }
     #endregion
 
     #region interface
     #region public
+    /**
+      <summary>Gets the file configuration.</summary>
+    */
+    public ConfigurationImpl Configuration
+    {
+      get
+      {return configuration;}
+    }
+
     /**
       <summary>Gets the high-level representation of the file content.</summary>
     */
@@ -198,8 +226,8 @@ namespace org.pdfclown.files
     {return indirectObjects.Add(obj).Reference;}
 
     /**
-      <summary>Serializes the file to the current file-system path using the
-      <see cref="SerializationModeEnum.Standard">standard serialization mode</see>.</summary>
+      <summary>Serializes the file to the current file-system path using the <see
+      cref="SerializationModeEnum.Standard">standard serialization mode</see>.</summary>
     */
     public void Save(
       )
@@ -217,10 +245,9 @@ namespace org.pdfclown.files
         throw new FileNotFoundException("No valid source path available.");
 
       /*
-        NOTE: The document file cannot be directly overwritten
-        as it's locked for reading by the open stream;
-        its update is therefore delayed to its disposal,
-        when the temporary file will overwrite it (see Dispose() method).
+        NOTE: The document file cannot be directly overwritten as it's locked for reading by the
+        open stream; its update is therefore delayed to its disposal, when the temporary file will
+        overwrite it (see Dispose() method).
       */
       Save(TempPath, mode);
     }
@@ -283,8 +310,8 @@ namespace org.pdfclown.files
     /**
       <summary>Gets the file header version [PDF:1.6:3.4.1].</summary>
       <remarks>This property represents just the original file version; to get the actual version,
-      use the <see cref="org.pdfclown.documents.Document.Version">Document.Version</see>
-      method.</remarks>
+      use the <see cref="org.pdfclown.documents.Document.Version">Document.Version</see> method.
+      </remarks>
     */
     public Version Version
     {
@@ -302,8 +329,7 @@ namespace org.pdfclown.files
         reader = null;
 
         /*
-          NOTE: If the temporary file exists (see Save method),
-          it must overwrite the document file.
+          NOTE: If the temporary file exists (see Save() method), it must overwrite the document file.
         */
         if(System.IO.File.Exists(TempPath))
         {
@@ -318,8 +344,15 @@ namespace org.pdfclown.files
     #endregion
 
     #region private
+    private void Initialize(
+      )
+    {configuration = new ConfigurationImpl(this);}
+
     private string TempPath
-    {get{return (path == null ? null : path + ".tmp");}}
+    {
+      get
+      {return (path == null ? null : path + ".tmp");}
+    }
     #endregion
     #endregion
     #endregion

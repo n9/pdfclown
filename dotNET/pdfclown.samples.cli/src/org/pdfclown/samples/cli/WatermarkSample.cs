@@ -28,23 +28,19 @@ namespace org.pdfclown.samples.cli
     public override bool Run(
       )
     {
-      string filePath = PromptPdfFileChoice("Please select a PDF file");
-
       // 1. Open the PDF file!
+      string filePath = PromptPdfFileChoice("Please select a PDF file");
       files::File file = new files::File(filePath);
       Document document = file.Document;
 
-      // 2. Create a watermark (form)!
+      // 2. Create a watermark!
       FormXObject watermark = CreateWatermark(document);
 
       // 3. Apply the watermark to the pages of the document!
       ApplyWatermark(watermark);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Watermark","how to place some content behind existing pages");
-
       // 4. Serialize the PDF file!
-      Serialize(file);
+      Serialize(file, true, "Watermark", "how to place some content behind existing pages");
 
       return true;
     }

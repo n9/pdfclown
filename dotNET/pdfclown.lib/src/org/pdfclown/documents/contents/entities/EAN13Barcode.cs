@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -95,7 +95,7 @@ namespace org.pdfclown.documents.contents.entities
     /** Digit glyph width. */
     private static readonly int DigitGlyphWidth;
     /** Digit glyph horizontal positions. */
-    private static readonly float[] DigitGlyphXs;
+    private static readonly double[] DigitGlyphXs;
 
     /** Guard bar index positions. */
     private static int[] GuardBarIndexes =
@@ -160,7 +160,7 @@ namespace org.pdfclown.documents.contents.entities
         Digit glyph horizontal positions.
       */
       {
-        float[] elementWidths =
+        double[] elementWidths =
         {
           DigitWidth,
           3,
@@ -170,7 +170,7 @@ namespace org.pdfclown.documents.contents.entities
           3
         };
         int[] digitIndexes = {0,2,3,4,5,6,7,9,10,11,12,13,14};
-        DigitGlyphXs = new float[13];
+        DigitGlyphXs = new double[13];
         int digitXIndex = 0;
         for(
           int index = 0,
@@ -221,14 +221,14 @@ namespace org.pdfclown.documents.contents.entities
           false,
           false
           );
-        float fontSize = (float)(DigitGlyphWidth / font.GetWidth(code.Substring(0,1), 1));
+        double fontSize = (DigitGlyphWidth / font.GetWidth(code.Substring(0,1), 1));
 
         // 1. Bars.
         {
-          float elementX = DigitWidth;
+          double elementX = DigitWidth;
           int[] elementWidths = GetElementWidths();
 
-          float guardBarIndentY = DigitHeight / 2;
+          double guardBarIndentY = DigitHeight / 2;
           bool isBar = true;
           for(
             int elementIndex = 0;
@@ -236,7 +236,7 @@ namespace org.pdfclown.documents.contents.entities
             elementIndex++
             )
           {
-            float elementWidth = elementWidths[elementIndex];
+            double elementWidth = elementWidths[elementIndex];
             // Dark element?
             /*
               NOTE: EAN symbol elements alternate bars to spaces.
@@ -245,15 +245,15 @@ namespace org.pdfclown.documents.contents.entities
             {
               composer.DrawRectangle(
                 new RectangleF(
-                  elementX,
+                  (float)elementX,
                   0,
-                  elementWidth,
-                  BarHeight + (
+                  (float)elementWidth,
+                  (float)(BarHeight + (
                     // Guard bar?
                     Array.BinarySearch<int>(GuardBarIndexes, elementIndex) >= 0
                       ? guardBarIndentY // Guard bar.
                       : 0 // Symbol character.
-                    )
+                    ))
                   )
                 );
             }
@@ -267,7 +267,7 @@ namespace org.pdfclown.documents.contents.entities
         // 2. Digits.
         {
           composer.SetFont(font,fontSize);
-          float digitY = BarHeight + (DigitHeight - ((float)font.GetAscent(fontSize))) / 2;
+          double digitY = BarHeight + (DigitHeight - (font.GetAscent(fontSize))) / 2;
           // Showing the digits...
           for(
             int digitIndex = 0;
@@ -276,12 +276,12 @@ namespace org.pdfclown.documents.contents.entities
             )
           {
             string digit = code.Substring(digitIndex, 1);
-            float pX = DigitGlyphXs[digitIndex] // Digit position.
-              - (float)font.GetWidth(digit,fontSize) / 2; // Centering.
+            double pX = DigitGlyphXs[digitIndex] // Digit position.
+              - font.GetWidth(digit,fontSize) / 2; // Centering.
             // Show the current digit!
             composer.ShowText(
               digit,
-              new PointF(pX,digitY)
+              new PointF((float)pX,(float)digitY)
               );
           }
         }

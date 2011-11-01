@@ -52,7 +52,7 @@ import org.pdfclown.util.parsers.ParseException;
   <p>It is alternative to the classic cross-reference table.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 11/01/11
 */
 public final class XRefStream
   extends PdfStream
@@ -152,13 +152,14 @@ public final class XRefStream
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    File context
     )
   {
     if(entries != null)
     {flush(stream);}
 
-    super.writeTo(stream);
+    super.writeTo(stream, context);
   }
 
   // <Map>
@@ -267,7 +268,7 @@ public final class XRefStream
         if(entryNumber - prevObjectNumber != 1) // Current subsection terminated.
         {
           if(!indexArray.isEmpty())
-          {indexArray.add(new PdfInteger(prevObjectNumber-((PdfInteger)indexArray.get(indexArray.size()-1)).getValue()+1));} // Number of entries in the previous subsection.
+          {indexArray.add(new PdfInteger(prevObjectNumber - ((PdfInteger)indexArray.get(indexArray.size() - 1)).getValue() + 1));} // Number of entries in the previous subsection.
           indexArray.add(new PdfInteger(entryNumber)); // First object number in the next subsection.
         }
         prevObjectNumber = entryNumber;
@@ -276,24 +277,24 @@ public final class XRefStream
         {
           case Free:
             body.append((byte)FreeEntryType);
-            body.append(numberToByteArray(entry.getOffset(),entryFieldSizes[1]));
-            body.append(numberToByteArray(entry.getGeneration(),entryFieldSizes[2]));
+            body.append(numberToByteArray(entry.getOffset(), entryFieldSizes[1]));
+            body.append(numberToByteArray(entry.getGeneration(), entryFieldSizes[2]));
             break;
           case InUse:
             body.append((byte)InUseEntryType);
-            body.append(numberToByteArray(entry.getOffset(),entryFieldSizes[1]));
-            body.append(numberToByteArray(entry.getGeneration(),entryFieldSizes[2]));
+            body.append(numberToByteArray(entry.getOffset(), entryFieldSizes[1]));
+            body.append(numberToByteArray(entry.getGeneration(), entryFieldSizes[2]));
             break;
           case InUseCompressed:
             body.append((byte)InUseCompressedEntryType);
-            body.append(numberToByteArray(entry.getStreamNumber(),entryFieldSizes[1]));
-            body.append(numberToByteArray(entry.getOffset(),entryFieldSizes[2]));
+            body.append(numberToByteArray(entry.getStreamNumber(), entryFieldSizes[1]));
+            body.append(numberToByteArray(entry.getOffset(), entryFieldSizes[2]));
             break;
           default:
             throw new UnsupportedOperationException();
         }
       }
-      indexArray.add(new PdfInteger(prevObjectNumber-((PdfInteger)indexArray.get(indexArray.size()-1)).getValue()+1)); // Number of entries in the previous subsection.
+      indexArray.add(new PdfInteger(prevObjectNumber - ((PdfInteger)indexArray.get(indexArray.size() - 1)).getValue() + 1)); // Number of entries in the previous subsection.
     }
 
     // 2. Header.

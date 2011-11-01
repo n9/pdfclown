@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.objects;
+using org.pdfclown.util;
 
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ namespace org.pdfclown.documents.contents.layers
   {
     #region types
     /**
-      <summary>Membership visibility policy.</summary>
+      <summary>Membership visibility policy [PDF:1.7:4.10.1].</summary>
     */
     public enum VisibilityPolicyEnum
     {
@@ -123,39 +124,34 @@ namespace org.pdfclown.documents.contents.layers
 
   internal static class VisibilityPolicyEnumExtension
   {
-    public static PdfName GetName(
-      this LayerMembership.VisibilityPolicyEnum visibilityPolicy
-      )
+    private static readonly BiDictionary<LayerMembership.VisibilityPolicyEnum,PdfName> codes;
+
+    static VisibilityPolicyEnumExtension()
     {
-      switch(visibilityPolicy)
-      {
-        case LayerMembership.VisibilityPolicyEnum.AllOn:
-          return PdfName.AllOn;
-        case LayerMembership.VisibilityPolicyEnum.AnyOn:
-          return PdfName.AnyOn;
-        case LayerMembership.VisibilityPolicyEnum.AnyOff:
-          return PdfName.AnyOff;
-        case LayerMembership.VisibilityPolicyEnum.AllOff:
-          return PdfName.AllOff;
-        default:
-          throw new NotImplementedException();
-      }
+      codes = new BiDictionary<LayerMembership.VisibilityPolicyEnum,PdfName>();
+      codes[LayerMembership.VisibilityPolicyEnum.AllOn] = PdfName.AllOn;
+      codes[LayerMembership.VisibilityPolicyEnum.AnyOn] = PdfName.AnyOn;
+      codes[LayerMembership.VisibilityPolicyEnum.AnyOff] = PdfName.AnyOff;
+      codes[LayerMembership.VisibilityPolicyEnum.AllOff] = PdfName.AllOff;
     }
 
-    public static LayerMembership.VisibilityPolicyEnum ToEnum(
+    public static LayerMembership.VisibilityPolicyEnum Get(
       PdfName name
       )
     {
-      if(name == null || name.Equals(PdfName.AllOn))
-        return LayerMembership.VisibilityPolicyEnum.AllOn;
-      else if(name.Equals(PdfName.AnyOn))
+      if(name == null)
         return LayerMembership.VisibilityPolicyEnum.AnyOn;
-      else if(name.Equals(PdfName.AnyOff))
-        return LayerMembership.VisibilityPolicyEnum.AnyOff;
-      else if(name.Equals(PdfName.AllOff))
-        return LayerMembership.VisibilityPolicyEnum.AllOff;
-      else
+
+      LayerMembership.VisibilityPolicyEnum? visibilityPolicy = codes.GetKey(name);
+      if(!visibilityPolicy.HasValue)
         throw new NotSupportedException("Visibility policy unknown: " + name);
+
+      return visibilityPolicy.Value;
     }
+
+    public static PdfName GetName(
+      this LayerMembership.VisibilityPolicyEnum visibilityPolicy
+      )
+    {return codes[visibilityPolicy];}
   }
 }

@@ -18,9 +18,8 @@ namespace org.pdfclown.samples.cli
     public override bool Run(
       )
     {
+      // 1. Opening the PDF file...
       string filePath = PromptPdfFileChoice("Please select a PDF file");
-
-      // 1. Open the PDF file!
       File file = new File(filePath);
 
       // 2. Modifying the document...
@@ -47,11 +46,8 @@ namespace org.pdfclown.samples.cli
         document.BaseDataObject[new PdfName("OpenAction")] = file.Register(action);  // Adds the action to the file, returning its reference.
       }
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Primitive objects","manipulating a document at primitive object level");
-
       // 3. Serialize the PDF file!
-      Serialize(file);
+      Serialize(file, true, "Primitive objects", "manipulating a document at primitive object level");
 
       return true;
     }

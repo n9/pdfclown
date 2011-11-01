@@ -110,7 +110,7 @@ namespace org.pdfclown.tools
 
           // Calculate the data size of the current object!
           IOutputStream buffer = new Buffer();
-          reference.IndirectObject.WriteTo(buffer);
+          reference.IndirectObject.WriteTo(buffer, reference.File);
           dataSize += buffer.Length;
         }
 

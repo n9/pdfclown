@@ -32,9 +32,10 @@ using System.Collections.Generic;
 namespace org.pdfclown.documents.functions
 {
   /**
-    <summary>Sampled function using a sequence of sample values to provide an approximation
-    for functions whose domains and ranges are bounded [PDF:1.6:3.9.1].</summary>
-    <remarks>The samples are organized as an m-dimensional table in which each entry has n components.</remarks>
+    <summary>Sampled function using a sequence of sample values to provide an approximation for
+    functions whose domains and ranges are bounded [PDF:1.6:3.9.1].</summary>
+    <remarks>The samples are organized as an m-dimensional table in which each entry has n components.
+    </remarks>
   */
   [PDF(VersionEnum.PDF12)]
   public sealed class Type0Function
@@ -66,8 +67,8 @@ namespace org.pdfclown.documents.functions
 
     #region interface
     #region public
-    public override float[] Calculate(
-      float[] inputs
+    public override double[] Calculate(
+      double[] inputs
       )
     {
       // FIXME: Auto-generated method stub
@@ -115,10 +116,10 @@ namespace org.pdfclown.documents.functions
     /**
       <summary>Gets the linear mapping of sample values into the ranges of the function's output values.</summary>
     */
-    public IList<Interval<float>> RangeDecodes
+    public IList<Interval<double>> RangeDecodes
     {
       get
-      {return GetIntervals<float>(PdfName.Decode, null);}
+      {return GetIntervals<double>(PdfName.Decode, null);}
     }
 
     /**

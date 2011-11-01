@@ -41,11 +41,12 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class ContentMarker
   extends Operation
+  implements IResourceReference<PropertyList>
 {
   // <class>
   // <dynamic>
@@ -113,7 +114,7 @@ public abstract class ContentMarker
   {
     Object properties = getProperties();
     return properties instanceof PdfName
-      ? context.getResources().getPropertyLists().get(properties) // Resource resolution.
+      ? context.getResources().getPropertyLists().get(properties)
       : (PropertyList)properties;
   }
 
@@ -162,6 +163,28 @@ public abstract class ContentMarker
     PdfName value
     )
   {operands.set(0,value);}
+
+  // <IResourceReference>
+  @Override
+  public PdfName getName(
+    )
+  {
+    Object properties = getProperties();
+    return (properties instanceof PdfName ? (PdfName)properties : null);
+  }
+
+  @Override
+  public PropertyList getResource(
+    IContentContext context
+    )
+  {return getProperties(context);}
+
+  @Override
+  public void setName(
+    PdfName value
+    )
+  {setProperties(value);}
+  // </IResourceReference>
   // </public>
 
   // <protected>

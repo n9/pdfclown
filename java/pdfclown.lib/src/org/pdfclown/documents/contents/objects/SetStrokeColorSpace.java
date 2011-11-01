@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,7 +29,6 @@ import java.util.List;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
-import org.pdfclown.documents.contents.ColorSpaceResources;
 import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
 import org.pdfclown.documents.contents.IContentContext;
 import org.pdfclown.documents.contents.colorSpaces.ColorSpace;
@@ -45,11 +44,12 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public final class SetStrokeColorSpace
   extends Operation
+  implements IResourceReference<ColorSpace<?>>
 {
   // <class>
   // <static>
@@ -81,6 +81,34 @@ public final class SetStrokeColorSpace
   public ColorSpace<?> getColorSpace(
     IContentContext context
     )
+  {return getResource(context);}
+
+  @Override
+  public void scan(
+    GraphicsState state
+    )
+  {
+    // 1. Color space.
+    state.setStrokeColorSpace(getColorSpace(state.getScanner().getContentContext()));
+
+    // 2. Initial color.
+    /*
+      NOTE: The operation also sets the current stroking color
+      to its initial value, which depends on the color space [PDF:1.6:4.5.7].
+    */
+    state.setStrokeColor(state.getStrokeColorSpace().getDefaultColor());
+  }
+
+  // <IResourceReference>
+  @Override
+  public PdfName getName(
+    )
+  {return (PdfName)operands.get(0);}
+
+  @Override
+  public ColorSpace<?> getResource(
+    IContentContext context
+    )
   {
     /*
       NOTE: The names DeviceGray, DeviceRGB, DeviceCMYK, and Pattern always identify
@@ -100,39 +128,12 @@ public final class SetStrokeColorSpace
       return context.getResources().getColorSpaces().get(name);
   }
 
-  /**
-    Gets the name of the {@link ColorSpace color space} resource to be set.
-
-    @see #getColorSpace(IContentContext)
-    @see ColorSpaceResources
-  */
-  public PdfName getName(
-    )
-  {return (PdfName)operands.get(0);}
-
   @Override
-  public void scan(
-    GraphicsState state
-    )
-  {
-    // 1. Color space.
-    state.setStrokeColorSpace(getColorSpace(state.getScanner().getContentContext()));
-
-    // 2. Initial color.
-    /*
-      NOTE: The operation also sets the current stroking color
-      to its initial value, which depends on the color space [PDF:1.6:4.5.7].
-    */
-    state.setStrokeColor(state.getStrokeColorSpace().getDefaultColor());
-  }
-
-  /**
-    @see #getName()
-  */
   public void setName(
     PdfName value
     )
   {operands.set(0,value);}
+  // </IResourceReference>
   // </public>
   // </interface>
   // </dynamic>

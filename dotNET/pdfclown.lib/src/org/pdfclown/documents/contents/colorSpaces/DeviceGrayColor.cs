@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -67,7 +67,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     #region dynamic
     #region constructors
     public DeviceGrayColor(
-      float g
+      double g
       ) : this(
         new List<PdfDirectObject>(
           new PdfDirectObject[]
@@ -97,7 +97,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     /**
       <summary>Gets/Sets the gray component.</summary>
     */
-    public float G
+    public double G
     {
       get
       {return GetComponentValue(0);}

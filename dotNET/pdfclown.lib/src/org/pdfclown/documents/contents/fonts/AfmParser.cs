@@ -193,13 +193,13 @@ endParsing:
           if(charName == null)
             continue;
 
-          charCode = GlyphMapping.NameToCode(charName);
+          charCode = GlyphMapping.NameToCode(charName).Value;
         }
         int code = (
           charName == null
               || Metrics.IsCustomEncoding
             ? charCode
-            : GlyphMapping.NameToCode(charName)
+            : GlyphMapping.NameToCode(charName).Value
           );
 
         GlyphIndexes[code] = charCode;
@@ -236,8 +236,8 @@ endParsing:
 
         Match lineMatch = lineMatches[0];
 
-        int code1 = GlyphMapping.NameToCode(lineMatch.Groups[1].Value);
-        int code2 = GlyphMapping.NameToCode(lineMatch.Groups[2].Value);
+        int code1 = GlyphMapping.NameToCode(lineMatch.Groups[1].Value).Value;
+        int code2 = GlyphMapping.NameToCode(lineMatch.Groups[2].Value).Value;
         int pair = code1 << 16 + code2;
         int value = Int32.Parse(lineMatch.Groups[3].Value);
 

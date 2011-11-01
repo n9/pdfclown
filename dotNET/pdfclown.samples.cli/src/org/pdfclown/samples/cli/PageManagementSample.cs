@@ -34,15 +34,15 @@ namespace org.pdfclown.samples.cli
     public override bool Run(
       )
     {
-      string mainFilePath = PromptPdfFileChoice("Please select a PDF file");
+      ActionEnum action = PromptAction();
 
-      // Open the PDF file!
+      // Opening the PDF file...
+      string mainFilePath = PromptPdfFileChoice("Please select a PDF file");
       File mainFile = new File(mainFilePath);
       Document mainDocument = mainFile.Document;
       Pages mainPages = mainDocument.Pages;
       int mainPagesCount = mainPages.Count;
 
-      ActionEnum action = PromptAction();
       switch(action)
       {
         case ActionEnum.PageDataSizeCalculation:
@@ -284,7 +284,7 @@ namespace org.pdfclown.samples.cli
       Serialize(
         file,
         GetType().Name + "_" + action.ToString() + (index.HasValue ? "." + index.Value : ""),
-        chooseMode
+        chooseMode, null, null
         );
     }
   }

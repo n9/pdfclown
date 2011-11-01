@@ -163,12 +163,7 @@ namespace org.pdfclown.files
       PdfIndirectObject indirectObject = modifiedObjects[lastObjectNumber] = new PdfIndirectObject(
         file,
         obj,
-        new XRefEntry(
-          lastObjectNumber,
-          0,
-          0,
-          XRefEntry.UsageEnum.InUse
-          )
+        new XRefEntry(lastObjectNumber, 0)
         );
       return indirectObject;
     }

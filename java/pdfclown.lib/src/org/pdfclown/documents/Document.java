@@ -61,7 +61,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF document [PDF:1.6:3.6.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Document
@@ -166,11 +166,37 @@ public final class Document
     {document.checkCompatibility(xrefMode = value);}
   }
 
+  /**
+    Page layout to be used when the document is opened [PDF:1.6:3.6.1].
+  */
   public enum PageLayoutEnum
   {
+    /**
+      Displays one page at a time.
+    */
     SinglePage(PdfName.SinglePage),
+    /**
+      Displays the pages in one column.
+    */
     OneColumn(PdfName.OneColumn),
-    TwoColumns(PdfName.TwoColumnLeft);
+    /**
+      Displays the pages in two columns, with odd-numbered pages on the left.
+    */
+    TwoColumnLeft(PdfName.TwoColumnLeft),
+    /**
+      Displays the pages in two columns, with odd-numbered pages on the right.
+    */
+    TwoColumnRight(PdfName.TwoColumnRight),
+    /**
+      Displays the pages two at a time, with odd-numbered pages on the left.
+    */
+    @PDF(VersionEnum.PDF15)
+    TwoPageLeft(PdfName.TwoPageLeft),
+    /**
+      Displays the pages two at a time, with odd-numbered pages on the right.
+    */
+    @PDF(VersionEnum.PDF15)
+    TwoPageRight(PdfName.TwoPageRight);
 
     public static PageLayoutEnum valueOf(
       PdfName name
@@ -199,6 +225,9 @@ public final class Document
     {return name;}
   }
 
+  /**
+    Page mode specifying how the document should be displayed when opened [PDF:1.6:3.6.1].
+  */
   public enum PageModeEnum
   {
     /**
@@ -277,7 +306,7 @@ public final class Document
   // <dynamic>
   // <fields>
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public java.util.Hashtable<PdfReference,Object> cache = new java.util.Hashtable<PdfReference,Object>();
 
@@ -286,7 +315,7 @@ public final class Document
 
   // <constructors>
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public Document(
     File context
@@ -318,7 +347,7 @@ public final class Document
   }
 
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public Document(
     PdfDirectObject baseObject // Catalog.

@@ -14,7 +14,7 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class NamedDestinationSample
   extends Sample
@@ -27,7 +27,6 @@ public class NamedDestinationSample
     File file;
     {
       String filePath = promptPdfFileChoice("Please select a PDF file");
-
       try
       {file = new File(filePath);}
       catch(Exception e)
@@ -37,23 +36,26 @@ public class NamedDestinationSample
     Pages pages = document.getPages();
 
     // 2. Inserting page destinations...
-    Names names = document.getNames(); if(names == null){document.setNames(names = new Names(document));}
-    NamedDestinations destinations = names.getDestinations(); if(destinations == null){names.setDestinations(destinations = new NamedDestinations(document));}
+    Names names = document.getNames();
+    if(names == null)
+    {document.setNames(names = new Names(document));}
+
+    NamedDestinations destinations = names.getDestinations();
+    if(destinations == null)
+    {names.setDestinations(destinations = new NamedDestinations(document));}
+
     destinations.put(new PdfString("First page"), new LocalDestination(pages.get(0)));
     if(pages.size() > 1)
     {
-      destinations.put(new PdfString("Second page"), new LocalDestination(pages.get(1), Destination.ModeEnum.FitHorizontal, new Float[]{0f}));
+      destinations.put(new PdfString("Second page"), new LocalDestination(pages.get(1), Destination.ModeEnum.FitHorizontal, new Double[]{0d}));
 
       if(pages.size() > 2)
-      {destinations.put(new PdfString("Third page"), new LocalDestination(pages.get(2), Destination.ModeEnum.XYZ, new Float[]{50f,null,null}));}
+      {destinations.put(new PdfString("Third page"), new LocalDestination(pages.get(2), Destination.ModeEnum.XYZ, new Double[]{50d, null, null}));}
     }
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Named destinations","manipulating named destinations");
-
     // 3. Serialize the PDF file!
-    serialize(file);
-    
+    serialize(file, true, "Named destinations", "manipulating named destinations");
+
     return true;
   }
 }

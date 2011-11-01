@@ -30,11 +30,8 @@ namespace org.pdfclown.samples.cli
       // 2. Content creation.
       Build(document);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"Typesetting","demonstrating how to add style to contents");
-
       // 3. Serialize the PDF file!
-      Serialize(file,false);
+      Serialize(file, false, "Typesetting", "demonstrating how to add style to contents");
 
       return true;
     }

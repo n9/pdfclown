@@ -33,8 +33,8 @@ using drawing = System.Drawing;
 namespace org.pdfclown.documents.contents.colorSpaces
 {
   /**
-    <summary>CIE-based ABC single-transformation-stage color space,
-    where A, B, and C represent calibrated red, green and blue color values [PDF:1.6:4.5.4].</summary>
+    <summary>CIE-based ABC single-transformation-stage color space, where A, B, and C represent
+    calibrated red, green and blue color values [PDF:1.6:4.5.4].</summary>
   */
   [PDF(VersionEnum.PDF11)]
   public sealed class CalRGBColorSpace
@@ -69,19 +69,19 @@ namespace org.pdfclown.documents.contents.colorSpaces
       {return CalRGBColor.Default;}
     }
 
-    public override float[] Gamma
+    public override double[] Gamma
     {
       get
       {
         PdfArray gammaObject = (PdfArray)Dictionary[PdfName.Gamma];
         return (gammaObject == null
-          ? new float[]
+          ? new double[]
             {
               1,
               1,
               1
             }
-          : new float[]
+          : new double[]
             {
               ((IPdfNumber)gammaObject[0]).RawValue,
               ((IPdfNumber)gammaObject[1]).RawValue,

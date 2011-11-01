@@ -15,7 +15,7 @@ import org.pdfclown.objects.PdfStream;
   <p>XObject images other than JPEG aren't currently supported for handling.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class ImageExtractionSample
   extends Sample
@@ -28,7 +28,6 @@ public class ImageExtractionSample
     File file;
     {
       String filePath = promptPdfFileChoice("Please select a PDF file");
-
       try
       {file = new File(filePath);}
       catch(Exception e)
@@ -66,7 +65,7 @@ public class ImageExtractionSample
         }
       }
     }
-    
+
     return true;
   }
 

@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public final class Border
@@ -129,9 +129,9 @@ public final class Border
 
   // <static>
   // <fields>
-  private static final LineDash DefaultLineDash = new LineDash(new float[]{3});
+  private static final LineDash DefaultLineDash = new LineDash(new double[]{3});
   private static final StyleEnum DefaultStyle = StyleEnum.Solid;
-  private static final float DefaultWidth = 1;
+  private static final double DefaultWidth = 1;
   // </fields>
   // </static>
 
@@ -144,7 +144,7 @@ public final class Border
 
   public Border(
     Document context,
-    float width,
+    double width,
     StyleEnum style,
     LineDash pattern
     )
@@ -182,7 +182,7 @@ public final class Border
     if(dashObject == null)
       return DefaultLineDash;
 
-    float[] dashArray = new float[dashObject.size()];
+    double[] dashArray = new double[dashObject.size()];
     for(
       int dashIndex = 0,
         dashLength = dashArray.length;
@@ -213,7 +213,7 @@ public final class Border
   /**
     Gets the border width in points.
   */
-  public float getWidth(
+  public double getWidth(
     )
   {
     /*
@@ -238,7 +238,7 @@ public final class Border
     {
       PdfArray dashObject = new PdfArray();
 
-      float[] dashArray = value.getDashArray();
+      double[] dashArray = value.getDashArray();
       for(
         int dashIndex = 0,
           dashLength = dashArray.length;
@@ -269,7 +269,7 @@ public final class Border
     @see #getWidth()
   */
   public void setWidth(
-    float value
+    double value
     )
   {getBaseDataObject().put(PdfName.W, new PdfReal(value));}
   // </public>

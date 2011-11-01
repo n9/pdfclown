@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.bytes;
+using xObjects = org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.objects;
 
 using System.Collections.Generic;
@@ -35,7 +36,8 @@ namespace org.pdfclown.documents.contents.objects
   */
   [PDF(VersionEnum.PDF10)]
   public sealed class XObject
-    : GraphicsObject
+    : GraphicsObject,
+      IResourceReference<xObjects::XObject>
   {
     #region static
     #region fields
@@ -55,15 +57,6 @@ namespace org.pdfclown.documents.contents.objects
     #region interface
     #region public
     /**
-      <summary>Gets the <see cref="org.pdfclown.documents.contents.xObjects.XObject">external object</see> resource.</summary>
-      <param name="context">Content context.</param>
-    */
-    public org.pdfclown.documents.contents.xObjects.XObject GetResource(
-      IContentContext context
-      )
-    {return Operation.GetXObject(context);}
-
-    /**
       <summary>Gets the scanner for this object's contents.</summary>
       <param name="context">Scanning context.</param>
     */
@@ -72,16 +65,20 @@ namespace org.pdfclown.documents.contents.objects
       )
     {return Operation.GetScanner(context);}
 
-    /**
-      <summary>Gets the <see cref="org.pdfclown.documents.contents.xObjects.XObject">external object</see> resource name.</summary>
-      <seealso cref="GetResource(IContentContext)"/>
-      <seealso cref="org.pdfclown.documents.contents.XObjectResources"/>
-    */
+    #region IResourceReference
+    public xObjects::XObject GetResource(
+      IContentContext context
+      )
+    {return Operation.GetResource(context);}
+
     public PdfName Name
     {
       get
       {return Operation.Name;}
+      set
+      {Operation.Name = value;}
     }
+    #endregion
     #endregion
 
     #region private

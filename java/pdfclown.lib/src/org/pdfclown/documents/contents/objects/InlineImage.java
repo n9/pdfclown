@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,6 +31,7 @@ import java.awt.geom.Dimension2D;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 
@@ -39,7 +40,7 @@ import org.pdfclown.objects.PdfNumber;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class InlineImage
@@ -96,13 +97,14 @@ public final class InlineImage
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    Document context
     )
   {
     stream.write(BeginOperator); stream.write("\n");
-    getHeader().writeTo(stream);
+    getHeader().writeTo(stream, context);
     stream.write(DataOperator); stream.write("\n");
-    getBody().writeTo(stream); stream.write("\n"); // [FIX:0.0.4:3] Missed new-line symbol.
+    getBody().writeTo(stream, context); stream.write("\n");
     stream.write(EndOperator);
   }
   // </public>

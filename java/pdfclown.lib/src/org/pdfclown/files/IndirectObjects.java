@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 public final class IndirectObjects
   implements List<PdfIndirectObject>
@@ -165,12 +165,7 @@ public final class IndirectObjects
     PdfIndirectObject indirectObject = new PdfIndirectObject(
       file,
       object,
-      new XRefEntry(
-        lastObjectNumber,
-        0,
-        0,
-        XRefEntry.UsageEnum.InUse
-        )
+      new XRefEntry(lastObjectNumber, 0)
       );
     // Register the object!
     modifiedObjects.put(lastObjectNumber,indirectObject);
@@ -539,14 +534,14 @@ public final class IndirectObjects
 
   // <internal>
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public TreeMap<Integer,PdfIndirectObject> getModifiedObjects(
     )
   {return modifiedObjects;}
 
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public PdfIndirectObject update(
     PdfIndirectObject object

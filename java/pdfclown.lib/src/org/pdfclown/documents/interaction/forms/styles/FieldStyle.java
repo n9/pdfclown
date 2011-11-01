@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,7 @@ import org.pdfclown.documents.interaction.forms.Field;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public abstract class FieldStyle
 {
@@ -43,8 +43,9 @@ public abstract class FieldStyle
   // <fields>
   private Color<?> backColor = DeviceRGBColor.White;
   private char checkSymbol = (char)52;
-  private float fontSize = 10;
+  private double fontSize = 10;
   private Color<?> foreColor = DeviceRGBColor.Black;
+  private boolean graphicsVisibile = false;
   private char radioSymbol = (char)108;
   // </fields>
 
@@ -68,13 +69,17 @@ public abstract class FieldStyle
     )
   {return checkSymbol;}
 
-  public float getFontSize(
+  public double getFontSize(
     )
   {return fontSize;}
 
   public Color<?> getForeColor(
     )
   {return foreColor;}
+
+  public boolean isGraphicsVisibile(
+    )
+  {return graphicsVisibile;}
 
   public char getRadioSymbol(
     )
@@ -91,7 +96,7 @@ public abstract class FieldStyle
   {checkSymbol = value;}
 
   public void setFontSize(
-    float value
+    double value
     )
   {fontSize = value;}
 
@@ -99,6 +104,11 @@ public abstract class FieldStyle
     Color<?> value
     )
   {foreColor = value;}
+
+  public void setGraphicsVisibile(
+    boolean value
+    )
+  {graphicsVisibile = value;}
 
   public void setRadioSymbol(
     char value

@@ -40,7 +40,7 @@ import org.pdfclown.objects.PdfNumber;
   Special device color space [PDF:1.6:4.5.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class SpecialDeviceColorSpace
@@ -101,14 +101,6 @@ public abstract class SpecialDeviceColorSpace
 //      );
 
     //TODO: remove (temporary hack)!
-    float[] c = new float[3];
-    for(int i=0,l=color.getComponents().size();i<l;i++)
-    {
-      c[i]=((PdfNumber<?>)color.getComponents().get(i)).getNumberValue();
-      if(c[i] > 1){c[i]=1;}
-    }
-    if(c.length==1)
-    {c[2]=c[1]=c[0];}
     return new java.awt.Color(0,0,0);
   }
 

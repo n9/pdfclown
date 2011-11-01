@@ -12,7 +12,7 @@ import org.pdfclown.files.File;
   This sample is a <b>minimalist introduction to the use of PDF Clown</b>.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 public class HelloWorldSample
   extends Sample
@@ -32,11 +32,8 @@ public class HelloWorldSample
     // 3. Insert the contents into the document!
     populate(document);
 
-    // (boilerplate metadata insertion -- ignore it)
-    buildAccessories(document,"Hello world","a simple 'hello world'");
-
     // 4. Serialize the PDF file!
-    serialize(file,false);
+    serialize(file, false, "Hello world", "a simple 'hello world'");
 
     return true;
   }

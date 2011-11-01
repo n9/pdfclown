@@ -39,11 +39,11 @@ import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-  <b>CIE-based ABC single-transformation-stage color space</b>,
-  where A, B, and C represent <i>calibrated red, green and blue color values</i> [PDF:1.6:4.5.4].
+  CIE-based ABC single-transformation-stage color space, where A, B, and C represent calibrated red,
+  green and blue color values [PDF:1.6:4.5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public final class CalRGBColorSpace
@@ -86,18 +86,18 @@ public final class CalRGBColorSpace
   {return CalRGBColor.Default;}
 
   @Override
-  public float[] getGamma(
+  public double[] getGamma(
     )
   {
     PdfArray gammaObject = (PdfArray)getDictionary().get(PdfName.Gamma);
     return (gammaObject == null
-      ? new float[]
+      ? new double[]
         {
           1,
           1,
           1
         }
-      : new float[]
+      : new double[]
         {
           ((PdfNumber<?>)gammaObject.get(0)).getNumberValue(),
           ((PdfNumber<?>)gammaObject.get(1)).getNumberValue(),

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -46,7 +46,7 @@ namespace org.pdfclown.documents.interaction.forms.styles
     #region constructors
     public DefaultStyle(
       )
-    {BackColor = new DeviceRGBColor(.9f,.9f,.9f);}
+    {BackColor = new DeviceRGBColor(.9,.9,.9);}
     #endregion
 
     #region interface
@@ -88,8 +88,8 @@ namespace org.pdfclown.documents.interaction.forms.styles
             },
             new PdfDirectObject[]
             {
-              new PdfArray(new PdfDirectObject[]{new PdfReal(0.9412),new PdfReal(0.9412),new PdfReal(0.9412)}),
-              new PdfArray(new PdfDirectObject[]{new PdfInteger(0),new PdfInteger(0),new PdfInteger(0)}),
+              new PdfArray(new PdfDirectObject[]{new PdfReal(0.9412), new PdfReal(0.9412), new PdfReal(0.9412)}),
+              new PdfArray(new PdfDirectObject[]{new PdfInteger(0), new PdfInteger(0), new PdfInteger(0)}),
               new PdfString("4")
             }
             );
@@ -123,18 +123,23 @@ namespace org.pdfclown.documents.interaction.forms.styles
   //   appearance.getDown().put(PdfName.Off,offState);
 
         SizeF size = widget.Box.Size;
-        RectangleF frame = new RectangleF(0,0,size.Width,size.Height);
+        float lineWidth = 1;
+        RectangleF frame = new RectangleF(lineWidth / 2, lineWidth / 2, size.Width - lineWidth, size.Height - lineWidth);
         {
           onState.Size = new Size((int)size.Width,(int)size.Height);
 
           PrimitiveComposer composer = new PrimitiveComposer(onState);
 
-          composer.BeginLocalState();
-          composer.SetFillColor(BackColor);
-          composer.SetStrokeColor(ForeColor);
-          composer.DrawRectangle(frame);
-          composer.FillStroke();
-          composer.End();
+          if(GraphicsVisibile)
+          {
+            composer.BeginLocalState();
+            composer.SetLineWidth(lineWidth);
+            composer.SetFillColor(BackColor);
+            composer.SetStrokeColor(ForeColor);
+            composer.DrawRectangle(frame, 5);
+            composer.FillStroke();
+            composer.End();
+          }
 
           BlockComposer blockComposer = new BlockComposer(composer);
           blockComposer.Begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Middle);
@@ -146,7 +151,7 @@ namespace org.pdfclown.documents.interaction.forms.styles
               true,
               false
               ),
-            size.Height * 0.8f
+            size.Height * 0.8
             );
           blockComposer.ShowText(new String(new char[]{CheckSymbol}));
           blockComposer.End();
@@ -159,16 +164,20 @@ namespace org.pdfclown.documents.interaction.forms.styles
         {
           offState.Size = new Size((int)size.Width,(int)size.Height);
 
-          PrimitiveComposer composer = new PrimitiveComposer(offState);
+          if(GraphicsVisibile)
+          {
+            PrimitiveComposer composer = new PrimitiveComposer(offState);
+  
+            composer.BeginLocalState();
+            composer.SetLineWidth(lineWidth);
+            composer.SetFillColor(BackColor);
+            composer.SetStrokeColor(ForeColor);
+            composer.DrawRectangle(frame, 5);
+            composer.FillStroke();
+            composer.End();
 
-          composer.BeginLocalState();
-          composer.SetFillColor(BackColor);
-          composer.SetStrokeColor(ForeColor);
-          composer.DrawRectangle(frame);
-          composer.FillStroke();
-          composer.End();
-
-          composer.Flush();
+            composer.Flush();
+          }
         }
       }
     }
@@ -192,8 +201,8 @@ namespace org.pdfclown.documents.interaction.forms.styles
             },
             new PdfDirectObject[]
             {
-              new PdfArray(new PdfDirectObject[]{new PdfReal(0.9412),new PdfReal(0.9412),new PdfReal(0.9412)}),
-              new PdfArray(new PdfDirectObject[]{new PdfInteger(0),new PdfInteger(0),new PdfInteger(0)}),
+              new PdfArray(new PdfDirectObject[]{new PdfReal(0.9412), new PdfReal(0.9412), new PdfReal(0.9412)}),
+              new PdfArray(new PdfDirectObject[]{new PdfInteger(0), new PdfInteger(0), new PdfInteger(0)}),
               new PdfString("l")
             }
             );
@@ -226,18 +235,23 @@ namespace org.pdfclown.documents.interaction.forms.styles
   //   appearance.getDown().put(PdfName.Off,offState);
 
         SizeF size = widget.Box.Size;
-        RectangleF frame = new RectangleF(1,1,size.Width-2,size.Height-2);
+        float lineWidth = 1;
+        RectangleF frame = new RectangleF(lineWidth / 2, lineWidth / 2, size.Width - lineWidth, size.Height - lineWidth);
         {
           onState.Size = new Size((int)size.Width,(int)size.Height);;
 
           PrimitiveComposer composer = new PrimitiveComposer(onState);
 
-          composer.BeginLocalState();
-          composer.SetFillColor(BackColor);
-          composer.SetStrokeColor(ForeColor);
-          composer.DrawEllipse(frame);
-          composer.FillStroke();
-          composer.End();
+          if(GraphicsVisibile)
+          {
+            composer.BeginLocalState();
+            composer.SetLineWidth(lineWidth);
+            composer.SetFillColor(BackColor);
+            composer.SetStrokeColor(ForeColor);
+            composer.DrawEllipse(frame);
+            composer.FillStroke();
+            composer.End();
+          }
 
           BlockComposer blockComposer = new BlockComposer(composer);
           blockComposer.Begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Middle);
@@ -249,7 +263,7 @@ namespace org.pdfclown.documents.interaction.forms.styles
               true,
               false
               ),
-            size.Height * 0.8f
+            size.Height * 0.8
             );
           blockComposer.ShowText(new String(new char[]{RadioSymbol}));
           blockComposer.End();
@@ -262,16 +276,20 @@ namespace org.pdfclown.documents.interaction.forms.styles
         {
           offState.Size = new Size((int)size.Width,(int)size.Height);;
 
-          PrimitiveComposer composer = new PrimitiveComposer(offState);
-
-          composer.BeginLocalState();
-          composer.SetFillColor(BackColor);
-          composer.SetStrokeColor(ForeColor);
-          composer.DrawEllipse(frame);
-          composer.FillStroke();
-          composer.End();
-
-          composer.Flush();
+          if(GraphicsVisibile)
+          {
+            PrimitiveComposer composer = new PrimitiveComposer(offState);
+  
+            composer.BeginLocalState();
+            composer.SetLineWidth(lineWidth);
+            composer.SetFillColor(BackColor);
+            composer.SetStrokeColor(ForeColor);
+            composer.DrawEllipse(frame);
+            composer.FillStroke();
+            composer.End();
+  
+            composer.Flush();
+          }
         }
       }
     }
@@ -293,15 +311,18 @@ namespace org.pdfclown.documents.interaction.forms.styles
         normalAppearanceState.Size = new Size((int)size.Width,(int)size.Height);;
         PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
-        composer.BeginLocalState();
         float lineWidth = 1;
-        composer.SetLineWidth(lineWidth);
-        composer.SetFillColor(BackColor);
-        composer.SetStrokeColor(ForeColor);
         RectangleF frame = new RectangleF(lineWidth / 2, lineWidth / 2, size.Width - lineWidth, size.Height - lineWidth);
-        composer.DrawRectangle(frame,5);
-        composer.FillStroke();
-        composer.End();
+        if(GraphicsVisibile)
+        {
+          composer.BeginLocalState();
+          composer.SetLineWidth(lineWidth);
+          composer.SetFillColor(BackColor);
+          composer.SetStrokeColor(ForeColor);
+          composer.DrawRectangle(frame, 5);
+          composer.FillStroke();
+          composer.End();
+        }
 
         string title = (string)field.Value;
         if(title != null)
@@ -316,7 +337,7 @@ namespace org.pdfclown.documents.interaction.forms.styles
               true,
               false
               ),
-            size.Height * 0.5f
+            size.Height * 0.5
             );
           blockComposer.ShowText(title);
           blockComposer.End();
@@ -346,15 +367,18 @@ namespace org.pdfclown.documents.interaction.forms.styles
         normalAppearanceState.Size = new Size((int)size.Width,(int)size.Height);;
         PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
-        composer.BeginLocalState();
         float lineWidth = 1;
-        composer.SetLineWidth(lineWidth);
-        composer.SetFillColor(BackColor);
-        composer.SetStrokeColor(ForeColor);
         RectangleF frame = new RectangleF(lineWidth / 2, lineWidth / 2, size.Width - lineWidth, size.Height - lineWidth);
-        composer.DrawRectangle(frame,5);
-        composer.FillStroke();
-        composer.End();
+        if(GraphicsVisibile)
+        {
+          composer.BeginLocalState();
+          composer.SetLineWidth(lineWidth);
+          composer.SetFillColor(BackColor);
+          composer.SetStrokeColor(ForeColor);
+          composer.DrawRectangle(frame, 5);
+          composer.FillStroke();
+          composer.End();
+        }
 
         composer.BeginMarkedContent(PdfName.Tx);
         composer.SetFont(
@@ -399,15 +423,18 @@ namespace org.pdfclown.documents.interaction.forms.styles
         normalAppearanceState.Size = new Size((int)size.Width,(int)size.Height);;
         PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
-        composer.BeginLocalState();
         float lineWidth = 1;
-        composer.SetLineWidth(lineWidth);
-        composer.SetFillColor(BackColor);
-        composer.SetStrokeColor(ForeColor);
         RectangleF frame = new RectangleF(lineWidth / 2, lineWidth / 2, size.Width - lineWidth, size.Height - lineWidth);
-        composer.DrawRectangle(frame,5);
-        composer.FillStroke();
-        composer.End();
+        if(GraphicsVisibile)
+        {
+          composer.BeginLocalState();
+          composer.SetLineWidth(lineWidth);
+          composer.SetFillColor(BackColor);
+          composer.SetStrokeColor(ForeColor);
+          composer.DrawRectangle(frame, 5);
+          composer.FillStroke();
+          composer.End();
+        }
 
         composer.BeginMarkedContent(PdfName.Tx);
         composer.SetFont(
@@ -455,8 +482,8 @@ namespace org.pdfclown.documents.interaction.forms.styles
           },
           new PdfDirectObject[]
           {
-            new PdfArray(new PdfDirectObject[]{new PdfReal(.9),new PdfReal(.9),new PdfReal(.9)}),
-            new PdfArray(new PdfDirectObject[]{new PdfInteger(0),new PdfInteger(0),new PdfInteger(0)})
+            new PdfArray(new PdfDirectObject[]{new PdfReal(.9), new PdfReal(.9), new PdfReal(.9)}),
+            new PdfArray(new PdfDirectObject[]{new PdfInteger(0), new PdfInteger(0), new PdfInteger(0)})
           }
           );
       }
@@ -467,20 +494,25 @@ namespace org.pdfclown.documents.interaction.forms.styles
         normalAppearanceState.Size = new Size((int)size.Width,(int)size.Height);;
         PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
-        composer.BeginLocalState();
         float lineWidth = 1;
-        composer.SetLineWidth(lineWidth);
-        composer.SetFillColor(BackColor);
-        composer.SetStrokeColor(ForeColor);
         RectangleF frame = new RectangleF(lineWidth / 2, lineWidth / 2, size.Width - lineWidth, size.Height - lineWidth);
-        composer.DrawRectangle(frame,5);
-        composer.FillStroke();
-        composer.End();
+        if(GraphicsVisibile)
+        {
+          composer.BeginLocalState();
+          composer.SetLineWidth(lineWidth);
+          composer.SetFillColor(BackColor);
+          composer.SetStrokeColor(ForeColor);
+          composer.DrawRectangle(frame, 5);
+          composer.FillStroke();
+          composer.End();
+        }
 
         composer.BeginLocalState();
-        composer.DrawRectangle(frame,5);
-        composer.Clip(); // Ensures that the visible content is clipped within the rounded frame.
-
+        if(GraphicsVisibile)
+        {
+          composer.DrawRectangle(frame, 5);
+          composer.Clip(); // Ensures that the visible content is clipped within the rounded frame.
+        }
         composer.BeginMarkedContent(PdfName.Tx);
         composer.SetFont(
           new StandardType1Font(
@@ -491,14 +523,14 @@ namespace org.pdfclown.documents.interaction.forms.styles
             ),
           FontSize
           );
-        float y = 3;
+        double y = 3;
         foreach(ChoiceItem item in field.Items)
         {
           composer.ShowText(
             item.Text,
-            new PointF(0, y)
+            new PointF(0, (float)y)
             );
-          y += FontSize * 1.175f;
+          y += FontSize * 1.175;
           if(y > size.Height)
             break;
         }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF11)
 public final class LabColor
@@ -55,9 +55,9 @@ public final class LabColor
     This method MUST be made internal and its color space MUST be passed as argument!
   */
   public LabColor(
-    float l,
-    float a,
-    float b
+    double l,
+    double a,
+    double b
     )
   {
     this(
@@ -91,21 +91,21 @@ public final class LabColor
   /**
     Gets the second component (a*).
   */
-  public float getA(
+  public double getA(
     )
   {return getComponentValue(1);}
 
   /**
     Gets the third component (b*).
   */
-  public float getB(
+  public double getB(
     )
   {return getComponentValue(2);}
 
   /**
     Gets the first component (L*).
   */
-  public float getL(
+  public double getL(
     )
   {return getComponentValue(0);}
 
@@ -113,7 +113,7 @@ public final class LabColor
     @see #getA()
   */
   public void setA(
-    float value
+    double value
     )
   {setComponentValue(1, value);}
 
@@ -121,7 +121,7 @@ public final class LabColor
     @see #getB()
   */
   public void setB(
-    float value
+    double value
     )
   {setComponentValue(2, value);}
 
@@ -129,7 +129,7 @@ public final class LabColor
     @see #getL()
   */
   public void setL(
-    float value
+    double value
     )
   {setComponentValue(0, value);}
   // </public>

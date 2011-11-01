@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,6 +44,9 @@ namespace org.pdfclown.documents.contents.fonts
     : Type1Font
   {
     #region types
+    /**
+      <summary>Standard Type 1 font families [PDF:1.6:5.5.1].</summary>
+    */
     public enum FamilyEnum
     {
       Courier,
@@ -129,21 +132,28 @@ namespace org.pdfclown.documents.contents.fonts
 
     #region interface
     #region public
-    public override float Ascent
-    {get{return metrics.Ascender;}}
+    public override double Ascent
+    {
+      get
+      {return metrics.Ascender;}
+    }
 
-    public override float Descent
-    {get{return metrics.Descender;}}
+    public override double Descent
+    {
+      get
+      {return metrics.Descender;}
+    }
 
     public override FlagsEnum Flags
     {
       //TODO:IMPL!!!
-      get{return 0;}
+      get
+      {return 0;}
     }
     #endregion
 
     #region protected
-    protected override Dictionary<ByteArray,int> GetNativeEncoding(
+    protected override IDictionary<ByteArray,int> GetNativeEncoding(
       )
     {
       if(symbolic) // Symbolic font.

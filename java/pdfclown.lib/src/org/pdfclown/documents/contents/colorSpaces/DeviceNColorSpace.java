@@ -42,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF13)
 public final class DeviceNColorSpace
@@ -78,7 +78,7 @@ public final class DeviceNColorSpace
   public DeviceNColor getDefaultColor(
     )
   {
-    float[] components = new float[getComponentCount()];
+    double[] components = new double[getComponentCount()];
     for(
       int index = 0,
         length = components.length;

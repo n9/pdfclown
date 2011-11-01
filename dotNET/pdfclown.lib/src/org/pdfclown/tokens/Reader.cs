@@ -164,33 +164,32 @@ namespace org.pdfclown.tokens
                 {
                   // Skip to the next entry!
                   parser.MoveNext(3);
+                  continue;
                 }
-                else // Undefined entry.
-                {
-                  // Get the indirect object offset!
-                  int offset = (int)parser.GetToken(1);
-                  // Get the object generation number!
-                  int generation = (int)parser.GetToken(1);
-                  // Get the usage tag!
-                  XRefEntry.UsageEnum usage;
-                  {
-                    string usageToken = (string)parser.GetToken(1);
-                    if(usageToken.Equals(Keyword.InUseXrefEntry))
-                      usage = XRefEntry.UsageEnum.InUse;
-                    else if(usageToken.Equals(Keyword.FreeXrefEntry))
-                      usage = XRefEntry.UsageEnum.Free;
-                    else
-                      throw new ParseException("Invalid xref entry.", parser.Position);
-                  }
 
-                  // Entry initialization.
-                  xrefEntries[index] = new XRefEntry(
-                    index,
-                    generation,
-                    offset,
-                    usage
-                    );
+                // Get the indirect object offset!
+                int offset = (int)parser.GetToken(1);
+                // Get the object generation number!
+                int generation = (int)parser.GetToken(1);
+                // Get the usage tag!
+                XRefEntry.UsageEnum usage;
+                {
+                  string usageToken = (string)parser.GetToken(1);
+                  if(usageToken.Equals(Keyword.InUseXrefEntry))
+                    usage = XRefEntry.UsageEnum.InUse;
+                  else if(usageToken.Equals(Keyword.FreeXrefEntry))
+                    usage = XRefEntry.UsageEnum.Free;
+                  else
+                    throw new ParseException("Invalid xref entry.", parser.Position);
                 }
+
+                // Define entry!
+                xrefEntries[index] = new XRefEntry(
+                  index,
+                  generation,
+                  offset,
+                  usage
+                  );
               }
             }
 
@@ -200,8 +199,15 @@ namespace org.pdfclown.tokens
           else // XRef-stream section.
           {
             XRefStream stream = (XRefStream)parser.ParsePdfObject(3); // Gets the xref stream skipping the indirect-object header.
-            // Add the xref entries from the current xref stream!
-            xrefEntries.SetAll(stream);
+            // XRef-stream subsection entries.
+            foreach(XRefEntry xrefEntry in stream.Values)
+            {
+              if(xrefEntries.ContainsKey(xrefEntry.Number)) // Already-defined entry.
+                continue;
+
+              // Define entry!
+              xrefEntries[xrefEntry.Number] = xrefEntry;
+            }
 
             // Get the previous trailer!
             sectionTrailer = stream.Header;

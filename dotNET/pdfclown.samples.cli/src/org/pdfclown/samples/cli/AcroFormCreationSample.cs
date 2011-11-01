@@ -31,11 +31,8 @@ namespace org.pdfclown.samples.cli
       // 2. Content creation.
       Populate(document);
 
-      // (boilerplate metadata insertion -- ignore it)
-      BuildAccessories(document,"AcroForm","inserting AcroForm fields");
-
       // 3. Serialize the PDF file!
-      Serialize(file,false);
+      Serialize(file, false, "AcroForm", "inserting AcroForm fields");
 
       return true;
     }
@@ -67,6 +64,7 @@ namespace org.pdfclown.samples.cli
       // 3. Define the appearance style to apply to the fields!
       DefaultStyle fieldStyle = new DefaultStyle();
       fieldStyle.FontSize = 12;
+      fieldStyle.GraphicsVisibile = true;
 
       PrimitiveComposer composer = new PrimitiveComposer(page);
       composer.SetFont(
@@ -236,24 +234,39 @@ namespace org.pdfclown.samples.cli
       {
         // Preparing the item list that we'll use for choice fields (a list box and a combo box (see below))...
         ChoiceItems items = new ChoiceItems(document);
-        items.Add(new ChoiceItem("Joan Baez")); // NOTE: Explicitly-created item.
-        items.Add("Tracy Chapman"); // NOTE: Implicitly-created item (syntactic sugar for lazy guys...).
+        items.Add("Tori Amos");
+        items.Add("Anouk");
+        items.Add("Joan Baez");
+        items.Add("Rachele Bastreghi");
+        items.Add("Anna Calvi");
+        items.Add("Tracy Chapman");
         items.Add("Carmen Consoli");
+        items.Add("Ani DiFranco");
         items.Add("Cristina Dona'");
         items.Add("PJ Harvey");
         items.Add("Billie Holiday");
         items.Add("Janis Joplin");
         items.Add("Angelique Kidjo");
+        items.Add("Patrizia Laquidara");
+        items.Add("Annie Lennox");
+        items.Add("Loreena McKennitt");
         items.Add("Joni Mitchell");
         items.Add("Alanis Morissette");
         items.Add("Yael Naim");
+        items.Add("Noa");
         items.Add("Sinead O'Connor");
+        items.Add("Dolores O'Riordan");
+        items.Add("Nina Persson");
         items.Add("Brisa Roche'");
+        items.Add("Roberta Sammarelli");
+        items.Add("Cristina Scabbia");
         items.Add("Nina Simone");
         items.Add("Skin");
+        items.Add("Patti Smith");
         items.Add("Fatima Spar");
         items.Add("Paola Turci");
         items.Add("Sarah Vaughan");
+        items.Add("Nina Zilli");
 
         // 4.e1. List box.
         {

@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,41 +25,41 @@
 
 package org.pdfclown.documents.contents.composition;
 
-import org.pdfclown.documents.contents.fonts.Font;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.pdfclown.documents.contents.fonts.Font;
 
 /**
   Text fitter.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.3
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 final class TextFitter
 {
   // <class>
   // <dynamic>
   // <fields>
-  private Font font;
-  private float fontSize;
-  private boolean hyphenation;
-  private String text;
-  private float width;
+  private final Font font;
+  private final double fontSize;
+  private final boolean hyphenation;
+  private final String text;
+  private double width;
 
   private int beginIndex = 0;
   private int endIndex = -1;
   private String fittedText;
-  private float fittedWidth;
+  private double fittedWidth;
   // </fields>
 
   // <constructors>
   TextFitter(
     String text,
-    float width,
+    double width,
     Font font,
-    float fontSize,
+    double fontSize,
     boolean hyphenation
     )
   {
@@ -95,7 +95,7 @@ final class TextFitter
   */
   public boolean fit(
     int index,
-    float width
+    double width
     )
   {
     beginIndex = index;
@@ -138,7 +138,7 @@ fitting:
         // Get the limit of the current word!
         int wordEndIndex = matcher.end(0);
         // Add the current word!
-        float wordWidth = font.getKernedWidth(
+        double wordWidth = font.getKernedWidth(
           matcher.group(0),
           fontSize
           ); // Current word's width.
@@ -236,7 +236,7 @@ hyphenating:
   /**
     Gets the fitted text's width.
   */
-  public float getFittedWidth(
+  public double getFittedWidth(
     )
   {return fittedWidth;}
 
@@ -250,7 +250,7 @@ hyphenating:
   /**
     Gets the size of the font used to fit the text.
   */
-  public float getFontSize(
+  public double getFontSize(
     )
   {return fontSize;}
 
@@ -264,7 +264,7 @@ hyphenating:
   /**
     Gets the available width.
   */
-  public float getWidth(
+  public double getWidth(
     )
   {return width;}
 

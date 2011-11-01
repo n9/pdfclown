@@ -108,9 +108,9 @@ namespace org.pdfclown.objects
       get
       {
         /*
-          NOTE: Encoding filters are removed by default because they belong to a lower layer
-          (token layer), so that it's appropriate and consistent to transparently keep
-          the object layer unaware of such a facility.
+          NOTE: Encoding filters are removed by default because they belong to a lower layer (token
+          layer), so that it's appropriate and consistent to transparently keep the object layer
+          unaware of such a facility.
         */
         return GetBody(true);
       }
@@ -126,12 +126,6 @@ namespace org.pdfclown.objects
         clone.body = (IBuffer)body.Clone();
       }
       return clone;
-    }
-
-    public override PdfIndirectObject Container
-    {
-      get
-      {return Root;}
     }
 
     /**
@@ -203,12 +197,6 @@ namespace org.pdfclown.objects
       {parent = value;}
     }
 
-    public override PdfIndirectObject Root
-    {
-      get
-      {return (PdfIndirectObject)parent;} // NOTE: Stream root is by-definition its parent.
-    }
-
     public override bool Updateable
     {
       get
@@ -217,8 +205,17 @@ namespace org.pdfclown.objects
       {updateable = value;}
     }
 
+    public override bool Updated
+    {
+      get
+      {return updated;}
+      protected internal set
+      {updated = value;}
+    }
+
     public override void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      File context
       )
     {
       header.Updateable = false;
@@ -229,20 +226,12 @@ namespace org.pdfclown.objects
 
       // 1. Header.
       // Encoding.
-      /*
-        NOTE: As the contract establishes that a stream instance should be kept
-        free from encodings in order to be editable, encoding is NOT applied to
-        the actual online stream, but to its serialized representation only.
-        That is, as encoding is just a serialization practise, it is excluded from
-        alive, instanced streams.
-      */
       PdfDirectObject filterObject = header[PdfName.Filter];
       if(filterObject == null) // Unencoded body.
       {
         /*
-          NOTE: As online representation is unencoded,
-          header entries related to the encoded stream body are temporary
-          (instrumental to the current serialization process).
+          NOTE: Header entries related to stream body encoding are temporary, instrumental to the
+          current serialization process only.
         */
         unencodedBody = true;
 
@@ -267,7 +256,7 @@ namespace org.pdfclown.objects
       // Set encoded length!
       header[PdfName.Length] = new PdfInteger(bodyLength);
 
-      header.WriteTo(stream);
+      header.WriteTo(stream, context);
 
       // Is the body free from encodings?
       if(unencodedBody)
@@ -287,14 +276,6 @@ namespace org.pdfclown.objects
     #endregion
 
     #region protected
-    protected internal override bool Updated
-    {
-      get
-      {return updated;}
-      set
-      {updated = value;}
-    }
-
     protected internal override bool Virtual
     {
       get

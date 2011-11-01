@@ -43,7 +43,7 @@ import org.pdfclown.util.ConvertUtils;
   Standard Type 1 font [PDF:1.6:5.5.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/25/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public final class StandardType1Font
@@ -51,6 +51,9 @@ public final class StandardType1Font
 {
   // <class>
   // <classes>
+  /**
+    Standard Type 1 font families [PDF:1.6:5.5.1].
+  */
   public enum FamilyEnum
   {
     Courier(false),
@@ -118,7 +121,7 @@ public final class StandardType1Font
   }
 
   /**
-    For internal use only.
+    <span style="color:red">For internal use only.</span>
   */
   public StandardType1Font(
     PdfDirectObject baseObject
@@ -129,12 +132,12 @@ public final class StandardType1Font
   // <interface>
   // <public>
   @Override
-  public float getAscent(
+  public double getAscent(
     )
   {return metrics.ascender;}
 
   @Override
-  public float getDescent(
+  public double getDescent(
     )
   {return metrics.descender;}
 

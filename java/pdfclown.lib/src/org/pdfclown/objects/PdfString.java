@@ -28,6 +28,7 @@ package org.pdfclown.objects;
 import java.io.ByteArrayOutputStream;
 
 import org.pdfclown.bytes.IOutputStream;
+import org.pdfclown.files.File;
 import org.pdfclown.tokens.Encoding;
 import org.pdfclown.util.ConvertUtils;
 import org.pdfclown.util.IDataWrapper;
@@ -45,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.1, 04/28/11
+  @version 0.1.1, 11/01/11
 */
 public class PdfString
   extends PdfSimpleObject<byte[]>
@@ -178,7 +179,8 @@ public class PdfString
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    File context
     )
   {
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();

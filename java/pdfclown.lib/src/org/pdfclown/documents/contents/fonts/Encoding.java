@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,19 +25,19 @@
 
 package org.pdfclown.documents.contents.fonts;
 
-import org.pdfclown.objects.PdfName;
-import org.pdfclown.util.ByteArray;
-
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+
+import org.pdfclown.objects.PdfName;
+import org.pdfclown.util.ByteArray;
 
 /**
   Predefined encodings [PDF:1.6:5.5.5,D].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 class Encoding
 {
@@ -50,9 +50,9 @@ class Encoding
   static
   {
   //TODO:this collection MUST be automatically populated looking for Encoding subclasses!
-    Encodings.put(PdfName.StandardEncoding,new StandardEncoding());
-    Encodings.put(PdfName.MacRomanEncoding,new MacRomanEncoding());
-    Encodings.put(PdfName.WinAnsiEncoding,new WinAnsiEncoding());
+    Encodings.put(PdfName.StandardEncoding, new StandardEncoding());
+    Encodings.put(PdfName.MacRomanEncoding, new MacRomanEncoding());
+    Encodings.put(PdfName.WinAnsiEncoding, new WinAnsiEncoding());
   }
   // </constructors>
 
@@ -66,7 +66,7 @@ class Encoding
 
   // <dynamic>
   // <fields>
-  private Hashtable<ByteArray,Integer> codes = new Hashtable<ByteArray,Integer>();
+  private final Hashtable<ByteArray,Integer> codes = new Hashtable<ByteArray,Integer>();
   // </fields>
 
   // <interface>

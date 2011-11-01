@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,7 +43,7 @@ import org.pdfclown.objects.PdfDirectObject;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class ShowText
@@ -141,24 +141,24 @@ public abstract class ShowText
     IContentContext context = state.getScanner().getContentContext();
     double contextHeight = context.getBox().getHeight();
     Font font = state.getFont();
-    float fontSize = state.getFontSize();
-    float scale = state.getScale() / 100;
-    float scaledFactor = Font.getScalingFactor(fontSize) * scale;
-    float wordSpace = state.getWordSpace() * scale;
-    float charSpace = state.getCharSpace() * scale;
+    double fontSize = state.getFontSize();
+    double scale = state.getScale() / 100;
+    double scaledFactor = Font.getScalingFactor(fontSize) * scale;
+    double wordSpace = state.getWordSpace() * scale;
+    double charSpace = state.getCharSpace() * scale;
     AffineTransform ctm = (AffineTransform)state.getCtm().clone();
     AffineTransform tm;
     if(this instanceof ShowTextToNextLine)
     {
       ShowTextToNextLine showTextToNextLine = (ShowTextToNextLine)this;
-      Float newWordSpace = showTextToNextLine.getWordSpace();
+      Double newWordSpace = showTextToNextLine.getWordSpace();
       if(newWordSpace != null)
       {
         if(textScanner == null)
         {state.setWordSpace(newWordSpace);}
         wordSpace = newWordSpace * scale;
       }
-      Float newCharSpace = showTextToNextLine.getCharSpace();
+      Double newCharSpace = showTextToNextLine.getCharSpace();
       if(newCharSpace != null)
       {
         if(textScanner == null)
@@ -178,7 +178,7 @@ public abstract class ShowText
         String textString = font.decode((byte[])textElement);
         for(char textChar : textString.toCharArray())
         {
-          float charWidth = font.getWidth(textChar) * scaledFactor;
+          double charWidth = font.getWidth(textChar) * scaledFactor;
 
           if(textScanner != null)
           {
@@ -187,7 +187,7 @@ public abstract class ShowText
               during a text-showing operation.
             */
             AffineTransform trm = (AffineTransform)ctm.clone(); trm.concatenate(tm);
-            float charHeight = font.getHeight(textChar,fontSize);
+            double charHeight = font.getHeight(textChar,fontSize);
             Rectangle2D charBox = new Rectangle2D.Double(
               trm.getTranslateX(),
               contextHeight - trm.getTranslateY() - font.getAscent(fontSize) * trm.getScaleY(),
@@ -205,7 +205,7 @@ public abstract class ShowText
         }
       }
       else // Text position adjustment.
-      {tm.translate(-((Number)textElement).floatValue() * scaledFactor, 0);}
+      {tm.translate(-((Number)textElement).doubleValue() * scaledFactor, 0);}
     }
 
     if(textScanner == null)

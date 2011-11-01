@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.bytes;
+using org.pdfclown.files;
 using org.pdfclown.util;
 
 using System;
@@ -180,7 +181,8 @@ namespace org.pdfclown.objects
     }
 
     public override void WriteTo(
-      IOutputStream stream
+      IOutputStream stream,
+      files.File context
       )
     {
       MemoryStream buffer = new MemoryStream();

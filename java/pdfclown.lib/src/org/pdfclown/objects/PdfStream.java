@@ -40,7 +40,7 @@ import org.pdfclown.tokens.Symbol;
   PDF stream object [PDF:1.6:3.2.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 public class PdfStream
   extends PdfDataObject
@@ -135,9 +135,9 @@ public class PdfStream
     )
   {
     /*
-      NOTE: Encoding filters are removed by default because they belong to a lower layer
-      (token layer), so that it's appropriate and consistent to transparently keep the object layer
-      unaware of such a facility.
+      NOTE: Encoding filters are removed by default because they belong to a lower layer (token
+      layer), so that it's appropriate and consistent to transparently keep the object layer unaware
+      of such a facility.
     */
     return getBody(true);
   }
@@ -188,11 +188,6 @@ public class PdfStream
     return body;
   }
 
-  @Override
-  public PdfIndirectObject getContainer(
-    )
-  {return getRoot();}
-
   /**
     Gets the stream header.
   */
@@ -206,14 +201,14 @@ public class PdfStream
   {return parent;}
 
   @Override
-  public PdfIndirectObject getRoot(
-    )
-  {return (PdfIndirectObject)parent;} // NOTE: Stream root is by-definition its parent.
-
-  @Override
   public boolean isUpdateable(
     )
   {return updateable;}
+
+  @Override
+  public boolean isUpdated(
+    )
+  {return updated;}
 
   @Override
   public void setUpdateable(
@@ -223,7 +218,8 @@ public class PdfStream
 
   @Override
   public void writeTo(
-    IOutputStream stream
+    IOutputStream stream,
+    File context
     )
   {
     header.setUpdateable(false);
@@ -234,20 +230,12 @@ public class PdfStream
 
     // 1. Header.
     // Encoding.
-    /*
-      NOTE: As the contract establishes that a stream instance should be kept
-      free from encodings in order to be editable, encoding is NOT applied to
-      the actual online stream, but to its serialized representation only.
-      That is, as encoding is just a serialization practise, it is excluded from
-      alive, instanced streams.
-    */
     PdfDirectObject filterObject = header.get(PdfName.Filter);
     if(filterObject == null) // Unencoded body.
     {
       /*
-        NOTE: As online representation is unencoded,
-        header entries related to the encoded stream body are temporary
-        (instrumental to the current serialization process).
+        NOTE: Header entries related to stream body encoding are temporary, instrumental to the
+        current serialization process only.
       */
       unencodedBody = true;
 
@@ -272,7 +260,7 @@ public class PdfStream
     // Set encoded length!
     header.put(PdfName.Length, new PdfInteger(bodyLength));
 
-    header.writeTo(stream);
+    header.writeTo(stream, context);
 
     // Is the body free from encodings?
     if(unencodedBody)
@@ -292,11 +280,6 @@ public class PdfStream
   // </public>
 
   // <protected>
-  @Override
-  protected boolean isUpdated(
-    )
-  {return updated;}
-
   @Override
   protected boolean isVirtual(
     )

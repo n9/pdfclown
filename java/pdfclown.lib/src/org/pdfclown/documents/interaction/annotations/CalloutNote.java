@@ -50,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 07/05/11
+  @version 0.1.1, 11/01/11
 */
 @PDF(VersionEnum.PDF13)
 public final class CalloutNote
@@ -199,7 +199,7 @@ public final class CalloutNote
   */
   public JustificationEnum getJustification(
     )
-  {return JustificationEnum.get((PdfInteger)getBaseDataObject().get(PdfName.Q));}
+  {return JustificationEnum.valueOf((PdfInteger)getBaseDataObject().get(PdfName.Q));}
 
   /**
     Gets the callout line attached to the free text annotation.
