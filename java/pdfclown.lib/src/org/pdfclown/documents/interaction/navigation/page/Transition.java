@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF11)
 public final class Transition
@@ -443,7 +443,7 @@ public final class Transition
     PdfNumber<?> durationObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.D);
     return durationObject == null
       ? 1
-      : durationObject.getNumberValue();
+      : durationObject.getDoubleValue();
   }
 
   /**
@@ -480,7 +480,7 @@ public final class Transition
     PdfNumber<?> scaleObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.SS);
     return scaleObject == null
       ? 1
-      : scaleObject.getNumberValue();
+      : scaleObject.getDoubleValue();
   }
 
   /**

@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF10)
 public final class TranslateTextRelative
@@ -93,11 +93,11 @@ public final class TranslateTextRelative
   // <public>
   public double getOffsetX(
     )
-  {return ((PdfNumber<?>)operands.get(0)).getNumberValue();}
+  {return ((PdfNumber<?>)operands.get(0)).getDoubleValue();}
 
   public double getOffsetY(
     )
-  {return ((PdfNumber<?>)operands.get(1)).getNumberValue();}
+  {return ((PdfNumber<?>)operands.get(1)).getDoubleValue();}
 
   /**
     Gets whether this operation, as a side effect, sets the leading parameter in the text state.

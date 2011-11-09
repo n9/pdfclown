@@ -29,7 +29,7 @@ package org.pdfclown.objects;
   PDF number object [PDF:1.6:3.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 public abstract class PdfNumber<TValue extends Number>
   extends PdfSimpleObject<TValue>
@@ -42,7 +42,7 @@ public abstract class PdfNumber<TValue extends Number>
   public final int compareTo(
     PdfDirectObject obj
     )
-  {return ((Double)getNumberValue()).compareTo(((PdfNumber<?>)obj).getNumberValue());}
+  {return ((Double)getDoubleValue()).compareTo(((PdfNumber<?>)obj).getDoubleValue());}
 
   @Override
   public final boolean equals(
@@ -54,9 +54,26 @@ public abstract class PdfNumber<TValue extends Number>
       && ((PdfNumber<?>)object).getRawValue().equals(getRawValue());
   }
 
-  public final double getNumberValue(
+  /**
+    Gets the double-precision floating-point representation of the value.
+  */
+  public final double getDoubleValue(
     )
   {return getValue().doubleValue();}
+
+  /**
+    Gets the floating-point representation of the value.
+  */
+  public final float getFloatValue(
+    )
+  {return getValue().floatValue();}
+
+  /**
+    Gets the integer representation of the value.
+  */
+  public final int getIntValue(
+    )
+  {return getValue().intValue();}
 
   @Override
   public Number getValue(

@@ -50,7 +50,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Function<TDataObject extends PdfDataObject>
@@ -171,7 +171,7 @@ public abstract class Function<TDataObject extends PdfDataObject>
         index < length;
         index++
         )
-      {inputValues[index] = ((PdfNumber<?>)inputs.get(index)).getNumberValue();}
+      {inputValues[index] = ((PdfNumber<?>)inputs.get(index)).getDoubleValue();}
       double[] outputValues = calculate(inputValues);
       for(
         int index = 0,

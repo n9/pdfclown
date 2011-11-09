@@ -56,7 +56,7 @@ import org.pdfclown.util.NotImplementedException;
   Abstract font [PDF:1.6:5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Font
@@ -448,7 +448,7 @@ public abstract class Font
   */
   public double getAscent(
     )
-  {return ((PdfNumber<?>)getDescriptor().get(PdfName.Ascent)).getNumberValue();}
+  {return ((PdfNumber<?>)getDescriptor().get(PdfName.Ascent)).getDoubleValue();}
 
   /**
     Gets the vertical offset from the baseline to the ascender line (ascent),
@@ -468,7 +468,7 @@ public abstract class Font
   */
   public double getDescent(
     )
-  {return ((PdfNumber<?>)getDescriptor().get(PdfName.Descent)).getNumberValue();}
+  {return ((PdfNumber<?>)getDescriptor().get(PdfName.Descent)).getDoubleValue();}
 
   /**
     Gets the vertical offset from the baseline to the descender line (descent), scaled to the given font size.

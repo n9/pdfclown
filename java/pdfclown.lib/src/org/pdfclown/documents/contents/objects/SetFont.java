@@ -42,7 +42,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF10)
 public final class SetFont
@@ -87,7 +87,7 @@ public final class SetFont
   */
   public double getSize(
     )
-  {return ((PdfNumber<?>)operands.get(1)).getNumberValue();}
+  {return ((PdfNumber<?>)operands.get(1)).getDoubleValue();}
 
   @Override
   public void scan(

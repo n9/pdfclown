@@ -68,7 +68,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Page
@@ -341,7 +341,7 @@ public final class Page
     )
   {
     PdfNumber<?> durationObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.Dur);
-    return durationObject == null ? 0 : durationObject.getNumberValue();
+    return durationObject == null ? 0 : durationObject.getDoubleValue();
   }
 
   /**

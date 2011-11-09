@@ -54,7 +54,7 @@ import org.pdfclown.util.math.geom.Dimension;
   Form external object [PDF:1.6:4.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF10)
 public final class FormXObject
@@ -123,12 +123,12 @@ public final class FormXObject
       return new AffineTransform();
     else
       return new AffineTransform(
-        ((PdfNumber<?>)matrix.get(0)).getNumberValue(),
-        ((PdfNumber<?>)matrix.get(1)).getNumberValue(),
-        ((PdfNumber<?>)matrix.get(2)).getNumberValue(),
-        ((PdfNumber<?>)matrix.get(3)).getNumberValue(),
-        ((PdfNumber<?>)matrix.get(4)).getNumberValue(),
-        ((PdfNumber<?>)matrix.get(5)).getNumberValue()
+        ((PdfNumber<?>)matrix.get(0)).getDoubleValue(),
+        ((PdfNumber<?>)matrix.get(1)).getDoubleValue(),
+        ((PdfNumber<?>)matrix.get(2)).getDoubleValue(),
+        ((PdfNumber<?>)matrix.get(3)).getDoubleValue(),
+        ((PdfNumber<?>)matrix.get(4)).getDoubleValue(),
+        ((PdfNumber<?>)matrix.get(5)).getDoubleValue()
         );
   }
 
@@ -141,8 +141,8 @@ public final class FormXObject
   {
     PdfArray box = (PdfArray)getBaseDataObject().getHeader().resolve(PdfName.BBox);
     return new Dimension(
-      ((PdfNumber<?>)box.get(2)).getNumberValue(),
-      ((PdfNumber<?>)box.get(3)).getNumberValue()
+      ((PdfNumber<?>)box.get(2)).getDoubleValue(),
+      ((PdfNumber<?>)box.get(3)).getDoubleValue()
       );
   }
 
@@ -179,10 +179,10 @@ public final class FormXObject
   {
     PdfArray box = (PdfArray)getBaseDataObject().getHeader().resolve(PdfName.BBox);
     return new Rectangle2D.Double(
-      ((PdfNumber<?>)box.get(0)).getNumberValue(),
-      ((PdfNumber<?>)box.get(1)).getNumberValue(),
-      ((PdfNumber<?>)box.get(2)).getNumberValue(),
-      ((PdfNumber<?>)box.get(3)).getNumberValue()
+      ((PdfNumber<?>)box.get(0)).getDoubleValue(),
+      ((PdfNumber<?>)box.get(1)).getDoubleValue(),
+      ((PdfNumber<?>)box.get(2)).getDoubleValue(),
+      ((PdfNumber<?>)box.get(3)).getDoubleValue()
       );
   }
 

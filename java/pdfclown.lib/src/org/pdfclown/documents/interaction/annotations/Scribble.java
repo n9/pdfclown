@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF13)
 public final class Scribble
@@ -112,8 +112,8 @@ public final class Scribble
       {
         path.add(
           new Point2D.Double(
-            ((PdfNumber<?>)pathObject.get(pointIndex)).getNumberValue(),
-            pageHeight - ((PdfNumber<?>)pathObject.get(pointIndex+1)).getNumberValue()
+            ((PdfNumber<?>)pathObject.get(pointIndex)).getDoubleValue(),
+            pageHeight - ((PdfNumber<?>)pathObject.get(pointIndex+1)).getDoubleValue()
             )
           );
       }

@@ -42,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
   single-component color value [PDF:1.6:4.5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF11)
 public final class CalGrayColorSpace
@@ -92,7 +92,7 @@ public final class CalGrayColorSpace
 
     return (gammaObject == null
       ? new double[]{1}
-      : new double[]{gammaObject.getNumberValue()}
+      : new double[]{gammaObject.getDoubleValue()}
       );
   }
 

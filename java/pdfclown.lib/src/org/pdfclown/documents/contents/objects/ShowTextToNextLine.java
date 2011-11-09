@@ -39,7 +39,7 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF10)
 public final class ShowTextToNextLine
@@ -118,7 +118,7 @@ public final class ShowTextToNextLine
     if(operator.equals(SimpleOperator))
       return null;
     else
-      return ((PdfNumber<?>)operands.get(1)).getNumberValue();
+      return ((PdfNumber<?>)operands.get(1)).getDoubleValue();
   }
 
   @Override
@@ -139,7 +139,7 @@ public final class ShowTextToNextLine
     if(operator.equals(SimpleOperator))
       return null;
     else
-      return ((PdfNumber<?>)operands.get(0)).getNumberValue();
+      return ((PdfNumber<?>)operands.get(0)).getDoubleValue();
   }
 
   /**

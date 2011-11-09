@@ -45,7 +45,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF13)
 public final class Type3Function
@@ -90,7 +90,7 @@ public final class Type3Function
     {
       PdfArray domainBoundsObject = (PdfArray)getDictionary().resolve(PdfName.Bounds);
       for(PdfDirectObject domainBoundObject : domainBoundsObject)
-      {domainBounds.add(((PdfNumber<?>)domainBoundObject).getNumberValue());}
+      {domainBounds.add(((PdfNumber<?>)domainBoundObject).getDoubleValue());}
     }
     return domainBounds;
   }

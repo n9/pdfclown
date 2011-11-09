@@ -48,7 +48,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF13)
 public final class Line
@@ -208,8 +208,8 @@ public final class Line
   {
     PdfArray coordinatesObject = (PdfArray)getBaseDataObject().get(PdfName.L);
     return new Point2D.Double(
-      ((PdfNumber<?>)coordinatesObject.get(2)).getNumberValue(),
-      ((PdfNumber<?>)coordinatesObject.get(3)).getNumberValue()
+      ((PdfNumber<?>)coordinatesObject.get(2)).getDoubleValue(),
+      ((PdfNumber<?>)coordinatesObject.get(3)).getDoubleValue()
       );
   }
 
@@ -236,9 +236,9 @@ public final class Line
       return null;
 //TODO:use baseObject constructor!!!
     return new DeviceRGBColor(
-      ((PdfNumber<?>)fillColorObject.get(0)).getNumberValue(),
-      ((PdfNumber<?>)fillColorObject.get(1)).getNumberValue(),
-      ((PdfNumber<?>)fillColorObject.get(2)).getNumberValue()
+      ((PdfNumber<?>)fillColorObject.get(0)).getDoubleValue(),
+      ((PdfNumber<?>)fillColorObject.get(1)).getDoubleValue(),
+      ((PdfNumber<?>)fillColorObject.get(2)).getDoubleValue()
       );
   }
 
@@ -251,7 +251,7 @@ public final class Line
   {
     PdfNumber<?> leaderLineExtensionLengthObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.LLE);
     return leaderLineExtensionLengthObject != null
-      ? leaderLineExtensionLengthObject.getNumberValue()
+      ? leaderLineExtensionLengthObject.getDoubleValue()
       : DefaultLeaderLineExtensionLength;
   }
 
@@ -267,7 +267,7 @@ public final class Line
   {
     PdfNumber<?> leaderLineLengthObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.LL);
     return leaderLineLengthObject != null
-      ? -leaderLineLengthObject.getNumberValue()
+      ? -leaderLineLengthObject.getDoubleValue()
       : DefaultLeaderLineLength;
   }
 
@@ -279,8 +279,8 @@ public final class Line
   {
     PdfArray coordinatesObject = (PdfArray)getBaseDataObject().get(PdfName.L);
     return new Point2D.Double(
-      ((PdfNumber<?>)coordinatesObject.get(0)).getNumberValue(),
-      ((PdfNumber<?>)coordinatesObject.get(1)).getNumberValue()
+      ((PdfNumber<?>)coordinatesObject.get(0)).getDoubleValue(),
+      ((PdfNumber<?>)coordinatesObject.get(1)).getDoubleValue()
       );
   }
 

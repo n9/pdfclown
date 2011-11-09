@@ -44,7 +44,7 @@ import org.pdfclown.util.ByteArray;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF10)
 public abstract class SimpleFont
@@ -130,7 +130,7 @@ public abstract class SimpleFont
           );
         for(PdfDirectObject glyphWidthObject : glyphWidthObjects)
         {
-          int glyphWidth = ((PdfInteger)glyphWidthObject).getRawValue();
+          int glyphWidth = (int)Math.round(((PdfNumber<?>)glyphWidthObject).getDoubleValue());
           if(glyphWidth > 0)
           {
             Integer code = codes.get(charCode);
@@ -152,7 +152,7 @@ public abstract class SimpleFont
       if(descriptor != null)
       {
         PdfNumber<?> defaultGlyphWidthObject = (PdfNumber<?>)descriptor.get(PdfName.MissingWidth);
-        defaultGlyphWidth = (defaultGlyphWidthObject == null ? 0 : (int)Math.round(defaultGlyphWidthObject.getNumberValue()));
+        defaultGlyphWidth = (defaultGlyphWidthObject == null ? 0 : (int)Math.round(defaultGlyphWidthObject.getDoubleValue()));
       }
     }
   }

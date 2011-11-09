@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF13)
 public final class Type2Function
@@ -107,8 +107,8 @@ public final class Type2Function
           outputBounds.add(
             new double[]
             {
-              ((PdfNumber<?>)lowOutputBoundsObjectIterator.next()).getNumberValue(),
-              ((PdfNumber<?>)highOutputBoundsObjectIterator.next()).getNumberValue()
+              ((PdfNumber<?>)lowOutputBoundsObjectIterator.next()).getDoubleValue(),
+              ((PdfNumber<?>)highOutputBoundsObjectIterator.next()).getDoubleValue()
             }
             );
         }
@@ -122,7 +122,7 @@ public final class Type2Function
   */
   public double getExponent(
     )
-  {return ((PdfNumber<?>)getDictionary().get(PdfName.N)).getNumberValue();}
+  {return ((PdfNumber<?>)getDictionary().get(PdfName.N)).getDoubleValue();}
   // </public>
   // </interface>
   // </dynamic>

@@ -97,6 +97,12 @@ namespace org.pdfclown.objects
     {stream.Write(RawValue.ToString(context.Configuration.RealFormat, formatInfo));}
 
     #region IPdfNumber
+    public double DoubleValue
+    {
+      get
+      {return this.RawValue;}
+    }
+
     public float FloatValue
     {
       get

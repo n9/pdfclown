@@ -45,7 +45,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF10)
 public final class DrawCurve
@@ -161,8 +161,8 @@ public final class DrawCurve
       return null;
     else
       return new Point2D.Double(
-        ((PdfNumber<?>)operands.get(0)).getNumberValue(),
-        ((PdfNumber<?>)operands.get(1)).getNumberValue()
+        ((PdfNumber<?>)operands.get(0)).getDoubleValue(),
+        ((PdfNumber<?>)operands.get(1)).getDoubleValue()
         );
   }
 
@@ -174,13 +174,13 @@ public final class DrawCurve
   {
     if(operator.equals(FinalOperator))
       return new Point2D.Double(
-        ((PdfNumber<?>)operands.get(0)).getNumberValue(),
-        ((PdfNumber<?>)operands.get(1)).getNumberValue()
+        ((PdfNumber<?>)operands.get(0)).getDoubleValue(),
+        ((PdfNumber<?>)operands.get(1)).getDoubleValue()
         );
     else
       return new Point2D.Double(
-        ((PdfNumber<?>)operands.get(2)).getNumberValue(),
-        ((PdfNumber<?>)operands.get(3)).getNumberValue()
+        ((PdfNumber<?>)operands.get(2)).getDoubleValue(),
+        ((PdfNumber<?>)operands.get(3)).getDoubleValue()
         );
   }
 
@@ -192,13 +192,13 @@ public final class DrawCurve
   {
     if(operator.equals(FullOperator))
       return new Point2D.Double(
-        ((PdfNumber<?>)operands.get(4)).getNumberValue(),
-        ((PdfNumber<?>)operands.get(5)).getNumberValue()
+        ((PdfNumber<?>)operands.get(4)).getDoubleValue(),
+        ((PdfNumber<?>)operands.get(5)).getDoubleValue()
         );
     else
       return new Point2D.Double(
-        ((PdfNumber<?>)operands.get(2)).getNumberValue(),
-        ((PdfNumber<?>)operands.get(3)).getNumberValue()
+        ((PdfNumber<?>)operands.get(2)).getDoubleValue(),
+        ((PdfNumber<?>)operands.get(3)).getDoubleValue()
         );
   }
 

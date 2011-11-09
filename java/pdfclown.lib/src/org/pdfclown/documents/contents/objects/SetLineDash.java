@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF10)
 public final class SetLineDash
@@ -98,9 +98,9 @@ public final class SetLineDash
       index < length;
       index++
       )
-    {dashArray[index] = ((PdfNumber<?>)baseDashArray.get(index)).getNumberValue();}
+    {dashArray[index] = ((PdfNumber<?>)baseDashArray.get(index)).getDoubleValue();}
     // 2. Dash phase.
-    double dashPhase = ((PdfNumber<?>)operands.get(1)).getNumberValue();
+    double dashPhase = ((PdfNumber<?>)operands.get(1)).getDoubleValue();
 
     return new LineDash(dashArray, dashPhase);
   }

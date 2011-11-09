@@ -46,7 +46,7 @@ import org.pdfclown.util.math.Interval;
   components of a CIE 1976 L*a*b* space [PDF:1.6:4.5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF11)
 public final class LabColorSpace
@@ -132,8 +132,8 @@ public final class LabColorSpace
         {
           ranges.add(
             new Interval<Double>(
-              ((PdfNumber<?>)rangesObjectIterator.next()).getNumberValue(),
-              ((PdfNumber<?>)rangesObjectIterator.next()).getNumberValue()
+              ((PdfNumber<?>)rangesObjectIterator.next()).getDoubleValue(),
+              ((PdfNumber<?>)rangesObjectIterator.next()).getDoubleValue()
               )
             );
         }

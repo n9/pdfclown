@@ -48,7 +48,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Pattern<TDataObject extends PdfDataObject>
@@ -169,12 +169,12 @@ public abstract class Pattern<TDataObject extends PdfDataObject>
     else
       return new double[]
         {
-          ((PdfNumber<?>)matrix.get(0)).getNumberValue(), // a.
-          ((PdfNumber<?>)matrix.get(1)).getNumberValue(), // b.
-          ((PdfNumber<?>)matrix.get(2)).getNumberValue(), // c.
-          ((PdfNumber<?>)matrix.get(3)).getNumberValue(), // d.
-          ((PdfNumber<?>)matrix.get(4)).getNumberValue(), // e.
-          ((PdfNumber<?>)matrix.get(5)).getNumberValue() // f.
+          ((PdfNumber<?>)matrix.get(0)).getDoubleValue(), // a.
+          ((PdfNumber<?>)matrix.get(1)).getDoubleValue(), // b.
+          ((PdfNumber<?>)matrix.get(2)).getDoubleValue(), // c.
+          ((PdfNumber<?>)matrix.get(3)).getDoubleValue(), // d.
+          ((PdfNumber<?>)matrix.get(4)).getDoubleValue(), // e.
+          ((PdfNumber<?>)matrix.get(5)).getDoubleValue() // f.
         };
   }
   // </public>

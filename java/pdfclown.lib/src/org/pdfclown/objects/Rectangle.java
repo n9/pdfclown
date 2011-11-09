@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 public final class Rectangle
   extends PdfObjectWrapper<PdfArray>
@@ -137,7 +137,7 @@ public final class Rectangle
 
   public double getBottom(
     )
-  {return ((PdfNumber<?>)getBaseDataObject().get(1)).getNumberValue();}
+  {return ((PdfNumber<?>)getBaseDataObject().get(1)).getDoubleValue();}
 
   public double getHeight(
     )
@@ -145,15 +145,15 @@ public final class Rectangle
 
   public double getLeft(
     )
-  {return ((PdfNumber<?>)getBaseDataObject().get(0)).getNumberValue();}
+  {return ((PdfNumber<?>)getBaseDataObject().get(0)).getDoubleValue();}
 
   public double getRight(
     )
-  {return ((PdfNumber<?>)getBaseDataObject().get(2)).getNumberValue();}
+  {return ((PdfNumber<?>)getBaseDataObject().get(2)).getDoubleValue();}
 
   public double getTop(
     )
-  {return ((PdfNumber<?>)getBaseDataObject().get(3)).getNumberValue();}
+  {return ((PdfNumber<?>)getBaseDataObject().get(3)).getDoubleValue();}
 
   public double getWidth(
     )

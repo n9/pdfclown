@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF12)
 public final class AppearanceCharacteristics
@@ -313,7 +313,7 @@ public final class AppearanceCharacteristics
       if(alignmentObject == null)
         return AlignmentXEnum.Center;
 
-      switch((int)Math.round(((PdfNumber<?>)alignmentObject.get(0)).getNumberValue()/.5))
+      switch((int)Math.round(((PdfNumber<?>)alignmentObject.get(0)).getDoubleValue()/.5))
       {
         case 0: return AlignmentXEnum.Left;
         case 2: return AlignmentXEnum.Right;
@@ -334,7 +334,7 @@ public final class AppearanceCharacteristics
       if(alignmentObject == null)
         return AlignmentYEnum.Middle;
 
-      switch((int)Math.round(((PdfNumber<?>)alignmentObject.get(1)).getNumberValue()/.5))
+      switch((int)Math.round(((PdfNumber<?>)alignmentObject.get(1)).getDoubleValue()/.5))
       {
         case 0: return AlignmentYEnum.Bottom;
         case 2: return AlignmentYEnum.Top;

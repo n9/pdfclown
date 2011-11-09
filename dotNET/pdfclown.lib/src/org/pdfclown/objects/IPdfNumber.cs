@@ -34,7 +34,15 @@ namespace org.pdfclown.objects
     : IPdfSimpleObject<double>
   {
     /**
-      <summary>Gets the floating point representation of the value.</summary>
+      <summary>Gets the double-precision floating-point representation of the value.</summary>
+    */
+    double DoubleValue
+    {
+      get;
+    }
+
+    /**
+      <summary>Gets the floating-point representation of the value.</summary>
     */
     float FloatValue
     {

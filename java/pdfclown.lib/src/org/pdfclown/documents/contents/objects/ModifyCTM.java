@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,7 +43,7 @@ import org.pdfclown.util.math.SquareMatrix;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.0
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF10)
 public final class ModifyCTM
@@ -129,12 +129,12 @@ public final class ModifyCTM
     )
   {
     return new AffineTransform(
-      ((PdfNumber<?>)operands.get(0)).getNumberValue(),
-      ((PdfNumber<?>)operands.get(1)).getNumberValue(),
-      ((PdfNumber<?>)operands.get(2)).getNumberValue(),
-      ((PdfNumber<?>)operands.get(3)).getNumberValue(),
-      ((PdfNumber<?>)operands.get(4)).getNumberValue(),
-      ((PdfNumber<?>)operands.get(5)).getNumberValue()
+      ((PdfNumber<?>)operands.get(0)).getDoubleValue(),
+      ((PdfNumber<?>)operands.get(1)).getDoubleValue(),
+      ((PdfNumber<?>)operands.get(2)).getDoubleValue(),
+      ((PdfNumber<?>)operands.get(3)).getDoubleValue(),
+      ((PdfNumber<?>)operands.get(4)).getDoubleValue(),
+      ((PdfNumber<?>)operands.get(5)).getDoubleValue()
       );
   }
   // </public>

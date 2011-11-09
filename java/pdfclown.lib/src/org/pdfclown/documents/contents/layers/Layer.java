@@ -49,7 +49,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF15)
 public class Layer
@@ -273,8 +273,8 @@ public class Layer
     PdfNumber<?> minObject = (PdfNumber<?>)zoomDictionary.resolve(PdfName.min);
     PdfNumber<?> maxObject = (PdfNumber<?>)zoomDictionary.resolve(PdfName.max);
     return new Interval<Double>(
-      minObject != null ? minObject.getNumberValue() : 0,
-      maxObject != null ? maxObject.getNumberValue() : Double.POSITIVE_INFINITY
+      minObject != null ? minObject.getDoubleValue() : 0,
+      maxObject != null ? maxObject.getDoubleValue() : Double.POSITIVE_INFINITY
       );
   }
 

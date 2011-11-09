@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
   green and blue color values [PDF:1.6:4.5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF11)
 public final class CalRGBColorSpace
@@ -99,9 +99,9 @@ public final class CalRGBColorSpace
         }
       : new double[]
         {
-          ((PdfNumber<?>)gammaObject.get(0)).getNumberValue(),
-          ((PdfNumber<?>)gammaObject.get(1)).getNumberValue(),
-          ((PdfNumber<?>)gammaObject.get(2)).getNumberValue()
+          ((PdfNumber<?>)gammaObject.get(0)).getDoubleValue(),
+          ((PdfNumber<?>)gammaObject.get(1)).getDoubleValue(),
+          ((PdfNumber<?>)gammaObject.get(2)).getDoubleValue()
         }
       );
   }

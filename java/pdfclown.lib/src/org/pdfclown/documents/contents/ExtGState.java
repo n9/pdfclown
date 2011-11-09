@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF12)
 public final class ExtGState
@@ -129,7 +129,7 @@ public final class ExtGState
     )
   {
     PdfArray fontObject = (PdfArray)getBaseDataObject().get(PdfName.Font);
-    return fontObject != null ? ((PdfNumber<?>)fontObject.get(1)).getNumberValue() : null;
+    return fontObject != null ? ((PdfNumber<?>)fontObject.get(1)).getDoubleValue() : null;
   }
 
   @PDF(VersionEnum.PDF13)
@@ -158,9 +158,9 @@ public final class ExtGState
         index < length;
         index++
         )
-      {dashArray[index] = ((PdfNumber<?>)baseDashArray.get(index)).getNumberValue();}
+      {dashArray[index] = ((PdfNumber<?>)baseDashArray.get(index)).getDoubleValue();}
     }
-    double dashPhase = ((PdfNumber<?>)lineDashObject.get(1)).getNumberValue();
+    double dashPhase = ((PdfNumber<?>)lineDashObject.get(1)).getDoubleValue();
     return new LineDash(dashArray, dashPhase);
   }
 
@@ -177,7 +177,7 @@ public final class ExtGState
     )
   {
     PdfNumber<?> lineWidthObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.LW);
-    return lineWidthObject != null ? lineWidthObject.getNumberValue() : null;
+    return lineWidthObject != null ? lineWidthObject.getDoubleValue() : null;
   }
 
   @PDF(VersionEnum.PDF13)
@@ -185,7 +185,7 @@ public final class ExtGState
     )
   {
     PdfNumber<?> miterLimitObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.ML);
-    return miterLimitObject != null ? miterLimitObject.getNumberValue() : null;
+    return miterLimitObject != null ? miterLimitObject.getDoubleValue() : null;
   }
   // </public>
   // </interface>

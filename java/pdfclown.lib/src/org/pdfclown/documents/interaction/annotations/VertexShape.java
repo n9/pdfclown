@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF15)
 public abstract class VertexShape
@@ -100,8 +100,8 @@ public abstract class VertexShape
     {
       vertices.add(
         new Point2D.Double(
-          ((PdfNumber<?>)verticesObject.get(index)).getNumberValue(),
-          pageHeight - ((PdfNumber<?>)verticesObject.get(index+1)).getNumberValue()
+          ((PdfNumber<?>)verticesObject.get(index)).getDoubleValue(),
+          pageHeight - ((PdfNumber<?>)verticesObject.get(index+1)).getDoubleValue()
           )
         );
     }

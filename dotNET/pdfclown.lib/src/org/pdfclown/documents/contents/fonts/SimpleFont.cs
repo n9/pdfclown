@@ -117,7 +117,7 @@ namespace org.pdfclown.documents.contents.fonts
             );
           foreach(PdfDirectObject glyphWidthObject in glyphWidthObjects)
           {
-            int glyphWidth = ((PdfInteger)glyphWidthObject).RawValue;
+            int glyphWidth = (int)Math.Round(((IPdfNumber)glyphWidthObject).DoubleValue);
             if(glyphWidth > 0)
             {
               int code;
@@ -134,7 +134,7 @@ namespace org.pdfclown.documents.contents.fonts
         if(descriptor != null)
         {
           IPdfNumber defaultGlyphWidthObject = (IPdfNumber)descriptor[PdfName.MissingWidth];
-          defaultGlyphWidth = (defaultGlyphWidthObject == null ? 0 : (int)Math.Round(defaultGlyphWidthObject.RawValue));
+          defaultGlyphWidth = (defaultGlyphWidthObject == null ? 0 : (int)Math.Round(defaultGlyphWidthObject.DoubleValue));
         }
       }
     }

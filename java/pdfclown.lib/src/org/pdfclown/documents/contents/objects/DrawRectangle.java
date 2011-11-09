@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF10)
 public final class DrawRectangle
@@ -82,19 +82,19 @@ public final class DrawRectangle
   // <public>
   public double getHeight(
     )
-  {return ((PdfNumber<?>)operands.get(3)).getNumberValue();}
+  {return ((PdfNumber<?>)operands.get(3)).getDoubleValue();}
 
   public double getWidth(
     )
-  {return ((PdfNumber<?>)operands.get(2)).getNumberValue();}
+  {return ((PdfNumber<?>)operands.get(2)).getDoubleValue();}
 
   public double getX(
     )
-  {return ((PdfNumber<?>)operands.get(0)).getNumberValue();}
+  {return ((PdfNumber<?>)operands.get(0)).getDoubleValue();}
 
   public double getY(
     )
-  {return ((PdfNumber<?>)operands.get(1)).getNumberValue();}
+  {return ((PdfNumber<?>)operands.get(1)).getDoubleValue();}
 
   @Override
   public void scan(

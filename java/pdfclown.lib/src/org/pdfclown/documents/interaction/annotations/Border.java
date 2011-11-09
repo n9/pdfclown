@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF11)
 public final class Border
@@ -189,7 +189,7 @@ public final class Border
       dashIndex < dashLength;
       dashIndex++
       )
-    {dashArray[dashIndex] = ((PdfNumber<?>)dashObject.get(dashIndex)).getNumberValue();}
+    {dashArray[dashIndex] = ((PdfNumber<?>)dashObject.get(dashIndex)).getDoubleValue();}
 
     return new LineDash(dashArray);
   }
@@ -222,7 +222,7 @@ public final class Border
     PdfNumber<?> widthObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.W);
     return widthObject == null
       ? DefaultWidth
-      : widthObject.getNumberValue();
+      : widthObject.getDoubleValue();
   }
 
   /**

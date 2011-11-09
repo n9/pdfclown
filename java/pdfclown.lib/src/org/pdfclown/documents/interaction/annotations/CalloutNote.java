@@ -50,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF13)
 public final class CalloutNote
@@ -122,13 +122,13 @@ public final class CalloutNote
       PdfArray coordinates = getBaseDataObject();
       if(coordinates.size() < 6)
         return new Point2D.Double(
-          ((PdfNumber<?>)coordinates.get(2)).getNumberValue(),
-          page.getBox().getHeight() - ((PdfNumber<?>)coordinates.get(3)).getNumberValue()
+          ((PdfNumber<?>)coordinates.get(2)).getDoubleValue(),
+          page.getBox().getHeight() - ((PdfNumber<?>)coordinates.get(3)).getDoubleValue()
           );
       else
         return new Point2D.Double(
-          ((PdfNumber<?>)coordinates.get(4)).getNumberValue(),
-          page.getBox().getHeight() - ((PdfNumber<?>)coordinates.get(5)).getNumberValue()
+          ((PdfNumber<?>)coordinates.get(4)).getDoubleValue(),
+          page.getBox().getHeight() - ((PdfNumber<?>)coordinates.get(5)).getDoubleValue()
           );
     }
 
@@ -140,8 +140,8 @@ public final class CalloutNote
         return null;
 
       return new Point2D.Double(
-        ((PdfNumber<?>)coordinates.get(2)).getNumberValue(),
-        page.getBox().getHeight() - ((PdfNumber<?>)coordinates.get(3)).getNumberValue()
+        ((PdfNumber<?>)coordinates.get(2)).getDoubleValue(),
+        page.getBox().getHeight() - ((PdfNumber<?>)coordinates.get(3)).getDoubleValue()
         );
     }
 
@@ -151,8 +151,8 @@ public final class CalloutNote
       PdfArray coordinates = getBaseDataObject();
 
       return new Point2D.Double(
-        ((PdfNumber<?>)coordinates.get(0)).getNumberValue(),
-        page.getBox().getHeight() - ((PdfNumber<?>)coordinates.get(1)).getNumberValue()
+        ((PdfNumber<?>)coordinates.get(0)).getDoubleValue(),
+        page.getBox().getHeight() - ((PdfNumber<?>)coordinates.get(1)).getDoubleValue()
         );
     }
     // </public>

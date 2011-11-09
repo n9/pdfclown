@@ -51,7 +51,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/16/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF13)
 public final class TextMarkup
@@ -217,20 +217,20 @@ public final class TextMarkup
       markupBoxes.add(
         new Quad(
           new Point2D.Double(
-            ((PdfNumber<?>)quadPointsObject.get(index)).getNumberValue(),
-            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 1)).getNumberValue()
+            ((PdfNumber<?>)quadPointsObject.get(index)).getDoubleValue(),
+            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 1)).getDoubleValue()
             ),
           new Point2D.Double(
-            ((PdfNumber<?>)quadPointsObject.get(index + 2)).getNumberValue(),
-            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 3)).getNumberValue()
+            ((PdfNumber<?>)quadPointsObject.get(index + 2)).getDoubleValue(),
+            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 3)).getDoubleValue()
             ),
           new Point2D.Double(
-            ((PdfNumber<?>)quadPointsObject.get(index + 6)).getNumberValue(),
-            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 7)).getNumberValue()
+            ((PdfNumber<?>)quadPointsObject.get(index + 6)).getDoubleValue(),
+            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 7)).getDoubleValue()
             ),
           new Point2D.Double(
-            ((PdfNumber<?>)quadPointsObject.get(index + 4)).getNumberValue(),
-            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 5)).getNumberValue()
+            ((PdfNumber<?>)quadPointsObject.get(index + 4)).getDoubleValue(),
+            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 5)).getDoubleValue()
             )
           )
         );

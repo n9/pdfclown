@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF13)
 public abstract class Shape
@@ -90,9 +90,9 @@ public abstract class Shape
 //TODO:use baseObject constructor!!!
     return fillColorObject != null
       ? new DeviceRGBColor(
-        ((PdfNumber<?>)fillColorObject.get(0)).getNumberValue(),
-        ((PdfNumber<?>)fillColorObject.get(1)).getNumberValue(),
-        ((PdfNumber<?>)fillColorObject.get(2)).getNumberValue()
+        ((PdfNumber<?>)fillColorObject.get(0)).getDoubleValue(),
+        ((PdfNumber<?>)fillColorObject.get(1)).getDoubleValue(),
+        ((PdfNumber<?>)fillColorObject.get(2)).getDoubleValue()
         )
       : null;
   }

@@ -66,6 +66,12 @@ namespace org.pdfclown.objects
     {stream.Write(RawValue.ToString());}
 
     #region IPdfNumber
+    public double DoubleValue
+    {
+      get
+      {return this.RawValue;}
+    }
+
     public float FloatValue
     {
       get

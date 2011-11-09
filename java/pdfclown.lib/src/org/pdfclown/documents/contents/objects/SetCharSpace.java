@@ -39,7 +39,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/09/11
 */
 @PDF(VersionEnum.PDF10)
 public final class SetCharSpace
@@ -75,7 +75,7 @@ public final class SetCharSpace
 
   public double getValue(
     )
-  {return ((PdfNumber<?>)operands.get(0)).getNumberValue();}
+  {return ((PdfNumber<?>)operands.get(0)).getDoubleValue();}
 
   public void setValue(
     double value
