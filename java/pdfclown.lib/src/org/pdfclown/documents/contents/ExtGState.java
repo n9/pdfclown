@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/09/11
+  @version 0.1.1, 11/14/11
 */
 @PDF(VersionEnum.PDF12)
 public final class ExtGState
@@ -58,7 +58,6 @@ public final class ExtGState
     Wraps the specified base object into a graphics state parameter dictionary object.
 
     @param baseObject Base object of a graphics state parameter dictionary object.
-    @param container Indirect object possibly containing the graphics state parameter dictionary base object.
     @return Graphics state parameter dictionary object corresponding to the base object.
   */
   public static ExtGState wrap(

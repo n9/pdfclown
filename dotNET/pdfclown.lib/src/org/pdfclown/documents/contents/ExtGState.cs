@@ -42,9 +42,9 @@ namespace org.pdfclown.documents.contents
     #region interface
     #region public
     /**
-      <summary>Wraps the specified base object into a graphics state parameter dictionary object.</summary>
+      <summary>Wraps the specified base object into a graphics state parameter dictionary object.
+      </summary>
       <param name="baseObject">Base object of a graphics state parameter dictionary object.</param>
-      <param name="container">Indirect object possibly containing the graphics state parameter dictionary base object.</param>
       <returns>Graphics state parameter dictionary object corresponding to the base object.</returns>
     */
     public static ExtGState Wrap(

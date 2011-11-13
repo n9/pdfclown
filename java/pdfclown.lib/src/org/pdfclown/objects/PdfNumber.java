@@ -29,7 +29,7 @@ package org.pdfclown.objects;
   PDF number object [PDF:1.6:3.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/09/11
+  @version 0.1.1, 11/14/11
 */
 public abstract class PdfNumber<TValue extends Number>
   extends PdfSimpleObject<TValue>
@@ -57,23 +57,20 @@ public abstract class PdfNumber<TValue extends Number>
   /**
     Gets the double-precision floating-point representation of the value.
   */
-  public final double getDoubleValue(
-    )
-  {return getValue().doubleValue();}
+  public abstract double getDoubleValue(
+    );
 
   /**
     Gets the floating-point representation of the value.
   */
-  public final float getFloatValue(
-    )
-  {return getValue().floatValue();}
+  public abstract float getFloatValue(
+    );
 
   /**
     Gets the integer representation of the value.
   */
-  public final int getIntValue(
-    )
-  {return getValue().intValue();}
+  public abstract int getIntValue(
+    );
 
   @Override
   public Number getValue(

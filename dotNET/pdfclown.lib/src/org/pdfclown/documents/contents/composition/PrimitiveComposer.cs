@@ -134,7 +134,7 @@ namespace org.pdfclown.documents.contents.composition
 
     /**
       <summary>Begins a new layered-content sequence [PDF:1.6:4.10.2].</summary>
-      <param name="layer"><see cref="LayerEntity"/> enclosing the layered content.</param>
+      <param name="layer">Layer entity enclosing the layered content.</param>
       <returns>Added layered-content sequence.</returns>
       <seealso cref="End()"/>
     */

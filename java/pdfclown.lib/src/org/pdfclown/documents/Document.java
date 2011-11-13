@@ -61,7 +61,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF document [PDF:1.6:3.6.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/14/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Document
@@ -497,7 +497,7 @@ public final class Document
   }
 
   /**
-    Gets the <b>default resource collection</b> [PDF:1.6:3.6.2].
+    Gets the default resource collection [PDF:1.6:3.6.2].
     <p>The default resource collection is used as last resort by every page
     that doesn't reference one explicitly (and doesn't reference an intermediate one
     implicitly).</p>

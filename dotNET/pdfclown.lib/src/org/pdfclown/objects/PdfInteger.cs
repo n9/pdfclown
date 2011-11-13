@@ -69,19 +69,19 @@ namespace org.pdfclown.objects
     public double DoubleValue
     {
       get
-      {return this.RawValue;}
+      {return RawValue;}
     }
 
     public float FloatValue
     {
       get
-      {return this.RawValue;}
+      {return RawValue;}
     }
 
     public int IntValue
     {
       get
-      {return this.RawValue;}
+      {return RawValue;}
     }
 
     double IPdfSimpleObject<double>.RawValue

@@ -103,7 +103,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/14/11
 */
 public final class PrimitiveComposer
 {
@@ -191,7 +191,7 @@ public final class PrimitiveComposer
   /**
     Begins a new layered-content sequence [PDF:1.6:4.10.2].
 
-    @param {@link LayerEntity} enclosing the layered content.
+    @param layer Layer entity enclosing the layered content.
     @return Added layered-content sequence.
     @see #end()
   */

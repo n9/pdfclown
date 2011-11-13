@@ -1,5 +1,5 @@
 /**
-  <summary><p>Static, self-contained numerical transformations that represent parameterized classes of functions,
+  <summary>Static, self-contained numerical transformations that represent parameterized classes of functions,
   including mathematical formulas and sampled representations with arbitrary resolution [PDF:1.6:3.9].</summary>
   <remarks>Functions are used in various ways in PDF, including device-dependent rasterization information
   for high-quality printing (halftone spot functions and transfer functions), color transform functions

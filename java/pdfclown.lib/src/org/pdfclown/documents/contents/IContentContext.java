@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,13 +33,13 @@ import java.awt.geom.Rectangle2D;
   Content stream context.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/14/11
 */
 public interface IContentContext
   extends IContentEntity
 {
   /**
-    Gets the <b>bounding box</b> associated with this content context either explicitly
+    Gets the bounding box associated with this content context either explicitly
     (directly associated to the object) or (if not explicitly available) implicitly
     (inherited from a higher level object), expressed in default user-space units.
   */
@@ -47,7 +47,7 @@ public interface IContentContext
     );
 
   /**
-    Gets the <b>contents collection</b> representing the content stream associated
+    Gets the contents collection representing the content stream associated
     with this content context.
 
     @since 0.0.5
@@ -56,7 +56,7 @@ public interface IContentContext
     );
 
   /**
-    Gets the <b>resources</b> associated with this content context either explicitly (directly
+    Gets the resources associated with this content context either explicitly (directly
     associated to the object) or (if not explicitly available) implicitly (inherited from a
     higher-level object).
     <p>The implementing class MUST ensure that the returned object isn't <code>null</code>.</p>
@@ -65,7 +65,7 @@ public interface IContentContext
     );
 
   /**
-    Gets the <b>rendering rotation</b> of this content context.
+    Gets the rendering rotation of this content context.
 
     @since 0.1.0
   */

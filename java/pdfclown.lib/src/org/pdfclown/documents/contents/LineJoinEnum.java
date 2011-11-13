@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,7 +36,7 @@ import org.pdfclown.VersionEnum;
   Shape to be used at the corners of stroked paths [PDF:1.6:4.3.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.1, 11/14/11
 */
 @PDF(VersionEnum.PDF10)
 public enum LineJoinEnum
@@ -104,9 +104,9 @@ public enum LineJoinEnum
   /**
     Converts this constant into its equivalent AWT code.
 
-    @see BasicStroke.JOIN_BEVEL
-    @see BasicStroke.JOIN_MITER
-    @see BasicStroke.JOIN_ROUND
+    @see BasicStroke#JOIN_BEVEL
+    @see BasicStroke#JOIN_MITER
+    @see BasicStroke#JOIN_ROUND
   */
   public int toAwt(
     )

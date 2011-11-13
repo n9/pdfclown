@@ -45,7 +45,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 11/09/11
+  @version 0.1.1, 11/14/11
 */
 @PDF(VersionEnum.PDF13)
 public final class Type3Function
@@ -80,7 +80,7 @@ public final class Type3Function
   {return new NotImplementedException();}
 
   /**
-    Gets the <b>{@link Function#getDomains() domain} partition bounds</b> whose resulting intervals are respectively applied
+    Gets the {@link Function#getDomains() domain} partition bounds whose resulting intervals are respectively applied
     to each {@link #getFunctions() function}.
   */
   public List<Double> getDomainBounds(
@@ -104,7 +104,7 @@ public final class Type3Function
   {return getIntervals(PdfName.Encode, null);}
 
   /**
-    Gets the <b>1-input functions</b> making up this stitching function.
+    Gets the 1-input functions making up this stitching function.
     <p>The output dimensionality of all functions must be the same.</p>
   */
   public Functions getFunctions(

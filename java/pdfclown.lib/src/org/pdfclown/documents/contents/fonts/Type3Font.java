@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,10 +25,19 @@
 
 package org.pdfclown.documents.contents.fonts;
 
+import java.util.Hashtable;
+import java.util.Map;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
+import org.pdfclown.objects.PdfDataObject;
+import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
+import org.pdfclown.objects.PdfName;
+import org.pdfclown.util.BiMap;
+import org.pdfclown.util.ByteArray;
+import org.pdfclown.util.ConvertUtils;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -36,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.1, 11/14/11
 */
 @PDF(VersionEnum.PDF10)
 public final class Type3Font
@@ -60,7 +69,59 @@ public final class Type3Font
   {throw new NotImplementedException();}
 
   @Override
-  protected void loadEncoding() {
-    // FIXME
+  public double getAscent(
+    )
+  {return 0;}
+
+  @Override
+  public double getDescent(
+    )
+  {return 0;}
+
+  protected Map<ByteArray,Integer> getNativeEncoding(
+    )
+  {
+    //FIXME: consolidate with Type1Font and TrueTypeFont!
+    return Encoding.get(PdfName.StandardEncoding).getCodes();
+  }
+
+  @Override
+  protected void loadEncoding(
+    )
+  {
+    //FIXME: consolidate with Type1Font and TrueTypeFont!
+    // Encoding.
+    if(codes == null)
+    {
+      Map<ByteArray,Integer> codes;
+      PdfDataObject encodingObject = getBaseDataObject().resolve(PdfName.Encoding);
+      if(encodingObject == null) // Native encoding.
+      {codes = getNativeEncoding();}
+      else if(encodingObject instanceof PdfName) // Predefined encoding.
+      {codes = Encoding.get((PdfName)encodingObject).getCodes();}
+      else // Custom encoding.
+      {
+        PdfDictionary encodingDictionary = (PdfDictionary)encodingObject;
+
+        // 1. Base encoding.
+        PdfName baseEncodingName = (PdfName)encodingDictionary.get(PdfName.BaseEncoding);
+        if(baseEncodingName == null) // Native base encoding.
+        {codes = getNativeEncoding();}
+        else // Predefined base encoding.
+        {codes = Encoding.get(baseEncodingName).getCodes();}
+
+        // 2. Differences.
+        loadEncodingDifferences(encodingDictionary, codes);
+      }
+      this.codes = new BiMap<ByteArray,Integer>(codes);
+    }
+
+    // Glyph indexes.
+    if(glyphIndexes == null)
+    {
+      glyphIndexes = new Hashtable<Integer,Integer>();
+      for(Map.Entry<ByteArray,Integer> codeEntry : codes.entrySet())
+      {glyphIndexes.put(codeEntry.getValue(),ConvertUtils.byteArrayToInt(codeEntry.getKey().data));}
+    }
   }
 }

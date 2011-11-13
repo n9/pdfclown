@@ -45,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.1, 11/14/11
 */
 @PDF(VersionEnum.PDF12)
 public final class SeparationColorSpace
@@ -55,10 +55,10 @@ public final class SeparationColorSpace
   // <static>
   // <fields>
   /**
-    Special component name <i>referring collectively to all components available on an output device</i>,
-    including those for the standard process components.
-    <p>When a separation space with this component name is the current color space, <i>painting operators
-    apply tint values to all available components at once</i>.</p>
+    Special colorant name <i>referring collectively to all components available</i> on an output
+    device, including those for the standard process components.
+    <p>When a separation space with this component name is the current color space, <i>painting
+    operators apply tint values to all available components at once</i>.</p>
   */
   public static final String AllComponentName = (String)PdfName.All.getValue();
   // </fields>
@@ -99,8 +99,8 @@ public final class SeparationColorSpace
     to represent.
     <p>Special names:</p>
     <ul>
-      <li>{@link #AllColorantName All}</li>
-      <li>{@link #NoneColorantName None}</li>
+      <li>{@link SeparationColorSpace#AllComponentName All}</li>
+      <li>{@link SpecialDeviceColorSpace#NoneComponentName None}</li>
     </ul>
   */
   @Override

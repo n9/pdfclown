@@ -100,19 +100,19 @@ namespace org.pdfclown.objects
     public double DoubleValue
     {
       get
-      {return this.RawValue;}
+      {return RawValue;}
     }
 
     public float FloatValue
     {
       get
-      {return (float)this.RawValue;}
+      {return (float)RawValue;}
     }
 
     public int IntValue
     {
       get
-      {return (int)this.RawValue;}
+      {return (int)Math.Round(RawValue);}
     }
     #endregion
     #endregion

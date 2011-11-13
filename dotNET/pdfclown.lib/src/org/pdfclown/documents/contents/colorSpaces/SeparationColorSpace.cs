@@ -47,10 +47,10 @@ namespace org.pdfclown.documents.contents.colorSpaces
     #region static
     #region fields
     /**
-      <summary>Special component name referring collectively to all components available on an output device,
-      including those for the standard process components.</summary>
-      <remarks>When a separation space with this component name is the current color space, painting operators
-      apply tint values to all available components at once.</remarks>
+      <summary>Special colorant name referring collectively to all components available on an output
+      device, including those for the standard process components.</summary>
+      <remarks>When a separation space with this component name is the current color space, painting
+      operators apply tint values to all available components at once.</remarks>
     */
     public static readonly string AllComponentName = (string)PdfName.All.Value;
     #endregion
@@ -84,8 +84,8 @@ namespace org.pdfclown.documents.contents.colorSpaces
       to represent.</summary>
       <remarks>Special names:
         <list type="bullet">
-          <item><see cref="AllColorantName">All</see></item>
-          <item><see cref="NoneColorantName">None</see></item>
+          <item><see cref="AllComponentName">All</see></item>
+          <item><see cref="NoneComponentName">None</see></item>
         </list>
       </remarks>
     */

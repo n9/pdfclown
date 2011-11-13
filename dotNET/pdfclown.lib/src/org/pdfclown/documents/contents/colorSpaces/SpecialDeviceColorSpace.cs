@@ -44,9 +44,9 @@ namespace org.pdfclown.documents.contents.colorSpaces
     #region static
     #region fields
     /**
-      <summary>Special component name never producing any visible output.</summary>
-      <remarks>When a color space with this component name is the current color space, painting operators
-      have no effect.</remarks>
+      <summary>Special colorant name never producing any visible output.</summary>
+      <remarks>When a color space with this component name is the current color space, painting
+      operators have no effect.</remarks>
     */
     public static readonly string NoneComponentName = (string)PdfName.None.Value;
     #endregion

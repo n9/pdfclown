@@ -42,15 +42,14 @@ import java.util.Set;
 import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.tokens.CharsetName;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.pdfclown.util.NotImplementedException;
 
 /**
   CFF file format parser [CFF:1.0].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/14/11
 */
 final class CffParser
 {

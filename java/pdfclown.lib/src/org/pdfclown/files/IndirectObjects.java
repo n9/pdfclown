@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/14/11
 */
 public final class IndirectObjects
   implements List<PdfIndirectObject>
@@ -393,8 +393,7 @@ public final class IndirectObjects
     way to import the content of one file into another</i>.</p>
     <p>Alternatives:</p>
     <ul>
-      <li>To register and get external indirect object, use
-      {@link #addAllExternal(Collection<? extends PdfIndirectObject>) addAllExternal(Collection<? extends PdfIndirectObject>)}.</li>
+      <li>To register and get external indirect object, use {@link #addAllExternal(Collection)}.</li>
     </ul>
   */
   @Override

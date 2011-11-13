@@ -34,13 +34,12 @@ import org.pdfclown.documents.functions.Function;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.objects.PdfNumber;
 
 /**
   Special device color space [PDF:1.6:4.5.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.1, 11/14/11
 */
 @PDF(VersionEnum.PDF12)
 public abstract class SpecialDeviceColorSpace
@@ -50,7 +49,7 @@ public abstract class SpecialDeviceColorSpace
   // <static>
   // <fields>
   /**
-    Special component name <i>never producing any visible output</i>.
+    Special colorant name <i>never producing any visible output</i>.
     <p>When a color space with this component name is the current color space, <i>painting operators
     have no effect</i>.</p>
   */
@@ -71,7 +70,7 @@ public abstract class SpecialDeviceColorSpace
   // <interface>
   // <public>
   /**
-    Gets the <b>alternate color space</b> used in case any of the {@link #getComponentNames() component names}
+    Gets the alternate color space used in case any of the {@link #getComponentNames() component names}
     in the color space do not correspond to a component available on the device.
   */
   public ColorSpace<?> getAlternateSpace(
@@ -79,7 +78,7 @@ public abstract class SpecialDeviceColorSpace
   {return ColorSpace.wrap(getBaseDataObject().get(2));}
 
   /**
-    Gets the <b>names of the color components</b>.
+    Gets the names of the color components.
    */
   public abstract List<String> getComponentNames(
     );
@@ -105,7 +104,7 @@ public abstract class SpecialDeviceColorSpace
   }
 
   /**
-    Gets the <i><b>function</b> to transform a tint value into color component values</i>
+    Gets the <i>function to transform a tint value into color component values</i>
     in the {@link #getAlternateSpace() alternate color space}.
   */
   public Function<?> getTintFunction(
