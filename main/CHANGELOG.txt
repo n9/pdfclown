@@ -1,8 +1,8 @@
-PDF Clown Project - CHANGELOG
+CHANGELOG
+PDF Clown Project [README.html] > 
 
-Stefano Chizzolini <>
 
-Project version: 0.1.0 -- CHANGELOG revision: 0 (2011-02-24)
+Project version: 0.1.1 - CHANGELOG revision: 0 (2011-11-14)
 
 ---------------
 Introduction
@@ -11,6 +11,132 @@ This is a coarsely-grained record of major changes occurred to the PDF Clown Pro
 
 For a more concise list of changes, please see the WHATSNEW [WHATSNEW.html].
 
+
+---------------
+Version 0.1.1
+---------------
+Release date: 2011-11-14
+Backward compatibility: false
+
+This release [http://pdfclown.wordpress.com/2011/04/12/waiting-for-pdf-clown-0-1-1-release/] adds support to optional/layered contents, text highlighting, metadata streams (XMP), Type1/CFF font files, along with primitive object model and AcroForm fields filling enhancements.
+
+Lots of minor improvements have been applied too.
+
+ * Utility (org.pdfclown.util)
+  * [add] class math.geom.Quad
+  * [add] class parsers.ParseException
+  * [add] class parsers.PostScriptParser
+ * File Serialization (org.pdfclown.tokens)
+  * [add] class BaseParser
+  * [add] class FileParser
+  * [remove] class FileFormatException
+  * [remove] class Parser: replaced by FileParser.
+  * [remove] class TokenTypeEnum
+ * Primitive Objects (org.pdfclown.objects)
+  * [add] class Array: collection of sequentially-arranged object wrappers.
+  * [add] class PdfSimpleObject
+  * [change] class PdfNumber:
+   * [add] getDoubleValue()
+   * [add] getFloatValue()
+   * [add] getIntValue()
+   * [remove] getNumberValue(): replaced by getDoubleValue().
+  * [change] class PdfObject:
+   * [add] getContainer()
+   * [add] getFile()
+   * [add] getIndirectObject()
+   * [add] getParent()
+   * [add] getReference()
+   * [add] is/setUpdateable(boolean)
+   * [add] is/setUpdated(boolean)
+   * [add] is/setVirtual(boolean)
+   * [add] update()
+  * [change] class PdfObjectWrapper:
+   * [add] get/setMetadata(Metadata)
+  * [change] class PdfReal: extends PdfNumber<Double>.
+  * [remove] class PdfAtomicObject: replaced by PdfSimpleObject.
+ * File Structure (org.pdfclown.files)
+  * [change] class File:
+   * [add] class Configuration
+   * [add] getConfiguration()
+   * [remove] class ResolvedObject<T extends PdfDataObject>
+   * [remove] resolve(PdfObject, IPdfIndirectObject)
+   * [remove] update(PdfDirectObject)
+  * [remove] class UpdateModeEnum
+ * Document Structure (org.pdfclown.documents)
+  * [change] class Document:
+   * [add] exclude(PdfObjectWrapper<?>)
+   * [add] exclude(Collection<? extends PdfObjectWrapper<?>>)
+   * [add] get/setLayer(LayerDefinition)
+   * [add] include(PdfObjectWrapper<?>)
+   * [add] include(Collection<? extends PdfObjectWrapper<?>>)
+   * [remove] contextualize(PdfObjectWrapper<?>): replaced by include(PdfObjectWrapper<?>).
+   * [remove] contextualize(Collection<? extends PdfObjectWrapper<?>>): replaced by include(Collection<? extends PdfObjectWrapper<?>>).
+   * [remove] decontextualize(PdfObjectWrapper<?>): replaced by exclude(PdfObjectWrapper<?>).
+   * [remove] decontextualize(Collection<? extends PdfObjectWrapper<?>>): replaced by exclude(Collection<? extends PdfObjectWrapper<?>>).
+  * [change] class Page:
+   * [add] get/setArtBox(Rectangle2D)
+   * [add] get/setBleedBox(Rectangle2D)
+   * [add] get/setCropBox(Rectangle2D)
+   * [add] get/setTrimBox(Rectangle2D)
+ * Content Streaming (org.pdfclown.documents.contents)
+  * [add] class fonts.CffParser: Type1/CFF parser.
+  * [add] class layers.BaseStateEnum
+  * [add] class layers.Layer
+  * [add] class layers.LayerConfiguration
+  * [add] class layers.LayerDefinition
+  * [add] class layers.LayerEntity
+  * [add] class layers.LayerGroup
+  * [add] class layers.LayerMembership
+  * [add] class layers.Layers
+  * [add] class layers.ListModeEnum
+  * [add] interface layers.ILayerable
+  * [add] interface layers.ILayerConfiguration
+  * [add] interface layers.ILayerNode
+  * [add] interface objects.IResourceReference
+  * [add] class tokens.ContentParser
+  * [change] class composition.PrimitiveComposer:
+   * [add] beginLayer(LayerEntity)
+   * [add] beginLayer(PdfName)
+   * [add] beginMarkedContent(PdfName, PropertyList)
+   * [add] beginMarkedContent(PdfName, PdfName)
+  * [change] class fonts.CMapParser: extends PostScriptParser.
+  * [change] class objects.PaintShading: implements IResourceReference<Shading<?>>
+  * [change] class objects.PaintXObject: implements IResourceReference<XObject<?>>
+  * [change] class objects.SetExtGState: implements IResourceReference<ExtGState<?>>
+  * [change] class objects.SetFillColorSpace: implements IResourceReference<ColorSpace<?>>
+  * [change] class objects.SetFont: implements IResourceReference<Font<?>>
+  * [change] class objects.SetStrokeColorSpace: implements IResourceReference<ColorSpace<?>>
+  * [change] class objects.Shading: implements IResourceReference<Shading<?>>
+  * [change] class objects.XObject: implements IResourceReference<XObject<?>>
+  * [remove] class fonts.FontFileFormatException
+  * [remove] class tokens.Parser: replaced by tokens.ContentParser
+ * Interaction (org.pdfclown.documents.interaction)
+  * [add] class JustificationEnum
+  * [add] class actions.SetLayerState
+  * [change] class annotations.TextMarkup:
+   * [add] get/setMarkupBoxes(List<Quad>): enhanced quadrilaterals management.
+   * [remove] get/setBoxes(List<Rectangle2D>): replaced by get/setMarkupBoxes(List<Quad>).
+  * [change] class forms.CheckBox:
+   * [change] setChecked(boolean): appearance stream update implemented.
+  * [change] class forms.TextField:
+   * [add] get/setJustification(JustificationEnum)
+   * [change] setValue(Object): appearance stream update implemented.
+  * [change] class forms.styles.FieldStyle:
+   * [add] is/setGraphicsVisibile(boolean): whether to render field graphics (border, background, ...) or just field contents.
+  * [remove] class actions.SetOcgState: replaced by actions.SetLayerState
+ * Interchange (org.pdfclown.documents.interchange)
+  * [add] class metadata.Metadata: metadata stream.
+  * [change] class metadata.Information: update synchronization (ensures priority over older metadata within the same document (see onChange() method)).
+ * Tools (org.pdfclown.tools)
+  * [change] class TextExtractor:
+   * [add] interface IIntervalFilter: text filter by character position (simplifies text search).
+   * [add] filter(Map<Rectangle2D,List<ITextString>>, List<Interval<Integer>>): filters text at specified intervals.
+   * [add] filter(Map<Rectangle2D,List<ITextString>>, IIntervalFilter): filters text using the specified interval filter.
+   * [add] is/setDehyphenated(boolean): text strings dehyphenation.
+   * [add] toString(Map<Rectangle2D,List<ITextString>>): converts extracted text information into plain text.
+   * [add] toString(Map<Rectangle2D,List<ITextString>>, String, String): converts extracted text information into plain text, formatting line and area breaks.
+   * [remove] extractPlain(IContentContext): replaced by extract(IContentContext) and toString(...).
+   * [remove] extractPlain(Contents): replaced by extract(Contents) and toString(...).
 
 ---------------
 Version 0.1.0
@@ -79,8 +205,8 @@ Lots of minor improvements have been applied too.
   * [add] class annotations.Sound: renamed from annotations.SoundAnnotation
   * [change] class navigation.document.Bookmark:
    * [add] enum FlagsEnum
-   * [add] get/setColor(DeviceRGBColor value)
-   * [add] get/setFlags(EnumSet value)
+   * [add] get/setColor(DeviceRGBColor)
+   * [add] get/setFlags(EnumSet)
   * [remove] class annotations.MovieAnnotation: renamed to annotations.Movie
   * [remove] class annotations.SoundAnnotation: renamed to annotations.Sound
  * Content Streaming (org.pdfclown.documents.contents)
@@ -131,11 +257,11 @@ Lots of minor improvements have been applied too.
   * [change] class FontResources: ResourceItems derivation.
   * [change] interface IContentContext:
    * [add] getRotation()
-   * [add] render(Graphics2D context, Dimension2D size)
+   * [add] render(Graphics2D, Dimension2D)
   * [change] class Resources:
-   * [add] get/setPatterns(PatternResources value)
-   * [add] get/setPropertyLists(PropertyListResources value)
-   * [add] get/setShadings(ShadingResources value)
+   * [add] get/setPatterns(PatternResources)
+   * [add] get/setPropertyLists(PropertyListResources)
+   * [add] get/setShadings(ShadingResources)
   * [change] class XObjectResources: ResourceItems derivation.
   * [change] class colorSpaces.CalGrayColorSpace
   * [change] class colorSpaces.CalRGBColorSpace
@@ -157,8 +283,8 @@ Lots of minor improvements have been applied too.
   * [change] class objects.CloseSubpath: support to rendering.
   * [change] class objects.CompositeObject: support to rendering.
   * [change] class objects.ContentObject:
-   * [add] scan(ContentScanner.GraphicsState state)
-   * [remove] applyTo(ContentScanner.GraphicsState state)
+   * [add] scan(ContentScanner.GraphicsState)
+   * [remove] applyTo(ContentScanner.GraphicsState)
   * [change] class objects.DrawCurve: support to rendering.
   * [change] class objects.DrawLine: support to rendering.
   * [change] class objects.DrawRectangle: support to rendering.
@@ -167,14 +293,14 @@ Lots of minor improvements have been applied too.
   * [change] class objects.ModifyCTM: support to rendering.
   * [change] class objects.PaintPath: paint-path-related operations consolidation; support to rendering.
   * [change] class objects.PaintShading:
-   * [add] get/setName(PdfName value)
-   * [add] getShading(IContentContext context)
+   * [add] get/setName(PdfName)
+   * [add] getShading(IContentContext)
   * [change] class objects.PaintXObject:
-   * [add] getXObject(IContentContext context)
+   * [add] getXObject(IContentContext)
   * [change] class objects.Path: support to rendering.
   * [change] class objects.SetCharSpace: support to rendering.
   * [change] class objects.SetExtGState:
-   * [add] getExtGState(IContentContext context)
+   * [add] getExtGState(IContentContext)
   * [change] class objects.SetFillColor: support to rendering.
   * [change] class objects.SetFillColorSpace: support to rendering.
   * [change] class objects.SetFont: support to rendering.
@@ -193,12 +319,12 @@ Lots of minor improvements have been applied too.
   * [change] class objects.SetWordSpace: support to rendering.
   * [change] class objects.Shading:
    * [add] getName()
-   * [add] getResource(IContentContext context)
+   * [add] getResource(IContentContext)
   * [change] class objects.ShowText: support to rendering.
   * [change] class objects.TranslateTextRelative: support to rendering.
   * [change] class objects.TranslateTextToNextLine: support to rendering.
   * [change] class objects.XObject:
-   * [add] getResource(IContentContext context)
+   * [add] getResource(IContentContext)
   * [change] class xObjects.FormXObject: support to rendering.
   * [remove] class composition.BlockFilter: renamed to composition.BlockComposer
   * [remove] class composition.PrimitiveFilter: renamed to composition.PrimitiveComposer
@@ -215,9 +341,9 @@ Lots of minor improvements have been applied too.
  * Tools (org.pdfclown.tools)
   * [add] class Renderer: document renderer and printer.
   * [change] class PageManager:
-   * [add] getSize(Page page), getSize(Page page, Set visitedReferences): page size calculation.
-   * [add] split(int... indexes): splits the document into multiple subdocuments delimited by the specified page indexes.
-   * [add] split(long maxDataSize): splits the document into multiple subdocuments on maximum file size.
+   * [add] getSize(Page), getSize(Page, Set): page size calculation.
+   * [add] split(int...): splits the document into multiple subdocuments delimited by the specified page indexes.
+   * [add] split(long): splits the document into multiple subdocuments on maximum file size.
 
 ---------------
 Version 0.0.8
@@ -941,3 +1067,13 @@ Backward compatibility: true
   * [add] Font objects collection (Fonts)
   * [add] Device color space object (colorSpaces.DeviceColor) and descendants
   * [add] Entity object (entities.Entity) and descendants
+
+---------------
+Resources
+---------------
+ * Navigation:
+  * Current directory [.]: browse current section contents
+  * Parent section [README.html]: move to parent section
+  * Previous section [WHATSNEW.html]: move to previous section
+  * Next section [ISSUES.html]: move to next section
+  * INDEX [INDEX.html]: move to the distribution map

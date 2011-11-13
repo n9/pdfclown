@@ -1,32 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<changeLog name="changes" version="0.1.0" xml:lang="en"
-  xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.1"
+<changeLog
+  xml:lang="en"
+  xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.2"
   xmlns:db="http://docbook.org/ns/docbook" db:version="5.0"
   xmlns:xl="http://www.w3.org/1999/xlink"
   >
-  <meta>
-    <date>2011-02-24</date>
-    <!--
-      'revision' is the current revision of this metadocumentation.
-      Its value should be an incremental counter anchored to the project version,
-      i.e. it should be reset to zero everytime a new project version is created.
-    -->
-    <revision>0</revision>
-    <author>
-      <name>
-        <first>Stefano</first>
-        <last>Chizzolini</last>
-      </name>
-      <contact type="url">http://www.stefanochizzolini.it</contact>
-    </author>
-  </meta>
-  <title>PDF Clown for .NET</title>
   <description>
     <db:para>This is a coarsely-grained record of major changes occurred specifically to the C# implementation of <db:emphasis role="strong">PDF Clown</db:emphasis>.</db:para>
     <db:para>For common changes to the PDF Clown Project, please see the <db:link xl:href="../main/CHANGELOG.html">PDF Clown Project CHANGELOG</db:link>.</db:para>
   </description>
   <tip>Change chronology of PDF Clown implementation for .NET</tip>
-  <keywords>PDF, PDF Clown, library, C#, .NET, changes</keywords>
   <features>
     <feature id="it.stefanochizzolini.clown:ANY">
       <title>General</title>
@@ -57,6 +40,11 @@
     </feature>
   </features>
   <entries>
+    <release version="0.1.1" date="2011-11-14" compatible="false">
+      <description>
+        <db:para>ICSharpCode.SharpZipLib.dll dependency removed.</db:para>
+      </description>
+    </release>
     <release version="0.0.8" date="2010-08-21" compatible="false">
       <description>
         <db:para>Migrated to .NET 3.5.</db:para>

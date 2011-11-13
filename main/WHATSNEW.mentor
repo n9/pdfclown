@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<whatsNew name="whatsNew" version="0.1.0" xml:lang="en"
-  xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.1"
+<whatsNew
+  xml:lang="en"
+  xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.2"
   xmlns:db="http://docbook.org/ns/docbook" db:version="5.0"
   xmlns:xl="http://www.w3.org/1999/xlink"
   >
-  <meta>
-    <date>2011-02-24</date>
-    <!--
-      'revision' is the current revision of this metadocumentation.
-      Its value should be an incremental counter anchored to the project version,
-      i.e. it should be reset to zero everytime a new project version is created.
-    -->
-    <revision>0</revision>
-    <author>
-      <name>
-        <first>Stefano</first>
-        <last>Chizzolini</last>
-      </name>
-      <contact type="url">http://www.stefanochizzolini.it</contact>
-    </author>
-  </meta>
-  <title>PDF Clown Project</title>
   <description>
     <db:para>This is a list of highlights about major changes occurred to the <db:emphasis role="strong">PDF Clown Project</db:emphasis> from a functional point of view.</db:para>
     <db:para>For a more detailed list of changes, please see the <db:link xl:href="CHANGELOG.html">CHANGELOG</db:link>.</db:para>
   </description>
   <tip>New features of the PDF Clown Project</tip>
-  <keywords>PDF, PDF Clown, library, project, changes, highlights</keywords>
   <entries>
+    <release version="0.1.1" date="2011-11-14" compatible="false">
+      <description>
+        <db:para><db:link xl:href="http://pdfclown.wordpress.com/2011/04/12/waiting-for-pdf-clown-0-1-1-release/">This release</db:link> adds support to <db:emphasis role="strong">optional/layered contents</db:emphasis>, <db:emphasis role="strong">text highlighting</db:emphasis>, metadata streams (XMP), Type1/CFF font files, along with primitive object model and AcroForm fields filling enhancements.</db:para>
+        <db:para>Lots of minor improvements have been applied too.</db:para>
+      </description>
+      <entries>
+        <add>Primitive object model: see objects namespace (PdfObject, PdfObjectWrapper, PdfSimpleObject, PdfReal).</add>
+        <add>Optional/layered contents: see documents.contents.layers namespace</add>
+        <add>Text highlighting: see tools.TextExtractor, annotations.TextMarkup</add>
+        <add>AcroForm fields filling: see documents.interaction.forms namespace</add>
+        <add>Metadata streams (XMP): see documents.interchange.metadata.Metadata, PdfObjectWrapper.get/setMetadata(Metadata)</add>
+        <add>Type1/CFF font files support: see fonts.CffParser</add>
+        <add>File configuration: real number formatting (see files.File.Configuration)</add>
+        <add>Page boxes: see documents.Page (get/setArtBox(Rectangle2D), get/setBleedBox(Rectangle2D), get/setCropBox(Rectangle2D), get/setTrimBox(Rectangle2D))</add>
+        <add>PostScript-based parsers: see util.parsers.PostScriptParser, tokens.BaseParser, tokens.FileParser, documents.contents.tokens.ContentParser</add>
+      </entries>
+    </release>
     <release version="0.1.0" date="2011-02-24" compatible="false">
       <description>
         <db:para>This release introduces support to <db:emphasis role="strong">cross-reference-stream-based PDF files</db:emphasis> (as defined since PDF 1.5 spec) along with <db:emphasis role="strong"><db:link xl:href="http://pdfclown.wordpress.com/2010/09/23/waiting-for-pdf-clown-0-1-release/">page rendering and printing</db:link></db:emphasis>: a specialized tool provides a convenient way to convert PDF pages into images (aka rasterization).</db:para>

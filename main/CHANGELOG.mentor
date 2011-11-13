@@ -1,32 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<changeLog name="changes" version="0.1.0" xml:lang="en"
-  xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.1"
+<changeLog
+  xml:lang="en"
+  xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.2"
   xmlns:db="http://docbook.org/ns/docbook" db:version="5.0"
   xmlns:xl="http://www.w3.org/1999/xlink"
   >
-  <meta>
-    <date>2011-02-24</date>
-    <!--
-      'revision' is the current revision of this metadocumentation.
-      Its value should be an incremental counter anchored to the project version,
-      i.e. it should be reset to zero everytime a new project version is created.
-    -->
-    <revision>0</revision>
-    <author>
-      <name>
-        <first>Stefano</first>
-        <last>Chizzolini</last>
-      </name>
-      <contact type="url">http://www.stefanochizzolini.it</contact>
-    </author>
-  </meta>
-  <title>PDF Clown Project</title>
   <description>
     <db:para>This is a coarsely-grained record of major changes occurred to the <db:emphasis role="strong">PDF Clown Project</db:emphasis>, from a systematic point of view.</db:para>
     <db:para>For a more concise list of changes, please see the <db:link xl:href="WHATSNEW.html">WHATSNEW</db:link>.</db:para>
   </description>
   <tip>Change chronology of the PDF Clown Project</tip>
-  <keywords>PDF, PDF Clown, library, project, changes</keywords>
   <features>
     <feature id="org.pdfclown">
       <title>Main (org.pdfclown)</title>
@@ -52,8 +35,14 @@
     <feature id="org.pdfclown.documents.interaction">
       <title>Interaction (org.pdfclown.documents.interaction)</title>
     </feature>
+    <feature id="org.pdfclown.documents.interchange">
+      <title>Interchange (org.pdfclown.documents.interchange)</title>
+    </feature>
     <feature id="org.pdfclown.tools">
       <title>Tools (org.pdfclown.tools)</title>
+    </feature>
+    <feature id="org.pdfclown.util">
+      <title>Utility (org.pdfclown.util)</title>
     </feature>
     <feature id="it.stefanochizzolini.clown:ANY">
       <title>General</title>
@@ -108,6 +97,190 @@
     </feature>
   </features>
   <entries>
+    <release version="0.1.1" date="2011-11-14" compatible="false">
+      <description>
+        <db:para><db:link xl:href="http://pdfclown.wordpress.com/2011/04/12/waiting-for-pdf-clown-0-1-1-release/">This release</db:link> adds support to <db:emphasis role="strong">optional/layered contents</db:emphasis>, <db:emphasis role="strong">text highlighting</db:emphasis>, metadata streams (XMP), Type1/CFF font files, along with primitive object model and AcroForm fields filling enhancements.</db:para>
+        <db:para>Lots of minor improvements have been applied too.</db:para>
+      </description>
+      <feature idref="org.pdfclown.util">
+        <entries>
+          <add>class math.geom.Quad</add>
+          <add>class parsers.ParseException</add>
+          <add>class parsers.PostScriptParser</add>
+        </entries>
+      </feature>
+      <feature idref="org.pdfclown.tokens">
+        <entries>
+          <add>class BaseParser</add>
+          <add>class FileParser</add>
+          <remove>class FileFormatException</remove>
+          <remove>class Parser: replaced by FileParser.</remove>
+          <remove>class TokenTypeEnum</remove>
+        </entries>
+      </feature>
+      <feature idref="org.pdfclown.objects">
+        <entries>
+          <add>class Array: collection of sequentially-arranged object wrappers.</add>
+          <add>class PdfSimpleObject</add>
+          <change><text>class PdfNumber:</text>
+            <entries>
+              <add>getDoubleValue()</add>
+              <add>getFloatValue()</add>
+              <add>getIntValue()</add>
+              <remove>getNumberValue(): replaced by getDoubleValue().</remove>
+            </entries>
+          </change>
+          <change><text>class PdfObject:</text>
+            <entries>
+              <add>getContainer()</add>
+              <add>getFile()</add>
+              <add>getIndirectObject()</add>
+              <add>getParent()</add>
+              <add>getReference()</add>
+              <add>is/setUpdateable(boolean)</add>
+              <add>is/setUpdated(boolean)</add>
+              <add>is/setVirtual(boolean)</add>
+              <add>update()</add>
+            </entries>
+          </change>
+          <change><text>class PdfObjectWrapper:</text>
+            <entries>
+              <add>get/setMetadata(Metadata)</add>
+            </entries>
+          </change>
+          <change>class PdfReal: extends PdfNumber&lt;Double&gt;.</change>
+          <remove>class PdfAtomicObject: replaced by PdfSimpleObject.</remove>
+        </entries>
+      </feature>
+      <feature idref="org.pdfclown.files">
+        <entries>
+          <change><text>class File:</text>
+            <entries>
+              <add>class Configuration</add>
+              <add>getConfiguration()</add>
+              <remove>class ResolvedObject&lt;T extends PdfDataObject&gt;</remove>
+              <remove>resolve(PdfObject, IPdfIndirectObject)</remove>
+              <remove>update(PdfDirectObject)</remove>
+            </entries>
+          </change>
+          <remove>class UpdateModeEnum</remove>
+        </entries>
+      </feature>
+      <feature idref="org.pdfclown.documents">
+        <entries>
+          <change><text>class Document:</text>
+            <entries>
+              <add>exclude(PdfObjectWrapper&lt;?&gt;)</add>
+              <add>exclude(Collection&lt;? extends PdfObjectWrapper&lt;?&gt;&gt;)</add>
+              <add>get/setLayer(LayerDefinition)</add>
+              <add>include(PdfObjectWrapper&lt;?&gt;)</add>
+              <add>include(Collection&lt;? extends PdfObjectWrapper&lt;?&gt;&gt;)</add>
+              <remove>contextualize(PdfObjectWrapper&lt;?&gt;): replaced by include(PdfObjectWrapper&lt;?&gt;).</remove>
+              <remove>contextualize(Collection&lt;? extends PdfObjectWrapper&lt;?&gt;&gt;): replaced by include(Collection&lt;? extends PdfObjectWrapper&lt;?&gt;&gt;).</remove>
+              <remove>decontextualize(PdfObjectWrapper&lt;?&gt;): replaced by exclude(PdfObjectWrapper&lt;?&gt;).</remove>
+              <remove>decontextualize(Collection&lt;? extends PdfObjectWrapper&lt;?&gt;&gt;): replaced by exclude(Collection&lt;? extends PdfObjectWrapper&lt;?&gt;&gt;).</remove>
+            </entries>
+          </change>
+          <change><text>class Page:</text>
+            <entries>
+              <add>get/setArtBox(Rectangle2D)</add>
+              <add>get/setBleedBox(Rectangle2D)</add>
+              <add>get/setCropBox(Rectangle2D)</add>
+              <add>get/setTrimBox(Rectangle2D)</add>
+            </entries>
+          </change>
+        </entries>
+      </feature>
+      <feature idref="org.pdfclown.documents.contents">
+        <entries>
+          <add>class fonts.CffParser: Type1/CFF parser.</add>
+          <add>class layers.BaseStateEnum</add>
+          <add>class layers.Layer</add>
+          <add>class layers.LayerConfiguration</add>
+          <add>class layers.LayerDefinition</add>
+          <add>class layers.LayerEntity</add>
+          <add>class layers.LayerGroup</add>
+          <add>class layers.LayerMembership</add>
+          <add>class layers.Layers</add>
+          <add>class layers.ListModeEnum</add>
+          <add>interface layers.ILayerable</add>
+          <add>interface layers.ILayerConfiguration</add>
+          <add>interface layers.ILayerNode</add>
+          <add>interface objects.IResourceReference</add>
+          <add>class tokens.ContentParser</add>
+          <change><text>class composition.PrimitiveComposer:</text>
+            <entries>
+              <add>beginLayer(LayerEntity)</add>
+              <add>beginLayer(PdfName)</add>
+              <add>beginMarkedContent(PdfName, PropertyList)</add>
+              <add>beginMarkedContent(PdfName, PdfName)</add>
+            </entries>
+          </change>
+          <change>class fonts.CMapParser: extends PostScriptParser.</change>
+          <change>class objects.PaintShading: implements IResourceReference&lt;Shading&lt;?&gt;&gt;</change>
+          <change>class objects.PaintXObject: implements IResourceReference&lt;XObject&lt;?&gt;&gt;</change>
+          <change>class objects.SetExtGState: implements IResourceReference&lt;ExtGState&lt;?&gt;&gt;</change>
+          <change>class objects.SetFillColorSpace: implements IResourceReference&lt;ColorSpace&lt;?&gt;&gt;</change>
+          <change>class objects.SetFont: implements IResourceReference&lt;Font&lt;?&gt;&gt;</change>
+          <change>class objects.SetStrokeColorSpace: implements IResourceReference&lt;ColorSpace&lt;?&gt;&gt;</change>
+          <change>class objects.Shading: implements IResourceReference&lt;Shading&lt;?&gt;&gt;</change>
+          <change>class objects.XObject: implements IResourceReference&lt;XObject&lt;?&gt;&gt;</change>
+          <remove>class fonts.FontFileFormatException</remove>
+          <remove>class tokens.Parser: replaced by tokens.ContentParser</remove>
+        </entries>
+      </feature>
+      <feature idref="org.pdfclown.documents.interaction">
+        <entries>
+          <add>class JustificationEnum</add>
+          <add>class actions.SetLayerState</add>
+          <change><text>class annotations.TextMarkup:</text>
+            <entries>
+              <add>get/setMarkupBoxes(List&lt;Quad&gt;): enhanced quadrilaterals management.</add>
+              <remove>get/setBoxes(List&lt;Rectangle2D&gt;): replaced by get/setMarkupBoxes(List&lt;Quad&gt;).</remove>
+            </entries>
+          </change>
+          <change><text>class forms.CheckBox:</text>
+            <entries>
+              <change>setChecked(boolean): appearance stream update implemented.</change>
+            </entries>
+          </change>
+          <change><text>class forms.TextField:</text>
+            <entries>
+              <add>get/setJustification(JustificationEnum)</add>
+              <change>setValue(Object): appearance stream update implemented.</change>
+            </entries>
+          </change>
+          <change><text>class forms.styles.FieldStyle:</text>
+            <entries>
+              <add>is/setGraphicsVisibile(boolean): whether to render field graphics (border, background, ...) or just field contents.</add>
+            </entries>
+          </change>
+          <remove>class actions.SetOcgState: replaced by actions.SetLayerState</remove>
+        </entries>
+      </feature>
+      <feature idref="org.pdfclown.documents.interchange">
+        <entries>
+          <add>class metadata.Metadata: metadata stream.</add>
+          <change>class metadata.Information: update synchronization (ensures priority over older metadata within the same document (see onChange() method)).</change>
+        </entries>
+      </feature>
+      <feature idref="org.pdfclown.tools">
+        <entries>
+          <change><text>class TextExtractor:</text>
+            <entries>
+              <add>interface IIntervalFilter: text filter by character position (simplifies text search).</add>
+              <add>filter(Map&lt;Rectangle2D,List&lt;ITextString&gt;&gt;, List&lt;Interval&lt;Integer&gt;&gt;): filters text at specified intervals.</add>
+              <add>filter(Map&lt;Rectangle2D,List&lt;ITextString&gt;&gt;, IIntervalFilter): filters text using the specified interval filter.</add>
+              <add>is/setDehyphenated(boolean): text strings dehyphenation.</add>
+              <add>toString(Map&lt;Rectangle2D,List&lt;ITextString&gt;&gt;): converts extracted text information into plain text.</add>
+              <add>toString(Map&lt;Rectangle2D,List&lt;ITextString&gt;&gt;, String, String): converts extracted text information into plain text, formatting line and area breaks.</add>
+              <remove>extractPlain(IContentContext): replaced by extract(IContentContext) and toString(...).</remove>
+              <remove>extractPlain(Contents): replaced by extract(Contents) and toString(...).</remove>
+            </entries>
+          </change>
+        </entries>
+      </feature>
+    </release>
     <release version="0.1.0" date="2011-02-24" compatible="false">
       <description>
         <db:para>This release introduces support to <db:emphasis role="strong">cross-reference-stream-based PDF files</db:emphasis> (as defined since PDF 1.5 spec) along with <db:emphasis role="strong"><db:link xl:href="http://pdfclown.wordpress.com/2010/09/23/waiting-for-pdf-clown-0-1-release/">page rendering and printing</db:link></db:emphasis>: a specialized tool provides a convenient way to convert PDF pages into images (aka rasterization).</db:para>
@@ -211,8 +384,8 @@
           <change><text>class navigation.document.Bookmark:</text>
             <entries>
               <add>enum FlagsEnum</add>
-              <add>get/setColor(DeviceRGBColor value)</add>
-              <add>get/setFlags(EnumSet value)</add>
+              <add>get/setColor(DeviceRGBColor)</add>
+              <add>get/setFlags(EnumSet)</add>
             </entries>
           </change>
           <remove>class annotations.MovieAnnotation: renamed to annotations.Movie</remove>
@@ -272,14 +445,14 @@
           <change><text>interface IContentContext:</text>
             <entries>
               <add>getRotation()</add>
-              <add>render(Graphics2D context, Dimension2D size)</add>
+              <add>render(Graphics2D, Dimension2D)</add>
             </entries>
           </change>
           <change><text>class Resources:</text>
             <entries>
-              <add>get/setPatterns(PatternResources value)</add>
-              <add>get/setPropertyLists(PropertyListResources value)</add>
-              <add>get/setShadings(ShadingResources value)</add>
+              <add>get/setPatterns(PatternResources)</add>
+              <add>get/setPropertyLists(PropertyListResources)</add>
+              <add>get/setShadings(ShadingResources)</add>
             </entries>
           </change>
           <change>class XObjectResources: ResourceItems derivation.</change>
@@ -304,8 +477,8 @@
           <change>class objects.CompositeObject: support to rendering.</change>
           <change><text>class objects.ContentObject:</text>
             <entries>
-              <add>scan(ContentScanner.GraphicsState state)</add>
-              <remove>applyTo(ContentScanner.GraphicsState state)</remove>
+              <add>scan(ContentScanner.GraphicsState)</add>
+              <remove>applyTo(ContentScanner.GraphicsState)</remove>
             </entries>
           </change>
           <change>class objects.DrawCurve: support to rendering.</change>
@@ -317,20 +490,20 @@
           <change>class objects.PaintPath: paint-path-related operations consolidation; support to rendering.</change>
           <change><text>class objects.PaintShading:</text>
             <entries>
-              <add>get/setName(PdfName value)</add>
-              <add>getShading(IContentContext context)</add>
+              <add>get/setName(PdfName)</add>
+              <add>getShading(IContentContext)</add>
             </entries>
           </change>
           <change><text>class objects.PaintXObject:</text>
             <entries>
-              <add>getXObject(IContentContext context)</add>
+              <add>getXObject(IContentContext)</add>
             </entries>
           </change>
           <change>class objects.Path: support to rendering.</change>
           <change>class objects.SetCharSpace: support to rendering.</change>
           <change><text>class objects.SetExtGState:</text>
             <entries>
-              <add>getExtGState(IContentContext context)</add>
+              <add>getExtGState(IContentContext)</add>
             </entries>
           </change>
           <change>class objects.SetFillColor: support to rendering.</change>
@@ -352,7 +525,7 @@
           <change><text>class objects.Shading:</text>
             <entries>
               <add>getName()</add>
-              <add>getResource(IContentContext context)</add>
+              <add>getResource(IContentContext)</add>
             </entries>
           </change>
           <change>class objects.ShowText: support to rendering.</change>
@@ -360,7 +533,7 @@
           <change>class objects.TranslateTextToNextLine: support to rendering.</change>
           <change><text>class objects.XObject:</text>
             <entries>
-              <add>getResource(IContentContext context)</add>
+              <add>getResource(IContentContext)</add>
             </entries>
           </change>
           <change>class xObjects.FormXObject: support to rendering.</change>
@@ -383,9 +556,9 @@
           <add>class Renderer: document renderer and printer.</add>
           <change><text>class PageManager:</text>
             <entries>
-              <add>getSize(Page page), getSize(Page page, Set visitedReferences): page size calculation.</add>
-              <add>split(int... indexes): splits the document into multiple subdocuments delimited by the specified page indexes.</add>
-              <add>split(long maxDataSize): splits the document into multiple subdocuments on maximum file size.</add>
+              <add>getSize(Page), getSize(Page, Set): page size calculation.</add>
+              <add>split(int...): splits the document into multiple subdocuments delimited by the specified page indexes.</add>
+              <add>split(long): splits the document into multiple subdocuments on maximum file size.</add>
             </entries>
           </change>
         </entries>
@@ -890,7 +1063,7 @@
       </feature>
       <feature idref="it.stefanochizzolini.clown.documents">
         <entries>
-          <change><text>class Page</text>: implements IContentEntity</change>
+          <change>class Page: implements IContentEntity</change>
         </entries>
       </feature>
       <feature idref="it.stefanochizzolini.clown.documents.contents">

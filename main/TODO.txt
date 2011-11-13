@@ -1,7 +1,8 @@
-PDF Clown Project - TODO
+TODO
+PDF Clown Project [README.html] > 
 
 
-Project version: 0.1.0 -- TODO revision: 0 (2011-02-24)
+Project version: 0.1.1 - TODO revision: 0 (2011-11-14)
 
 ---------------
 Introduction
@@ -12,9 +13,18 @@ Here are pending activities that need to be accomplished.
 ---------------
 TODO list
 ---------------
- * [todo] Atomic primitive objects (e.g. PdfName, PdfString, PdfInteger etc.) MUST be made immutable. Rationale: reliable and consistent referencing of shared instances.
- * [todo] Automatic object update. Rationale: explicit update invocations are cumbersome and error-prone.
  * [todo] Documentation: improve and extend PDF Clown Project User Guide [doc/userGuide.pdf] contents. Rationale: current documentation is barely uncomplete.
  * [todo] Hyphenation (see documents.contents.composition.TextFitter): implement a decent algorithm. Rationale: current implementation is purely a stub.
  * [todo] Parsers (see tokens.Parser, documents.contents.tokens.Parser): refactor (derive from the same generalization). Rationale: current code duplication (to supersede) has been temporarely tolerated in order to focus on new functionalities.
  * [todo] Exceptions (see tokens.FileFormatException, documents.contents.fonts.FontFileFormatException ...): refactor? Rationale: exceptions may need harmonization.
+ * [todo] Type1/CFF parsing: delayed Unicode mapping
+
+---------------
+Resources
+---------------
+ * Navigation:
+  * Current directory [.]: browse current section contents
+  * Parent section [README.html]: move to parent section
+  * Previous section [ISSUES.html]: move to previous section
+  * Next section [INDEX.html]: move to next section
+  * INDEX [INDEX.html]: move to the distribution map

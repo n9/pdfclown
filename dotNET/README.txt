@@ -1,14 +1,13 @@
-PDF Clown for .NET - README
-PDF Clown Project [../main/README.html]
+PDF Clown for .NET
+PDF Clown Project [../main/README.html] > 
 
-Stefano Chizzolini <>
 
-Project version: 0.1.0 -- README revision: 0 (2011-02-24)
+Project version: 0.1.1 - README revision: 0 (2011-11-14)
 
 ---------------
 Introduction
 ---------------
-This is the .NET source-code distribution of PDF Clown, a C# library for the manipulation of PDF files.
+This is the C#/.NET source code distribution of PDF Clown, a general-purpose library for the manipulation of PDF files.
 
 
 ---------------
@@ -55,14 +54,15 @@ PDF Clown for .NET currently depends on:
 ---------------
 Resources
 ---------------
- * Library [pdfclown.lib/README.html]: PDF Clown source code
- * Samples [pdfclown.samples.cli/README.html]: Functionality demonstrations
- * Documentation [../main/doc/README.html]: PDF Clown common guides
- * Additional resources [../main/res/README.html]: Material supporting PDF Clown distribution
- * PDF Clown for .NET (CHANGELOG) [CHANGELOG.html]: Change chronology of PDF Clown implementation for .NET
- * PDF Clown Project home page [http://www.pdfclown.org]: Project home page
+ *  [pdfclown.lib/README.html]: PDF Clown source code
+ *  [pdfclown.samples.cli/README.html]: Functionality demonstrations
+ *  [../main/doc/README.html]: PDF Clown common guides
+ *  [../main/res/README.html]: Material supporting PDF Clown distribution
+ *  [CHANGELOG.html]: Change chronology of PDF Clown implementation for .NET
+ * PDF Clown home page [http://www.pdfclown.org]: Project home page
  * Navigation:
   * Current directory [.]: browse current section contents
   * Parent section [../main/README.html]: move to parent section
-  * Previous section [../main/../java/README.html]: move to previous section
-  * Next section [../main/res/README.html]: move to next section
+  * Previous section [../java/README.html]: move to previous section
+  * Next section [pdfclown.lib/README.html]: move to next section
+  * INDEX [../main/INDEX.html]: move to the distribution map

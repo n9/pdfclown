@@ -34,7 +34,7 @@
     value="0.1.1"
     />
   <property name="project.stage"
-    value="Alpha"
+    value="Beta"
     />
   <property name="project.version.ext"
     value="${project.version}-${project.stage}"
@@ -86,7 +86,7 @@
       author="true"
       charset="UTF-8"
       destdir="${javadoc.dir}"
-      doctitle="${project.title} ${project.version}&lt;br/&gt;API Reference"
+      doctitle="&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;img src='pdfclown.png'/&gt;&lt;/td&gt;&lt;td&gt;${project.title} ${project.version}&lt;br/&gt;API Reference&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;"
       overview="${src.dir}/overview.html"
       sourcepath="${src.dir}"
       use="true"
@@ -94,9 +94,11 @@
       windowtitle="${project.title} ${project.version} API Reference"
       >
       <header><![CDATA[<b>${project.title}</b><br/><small>${project.version}</small>]]></header>
-      <bottom><![CDATA[<small><a href="http://www.pdfclown.org">Project home page</a><br><br>Copyright &#169; 2006-2011 ${project.vendor}. Some Rights Reserved.<br/>This documentation is available under the terms of the <a href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License</a>.</small>]]></bottom>
-      <link href="http://download.oracle.com/javase/6/docs/api"/>
+      <bottom><![CDATA[<small><a href="http://www.pdfclown.org">Project home page</a><br><br>Copyright &#169; 2006-2011 <a href="http://www.stefanochizzolini.it/">${project.vendor}</a>. Some Rights Reserved.<br/>This documentation is available under the terms of the <a href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License</a>.</small>]]></bottom>
+      <link href="http://docs.oracle.com/javase/6/docs/api/"/>
     </javadoc>
+    <copy file="../res/styles/javadoc.css" tofile="${javadoc.dir}/stylesheet.css" overwrite="true" />
+    <copy file="../../main/res/images/pdfclown.png" todir="${javadoc.dir}"/>
   </target>
 
   <target name="package"

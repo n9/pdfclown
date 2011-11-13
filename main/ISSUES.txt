@@ -1,8 +1,8 @@
-PDF Clown Project - ISSUES
+ISSUES
+PDF Clown Project [README.html] > 
 
-Stefano Chizzolini <>
 
-Project version: 0.1.0 -- ISSUES revision: 0 (2011-02-24)
+Project version: 0.1.1 - ISSUES revision: 0 (2011-11-14)
 
 ---------------
 Introduction
@@ -15,6 +15,15 @@ ISSUES list
 ---------------
  * [limitation] Content rendering and printing: currently at pre-alpha stage (no assumption to work at production level -- implementation is still incomplete).
  * [limitation] Text extraction: column layouts and table layouts haven't been supported yet (text is always grouped by row).
- * [limitation] Text extraction: embedded CFF font file format hasn't been supported yet.
  * [limitation] Text composition: only left-to-right writing systems are currently supported.
  * [limitation] Font subsetting: currently not supported (font descriptions are fully embedded).
+
+---------------
+Resources
+---------------
+ * Navigation:
+  * Current directory [.]: browse current section contents
+  * Parent section [README.html]: move to parent section
+  * Previous section [CHANGELOG.html]: move to previous section
+  * Next section [TODO.html]: move to next section
+  * INDEX [INDEX.html]: move to the distribution map

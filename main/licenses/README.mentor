@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resource name="licenses" base=".." xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.1" xmlns:db="http://docbook.org/ns/docbook" db:version="5.0">
-<title>License</title>
-<tip>Licenses applied to the PDF Clown distribution</tip>
-<description><db:para>This section hosts the licenses applied to PDF Clown.</db:para></description>
-<keywords>license, agreement, conditions, use</keywords>
-<resources>
-<resource href="./gnu.org/gpl.html">
-<title>GNU GPL</title>
-<tip>GNU General Public License version 3</tip>
-</resource>
-<resource href="./gnu.org/lgpl.html">
-<title>GNU LGPL</title>
-<tip>GNU Lesser General Public License version 3</tip>
-</resource>
-<resource href="./gnu.org/fdl.html">
-<title>GNU FDL</title>
-<tip>GNU Free Documentation License version 1.2</tip>
-</resource>
-</resources>
+<resource
+  xml:lang="en"
+  xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.2"
+  xmlns:db="http://docbook.org/ns/docbook" db:version="5.0"
+  >
+  <title>License</title>
+  <tip>Licenses applied to the PDF Clown distribution</tip>
+  <description>
+    <db:para>This section hosts the licenses applied to PDF Clown.</db:para>
+  </description>
 </resource>

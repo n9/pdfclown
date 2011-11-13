@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="PDFClownDotNET" version="0.1.0" base="../main" xml:lang="en"
-  xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.1"
+<project
+  version="0.1.1"
+  xml:lang="en"
+  xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.2"
   xmlns:db="http://docbook.org/ns/docbook" db:version="5.0"
+  xmlns:xl="http://www.w3.org/1999/xlink"
   >
   <meta>
-    <date>2011-02-24</date>
+    <date>2011-11-14</date>
     <!--
       'revision' is the current revision of this metadocumentation.
       Its value should be an incremental counter anchored to the project version,
@@ -20,21 +23,9 @@
     </author>
   </meta>
   <title>PDF Clown for .NET</title>
-  <description><db:para>This is the .NET source-code distribution of <db:emphasis role="strong">PDF Clown</db:emphasis>, a C# library for the manipulation of PDF files.</db:para>
+  <description><db:para>This is the C#/.NET source code distribution of <db:emphasis role="strong">PDF Clown</db:emphasis>, <db:emphasis>a general-purpose library for the manipulation of PDF files</db:emphasis>.</db:para>
   </description>
   <tip>PDF Clown implementation for .NET</tip>
-  <keywords>PDF, PDF Clown, library, C#, .NET</keywords>
-  <resources>
-    <resource name="pdfclown.lib" href="pdfclown.lib/README.mentor"/>
-    <resource name="pdfclown.samples.cli" href="pdfclown.samples.cli/README.mentor"/>
-    <resource name="doc" href="../main/doc/README.mentor"/>
-    <resource name="res" href="../main/res/README.mentor"/>
-    <resource name="changes" href="CHANGELOG.mentor"/>
-    <resource name="home" href="http://www.pdfclown.org">
-      <title>PDF Clown Project home page</title>
-      <tip>Project home page</tip>
-    </resource>
-  </resources>
   <copyright>
     <year>2006-2011</year>
     <holder>

@@ -1,33 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resource name="res" base=".."
-  xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.1"
+<resource
+  xml:lang="en"
+  xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.2"
   xmlns:db="http://docbook.org/ns/docbook" db:version="5.0"
   xmlns:xl="http://www.w3.org/1999/xlink"
   >
-<title>Additional resources</title>
-<tip>Material supporting PDF Clown distribution</tip>
-<description><db:para>This section contains material related to the PDF Clown distribution, such as stylesheets and documentation in source format.</db:para></description>
-<keywords>resources</keywords>
-<resources>
-  <resource name="doc" href="doc/">
-    <title>Documentation sources</title>
-    <tip>PDF Clown's documentation in source format.</tip>
-  </resource>
-  <resource name="pkg" href="pkg/">
-    <title>Package resources</title>
-    <tip>Resources to include inside the compiled library.</tip>
-  </resource>
-  <resource name="samples" href="samples/">
-    <title>Sample files</title>
-    <tip>Sample resources (fonts, images, PDFs...) used to feed PDF Clown's sample applications.</tip>
-  </resource>
-  <resource name="script" href="script/">
-    <title>Scripts</title>
-    <tip>Utility <db:link xl:href="http://en.wikipedia.org/wiki/Shell_script">shell scripts</db:link>.</tip>
-  </resource>
-  <resource name="xsl" href="xsl/">
-    <title>Stylesheets</title>
-    <tip><db:link xl:href="http://en.wikipedia.org/wiki/Xslt">XSLT stylesheets</db:link> for data trasformation.</tip>
-  </resource>
-</resources>
+  <title>Additional resources</title>
+  <tip>Material supporting PDF Clown distribution</tip>
+  <description>
+    <db:para>This section contains material related to the PDF Clown distribution, such as stylesheets and documentation in source format.</db:para>
+  </description>
 </resource>

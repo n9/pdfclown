@@ -1,8 +1,8 @@
-PDF Clown for .NET - CHANGELOG
+CHANGELOG
+PDF Clown Project [../main/README.html] > PDF Clown for .NET [README.html] > 
 
-Stefano Chizzolini <>
 
-Project version: 0.1.0 -- CHANGELOG revision: 0 (2011-02-24)
+Project version: 0.1.1 - CHANGELOG revision: 0 (2011-11-14)
 
 ---------------
 Introduction
@@ -10,6 +10,15 @@ Introduction
 This is a coarsely-grained record of major changes occurred specifically to the C# implementation of PDF Clown.
 
 For common changes to the PDF Clown Project, please see the PDF Clown Project CHANGELOG [../main/CHANGELOG.html].
+
+
+---------------
+Version 0.1.1
+---------------
+Release date: 2011-11-14
+Backward compatibility: false
+
+ICSharpCode.SharpZipLib.dll dependency removed.
 
 
 ---------------
@@ -38,3 +47,13 @@ Backward compatibility: false
  * Content Streaming (it.stefanochizzolini.clown.documents.contents)
   * [change] class tokens.Parser
    * [fix] [1668410] MoveNext(): parsing of float numbers has been corrected. Symptom: parsing of float numbers was buggy. Cause: the default localized number format was inadvertently used instead of the canonical format (decimal separator was unpredictable).
+
+---------------
+Resources
+---------------
+ * Navigation:
+  * Current directory [.]: browse current section contents
+  * Parent section [README.html]: move to parent section
+  * Previous section [pdfclown.samples.cli/README.html]: move to previous section
+  * Next section [../main/licenses/README.html]: move to next section
+  * INDEX [../main/INDEX.html]: move to the distribution map

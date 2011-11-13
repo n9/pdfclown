@@ -1,14 +1,31 @@
-PDF Clown Project - README
+PDF Clown Project
 
-Stefano Chizzolini <>
 
-Project version: 0.1.0 -- README revision: 0 (2011-02-24)
+
+Project version: 0.1.1 - README revision: 0 (2011-11-14)
 
 ---------------
 Introduction
 ---------------
-This is the source-code distribution of PDF Clown, an abstract library for the manipulation of PDF files implemented in multiple platforms (currently: Java [../java/README.html] and .NET [../dotNET/README.html]).
+This is the source code distribution of PDF Clown, a general-purpose library for the manipulation of PDF files implemented in multiple platforms (Java [../java/README.html], .NET [../dotNET/README.html]).
 
+
+---------------
+What's new?
+---------------
+This release [http://pdfclown.wordpress.com/2011/04/12/waiting-for-pdf-clown-0-1-1-release/] adds support to optional/layered contents, text highlighting, metadata streams (XMP), Type1/CFF font files, along with primitive object model and AcroForm fields filling enhancements.
+
+Lots of minor improvements have been applied too.
+
+ * [add] Primitive object model: see objects namespace (PdfObject, PdfObjectWrapper, PdfSimpleObject, PdfReal).
+ * [add] Optional/layered contents: see documents.contents.layers namespace
+ * [add] Text highlighting: see tools.TextExtractor, annotations.TextMarkup
+ * [add] AcroForm fields filling: see documents.interaction.forms namespace
+ * [add] Metadata streams (XMP): see documents.interchange.metadata.Metadata, PdfObjectWrapper.get/setMetadata(Metadata)
+ * [add] Type1/CFF font files support: see fonts.CffParser
+ * [add] File configuration: real number formatting (see files.File.Configuration)
+ * [add] Page boxes: see documents.Page (get/setArtBox(Rectangle2D), get/setBleedBox(Rectangle2D), get/setCropBox(Rectangle2D), get/setTrimBox(Rectangle2D))
+ * [add] PostScript-based parsers: see util.parsers.PostScriptParser, tokens.BaseParser, tokens.FileParser, documents.contents.tokens.ContentParser
 
 ---------------
 Copyright
@@ -51,17 +68,40 @@ The Community page [http://www.pdfclown.org/community.html] guides you through t
 
 
 ---------------
+Updates
+---------------
+The  [http://sourceforge.net/projects/clown/] is hosted by SourceForge.net and referenced by the official PDF Clown's website [http://www.pdfclown.org/]: please AVOID downloading from any other repository if you want to be sure its updates can be trusted.
+
+This distribution represents the result of a release cycle which tipically spans over several months: instead of waiting for the final release, you can keep your copy of the PDF Clown's code base up-to-date synchronizing it with the  [http://sourceforge.net/scm/?type=svn&group_id=176158]. You have just to choose the branch more appropriate for your needs:
+
+ * Fix branch <https://clown.svn.sourceforge.net/svnroot/clown/branches/0.1.1-Fix [https://clown.svn.sourceforge.net/svnroot/clown/branches/0.1.1-Fix]>: corrective branch (bug fixes for existing functionalities);
+ * Trunk <https://clown.svn.sourceforge.net/svnroot/clown/trunk [https://clown.svn.sourceforge.net/svnroot/clown/trunk]>: evolutionary branch (all the latest & greatest along with the same bug fixes of the above-mentioned Fix branch).
+
+---------------
+Support it!
+---------------
+Are you successfully using this software? Remember that behind it there are human beings who enjoyed donating some effort to craft a nice piece of code -- you can demonstrate your appreciation in several ways:
+
+ * donate: even a little PayPal transfer [http://www.stefanochizzolini.it/en/projects/clown/#Donations] is welcome, just to cheer your success;
+ * contribute: have you extended the library to cover new functionalities? have you written useful sample code or documentation you'd like to share? let us know!;
+ * communicate: inform your colleagues and Web community about this project and promote the broader adoption of free software [http://en.wikipedia.org/wiki/Free_software].
+
+---------------
 Resources
 ---------------
- * License [licenses/README.html]: Licenses applied to the PDF Clown distribution
- * Documentation [doc/README.html]: PDF Clown common guides
- * PDF Clown for Java [../java/README.html]: PDF Clown implementation for Java
- * PDF Clown for .NET [../dotNET/README.html]: PDF Clown implementation for .NET
- * Additional resources [res/README.html]: Material supporting PDF Clown distribution
- * PDF Clown Project (WHATSNEW) [WHATSNEW.html]: New features of the PDF Clown Project
- * PDF Clown Project (CHANGELOG) [CHANGELOG.html]: Change chronology of the PDF Clown Project
- * PDF Clown Project (ISSUES) [ISSUES.html]: Known issues
- * PDF Clown Project (TODO) [TODO.html]: TODO list of the PDF Clown Project
+ *  [../java/README.html]: PDF Clown implementation for Java
+ *  [../dotNET/README.html]: PDF Clown implementation for .NET
+ *  [licenses/README.html]: Licenses applied to the PDF Clown distribution
+ *  [doc/README.html]: PDF Clown common guides
+ *  [res/README.html]: Material supporting PDF Clown distribution
+ *  [CREDITS.html]: Who's behind PDF Clown development
+ *  [WHATSNEW.html]: New features of the PDF Clown Project
+ *  [CHANGELOG.html]: Change chronology of the PDF Clown Project
+ *  [ISSUES.html]: Known issues
+ *  [TODO.html]: TODO list of the PDF Clown Project
+ *  [INDEX.html]: Distribution map
  * PDF Clown home page [http://www.pdfclown.org]: Project home page
  * Navigation:
   * Current directory [.]: browse current section contents
+  * Next section [../java/README.html]: move to next section
+  * INDEX [INDEX.html]: move to the distribution map

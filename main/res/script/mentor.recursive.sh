@@ -1,13 +1,15 @@
 #!/bin/bash
+#TODO: substitute with Ant build!
 #
-# Mentor 0.1 Recursive compilation script.
-# 2006-09-12. Edited by Stefano Chizzolini (http://www.stefanochizzolini.it)
+# Mentor 0.2 Recursive compilation script.
+# 2011-11-02. Edited by Stefano Chizzolini (http://www.stefanochizzolini.it)
 #
 # CLI parameters:
-# $1 is the distribution base directory.
+# <none>
 
-files=$(find $1 -name '*.mentor')
+mainDir=$(pwd)
+files=$(find $(readlink -f $mainDir/..) -name '*.mentor')
 for file in $files
 do
-  $1/main/res/script/mentor.sh $(dirname $file) $(basename $file .mentor) $1
+  $mainDir/res/script/mentor.sh $file $mainDir
 done

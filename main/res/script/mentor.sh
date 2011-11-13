@@ -1,38 +1,39 @@
 #!/bin/bash
+#TODO: substitute with Ant build!
 #
-# Mentor 0.1 compilation script.
-# 2008-11-27. Edited by Stefano Chizzolini (http://www.stefanochizzolini.it)
+# Mentor 0.2 Compilation script.
+# 2011-11-02. Edited by Stefano Chizzolini (http://www.stefanochizzolini.it)
 #
 # CLI parameters:
-# $1 is the file directory.
-# $2 is the file title.
-# $3 is the distribution base directory.
+# $1 File path.
+path=$(readlink -f $1)
+# $2 Distribution main directory.
+mainDir=$(readlink -f $2)
 
 xalan='java org.apache.xalan.xslt.Process'
 fop='fop'
-xslDir="$3/main/res/xsl"
-fileTitle="$2"
-filePath="$1/$fileTitle"
+xslDir="$mainDir/res/xsl"
+abstractPath="$(dirname $path)/$(basename $path .mentor)"
 
-echo $'\n'"$filePath begins."
+echo $'\n'"$abstractPath begins."
 
 # Generate DocBook!
-echo $'\n'"Compiling $filePath.docbook ..."
-$xalan -IN $filePath.mentor -XSL $xslDir/mentor/mentor.docbook.xsl -OUT $filePath.docbook -PARAM dir $1 -PARAM fileTitle $fileTitle
+echo $'\n'"Compiling $abstractPath.docbook ..."
+$xalan -IN $abstractPath.mentor -XSL $xslDir/mentor/mentor.docbook.xsl -OUT $abstractPath.docbook -PARAM path $path -PARAM mainDir $mainDir
 
 # Generate plain text!
-echo $'\n'"Compiling $filePath.txt ..."
-$xalan -IN $filePath.docbook -XSL $xslDir/mentor/mentor.docbook.txt.xsl -OUT $filePath.txt
+echo $'\n'"Compiling $abstractPath.txt ..."
+$xalan -IN $abstractPath.docbook -XSL $xslDir/mentor/mentor.docbook.txt.xsl -OUT $abstractPath.txt
 
 # Generate HTML!
-echo $'\n'"Compiling $filePath.html ..."
-$xalan -IN $filePath.docbook -XSL $xslDir/docbook/custom/docbook.html.xsl -OUT $filePath.html
+echo $'\n'"Compiling $abstractPath.html ..."
+$xalan -IN $abstractPath.docbook -XSL $xslDir/docbook/custom/docbook.html.xsl -OUT $abstractPath.html -PARAM html.stylesheet $mainDir/res/styles/mentor.css
 
 # Generate PDF!
-#echo $'\n'"Compiling $filePath.pdf ..."
-#$fop -xml $filePath.docbook -xsl $xslDir/docbook/custom/mentor.docbook.fo.xsl -pdf $filePath.pdf
+#echo $'\n'"Compiling $abstractPath.pdf ..."
+#$fop -xml $abstractPath.docbook -xsl $xslDir/docbook/custom/mentor.docbook.fo.xsl -pdf $abstractPath.pdf
 
 # Discard DocBook!
-rm $filePath.docbook
+rm $abstractPath.docbook
 
-echo $'\n'"$filePath ends." $'\n'
+echo $'\n'"$abstractPath ends." $'\n'

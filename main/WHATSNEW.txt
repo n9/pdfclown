@@ -1,7 +1,8 @@
-PDF Clown Project - WHATSNEW
+WHATSNEW
+PDF Clown Project [README.html] > 
 
 
-Project version: 0.1.0 -- WHATSNEW revision: 0 (2011-02-24)
+Project version: 0.1.1 - WHATSNEW revision: 0 (2011-11-14)
 
 ---------------
 Introduction
@@ -10,6 +11,26 @@ This is a list of highlights about major changes occurred to the PDF Clown Proje
 
 For a more detailed list of changes, please see the CHANGELOG [CHANGELOG.html].
 
+
+---------------
+Version 0.1.1
+---------------
+Release date: 2011-11-14
+Backward compatibility: false
+
+This release [http://pdfclown.wordpress.com/2011/04/12/waiting-for-pdf-clown-0-1-1-release/] adds support to optional/layered contents, text highlighting, metadata streams (XMP), Type1/CFF font files, along with primitive object model and AcroForm fields filling enhancements.
+
+Lots of minor improvements have been applied too.
+
+ * [add] Primitive object model: see objects namespace (PdfObject, PdfObjectWrapper, PdfSimpleObject, PdfReal).
+ * [add] Optional/layered contents: see documents.contents.layers namespace
+ * [add] Text highlighting: see tools.TextExtractor, annotations.TextMarkup
+ * [add] AcroForm fields filling: see documents.interaction.forms namespace
+ * [add] Metadata streams (XMP): see documents.interchange.metadata.Metadata, PdfObjectWrapper.get/setMetadata(Metadata)
+ * [add] Type1/CFF font files support: see fonts.CffParser
+ * [add] File configuration: real number formatting (see files.File.Configuration)
+ * [add] Page boxes: see documents.Page (get/setArtBox(Rectangle2D), get/setBleedBox(Rectangle2D), get/setCropBox(Rectangle2D), get/setTrimBox(Rectangle2D))
+ * [add] PostScript-based parsers: see util.parsers.PostScriptParser, tokens.BaseParser, tokens.FileParser, documents.contents.tokens.ContentParser
 
 ---------------
 Version 0.1.0
@@ -23,7 +44,7 @@ Lots of minor improvements have been applied too.
 
  * [add] Page rendering and printing: document model (see documents namespace), content stream model (see documents.contents.objects namespace) and content scanner (see documents.contents.ContentScanner) have been revised and expanded to support an easy-to-use rasterization tool (see tools.Renderer). Color spaces (see documents.contents.colorSpaces namespace) and functions (see documents.functions namespace) have been expanded to integrate the rasterization functionality. NOTE: the implementation of these functionalities must be currently considered at pre-alpha stage (next releases will fill the gaps).
  * [add] Cross reference streams (see tokens namespace).
- * [add] Page management: the dedicated tool has been furtherly improved, now supporting even document splitting on maximum file size (see tools.PageManager)
+ * [add] Page management: the dedicated tool has been furtherly improved, now even supporting document splitting on maximum file size (see tools.PageManager)
  * [add] Version compatibility check: document version can be automatically managed (see documents.Document.getConfiguration().get/setCompatibilityMode())
 
 ---------------
@@ -191,3 +212,13 @@ Backward compatibility: true
  * [add] Bookmarks (see interaction.navigation.documentLevel)
  * [add] Viewer preferences (see interaction.ViewerPreferences)
  * [add] Content stream management (see contentStreaming namespace)
+
+---------------
+Resources
+---------------
+ * Navigation:
+  * Current directory [.]: browse current section contents
+  * Parent section [README.html]: move to parent section
+  * Previous section [CREDITS.html]: move to previous section
+  * Next section [CHANGELOG.html]: move to next section
+  * INDEX [INDEX.html]: move to the distribution map

@@ -1,14 +1,13 @@
-PDF Clown for Java - README
-PDF Clown Project [../main/README.html]
+PDF Clown for Java
+PDF Clown Project [../main/README.html] > 
 
-Stefano Chizzolini <>
 
-Project version: 0.1.0 -- README revision: 0 (2011-02-24)
+Project version: 0.1.1 - README revision: 0 (2011-11-14)
 
 ---------------
 Introduction
 ---------------
-This is the Java source-code distribution of PDF Clown, a library for the manipulation of PDF files.
+This is the Java source code distribution of PDF Clown, a general-purpose library for the manipulation of PDF files.
 
 
 ---------------
@@ -53,12 +52,12 @@ PDF Clown for Java currently depends on:
  * Java 6 platform [http://java.sun.com]
 
 ---------------
-IDE
+Getting started
 ---------------
 ---------------
-Eclipse
+Eclipse IDE
 ---------------
-The code projects of PDF Clown for Java have been configured to run for debugging under the Eclipse IDE [http://eclipse.org/]. They have been tested under Helios (3.6) version on both GNU/Linux (Ubuntu [http://www.ubuntu.com]) 2.6.32+ and MS Windows NT 5.1+ systems.
+The code projects of PDF Clown for Java have been configured to run for debugging under the Eclipse IDE [http://eclipse.org/]. They have been tested under Helios (3.6) on both GNU/Linux (Ubuntu [http://www.ubuntu.com]) 2.6.32+ and MS Windows NT 5.1+ systems.
 
 In order to work under the Eclipse IDE, you have simply to follow these steps:
 
@@ -70,15 +69,15 @@ In order to work under the Eclipse IDE, you have simply to follow these steps:
 * in the "Select" page, select the import source "General" > "Existing Projects into Workspace", then click "Next";
 * in the "Import Projects" page, browse for "Select root directory" and confirm "java" subdirectory (it should be proposed as default by the folder browser dialog). Now all the available projects should have appeared (and been checked) in the "Projects" list;
 * click "Finish";
-* verify Eclipse configuration: 
+* verify Eclipse configuration:
             
  * text editor encoding MUST be set to "UTF-8" in order to properly deal with Unicode [http://unicode.org/standard/principles.html] text: open the "Preferences" window (select "Window" > "Preferences" menu), select "General" > "Workspace", then choose "UTF-8" ("Other" option) for "Text file encoding".
 When the import completes, all the projects will be available in your workbench (switch to the "Java" perspective to see them represented within the "Project Explorer" view). The following resources have been configured to ease your compiling and debugging activities:
 
  * Ant build files: each project features an Ant build file that has already been integrated into Eclipse's automatic building workflow;
- * launchers: each sample project (specifically: clown.samples.cli, clown.samples.gui) features also a ready-to-use launcher you can run for debugging this way:
+ * launchers: each sample project (specifically: pdfclown.samples.cli, pdfclown.samples.gui) features also a ready-to-use launcher you can run for debugging this way:
             
- * open the "Debug Configurations" window: right-click on a sample project's node (e.g. "clown.samples.cli") in "Project Explorer" view, then select the contextual menu "Debug As" > "Debug Configurations...";
+ * open the "Debug Configurations" window: right-click on a sample project's node (e.g. "pdfclown.samples.cli") in "Project Explorer" view, then select the contextual menu "Debug As" > "Debug Configurations...";
  * select a sample project's launcher: select "Java Application" > one of the available sample project launchers (e.g. "PDF Clown CLI Samples");
  * run the selected launcher: click "Debug".
 
@@ -86,16 +85,17 @@ When the import completes, all the projects will be available in your workbench 
 ---------------
 Resources
 ---------------
- * Library [pdfclown.lib/README.html]: PDF Clown source code
- * CLI Samples [pdfclown.samples.cli/README.html]: Functionality demonstrations based on console interface
- * GUI Samples [pdfclown.samples.gui/README.html]: Functionality demonstrations based on graphical user interface
- * Web Samples [pdfclown.samples.web/README.html]: Functionality demonstrations based on servlets
- * Documentation [../main/doc/README.html]: PDF Clown common guides
- * Additional resources [../main/res/README.html]: Material supporting PDF Clown distribution
- * PDF Clown for Java (CHANGELOG) [CHANGELOG.html]: Change chronology of PDF Clown implementation for Java
- * PDF Clown Project home page [http://www.pdfclown.org]: Project home page
+ *  [pdfclown.lib/README.html]: PDF Clown source code
+ *  [pdfclown.samples.cli/README.html]: Functionality demonstrations based on console interface
+ *  [pdfclown.samples.gui/README.html]: Functionality demonstrations based on graphical user interface
+ *  [pdfclown.samples.web/README.html]: Functionality demonstrations based on servlets
+ *  [../main/doc/README.html]: PDF Clown common guides
+ *  [../main/res/README.html]: Material supporting PDF Clown distribution
+ *  [CHANGELOG.html]: Change chronology of PDF Clown implementation for Java
+ * PDF Clown home page [http://www.pdfclown.org]: Project home page
  * Navigation:
   * Current directory [.]: browse current section contents
   * Parent section [../main/README.html]: move to parent section
-  * Previous section [../main/doc/README.html]: move to previous section
-  * Next section [../main/../dotNET/README.html]: move to next section
+  * Previous section [../main/README.html]: move to previous section
+  * Next section [pdfclown.lib/README.html]: move to next section
+  * INDEX [../main/INDEX.html]: move to the distribution map

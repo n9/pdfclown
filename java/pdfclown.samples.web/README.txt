@@ -1,9 +1,8 @@
-Web Samples - README
-PDF Clown for Java [../README.html]
+Web Samples
+PDF Clown Project [../../main/README.html] > PDF Clown for Java [../README.html] > 
 
-Stefano Chizzolini <>
 
-Project version: 0.1.0 -- README revision: 0 (2011-02-24)
+Project version: 0.1.1 - README revision: 0 (2011-11-14)
 
 ---------------
 Introduction
@@ -16,3 +15,7 @@ Resources
 ---------------
  * Navigation:
   * Current directory [.]: browse current section contents
+  * Parent section [../README.html]: move to parent section
+  * Previous section [../pdfclown.samples.gui/README.html]: move to previous section
+  * Next section [../CHANGELOG.html]: move to next section
+  * INDEX [../../main/INDEX.html]: move to the distribution map

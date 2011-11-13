@@ -26,7 +26,7 @@
     value="pdfclown-samples-cli"
     />
   <property name="project.version"
-    value="0.1.0"
+    value="0.1.1"
     />
   <property name="project.stage"
     value="Beta"
@@ -95,10 +95,11 @@
       windowtitle="${project.title} ${project.version} API Reference"
       >
       <header><![CDATA[<b>${project.title}</b><br><small>${project.version}</small>]]></header>
-      <bottom><![CDATA[<small><a href="http://www.pdfclown.org">Project home page</a><br><br>Copyright &#169; 2006-2011 ${project.vendor}. Some Rights Reserved.<br/>This documentation is available under the terms of the <a href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License</a>.</small>]]></bottom>
-      <link href="http://download.oracle.com/javase/6/docs/api"/>
-      <link href="../../../pdfclown.lib/build/docs/api"/>
+      <bottom><![CDATA[<small><a href="http://www.pdfclown.org">Project home page</a><br><br>Copyright &#169; 2006-2011 <a href="http://www.stefanochizzolini.it/">${project.vendor}</a>. Some Rights Reserved.<br/>This documentation is available under the terms of the <a href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License</a>.</small>]]></bottom>
+      <link href="http://docs.oracle.com/javase/6/docs/api/"/>
+      <link href="../../../../pdfclown.lib/build/docs/api/"/>
     </javadoc>
+    <copy file="../res/styles/javadoc.css" tofile="${javadoc.dir}/stylesheet.css" overwrite="true" />
   </target>
 
   <target name="package"

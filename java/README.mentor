@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="PDFClownJava" version="0.1.0" base="../main" xml:lang="en"
-  xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.1"
+<project
+  version="0.1.1"
+  xml:lang="en"
+  xmlns="http://www.stefanochizzolini.it/ns/mentor" nsVersion="0.2"
   xmlns:db="http://docbook.org/ns/docbook" db:version="5.0"
   xmlns:xl="http://www.w3.org/1999/xlink"
   >
   <meta>
-    <date>2011-02-24</date>
+    <date>2011-11-14</date>
     <!--
       'revision' is the current revision of this metadocumentation.
       Its value should be an incremental counter anchored to the project version,
@@ -21,23 +23,9 @@
     </author>
   </meta>
   <title>PDF Clown for Java</title>
-  <description><db:para>This is the Java source-code distribution of <db:emphasis role="strong">PDF Clown</db:emphasis>, a library for the manipulation of PDF files.</db:para>
+  <description><db:para>This is the Java source code distribution of <db:emphasis role="strong">PDF Clown</db:emphasis>, <db:emphasis>a general-purpose library for the manipulation of PDF files</db:emphasis>.</db:para>
   </description>
   <tip>PDF Clown implementation for Java</tip>
-  <keywords>PDF, PDF Clown, library, Java</keywords>
-  <resources>
-    <resource name="pdfclown.lib" href="pdfclown.lib/README.mentor"/>
-    <resource name="pdfclown.samples.cli" href="pdfclown.samples.cli/README.mentor"/>
-    <resource name="pdfclown.samples.gui" href="pdfclown.samples.gui/README.mentor"/>
-    <resource name="pdfclown.samples.web" href="pdfclown.samples.web/README.mentor"/>
-    <resource name="doc" href="../main/doc/README.mentor"/>
-    <resource name="res" href="../main/res/README.mentor"/>
-    <resource name="changes" href="CHANGELOG.mentor"/>
-    <resource name="home" href="http://www.pdfclown.org">
-      <title>PDF Clown Project home page</title>
-      <tip>Project home page</tip>
-    </resource>
-  </resources>
   <copyright>
     <year>2006-2011</year>
     <holder>
@@ -81,12 +69,12 @@
         <db:listitem><db:emphasis role="bold"><db:link xl:href="http://java.sun.com">Java 6 platform</db:link></db:emphasis></db:listitem>
       </db:itemizedlist>
     </db:section>
-    <db:section>
-      <db:title>IDE</db:title>
+    <db:section id="gettingStarted">
+      <db:title>Getting started</db:title>
 
       <db:section id="eclipse">
-        <db:title>Eclipse</db:title>
-        <db:para>The code projects of PDF Clown for Java have been configured to run for debugging under the <db:link xl:href="http://eclipse.org/">Eclipse IDE</db:link>. They have been tested under Helios (3.6) version on both GNU/Linux (<db:link xl:href="http://www.ubuntu.com">Ubuntu</db:link>) 2.6.32+ and MS Windows NT 5.1+ systems.</db:para>
+        <db:title>Eclipse IDE</db:title>
+        <db:para>The code projects of PDF Clown for Java have been configured to run for debugging under the <db:link xl:href="http://eclipse.org/">Eclipse IDE</db:link>. They have been tested under Helios (3.6) on both GNU/Linux (<db:link xl:href="http://www.ubuntu.com">Ubuntu</db:link>) 2.6.32+ and MS Windows NT 5.1+ systems.</db:para>
         <db:para>In order to work under the Eclipse IDE, you have simply to follow these steps:</db:para>
         <db:orderedlist>
           <db:listitem><db:emphasis role="bold">launch Eclipse</db:emphasis>;</db:listitem>
@@ -99,7 +87,7 @@
               <db:listitem>click "Finish";</db:listitem>
             </db:orderedlist>
           </db:listitem>
-          <db:listitem><db:emphasis role="bold">verify Eclipse configuration</db:emphasis>: 
+          <db:listitem><db:emphasis role="bold">verify Eclipse configuration</db:emphasis>:
             <db:itemizedlist>
               <db:listitem>text editor encoding MUST be set to "UTF-8" in order to properly deal with <db:link xl:href="http://unicode.org/standard/principles.html">Unicode</db:link> text: open the "Preferences" window (select "Window" > "Preferences" menu), select "General" > "Workspace", then choose "UTF-8" ("Other" option) for "Text file encoding".</db:listitem>
             </db:itemizedlist>
@@ -108,9 +96,9 @@
         <db:para>When the import completes, all the projects will be available in your workbench (switch to the "Java" perspective to see them represented within the "Project Explorer" view). The following resources have been configured to ease your compiling and debugging activities:</db:para>
         <db:itemizedlist>
           <db:listitem><db:emphasis role="bold">Ant build files</db:emphasis>: each project features an Ant build file that has already been integrated into Eclipse's automatic building workflow;</db:listitem>
-          <db:listitem><db:emphasis role="bold">launchers</db:emphasis>: each sample project (specifically: clown.samples.cli, clown.samples.gui) features also a ready-to-use launcher you can run for debugging this way:
+          <db:listitem><db:emphasis role="bold">launchers</db:emphasis>: each sample project (specifically: pdfclown.samples.cli, pdfclown.samples.gui) features also a ready-to-use launcher you can run for debugging this way:
             <db:orderedlist>
-              <db:listitem>open the "Debug Configurations" window: right-click on a sample project's node (e.g. "clown.samples.cli") in "Project Explorer" view, then select the contextual menu "Debug As" > "Debug Configurations...";</db:listitem>
+              <db:listitem>open the "Debug Configurations" window: right-click on a sample project's node (e.g. "pdfclown.samples.cli") in "Project Explorer" view, then select the contextual menu "Debug As" > "Debug Configurations...";</db:listitem>
               <db:listitem>select a sample project's launcher: select "Java Application" > one of the available sample project launchers (e.g. "PDF Clown CLI Samples");</db:listitem>
               <db:listitem>run the selected launcher: click "Debug".</db:listitem>
             </db:orderedlist>

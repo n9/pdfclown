@@ -6,7 +6,7 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   >
   <!--
-This is an ad-hoc plain-text filter for Mentor-derived DocBook 5.0 (just a tiny subset!).
+Ad-hoc plain-text filter for Mentor-derived DocBook 5.0 (just a tiny subset!).
 2006-09-12. Edited by Stefano Chizzolini (http://www.stefanochizzolini.it).
 
 PS: Sure, before attempting such a convoluted (and redundant) path I got a try with XSL-FO-generated plain text (via FOP), but the result was really poor, just unacceptable. I wonder why the Norman Walsh's gang seems not to have bothered to craft a stylesheet for plain-text rendering along with already-supported formats such as HTML, XSL-FO etc. ;-)
