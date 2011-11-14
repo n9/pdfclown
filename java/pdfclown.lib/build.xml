@@ -25,8 +25,6 @@
   <property name="package.resources.common.dir"
     location="../../main/res/pkg"
     />
-    <mkdir dir="${javadoc.dir}"/>
-
   <property name="package.name"
     value="pdfclown"
     />
@@ -99,6 +97,10 @@
     </javadoc>
     <copy file="../res/styles/javadoc.css" tofile="${javadoc.dir}/stylesheet.css" overwrite="true" />
     <copy file="../../main/res/images/pdfclown.png" todir="${javadoc.dir}"/>
+    <jar
+      basedir="${javadoc.dir}"
+      destfile="${package.dir}/${package.name}-${project.version}-javadoc.jar"
+      />
   </target>
 
   <target name="package"
@@ -139,5 +141,9 @@
           />
       </manifest>
     </jar>
+    <jar
+      basedir="${src.dir}"
+      destfile="${package.dir}/${package.name}-${project.version}-sources.jar"
+      />
   </target>
 </project>

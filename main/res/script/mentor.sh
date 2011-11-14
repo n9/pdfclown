@@ -15,6 +15,20 @@ fop='fop'
 xslDir="$mainDir/res/xsl"
 abstractPath="$(dirname $path)/$(basename $path .mentor)"
 
+getRelativePath(){
+  source="$1"
+  target="$2"
+
+  common_part=$source/
+  back=
+  while [ "${target#$common_part}" = "${target}" ]; do
+    common_part=$(dirname $common_part)/
+    back="../${back}"
+  done
+
+  echo ${back}${target#$common_part}
+}
+
 echo $'\n'"$abstractPath begins."
 
 # Generate DocBook!
@@ -27,7 +41,7 @@ $xalan -IN $abstractPath.docbook -XSL $xslDir/mentor/mentor.docbook.txt.xsl -OUT
 
 # Generate HTML!
 echo $'\n'"Compiling $abstractPath.html ..."
-$xalan -IN $abstractPath.docbook -XSL $xslDir/docbook/custom/docbook.html.xsl -OUT $abstractPath.html -PARAM html.stylesheet $mainDir/res/styles/mentor.css
+$xalan -IN $abstractPath.docbook -XSL $xslDir/docbook/custom/docbook.html.xsl -OUT $abstractPath.html -PARAM html.stylesheet $(getRelativePath $(dirname $path) $mainDir)/res/styles/mentor.css
 
 # Generate PDF!
 #echo $'\n'"Compiling $abstractPath.pdf ..."
