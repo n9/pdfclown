@@ -44,7 +44,7 @@ import org.pdfclown.util.parsers.ParseException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 04/25/11
+  @version 0.1.2, 11/26/11
 */
 public final class FileParser
   extends BaseParser
@@ -74,6 +74,12 @@ public final class FileParser
     {return objectNumber;}
   }
   // </classes>
+
+  // <static>
+  // <fields>
+  private static final int EOFMarkerChunkSize = 1024; // [PDF:1.6:H.3.18].
+  // </fields>
+  // </static>
 
   // <dynamic>
   // <fields>
@@ -231,29 +237,17 @@ public final class FileParser
   }
 
   /**
-    Retrieves the starting position of the last xref-table section.
+    Retrieves the starting position of the last xref-table section [PDF:1.6:3.4.4].
   */
   public long retrieveXRefOffset(
-    )
-  {return retrieveXRefOffset(getStream().getLength());}
-
-  /**
-    Retrieves the starting position of an xref-table section [PDF:1.6:3.4.4].
-
-    @param offset Position of the EOF marker related to the section intended to be parsed.
-  */
-  public long retrieveXRefOffset(
-    long offset
     )
   {
-    final int chunkSize = 1024; // [PDF:1.6:H.3.18].
-
     IInputStream stream = getStream();
+    long streamLength = stream.getLength();
+    int chunkSize = (int)Math.min(streamLength, EOFMarkerChunkSize);
 
     // Move back before 'startxref' keyword!
-    long position = offset - chunkSize;
-    if (position < 0)
-    {position = 0;}
+    long position = streamLength - chunkSize;
     stream.seek(position);
 
     // Get 'startxref' keyword position!

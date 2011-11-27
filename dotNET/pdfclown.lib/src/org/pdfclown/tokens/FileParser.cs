@@ -59,6 +59,12 @@ namespace org.pdfclown.tokens
     }
     #endregion
 
+    #region static
+    #region fields
+    private static readonly int EOFMarkerChunkSize = 1024; // [PDF:1.6:H.3.18].
+    #endregion
+    #endregion
+
     #region dynamic
     #region fields
     private files.File file;
@@ -199,28 +205,17 @@ namespace org.pdfclown.tokens
     }
 
     /**
-      <summary>Retrieves the starting position of the last xref-table section.</summary>
+      <summary>Retrieves the starting position of the last xref-table section [PDF:1.6:3.4.4].</summary>
     */
     public long RetrieveXRefOffset(
-      )
-    {return RetrieveXRefOffset(Stream.Length);}
-
-    /**
-      <summary>Retrieves the starting position of an xref-table section [PDF:1.6:3.4.4].</summary>
-      <param name="offset">Position of the EOF marker related to the section intended to be parsed.</param>
-    */
-    public long RetrieveXRefOffset(
-      long offset
       )
     {
-      const int chunkSize = 1024; // [PDF:1.6:H.3.18].
-
       IInputStream stream = Stream;
+      long streamLength = stream.Length;
+      int chunkSize = (int)Math.Min(streamLength, EOFMarkerChunkSize);
 
       // Move back before 'startxref' keyword!
-      long position = offset - chunkSize;
-      if (position < 0)
-      {position = 0;} // [FIX:0.0.4:1] It failed to deal with less-than-1024-byte-long PDF files.
+      long position = streamLength - chunkSize;
       stream.Seek(position);
 
       // Get 'startxref' keyword position!

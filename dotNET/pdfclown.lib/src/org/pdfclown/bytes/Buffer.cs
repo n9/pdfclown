@@ -263,28 +263,6 @@ namespace org.pdfclown.bytes
       )
     {Insert(index, data.ToByteArray());}
 
-    event EventHandler IBuffer.OnChange
-    {
-      add
-      {
-        if (OnChange != null)
-        {
-          lock (OnChange)
-          {OnChange += value;}
-        }
-        else
-        {OnChange = new EventHandler(value);}
-      }
-      remove
-      {
-        if (OnChange != null)
-        {
-          lock (OnChange)
-          {OnChange -= value;}
-        }
-      }
-    }
-
     public void Replace(
       int index,
       byte[] data

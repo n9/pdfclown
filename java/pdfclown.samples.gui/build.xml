@@ -26,7 +26,7 @@
     value="pdfclown-samples-gui"
     />
   <property name="project.version"
-    value="0.1.1"
+    value="0.1.2"
     />
   <property name="project.stage"
     value="Beta"
