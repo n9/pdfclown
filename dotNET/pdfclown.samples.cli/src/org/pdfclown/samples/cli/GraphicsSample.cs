@@ -21,8 +21,8 @@ namespace org.pdfclown.samples.cli
   public class GraphicsSample
     : Sample
   {
-    private static readonly DeviceRGBColor SampleColor = new DeviceRGBColor(1,0,0);
-    private static readonly DeviceRGBColor BackColor = new DeviceRGBColor(210/256f,232/256f,245/256f);
+    private static readonly DeviceRGBColor SampleColor = new DeviceRGBColor(1, 0, 0);
+    private static readonly DeviceRGBColor BackColor = new DeviceRGBColor(210 / 256d, 232 / 256d, 245 / 256d);
 
     public override bool Run(
       )
@@ -37,6 +37,7 @@ namespace org.pdfclown.samples.cli
       BuildSimpleTextPage(document);
       BuildTextBlockPage(document);
       BuildTextBlockPage2(document);
+      BuildTextBlockPage3(document);
 
       // 3. Serialize the PDF file!
       Serialize(file, false, "Composition elements", "applying the composition elements");
@@ -359,11 +360,11 @@ namespace org.pdfclown.samples.cli
           composer.SetLineDash(3,5,5);
         }
 
-        composer.SetFillColor(new DeviceRGBColor(1,x / 500f, x / 500f));
+        composer.SetFillColor(new DeviceRGBColor(1, x / 500d, x / 500d));
         composer.DrawRectangle(
-            new RectangleF(x,250,150,100),
-            radius // NOTE: radius parameter determines the rounded angle size.
-            );
+          new RectangleF(x, 250, 150, 100),
+          radius // NOTE: radius parameter determines the rounded angle size.
+          );
         composer.FillStroke();
 
         x += 175;
@@ -877,6 +878,79 @@ namespace org.pdfclown.samples.cli
         composer.End();
 
         y+=step;
+      }
+
+      // 4. Flush the contents into the page!
+      composer.Flush();
+    }
+
+    private void BuildTextBlockPage3(
+      Document document
+      )
+    {
+      // 1. Add the page to the document!
+      Page page = new Page(document); // Instantiates the page inside the document context.
+      document.Pages.Add(page); // Puts the page in the pages collection.
+
+      SizeF pageSize = page.Size;
+
+      // 2. Create a content composer for the page!
+      PrimitiveComposer composer = new PrimitiveComposer(page);
+
+      // 3. Drawing the page contents...
+      composer.SetFont(
+        new StandardType1Font(
+          document,
+          StandardType1Font.FamilyEnum.Courier,
+          true,
+          false
+          ),
+        32
+        );
+
+      int stepCount = 5;
+      int step = (int)pageSize.Height / (stepCount + 1);
+      BlockComposer blockComposer = new BlockComposer(composer);
+      {
+        blockComposer.Begin(
+          new RectangleF(
+            30,
+            0,
+            pageSize.Width-60,
+            step*.8f
+            ),
+          AlignmentXEnum.Center,
+          AlignmentYEnum.Middle
+          );
+        blockComposer.ShowText(
+          "Text block without wordspace"
+          );
+        blockComposer.End();
+      }
+
+      // Drawing the text block...
+      {
+        composer.SetFont(
+          composer.State.Font,
+          10
+          );
+        RectangleF frame = new RectangleF(
+          30,
+          120,
+          pageSize.Width-60,
+          pageSize.Height-150
+          );
+        blockComposer.Begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Top);
+        // Add text until the frame area is completely filled!
+        while(blockComposer.ShowText("DemonstratingHowTextWithoutSpacesIsManagedInCaseOfInsertionInADelimitedPageAreaThroughBlockComposerClass.") > 0);
+        blockComposer.End();
+
+        composer.BeginLocalState();
+        composer.SetLineWidth(0.2f);
+        composer.SetLineDash(5,5,5);
+        composer.DrawRectangle(frame);
+        composer.Stroke();
+        composer.End();
       }
 
       // 4. Flush the contents into the page!

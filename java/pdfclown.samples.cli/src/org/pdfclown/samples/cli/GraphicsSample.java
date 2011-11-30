@@ -27,13 +27,13 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 11/28/11
 */
 public class GraphicsSample
   extends Sample
 {
-  private static final DeviceRGBColor SampleColor = new DeviceRGBColor(1,0,0);
-  private static final DeviceRGBColor BackColor = new DeviceRGBColor(210/256,232/256,245/256);
+  private static final DeviceRGBColor SampleColor = new DeviceRGBColor(1, 0, 0);
+  private static final DeviceRGBColor BackColor = new DeviceRGBColor(210 / 256d, 232 / 256d, 245 / 256d);
 
   @Override
   public boolean run(
@@ -49,6 +49,7 @@ public class GraphicsSample
     buildSimpleTextPage(document);
     buildTextBlockPage(document);
     buildTextBlockPage2(document);
+    buildTextBlockPage3(document);
 
     // 3. Serialize the PDF file!
     serialize(file, false, "Composition elements", "applying the composition elements");
@@ -381,11 +382,11 @@ public class GraphicsSample
         composer.setLineDash(3,5,5);
       }
 
-      composer.setFillColor(new DeviceRGBColor(1,x/500,x/500));
+      composer.setFillColor(new DeviceRGBColor(1, x / 500d, x / 500d));
       composer.drawRectangle(
-          new Rectangle2D.Double(x,250,150,100),
-          radius // NOTE: radius parameter determines the rounded angle size.
-          );
+        new Rectangle2D.Double(x, 250, 150, 100),
+        radius // NOTE: radius parameter determines the rounded angle size.
+        );
       composer.fillStroke();
 
       x += 175;
@@ -914,6 +915,84 @@ public class GraphicsSample
       composer.end();
 
       y+=step;
+    }
+
+    // 4. Flush the contents into the page!
+    composer.flush();
+  }
+
+  private void buildTextBlockPage3(
+    Document document
+    )
+  {
+    // 1. Add the page to the document!
+    Page page = new Page(document); // Instantiates the page inside the document context.
+    document.getPages().add(page); // Puts the page in the pages collection.
+
+    Dimension2D pageSize = page.getSize();
+
+    // 2. Create a content composer for the page!
+    PrimitiveComposer composer = new PrimitiveComposer(page);
+
+    // 3. Drawing the page contents...
+    try
+    {
+      composer.setFont(
+        new StandardType1Font(
+          document,
+          StandardType1Font.FamilyEnum.Courier,
+          true,
+          false
+          ),
+        32
+        );
+    }
+    catch(Exception e)
+    {throw new RuntimeException(e);}
+
+    int stepCount = 5;
+    int step = (int)(pageSize.getHeight()) / (stepCount + 1);
+    BlockComposer blockComposer = new BlockComposer(composer);
+    {
+      blockComposer.begin(
+        new Rectangle2D.Double(
+          30,
+          0,
+          pageSize.getWidth()-60,
+          step*.8
+          ),
+        AlignmentXEnum.Center,
+        AlignmentYEnum.Middle
+        );
+      blockComposer.showText(
+        "Text block without wordspace"
+        );
+      blockComposer.end();
+    }
+
+    // Drawing the text block...
+    {
+      composer.setFont(
+        composer.getState().getFont(),
+        10
+        );
+      Rectangle2D frame = new Rectangle2D.Double(
+        30,
+        120,
+        pageSize.getWidth()-60,
+        pageSize.getHeight()-150
+        );
+      blockComposer.begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Top);
+      // Add text until the frame area is completely filled!
+      while(blockComposer.showText("DemonstratingHowTextWithoutSpacesIsManagedInCaseOfInsertionInADelimitedPageAreaThroughBlockComposerClass.") > 0);
+      blockComposer.end();
+
+      composer.beginLocalState();
+      composer.setLineWidth(0.2f);
+      composer.setLineDash(5,5,5);
+      composer.drawRectangle(frame);
+      composer.stroke();
+      composer.end();
     }
 
     // 4. Flush the contents into the page!

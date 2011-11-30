@@ -42,6 +42,7 @@ import org.pdfclown.documents.contents.objects.LocalGraphicsState;
 import org.pdfclown.documents.contents.objects.ModifyCTM;
 import org.pdfclown.documents.contents.objects.Operation;
 import org.pdfclown.documents.contents.objects.SetWordSpace;
+import org.pdfclown.util.math.OperationUtils;
 
 /**
   Content block composer.
@@ -200,6 +201,7 @@ public final class BlockComposer
   // <public>
   /**
     Begins a content block.
+
     @param frame Block boundaries.
     @param alignmentX Horizontal alignment.
     @param alignmentY Vertical alignment.
@@ -324,8 +326,8 @@ public final class BlockComposer
 
   /**
     Ends current paragraph, specifying the offset of the next one.
-    <h3>Remarks</h3>
     <p>This functionality allows higher-level features such as paragraph indentation and margin.</p>
+
     @param offset Relative location of the next paragraph.
   */
   public void showBreak(
@@ -340,8 +342,8 @@ public final class BlockComposer
 
   /**
     Ends current paragraph, specifying the alignment of the next one.
-    <h3>Remarks</h3>
     <p>This functionality allows higher-level features such as paragraph indentation and margin.</p>
+
     @param alignmentX Horizontal alignment.
   */
   public void showBreak(
@@ -355,8 +357,8 @@ public final class BlockComposer
 
   /**
     Ends current paragraph, specifying the offset and alignment of the next one.
-    <h3>Remarks</h3>
     <p>This functionality allows higher-level features such as paragraph indentation and margin.</p>
+
     @param offset Relative location of the next paragraph.
     @param alignmentX Horizontal alignment.
   */
@@ -372,6 +374,7 @@ public final class BlockComposer
 
   /**
     Shows text.
+
     @return Last shown character index.
   */
   public int showText(
@@ -417,21 +420,18 @@ textShowing:
         }
       }
 
-      // Text height: exceeds current row's height?
+      // Does text height exceed current row's height?
       if(lineHeight > currentRow.height)
       {
-        // Text height: exceeds block's remaining vertical space?
-        if(lineHeight > frame.getHeight() - currentRow.y) // Text exceeds.
+        // Does text height exceed block's remaining vertical space?
+        if(OperationUtils.compare(currentRow.y + lineHeight, frame.getHeight()) == 1)
         {
           // Terminate the current row!
           endRow(false);
           break textShowing;
         }
-        else // Text doesn't exceed.
-        {
-          // Adapt current row's height!
-          currentRow.height = lineHeight;
-        }
+
+        currentRow.height = lineHeight; // Adapts current row's height.
       }
 
       // Does the text fit?
@@ -551,6 +551,7 @@ trailParsing:
 
   /**
     Ends the content row.
+
     @param broken Indicates whether this is the end of a paragraph.
   */
   private void endRow(

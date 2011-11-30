@@ -145,21 +145,19 @@ namespace org.pdfclown.documents.contents.composition
             // Remove the current (unfitting) word!
             fittedWidth -= wordWidth;
             wordEndIndex = index;
+            if(!hyphenation && wordEndIndex > beginIndex) // Enough non-hyphenated text fitted.
+              goto endFitting; // NOTE: I know GOTO is evil, but in this case using it sparingly avoids cumbersome boolean flag checks.
 
-            // Hyphenate?
-            if(hyphenation
-              && wordEndIndex > 0)
-            {
-              /*
-                NOTE: We need to hyphenate the current (unfitting) word.
-              */
-              Hyphenate(
-                ref index,
-                ref wordEndIndex,
-                wordWidth,
-                out hyphen
-                );
-            }
+            /*
+              NOTE: We need to hyphenate the current (unfitting) word.
+            */
+            Hyphenate(
+              hyphenation,
+              ref index,
+              ref wordEndIndex,
+              wordWidth,
+              out hyphen
+              );
 
             break;
           }
@@ -259,6 +257,7 @@ endFitting:
 
     #region private
     private  void Hyphenate(
+      bool hyphenation,
       ref int index,
       ref int wordEndIndex,
       double wordWidth,
@@ -272,7 +271,7 @@ endFitting:
       {
         // Add the current character!
         char textChar = text[wordEndIndex];
-        wordWidth = (font.GetKerning(text[wordEndIndex - 1],textChar) + font.GetWidth(textChar)) * Font.GetScalingFactor(fontSize); // Current character's width.
+        wordWidth = ((wordEndIndex > 0 ? font.GetKerning(text[wordEndIndex - 1],textChar) : 0) + font.GetWidth(textChar)) * Font.GetScalingFactor(fontSize); // Current character's width.
         wordEndIndex++;
         fittedWidth += wordWidth;
         // Does the fitted text's width exceed the available width?
@@ -281,31 +280,40 @@ endFitting:
           // Remove the current character!
           fittedWidth -= wordWidth;
           wordEndIndex--;
-          // Is hyphenation to be applied?
-          if(wordEndIndex > index + 4) // Long-enough word chunk.
+          if(hyphenation)
           {
-            // Make room for the hyphen character!
-            wordEndIndex--;
-            index = wordEndIndex;
-            textChar = text[wordEndIndex];
-            fittedWidth -= (font.GetKerning(text[wordEndIndex - 1],textChar) + font.GetWidth(textChar)) * Font.GetScalingFactor(fontSize);
-
-            // Add the hyphen character!
-            textChar = '-'; // hyphen.
-            fittedWidth += (font.GetKerning(text[wordEndIndex - 1],textChar) + font.GetWidth(textChar)) * Font.GetScalingFactor(fontSize);
-
-            hyphen = textChar.ToString();
-          }
-          else // No hyphenation.
-          {
-            // Removing the current word chunk...
-            while(wordEndIndex > index)
+            // Is hyphenation to be applied?
+            if(wordEndIndex > index + 4) // Long-enough word chunk.
             {
+              // Make room for the hyphen character!
               wordEndIndex--;
+              index = wordEndIndex;
               textChar = text[wordEndIndex];
               fittedWidth -= (font.GetKerning(text[wordEndIndex - 1],textChar) + font.GetWidth(textChar)) * Font.GetScalingFactor(fontSize);
+  
+              // Add the hyphen character!
+              textChar = '-'; // hyphen.
+              fittedWidth += (font.GetKerning(text[wordEndIndex - 1],textChar) + font.GetWidth(textChar)) * Font.GetScalingFactor(fontSize);
+  
+              hyphen = textChar.ToString();
             }
+            else // No hyphenation.
+            {
+              // Removing the current word chunk...
+              while(wordEndIndex > index)
+              {
+                wordEndIndex--;
+                textChar = text[wordEndIndex];
+                fittedWidth -= (font.GetKerning(text[wordEndIndex - 1],textChar) + font.GetWidth(textChar)) * Font.GetScalingFactor(fontSize);
+              }
 
+              hyphen = String.Empty;
+            }
+          }
+          else
+          {
+            index = wordEndIndex;
+            
             hyphen = String.Empty;
           }
           break;

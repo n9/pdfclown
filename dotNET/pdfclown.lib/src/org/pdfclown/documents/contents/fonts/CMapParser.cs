@@ -28,6 +28,7 @@ using org.pdfclown.documents.contents.objects;
 using org.pdfclown.objects;
 using org.pdfclown.tokens;
 using org.pdfclown.util;
+using org.pdfclown.util.math;
 using org.pdfclown.util.parsers;
 
 using System;

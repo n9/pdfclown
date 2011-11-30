@@ -27,6 +27,7 @@ using org.pdfclown.bytes;
 using fonts = org.pdfclown.documents.contents.fonts;
 using org.pdfclown.documents.contents.objects;
 using org.pdfclown.objects;
+using org.pdfclown.util.math;
 
 using System;
 using System.Collections.Generic;
@@ -378,21 +379,18 @@ namespace org.pdfclown.documents.contents.composition
           }
         }
 
-        // Text height: exceeds current row's height?
+        // Does text height exceed current row's height?
         if(lineHeight > currentRow.Height)
         {
-          // Text height: exceeds block's remaining vertical space?
-          if(lineHeight > frame.Height - currentRow.Y) // Text exceeds.
+          // Does text height exceed block's remaining vertical space?
+          if(OperationUtils.Compare(currentRow.Y + lineHeight, frame.Height) == 1)
           {
             // Terminate the current row!
             EndRow(false);
             goto endTextShowing; // NOTE: I know GOTO is evil, yet in this case it's a much cleaner solution.
           }
-          else // Text doesn't exceed.
-          {
-            // Adapt current row's height!
-            currentRow.Height = lineHeight;
-          }
+
+          currentRow.Height = lineHeight; // Adapts current row's height.
         }
 
         // Does the text fit?

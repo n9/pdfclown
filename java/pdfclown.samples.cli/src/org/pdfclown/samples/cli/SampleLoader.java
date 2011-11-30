@@ -1,7 +1,5 @@
 package org.pdfclown.samples.cli;
 
-import it.stefanochizzolini.reflex.Package;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Modifier;
@@ -17,7 +15,7 @@ import java.util.Scanner;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.1
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 11/28/11
 */
 public class SampleLoader
 {
@@ -79,7 +77,7 @@ public class SampleLoader
     while(true)
     {
       // Get the classes belonging to the current package!
-      List<Class<?>> samplePackageClasses = Package.getClasses(
+      List<Class<?>> samplePackageClasses = it.stefanochizzolini.reflex.Package.getClasses(
         samplePackageName,
         new String[]{it.stefanochizzolini.reflex.Class.getLocation(ClassName)} // Locations: current deployment unit only.
         );

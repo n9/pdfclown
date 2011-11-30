@@ -149,8 +149,7 @@ fitting:
           // Remove the current (unfitting) word!
           fittedWidth -= wordWidth;
           wordEndIndex = index;
-          if(wordEndIndex == 0 // Fitted text is empty.
-            || !hyphenation) // No hyphenation.
+          if(!hyphenation && wordEndIndex > beginIndex) // Enough non-hyphenated text fitted.
             break fitting;
 
           /*
@@ -164,7 +163,7 @@ hyphenating:
           {
             // Add the current character!
             char textChar = text.charAt(wordEndIndex); // Current character.
-            wordWidth = (font.getKerning(text.charAt(wordEndIndex - 1),textChar) + font.getWidth(textChar)) * Font.getScalingFactor(fontSize); // Current character's width.
+            wordWidth = ((wordEndIndex > 0 ? font.getKerning(text.charAt(wordEndIndex - 1),textChar) : 0) + font.getWidth(textChar)) * Font.getScalingFactor(fontSize); // Current character's width.
             wordEndIndex++;
             fittedWidth += wordWidth;
             // Does fitted text's width exceed the available width?
@@ -173,30 +172,37 @@ hyphenating:
               // Remove the current character!
               fittedWidth -= wordWidth;
               wordEndIndex--;
-              // Is hyphenation to be applied?
-              if(wordEndIndex > index + 4) // Long-enough word chunk.
+              if(hyphenation)
               {
-                // Make room for the hyphen character!
-                wordEndIndex--;
-                index = wordEndIndex;
-                textChar = text.charAt(wordEndIndex);
-                fittedWidth -= (font.getKerning(text.charAt(wordEndIndex - 1),textChar) + font.getWidth(textChar)) * Font.getScalingFactor(fontSize);
-
-                // Add the hyphen character!
-                textChar = '-'; // hyphen.
-                fittedWidth += (font.getKerning(text.charAt(wordEndIndex - 1),textChar) + font.getWidth(textChar)) * Font.getScalingFactor(fontSize);
-
-                hyphen = String.valueOf(textChar);
-              }
-              else // No hyphenation.
-              {
-                // Removing the current word chunk...
-                while(wordEndIndex > index)
+                // Is hyphenation to be applied?
+                if(wordEndIndex > index + 4) // Long-enough word chunk.
                 {
+                  // Make room for the hyphen character!
                   wordEndIndex--;
+                  index = wordEndIndex;
                   textChar = text.charAt(wordEndIndex);
                   fittedWidth -= (font.getKerning(text.charAt(wordEndIndex - 1),textChar) + font.getWidth(textChar)) * Font.getScalingFactor(fontSize);
+
+                  // Add the hyphen character!
+                  textChar = '-'; // hyphen.
+                  fittedWidth += (font.getKerning(text.charAt(wordEndIndex - 1),textChar) + font.getWidth(textChar)) * Font.getScalingFactor(fontSize);
+
+                  hyphen = String.valueOf(textChar);
                 }
+                else // No hyphenation.
+                {
+                  // Removing the current word chunk...
+                  while(wordEndIndex > index)
+                  {
+                    wordEndIndex--;
+                    textChar = text.charAt(wordEndIndex);
+                    fittedWidth -= (font.getKerning(text.charAt(wordEndIndex - 1),textChar) + font.getWidth(textChar)) * Font.getScalingFactor(fontSize);
+                  }
+                }
+              }
+              else
+              {
+                index = wordEndIndex;
               }
               break hyphenating;
             }

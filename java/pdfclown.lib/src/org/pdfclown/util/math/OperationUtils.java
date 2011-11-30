@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,14 +30,79 @@ package org.pdfclown.util.math;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.2, 11/28/11
 */
 public final class OperationUtils
 {
   // <class>
   // <static>
+  // <fields>
   /**
-    Big-endian comparison.
+    Default relative floating-point precision error tolerance.
+  */
+  private static final double Epsilon = 0.000001;
+  // <fields>
+
+  // <interface>
+  /**
+    Compares double-precision floating-point numbers applying the default error tolerance.
+
+    @param value1 First argument to compare.
+    @param value2 Second argument to compare.
+    @return How the first argument compares to the second:
+      <ul>
+        <li>-1, smaller;</li>
+        <li>0, equal;</li>
+        <li>1, greater.</li>
+      </ul>
+  */
+  public static int compare(
+    double value1,
+    double value2
+    )
+  {return compare(value1, value2, Epsilon);}
+
+  /**
+    Compares double-precision floating-point numbers applying the specified error tolerance.
+
+    @param value1 First argument to compare.
+    @param value2 Second argument to compare.
+    @param epsilon Relative error tolerance.
+    @return How the first argument compares to the second:
+      <ul>
+        <li>-1, smaller;</li>
+        <li>0, equal;</li>
+        <li>1, greater.</li>
+      </ul>
+  */
+  public static int compare(
+    double value1,
+    double value2,
+    double epsilon
+    )
+  {
+    int exponent = Math.getExponent(Math.max(value1, value2));
+    double delta = Math.scalb(epsilon, exponent);
+    double difference = value1 - value2;
+    if (difference > delta)
+      return 1;
+    else if (difference < -delta)
+      return -1;
+    else
+      return 0;
+  }
+
+  /**
+    Compares big-endian byte arrays.
+
+    @param data1 First argument to compare.
+    @param data2 Second argument to compare.
+    @return How the first argument compares to the second:
+      <ul>
+        <li>-1, smaller;</li>
+        <li>0, equal;</li>
+        <li>1, greater.</li>
+      </ul>
   */
   public static int compare(
     byte[] data1,
@@ -63,7 +128,7 @@ public final class OperationUtils
   }
 
   /**
-    Big-endian increment.
+    Increments a big-endian byte array.
   */
   public static void increment(
     byte[] data
@@ -71,7 +136,7 @@ public final class OperationUtils
   {increment(data, data.length-1);}
 
   /**
-    Big-endian increment.
+    Increments a big-endian byte array at the specified position.
   */
   public static void increment(
     byte[] data,
@@ -86,6 +151,7 @@ public final class OperationUtils
     else
     {data[position]++;}
   }
+  // </interface>
   // </static>
   // </class>
 }
