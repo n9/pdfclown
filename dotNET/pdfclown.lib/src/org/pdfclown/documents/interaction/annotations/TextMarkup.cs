@@ -119,6 +119,14 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region dynamic
     #region constructors
+    /**
+      <summary>Creates a new text markup on the specified page, making it printable by default.
+      </summary>
+      <param name="page">Page to annotate.</param>
+      <param name="markupType">Markup type.</param>
+      <param name="markupBox">Quadrilateral encompassing a word or group of contiguous words in the
+      text underlying the annotation.</param>
+    */
     public TextMarkup(
       Page page,
       MarkupTypeEnum markupType,
@@ -126,27 +134,43 @@ namespace org.pdfclown.documents.interaction.annotations
       ) : this(
         page,
         markupType,
-        markupBox.GetBounds(),
         new List<Quad>(){markupBox}
         )
     {}
 
+    /**
+      <summary>Creates a new text markup on the specified page, making it printable by default.
+      </summary>
+      <param name="page">Page to annotate.</param>
+      <param name="markupType">Markup type.</param>
+      <param name="markupBoxes">Quadrilaterals encompassing a word or group of contiguous words in
+      the text underlying the annotation.</param>
+    */
     public TextMarkup(
       Page page,
       MarkupTypeEnum markupType,
       IList<Quad> markupBoxes
       ) : this(
         page,
-        markupType,
         markupBoxes[0].GetBounds(),
+        markupType,
         markupBoxes
         )
     {}
 
+    /**
+      <summary>Creates a new text markup on the specified page, making it printable by default.
+      </summary>
+      <param name="page">Page to annotate.</param>
+      <param name="box">Annotation location on the page.</param>
+      <param name="markupType">Markup type.</param>
+      <param name="markupBoxes">Quadrilaterals encompassing a word or group of contiguous words in
+      the text underlying the annotation.</param>
+    */
     public TextMarkup(
       Page page,
-      MarkupTypeEnum markupType,
       RectangleF box,
+      MarkupTypeEnum markupType,
       IList<Quad> markupBoxes
       ) : base(
         page.Document,
@@ -157,6 +181,7 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       MarkupType = markupType;
       MarkupBoxes = markupBoxes;
+      Printable = true;
     }
 
     public TextMarkup(
