@@ -51,7 +51,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 12/28/11
 */
 @PDF(VersionEnum.PDF13)
 public final class TextMarkup
@@ -135,6 +135,14 @@ public final class TextMarkup
 
   // <dynamic>
   // <constructors>
+  /**
+    Creates a new text markup on the specified page, making it printable by default.
+
+    @param page Page to annotate.
+    @param markupType Markup type.
+    @param markupBox Quadrilateral encompassing a word or group of contiguous words in the text
+      underlying the annotation.
+  */
   public TextMarkup(
     Page page,
     MarkupTypeEnum markupType,
@@ -144,11 +152,18 @@ public final class TextMarkup
     this(
       page,
       markupType,
-      markupBox.getBounds2D(),
       Arrays.asList(markupBox)
       );
   }
 
+  /**
+    Creates a new text markup on the specified page, making it printable by default.
+
+    @param page Page to annotate.
+    @param markupType Markup type.
+    @param markupBoxes Quadrilaterals encompassing a word or group of contiguous words in the text
+      underlying the annotation.
+  */
   public TextMarkup(
     Page page,
     MarkupTypeEnum markupType,
@@ -157,16 +172,25 @@ public final class TextMarkup
   {
     this(
       page,
-      markupType,
       markupBoxes.get(0).getBounds2D(),
+      markupType,
       markupBoxes
       );
   }
 
+  /**
+    Creates a new text markup on the specified page, making it printable by default.
+
+    @param page Page to annotate.
+    @param box Annotation location on the page.
+    @param markupType Markup type.
+    @param markupBoxes Quadrilaterals encompassing a word or group of contiguous words in the text
+      underlying the annotation.
+  */
   public TextMarkup(
     Page page,
-    MarkupTypeEnum markupType,
     Rectangle2D box,
+    MarkupTypeEnum markupType,
     List<Quad> markupBoxes
     )
   {
@@ -178,6 +202,7 @@ public final class TextMarkup
       );
     setMarkupType(markupType);
     setMarkupBoxes(markupBoxes);
+    setPrintable(true);
   }
 
   public TextMarkup(
