@@ -40,6 +40,7 @@ namespace org.pdfclown.documents.contents.composition
     private readonly Font font;
     private readonly double fontSize;
     private readonly bool hyphenation;
+    private readonly char hyphenationCharacter;
     private readonly string text;
     private double width;
 
@@ -55,7 +56,8 @@ namespace org.pdfclown.documents.contents.composition
       double width,
       Font font,
       double fontSize,
-      bool hyphenation
+      bool hyphenation,
+      char hyphenationCharacter
       )
     {
       this.text = text;
@@ -63,6 +65,7 @@ namespace org.pdfclown.documents.contents.composition
       this.font = font;
       this.fontSize = fontSize;
       this.hyphenation = hyphenation;
+      this.hyphenationCharacter = hyphenationCharacter;
     }
     #endregion
 
@@ -131,13 +134,9 @@ namespace org.pdfclown.documents.contents.composition
           }
 
           Group matchGroup = match.Groups[0];
-          // Get the limit of the current word!
-          int wordEndIndex = matchGroup.Index + matchGroup.Length;
           // Add the current word!
-          double wordWidth = font.GetKernedWidth(
-            matchGroup.Value,
-            fontSize
-            ); // Current word's width.
+          int wordEndIndex = matchGroup.Index + matchGroup.Length; // Current word's limit.
+          double wordWidth = font.GetWidth(matchGroup.Value, fontSize); // Current word's width.
           fittedWidth += wordWidth;
           // Does the fitted text's width exceed the available width?
           if(fittedWidth > width)
@@ -237,6 +236,16 @@ endFitting:
     }
 
     /**
+      <summary>Gets/Sets the character shown at the end of the line before a hyphenation break.
+      </summary>
+    */
+    public char HyphenationCharacter
+    {
+      get
+      {return hyphenationCharacter;}
+    }
+
+    /**
       <summary>Gets the available text.</summary>
     */
     public string Text
@@ -271,7 +280,7 @@ endFitting:
       {
         // Add the current character!
         char textChar = text[wordEndIndex];
-        wordWidth = ((wordEndIndex > 0 ? font.GetKerning(text[wordEndIndex - 1],textChar) : 0) + font.GetWidth(textChar)) * Font.GetScalingFactor(fontSize); // Current character's width.
+        wordWidth = font.GetWidth(textChar, fontSize);
         wordEndIndex++;
         fittedWidth += wordWidth;
         // Does the fitted text's width exceed the available width?
@@ -289,12 +298,12 @@ endFitting:
               wordEndIndex--;
               index = wordEndIndex;
               textChar = text[wordEndIndex];
-              fittedWidth -= (font.GetKerning(text[wordEndIndex - 1],textChar) + font.GetWidth(textChar)) * Font.GetScalingFactor(fontSize);
-  
+              fittedWidth -= font.GetWidth(textChar, fontSize);
+
               // Add the hyphen character!
-              textChar = '-'; // hyphen.
-              fittedWidth += (font.GetKerning(text[wordEndIndex - 1],textChar) + font.GetWidth(textChar)) * Font.GetScalingFactor(fontSize);
-  
+              textChar = hyphenationCharacter;
+              fittedWidth += font.GetWidth(textChar, fontSize);
+
               hyphen = textChar.ToString();
             }
             else // No hyphenation.
@@ -304,7 +313,7 @@ endFitting:
               {
                 wordEndIndex--;
                 textChar = text[wordEndIndex];
-                fittedWidth -= (font.GetKerning(text[wordEndIndex - 1],textChar) + font.GetWidth(textChar)) * Font.GetScalingFactor(fontSize);
+                fittedWidth -= font.GetWidth(textChar, fontSize);
               }
 
               hyphen = String.Empty;

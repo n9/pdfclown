@@ -50,7 +50,7 @@ import org.pdfclown.util.math.OperationUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.3
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 12/30/11
 */
 /*
   TODO: Manage all the graphics parameters (especially
@@ -174,9 +174,10 @@ public final class BlockComposer
   private AlignmentXEnum alignmentX;
   private AlignmentYEnum alignmentY;
   private boolean hyphenation;
+  private char hyphenationCharacter = '-';
   private Length lineSpace = new Length(0, UnitModeEnum.Relative);
 
-  /** Available area where to render the block contents inside. */
+  /** Area available for the block contents. */
   private Rectangle2D frame;
   /** Actual area occupied by the block contents. */
   private Rectangle2D.Double boundBox;
@@ -278,6 +279,13 @@ public final class BlockComposer
   {return frame;}
 
   /**
+    Gets the character shown at the end of the line before a hyphenation break.
+  */
+  public char getHyphenationCharacter(
+    )
+  {return hyphenationCharacter;}
+
+  /**
     Gets the text interline spacing.
   */
   public Length getLineSpace(
@@ -305,6 +313,11 @@ public final class BlockComposer
     boolean value
     )
   {hyphenation = value;}
+
+  public void setHyphenationCharacter(
+    char value
+    )
+  {hyphenationCharacter = value;}
 
   /**
     @see #getLineSpace()
@@ -395,7 +408,8 @@ public final class BlockComposer
       0,
       font,
       fontSize,
-      hyphenation
+      hyphenation,
+      hyphenationCharacter
       );
     int textLength = text.length();
     int index = 0;

@@ -171,6 +171,7 @@ endParsing:
 
       string line;
       Regex linePattern = new Regex("C (\\S+) ; WX (\\S+) ; N (\\S+)");
+      int implicitCharCode = short.MaxValue;
       while((line = FontData.ReadLine()) != null)
       {
         MatchCollection lineMatches = linePattern.Matches(line);
@@ -187,13 +188,12 @@ endParsing:
         int charCode = Int32.Parse(lineMatch.Groups[1].Value);
         int width = Int32.Parse(lineMatch.Groups[2].Value);
         string charName = lineMatch.Groups[3].Value;
-
         if(charCode < 0)
         {
           if(charName == null)
             continue;
 
-          charCode = GlyphMapping.NameToCode(charName).Value;
+          charCode = ++implicitCharCode;
         }
         int code = (
           charName == null

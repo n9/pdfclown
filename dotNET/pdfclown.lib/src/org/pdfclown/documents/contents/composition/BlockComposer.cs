@@ -58,7 +58,10 @@ namespace org.pdfclown.documents.contents.composition
       {}
 
       public List<ContentObject> Objects
-      {get{return objects;}}
+      {
+        get
+        {return objects;}
+      }
 
       public override void WriteTo(
         IOutputStream stream,
@@ -157,9 +160,10 @@ namespace org.pdfclown.documents.contents.composition
     private AlignmentXEnum alignmentX;
     private AlignmentYEnum alignmentY;
     private bool hyphenation;
+    private char hyphenationCharacter = '-';
     private Length lineSpace = new Length(0, Length.UnitModeEnum.Relative);
 
-    /** <summary>Available area where to render the block contents inside.</summary> */
+    /** <summary>Area available for the block contents.</summary> */
     private RectangleF frame;
     /** <summary>Actual area occupied by the block contents.</summary> */
     private RectangleF boundBox;
@@ -186,7 +190,10 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Gets the base composer.</summary>
     */
     public PrimitiveComposer BaseComposer
-    {get{return baseComposer;}}
+    {
+      get
+      {return baseComposer;}
+    }
 
     /**
       <summary>Begins a content block.</summary>
@@ -222,7 +229,10 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Gets the actual area occupied by the block contents.</summary>
     */
     public RectangleF BoundBox
-    {get{return boundBox;}}
+    {
+      get
+      {return boundBox;}
+    }
 
     /**
       <summary>Ends the content block.</summary>
@@ -251,15 +261,32 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Gets the available area where to render the block contents inside.</summary>
     */
     public RectangleF Frame
-    {get{return frame;}}
+    {
+      get
+      {return frame;}
+    }
 
     /**
       <summary>Gets/Sets whether the hyphenation algorithm has to be applied.</summary>
     */
     public bool Hyphenation
     {
-      get{return hyphenation;}
-      set{hyphenation = value;}
+      get
+      {return hyphenation;}
+      set
+      {hyphenation = value;}
+    }
+
+    /**
+      <summary>Gets/Sets the character shown at the end of the line before a hyphenation break.
+      </summary>
+    */
+    public char HyphenationCharacter
+    {
+      get
+      {return hyphenationCharacter;}
+      set
+      {hyphenationCharacter = value;}
     }
 
     /**
@@ -267,15 +294,20 @@ namespace org.pdfclown.documents.contents.composition
     */
     public Length LineSpace
     {
-      get{return lineSpace;}
-      set{lineSpace = value;}
+      get
+      {return lineSpace;}
+      set
+      {lineSpace = value;}
     }
 
     /**
       <summary>Gets the content scanner.</summary>
     */
     public ContentScanner Scanner
-    {get{return scanner;}}
+    {
+      get
+      {return scanner;}
+    }
 
     /**
       <summary>Ends current paragraph.</summary>
@@ -355,7 +387,8 @@ namespace org.pdfclown.documents.contents.composition
         0,
         font,
         fontSize,
-        hyphenation
+        hyphenation,
+        hyphenationCharacter
         );
       int textLength = text.Length;
       int index = 0;

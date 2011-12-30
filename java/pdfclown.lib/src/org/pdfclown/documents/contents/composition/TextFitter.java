@@ -35,7 +35,7 @@ import org.pdfclown.documents.contents.fonts.Font;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.3
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 12/30/11
 */
 final class TextFitter
 {
@@ -45,6 +45,7 @@ final class TextFitter
   private final Font font;
   private final double fontSize;
   private final boolean hyphenation;
+  private final char hyphenationCharacter;
   private final String text;
   private double width;
 
@@ -60,7 +61,8 @@ final class TextFitter
     double width,
     Font font,
     double fontSize,
-    boolean hyphenation
+    boolean hyphenation,
+    char hyphenationCharacter
     )
   {
     this.text = text;
@@ -68,6 +70,7 @@ final class TextFitter
     this.font = font;
     this.fontSize = fontSize;
     this.hyphenation = hyphenation;
+    this.hyphenationCharacter = hyphenationCharacter;
   }
   // </constructors>
 
@@ -135,13 +138,9 @@ fitting:
           }
         }
 
-        // Get the limit of the current word!
-        int wordEndIndex = matcher.end(0);
         // Add the current word!
-        double wordWidth = font.getKernedWidth(
-          matcher.group(0),
-          fontSize
-          ); // Current word's width.
+        int wordEndIndex = matcher.end(0); // Current word's limit.
+        double wordWidth = font.getWidth(matcher.group(0), fontSize); // Current word's width.
         fittedWidth += wordWidth;
         // Does the fitted text's width exceed the available width?
         if(fittedWidth > width)
@@ -163,7 +162,7 @@ hyphenating:
           {
             // Add the current character!
             char textChar = text.charAt(wordEndIndex); // Current character.
-            wordWidth = ((wordEndIndex > 0 ? font.getKerning(text.charAt(wordEndIndex - 1),textChar) : 0) + font.getWidth(textChar)) * Font.getScalingFactor(fontSize); // Current character's width.
+            wordWidth = font.getWidth(textChar, fontSize);
             wordEndIndex++;
             fittedWidth += wordWidth;
             // Does fitted text's width exceed the available width?
@@ -181,11 +180,11 @@ hyphenating:
                   wordEndIndex--;
                   index = wordEndIndex;
                   textChar = text.charAt(wordEndIndex);
-                  fittedWidth -= (font.getKerning(text.charAt(wordEndIndex - 1),textChar) + font.getWidth(textChar)) * Font.getScalingFactor(fontSize);
+                  fittedWidth -= font.getWidth(textChar, fontSize);
 
                   // Add the hyphen character!
-                  textChar = '-'; // hyphen.
-                  fittedWidth += (font.getKerning(text.charAt(wordEndIndex - 1),textChar) + font.getWidth(textChar)) * Font.getScalingFactor(fontSize);
+                  textChar = hyphenationCharacter;
+                  fittedWidth += font.getWidth(textChar, fontSize);
 
                   hyphen = String.valueOf(textChar);
                 }
@@ -196,7 +195,7 @@ hyphenating:
                   {
                     wordEndIndex--;
                     textChar = text.charAt(wordEndIndex);
-                    fittedWidth -= (font.getKerning(text.charAt(wordEndIndex - 1),textChar) + font.getWidth(textChar)) * Font.getScalingFactor(fontSize);
+                    fittedWidth -= font.getWidth(textChar, fontSize);
                   }
                 }
               }
@@ -259,6 +258,13 @@ hyphenating:
   public double getFontSize(
     )
   {return fontSize;}
+
+  /**
+    Gets the character shown at the end of the line before a hyphenation break.
+  */
+  public char getHyphenationCharacter(
+    )
+  {return hyphenationCharacter;}
 
   /**
     Gets the available text.

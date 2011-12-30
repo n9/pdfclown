@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/25/11
+  @version 0.1.2, 12/30/11
 */
 final class AfmParser
 {
@@ -185,6 +185,7 @@ final class AfmParser
 
     String line;
     Pattern linePattern = Pattern.compile("C (\\S+) ; WX (\\S+) ; N (\\S+)");
+    int implicitCharCode = Short.MAX_VALUE;
     while((line = fontData.readLine()) != null)
     {
       Matcher lineMatcher = linePattern.matcher(line);
@@ -199,13 +200,12 @@ final class AfmParser
       int charCode = Integer.valueOf(lineMatcher.group(1));
       int width = Integer.valueOf(lineMatcher.group(2));
       String charName = lineMatcher.group(3);
-
       if(charCode < 0)
       {
         if(charName == null)
           continue;
 
-        charCode = GlyphMapping.nameToCode(charName);
+        charCode = ++implicitCharCode;
       }
       int code = (
         charName == null
