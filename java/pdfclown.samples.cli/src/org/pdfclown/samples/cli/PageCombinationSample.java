@@ -12,7 +12,6 @@ import org.pdfclown.documents.Pages;
 import org.pdfclown.documents.contents.composition.AlignmentXEnum;
 import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
-import org.pdfclown.documents.contents.xObjects.XObject;
 import org.pdfclown.files.File;
 
 /**
@@ -48,17 +47,13 @@ public class PageCombinationSample
     // 3. Source page combination into target file.
     Document document = file.getDocument();
     Pages pages = document.getPages();
-    PrimitiveComposer composer = null;
     int pageIndex = -1;
+    PrimitiveComposer composer = null;
     Dimension2D targetPageSize = PageFormat.getSize(SizeEnum.A4);
     for(Page sourcePage : sourceFile.getDocument().getPages())
     {
       pageIndex++;
       int pageMod = pageIndex % 2;
-
-      // Convert the source page into a form inside the target document!
-      XObject form = sourcePage.toXObject(document);
-
       if(pageMod == 0)
       {
         if(composer != null)
@@ -76,7 +71,7 @@ public class PageCombinationSample
 
       // Add the form to the target page!
       composer.showXObject(
-        form,
+        sourcePage.toXObject(document), // Converts the source page into a form inside the target document.
         new Point2D.Double(targetPageSize.getWidth() * pageMod, 0),
         targetPageSize,
         AlignmentXEnum.Left,

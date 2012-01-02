@@ -33,17 +33,13 @@ namespace org.pdfclown.samples.cli
       // 3. Source page combination into target file.
       Document document = file.Document;
       Pages pages = document.Pages;
-      PrimitiveComposer composer = null;
       int pageIndex = -1;
+      PrimitiveComposer composer = null;
       SizeF targetPageSize = PageFormat.GetSize(PageFormat.SizeEnum.A4);
       foreach(Page sourcePage in sourceFile.Document.Pages)
       {
         pageIndex++;
         int pageMod = pageIndex % 2;
-
-        // Convert the source page into a form inside the target document!
-        XObject form = sourcePage.ToXObject(document);
-
         if(pageMod == 0)
         {
           if(composer != null)
@@ -61,7 +57,7 @@ namespace org.pdfclown.samples.cli
 
         // Add the form to the target page!
         composer.ShowXObject(
-          form,
+          sourcePage.ToXObject(document), // Converts the source page into a form inside the target document.
           new PointF(targetPageSize.Width * pageMod, 0),
           targetPageSize,
           AlignmentXEnum.Left,
