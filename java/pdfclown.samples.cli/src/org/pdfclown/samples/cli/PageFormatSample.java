@@ -19,7 +19,7 @@ import org.pdfclown.files.File;
   <i>varying both in size and orientation</i>.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/02/12
 */
 public class PageFormatSample
   extends Sample
@@ -53,23 +53,21 @@ public class PageFormatSample
       );
 
     Pages pages = document.getPages();
-    for(PageFormat.SizeEnum pageFormat
-      : EnumSet.allOf(PageFormat.SizeEnum.class))
+    EnumSet<PageFormat.SizeEnum> pageFormats = EnumSet.allOf(PageFormat.SizeEnum.class);
+    EnumSet<PageFormat.OrientationEnum> pageOrientations = EnumSet.allOf(PageFormat.OrientationEnum.class);
+    for(PageFormat.SizeEnum pageFormat : pageFormats)
     {
-      for(PageFormat.OrientationEnum pageOrientation
-        : EnumSet.allOf(PageFormat.OrientationEnum.class))
+      for(PageFormat.OrientationEnum pageOrientation : pageOrientations)
       {
         // Add a page to the document!
-        Page page = new Page(document); // Instantiates the page inside the document context.
-        pages.add(page); // Puts the page in the pages collection.
-
-        // Set the page size!
-        page.setSize(
+        Page page = new Page(
+          document,
           PageFormat.getSize(
             pageFormat,
             pageOrientation
             )
-          );
+          ); // Instantiates the page inside the document context.
+        pages.add(page); // Puts the page in the pages collection.
 
         // Drawing the text label on the page...
         Dimension2D pageSize = page.getSize();
@@ -81,9 +79,9 @@ public class PageFormatSample
             pageSize.getWidth() / 2,
             pageSize.getHeight() / 2
             ), // Location: page center.
-          AlignmentXEnum.Center, // Place the text on horizontal center of the location.
-          AlignmentYEnum.Middle, // Place the text on vertical middle of the location.
-          45 // Rotate the text 45 degrees counterclockwise.
+          AlignmentXEnum.Center, // Places the text on horizontal center of the location.
+          AlignmentYEnum.Middle, // Places the text on vertical middle of the location.
+          45 // Rotates the text 45 degrees counterclockwise.
           );
         composer.flush();
       }

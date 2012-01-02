@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -184,11 +184,7 @@ namespace org.pdfclown.documents.interaction.forms
 
       FormXObject normalAppearance = appearance.Normal[null];
       if(normalAppearance == null)
-      {
-        appearance.Normal[null] = normalAppearance = new FormXObject(Document);
-        RectangleF widgetBox = widget.Box;
-        normalAppearance.Size = new SizeF(widgetBox.Width, widgetBox.Height);
-      }
+      {appearance.Normal[null] = normalAppearance = new FormXObject(Document, widget.Box.Size);}
 
       PdfName fontName = null;
       double fontSize = 0;

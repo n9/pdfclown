@@ -475,10 +475,7 @@ namespace org.pdfclown.samples.cli
       )
     {
       // Create a template (form)!
-      FormXObject template = new FormXObject(document);
-
-      // Size.
-      template.Size = document.PageSize.Value;
+      FormXObject template = new FormXObject(document, document.PageSize.Value);
       SizeF templateSize = template.Size;
 
       // Get form content stream!

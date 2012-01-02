@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -60,7 +60,7 @@ namespace org.pdfclown.documents.interaction.annotations
       Appearance appearance = new Appearance(page.Document);
       Appearance = appearance;
       AppearanceStates normalAppearance = appearance.Normal;
-      normalAppearance[new PdfName(widgetName)] = new FormXObject(page.Document);
+      normalAppearance[new PdfName(widgetName)] = new FormXObject(page.Document, box.Size);
     }
 
     public DualWidget(

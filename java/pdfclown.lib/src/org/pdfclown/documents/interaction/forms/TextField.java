@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -64,7 +64,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/02/12
 */
 @PDF(VersionEnum.PDF12)
 public final class TextField
@@ -231,9 +231,13 @@ public final class TextField
     FormXObject normalAppearance = appearance.getNormal().get(null);
     if(normalAppearance == null)
     {
-      appearance.getNormal().put(null, normalAppearance = new FormXObject(getDocument()));
-      Rectangle2D widgetBox = widget.getBox();
-      normalAppearance.setSize(new Dimension(widgetBox.getWidth(), widgetBox.getHeight()));
+      appearance.getNormal().put(
+        null,
+        normalAppearance = new FormXObject(
+          getDocument(),
+          Dimension.get(widget.getBox())
+          )
+        );
     }
 
     PdfName fontName = null;

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -126,58 +126,42 @@ namespace org.pdfclown.documents
     #region dynamic
     #region constructors
     /**
-      <summary>Creates a new page within the given document context, using default resources.</summary>
+      <summary>Creates a new page within the specified document context, using the default size.
+      </summary>
+      <param name="context">Document where to place this page.</param>
     */
     public Page(
       Document context
+      ) : this(context, null)
+    {}
+
+    /**
+      <summary>Creates a new page within the specified document context.</summary>
+      <param name="context">Document where to place this page.</param>
+      <param name="size">Page size. In case of <code>null</code>, uses the default size.</param>
+    */
+    public Page(
+      Document context,
+      drawing::SizeF? size
       ) : base(
         context,
         new PdfDictionary(
-          new PdfName[2]
+          new PdfName[]
           {
             PdfName.Type,
             PdfName.Contents
           },
-          new PdfDirectObject[2]
+          new PdfDirectObject[]
           {
             PdfName.Page,
-            context.File.Register(
-              new PdfStream()
-              )
+            context.File.Register(new PdfStream())
           }
           )
         )
-    {}
-
-    /**
-      <summary>Creates a new page within the given document context, using custom resources.</summary>
-    */
-    public Page(
-      Document context,
-      drawing::Size size,
-      Resources resources
-      ) : base(
-        context,
-        new PdfDictionary(
-          new PdfName[4]
-          {
-            PdfName.Type,
-            PdfName.MediaBox,
-            PdfName.Contents,
-            PdfName.Resources
-          },
-          new PdfDirectObject[4]
-          {
-            PdfName.Page,
-            new Rectangle(0,0,size.Width,size.Height).BaseDataObject,
-            context.File.Register(
-              new PdfStream()
-              ),
-            resources.BaseObject
-          }
-          )
-        )
-    {}
+    {
+      if(size.HasValue)
+      {Size = size.Value;}
+    }
 
     private Page(
       PdfDirectObject baseObject
@@ -391,7 +375,11 @@ namespace org.pdfclown.documents
       {return Box.Size;}
       set
       {
-        drawing::RectangleF box = Box;
+        drawing::RectangleF box;
+        try
+        {box = Box;}
+        catch
+        {box = new drawing::RectangleF(0, 0, 0, 0);}
         box.Size = value;
         Box = box;
       }
@@ -502,40 +490,29 @@ namespace org.pdfclown.documents
       Document context
       )
     {
-      File contextFile = context.File;
-
-      xObjects::FormXObject form = new xObjects::FormXObject(context);
-      PdfStream formStream = form.BaseDataObject;
-
-      // Header.
+      xObjects::FormXObject form;
       {
-        PdfDictionary formHeader = formStream.Header;
-        // Bounding box.
-        formHeader[PdfName.BBox] = (PdfDirectObject)GetInheritableAttribute(PdfName.MediaBox).Clone(contextFile);
-        // Resources.
+        form = new xObjects::FormXObject(
+          context,
+          Box,
+          (Resources)(context.Equals(Document)
+            ? Resources // Same document: reuses the existing resources.
+            : Resources.Clone(context)) // Alien document: clones the resources.
+          );
+
+        // Body (contents).
         {
-          PdfDirectObject resourcesObject = GetInheritableAttribute(PdfName.Resources);
-          // Same document?
-          /* NOTE: Try to reuse the resource dictionary whenever possible. */
-          formHeader[PdfName.Resources] = (context.Equals(Document) ?
-            resourcesObject
-            : (PdfDirectObject)resourcesObject.Clone(contextFile));
+          IBuffer formBody = form.BaseDataObject.Body;
+          PdfDataObject contentsDataObject = BaseDataObject.Resolve(PdfName.Contents);
+          if(contentsDataObject is PdfStream)
+          {formBody.Append(((PdfStream)contentsDataObject).Body);}
+          else
+          {
+            foreach(PdfDirectObject contentStreamObject in (PdfArray)contentsDataObject)
+            {formBody.Append(((PdfStream)File.Resolve(contentStreamObject)).Body);}
+          }
         }
       }
-
-      // Body (contents).
-      {
-        IBuffer formBody = formStream.Body;
-        PdfDataObject contentsDataObject = BaseDataObject.Resolve(PdfName.Contents);
-        if(contentsDataObject is PdfStream)
-        {formBody.Append(((PdfStream)contentsDataObject).Body);}
-        else
-        {
-          foreach(PdfDirectObject contentStreamObject in (PdfArray)contentsDataObject)
-          {formBody.Append(((PdfStream)File.Resolve(contentStreamObject)).Body);}
-        }
-      }
-
       return form;
     }
     #endregion

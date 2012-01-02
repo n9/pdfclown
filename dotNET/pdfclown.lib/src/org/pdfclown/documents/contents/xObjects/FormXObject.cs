@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,24 +47,46 @@ namespace org.pdfclown.documents.contents.xObjects
     #region dynamic
     #region constructors
     /**
-      <summary>Creates a new form within the given document context, using default resources.</summary>
-    */
-    public FormXObject(
-      Document context
-      ) : this(context, null)
-    {}
-
-    /**
-      <summary>Creates a new form within the given document context, using custom resources.</summary>
+      <summary>Creates a new form within the specified document context.</summary>
+      <param name="context">Document where to place this form.</param>
+      <param name="size">Form size.</param>
     */
     public FormXObject(
       Document context,
+      drawing::SizeF size
+      ) : this(context, size, null)
+    {}
+
+    /**
+      <summary>Creates a new form within the specified document context.</summary>
+      <param name="context">Document where to place this form.</param>
+      <param name="size">Form size.</param>
+      <param name="resources">Form resources. In case of <code>null</code>, creates a new collection.
+      </param>
+    */
+    public FormXObject(
+      Document context,
+      drawing::SizeF size,
+      Resources resources
+      ) : this(context, new drawing::RectangleF(new drawing::PointF(0, 0), size), resources)
+    {}
+
+    /**
+      <summary>Creates a new form within the specified document context.</summary>
+      <param name="context">Document where to place this form.</param>
+      <param name="box">Form box.</param>
+      <param name="resources">Form resources. In case of <code>null</code>, creates a new collection.
+      </param>
+    */
+    public FormXObject(
+      Document context,
+      drawing::RectangleF box,
       Resources resources
       ) : base(context)
     {
       PdfDictionary header = BaseDataObject.Header;
       header[PdfName.Subtype] = PdfName.Form;
-      header[PdfName.BBox] = new Rectangle(0,0,0,0).BaseDataObject;
+      header[PdfName.BBox] = new Rectangle(box).BaseDataObject;
 
       // No resources collection?
       /* NOTE: Resources collection is mandatory. */

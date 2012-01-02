@@ -47,7 +47,7 @@ import org.pdfclown.files.File;
   content flow composition), to be made available in the next releases.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/02/12
 */
 public class ComplexTypesettingSample
   extends Sample
@@ -502,10 +502,7 @@ public class ComplexTypesettingSample
     )
   {
     // Create a template (form)!
-    FormXObject template = new FormXObject(document);
-
-    // Size.
-    template.setSize(document.getPageSize());
+    FormXObject template = new FormXObject(document, document.getPageSize());
     Dimension2D templateSize = template.getSize();
 
     // Get form content stream!

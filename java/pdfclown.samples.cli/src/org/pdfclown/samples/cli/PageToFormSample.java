@@ -17,13 +17,12 @@ import org.pdfclown.files.File;
 
 /**
   This sample demonstrates <b>how to reuse a PDF page as a form</b> (precisely: form XObject [PDF:1.6:4.9]).
-  <h3>Remarks</h3>
   <p>Form XObjects are a convenient way to represent contents multiple times on multiple pages as
   templates.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.5
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/02/12
 */
 public class PageToFormSample
   extends Sample

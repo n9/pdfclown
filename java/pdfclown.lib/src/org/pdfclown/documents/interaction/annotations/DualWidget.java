@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,6 +36,7 @@ import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.NotImplementedException;
+import org.pdfclown.util.math.geom.Dimension;
 
 /**
   Dual-state widget annotation.
@@ -43,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 01/02/12
 */
 @PDF(VersionEnum.PDF12)
 public final class DualWidget
@@ -70,7 +71,13 @@ public final class DualWidget
     Appearance appearance = new Appearance(page.getDocument());
     setAppearance(appearance);
     AppearanceStates normalAppearance = appearance.getNormal();
-    normalAppearance.put(new PdfName(widgetName),new FormXObject(page.getDocument()));
+    normalAppearance.put(
+      new PdfName(widgetName),
+      new FormXObject(
+        page.getDocument(),
+        Dimension.get(box)
+        )
+      );
   }
 
   public DualWidget(
@@ -94,7 +101,7 @@ public final class DualWidget
     {
       PdfName key = normalAppearanceEntry.getKey();
       if(!key.equals(PdfName.Off)) // 'On' state.
-        return (String)key.getValue();
+        return key.getValue();
     }
     return null; // NOTE: It MUST NOT happen (on-state should always be defined).
   }

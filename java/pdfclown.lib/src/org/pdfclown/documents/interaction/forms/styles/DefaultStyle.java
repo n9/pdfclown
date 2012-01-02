@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -63,7 +63,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/02/12
 */
 public final class DefaultStyle
   extends FieldStyle
@@ -151,8 +151,10 @@ public final class DefaultStyle
       if(appearance == null)
       {widget.setAppearance(appearance = new Appearance(document));}
 
+      Dimension2D size = Dimension.get(widget.getBox());
+
       AppearanceStates normalAppearance = appearance.getNormal();
-      FormXObject onState = new FormXObject(document);
+      FormXObject onState = new FormXObject(document, size);
       normalAppearance.put(PdfName.Yes,onState);
 
 //TODO:verify!!!
@@ -161,13 +163,9 @@ public final class DefaultStyle
 //   appearance.getRollover().put(PdfName.Off,offState);
 //   appearance.getDown().put(PdfName.Off,offState);
 
-      Rectangle2D widgetBox = widget.getBox();
-      Dimension2D size = new Dimension(widgetBox.getWidth(), widgetBox.getHeight());
       double lineWidth = 1;
       Rectangle2D frame = new Rectangle2D.Double(lineWidth / 2, lineWidth / 2, size.getWidth() - lineWidth, size.getHeight() - lineWidth);
       {
-        onState.setSize(size);
-
         PrimitiveComposer composer = new PrimitiveComposer(onState);
 
         if(isGraphicsVisibile())
@@ -199,11 +197,9 @@ public final class DefaultStyle
         composer.flush();
       }
 
-      FormXObject offState = new FormXObject(document);
-      normalAppearance.put(PdfName.Off,offState);
+      FormXObject offState = new FormXObject(document, size);
+      normalAppearance.put(PdfName.Off, offState);
       {
-        offState.setSize(size);
-
         if(isGraphicsVisibile())
         {
           PrimitiveComposer composer = new PrimitiveComposer(offState);
@@ -286,13 +282,10 @@ public final class DefaultStyle
 //   appearance.getRollover().put(PdfName.Off,offState);
 //   appearance.getDown().put(PdfName.Off,offState);
 
-      Rectangle2D widgetBox = widget.getBox();
-      Dimension2D size = new Dimension(widgetBox.getWidth(),widgetBox.getHeight());
+      Dimension2D size = Dimension.get(widget.getBox());
       double lineWidth = 1;
       Rectangle2D frame = new Rectangle2D.Double(lineWidth / 2, lineWidth / 2, size.getWidth() - lineWidth, size.getHeight() - lineWidth);
       {
-        onState.setSize(size);
-
         PrimitiveComposer composer = new PrimitiveComposer(onState);
 
         if(isGraphicsVisibile())
@@ -324,11 +317,9 @@ public final class DefaultStyle
         composer.flush();
       }
 
-      FormXObject offState = new FormXObject(document);
+      FormXObject offState = new FormXObject(document, size);
       normalAppearance.put(PdfName.Off,offState);
       {
-        offState.setSize(size);
-
         if(isGraphicsVisibile())
         {
           PrimitiveComposer composer = new PrimitiveComposer(offState);
@@ -358,11 +349,10 @@ public final class DefaultStyle
     if(appearance == null)
     {widget.setAppearance(appearance = new Appearance(document));}
 
-    FormXObject normalAppearanceState = new FormXObject(document);
+    FormXObject normalAppearanceState;
     {
-      Rectangle2D widgetBox = widget.getBox();
-      Dimension2D size = new Dimension(widgetBox.getWidth(),widgetBox.getHeight());
-      normalAppearanceState.setSize(size);
+      Dimension2D size = Dimension.get(widget.getBox());
+      normalAppearanceState = new FormXObject(document, size);
       PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
       double lineWidth = 1;
@@ -418,11 +408,10 @@ public final class DefaultStyle
       new PdfString("/Helv " + getFontSize() + " Tf 0 0 0 rg")
       );
 
-    FormXObject normalAppearanceState = new FormXObject(document);
+    FormXObject normalAppearanceState;
     {
-      Rectangle2D widgetBox = widget.getBox();
-      Dimension2D size = new Dimension(widgetBox.getWidth(),widgetBox.getHeight());
-      normalAppearanceState.setSize(size);
+      Dimension2D size = Dimension.get(widget.getBox());
+      normalAppearanceState = new FormXObject(document, size);
       PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
       double lineWidth = 1;
@@ -478,11 +467,10 @@ public final class DefaultStyle
       new PdfString("/Helv " + getFontSize() + " Tf 0 0 0 rg")
       );
 
-    FormXObject normalAppearanceState = new FormXObject(document);
+    FormXObject normalAppearanceState;
     {
-      Rectangle2D widgetBox = widget.getBox();
-      Dimension2D size = new Dimension(widgetBox.getWidth(),widgetBox.getHeight());
-      normalAppearanceState.setSize(size);
+      Dimension2D size = Dimension.get(widget.getBox());
+      normalAppearanceState = new FormXObject(document, size);
       PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
       double lineWidth = 1;
@@ -556,11 +544,10 @@ public final class DefaultStyle
         );
     }
 
-    FormXObject normalAppearanceState = new FormXObject(document);
+    FormXObject normalAppearanceState;
     {
-      Rectangle2D widgetBox = widget.getBox();
-      Dimension2D size = new Dimension(widgetBox.getWidth(),widgetBox.getHeight());
-      normalAppearanceState.setSize(size);
+      Dimension2D size = Dimension.get(widget.getBox());
+      normalAppearanceState = new FormXObject(document, size);
       PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
       double lineWidth = 1;

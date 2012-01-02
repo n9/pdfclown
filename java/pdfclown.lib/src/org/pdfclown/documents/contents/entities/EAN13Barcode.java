@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -56,7 +56,7 @@ import org.pdfclown.documents.contents.xObjects.XObject;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/02/12
 */
 public final class EAN13Barcode
   extends Barcode
@@ -303,9 +303,8 @@ public final class EAN13Barcode
     Document context
     )
   {
-    FormXObject xObject = new FormXObject(context);
+    FormXObject xObject = new FormXObject(context, getSize());
     {
-      xObject.setSize(getSize());
       PrimitiveComposer composer = new PrimitiveComposer(xObject);
       toInlineObject(composer);
       composer.flush();

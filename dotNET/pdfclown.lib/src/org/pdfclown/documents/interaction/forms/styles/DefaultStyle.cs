@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -112,8 +112,10 @@ namespace org.pdfclown.documents.interaction.forms.styles
         if(appearance == null)
         {widget.Appearance = appearance = new Appearance(document);}
 
+        SizeF size = widget.Box.Size;
+
         AppearanceStates normalAppearance = appearance.Normal;
-        FormXObject onState = new FormXObject(document);
+        FormXObject onState = new FormXObject(document, size);
         normalAppearance[PdfName.Yes] = onState;
 
   //TODO:verify!!!
@@ -122,12 +124,9 @@ namespace org.pdfclown.documents.interaction.forms.styles
   //   appearance.getRollover().put(PdfName.Off,offState);
   //   appearance.getDown().put(PdfName.Off,offState);
 
-        SizeF size = widget.Box.Size;
         float lineWidth = 1;
         RectangleF frame = new RectangleF(lineWidth / 2, lineWidth / 2, size.Width - lineWidth, size.Height - lineWidth);
         {
-          onState.Size = new Size((int)size.Width,(int)size.Height);
-
           PrimitiveComposer composer = new PrimitiveComposer(onState);
 
           if(GraphicsVisibile)
@@ -159,11 +158,9 @@ namespace org.pdfclown.documents.interaction.forms.styles
           composer.Flush();
         }
 
-        FormXObject offState = new FormXObject(document);
+        FormXObject offState = new FormXObject(document, size);
         normalAppearance[PdfName.Off] = offState;
         {
-          offState.Size = new Size((int)size.Width,(int)size.Height);
-
           if(GraphicsVisibile)
           {
             PrimitiveComposer composer = new PrimitiveComposer(offState);
@@ -238,8 +235,6 @@ namespace org.pdfclown.documents.interaction.forms.styles
         float lineWidth = 1;
         RectangleF frame = new RectangleF(lineWidth / 2, lineWidth / 2, size.Width - lineWidth, size.Height - lineWidth);
         {
-          onState.Size = new Size((int)size.Width,(int)size.Height);;
-
           PrimitiveComposer composer = new PrimitiveComposer(onState);
 
           if(GraphicsVisibile)
@@ -271,11 +266,9 @@ namespace org.pdfclown.documents.interaction.forms.styles
           composer.Flush();
         }
 
-        FormXObject offState = new FormXObject(document);
+        FormXObject offState = new FormXObject(document, size);
         normalAppearance[PdfName.Off] = offState;
         {
-          offState.Size = new Size((int)size.Width,(int)size.Height);;
-
           if(GraphicsVisibile)
           {
             PrimitiveComposer composer = new PrimitiveComposer(offState);
@@ -305,10 +298,10 @@ namespace org.pdfclown.documents.interaction.forms.styles
       if(appearance == null)
       {widget.Appearance = appearance = new Appearance(document);}
 
-      FormXObject normalAppearanceState = new FormXObject(document);
+      FormXObject normalAppearanceState;
       {
         SizeF size = widget.Box.Size;
-        normalAppearanceState.Size = new Size((int)size.Width,(int)size.Height);;
+        normalAppearanceState = new FormXObject(document, size);
         PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
         float lineWidth = 1;
@@ -361,10 +354,10 @@ namespace org.pdfclown.documents.interaction.forms.styles
 
       widget.BaseDataObject[PdfName.DA] = new PdfString("/Helv " + FontSize + " Tf 0 0 0 rg");
 
-      FormXObject normalAppearanceState = new FormXObject(document);
+      FormXObject normalAppearanceState;
       {
         SizeF size = widget.Box.Size;
-        normalAppearanceState.Size = new Size((int)size.Width,(int)size.Height);;
+        normalAppearanceState = new FormXObject(document, size);
         PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
         float lineWidth = 1;
@@ -417,10 +410,10 @@ namespace org.pdfclown.documents.interaction.forms.styles
 
       widget.BaseDataObject[PdfName.DA] = new PdfString("/Helv " + FontSize + " Tf 0 0 0 rg");
 
-      FormXObject normalAppearanceState = new FormXObject(document);
+      FormXObject normalAppearanceState;
       {
         SizeF size = widget.Box.Size;
-        normalAppearanceState.Size = new Size((int)size.Width,(int)size.Height);;
+        normalAppearanceState = new FormXObject(document, size);
         PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
         float lineWidth = 1;
@@ -488,10 +481,10 @@ namespace org.pdfclown.documents.interaction.forms.styles
           );
       }
 
-      FormXObject normalAppearanceState = new FormXObject(document);
+      FormXObject normalAppearanceState;
       {
         SizeF size = widget.Box.Size;
-        normalAppearanceState.Size = new Size((int)size.Width,(int)size.Height);;
+        normalAppearanceState = new FormXObject(document, size);
         PrimitiveComposer composer = new PrimitiveComposer(normalAppearanceState);
 
         float lineWidth = 1;

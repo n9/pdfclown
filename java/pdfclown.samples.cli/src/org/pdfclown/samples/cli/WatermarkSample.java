@@ -16,14 +16,13 @@ import org.pdfclown.tools.PageStamper;
 
 /**
   This sample demonstrates <b>how to insert watermark text</b> into an existing PDF document.
-  <h3>Remarks</h3>
   <p>This implementation uses a Form XObject [PDF:1.6:4.9] to conveniently achieve a consistent page
   background. Form XObjects provide context independence encapsulating their contents (and resources)
   in a single stream: such an approach allows content reuse.</p>
   <p>The watermark is seamlessly inserted under each page content using the PageStamper class.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/02/12
 */
 public class WatermarkSample
   extends Sample
@@ -84,11 +83,10 @@ public class WatermarkSample
     Document document
     )
   {
-    // 1. Create a new external form object to represent the watermark!
-    FormXObject watermark = new FormXObject(document);
-    // Size.
     Dimension2D size = document.getSize();
-    watermark.setSize(size);
+
+    // 1. Create a new external form object to represent the watermark!
+    FormXObject watermark = new FormXObject(document, size);
 
     // 2. Inserting the contents of the watermark...
     // 2.1. Create a content composer for the watermark!
@@ -106,12 +104,12 @@ public class WatermarkSample
       );
     // Set the color to fill the text characters!
     composer.setFillColor(
-      new DeviceRGBColor(115f/255, 164f/255, 232f/255)
+      new DeviceRGBColor(115f / 255, 164f / 255, 232f / 255)
       );
     // Show the text!
     composer.showText(
       "PDFClown", // Text to show.
-      new Point2D.Double(size.getWidth()/2d,size.getHeight()/2d), // Anchor location: page center.
+      new Point2D.Double(size.getWidth() / 2d, size.getHeight() / 2d), // Anchor location: page center.
       AlignmentXEnum.Center, // Horizontal placement (relative to the anchor): center.
       AlignmentYEnum.Middle, // Vertical placement (relative to the anchor): middle.
       50 // Rotation: 50-degree-counterclockwise.

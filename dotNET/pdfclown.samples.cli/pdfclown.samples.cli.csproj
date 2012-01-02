@@ -80,6 +80,7 @@
     <Compile Include="src\org\pdfclown\samples\cli\LayerParsingSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\AcroFormFillingSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\DataSearchSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\PageCombinationSample.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PDFClownCLISamples.exe.config">

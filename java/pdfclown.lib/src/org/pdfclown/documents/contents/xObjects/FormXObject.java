@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -54,7 +54,7 @@ import org.pdfclown.util.math.geom.Dimension;
   Form external object [PDF:1.6:4.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 01/02/12
 */
 @PDF(VersionEnum.PDF10)
 public final class FormXObject
@@ -65,32 +65,55 @@ public final class FormXObject
   // <dynamic>
   // <constructors>
   /**
-    Creates a new form within the given document context, using default resources.
-  */
-  public FormXObject(
-    Document context
-    )
-  {this(context, null);}
+    Creates a new form within the specified document context.
 
-  /**
-    Creates a new form within the given document context, using custom resources.
+    @param context Document where to place this form.
+    @param size Form size.
   */
   public FormXObject(
     Document context,
+    Dimension2D size
+    )
+  {this(context, size, null);}
+
+  /**
+    Creates a new form within the specified document context.
+
+    @param context Document where to place this form.
+    @param size Form size.
+    @param resources Form resources. In case of <code>null</code>, creates a new collection.
+  */
+  public FormXObject(
+    Document context,
+    Dimension2D size,
+    Resources resources
+    )
+  {this(context, new Rectangle2D.Double(0, 0, size.getWidth(), size.getHeight()), resources);}
+
+  /**
+    Creates a new form within the specified document context.
+
+    @param context Document where to place this form.
+    @param box Form box.
+    @param resources Form resources. In case of <code>null</code>, creates a new collection.
+  */
+  public FormXObject(
+    Document context,
+    Rectangle2D box,
     Resources resources
     )
   {
     super(context);
 
     PdfDictionary header = getBaseDataObject().getHeader();
-    header.put(PdfName.Subtype,PdfName.Form);
-    header.put(PdfName.BBox,new Rectangle(0,0,0,0).getBaseDataObject());
+    header.put(PdfName.Subtype, PdfName.Form);
+    header.put(PdfName.BBox, new Rectangle(box).getBaseDataObject());
 
     // No resources collection?
     /* NOTE: Resources collection is mandatory. */
     if(resources == null)
     {resources = new Resources(context);}
-    header.put(PdfName.Resources,resources.getBaseObject());
+    header.put(PdfName.Resources, resources.getBaseObject());
   }
 
   /**

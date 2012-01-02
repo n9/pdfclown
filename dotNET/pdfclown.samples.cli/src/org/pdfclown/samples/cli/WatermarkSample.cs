@@ -74,11 +74,10 @@ namespace org.pdfclown.samples.cli
       Document document
       )
     {
-      // 1. Create a new external form object to represent the watermark!
-      FormXObject watermark = new FormXObject(document);
-      // Size.
       SizeF size = document.GetSize();
-      watermark.Size = size;
+
+      // 1. Create a new external form object to represent the watermark!
+      FormXObject watermark = new FormXObject(document, size);
 
       // 2. Inserting the contents of the watermark...
       // 2.1. Create a content composer for the watermark!
@@ -96,12 +95,12 @@ namespace org.pdfclown.samples.cli
         );
       // Set the color to fill the text characters!
       composer.SetFillColor(
-        new DeviceRGBColor(115f/255, 164f/255, 232f/255)
+        new DeviceRGBColor(115f / 255, 164f / 255, 232f / 255)
         );
       // Show the text!
       composer.ShowText(
         "PDFClown", // Text to show.
-        new PointF(size.Width/2f,size.Height/2f), // Anchor location: page center.
+        new PointF(size.Width / 2f, size.Height / 2f), // Anchor location: page center.
         AlignmentXEnum.Center, // Horizontal placement (relative to the anchor): center.
         AlignmentYEnum.Middle, // Vertical placement (relative to the anchor): middle.
         50 // Rotation: 50-degree-counterclockwise.

@@ -43,25 +43,21 @@ namespace org.pdfclown.samples.cli
         );
 
       Pages pages = document.Pages;
-      foreach(
-        PageFormat.SizeEnum pageFormat
-          in (PageFormat.SizeEnum[])Enum.GetValues(typeof(PageFormat.SizeEnum))
-        )
+      PageFormat.SizeEnum[] pageFormats = (PageFormat.SizeEnum[])Enum.GetValues(typeof(PageFormat.SizeEnum));
+      PageFormat.OrientationEnum[] pageOrientations = (PageFormat.OrientationEnum[])Enum.GetValues(typeof(PageFormat.OrientationEnum));
+      foreach(PageFormat.SizeEnum pageFormat in pageFormats)
       {
-        foreach(
-          PageFormat.OrientationEnum pageOrientation
-            in (PageFormat.OrientationEnum[])Enum.GetValues(typeof(PageFormat.OrientationEnum))
-          )
+        foreach(PageFormat.OrientationEnum pageOrientation in pageOrientations)
         {
           // Add a page to the document!
-          Page page = new Page(document); // Instantiates the page inside the document context.
+          Page page = new Page(
+            document,
+            PageFormat.GetSize(
+              pageFormat,
+              pageOrientation
+              )
+            ); // Instantiates the page inside the document context.
           pages.Add(page); // Puts the page in the pages collection.
-
-          // Set the page size!
-          page.Size = PageFormat.GetSize(
-            pageFormat,
-            pageOrientation
-            );
 
           // Drawing the text label on the page...
           SizeF pageSize = page.Size;
@@ -73,9 +69,9 @@ namespace org.pdfclown.samples.cli
               pageSize.Width / 2,
               pageSize.Height / 2
               ), // Location: page center.
-            AlignmentXEnum.Center, // Place the text on horizontal center of the location.
-            AlignmentYEnum.Middle, // Place the text on vertical middle of the location.
-            45 // Rotate the text 45 degrees counterclockwise.
+            AlignmentXEnum.Center, // Places the text on horizontal center of the location.
+            AlignmentYEnum.Middle, // Places the text on vertical middle of the location.
+            45 // Rotates the text 45 degrees counterclockwise.
             );
           composer.Flush();
         }

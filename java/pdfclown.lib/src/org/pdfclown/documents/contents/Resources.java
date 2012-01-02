@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,13 +32,12 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Resources collection [PDF:1.6:3.7.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 01/02/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Resources
@@ -77,7 +76,7 @@ public final class Resources
   public Resources clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return new Resources((PdfDirectObject)getBaseObject().clone(context.getFile()));}
 
   public ColorSpaceResources getColorSpaces(
     )

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -68,7 +68,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 01/02/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Page
@@ -164,10 +164,24 @@ public final class Page
   // <dynamic>
   // <constructors>
   /**
-    Creates a new page within the given document context, using default resources.
+    Creates a new page within the specified document context, using the default size.
+
+    @param context Document where to place this page.
   */
   public Page(
     Document context
+    )
+  {this(context, null);}
+
+  /**
+    Creates a new page within the specified document context.
+
+    @param context Document where to place this page.
+    @param size Page size. In case of <code>null</code>, uses the default size.
+  */
+  public Page(
+    Document context,
+    Dimension2D size
     )
   {
     super(
@@ -181,44 +195,12 @@ public final class Page
         new PdfDirectObject[]
         {
           PdfName.Page,
-          context.getFile().register(
-            new PdfStream()
-            )
+          context.getFile().register(new PdfStream())
         }
         )
       );
-  }
-
-  /**
-    Creates a new page within the given document context, using custom resources.
-  */
-  public Page(
-    Document context,
-    Dimension2D size,
-    Resources resources
-    )
-  {
-    super(
-      context,
-      new PdfDictionary(
-        new PdfName[]
-        {
-          PdfName.Type,
-          PdfName.MediaBox,
-          PdfName.Contents,
-          PdfName.Resources
-        },
-        new PdfDirectObject[]
-        {
-          PdfName.Page,
-          new Rectangle(0,0,size.getWidth(),size.getHeight()).getBaseDataObject(),
-          context.getFile().register(
-            new PdfStream()
-            ),
-          resources.getBaseObject()
-        }
-        )
-      );
+    if(size != null)
+    {setSize(size);}
   }
 
   private Page(
@@ -401,10 +383,7 @@ public final class Page
   */
   public Dimension2D getSize(
     )
-  {
-    Rectangle2D box = getBox();
-    return new Dimension(box.getWidth(), box.getHeight());
-  }
+  {return Dimension.get(getBox());}
 
   /**
     Gets the tab order to be used for annotations on the page.
@@ -510,7 +489,11 @@ public final class Page
     Dimension2D value
     )
   {
-    Rectangle2D box = getBox();
+    Rectangle2D box;
+    try
+    {box = getBox();}
+    catch (Exception e)
+    {box = new Rectangle2D.Double();}
     box.setRect(box.getX(), box.getY(), value.getWidth(), value.getHeight());
     setBox(box);
   }
@@ -590,46 +573,29 @@ public final class Page
     Document context
     )
   {
-    File contextFile = context.getFile();
-
-    FormXObject form = new FormXObject(context);
-    PdfStream formStream = form.getBaseDataObject();
-
-    // Header.
+    FormXObject form;
     {
-      PdfDictionary formHeader = formStream.getHeader();
-      // Bounding box.
-      formHeader.put(
-        PdfName.BBox,
-        (PdfDirectObject)getInheritableAttribute(PdfName.MediaBox).clone(contextFile)
+      form = new FormXObject(
+        context,
+        getBox(),
+        context.equals(getDocument())
+          ? getResources() // Same document: reuses the existing resources.
+          : getResources().clone(context) // Alien document: clones the resources.
         );
-      // Resources.
+
+      // Body (contents).
       {
-        PdfDirectObject resourcesObject = getInheritableAttribute(PdfName.Resources);
-        formHeader.put(
-          PdfName.Resources,
-          // Same document?
-          /* NOTE: Try to reuse the resource dictionary whenever possible. */
-          (context.equals(getDocument()) ?
-            resourcesObject
-            : (PdfDirectObject)resourcesObject.clone(contextFile))
-          );
+        IBuffer formBody = form.getBaseDataObject().getBody();
+        PdfDataObject contentsDataObject = getBaseDataObject().resolve(PdfName.Contents);
+        if(contentsDataObject instanceof PdfStream)
+        {formBody.append(((PdfStream)contentsDataObject).getBody());}
+        else
+        {
+          for(PdfDirectObject contentStreamObject : (PdfArray)contentsDataObject)
+          {formBody.append(((PdfStream)File.resolve(contentStreamObject)).getBody());}
+        }
       }
     }
-
-    // Body (contents).
-    {
-      IBuffer formBody = formStream.getBody();
-      PdfDataObject contentsDataObject = getBaseDataObject().resolve(PdfName.Contents);
-      if(contentsDataObject instanceof PdfStream)
-      {formBody.append(((PdfStream)contentsDataObject).getBody());}
-      else
-      {
-        for(PdfDirectObject contentStreamObject : (PdfArray)contentsDataObject)
-        {formBody.append(((PdfStream)File.resolve(contentStreamObject)).getBody());}
-      }
-    }
-
     return form;
   }
   // </IContentEntity>

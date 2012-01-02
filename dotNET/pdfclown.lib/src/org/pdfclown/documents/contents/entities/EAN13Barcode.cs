@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -294,9 +294,8 @@ namespace org.pdfclown.documents.contents.entities
       Document context
       )
     {
-      xObjects::FormXObject xObject = new xObjects::FormXObject(context);
+      xObjects::FormXObject xObject = new xObjects::FormXObject(context, Size);
       {
-        xObject.Size = Size;
         PrimitiveComposer composer = new PrimitiveComposer(xObject);
         this.ToInlineObject(composer);
         composer.Flush();
