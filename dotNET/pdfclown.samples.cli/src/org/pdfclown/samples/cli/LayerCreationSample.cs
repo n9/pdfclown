@@ -101,7 +101,7 @@ namespace org.pdfclown.samples.cli
           NOTE: Text in this section is shown using BlockComposer along with PrimitiveComposer
           to demonstrate their flexible cooperation.
         */
-        blockComposer.Begin(new RectangleF(50, 125, 200, 50), AlignmentXEnum.Left, AlignmentYEnum.Middle);
+        blockComposer.Begin(new RectangleF(50, 125, 200, 50), XAlignmentEnum.Left, YAlignmentEnum.Middle);
 
         composer.BeginLayer(layer1);
         blockComposer.ShowText(layer1.Title);
@@ -144,7 +144,7 @@ namespace org.pdfclown.samples.cli
           NOTE: Text in this section is shown using BlockComposer along with PrimitiveComposer
           to demonstrate their flexible cooperation.
         */
-        blockComposer.Begin(new RectangleF(50, 185, 200, 75), AlignmentXEnum.Left, AlignmentYEnum.Middle);
+        blockComposer.Begin(new RectangleF(50, 185, 200, 75), XAlignmentEnum.Left, YAlignmentEnum.Middle);
 
         composer.BeginLayer(radio1);
         blockComposer.ShowText(radio1.Title);

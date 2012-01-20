@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -27,6 +27,7 @@ using org.pdfclown.objects;
 
 using System;
 using System.Collections.Generic;
+using drawing = System.Drawing;
 
 namespace org.pdfclown.documents.contents.colorSpaces
 {
@@ -39,8 +40,8 @@ namespace org.pdfclown.documents.contents.colorSpaces
   {
     #region static
     #region fields
-    public static readonly DeviceRGBColor Black = new DeviceRGBColor(0,0,0);
-    public static readonly DeviceRGBColor White = new DeviceRGBColor(1,1,1);
+    public static readonly DeviceRGBColor Black = Get(drawing::Color.Black);
+    public static readonly DeviceRGBColor White = Get(drawing::Color.White);
 
     public static readonly DeviceRGBColor Default = Black;
     #endregion
@@ -59,6 +60,19 @@ namespace org.pdfclown.documents.contents.colorSpaces
         ? new DeviceRGBColor(components)
         : Default
         );
+    }
+
+    /**
+      <summary>Gets the color corresponding to the specified system color.</summary>
+      <param name="color">System color to convert.</param>
+    */
+    public static DeviceRGBColor Get(
+      drawing::Color? color
+      )
+    {
+      return (color.HasValue
+        ? new DeviceRGBColor(color.Value.R / 255d, color.Value.G / 255d, color.Value.B / 255d)
+        : Default);
     }
     #endregion
     #endregion

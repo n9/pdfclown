@@ -1,14 +1,15 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.Color;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.files.File;
 import org.pdfclown.tools.PageStamper;
@@ -22,7 +23,7 @@ import org.pdfclown.tools.PageStamper;
   etc.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 public class PageNumberingSample
   extends Sample
@@ -66,7 +67,7 @@ public class PageNumberingSample
       true,
       false
       );
-    DeviceRGBColor redColor = new DeviceRGBColor(1, 0, 0);
+    DeviceRGBColor redColor = DeviceRGBColor.get(Color.RED);
     int margin = 32;
     for(Page page : document.getPages())
     {
@@ -92,9 +93,9 @@ public class PageNumberingSample
             pageSize.getHeight() - margin
             ),
           (pageIsEven
-            ? AlignmentXEnum.Left
-            : AlignmentXEnum.Right),
-          AlignmentYEnum.Bottom,
+            ? XAlignmentEnum.Left
+            : XAlignmentEnum.Right),
+          YAlignmentEnum.Bottom,
           0
           );
       }

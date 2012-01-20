@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -70,6 +70,12 @@ namespace org.pdfclown.objects
 
     #region interface
     #region public
+    public bool BooleanValue
+    {
+      get
+      {return (bool)Value;}
+    }
+
     public override int CompareTo(
       PdfDirectObject obj
       )

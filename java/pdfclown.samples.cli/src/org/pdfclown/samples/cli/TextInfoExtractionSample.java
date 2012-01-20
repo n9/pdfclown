@@ -21,16 +21,16 @@ import org.pdfclown.tools.PageStamper;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 public class TextInfoExtractionSample
   extends Sample
 {
   private final DeviceRGBColor[] textCharBoxColors = new DeviceRGBColor[]
     {
-      new DeviceRGBColor(200 / 255, 100 / 255, 100 / 255),
-      new DeviceRGBColor(100 / 255, 200 / 255, 100 / 255),
-      new DeviceRGBColor(100 / 255, 100 / 255, 200 / 255)
+      new DeviceRGBColor(200 / 255d, 100 / 255d, 100 / 255d),
+      new DeviceRGBColor(100 / 255d, 200 / 255d, 100 / 255d),
+      new DeviceRGBColor(100 / 255d, 100 / 255d, 200 / 255d)
     };
   private final DeviceRGBColor textStringBoxColor = DeviceRGBColor.Black;
 

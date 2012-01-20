@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -79,6 +79,10 @@ namespace org.pdfclown.documents.contents.composition
           throw new NotSupportedException(unitMode.GetType().Name + " not supported.");
       }
     }
+
+    public override string ToString(
+      )
+    {return value + " (" + unitMode + ")";}
 
     /**
       <summary>Gets/Sets the measurement mode applied to the distance value.</summary>

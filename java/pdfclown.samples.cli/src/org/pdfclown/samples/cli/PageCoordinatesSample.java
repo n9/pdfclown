@@ -14,12 +14,12 @@ import org.pdfclown.documents.contents.FontResources;
 import org.pdfclown.documents.contents.Resources;
 import org.pdfclown.documents.contents.colorSpaces.Color;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.Length;
 import org.pdfclown.documents.contents.composition.Length.UnitModeEnum;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.contents.objects.ModifyCTM;
 import org.pdfclown.files.File;
@@ -31,7 +31,7 @@ import org.pdfclown.objects.PdfName;
   onto the canvas.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 public class PageCoordinatesSample
   extends Sample
@@ -130,11 +130,11 @@ public class PageCoordinatesSample
     }
 
     final BlockComposer blockComposer = new BlockComposer(composer);
-    blockComposer.setLineSpace(new Length(.25f, UnitModeEnum.Relative));
+    blockComposer.setLineSpace(new Length(.25, UnitModeEnum.Relative));
 
     composer.beginLocalState();
     composer.setFillColor(
-      new DeviceRGBColor(115f/255,164f/255,232f/255)
+      new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d)
       );
     final Rectangle2D frame = new Rectangle2D.Double(
       18,
@@ -142,7 +142,7 @@ public class PageCoordinatesSample
       pageSize.getWidth() * .5,
       pageSize.getHeight() * .5
       );
-    blockComposer.begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Top);
+    blockComposer.begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
     composer.setFont(ResourceName_DefaultFont,24);
     blockComposer.showText("Page coordinates sample");
     Dimension2D breakSize = new Dimension(8,4);
@@ -164,7 +164,7 @@ public class PageCoordinatesSample
       composer.setFillColor(colors[i]);
       blockComposer.showText("Step " + i + ")");
       composer.setFillColor(
-        new DeviceRGBColor(115f/255,164f/255,232f/255)
+        new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d)
         );
       blockComposer.showText(" " + steps[i]);
       blockComposer.showBreak(breakSize);
@@ -191,7 +191,7 @@ public class PageCoordinatesSample
 
     // Step 0.
     {
-      colors[0] = new DeviceRGBColor(30f/255, 10f/255, 0);
+      colors[0] = new DeviceRGBColor(30 / 255d, 10 / 255d, 0);
       composer.setFillColor(colors[0]);
       composer.setStrokeColor(colors[0]);
 
@@ -203,8 +203,8 @@ public class PageCoordinatesSample
       composer.showText(
         "Step 0",
         new Point2D.Double(0,pageSize.getHeight()),
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Bottom,
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Bottom,
         0
         );
 
@@ -213,7 +213,7 @@ public class PageCoordinatesSample
 
     // Step 1.
     {
-      colors[1] = new DeviceRGBColor(80f/255, 25f/255, 0);
+      colors[1] = new DeviceRGBColor(80 / 255d, 25 / 255d, 0);
       composer.setFillColor(colors[1]);
       composer.setStrokeColor(colors[1]);
 
@@ -228,8 +228,8 @@ public class PageCoordinatesSample
       composer.showText(
         "Step 1",
         new Point2D.Double(0,pageSize.getHeight()),
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Bottom,
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Bottom,
         0
         );
 
@@ -238,7 +238,7 @@ public class PageCoordinatesSample
 
     // Step 2.
     {
-      colors[2] = new DeviceRGBColor(130f/255, 45f/255, 0);
+      colors[2] = new DeviceRGBColor(130 / 255d, 45 / 255d, 0);
       composer.setFillColor(colors[2]);
       composer.setStrokeColor(colors[2]);
 
@@ -256,8 +256,8 @@ public class PageCoordinatesSample
       composer.showText(
         "Step 2",
         new Point2D.Double(0,pageSize.getHeight()),
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Bottom,
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Bottom,
         0
         );
 
@@ -266,7 +266,7 @@ public class PageCoordinatesSample
 
     // Step 3.
     {
-      colors[3] = new DeviceRGBColor(180f/255, 60f/255, 0);
+      colors[3] = new DeviceRGBColor(180 / 255d, 60 / 255d, 0);
       composer.setFillColor(colors[3]);
       composer.setStrokeColor(colors[3]);
 
@@ -282,8 +282,8 @@ public class PageCoordinatesSample
       composer.showText(
         "Step 3",
         new Point2D.Double(0,pageSize.getHeight()),
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Bottom,
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Bottom,
         0
         );
 
@@ -292,7 +292,7 @@ public class PageCoordinatesSample
 
     // Step 4.
     {
-      colors[4] = new DeviceRGBColor(230f/255, 75f/255, 0);
+      colors[4] = new DeviceRGBColor(230 / 255d, 75 / 255d, 0);
       composer.setFillColor(colors[4]);
       composer.setStrokeColor(colors[4]);
 
@@ -311,8 +311,8 @@ public class PageCoordinatesSample
       composer.showText(
         "Step 4",
         new Point2D.Double(0,pageSize.getHeight()),
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Bottom,
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Bottom,
         0
         );
 

@@ -7,13 +7,14 @@ import java.awt.geom.Rectangle2D;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.contents.xObjects.XObject;
 import org.pdfclown.files.File;
+import org.pdfclown.util.math.geom.GeomUtils;
 
 /**
   This sample demonstrates <b>how to reuse a PDF page as a form</b> (precisely: form XObject [PDF:1.6:4.9]).
@@ -22,7 +23,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.5
-  @version 0.1.2, 01/02/12
+  @version 0.1.2, 01/20/12
 */
 public class PageToFormSample
   extends Sample
@@ -76,22 +77,23 @@ public class PageToFormSample
     Dimension2D pageSize = page.getSize();
     // 3.1. Showing the form on the page...
     {
+      Dimension2D formSize = form.getSize();
       // Form 1.
       composer.showXObject(
         form,
         new Point2D.Double(pageSize.getWidth()/2,pageSize.getHeight()/2),
-        new Dimension(300,0),
-        AlignmentXEnum.Center,
-        AlignmentYEnum.Middle,
+        GeomUtils.scale(formSize, new Dimension(300,0)),
+        XAlignmentEnum.Center,
+        YAlignmentEnum.Middle,
         45
         );
       // Form 2.
       composer.showXObject(
         form,
         new Point2D.Double(0,pageSize.getHeight()),
-        new Dimension(0,300),
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Bottom,
+        GeomUtils.scale(formSize, new Dimension(0,300)),
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Bottom,
         0
         );
       // Form 3.
@@ -99,8 +101,8 @@ public class PageToFormSample
         form,
         new Point2D.Double(pageSize.getWidth(),pageSize.getHeight()),
         new Dimension(80,200),
-        AlignmentXEnum.Right,
-        AlignmentYEnum.Bottom,
+        XAlignmentEnum.Right,
+        YAlignmentEnum.Bottom,
         0
         );
     }
@@ -114,8 +116,8 @@ public class PageToFormSample
           pageSize.getWidth() * .5,
           pageSize.getHeight() * .5
           ),
-        AlignmentXEnum.Justify,
-        AlignmentYEnum.Top
+        XAlignmentEnum.Justify,
+        YAlignmentEnum.Top
         );
       StandardType1Font bodyFont = new StandardType1Font(
         document,

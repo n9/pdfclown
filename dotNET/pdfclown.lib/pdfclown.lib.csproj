@@ -58,8 +58,6 @@
     <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\ICCBasedColorSpace.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\LabColorSpace.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\colorSpaces\namespace.cs" />
-    <Compile Include="src\org\pdfclown\documents\contents\composition\AlignmentXEnum.cs" />
-    <Compile Include="src\org\pdfclown\documents\contents\composition\AlignmentYEnum.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\composition\Length.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\composition\namespace.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\composition\TextFitter.cs" />
@@ -412,6 +410,10 @@
     <Compile Include="src\org\pdfclown\documents\contents\layers\namespace.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\fonts\CffParser.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\objects\IResourceReference.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\composition\XAlignmentEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\composition\YAlignmentEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\composition\LineAlignmentEnum.cs" />
+    <Compile Include="src\org\pdfclown\util\math\geom\GeomUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />

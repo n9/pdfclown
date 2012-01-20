@@ -1,5 +1,6 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
@@ -29,7 +30,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 public class AnnotationSample
   extends Sample
@@ -123,7 +124,7 @@ public class AnnotationSample
       new Point(50, 260),
       new Point(200,210)
       );
-    line.setFillColor(new DeviceRGBColor(1,0,0));
+    line.setFillColor(DeviceRGBColor.get(Color.RED));
     line.setStartStyle(Line.LineEndStyleEnum.Circle);
     line.setEndStyle(Line.LineEndStyleEnum.ClosedArrow);
     line.setText("Arrow line annotation");
@@ -164,7 +165,7 @@ public class AnnotationSample
       page,
       new Rectangle(50, 350, 100, 30)
       );
-    rectangle.setFillColor(new DeviceRGBColor(1,0,0));
+    rectangle.setFillColor(DeviceRGBColor.get(Color.RED));
     rectangle.setText("Rectangle annotation");
 
     // Ellipse.
@@ -173,7 +174,7 @@ public class AnnotationSample
       page,
       new Rectangle(50, 400, 100, 30)
       );
-    ellipse.setFillColor(new DeviceRGBColor(0,0,1));
+    ellipse.setFillColor(DeviceRGBColor.get(Color.BLUE));
     ellipse.setText("Ellipse annotation");
 
     // Rubber stamp.

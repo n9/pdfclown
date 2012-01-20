@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,7 +43,7 @@ import org.pdfclown.util.ConvertUtils;
   Standard Type 1 font [PDF:1.6:5.5.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 @PDF(VersionEnum.PDF10)
 public final class StandardType1Font
@@ -180,7 +180,7 @@ public final class StandardType1Font
       otherwise, when overridden they degrade to a common Type 1 font.
       Metrics of non-overridden Standard Type 1 fonts MUST be loaded from resources.
     */
-    load((String)((PdfName)getBaseDataObject().get(PdfName.BaseFont)).getValue());
+    load(((PdfName)getBaseDataObject().get(PdfName.BaseFont)).getValue());
 
     super.onLoad();
   }

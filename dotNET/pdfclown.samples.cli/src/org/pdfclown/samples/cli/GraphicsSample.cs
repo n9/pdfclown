@@ -3,8 +3,9 @@ using org.pdfclown.documents.contents;
 using org.pdfclown.documents.contents.colorSpaces;
 using org.pdfclown.documents.contents.composition;
 using entities = org.pdfclown.documents.contents.entities;
-using org.pdfclown.documents.contents.fonts;
+using fonts = org.pdfclown.documents.contents.fonts;
 using org.pdfclown.documents.contents.objects;
+using xObjects = org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.files;
 using org.pdfclown.util.math.geom;
 
@@ -21,8 +22,8 @@ namespace org.pdfclown.samples.cli
   public class GraphicsSample
     : Sample
   {
-    private static readonly DeviceRGBColor SampleColor = new DeviceRGBColor(1, 0, 0);
-    private static readonly DeviceRGBColor BackColor = new DeviceRGBColor(210 / 256d, 232 / 256d, 245 / 256d);
+    private static readonly DeviceRGBColor SampleColor = DeviceRGBColor.Get(System.Drawing.Color.Red);
+    private static readonly DeviceRGBColor BackColor = new DeviceRGBColor(210 / 255d, 232 / 255d, 245 / 255d);
 
     public override bool Run(
       )
@@ -38,6 +39,7 @@ namespace org.pdfclown.samples.cli
       BuildTextBlockPage(document);
       BuildTextBlockPage2(document);
       BuildTextBlockPage3(document);
+      BuildTextBlockPage4(document);
 
       // 3. Serialize the PDF file!
       Serialize(file, false, "Composition elements", "applying the composition elements");
@@ -60,9 +62,9 @@ namespace org.pdfclown.samples.cli
 
       // 3. Drawing the page contents...
       composer.SetFont(
-        new StandardType1Font(
+        new fonts::StandardType1Font(
           document,
-          StandardType1Font.FamilyEnum.Courier,
+          fonts::StandardType1Font.FamilyEnum.Courier,
           true,
           false
           ),
@@ -71,7 +73,7 @@ namespace org.pdfclown.samples.cli
 
       {
         BlockComposer blockComposer = new BlockComposer(composer);
-        blockComposer.Begin(new RectangleF(30,0,pageSize.Width-60,50),AlignmentXEnum.Center,AlignmentYEnum.Middle);
+        blockComposer.Begin(new RectangleF(30,0,pageSize.Width-60,50),XAlignmentEnum.Center,YAlignmentEnum.Middle);
         blockComposer.ShowText("Curves");
         blockComposer.End();
       }
@@ -148,12 +150,7 @@ namespace org.pdfclown.samples.cli
 
       // 3.2. Circle.
       {
-        RectangleF arcFrame = new RectangleF(
-          100,
-          300,
-          100,
-          100
-          );
+        RectangleF arcFrame = new RectangleF(100, 300, 100, 100);
 
         // Drawing the circle frame...
         composer.BeginLocalState();
@@ -164,19 +161,14 @@ namespace org.pdfclown.samples.cli
         composer.End();
 
         // Drawing the circle...
-        composer.SetFillColor(new DeviceRGBColor(1,0,0));
+        composer.SetFillColor(DeviceRGBColor.Get(System.Drawing.Color.Red));
         composer.DrawEllipse(arcFrame);
         composer.FillStroke();
       }
 
       // 3.3. Horizontal ellipse.
       {
-        RectangleF arcFrame = new RectangleF(
-          210,
-          300,
-          100,
-          50
-          );
+        RectangleF arcFrame = new RectangleF(210, 300, 100, 50);
 
         // Drawing the ellipse frame...
         composer.BeginLocalState();
@@ -187,19 +179,14 @@ namespace org.pdfclown.samples.cli
         composer.End();
 
         // Drawing the ellipse...
-        composer.SetFillColor(new DeviceRGBColor(0,1,0));
+        composer.SetFillColor(DeviceRGBColor.Get(System.Drawing.Color.Green));
         composer.DrawEllipse(arcFrame);
         composer.FillStroke();
       }
 
       // 3.4. Vertical ellipse.
       {
-        RectangleF arcFrame = new RectangleF(
-          320,
-          300,
-          50,
-          100
-          );
+        RectangleF arcFrame = new RectangleF(320, 300, 50, 100);
 
         // Drawing the ellipse frame...
         composer.BeginLocalState();
@@ -210,7 +197,7 @@ namespace org.pdfclown.samples.cli
         composer.End();
 
         // Drawing the ellipse...
-        composer.SetFillColor(new DeviceRGBColor(0,0,1));
+        composer.SetFillColor(DeviceRGBColor.Get(System.Drawing.Color.Blue));
         composer.DrawEllipse(arcFrame);
         composer.FillStroke();
       }
@@ -306,9 +293,9 @@ namespace org.pdfclown.samples.cli
 
       // 3. Drawing the page contents...
       composer.SetFont(
-        new StandardType1Font(
+        new fonts::StandardType1Font(
           document,
-          StandardType1Font.FamilyEnum.Courier,
+          fonts::StandardType1Font.FamilyEnum.Courier,
           true,
           false
           ),
@@ -317,7 +304,7 @@ namespace org.pdfclown.samples.cli
 
       {
         BlockComposer blockComposer = new BlockComposer(composer);
-        blockComposer.Begin(new RectangleF(30,0,pageSize.Width-60,50),AlignmentXEnum.Center,AlignmentYEnum.Middle);
+        blockComposer.Begin(new RectangleF(30,0,pageSize.Width-60,50),XAlignmentEnum.Center,YAlignmentEnum.Middle);
         blockComposer.ShowText("Miscellaneous");
         blockComposer.End();
       }
@@ -386,8 +373,8 @@ namespace org.pdfclown.samples.cli
         composer.ShowText(
           lineCap + ":",
           new PointF(50,y),
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Middle,
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Middle,
           0
           );
         composer.SetLineWidth(12);
@@ -420,8 +407,8 @@ namespace org.pdfclown.samples.cli
         composer.ShowText(
           lineJoin + ":",
           new PointF(50,y),
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Middle,
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Middle,
           0
           );
         composer.SetLineWidth(12);
@@ -476,14 +463,12 @@ namespace org.pdfclown.samples.cli
       // Showing a clown image...
       // Instantiate a jpeg image object!
       entities::Image image = entities::Image.Get(InputPath + System.IO.Path.DirectorySeparatorChar + "images" + System.IO.Path.DirectorySeparatorChar + "Clown.jpg"); // Abstract image (entity).
+      xObjects::XObject imageXObject = image.ToXObject(document);
       // Show the image!
       composer.ShowXObject(
-        image.ToXObject(document),
-        new PointF(
-          170,
-          320
-          ),
-        new Size(450,0)
+        imageXObject,
+        new PointF(170, 320),
+        GeomUtils.Scale(imageXObject.Size, new SizeF(450,0))
         );
       composer.End(); // End local state.
 
@@ -506,17 +491,17 @@ namespace org.pdfclown.samples.cli
       // 3. Inserting contents...
       // Set the font to use!
       composer.SetFont(
-        new StandardType1Font(
+        new fonts::StandardType1Font(
           document,
-          StandardType1Font.FamilyEnum.Courier,
+          fonts::StandardType1Font.FamilyEnum.Courier,
           true,
           false
           ),
         32
         );
 
-      AlignmentXEnum[] xAlignments = (AlignmentXEnum[])Enum.GetValues(typeof(AlignmentXEnum));
-      AlignmentYEnum[] yAlignments = (AlignmentYEnum[])Enum.GetValues(typeof(AlignmentYEnum));
+      XAlignmentEnum[] xAlignments = (XAlignmentEnum[])Enum.GetValues(typeof(XAlignmentEnum));
+      YAlignmentEnum[] yAlignments = (YAlignmentEnum[])Enum.GetValues(typeof(YAlignmentEnum));
       int step = (int)(pageSize.Height) / ((xAlignments.Length-1) * yAlignments.Length+1);
 
       BlockComposer blockComposer = new BlockComposer(composer);
@@ -526,10 +511,8 @@ namespace org.pdfclown.samples.cli
         pageSize.Width-60,
         step/2
         );
-      blockComposer.Begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Middle);
-      blockComposer.ShowText(
-        "Simple text alignment"
-        );
+      blockComposer.Begin(frame,XAlignmentEnum.Center,YAlignmentEnum.Middle);
+      blockComposer.ShowText("Simple alignment");
       blockComposer.End();
 
       frame = new RectangleF(
@@ -538,7 +521,7 @@ namespace org.pdfclown.samples.cli
         pageSize.Width-60,
         step/2 -10
         );
-      blockComposer.Begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Bottom);
+      blockComposer.Begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Bottom);
       composer.SetFont(composer.State.Font,10);
       blockComposer.ShowText(
         "NOTE: showText(...) methods return the actual bounding box of the text shown.\n"
@@ -550,19 +533,19 @@ namespace org.pdfclown.samples.cli
       int x = 30;
       int y = step;
       int alignmentIndex = 0;
-      foreach(AlignmentXEnum alignmentX
-        in (AlignmentXEnum[])Enum.GetValues(typeof(AlignmentXEnum)))
+      foreach(XAlignmentEnum xAlignment
+        in (XAlignmentEnum[])Enum.GetValues(typeof(XAlignmentEnum)))
       {
         /*
           NOTE: As text shown through PrimitiveComposer has no bounding box constraining its extension,
           applying the justified alignment has no effect (it degrades to center alignment);
           in order to get such an effect, use BlockComposer instead.
         */
-        if(alignmentX.Equals(AlignmentXEnum.Justify))
+        if(xAlignment.Equals(XAlignmentEnum.Justify))
           continue;
 
-        foreach(AlignmentYEnum alignmentY
-          in (AlignmentYEnum[])Enum.GetValues(typeof(AlignmentYEnum)))
+        foreach(YAlignmentEnum yAlignment
+          in (YAlignmentEnum[])Enum.GetValues(typeof(YAlignmentEnum)))
         {
           if(alignmentIndex % 2 == 0)
           {
@@ -581,10 +564,10 @@ namespace org.pdfclown.samples.cli
           }
 
           composer.ShowText(
-            alignmentX + " " + alignmentY + ":",
+            xAlignment + " " + yAlignment + ":",
             new PointF(x,y),
-            AlignmentXEnum.Left,
-            AlignmentYEnum.Middle,
+            XAlignmentEnum.Left,
+            YAlignmentEnum.Middle,
             0
             );
 
@@ -614,28 +597,28 @@ namespace org.pdfclown.samples.cli
         }
         y = step;
         rotation = 0;
-        foreach(AlignmentXEnum alignmentX
-          in (AlignmentXEnum[])Enum.GetValues(typeof(AlignmentXEnum)))
+        foreach(XAlignmentEnum xAlignment
+          in (XAlignmentEnum[])Enum.GetValues(typeof(XAlignmentEnum)))
         {
           /*
             NOTE: As text shown through PrimitiveComposer has no bounding box constraining its extension,
             applying the justified alignment has no effect (it degrades to center alignment);
             in order to get such an effect, use BlockComposer instead.
           */
-          if(alignmentX.Equals(AlignmentXEnum.Justify))
+          if(xAlignment.Equals(XAlignmentEnum.Justify))
             continue;
 
-          foreach(AlignmentYEnum alignmentY
-            in (AlignmentYEnum[])Enum.GetValues(typeof(AlignmentYEnum)))
+          foreach(YAlignmentEnum yAlignment
+            in (YAlignmentEnum[])Enum.GetValues(typeof(YAlignmentEnum)))
           {
             float startArcAngle = 0;
-            switch(alignmentX)
+            switch(xAlignment)
             {
-              case AlignmentXEnum.Left:
+              case XAlignmentEnum.Left:
                 // OK -- NOOP.
                 break;
-              case AlignmentXEnum.Right:
-              case AlignmentXEnum.Center:
+              case XAlignmentEnum.Right:
+              case XAlignmentEnum.Center:
                 startArcAngle = 180;
                 break;
             }
@@ -655,8 +638,8 @@ namespace org.pdfclown.samples.cli
               composer,
               "PDF Clown",
               new PointF(x,y),
-              alignmentX,
-              alignmentY,
+              xAlignment,
+              yAlignment,
               rotation
               );
             y+=step;
@@ -683,20 +666,13 @@ namespace org.pdfclown.samples.cli
       PrimitiveComposer composer = new PrimitiveComposer(page);
 
       // 3. Drawing the page contents...
-      composer.SetFont(
-        new StandardType1Font(
-          document,
-          StandardType1Font.FamilyEnum.Courier,
-          true,
-          false
-          ),
-        32
-        );
-
-      AlignmentXEnum[] xAlignments = (AlignmentXEnum[])Enum.GetValues(typeof(AlignmentXEnum));
-      AlignmentYEnum[] yAlignments = (AlignmentYEnum[])Enum.GetValues(typeof(AlignmentYEnum));
-      int step = (int)(pageSize.Height) / (xAlignments.Length * yAlignments.Length+1);
-
+      fonts::Font mainFont = new fonts::StandardType1Font(document, fonts::StandardType1Font.FamilyEnum.Courier, true, false);
+      int step;
+      {
+        XAlignmentEnum[] xAlignments = (XAlignmentEnum[])Enum.GetValues(typeof(XAlignmentEnum));
+        YAlignmentEnum[] yAlignments = (YAlignmentEnum[])Enum.GetValues(typeof(YAlignmentEnum));
+        step = (int)(pageSize.Height) / (xAlignments.Length * yAlignments.Length+1);
+      }
       BlockComposer blockComposer = new BlockComposer(composer);
       {
         blockComposer.Begin(
@@ -706,45 +682,33 @@ namespace org.pdfclown.samples.cli
             pageSize.Width-60,
             step*.8f
             ),
-          AlignmentXEnum.Center,
-          AlignmentYEnum.Middle
+          XAlignmentEnum.Center,
+          YAlignmentEnum.Middle
           );
-        blockComposer.ShowText(
-          "Text block alignment"
-          );
+        composer.SetFont(mainFont, 32);
+        blockComposer.ShowText("Block alignment");
         blockComposer.End();
       }
 
       // Drawing the text blocks...
+      fonts::Font sampleFont = new fonts::StandardType1Font(document, fonts::StandardType1Font.FamilyEnum.Times, false, false);
       int x = 30;
       int y = (int)(step*1.2);
-      foreach(AlignmentXEnum alignmentX
-        in (AlignmentXEnum[])Enum.GetValues(typeof(AlignmentXEnum)))
+      foreach(XAlignmentEnum xAlignment in (XAlignmentEnum[])Enum.GetValues(typeof(XAlignmentEnum)))
       {
-        foreach(AlignmentYEnum alignmentY
-          in (AlignmentYEnum[])Enum.GetValues(typeof(AlignmentYEnum)))
+        foreach(YAlignmentEnum yAlignment in (YAlignmentEnum[])Enum.GetValues(typeof(YAlignmentEnum)))
         {
-          composer.SetFont(
-            composer.State.Font,
-            12
-            );
+          composer.SetFont(mainFont, 12);
           composer.ShowText(
-            alignmentX + " " + alignmentY + ":",
+            xAlignment + " " + yAlignment + ":",
             new PointF(x,y),
-            AlignmentXEnum.Left,
-            AlignmentYEnum.Middle,
+            XAlignmentEnum.Left,
+            YAlignmentEnum.Middle,
             0
             );
 
-          composer.SetFont(
-            composer.State.Font,
-            8
-            );
-          for(
-            int index = 0;
-            index < 2;
-            index++
-            )
+          composer.SetFont(sampleFont, 10);
+          for(int index = 0; index < 2; index++)
           {
             int frameX;
             switch(index)
@@ -767,7 +731,7 @@ namespace org.pdfclown.samples.cli
               200,
               step*.8f
               );
-            blockComposer.Begin(frame,alignmentX,alignmentY);
+            blockComposer.Begin(frame,xAlignment,yAlignment);
             blockComposer.ShowText(
               "Demonstrating how to constrain text inside a page area using PDF Clown. See the other available code samples (such as TypesettingSample) to discover more functionality details."
               );
@@ -803,16 +767,7 @@ namespace org.pdfclown.samples.cli
       PrimitiveComposer composer = new PrimitiveComposer(page);
 
       // 3. Drawing the page contents...
-      composer.SetFont(
-        new StandardType1Font(
-          document,
-          StandardType1Font.FamilyEnum.Courier,
-          true,
-          false
-          ),
-        32
-        );
-
+      fonts::Font mainFont = new fonts::StandardType1Font(document, fonts::StandardType1Font.FamilyEnum.Courier, true, false);
       int stepCount = 5;
       int step = (int)(pageSize.Height) / (stepCount + 1);
       BlockComposer blockComposer = new BlockComposer(composer);
@@ -824,60 +779,86 @@ namespace org.pdfclown.samples.cli
             pageSize.Width-60,
             step*.8f
             ),
-          AlignmentXEnum.Center,
-          AlignmentYEnum.Middle
+          XAlignmentEnum.Center,
+          YAlignmentEnum.Middle
           );
-        blockComposer.ShowText(
-          "Text block line space"
-          );
+        composer.SetFont(mainFont, 32);
+        blockComposer.ShowText("Block line alignment");
         blockComposer.End();
       }
 
-      // Drawing the text blocks...
-      int x = 30;
-      int y = (int)(step*1.1);
-      blockComposer.LineSpace.UnitMode = Length.UnitModeEnum.Relative;
-      for(int index = 0; index < stepCount; index++)
+      // Drawing the text block...
       {
-        float relativeLineSpace = 0.5f * index;
-        blockComposer.LineSpace.Value = relativeLineSpace;
+        fonts::Font sampleFont = new fonts::StandardType1Font(document, fonts::StandardType1Font.FamilyEnum.Times, false, false);
+        entities::Image sampleImage = entities::Image.Get(InputPath + System.IO.Path.DirectorySeparatorChar + "images" + System.IO.Path.DirectorySeparatorChar + "gnu.jpg");
+        xObjects::XObject sampleImageXObject = sampleImage.ToXObject(document);
 
-        composer.SetFont(
-          composer.State.Font,
-          10
-          );
-        composer.ShowText(
-          relativeLineSpace + ":",
-          new PointF(x,y),
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Middle,
-          0
-          );
+        IList<LineAlignmentEnum> lineAlignments = new List<LineAlignmentEnum>((LineAlignmentEnum[])Enum.GetValues(typeof(LineAlignmentEnum)));
+        float frameHeight = (pageSize.Height - 130 - 5 * lineAlignments.Count * 2) / (lineAlignments.Count * 2);
+        float frameWidth = (pageSize.Width - 60 - 5 * lineAlignments.Count) / lineAlignments.Count;
+        int imageSize = 7;
+        for(int index = 0, length = lineAlignments.Count; index < length; index++)
+        {
+          LineAlignmentEnum lineAlignment = lineAlignments[index];
 
-        composer.SetFont(
-          composer.State.Font,
-          9
-          );
-        RectangleF frame = new RectangleF(
-          150,
-          y-step*.4f,
-          350,
-          step*.9f
-          );
-        blockComposer.Begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Top);
-        blockComposer.ShowText(
-          "Demonstrating how to set the block line space. Line space can be expressed either as an absolute value (in user-space units) or as a relative one (floating-point ratio); in the latter case the base value is represented by the current font's line height (so that, for example, 2 means \"a line space that's twice as the line height\")."
-          );
-        blockComposer.End();
+          for(int imageIndex = 0, imageLength = lineAlignments.Count; imageIndex < imageLength; imageIndex++)
+          {
+            LineAlignmentEnum imageAlignment = lineAlignments[imageIndex];
 
-        composer.BeginLocalState();
-        composer.SetLineWidth(0.2f);
-        composer.SetLineDash(5,5,5);
-        composer.DrawRectangle(frame);
-        composer.Stroke();
-        composer.End();
+            for(int index2 = 0, length2 = 2; index2 < length2; index2++)
+            {
+              RectangleF frame = new RectangleF(
+                30 + (frameWidth + 5) * imageIndex,
+                100 + (frameHeight + 5) * (index * 2 + index2),
+                frameWidth,
+                frameHeight
+                );
 
-        y+=step;
+              blockComposer.Begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
+              {
+                composer.SetFont(mainFont, 3);
+                blockComposer.ShowText("Text: " + lineAlignment);
+                blockComposer.ShowBreak();
+                blockComposer.ShowText("Image: " + imageAlignment);
+              }
+              blockComposer.End();
+
+              blockComposer.Begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Middle);
+              {
+                composer.SetFont(sampleFont, 3);
+                blockComposer.ShowText("Previous row boundary.");
+                blockComposer.ShowBreak();
+                composer.SetFont(sampleFont, index2 == 0 ? 3 : 6);
+                blockComposer.ShowText("Alignment:");
+                composer.SetFont(sampleFont, index2 == 0 ? 6 : 3);
+                blockComposer.ShowText(" aligned to " + lineAlignment + " ", lineAlignment);
+                blockComposer.ShowXObject(sampleImageXObject, new SizeF(imageSize, imageSize), imageAlignment);
+                blockComposer.ShowBreak();
+                composer.SetFont(sampleFont, 3);
+                blockComposer.ShowText("Next row boundary.");
+              }
+              blockComposer.End();
+
+              composer.BeginLocalState();
+              {
+                composer.SetLineWidth(0.1f);
+                composer.SetLineDash(4,1,4);
+                composer.DrawRectangle(blockComposer.Frame);
+                composer.Stroke();
+              }
+              composer.End();
+
+              composer.BeginLocalState();
+              {
+                composer.SetLineWidth(0.1f);
+                composer.SetLineDash(1,1,1);
+                composer.DrawRectangle(blockComposer.BoundBox);
+                composer.Stroke();
+              }
+              composer.End();
+            }
+          }
+        }
       }
 
       // 4. Flush the contents into the page!
@@ -898,16 +879,84 @@ namespace org.pdfclown.samples.cli
       PrimitiveComposer composer = new PrimitiveComposer(page);
 
       // 3. Drawing the page contents...
-      composer.SetFont(
-        new StandardType1Font(
-          document,
-          StandardType1Font.FamilyEnum.Courier,
-          true,
-          false
-          ),
-        32
-        );
+      fonts::Font mainFont = new fonts::StandardType1Font(document, fonts::StandardType1Font.FamilyEnum.Courier, true, false);
+      int stepCount = 5;
+      int step = (int)(pageSize.Height) / (stepCount + 1);
 
+      // 3.1. Drawing the page title...
+      BlockComposer blockComposer = new BlockComposer(composer);
+      {
+        blockComposer.Begin(
+          new RectangleF(
+            30,
+            0,
+            pageSize.Width-60,
+            step*.8f
+            ),
+          XAlignmentEnum.Center,
+          YAlignmentEnum.Middle
+          );
+        composer.SetFont(mainFont, 32);
+        blockComposer.ShowText("Block line space");
+        blockComposer.End();
+      }
+
+      // 3.2. Drawing the text blocks...
+      fonts::Font sampleFont = new fonts::StandardType1Font(document, fonts::StandardType1Font.FamilyEnum.Times, false, false);
+      int x = 30;
+      int y = (int)(step * 1.1);
+      blockComposer.LineSpace.UnitMode = Length.UnitModeEnum.Relative;
+      for(int index = 0; index < stepCount; index++)
+      {
+        float relativeLineSpace = 0.5f * index;
+        blockComposer.LineSpace.Value = relativeLineSpace;
+
+        composer.SetFont(mainFont, 12);
+        composer.ShowText(
+          relativeLineSpace + ":",
+          new PointF(x,y),
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Middle,
+          0
+          );
+
+        composer.SetFont(sampleFont, 10);
+        RectangleF frame = new RectangleF(150, y - step * .4f, 350, step * .9f);
+        blockComposer.Begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
+        blockComposer.ShowText("Demonstrating how to set the block line space. Line space can be expressed either as an absolute value (in user-space units) or as a relative one (floating-point ratio); in the latter case the base value is represented by the current font's line height (so that, for example, 2 means \"a line space that's twice as the line height\").");
+        blockComposer.End();
+
+        composer.BeginLocalState();
+        {
+          composer.SetLineWidth(0.2);
+          composer.SetLineDash(5,5,5);
+          composer.DrawRectangle(frame);
+          composer.Stroke();
+        }
+        composer.End();
+
+        y+=step;
+      }
+
+      // 4. Flush the contents into the page!
+      composer.Flush();
+    }
+
+    private void BuildTextBlockPage4(
+      Document document
+      )
+    {
+      // 1. Add the page to the document!
+      Page page = new Page(document); // Instantiates the page inside the document context.
+      document.Pages.Add(page); // Puts the page in the pages collection.
+
+      SizeF pageSize = page.Size;
+
+      // 2. Create a content composer for the page!
+      PrimitiveComposer composer = new PrimitiveComposer(page);
+
+      // 3. Drawing the page contents...
+      fonts::Font mainFont = new fonts::StandardType1Font(document, fonts::StandardType1Font.FamilyEnum.Courier, true, false);
       int stepCount = 5;
       int step = (int)pageSize.Height / (stepCount + 1);
       BlockComposer blockComposer = new BlockComposer(composer);
@@ -919,38 +968,65 @@ namespace org.pdfclown.samples.cli
             pageSize.Width-60,
             step*.8f
             ),
-          AlignmentXEnum.Center,
-          AlignmentYEnum.Middle
+          XAlignmentEnum.Center,
+          YAlignmentEnum.Middle
           );
-        blockComposer.ShowText(
-          "Text block without wordspace"
-          );
+        composer.SetFont(mainFont, 32);
+        blockComposer.ShowText("Unspaced block");
         blockComposer.End();
       }
 
       // Drawing the text block...
       {
-        composer.SetFont(
-          composer.State.Font,
-          10
-          );
-        RectangleF frame = new RectangleF(
-          30,
-          120,
-          pageSize.Width-60,
-          pageSize.Height-150
-          );
-        blockComposer.Begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Top);
-        // Add text until the frame area is completely filled!
-        while(blockComposer.ShowText("DemonstratingHowTextWithoutSpacesIsManagedInCaseOfInsertionInADelimitedPageAreaThroughBlockComposerClass.") > 0);
-        blockComposer.End();
+        fonts::Font sampleFont = new fonts::StandardType1Font(document, fonts::StandardType1Font.FamilyEnum.Times, false, false);
+        composer.SetFont(sampleFont, 15);
 
-        composer.BeginLocalState();
-        composer.SetLineWidth(0.2f);
-        composer.SetLineDash(5,5,5);
-        composer.DrawRectangle(frame);
-        composer.Stroke();
-        composer.End();
+        float topMargin = 100;
+        float boxMargin = 30;
+        float boxWidth = pageSize.Width - boxMargin * 2;
+        float boxHeight = (pageSize.Height - topMargin - boxMargin - boxMargin) / 2;
+        {
+          RectangleF frame = new RectangleF(
+            boxMargin,
+            topMargin,
+            boxWidth,
+            boxHeight
+            );
+          blockComposer.Begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
+          // Add text until the frame area is completely filled!
+          while(blockComposer.ShowText("DemonstratingHowUnspacedTextIsManagedInCaseOfInsertionInADelimitedPageAreaThroughBlockComposerClass.") > 0);
+          blockComposer.End();
+
+          composer.BeginLocalState();
+          {
+            composer.SetLineWidth(0.2);
+            composer.SetLineDash(5,5,5);
+            composer.DrawRectangle(frame);
+            composer.Stroke();
+          }
+          composer.End();
+        }
+        {
+          RectangleF frame = new RectangleF(
+            boxMargin,
+            topMargin + boxHeight + boxMargin,
+            boxWidth,
+            boxHeight
+            );
+          blockComposer.Begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
+          // Add text until the frame area is completely filled!
+          while(blockComposer.ShowText(" DemonstratingHowUnspacedTextWithLeadingSpaceIsManagedInCaseOfInsertionInADelimitedPageAreaThroughBlockComposerClass.") > 0);
+          blockComposer.End();
+
+          composer.BeginLocalState();
+          {
+            composer.SetLineWidth(0.2);
+            composer.SetLineDash(5,5,5);
+            composer.DrawRectangle(frame);
+            composer.Stroke();
+          }
+          composer.End();
+        }
       }
 
       // 4. Flush the contents into the page!
@@ -990,8 +1066,8 @@ namespace org.pdfclown.samples.cli
       PrimitiveComposer composer,
       string value,
       PointF location,
-      AlignmentXEnum alignmentX,
-      AlignmentYEnum alignmentY,
+      XAlignmentEnum xAlignment,
+      YAlignmentEnum yAlignment,
       float rotation
       )
     {
@@ -1004,8 +1080,8 @@ namespace org.pdfclown.samples.cli
       Quad textFrame = composer.ShowText(
         value,
         location,
-        alignmentX,
-        alignmentY,
+        xAlignment,
+        yAlignment,
         rotation
         );
       composer.End();
@@ -1025,8 +1101,8 @@ namespace org.pdfclown.samples.cli
           location.X+70,
           location.Y
           ),
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Middle,
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Middle,
         0
         );
       composer.End();

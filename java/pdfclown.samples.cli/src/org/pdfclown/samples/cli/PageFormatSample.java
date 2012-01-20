@@ -8,8 +8,8 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.PageFormat;
 import org.pdfclown.documents.Pages;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.files.File;
@@ -19,7 +19,7 @@ import org.pdfclown.files.File;
   <i>varying both in size and orientation</i>.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/02/12
+  @version 0.1.2, 01/20/12
 */
 public class PageFormatSample
   extends Sample
@@ -79,8 +79,8 @@ public class PageFormatSample
             pageSize.getWidth() / 2,
             pageSize.getHeight() / 2
             ), // Location: page center.
-          AlignmentXEnum.Center, // Places the text on horizontal center of the location.
-          AlignmentYEnum.Middle, // Places the text on vertical middle of the location.
+          XAlignmentEnum.Center, // Places the text on horizontal center of the location.
+          YAlignmentEnum.Middle, // Places the text on vertical middle of the location.
           45 // Rotates the text 45 degrees counterclockwise.
           );
         composer.flush();

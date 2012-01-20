@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -179,7 +179,7 @@ namespace org.pdfclown.documents.contents.fonts
         otherwise, when overridden they degrade to a common Type 1 font.
         Metrics of non-overridden Standard Type 1 fonts MUST be loaded from resources.
       */
-      Load((string)((PdfName)BaseDataObject[PdfName.BaseFont]).Value);
+      Load(((PdfName)BaseDataObject[PdfName.BaseFont]).StringValue);
 
       base.OnLoad();
     }

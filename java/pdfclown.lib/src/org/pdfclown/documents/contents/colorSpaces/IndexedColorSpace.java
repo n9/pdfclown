@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
   Indexed color space [PDF:1.6:4.5.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 01/20/12
 */
 @PDF(VersionEnum.PDF11)
 public final class IndexedColorSpace
@@ -101,7 +101,7 @@ public final class IndexedColorSpace
           )
         {
           components.add(
-            new PdfReal((baseComponentValues[componentValueIndex++] & 0xff) / 255f)
+            new PdfReal((baseComponentValues[componentValueIndex++] & 0xff) / 255d)
             );
         }
       }

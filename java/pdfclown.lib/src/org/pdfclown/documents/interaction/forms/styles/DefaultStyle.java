@@ -31,8 +31,8 @@ import java.awt.geom.Rectangle2D;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
@@ -63,7 +63,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/02/12
+  @version 0.1.2, 01/20/12
 */
 public final class DefaultStyle
   extends FieldStyle
@@ -180,7 +180,7 @@ public final class DefaultStyle
         }
 
         BlockComposer blockComposer = new BlockComposer(composer);
-        blockComposer.begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Middle);
+        blockComposer.begin(frame,XAlignmentEnum.Center,YAlignmentEnum.Middle);
         composer.setFillColor(getForeColor());
         composer.setFont(
           new StandardType1Font(
@@ -300,7 +300,7 @@ public final class DefaultStyle
         }
 
         BlockComposer blockComposer = new BlockComposer(composer);
-        blockComposer.begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Middle);
+        blockComposer.begin(frame,XAlignmentEnum.Center,YAlignmentEnum.Middle);
         composer.setFillColor(getForeColor());
         composer.setFont(
           new StandardType1Font(
@@ -372,7 +372,7 @@ public final class DefaultStyle
       if(title != null)
       {
         BlockComposer blockComposer = new BlockComposer(composer);
-        blockComposer.begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Middle);
+        blockComposer.begin(frame,XAlignmentEnum.Center,YAlignmentEnum.Middle);
         composer.setFillColor(getForeColor());
         composer.setFont(
           new StandardType1Font(
@@ -440,8 +440,8 @@ public final class DefaultStyle
       composer.showText(
         (String)field.getValue(),
         new Point2D.Double(0,size.getHeight()/2),
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Middle,
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Middle,
         0
         );
       composer.end();
@@ -499,8 +499,8 @@ public final class DefaultStyle
       composer.showText(
         (String)field.getValue(),
         new Point2D.Double(0,size.getHeight()/2),
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Middle,
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Middle,
         0
         );
       composer.end();

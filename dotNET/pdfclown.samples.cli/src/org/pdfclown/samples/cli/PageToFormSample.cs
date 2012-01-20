@@ -3,6 +3,7 @@ using org.pdfclown.documents.contents.composition;
 using org.pdfclown.documents.contents.fonts;
 using org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.files;
+using org.pdfclown.util.math.geom;
 
 using System.Drawing;
 
@@ -59,22 +60,23 @@ namespace org.pdfclown.samples.cli
       SizeF pageSize = page.Size;
       // 3.1. Showing the form on the page...
       {
+        SizeF formSize = form.Size;
         // Form 1.
         composer.ShowXObject(
           form,
           new PointF(pageSize.Width/2,pageSize.Height/2),
-          new SizeF(300,0),
-          AlignmentXEnum.Center,
-          AlignmentYEnum.Middle,
+          GeomUtils.Scale(formSize, new SizeF(300,0)),
+          XAlignmentEnum.Center,
+          YAlignmentEnum.Middle,
           45
           );
         // Form 2.
         composer.ShowXObject(
           form,
           new PointF(0,pageSize.Height),
-          new SizeF(0,300),
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Bottom,
+          GeomUtils.Scale(formSize, new SizeF(0,300)),
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Bottom,
           0
           );
         // Form 3.
@@ -82,8 +84,8 @@ namespace org.pdfclown.samples.cli
           form,
           new PointF(pageSize.Width,pageSize.Height),
           new SizeF(80,200),
-          AlignmentXEnum.Right,
-          AlignmentYEnum.Bottom,
+          XAlignmentEnum.Right,
+          YAlignmentEnum.Bottom,
           0
           );
       }
@@ -96,7 +98,7 @@ namespace org.pdfclown.samples.cli
           pageSize.Width * .5f,
           pageSize.Height * .5f
           );
-        blockComposer.Begin(frame,AlignmentXEnum.Justify,AlignmentYEnum.Top);
+        blockComposer.Begin(frame,XAlignmentEnum.Justify,YAlignmentEnum.Top);
         StandardType1Font bodyFont = new StandardType1Font(
           document,
           StandardType1Font.FamilyEnum.Courier,

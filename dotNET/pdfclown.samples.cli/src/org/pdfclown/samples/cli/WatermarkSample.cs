@@ -95,14 +95,14 @@ namespace org.pdfclown.samples.cli
         );
       // Set the color to fill the text characters!
       composer.SetFillColor(
-        new DeviceRGBColor(115f / 255, 164f / 255, 232f / 255)
+        new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d)
         );
       // Show the text!
       composer.ShowText(
         "PDFClown", // Text to show.
         new PointF(size.Width / 2f, size.Height / 2f), // Anchor location: page center.
-        AlignmentXEnum.Center, // Horizontal placement (relative to the anchor): center.
-        AlignmentYEnum.Middle, // Vertical placement (relative to the anchor): middle.
+        XAlignmentEnum.Center, // Horizontal placement (relative to the anchor): center.
+        YAlignmentEnum.Middle, // Vertical placement (relative to the anchor): middle.
         50 // Rotation: 50-degree-counterclockwise.
         );
       // 2.3. Flush the contents into the watermark!

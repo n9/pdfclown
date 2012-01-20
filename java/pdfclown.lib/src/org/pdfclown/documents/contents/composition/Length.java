@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,7 +30,7 @@ package org.pdfclown.documents.contents.composition;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8.3
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 public final class Length
 {
@@ -110,4 +110,9 @@ public final class Length
     double value
     )
   {this.value = value;}
+
+  @Override
+  public String toString(
+    )
+  {return value + " (" + unitMode + ")";}
 }

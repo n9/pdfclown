@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 01/20/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Note
@@ -187,14 +187,10 @@ public final class Note
   public boolean isOpen(
     )
   {
-    /*
-      NOTE: 'Open' entry may be undefined.
-    */
     PdfBoolean openObject = (PdfBoolean)getBaseDataObject().get(PdfName.Open);
-    if(openObject == null)
-      return false;
-
-    return ((Boolean)openObject.getValue()).booleanValue();
+    return openObject != null
+      ? openObject.getValue()
+      : false;
   }
 
 //TODO:State and StateModel!!!

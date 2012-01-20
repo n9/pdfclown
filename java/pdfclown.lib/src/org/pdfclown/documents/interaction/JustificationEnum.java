@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,7 +25,7 @@
 
 package org.pdfclown.documents.interaction;
 
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
 import org.pdfclown.objects.PdfInteger;
 
 /**
@@ -33,7 +33,7 @@ import org.pdfclown.objects.PdfInteger;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 public enum JustificationEnum
 {
@@ -95,17 +95,17 @@ public enum JustificationEnum
     )
   {return code;}
 
-  public AlignmentXEnum toAlignmentX(
+  public XAlignmentEnum toXAlignment(
     )
   {
     switch(this)
     {
       case Left:
-        return AlignmentXEnum.Left;
+        return XAlignmentEnum.Left;
       case Center:
-        return AlignmentXEnum.Center;
+        return XAlignmentEnum.Center;
       case Right:
-        return AlignmentXEnum.Right;
+        return XAlignmentEnum.Right;
       default:
         throw new UnsupportedOperationException();
     }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -34,7 +34,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF boolean object [PDF:1.6:3.2.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 public final class PdfBoolean
   extends PdfSimpleObject<Boolean>
@@ -78,6 +78,11 @@ public final class PdfBoolean
     PdfDirectObject obj
     )
   {throw new NotImplementedException();}
+
+  @Override
+  public Boolean getValue(
+    )
+  {return (Boolean)super.getValue();}
 
   @Override
   public void writeTo(

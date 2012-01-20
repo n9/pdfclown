@@ -1,24 +1,32 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.List;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.LineCapEnum;
 import org.pdfclown.documents.contents.LineJoinEnum;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.Length.UnitModeEnum;
+import org.pdfclown.documents.contents.composition.LineAlignmentEnum;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.entities.Image;
+import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
+import org.pdfclown.documents.contents.fonts.StandardType1Font.FamilyEnum;
+import org.pdfclown.documents.contents.xObjects.XObject;
 import org.pdfclown.files.File;
+import org.pdfclown.util.math.geom.GeomUtils;
 import org.pdfclown.util.math.geom.Quad;
 
 /**
@@ -27,13 +35,13 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 11/28/11
+  @version 0.1.2, 01/20/12
 */
 public class GraphicsSample
   extends Sample
 {
-  private static final DeviceRGBColor SampleColor = new DeviceRGBColor(1, 0, 0);
-  private static final DeviceRGBColor BackColor = new DeviceRGBColor(210 / 256d, 232 / 256d, 245 / 256d);
+  private static final DeviceRGBColor SampleColor = DeviceRGBColor.get(Color.RED);
+  private static final DeviceRGBColor BackColor = new DeviceRGBColor(210 / 255d, 232 / 255d, 245 / 255d);
 
   @Override
   public boolean run(
@@ -50,6 +58,7 @@ public class GraphicsSample
     buildTextBlockPage(document);
     buildTextBlockPage2(document);
     buildTextBlockPage3(document);
+    buildTextBlockPage4(document);
 
     // 3. Serialize the PDF file!
     serialize(file, false, "Composition elements", "applying the composition elements");
@@ -88,7 +97,7 @@ public class GraphicsSample
 
     {
       BlockComposer blockComposer = new BlockComposer(composer);
-      blockComposer.begin(new Rectangle2D.Double(30,0,pageSize.getWidth()-60,50),AlignmentXEnum.Center,AlignmentYEnum.Middle);
+      blockComposer.begin(new Rectangle2D.Double(30,0,pageSize.getWidth()-60,50),XAlignmentEnum.Center,YAlignmentEnum.Middle);
       blockComposer.showText("Curves");
       blockComposer.end();
     }
@@ -165,12 +174,7 @@ public class GraphicsSample
 
     // 3.2. Circle.
     {
-      Rectangle2D arcFrame = new Rectangle2D.Double(
-        100,
-        300,
-        100,
-        100
-        );
+      Rectangle2D arcFrame = new Rectangle2D.Double(100, 300, 100, 100);
 
       // Drawing the circle frame...
       composer.beginLocalState();
@@ -181,19 +185,14 @@ public class GraphicsSample
       composer.end();
 
       // Drawing the circle...
-      composer.setFillColor(new DeviceRGBColor(1,0,0));
+      composer.setFillColor(DeviceRGBColor.get(Color.RED));
       composer.drawEllipse(arcFrame);
       composer.fillStroke();
     }
 
     // 3.3. Horizontal ellipse.
     {
-      Rectangle2D arcFrame = new Rectangle2D.Double(
-        210,
-        300,
-        100,
-        50
-        );
+      Rectangle2D arcFrame = new Rectangle2D.Double(210, 300, 100, 50);
 
       // Drawing the ellipse frame...
       composer.beginLocalState();
@@ -204,19 +203,14 @@ public class GraphicsSample
       composer.end();
 
       // Drawing the ellipse...
-      composer.setFillColor(new DeviceRGBColor(0,1,0));
+      composer.setFillColor(DeviceRGBColor.get(Color.GREEN));
       composer.drawEllipse(arcFrame);
       composer.fillStroke();
     }
 
     // 3.4. Vertical ellipse.
     {
-      Rectangle2D arcFrame = new Rectangle2D.Double(
-        320,
-        300,
-        50,
-        100
-        );
+      Rectangle2D arcFrame = new Rectangle2D.Double(320, 300, 50, 100);
 
       // Drawing the ellipse frame...
       composer.beginLocalState();
@@ -227,7 +221,7 @@ public class GraphicsSample
       composer.end();
 
       // Drawing the ellipse...
-      composer.setFillColor(new DeviceRGBColor(0,0,1));
+      composer.setFillColor(DeviceRGBColor.get(Color.BLUE));
       composer.drawEllipse(arcFrame);
       composer.fillStroke();
     }
@@ -339,7 +333,7 @@ public class GraphicsSample
 
     {
       BlockComposer blockComposer = new BlockComposer(composer);
-      blockComposer.begin(new Rectangle2D.Double(30,0,pageSize.getWidth()-60,50),AlignmentXEnum.Center,AlignmentYEnum.Middle);
+      blockComposer.begin(new Rectangle2D.Double(30,0,pageSize.getWidth()-60,50),XAlignmentEnum.Center,YAlignmentEnum.Middle);
       blockComposer.showText("Miscellaneous");
       blockComposer.end();
     }
@@ -408,8 +402,8 @@ public class GraphicsSample
       composer.showText(
         lineCap + ":",
         new Point2D.Double(50,y),
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Middle,
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Middle,
         0
         );
       composer.setLineWidth(12);
@@ -442,8 +436,8 @@ public class GraphicsSample
       composer.showText(
         lineJoin + ":",
         new Point2D.Double(50,y),
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Middle,
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Middle,
         0
         );
       composer.setLineWidth(12);
@@ -498,14 +492,12 @@ public class GraphicsSample
     // Showing a clown image...
     // Instantiate a jpeg image object!
     Image image = Image.get(getInputPath() + java.io.File.separator + "images" + java.io.File.separator + "Clown.jpg"); // Abstract image (entity).
+    XObject imageXObject = image.toXObject(document);
     // Show the image!
     composer.showXObject(
-      image.toXObject(document),
-      new Point2D.Double(
-        170,
-        320
-        ),
-      new Dimension(450,0)
+      imageXObject,
+      new Point2D.Double(170, 320),
+      GeomUtils.scale(imageXObject.getSize(), new Dimension(450,0))
       );
     composer.end(); // End local state.
 
@@ -542,8 +534,8 @@ public class GraphicsSample
     catch(Exception e)
     {}
 
-    EnumSet<AlignmentXEnum> xAlignments = EnumSet.allOf(AlignmentXEnum.class);
-    EnumSet<AlignmentYEnum> yAlignments = EnumSet.allOf(AlignmentYEnum.class);
+    EnumSet<XAlignmentEnum> xAlignments = EnumSet.allOf(XAlignmentEnum.class);
+    EnumSet<YAlignmentEnum> yAlignments = EnumSet.allOf(YAlignmentEnum.class);
     int step = (int)(pageSize.getHeight()) / ((xAlignments.size()-1) * yAlignments.size()+1);
 
     BlockComposer blockComposer = new BlockComposer(composer);
@@ -553,10 +545,8 @@ public class GraphicsSample
       pageSize.getWidth()-60,
       step/2
       );
-    blockComposer.begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Middle);
-    blockComposer.showText(
-      "Simple text alignment"
-      );
+    blockComposer.begin(frame,XAlignmentEnum.Center,YAlignmentEnum.Middle);
+    blockComposer.showText("Simple alignment");
     blockComposer.end();
 
     frame = new Rectangle2D.Double(
@@ -565,7 +555,7 @@ public class GraphicsSample
       pageSize.getWidth()-60,
       step/2 -10
       );
-    blockComposer.begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Bottom);
+    blockComposer.begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Bottom);
     composer.setFont(composer.getState().getFont(),10);
     blockComposer.showText(
       "NOTE: showText(...) methods return the actual bounding box of the text shown.\n"
@@ -577,19 +567,17 @@ public class GraphicsSample
     int x = 30;
     int y = step;
     int alignmentIndex = 0;
-    for(AlignmentXEnum alignmentX
-      : EnumSet.allOf(AlignmentXEnum.class))
+    for(XAlignmentEnum xAlignment : EnumSet.allOf(XAlignmentEnum.class))
     {
       /*
         NOTE: As text shown through PrimitiveComposer has no bounding box constraining its extension,
         applying the justified alignment has no effect (it degrades to center alignment);
         in order to get such an effect, use BlockComposer instead.
       */
-      if(alignmentX.equals(AlignmentXEnum.Justify))
+      if(xAlignment.equals(XAlignmentEnum.Justify))
         continue;
 
-      for(AlignmentYEnum alignmentY
-        : EnumSet.allOf(AlignmentYEnum.class))
+      for(YAlignmentEnum yAlignment : EnumSet.allOf(YAlignmentEnum.class))
       {
         if(alignmentIndex % 2 == 0)
         {
@@ -608,10 +596,10 @@ public class GraphicsSample
         }
 
         composer.showText(
-          alignmentX + " " + alignmentY + ":",
+          xAlignment + " " + yAlignment + ":",
           new Point2D.Double(x,y),
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Middle,
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Middle,
           0
           );
 
@@ -641,22 +629,20 @@ public class GraphicsSample
       }
       y = step;
       rotation = 0;
-      for(AlignmentXEnum alignmentX
-        : EnumSet.allOf(AlignmentXEnum.class))
+      for(XAlignmentEnum xAlignment : EnumSet.allOf(XAlignmentEnum.class))
       {
         /*
           NOTE: As text shown through PrimitiveComposer has no bounding box constraining its extension,
           applying the justified alignment has no effect (it degrades to center alignment);
           in order to get such an effect, use BlockComposer instead.
         */
-        if(alignmentX.equals(AlignmentXEnum.Justify))
+        if(xAlignment.equals(XAlignmentEnum.Justify))
           continue;
 
-        for(AlignmentYEnum alignmentY
-          : EnumSet.allOf(AlignmentYEnum.class))
+        for(YAlignmentEnum yAlignment : EnumSet.allOf(YAlignmentEnum.class))
         {
           float startArcAngle = 0;
-          switch(alignmentX)
+          switch(xAlignment)
           {
             case Left:
               // OK -- NOOP.
@@ -682,8 +668,8 @@ public class GraphicsSample
             composer,
             "PDF Clown",
             new Point2D.Double(x,y),
-            alignmentX,
-            alignmentY,
+            xAlignment,
+            yAlignment,
             rotation
             );
           y+=step;
@@ -710,25 +696,13 @@ public class GraphicsSample
     PrimitiveComposer composer = new PrimitiveComposer(page);
 
     // 3. Drawing the page contents...
-    try
+    Font mainFont = new StandardType1Font(document, StandardType1Font.FamilyEnum.Courier, true, false);
+    int step;
     {
-      composer.setFont(
-        new StandardType1Font(
-          document,
-          StandardType1Font.FamilyEnum.Courier,
-          true,
-          false
-          ),
-        32
-        );
+      EnumSet<XAlignmentEnum> xAlignments = EnumSet.allOf(XAlignmentEnum.class);
+      EnumSet<YAlignmentEnum> yAlignments = EnumSet.allOf(YAlignmentEnum.class);
+      step = (int)(pageSize.getHeight()) / (xAlignments.size() * yAlignments.size()+1);
     }
-    catch(Exception e)
-    {throw new RuntimeException(e);}
-
-    EnumSet<AlignmentXEnum> xAlignments = EnumSet.allOf(AlignmentXEnum.class);
-    EnumSet<AlignmentYEnum> yAlignments = EnumSet.allOf(AlignmentYEnum.class);
-    int step = (int)(pageSize.getHeight()) / (xAlignments.size() * yAlignments.size()+1);
-
     BlockComposer blockComposer = new BlockComposer(composer);
     {
       blockComposer.begin(
@@ -738,45 +712,33 @@ public class GraphicsSample
           pageSize.getWidth()-60,
           step*.8
           ),
-        AlignmentXEnum.Center,
-        AlignmentYEnum.Middle
+        XAlignmentEnum.Center,
+        YAlignmentEnum.Middle
         );
-      blockComposer.showText(
-        "Text block alignment"
-        );
+      composer.setFont(mainFont, 32);
+      blockComposer.showText("Block alignment");
       blockComposer.end();
     }
 
     // Drawing the text blocks...
+    Font sampleFont = new StandardType1Font(document, FamilyEnum.Times, false, false);
     int x = 30;
-    int y = (int)(step*1.2);
-    for(AlignmentXEnum alignmentX
-      : EnumSet.allOf(AlignmentXEnum.class))
+    int y = (int)(step * 1.2);
+    for(XAlignmentEnum xAlignment : EnumSet.allOf(XAlignmentEnum.class))
     {
-      for(AlignmentYEnum alignmentY
-        : EnumSet.allOf(AlignmentYEnum.class))
+      for(YAlignmentEnum yAlignment : EnumSet.allOf(YAlignmentEnum.class))
       {
-        composer.setFont(
-          composer.getState().getFont(),
-          12
-          );
+        composer.setFont(mainFont, 12);
         composer.showText(
-          alignmentX + " " + alignmentY + ":",
+          xAlignment + " " + yAlignment + ":",
           new Point2D.Double(x,y),
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Middle,
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Middle,
           0
           );
 
-        composer.setFont(
-          composer.getState().getFont(),
-          8
-          );
-        for(
-          int index = 0;
-          index < 2;
-          index++
-          )
+        composer.setFont(sampleFont, 10);
+        for(int index = 0; index < 2; index++)
         {
           int frameX;
           switch(index)
@@ -799,7 +761,7 @@ public class GraphicsSample
             200,
             step*.8
             );
-          blockComposer.begin(frame,alignmentX,alignmentY);
+          blockComposer.begin(frame,xAlignment,yAlignment);
           blockComposer.showText(
             "Demonstrating how to constrain text inside a page area using PDF Clown. See the other available code samples (such as TypesettingSample) to discover more functionality details."
             );
@@ -835,21 +797,7 @@ public class GraphicsSample
     PrimitiveComposer composer = new PrimitiveComposer(page);
 
     // 3. Drawing the page contents...
-    try
-    {
-      composer.setFont(
-        new StandardType1Font(
-          document,
-          StandardType1Font.FamilyEnum.Courier,
-          true,
-          false
-          ),
-        32
-        );
-    }
-    catch(Exception e)
-    {throw new RuntimeException(e);}
-
+    Font mainFont = new StandardType1Font(document, StandardType1Font.FamilyEnum.Courier, true, false);
     int stepCount = 5;
     int step = (int)(pageSize.getHeight()) / (stepCount + 1);
     BlockComposer blockComposer = new BlockComposer(composer);
@@ -861,60 +809,86 @@ public class GraphicsSample
           pageSize.getWidth()-60,
           step*.8
           ),
-        AlignmentXEnum.Center,
-        AlignmentYEnum.Middle
+        XAlignmentEnum.Center,
+        YAlignmentEnum.Middle
         );
-      blockComposer.showText(
-        "Text block line space"
-        );
+      composer.setFont(mainFont, 32);
+      blockComposer.showText("Block line alignment");
       blockComposer.end();
     }
 
-    // Drawing the text blocks...
-    int x = 30;
-    int y = (int)(step*1.1);
-    blockComposer.getLineSpace().setUnitMode(UnitModeEnum.Relative);
-    for(int index = 0; index < stepCount; index++)
+    // Drawing the text block...
     {
-      float relativeLineSpace = 0.5f * index;
-      blockComposer.getLineSpace().setValue(relativeLineSpace);
+      Font sampleFont = new StandardType1Font(document, FamilyEnum.Times, false, false);
+      Image sampleImage = Image.get(getInputPath() + java.io.File.separator + "images" + java.io.File.separator + "gnu.jpg");
+      XObject sampleImageXObject = sampleImage.toXObject(document);
 
-      composer.setFont(
-        composer.getState().getFont(),
-        10
-        );
-      composer.showText(
-        relativeLineSpace + ":",
-        new Point2D.Double(x,y),
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Middle,
-        0
-        );
+      List<LineAlignmentEnum> lineAlignments = Arrays.asList(LineAlignmentEnum.values());
+      double frameHeight = (pageSize.getHeight() - 130 - 5 * lineAlignments.size() * 2) / (lineAlignments.size() * 2);
+      double frameWidth = (pageSize.getWidth() - 60 - 5 * lineAlignments.size()) / lineAlignments.size();
+      int imageSize = 7;
+      for(int index = 0, length = lineAlignments.size(); index < length; index++)
+      {
+        LineAlignmentEnum lineAlignment = lineAlignments.get(index);
 
-      composer.setFont(
-        composer.getState().getFont(),
-        9
-        );
-      Rectangle2D frame = new Rectangle2D.Double(
-        150,
-        y-step*.4,
-        350,
-        step*.9
-        );
-      blockComposer.begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Top);
-      blockComposer.showText(
-        "Demonstrating how to set the block line space. Line space can be expressed either as an absolute value (in user-space units) or as a relative one (floating-point ratio); in the latter case the base value is represented by the current font's line height (so that, for example, 2 means \"a line space that's twice as the line height\")."
-        );
-      blockComposer.end();
+        for(int imageIndex = 0, imageLength = lineAlignments.size(); imageIndex < imageLength; imageIndex++)
+        {
+          LineAlignmentEnum imageAlignment = lineAlignments.get(imageIndex);
 
-      composer.beginLocalState();
-      composer.setLineWidth(0.2f);
-      composer.setLineDash(5,5,5);
-      composer.drawRectangle(frame);
-      composer.stroke();
-      composer.end();
+          for(int index2 = 0, length2 = 2; index2 < length2; index2++)
+          {
+            Rectangle2D frame = new Rectangle2D.Double(
+              30 + (frameWidth + 5) * imageIndex,
+              100 + (frameHeight + 5) * (index * 2 + index2),
+              frameWidth,
+              frameHeight
+              );
 
-      y+=step;
+            blockComposer.begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
+            {
+              composer.setFont(mainFont, 3);
+              blockComposer.showText("Text: " + lineAlignment);
+              blockComposer.showBreak();
+              blockComposer.showText("Image: " + imageAlignment);
+            }
+            blockComposer.end();
+
+            blockComposer.begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Middle);
+            {
+              composer.setFont(sampleFont, 3);
+              blockComposer.showText("Previous row boundary.");
+              blockComposer.showBreak();
+              composer.setFont(sampleFont, index2 == 0 ? 3 : 6);
+              blockComposer.showText("Alignment:");
+              composer.setFont(sampleFont, index2 == 0 ? 6 : 3);
+              blockComposer.showText(" aligned to " + lineAlignment + " ", lineAlignment);
+              blockComposer.showXObject(sampleImageXObject, new Dimension(imageSize, imageSize), imageAlignment);
+              blockComposer.showBreak();
+              composer.setFont(sampleFont, 3);
+              blockComposer.showText("Next row boundary.");
+            }
+            blockComposer.end();
+
+            composer.beginLocalState();
+            {
+              composer.setLineWidth(0.1);
+              composer.setLineDash(4,1,4);
+              composer.drawRectangle(blockComposer.getFrame());
+              composer.stroke();
+            }
+            composer.end();
+
+            composer.beginLocalState();
+            {
+              composer.setLineWidth(0.1);
+              composer.setLineDash(1,1,1);
+              composer.drawRectangle(blockComposer.getBoundBox());
+              composer.stroke();
+            }
+            composer.end();
+          }
+        }
+      }
     }
 
     // 4. Flush the contents into the page!
@@ -935,21 +909,84 @@ public class GraphicsSample
     PrimitiveComposer composer = new PrimitiveComposer(page);
 
     // 3. Drawing the page contents...
-    try
-    {
-      composer.setFont(
-        new StandardType1Font(
-          document,
-          StandardType1Font.FamilyEnum.Courier,
-          true,
-          false
-          ),
-        32
-        );
-    }
-    catch(Exception e)
-    {throw new RuntimeException(e);}
+    Font mainFont = new StandardType1Font(document, StandardType1Font.FamilyEnum.Courier, true, false);
+    int stepCount = 5;
+    int step = (int)(pageSize.getHeight()) / (stepCount + 1);
 
+    // 3.1. Drawing the page title...
+    BlockComposer blockComposer = new BlockComposer(composer);
+    {
+      blockComposer.begin(
+        new Rectangle2D.Double(
+          30,
+          0,
+          pageSize.getWidth()-60,
+          step*.8
+          ),
+        XAlignmentEnum.Center,
+        YAlignmentEnum.Middle
+        );
+      composer.setFont(mainFont, 32);
+      blockComposer.showText("Block line space");
+      blockComposer.end();
+    }
+
+    // 3.2. Drawing the text blocks...
+    Font sampleFont = new StandardType1Font(document, FamilyEnum.Times, false, false);
+    int x = 30;
+    int y = (int)(step * 1.1);
+    blockComposer.getLineSpace().setUnitMode(UnitModeEnum.Relative);
+    for(int index = 0; index < stepCount; index++)
+    {
+      float relativeLineSpace = 0.5f * index;
+      blockComposer.getLineSpace().setValue(relativeLineSpace);
+
+      composer.setFont(mainFont, 12);
+      composer.showText(
+        relativeLineSpace + ":",
+        new Point2D.Double(x,y),
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Middle,
+        0
+        );
+
+      composer.setFont(sampleFont, 10);
+      Rectangle2D frame = new Rectangle2D.Double(150, y - step * .4, 350, step * .9);
+      blockComposer.begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
+      blockComposer.showText("Demonstrating how to set the block line space. Line space can be expressed either as an absolute value (in user-space units) or as a relative one (floating-point ratio); in the latter case the base value is represented by the current font's line height (so that, for example, 2 means \"a line space that's twice as the line height\").");
+      blockComposer.end();
+
+      composer.beginLocalState();
+      {
+        composer.setLineWidth(0.2);
+        composer.setLineDash(5,5,5);
+        composer.drawRectangle(frame);
+        composer.stroke();
+      }
+      composer.end();
+
+      y+=step;
+    }
+
+    // 4. Flush the contents into the page!
+    composer.flush();
+  }
+
+  private void buildTextBlockPage4(
+    Document document
+    )
+  {
+    // 1. Add the page to the document!
+    Page page = new Page(document); // Instantiates the page inside the document context.
+    document.getPages().add(page); // Puts the page in the pages collection.
+
+    Dimension2D pageSize = page.getSize();
+
+    // 2. Create a content composer for the page!
+    PrimitiveComposer composer = new PrimitiveComposer(page);
+
+    // 3. Drawing the page contents...
+    Font mainFont = new StandardType1Font(document, StandardType1Font.FamilyEnum.Courier, true, false);
     int stepCount = 5;
     int step = (int)(pageSize.getHeight()) / (stepCount + 1);
     BlockComposer blockComposer = new BlockComposer(composer);
@@ -961,38 +998,65 @@ public class GraphicsSample
           pageSize.getWidth()-60,
           step*.8
           ),
-        AlignmentXEnum.Center,
-        AlignmentYEnum.Middle
+        XAlignmentEnum.Center,
+        YAlignmentEnum.Middle
         );
-      blockComposer.showText(
-        "Text block without wordspace"
-        );
+      composer.setFont(mainFont, 32);
+      blockComposer.showText("Unspaced block");
       blockComposer.end();
     }
 
     // Drawing the text block...
     {
-      composer.setFont(
-        composer.getState().getFont(),
-        10
-        );
-      Rectangle2D frame = new Rectangle2D.Double(
-        30,
-        120,
-        pageSize.getWidth()-60,
-        pageSize.getHeight()-150
-        );
-      blockComposer.begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Top);
-      // Add text until the frame area is completely filled!
-      while(blockComposer.showText("DemonstratingHowTextWithoutSpacesIsManagedInCaseOfInsertionInADelimitedPageAreaThroughBlockComposerClass.") > 0);
-      blockComposer.end();
+      Font sampleFont = new StandardType1Font(document, FamilyEnum.Times, false, false);
+      composer.setFont(sampleFont, 15);
 
-      composer.beginLocalState();
-      composer.setLineWidth(0.2f);
-      composer.setLineDash(5,5,5);
-      composer.drawRectangle(frame);
-      composer.stroke();
-      composer.end();
+      double topMargin = 100;
+      double boxMargin = 30;
+      double boxWidth = pageSize.getWidth() - boxMargin * 2;
+      double boxHeight = (pageSize.getHeight() - topMargin - boxMargin - boxMargin) / 2;
+      {
+        Rectangle2D frame = new Rectangle2D.Double(
+          boxMargin,
+          topMargin,
+          boxWidth,
+          boxHeight
+          );
+        blockComposer.begin(frame, XAlignmentEnum.Left, YAlignmentEnum.Top);
+        // Add text until the frame area is completely filled!
+        while(blockComposer.showText("DemonstratingHowUnspacedTextIsManagedInCaseOfInsertionInADelimitedPageAreaThroughBlockComposerClass.") > 0);
+        blockComposer.end();
+
+        composer.beginLocalState();
+        {
+          composer.setLineWidth(0.2);
+          composer.setLineDash(5,5,5);
+          composer.drawRectangle(frame);
+          composer.stroke();
+        }
+        composer.end();
+      }
+      {
+        Rectangle2D frame = new Rectangle2D.Double(
+          boxMargin,
+          topMargin + boxHeight + boxMargin,
+          boxWidth,
+          boxHeight
+          );
+        blockComposer.begin(frame, XAlignmentEnum.Left, YAlignmentEnum.Top);
+        // Add text until the frame area is completely filled!
+        while(blockComposer.showText(" DemonstratingHowUnspacedTextWithLeadingSpaceIsManagedInCaseOfInsertionInADelimitedPageAreaThroughBlockComposerClass.") > 0);
+        blockComposer.end();
+
+        composer.beginLocalState();
+        {
+          composer.setLineWidth(0.2);
+          composer.setLineDash(5,5,5);
+          composer.drawRectangle(frame);
+          composer.stroke();
+        }
+        composer.end();
+      }
     }
 
     // 4. Flush the contents into the page!
@@ -1032,8 +1096,8 @@ public class GraphicsSample
     PrimitiveComposer composer,
     String value,
     Point2D location,
-    AlignmentXEnum alignmentX,
-    AlignmentYEnum alignmentY,
+    XAlignmentEnum xAlignment,
+    YAlignmentEnum yAlignment,
     float rotation
     )
   {
@@ -1046,8 +1110,8 @@ public class GraphicsSample
     Quad textFrame = composer.showText(
       value,
       location,
-      alignmentX,
-      alignmentY,
+      xAlignment,
+      yAlignment,
       rotation
       );
     composer.end();
@@ -1067,8 +1131,8 @@ public class GraphicsSample
         location.getX()+70,
         location.getY()
         ),
-      AlignmentXEnum.Left,
-      AlignmentYEnum.Middle,
+      XAlignmentEnum.Left,
+      YAlignmentEnum.Middle,
       0
       );
     composer.end();

@@ -60,8 +60,8 @@ namespace org.pdfclown.samples.cli
             (float)pageSize.Width - Margin * 2,
             (float)pageSize.Height - Margin * 2
             ),
-          AlignmentXEnum.Justify,
-          AlignmentYEnum.Top
+          XAlignmentEnum.Justify,
+          YAlignmentEnum.Top
           );
         StandardType1Font bodyFont = new StandardType1Font(
           document,

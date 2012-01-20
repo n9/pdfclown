@@ -6,10 +6,10 @@ import java.awt.geom.Rectangle2D;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.files.File;
@@ -20,7 +20,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 public class TextFrameSample
   extends Sample
@@ -57,7 +57,7 @@ public class TextFrameSample
     PrimitiveComposer composer = new PrimitiveComposer(page);
 
     BlockComposer blockComposer = new BlockComposer(composer);
-    blockComposer.begin(new Rectangle2D.Double(300,400,200,100),AlignmentXEnum.Left,AlignmentYEnum.Middle);
+    blockComposer.begin(new Rectangle2D.Double(300,400,200,100),XAlignmentEnum.Left,YAlignmentEnum.Middle);
     try
     {
       composer.setFont(
@@ -72,11 +72,11 @@ public class TextFrameSample
     }
     catch(Exception e)
     {}
-    composer.setFillColor(new DeviceRGBColor(115d/255, 164d/255, 232d/255));
+    composer.setFillColor(new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d));
     blockComposer.showText("PrimitiveComposer.showText(...) methods return the actual bounding box of the text shown, allowing to precisely determine its location on the page.");
     blockComposer.end();
 
-    composer.setStrokeColor(new DeviceRGBColor(115d/255, 164d/255, 232d/255));
+    composer.setStrokeColor(composer.getState().getFillColor());
 
     // 3. Inserting contents...
     // Set the font to use!
@@ -98,8 +98,8 @@ public class TextFrameSample
       composer.showText(
         "Text frame",
         new Point2D.Double(150,360),
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Middle,
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Middle,
         45
         ).getPoints()
       );
@@ -121,8 +121,8 @@ public class TextFrameSample
       composer.showText(
         "Text frame",
         new Point2D.Double(300,600),
-        AlignmentXEnum.Center,
-        AlignmentYEnum.Middle,
+        XAlignmentEnum.Center,
+        YAlignmentEnum.Middle,
         -25
         ).getPoints()
       );

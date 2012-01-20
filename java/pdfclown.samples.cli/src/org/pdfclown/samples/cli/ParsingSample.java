@@ -35,7 +35,7 @@ import org.pdfclown.util.parsers.ParseException;
   to exploit all the available access functionalities.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 public class ParsingSample
   extends Sample
@@ -115,7 +115,7 @@ public class ParsingSample
     int pageCount = pages.size();
     System.out.println("\nPage count: " + pageCount);
 
-    int pageIndex = (int)Math.floor((float)pageCount / 2);
+    int pageIndex = (int)Math.floor(pageCount / 2d);
     System.out.println("Mid page:");
     printPageInfo(pages.get(pageIndex),pageIndex);
 

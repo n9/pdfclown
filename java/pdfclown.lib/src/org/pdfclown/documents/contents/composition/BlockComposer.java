@@ -1,8 +1,11 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
-    * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
+    * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it):
+      - porting and enhancement of [MG]'s line alignment .NET/C# implementation.
+    * Manuel Guilbault (code contributor, manuel.guilbault@gmail.com):
+      - line alignment.
 
   This file should be part of the source code distribution of "PDF Clown library"
   (the Program): see the accompanying README files for more info.
@@ -42,6 +45,8 @@ import org.pdfclown.documents.contents.objects.LocalGraphicsState;
 import org.pdfclown.documents.contents.objects.ModifyCTM;
 import org.pdfclown.documents.contents.objects.Operation;
 import org.pdfclown.documents.contents.objects.SetWordSpace;
+import org.pdfclown.documents.contents.xObjects.XObject;
+import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.OperationUtils;
 
 /**
@@ -49,8 +54,9 @@ import org.pdfclown.util.math.OperationUtils;
   <p>It provides content positioning functionalities for page typesetting.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @author Manuel Guilbault (manuel.guilbault@gmail.com)
   @since 0.0.3
-  @version 0.1.2, 12/30/11
+  @version 0.1.2, 01/20/12
 */
 /*
   TODO: Manage all the graphics parameters (especially
@@ -88,6 +94,16 @@ public final class BlockComposer
   private static final class Row
   {
     /**
+      Row base line.
+    */
+    public double baseLine;
+    /**
+      Row's graphics objects container.
+    */
+    @SuppressWarnings("unused")
+    public ContentPlaceholder container;
+    public double height;
+    /**
       Row's objects.
     */
     public ArrayList<RowObject> objects = new ArrayList<RowObject>();
@@ -95,18 +111,11 @@ public final class BlockComposer
       Number of space characters.
     */
     public int spaceCount = 0;
-    /**
-      Row's graphics objects container.
-    */
-    @SuppressWarnings("unused")
-    public ContentPlaceholder container;
-
-    public double height;
+    public double width;
     /**
       Vertical location relative to the block frame.
     */
     public double y;
-    public double width;
 
     Row(
       ContentPlaceholder container,
@@ -120,28 +129,47 @@ public final class BlockComposer
 
   private static final class RowObject
   {
+    public enum TypeEnum
+    {
+      Text,
+      XObject;
+    }
+
     /**
-      Row object's graphics objects container.
+      Base line.
+    */
+    public double baseLine;
+    /**
+      Graphics objects container associated to this object.
     */
     public ContainerObject container;
-
     public double height;
+    /**
+      Line alignment (can be either LineAlignmentEnum or Double).
+    */
+    public Object lineAlignment;
+    public int spaceCount;
     @SuppressWarnings("unused")
+    public TypeEnum type;
     public double width;
 
-    public int spaceCount;
-
     RowObject(
+      TypeEnum type,
       ContainerObject container,
       double height,
       double width,
-      int spaceCount
+      int spaceCount,
+      Object lineAlignment,
+      double baseLine
       )
     {
+      this.type = type;
       this.container = container;
       this.height = height;
       this.width = width;
       this.spaceCount = spaceCount;
+      this.lineAlignment = lineAlignment;
+      this.baseLine = baseLine;
     }
   }
   // </classes>
@@ -171,11 +199,12 @@ public final class BlockComposer
   private final PrimitiveComposer baseComposer;
   private final ContentScanner scanner;
 
-  private AlignmentXEnum alignmentX;
-  private AlignmentYEnum alignmentY;
   private boolean hyphenation;
   private char hyphenationCharacter = '-';
+  private LineAlignmentEnum lineAlignment = LineAlignmentEnum.BaseLine;
   private Length lineSpace = new Length(0, UnitModeEnum.Relative);
+  private XAlignmentEnum xAlignment;
+  private YAlignmentEnum yAlignment;
 
   /** Area available for the block contents. */
   private Rectangle2D frame;
@@ -186,6 +215,8 @@ public final class BlockComposer
   private boolean rowEnded;
 
   private LocalGraphicsState container;
+
+  private double lastFontSize;
   // </fields>
 
   // <constructors>
@@ -204,18 +235,19 @@ public final class BlockComposer
     Begins a content block.
 
     @param frame Block boundaries.
-    @param alignmentX Horizontal alignment.
-    @param alignmentY Vertical alignment.
+    @param xAlignment Horizontal alignment.
+    @param yAlignment Vertical alignment.
   */
   public void begin(
     Rectangle2D frame,
-    AlignmentXEnum alignmentX,
-    AlignmentYEnum alignmentY
+    XAlignmentEnum xAlignment,
+    YAlignmentEnum yAlignment
     )
   {
     this.frame = frame;
-    this.alignmentX = alignmentX;
-    this.alignmentY = alignmentY;
+    this.xAlignment = xAlignment;
+    this.yAlignment = yAlignment;
+    lastFontSize = 0;
 
     // Open the block local state!
     /*
@@ -265,14 +297,14 @@ public final class BlockComposer
   {return baseComposer;}
 
   /**
-    Gets the actual area occupied by the block contents.
+    Gets the area occupied by the already-placed block contents.
   */
   public Rectangle2D getBoundBox(
     )
   {return boundBox;}
 
   /**
-    Gets the available area where to render the block contents inside.
+    Gets the area where to place the block contents.
   */
   public Rectangle2D getFrame(
     )
@@ -280,13 +312,23 @@ public final class BlockComposer
 
   /**
     Gets the character shown at the end of the line before a hyphenation break.
+    Initial value: hyphen symbol (U+002D, i.e. '-').
   */
   public char getHyphenationCharacter(
     )
   {return hyphenationCharacter;}
 
   /**
+    Gets the default line alignment.
+    Initial value: {@link LineAlignmentEnum#BaseLine}.
+  */
+  public LineAlignmentEnum getLineAlignment(
+    )
+  {return lineAlignment;}
+
+  /**
     Gets the text interline spacing.
+    Initial value: 0.
   */
   public Length getLineSpace(
     )
@@ -300,7 +342,22 @@ public final class BlockComposer
   {return scanner;}
 
   /**
+    Gets the horizontal alignment applied to the current content block.
+  */
+  public XAlignmentEnum getXAlignment(
+    )
+  {return xAlignment;}
+
+  /**
+    Gets the vertical alignment applied to the current content block.
+  */
+  public YAlignmentEnum getYAlignment(
+    )
+  {return yAlignment;}
+
+  /**
     Gets whether the hyphenation algorithm has to be applied.
+    Initial value: <code>false</code>.
   */
   public boolean isHyphenation(
     )
@@ -318,6 +375,14 @@ public final class BlockComposer
     char value
     )
   {hyphenationCharacter = value;}
+
+  /**
+    @see #getLineAlignment()
+  */
+  public void setLineAlignment(
+    LineAlignmentEnum value
+    )
+  {lineAlignment = value;}
 
   /**
     @see #getLineSpace()
@@ -357,15 +422,15 @@ public final class BlockComposer
     Ends current paragraph, specifying the alignment of the next one.
     <p>This functionality allows higher-level features such as paragraph indentation and margin.</p>
 
-    @param alignmentX Horizontal alignment.
+    @param xAlignment Horizontal alignment.
   */
   public void showBreak(
-    AlignmentXEnum alignmentX
+    XAlignmentEnum xAlignment
     )
   {
     showBreak();
 
-    this.alignmentX = alignmentX;
+    this.xAlignment = xAlignment;
   }
 
   /**
@@ -373,25 +438,43 @@ public final class BlockComposer
     <p>This functionality allows higher-level features such as paragraph indentation and margin.</p>
 
     @param offset Relative location of the next paragraph.
-    @param alignmentX Horizontal alignment.
+    @param xAlignment Horizontal alignment.
   */
   public void showBreak(
     Dimension2D offset,
-    AlignmentXEnum alignmentX
+    XAlignmentEnum xAlignment
     )
   {
     showBreak(offset);
 
-    this.alignmentX = alignmentX;
+    this.xAlignment = xAlignment;
   }
 
   /**
     Shows text.
+    <p>Default line alignment is applied.</p>
 
+    @param text Text to show.
     @return Last shown character index.
   */
   public int showText(
     String text
+    )
+  {return showText(text, lineAlignment);}
+
+  /**
+    Shows text.
+
+    @param text Text to show.
+    @param lineAlignment Line alignment. It can be:
+      <li>{@link LineAlignmentEnum}</li>
+      <li>{@link Length}: arbitrary super-/sub-script, depending on whether the value is positive or
+      not.</li>
+    @return Last shown character index.
+  */
+  public int showText(
+    String text,
+    Object lineAlignment
     )
   {
     if(currentRow == null
@@ -402,6 +485,8 @@ public final class BlockComposer
     Font font = state.getFont();
     double fontSize = state.getFontSize();
     double lineHeight = font.getLineHeight(fontSize);
+    double baseLine = font.getAscent(fontSize);
+    lineAlignment = resolveLineAlignment(lineAlignment);
 
     TextFitter textFitter = new TextFitter(
       text,
@@ -417,41 +502,32 @@ public final class BlockComposer
 textShowing:
     while(true)
     {
-      // Beginning of current row?
-      if(currentRow.width == 0)
+      if(currentRow.width == 0) // Current row has just begun.
       {
         // Removing leading spaces...
         while(true)
         {
-          // Did we reach the text end?
-          if(index == textLength)
+          if(index == textLength) // Text end reached.
             break textShowing;
-
-          if(text.charAt(index) != ' ')
+          else if(text.charAt(index) != ' ') // No more leading spaces.
             break;
 
           index++;
         }
       }
 
-      // Does text height exceed current row's height?
-      if(lineHeight > currentRow.height)
+      if(OperationUtils.compare(currentRow.y + lineHeight, frame.getHeight()) == 1) // Text's height exceeds block's remaining vertical space.
       {
-        // Does text height exceed block's remaining vertical space?
-        if(OperationUtils.compare(currentRow.y + lineHeight, frame.getHeight()) == 1)
-        {
-          // Terminate the current row!
-          endRow(false);
-          break textShowing;
-        }
-
-        currentRow.height = lineHeight; // Adapts current row's height.
+        // Terminate current row and exit!
+        endRow(false);
+        break textShowing;
       }
 
       // Does the text fit?
       if(textFitter.fit(
         index,
-        frame.getWidth() - currentRow.width // Remaining row width.
+        frame.getWidth() - currentRow.width, // Remaining row width.
+        currentRow.spaceCount == 0
         ))
       {
         // Get the fitting text!
@@ -462,32 +538,23 @@ textShowing:
           currentRow.y
           );
 
-        // Render the fitting text:
-        // - open the row object's local state!
-        /*
-          NOTE: This device allows a fine-grained control over the row object's representation.
-          It MUST be coupled with a closing statement on row object's end.
-        */
-        RowObject object = new RowObject(
-          baseComposer.beginLocalState(),
-          lineHeight,
-          textChunkWidth,
-          countOccurrence(' ',textChunk)
-          );
-        currentRow.objects.add(object);
-        currentRow.spaceCount += object.spaceCount;
-        // - show the text chunk!
-        baseComposer.showText(
-          textChunk,
-          textChunkLocation
-          );
-        // - close the row object's local state!
-        baseComposer.end();
+        // Insert the fitting text!
+        RowObject object;
+        {
+          object = new RowObject(
+            RowObject.TypeEnum.Text,
+            baseComposer.beginLocalState(), // Opens the row object's local state.
+            lineHeight,
+            textChunkWidth,
+            countOccurrence(' ',textChunk),
+            lineAlignment,
+            baseLine
+            );
+          baseComposer.showText(textChunk, textChunkLocation);
+          baseComposer.end(); // Closes the row object's local state.
+        }
+        addRowObject(object, lineAlignment);
 
-        // Update ancillary parameters:
-        // - update row width!
-        currentRow.width += textChunkWidth;
-        // - update cursor position!
         index = textFitter.getEndIndex();
       }
 
@@ -495,8 +562,7 @@ textShowing:
 trailParsing:
       while(true)
       {
-        // Did we reach the text end?
-        if(index == textLength)
+        if(index == textLength) // Text end reached.
           break textShowing;
 
         switch(text.charAt(index))
@@ -510,19 +576,135 @@ trailParsing:
             break trailParsing;
           default:
             // New row (within the same paragraph)!
-            endRow(false); beginRow();
+            endRow(false);
+            beginRow();
             break trailParsing;
         }
 
         index++;
       }
     }
+    if(index >= 0
+      && lineAlignment == LineAlignmentEnum.BaseLine)
+    {lastFontSize = fontSize;}
 
     return index;
+  }
+
+  /**
+    Shows the specified external object.
+    <p>Default line alignment is applied.</p>
+
+    @param xObject External object.
+    @param size Size of the external object.
+    @return Whether the external object was successfully shown.
+  */
+  public boolean showXObject(
+    XObject xObject,
+    Dimension2D size
+    )
+  {return showXObject(xObject, size, lineAlignment);}
+
+  /**
+    Shows the specified external object.
+
+    @param xObject External object.
+    @param size Size of the external object.
+    @param lineAlignment Line alignment. It can be:
+      <li>{@link LineAlignmentEnum}</li>
+      <li>{@link Length}: arbitrary super-/sub-script, depending on whether the value is positive or
+      not.</li>
+    @return Whether the external object was successfully shown.
+  */
+  public boolean showXObject(
+    XObject xObject,
+    Dimension2D size,
+    Object lineAlignment
+    )
+  {
+    if(currentRow == null
+      || xObject == null)
+      return false;
+
+    if(size == null)
+    {size = xObject.getSize();}
+    lineAlignment = resolveLineAlignment(lineAlignment);
+
+    while(true)
+    {
+      if(OperationUtils.compare(currentRow.y + size.getHeight(), frame.getHeight()) == 1) // Object's height exceeds block's remaining vertical space.
+      {
+        // Terminate current row and exit!
+        endRow(false);
+        return false;
+      }
+      else if(OperationUtils.compare(currentRow.width + size.getWidth(), frame.getWidth()) < 1) // There's room for the object in the current row.
+      {
+        Point2D location = new Point2D.Double(
+          currentRow.width,
+          currentRow.y
+          );
+        RowObject object;
+        {
+          object = new RowObject(
+            RowObject.TypeEnum.XObject,
+            baseComposer.beginLocalState(), // Opens the row object's local state.
+            size.getHeight(),
+            size.getWidth(),
+            0,
+            lineAlignment,
+            size.getHeight()
+            );
+          baseComposer.showXObject(xObject, location, size);
+          baseComposer.end(); // Closes the row object's local state.
+        }
+        addRowObject(object, lineAlignment);
+
+        return true;
+      }
+      else // There's NOT enough room for the object in the current row.
+      {
+        // Go to next row!
+        endRow(false);
+        beginRow();
+      }
+    }
   }
   // </public>
 
   // <private>
+  /**
+    Adds an object to the current row.
+
+    @param object Object to add.
+    @param lineAlignment Object's line alignment.
+  */
+  private void addRowObject(
+    RowObject object,
+    Object lineAlignment
+    )
+  {
+    currentRow.objects.add(object);
+    currentRow.spaceCount += object.spaceCount;
+    currentRow.width += object.width;
+
+    if(lineAlignment instanceof Double || lineAlignment == LineAlignmentEnum.BaseLine)
+    {
+      double gap = (lineAlignment instanceof Double ? (Double)lineAlignment : 0);
+      double superGap = object.baseLine + gap - currentRow.baseLine;
+      if(superGap > 0)
+      {
+        currentRow.height += superGap;
+        currentRow.baseLine += superGap;
+      }
+      double subGap = currentRow.baseLine + (object.height - object.baseLine) - gap - currentRow.height;
+      if(subGap > 0)
+      {currentRow.height += subGap;}
+    }
+    else if(object.height > currentRow.height)
+    {currentRow.height = object.height;}
+  }
+
   /**
     Begins a content row.
   */
@@ -584,8 +766,8 @@ trailParsing:
     List<RowObject> objects = currentRow.objects;
 
     // Horizontal alignment.
-    AlignmentXEnum alignmentX = this.alignmentX;
-    switch(alignmentX)
+    XAlignmentEnum xAlignment = this.xAlignment;
+    switch(xAlignment)
     {
       case Left:
         break;
@@ -601,7 +783,7 @@ trailParsing:
           || broken) // NO spaces.
         {
           /* NOTE: This situation equals a simple left alignment. */
-          alignmentX = AlignmentXEnum.Left;
+          xAlignment = XAlignmentEnum.Left;
         }
         else // Spaces exist.
         {
@@ -638,16 +820,40 @@ trailParsing:
 
       // Vertical alignment.
       double objectYOffset = 0;
-//TODO:IMPL image support!!!
-//       switch(object.type)
-//       {
-//         case Text:
-          objectYOffset = -(currentRow.height - object.height); // Linebase-anchored vertical alignment.
-//           break;
-//         case Image:
-//           objectYOffset = -(currentRow.height - object.height) / 2; // Centered vertical alignment.
-//           break;
-//       }
+      {
+        LineAlignmentEnum lineAlignment;
+        double lineRise;
+        {
+          Object objectLineAlignment = object.lineAlignment;
+          if(objectLineAlignment instanceof Double)
+          {
+            lineAlignment = LineAlignmentEnum.BaseLine;
+            lineRise = (Double)objectLineAlignment;
+          }
+          else
+          {
+            lineAlignment = (LineAlignmentEnum)objectLineAlignment;
+            lineRise = 0;
+          }
+        }
+        switch (lineAlignment)
+        {
+            case Top:
+                /* NOOP */
+                break;
+            case Middle:
+                objectYOffset = -(currentRow.height - object.height) / 2;
+                break;
+            case BaseLine:
+                objectYOffset = -(currentRow.baseLine - object.baseLine - lineRise);
+                break;
+            case Bottom:
+                objectYOffset = -(currentRow.height - object.height);
+                break;
+            default:
+                throw new NotImplementedException("Line alignment " + lineAlignment + " unknown.");
+        }
+      }
 
       List<ContentObject> containedGraphics = object.container.getObjects();
       // Word spacing.
@@ -667,24 +873,46 @@ trailParsing:
     boundBox.height = currentRow.y + currentRow.height;
 
     // Update the actual block vertical location!
-    double xOffset;
-    switch(alignmentY)
+    double yOffset;
+    switch(yAlignment)
     {
       case Bottom:
-        xOffset = frame.getHeight() - boundBox.height;
+        yOffset = frame.getHeight() - boundBox.height;
         break;
       case Middle:
-        xOffset = (frame.getHeight() - boundBox.height) / 2;
+        yOffset = (frame.getHeight() - boundBox.height) / 2;
         break;
       case Top:
       default:
-        xOffset = 0;
+        yOffset = 0;
         break;
     }
-    boundBox.y = frame.getY() + xOffset;
+    boundBox.y = frame.getY() + yOffset;
 
     // Discard the current row!
     currentRow = null;
+  }
+
+  private Object resolveLineAlignment(
+    Object lineAlignment
+    )
+  {
+    if(!(lineAlignment instanceof LineAlignmentEnum
+      || lineAlignment instanceof Length))
+      throw new IllegalArgumentException("'lineAlignment' param MUST be either LineAlignmentEnum or Length.");
+
+    if(lineAlignment == LineAlignmentEnum.Super)
+    {lineAlignment = new Length(0.33, UnitModeEnum.Relative);}
+    else if(lineAlignment == LineAlignmentEnum.Sub)
+    {lineAlignment = new Length(-0.33, UnitModeEnum.Relative);}
+    if(lineAlignment instanceof Length)
+    {
+      if(lastFontSize == 0)
+      {lastFontSize = baseComposer.getState().getFontSize();}
+      lineAlignment = ((Length)lineAlignment).getValue(lastFontSize);
+    }
+
+    return lineAlignment;
   }
   // </private>
   // </interface>

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,8 +29,8 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.colorSpaces.DeviceColor;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfBoolean;
@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 01/20/12
 */
 @PDF(VersionEnum.PDF12)
 public final class AppearanceCharacteristics
@@ -303,7 +303,7 @@ public final class AppearanceCharacteristics
     /**
       Gets the horizontal alignment of the icon inside the annotation box.
     */
-    public AlignmentXEnum getAlignmentX(
+    public XAlignmentEnum getXAlignment(
       )
     {
       /*
@@ -311,20 +311,20 @@ public final class AppearanceCharacteristics
       */
       PdfArray alignmentObject = (PdfArray)getBaseDataObject().get(PdfName.A);
       if(alignmentObject == null)
-        return AlignmentXEnum.Center;
+        return XAlignmentEnum.Center;
 
       switch((int)Math.round(((PdfNumber<?>)alignmentObject.get(0)).getDoubleValue()/.5))
       {
-        case 0: return AlignmentXEnum.Left;
-        case 2: return AlignmentXEnum.Right;
-        default: return AlignmentXEnum.Center;
+        case 0: return XAlignmentEnum.Left;
+        case 2: return XAlignmentEnum.Right;
+        default: return XAlignmentEnum.Center;
       }
     }
 
     /**
       Gets the vertical alignment of the icon inside the annotation box.
     */
-    public AlignmentYEnum getAlignmentY(
+    public YAlignmentEnum getYAlignment(
       )
     {
       /*
@@ -332,13 +332,13 @@ public final class AppearanceCharacteristics
       */
       PdfArray alignmentObject = (PdfArray)getBaseDataObject().get(PdfName.A);
       if(alignmentObject == null)
-        return AlignmentYEnum.Middle;
+        return YAlignmentEnum.Middle;
 
       switch((int)Math.round(((PdfNumber<?>)alignmentObject.get(1)).getDoubleValue()/.5))
       {
-        case 0: return AlignmentYEnum.Bottom;
-        case 2: return AlignmentYEnum.Top;
-        default: return AlignmentYEnum.Middle;
+        case 0: return YAlignmentEnum.Bottom;
+        case 2: return YAlignmentEnum.Top;
+        default: return YAlignmentEnum.Middle;
       }
     }
 
@@ -380,23 +380,19 @@ public final class AppearanceCharacteristics
     public boolean isBorderExcluded(
       )
     {
-      /*
-        NOTE: 'FB' entry may be undefined.
-      */
       PdfBoolean borderExcludedObject = (PdfBoolean)getBaseDataObject().get(PdfName.FB);
-      if(borderExcludedObject == null)
-        return false;
-
-      return ((Boolean)borderExcludedObject.getValue()).booleanValue();
+      return borderExcludedObject != null
+        ? borderExcludedObject.getValue()
+        : false;
     }
 
     /**
       Sets the horizontal alignment of the icon inside the annotation box.
 
-      @see #getAlignmentX()
+      @see #getXAlignment()
     */
-    public void setAlignmentX(
-      AlignmentXEnum value
+    public void setXAlignment(
+      XAlignmentEnum value
       )
     {
       /*
@@ -434,10 +430,10 @@ public final class AppearanceCharacteristics
     /**
       Sets the vertical alignment of the icon inside the annotation box.
 
-      @see #getAlignmentY()
+      @see #getYAlignment()
     */
-    public void setAlignmentY(
-      AlignmentYEnum value
+    public void setYAlignment(
+      YAlignmentEnum value
       )
     {
       /*

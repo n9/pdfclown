@@ -6,10 +6,10 @@ import java.awt.geom.Rectangle2D;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.interaction.actions.JavaScript;
 import org.pdfclown.documents.interaction.annotations.DualWidget;
@@ -33,7 +33,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 public class AcroFormCreationSample
   extends Sample
@@ -101,8 +101,8 @@ public class AcroFormCreationSample
       composer.showText(
         "PushButton:",
         new Point2D.Double(140, 68),
-        AlignmentXEnum.Right,
-        AlignmentYEnum.Middle,
+        XAlignmentEnum.Right,
+        YAlignmentEnum.Middle,
         0
         );
 
@@ -128,7 +128,7 @@ public class AcroFormCreationSample
 
       {
         BlockComposer blockComposer = new BlockComposer(composer);
-        blockComposer.begin(new Rectangle2D.Double(296,50,page.getSize().getWidth()-336,36),AlignmentXEnum.Left,AlignmentYEnum.Middle);
+        blockComposer.begin(new Rectangle2D.Double(296,50,page.getSize().getWidth()-336,36),XAlignmentEnum.Left,YAlignmentEnum.Middle);
         composer.setFont(composer.getState().getFont(),7);
         blockComposer.showText("If you click this push button, a javascript action should prompt you an alert box responding to the activation event triggered by your PDF viewer.");
         blockComposer.end();
@@ -140,8 +140,8 @@ public class AcroFormCreationSample
       composer.showText(
         "CheckBox:",
         new Point2D.Double(140, 118),
-        AlignmentXEnum.Right,
-        AlignmentYEnum.Middle,
+        XAlignmentEnum.Right,
+        YAlignmentEnum.Middle,
         0
         );
       CheckBox field = new CheckBox(
@@ -181,8 +181,8 @@ public class AcroFormCreationSample
       composer.showText(
         "RadioButton:",
         new Point2D.Double(140, 168),
-        AlignmentXEnum.Right,
-        AlignmentYEnum.Middle,
+        XAlignmentEnum.Right,
+        YAlignmentEnum.Middle,
         0
         );
       RadioButton field = new RadioButton(
@@ -219,8 +219,8 @@ public class AcroFormCreationSample
       composer.showText(
         "TextField:",
         new Point2D.Double(140, 218),
-        AlignmentXEnum.Right,
-        AlignmentYEnum.Middle,
+        XAlignmentEnum.Right,
+        YAlignmentEnum.Middle,
         0
         );
       TextField field = new TextField(
@@ -245,7 +245,7 @@ public class AcroFormCreationSample
 
       {
         BlockComposer blockComposer = new BlockComposer(composer);
-        blockComposer.begin(new Rectangle2D.Double(360,200,page.getSize().getWidth()-400,36),AlignmentXEnum.Left,AlignmentYEnum.Middle);
+        blockComposer.begin(new Rectangle2D.Double(360,200,page.getSize().getWidth()-400,36),XAlignmentEnum.Left,YAlignmentEnum.Middle);
         composer.setFont(composer.getState().getFont(),7);
         blockComposer.showText("If you leave this text field after changing its content, a javascript action should prompt you an alert box responding to the validation event triggered by your PDF viewer.");
         blockComposer.end();
@@ -295,8 +295,8 @@ public class AcroFormCreationSample
         composer.showText(
           "ListBox:",
           new Point2D.Double(140, 268),
-          AlignmentXEnum.Right,
-          AlignmentYEnum.Middle,
+          XAlignmentEnum.Right,
+          YAlignmentEnum.Middle,
           0
           );
         ListBox field = new ListBox(
@@ -318,8 +318,8 @@ public class AcroFormCreationSample
         composer.showText(
           "ComboBox:",
           new Point2D.Double(140, 350),
-          AlignmentXEnum.Right,
-          AlignmentYEnum.Middle,
+          XAlignmentEnum.Right,
+          YAlignmentEnum.Middle,
           0
           );
         ComboBox field = new ComboBox(

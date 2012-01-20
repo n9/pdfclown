@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,7 +25,6 @@
 
 package org.pdfclown.documents.contents.composition;
 
-import java.awt.Dimension;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
@@ -103,7 +102,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/14/11
+  @version 0.1.2, 01/20/12
 */
 public final class PrimitiveComposer
 {
@@ -970,8 +969,8 @@ public final class PrimitiveComposer
     return showText(
       value,
       location,
-      AlignmentXEnum.Left,
-      AlignmentYEnum.Top,
+      XAlignmentEnum.Left,
+      YAlignmentEnum.Top,
       0
       );
   }
@@ -993,8 +992,8 @@ public final class PrimitiveComposer
     return showText(
       value,
       location,
-      AlignmentXEnum.Left,
-      AlignmentYEnum.Top,
+      XAlignmentEnum.Left,
+      YAlignmentEnum.Top,
       0,
       action
       );
@@ -1005,16 +1004,16 @@ public final class PrimitiveComposer
 
     @param value Text to show.
     @param location Anchor position at which showing the text.
-    @param alignmentX Horizontal alignment.
-    @param alignmentY Vertical alignment.
+    @param xAlignment Horizontal alignment.
+    @param yAlignment Vertical alignment.
     @param rotation Rotational counterclockwise angle.
     @return Bounding box vertices in default user space units.
   */
   public Quad showText(
     String value,
     Point2D location,
-    AlignmentXEnum alignmentX,
-    AlignmentYEnum alignmentY,
+    XAlignmentEnum xAlignment,
+    YAlignmentEnum yAlignment,
     double rotation
     )
   {
@@ -1027,8 +1026,8 @@ public final class PrimitiveComposer
     double height = font.getLineHeight(fontSize);
     double descent = font.getDescent(fontSize);
     Quad frame;
-    if(alignmentX == AlignmentXEnum.Left
-      && alignmentY == AlignmentYEnum.Top)
+    if(xAlignment == XAlignmentEnum.Left
+      && yAlignment == YAlignmentEnum.Top)
     {
       beginText();
       try
@@ -1102,7 +1101,7 @@ public final class PrimitiveComposer
         try
         {
           // Text coordinates adjustment.
-          switch(alignmentX)
+          switch(xAlignment)
           {
             case Left:
               x = 0;
@@ -1115,7 +1114,7 @@ public final class PrimitiveComposer
               x = -width / 2;
               break;
           }
-          switch(alignmentY)
+          switch(yAlignment)
           {
             case Top:
               y = -font.getAscent(fontSize);
@@ -1155,8 +1154,8 @@ public final class PrimitiveComposer
 
     @param value Text to show.
     @param location Anchor position at which showing the text.
-    @param alignmentX Horizontal alignment.
-    @param alignmentY Vertical alignment.
+    @param xAlignment Horizontal alignment.
+    @param yAlignment Vertical alignment.
     @param rotation Rotational counterclockwise angle.
     @param action Action to apply when the link is activated.
     @return Link.
@@ -1164,8 +1163,8 @@ public final class PrimitiveComposer
   public Link showText(
     String value,
     Point2D location,
-    AlignmentXEnum alignmentX,
-    AlignmentYEnum alignmentY,
+    XAlignmentEnum xAlignment,
+    YAlignmentEnum yAlignment,
     double rotation,
     Action action
     )
@@ -1177,8 +1176,8 @@ public final class PrimitiveComposer
     Rectangle2D linkBox = showText(
       value,
       location,
-      alignmentX,
-      alignmentY,
+      xAlignment,
+      yAlignment,
       rotation
       ).getBounds2D();
 
@@ -1227,7 +1226,7 @@ public final class PrimitiveComposer
     showXObject(
       name,
       location,
-      new Dimension(0,0)
+      null
       );
   }
 
@@ -1269,8 +1268,8 @@ public final class PrimitiveComposer
       name,
       location,
       size,
-      AlignmentXEnum.Left,
-      AlignmentYEnum.Top,
+      XAlignmentEnum.Left,
+      YAlignmentEnum.Top,
       0
       );
   }
@@ -1306,35 +1305,24 @@ public final class PrimitiveComposer
     @param name Resource identifier of the external object.
     @param location Position at which showing the external object.
     @param size Size of the external object.
-    @param alignmentX Horizontal alignment.
-    @param alignmentY Vertical alignment.
+    @param xAlignment Horizontal alignment.
+    @param yAlignment Vertical alignment.
     @param rotation Rotational counterclockwise angle.
   */
   public void showXObject(
     PdfName name,
     Point2D location,
     Dimension2D size,
-    AlignmentXEnum alignmentX,
-    AlignmentYEnum alignmentY,
+    XAlignmentEnum xAlignment,
+    YAlignmentEnum yAlignment,
     double rotation
     )
   {
     XObject xObject = scanner.getContentContext().getResources().getXObjects().get(name);
-
-    // Adjusting default dimensions...
-    /*
-      NOTE: Zero-valued dimensions represent default proportional dimensions.
-    */
     Dimension2D xObjectSize = xObject.getSize();
-    if(size.getWidth() == 0)
-    {
-      if(size.getHeight() == 0)
-      {size.setSize(xObjectSize);}
-      else
-      {size.setSize(size.getHeight() * xObjectSize.getWidth() / xObjectSize.getHeight(),size.getHeight());}
-    }
-    else if(size.getHeight() == 0)
-    {size.setSize(size.getWidth(),size.getWidth() * xObjectSize.getHeight() / xObjectSize.getWidth());}
+    
+    if(size == null)
+    {size = xObjectSize;}
 
     // Scaling.
     AffineTransform matrix = xObject.getMatrix();
@@ -1344,7 +1332,7 @@ public final class PrimitiveComposer
 
     // Alignment.
     double locationOffsetX, locationOffsetY;
-    switch(alignmentX)
+    switch(xAlignment)
     {
       case Left:
         locationOffsetX = 0;
@@ -1358,7 +1346,7 @@ public final class PrimitiveComposer
         locationOffsetX = size.getWidth() / 2;
         break;
     }
-    switch(alignmentY)
+    switch(yAlignment)
     {
       case Top:
         locationOffsetY = size.getHeight();
@@ -1398,22 +1386,22 @@ public final class PrimitiveComposer
     <h3>Remarks</h3>
     <p>The <code>value</code> is checked for presence in the current resource
     dictionary: if it isn't available, it's automatically added. If you need to
-    avoid such a behavior, use {@link #showXObject(PdfName,Point2D,Dimension2D,AlignmentXEnum,
-    AlignmentYEnum,double) showXObject(PdfName,...)}.</p>
+    avoid such a behavior, use {@link #showXObject(PdfName,Point2D,Dimension2D,XAlignmentEnum,
+    YAlignmentEnum,double) showXObject(PdfName,...)}.</p>
 
     @param value External object.
     @param location Position at which showing the external object.
     @param size Size of the external object.
-    @param alignmentX Horizontal alignment.
-    @param alignmentY Vertical alignment.
+    @param xAlignment Horizontal alignment.
+    @param yAlignment Vertical alignment.
     @param rotation Rotational counterclockwise angle.
   */
   public void showXObject(
     XObject value,
     Point2D location,
     Dimension2D size,
-    AlignmentXEnum alignmentX,
-    AlignmentYEnum alignmentY,
+    XAlignmentEnum xAlignment,
+    YAlignmentEnum yAlignment,
     double rotation
     )
   {
@@ -1421,8 +1409,8 @@ public final class PrimitiveComposer
       getXObjectName(value),
       location,
       size,
-      alignmentX,
-      alignmentY,
+      xAlignment,
+      yAlignment,
       rotation
       );
   }

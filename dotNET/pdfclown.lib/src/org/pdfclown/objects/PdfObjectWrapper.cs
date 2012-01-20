@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -139,7 +139,6 @@ namespace org.pdfclown.objects
           <item><see cref="string">Property name</see> resolvable to an <see cref="MemberInfo">annotated getter method</see></item>
           <item><see cref="MemberInfo"/></item>
         </list>
-        <para>In case of <code>null</code>, this method tries to retrieve the caller method's compatibility version.</para>
       </param>
     */
     protected void CheckCompatibility(

@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -882,8 +882,8 @@ namespace org.pdfclown.documents.contents.composition
       return ShowText(
         value,
         location,
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Top,
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Top,
         0
         );
     }
@@ -905,8 +905,8 @@ namespace org.pdfclown.documents.contents.composition
       return ShowText(
         value,
         location,
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Top,
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Top,
         0,
         action
         );
@@ -917,16 +917,16 @@ namespace org.pdfclown.documents.contents.composition
       </summary>
       <param name="value">Text to show.</param>
       <param name="location">Anchor position at which showing the text.</param>
-      <param name="alignmentX">Horizontal alignment.</param>
-      <param name="alignmentY">Vertical alignment.</param>
+      <param name="xAlignment">Horizontal alignment.</param>
+      <param name="yAlignment">Vertical alignment.</param>
       <param name="rotation">Rotational counterclockwise angle.</param>
       <returns>Bounding box vertices in default user space units.</returns>
     */
     public Quad ShowText(
       string value,
       PointF location,
-      AlignmentXEnum alignmentX,
-      AlignmentYEnum alignmentY,
+      XAlignmentEnum xAlignment,
+      YAlignmentEnum yAlignment,
       double rotation
       )
     {
@@ -939,8 +939,8 @@ namespace org.pdfclown.documents.contents.composition
       double height = font.GetLineHeight(fontSize);
       double descent = font.GetDescent(fontSize);
       Quad frame;
-      if(alignmentX == AlignmentXEnum.Left
-        && alignmentY == AlignmentYEnum.Top)
+      if(xAlignment == XAlignmentEnum.Left
+        && yAlignment == YAlignmentEnum.Top)
       {
         BeginText();
         try
@@ -1015,28 +1015,28 @@ namespace org.pdfclown.documents.contents.composition
           try
           {
             // Text coordinates adjustment.
-            switch(alignmentX)
+            switch(xAlignment)
             {
-              case AlignmentXEnum.Left:
+              case XAlignmentEnum.Left:
                 x = 0;
                 break;
-              case AlignmentXEnum.Right:
+              case XAlignmentEnum.Right:
                 x = -width;
                 break;
-              case AlignmentXEnum.Center:
-              case AlignmentXEnum.Justify:
+              case XAlignmentEnum.Center:
+              case XAlignmentEnum.Justify:
                 x = -width / 2;
                 break;
             }
-            switch(alignmentY)
+            switch(yAlignment)
             {
-              case AlignmentYEnum.Top:
+              case YAlignmentEnum.Top:
                 y = -font.GetAscent(fontSize);
                 break;
-              case AlignmentYEnum.Bottom:
+              case YAlignmentEnum.Bottom:
                 y = height - font.GetAscent(fontSize);
                 break;
-              case AlignmentYEnum.Middle:
+              case YAlignmentEnum.Middle:
                 y = height / 2 - font.GetAscent(fontSize);
                 break;
             }
@@ -1068,8 +1068,8 @@ namespace org.pdfclown.documents.contents.composition
       </summary>
       <param name="value">Text to show.</param>
       <param name="location">Anchor position at which showing the text.</param>
-      <param name="alignmentX">Horizontal alignment.</param>
-      <param name="alignmentY">Vertical alignment.</param>
+      <param name="xAlignment">Horizontal alignment.</param>
+      <param name="yAlignment">Vertical alignment.</param>
       <param name="rotation">Rotational counterclockwise angle.</param>
       <param name="action">Action to apply when the link is activated.</param>
       <returns>Link.</returns>
@@ -1077,8 +1077,8 @@ namespace org.pdfclown.documents.contents.composition
     public Link ShowText(
       string value,
       PointF location,
-      AlignmentXEnum alignmentX,
-      AlignmentYEnum alignmentY,
+      XAlignmentEnum xAlignment,
+      YAlignmentEnum yAlignment,
       double rotation,
       actions::Action action
       )
@@ -1090,8 +1090,8 @@ namespace org.pdfclown.documents.contents.composition
       RectangleF linkBox = ShowText(
         value,
         location,
-        alignmentX,
-        alignmentY,
+        xAlignment,
+        yAlignment,
         rotation
         ).GetBounds();
 
@@ -1136,7 +1136,7 @@ namespace org.pdfclown.documents.contents.composition
       ShowXObject(
         name,
         location,
-        new SizeF(0,0)
+        null
         );
     }
 
@@ -1168,15 +1168,15 @@ namespace org.pdfclown.documents.contents.composition
     public void ShowXObject(
       PdfName name,
       PointF location,
-      SizeF size
+      SizeF? size
       )
     {
       ShowXObject(
         name,
         location,
         size,
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Top,
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Top,
         0
         );
     }
@@ -1193,7 +1193,7 @@ namespace org.pdfclown.documents.contents.composition
     public void ShowXObject(
       XObject value,
       PointF location,
-      SizeF size
+      SizeF? size
       )
     {
       ShowXObject(
@@ -1208,72 +1208,58 @@ namespace org.pdfclown.documents.contents.composition
       <param name="name">Resource identifier of the external object.</param>
       <param name="location">Position at which showing the external object.</param>
       <param name="size">Size of the external object.</param>
-      <param name="alignmentX">Horizontal alignment.</param>
-      <param name="alignmentY">Vertical alignment.</param>
+      <param name="xAlignment">Horizontal alignment.</param>
+      <param name="yAlignment">Vertical alignment.</param>
       <param name="rotation">Rotational counterclockwise angle.</param>
     */
     public void ShowXObject(
       PdfName name,
       PointF location,
-      SizeF size,
-      AlignmentXEnum alignmentX,
-      AlignmentYEnum alignmentY,
+      SizeF? size,
+      XAlignmentEnum xAlignment,
+      YAlignmentEnum yAlignment,
       double rotation
       )
     {
       XObject xObject = scanner.ContentContext.Resources.XObjects[name];
-
-      // Adjusting default dimensions...
-      /*
-        NOTE: Zero-valued dimensions represent default proportional dimensions.
-      */
       SizeF xObjectSize = xObject.Size;
-      if(size.Width == 0)
-      {
-        if(size.Height == 0)
-        {
-          size.Width = xObjectSize.Width;
-          size.Height = xObjectSize.Height;
-        }
-        else
-        {size.Width = size.Height * xObjectSize.Width / xObjectSize.Height;}
-      }
-      else if(size.Height == 0)
-      {size.Height = size.Width * xObjectSize.Height / xObjectSize.Width;}
+
+      if(!size.HasValue)
+      {size = xObjectSize;}
 
       // Scaling.
       Matrix matrix = xObject.Matrix;
       double scaleX, scaleY;
-      scaleX = size.Width / (xObjectSize.Width * matrix.Elements[0]);
-      scaleY = size.Height / (xObjectSize.Height * matrix.Elements[3]);
+      scaleX = size.Value.Width / (xObjectSize.Width * matrix.Elements[0]);
+      scaleY = size.Value.Height / (xObjectSize.Height * matrix.Elements[3]);
 
       // Alignment.
       float locationOffsetX, locationOffsetY;
-      switch(alignmentX)
+      switch(xAlignment)
       {
-        case AlignmentXEnum.Left:
+        case XAlignmentEnum.Left:
           locationOffsetX = 0;
           break;
-        case AlignmentXEnum.Right:
-          locationOffsetX = size.Width;
+        case XAlignmentEnum.Right:
+          locationOffsetX = size.Value.Width;
           break;
-        case AlignmentXEnum.Center:
-        case AlignmentXEnum.Justify:
+        case XAlignmentEnum.Center:
+        case XAlignmentEnum.Justify:
         default:
-          locationOffsetX = size.Width / 2;
+          locationOffsetX = size.Value.Width / 2;
           break;
       }
-      switch(alignmentY)
+      switch(yAlignment)
       {
-        case AlignmentYEnum.Top:
-          locationOffsetY = size.Height;
+        case YAlignmentEnum.Top:
+          locationOffsetY = size.Value.Height;
           break;
-        case AlignmentYEnum.Bottom:
+        case YAlignmentEnum.Bottom:
           locationOffsetY = 0;
           break;
-        case AlignmentYEnum.Middle:
+        case YAlignmentEnum.Middle:
         default:
-          locationOffsetY = size.Height / 2;
+          locationOffsetY = size.Value.Height / 2;
           break;
       }
 
@@ -1302,21 +1288,21 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Shows the specified external object at the specified position [PDF:1.6:4.7].</summary>
       <remarks>The <paramref cref="value"/> is checked for presence in the current resource
       dictionary: if it isn't available, it's automatically added. If you need to avoid such a
-      behavior, use <see cref="ShowXObject(PdfName,PointF,SizeF,AlignmentXEnum,AlignmentYEnum,double)"/>.
+      behavior, use <see cref="ShowXObject(PdfName,PointF,SizeF,XAlignmentEnum,YAlignmentEnum,double)"/>.
       </remarks>
       <param name="value">External object.</param>
       <param name="location">Position at which showing the external object.</param>
       <param name="size">Size of the external object.</param>
-      <param name="alignmentX">Horizontal alignment.</param>
-      <param name="alignmentY">Vertical alignment.</param>
+      <param name="xAlignment">Horizontal alignment.</param>
+      <param name="yAlignment">Vertical alignment.</param>
       <param name="rotation">Rotational counterclockwise angle.</param>
     */
     public void ShowXObject(
       XObject value,
       PointF location,
-      SizeF size,
-      AlignmentXEnum alignmentX,
-      AlignmentYEnum alignmentY,
+      SizeF? size,
+      XAlignmentEnum xAlignment,
+      YAlignmentEnum yAlignment,
       double rotation
       )
     {
@@ -1324,8 +1310,8 @@ namespace org.pdfclown.documents.contents.composition
         GetXObjectName(value),
         location,
         size,
-        alignmentX,
-        alignmentY,
+        xAlignment,
+        yAlignment,
         rotation
         );
     }

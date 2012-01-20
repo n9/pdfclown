@@ -55,8 +55,8 @@ namespace org.pdfclown.samples.cli
             (float)pageSize.Width - Margin * 2,
             (float)pageSize.Height - Margin * 2
             ),
-          AlignmentXEnum.Justify,
-          AlignmentYEnum.Top
+          XAlignmentEnum.Justify,
+          YAlignmentEnum.Top
           );
         StandardType1Font bodyFont = new StandardType1Font(
           document,
@@ -83,9 +83,9 @@ namespace org.pdfclown.samples.cli
             (float)pageSize.Width / 2,
             (float)pageSize.Height / 2
             ),
-          new SizeF(0,0),
-          AlignmentXEnum.Center,
-          AlignmentYEnum.Middle,
+          null,
+          XAlignmentEnum.Center,
+          YAlignmentEnum.Middle,
           -25
           );
       }

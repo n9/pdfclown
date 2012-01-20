@@ -1,16 +1,15 @@
 package org.pdfclown.samples.cli;
 
-import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.entities.Image;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.files.File;
@@ -19,7 +18,7 @@ import org.pdfclown.files.File;
   This sample demonstrates <b>how to spacially manipulate an image object</b> within a PDF page.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 public class TransformationSample
   extends Sample
@@ -62,11 +61,11 @@ public class TransformationSample
         new Rectangle2D.Double(
           Margin,
           Margin,
-          (float)pageSize.getWidth() - Margin * 2,
-          (float)pageSize.getHeight() - Margin * 2
+          pageSize.getWidth() - Margin * 2,
+          pageSize.getHeight() - Margin * 2
           ),
-        AlignmentXEnum.Justify,
-        AlignmentYEnum.Top
+        XAlignmentEnum.Justify,
+        YAlignmentEnum.Top
         );
       StandardType1Font bodyFont = new StandardType1Font(
         document,
@@ -89,13 +88,10 @@ public class TransformationSample
       // Show the image!
       composer.showXObject(
         image.toXObject(document),
-        new Point2D.Double(
-          (float)pageSize.getWidth() / 2,
-          (float)pageSize.getHeight() / 2
-          ),
-        new Dimension(0,0),
-        AlignmentXEnum.Center,
-        AlignmentYEnum.Middle,
+        new Point2D.Double(pageSize.getWidth() / 2, pageSize.getHeight() / 2),
+        null,
+        XAlignmentEnum.Center,
+        YAlignmentEnum.Middle,
         -25
         );
     }

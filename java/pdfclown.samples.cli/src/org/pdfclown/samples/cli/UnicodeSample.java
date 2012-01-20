@@ -5,8 +5,8 @@ import java.awt.geom.Rectangle2D;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.fonts.Font;
@@ -16,7 +16,7 @@ import org.pdfclown.files.File;
   This sample demonstrates the PDF Clown's <b>support to Unicode-compliant fonts</b>.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 public class UnicodeSample
   extends Sample
@@ -122,8 +122,8 @@ public class UnicodeSample
         page.getSize().getWidth() - Margin * 2,
         page.getSize().getHeight() - Margin * 2
         ),
-      AlignmentXEnum.Justify,
-      AlignmentYEnum.Top
+      XAlignmentEnum.Justify,
+      YAlignmentEnum.Top
       );
     for(
       int index = 0,
@@ -138,11 +138,11 @@ public class UnicodeSample
 
       composer.setFont(font,11);
       blockComposer.showText(bodies[index]);
-      blockComposer.showBreak(AlignmentXEnum.Right);
+      blockComposer.showBreak(XAlignmentEnum.Right);
 
       composer.setFont(font,8);
       blockComposer.showText("[Source: " + sources[index] + "]");
-      blockComposer.showBreak(breakSize,AlignmentXEnum.Justify);
+      blockComposer.showBreak(breakSize,XAlignmentEnum.Justify);
     }
     // End the content block!
     blockComposer.end();

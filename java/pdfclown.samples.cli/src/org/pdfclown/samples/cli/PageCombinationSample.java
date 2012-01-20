@@ -9,8 +9,8 @@ import org.pdfclown.documents.PageFormat;
 import org.pdfclown.documents.PageFormat.OrientationEnum;
 import org.pdfclown.documents.PageFormat.SizeEnum;
 import org.pdfclown.documents.Pages;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.files.File;
 
@@ -22,7 +22,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 01/02/12
+  @version 0.1.2, 01/20/12
 */
 public class PageCombinationSample
   extends Sample
@@ -74,8 +74,8 @@ public class PageCombinationSample
         sourcePage.toXObject(document), // Converts the source page into a form inside the target document.
         new Point2D.Double(targetPageSize.getWidth() * pageMod, 0),
         targetPageSize,
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Top,
+        XAlignmentEnum.Left,
+        YAlignmentEnum.Top,
         0
         );
     }

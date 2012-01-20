@@ -149,8 +149,8 @@ namespace org.pdfclown.samples.cli
               composer.ShowText(
                 fontFamily.ToString() + " (continued)",
                 new PointF(pageSize.Width - Margin, y),
-                AlignmentXEnum.Right,
-                AlignmentYEnum.Top,
+                XAlignmentEnum.Right,
+                YAlignmentEnum.Top,
                 0
                 );
               composer.SetFont(font,FontBaseSize);

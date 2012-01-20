@@ -85,7 +85,8 @@ namespace org.pdfclown.samples.cli
       Pages pages = document.Pages;
       int pageCount = pages.Count;
       Console.WriteLine("\nPage count: " + pageCount);
-      int pageIndex = (int)Math.Round((float)pageCount / 2);
+
+      int pageIndex = (int)Math.Round(pageCount / 2d);
       Console.WriteLine("Mid page:");
       PrintPageInfo(pages[pageIndex],pageIndex);
 

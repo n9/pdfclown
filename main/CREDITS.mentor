@@ -30,12 +30,21 @@
     </agent>
     <agent role="contributor">
       <name>
+        <first>Manuel</first>
+        <last>Guilbault</last>
+      </name>
+      <tag>MG</tag>
+      <activity version="0.1.2">Code development</activity>
+      <contact type="email">manuel{dot}guilbault{at}gmail{dot}com</contact>
+    </agent>
+    <agent role="contributor">
+      <name>
         <first>Dirk</first>
         <last>Lellinger</last>
       </name>
       <tag>DL</tag>
       <activity version="0.1.1">Bug fixing</activity>
-      <contact type="email">dlellinger{a.t]users{d.o.t]sourceforge{d.o.t]net</contact>
+      <contact type="email">dlellinger{at}users{dot}sourceforge{dot}net</contact>
     </agent>
     <agent role="contributor">
       <name>
@@ -57,7 +66,7 @@
       </name>
       <tag>3J</tag>
       <activity version="0.0.8">Code development</activity>
-      <contact type="email">james{d.o.t]jack{a.t]symyx{d.o.t]com</contact>
+      <contact type="email">james{dot}jack{at}symyx{dot}com</contact>
     </agent>
     <agent role="contributor">
       <name>
@@ -66,7 +75,7 @@
       </name>
       <tag>JCT</tag>
       <activity version="0.0.8">Bug fixing</activity>
-      <contact type="email">jctruy{a.t]gmail{d.o.t]com</contact>
+      <contact type="email">jctruy{at}gmail{dot}com</contact>
     </agent>
     <agent role="contributor">
       <name>
@@ -75,7 +84,7 @@
       </name>
       <tag>AH</tag>
       <activity version="0.0.6,0.0.7">Bug fixing</activity>
-      <contact type="email">adron{a.t]users{d.o.t]sourceforge{d.o.t]net</contact>
+      <contact type="email">adron{at}users{dot}sourceforge{dot}net</contact>
     </agent>
     <agent role="contributor">
       <name>

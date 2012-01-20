@@ -4,6 +4,7 @@ using org.pdfclown.documents.contents.entities;
 using org.pdfclown.documents.contents.fonts;
 using org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.files;
+using org.pdfclown.util.math.geom;
 
 using System;
 using System.Collections.Generic;
@@ -65,8 +66,8 @@ namespace org.pdfclown.samples.cli
               pageSize.Width - Margin * 2,
               pageSize.Height - Margin * 2
               ),
-            AlignmentXEnum.Left,
-            AlignmentYEnum.Top
+            XAlignmentEnum.Left,
+            YAlignmentEnum.Top
             );
           StandardType1Font bodyFont = new StandardType1Font(
             document,
@@ -87,13 +88,10 @@ namespace org.pdfclown.samples.cli
         // Show the barcode!
         composer.ShowXObject(
           barcodeXObject,
-          new PointF(
-            pageSize.Width - Margin,
-            pageSize.Height - Margin
-            ),
-          new Size(100,0),
-          AlignmentXEnum.Right,
-          AlignmentYEnum.Bottom,
+          new PointF(pageSize.Width - Margin, pageSize.Height - Margin),
+          GeomUtils.Scale(barcodeXObject.Size, new SizeF(100,0)),
+          XAlignmentEnum.Right,
+          YAlignmentEnum.Bottom,
           0
           );
         composer.Flush();
@@ -109,13 +107,10 @@ namespace org.pdfclown.samples.cli
         // Show the barcode!
         composer.ShowXObject(
           barcodeXObject,
-          new PointF(
-            pageSize.Width / 2,
-            pageSize.Height / 2
-            ),
-          new Size((int)pageSize.Width/3,0),
-          AlignmentXEnum.Center,
-          AlignmentYEnum.Middle,
+          new PointF(pageSize.Width / 2, pageSize.Height / 2),
+          GeomUtils.Scale(barcodeXObject.Size, new SizeF(pageSize.Width / 3, 0)),
+          XAlignmentEnum.Center,
+          YAlignmentEnum.Middle,
           25
           );
         composer.Flush();
@@ -131,13 +126,10 @@ namespace org.pdfclown.samples.cli
         // Show the barcode!
         composer.ShowXObject(
           barcodeXObject,
-          new PointF(
-            pageSize.Width / 2,
-            pageSize.Height / 2
-            ),
-          new Size((int)pageSize.Height,(int)pageSize.Width),
-          AlignmentXEnum.Center,
-          AlignmentYEnum.Middle,
+          new PointF(pageSize.Width / 2, pageSize.Height / 2),
+          new SizeF(pageSize.Height, pageSize.Width),
+          XAlignmentEnum.Center,
+          YAlignmentEnum.Middle,
           -90
           );
         composer.Flush();

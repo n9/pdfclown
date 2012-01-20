@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -114,7 +114,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
             )
           {
             components.Add(
-              new PdfReal(((int)baseComponentValues[componentValueIndex++] & 0xff) / 255f)
+              new PdfReal(((int)baseComponentValues[componentValueIndex++] & 0xff) / 255d)
               );
           }
         }

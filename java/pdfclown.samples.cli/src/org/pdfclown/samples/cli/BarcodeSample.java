@@ -1,6 +1,5 @@
 package org.pdfclown.samples.cli;
 
-import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -8,21 +7,23 @@ import java.awt.geom.Rectangle2D;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.Pages;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.entities.EAN13Barcode;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.contents.xObjects.XObject;
 import org.pdfclown.files.File;
+import org.pdfclown.util.math.geom.Dimension;
+import org.pdfclown.util.math.geom.GeomUtils;
 
 /**
   This sample demonstrates <b>how to show bar codes</b> in a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 public class BarcodeSample
   extends Sample
@@ -76,11 +77,11 @@ public class BarcodeSample
           new Rectangle2D.Double(
             Margin,
             Margin,
-            (float)pageSize.getWidth() - Margin * 2,
-            (float)pageSize.getHeight() - Margin * 2
+            pageSize.getWidth() - Margin * 2,
+            pageSize.getHeight() - Margin * 2
             ),
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Top
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Top
           );
         StandardType1Font bodyFont = new StandardType1Font(
           document,
@@ -101,13 +102,10 @@ public class BarcodeSample
       // Show the barcode!
       composer.showXObject(
         barcodeXObject,
-        new Point2D.Double(
-          (float)pageSize.getWidth() - Margin,
-          (float)pageSize.getHeight() - Margin
-          ),
-        new Dimension(100,0),
-        AlignmentXEnum.Right,
-        AlignmentYEnum.Bottom,
+        new Point2D.Double(pageSize.getWidth() - Margin, pageSize.getHeight() - Margin),
+        GeomUtils.scale(barcodeXObject.getSize(), new Dimension(100,0)),
+        XAlignmentEnum.Right,
+        YAlignmentEnum.Bottom,
         0
         );
       composer.flush();
@@ -123,13 +121,10 @@ public class BarcodeSample
       // Show the barcode!
       composer.showXObject(
         barcodeXObject,
-        new Point2D.Double(
-          (float)pageSize.getWidth() / 2,
-          (float)pageSize.getHeight() / 2
-          ),
-        new Dimension((int)pageSize.getWidth()/3,0),
-        AlignmentXEnum.Center,
-        AlignmentYEnum.Middle,
+        new Point2D.Double(pageSize.getWidth() / 2, pageSize.getHeight() / 2),
+        GeomUtils.scale(barcodeXObject.getSize(), new Dimension(pageSize.getWidth()/3,0)),
+        XAlignmentEnum.Center,
+        YAlignmentEnum.Middle,
         25
         );
       composer.flush();
@@ -145,13 +140,10 @@ public class BarcodeSample
       // Show the barcode!
       composer.showXObject(
         barcodeXObject,
-        new Point2D.Double(
-          (float)pageSize.getWidth() / 2,
-          (float)pageSize.getHeight() / 2
-          ),
-        new Dimension((int)pageSize.getHeight(),(int)pageSize.getWidth()),
-        AlignmentXEnum.Center,
-        AlignmentYEnum.Middle,
+        new Point2D.Double(pageSize.getWidth() / 2, pageSize.getHeight() / 2),
+        new Dimension(pageSize.getHeight(),pageSize.getWidth()),
+        XAlignmentEnum.Center,
+        YAlignmentEnum.Middle,
         -90
         );
       composer.flush();

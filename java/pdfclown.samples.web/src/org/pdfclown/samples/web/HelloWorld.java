@@ -17,8 +17,8 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.PageFormat;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.entities.Image;
@@ -154,7 +154,7 @@ public class HelloWorld extends HttpServlet {
       pageSize.getHeight() - 250
       );
 
-    blockComposer.begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Top);
+    blockComposer.begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
     StandardType1Font titleFont = new StandardType1Font(
       document,
       StandardType1Font.FamilyEnum.Times,
@@ -190,7 +190,7 @@ public class HelloWorld extends HttpServlet {
     {/* NOOP. */}
     if(image == null)
     {
-      blockComposer.begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Top);
+      blockComposer.begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
       composer.setFont(bodyFont,12);
       composer.setFillColor(new DeviceRGBColor(1,0,0));
       blockComposer.showText("The file you uploaded wasn't a valid JPEG image!");
@@ -202,7 +202,7 @@ public class HelloWorld extends HttpServlet {
     }
     else
     {
-      blockComposer.begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Top);
+      blockComposer.begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
       composer.setFont(bodyFont,12);
       blockComposer.showText("Here it is the image you uploaded: ");
       blockComposer.end();
@@ -240,7 +240,7 @@ public class HelloWorld extends HttpServlet {
 
     if (comment != null)
     {
-      blockComposer.begin(frame,AlignmentXEnum.Justify,AlignmentYEnum.Top);
+      blockComposer.begin(frame,XAlignmentEnum.Justify,YAlignmentEnum.Top);
       composer.setFont(
         new StandardType1Font(
           document,

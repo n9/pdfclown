@@ -45,7 +45,7 @@ namespace org.pdfclown.samples.cli
       PrimitiveComposer composer = new PrimitiveComposer(page);
 
       BlockComposer blockComposer = new BlockComposer(composer);
-      blockComposer.Begin(new RectangleF(300, 400, 200, 100), AlignmentXEnum.Left, AlignmentYEnum.Middle);
+      blockComposer.Begin(new RectangleF(300, 400, 200, 100), XAlignmentEnum.Left, YAlignmentEnum.Middle);
       composer.SetFont(
         new fonts::StandardType1Font(
           document,
@@ -55,11 +55,11 @@ namespace org.pdfclown.samples.cli
           ),
         12
         );
-      composer.SetFillColor(new DeviceRGBColor(115d/255, 164d/255, 232d/255));
+      composer.SetFillColor(new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d));
       blockComposer.ShowText("PrimitiveComposer.ShowText(...) methods return the actual bounding box of the text shown, allowing to precisely determine its location on the page.");
       blockComposer.End();
 
-      composer.SetStrokeColor(new DeviceRGBColor(115d/255, 164d/255, 232d/255));
+      composer.SetStrokeColor(composer.State.FillColor);
 
       // 3. Inserting contents...
       // Set the font to use!
@@ -76,8 +76,8 @@ namespace org.pdfclown.samples.cli
         composer.ShowText(
           "Text frame",
           new PointF(150, 360),
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Middle,
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Middle,
           45
           ).Points
         );
@@ -94,8 +94,8 @@ namespace org.pdfclown.samples.cli
         composer.ShowText(
           "Text frame",
           new PointF(300, 600),
-          AlignmentXEnum.Center,
-          AlignmentYEnum.Middle,
+          XAlignmentEnum.Center,
+          YAlignmentEnum.Middle,
           -25
           ).Points
         );

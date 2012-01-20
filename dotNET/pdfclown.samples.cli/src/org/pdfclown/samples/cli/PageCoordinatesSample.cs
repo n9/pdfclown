@@ -114,11 +114,11 @@ namespace org.pdfclown.samples.cli
       }
 
       BlockComposer blockComposer = new BlockComposer(composer);
-      blockComposer.LineSpace = new Length(.25f, Length.UnitModeEnum.Relative);
+      blockComposer.LineSpace = new Length(.25, Length.UnitModeEnum.Relative);
 
       composer.BeginLocalState();
       composer.SetFillColor(
-        new colorSpaces::DeviceRGBColor(115f/255,164f/255,232f/255)
+        new colorSpaces::DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d)
         );
       RectangleF frame = new RectangleF(
         18,
@@ -126,7 +126,7 @@ namespace org.pdfclown.samples.cli
         pageSize.Width * .5f,
         pageSize.Height * .5f
         );
-      blockComposer.Begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Top);
+      blockComposer.Begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
       composer.SetFont(ResourceName_DefaultFont,24);
       blockComposer.ShowText("Page coordinates sample");
       SizeF breakSize = new SizeF(0,8);
@@ -148,7 +148,7 @@ namespace org.pdfclown.samples.cli
         composer.SetFillColor(colors[i]);
         blockComposer.ShowText("Step " + i + ")");
         composer.SetFillColor(
-          new colorSpaces::DeviceRGBColor(115f/255,164f/255,232f/255)
+          new colorSpaces::DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d)
           );
         blockComposer.ShowText(" " + steps[i]);
         blockComposer.ShowBreak(breakSize);
@@ -175,7 +175,7 @@ namespace org.pdfclown.samples.cli
 
       // Step 0.
       {
-        colors[0] = new colorSpaces::DeviceRGBColor(30f/255, 10f/255, 0);
+        colors[0] = new colorSpaces::DeviceRGBColor(30 / 255d, 10 / 255d, 0);
         composer.SetFillColor(colors[0]);
         composer.SetStrokeColor(colors[0]);
 
@@ -187,8 +187,8 @@ namespace org.pdfclown.samples.cli
         composer.ShowText(
           "Step 0",
           new PointF(0,pageSize.Height),
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Bottom,
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Bottom,
           0
           );
 
@@ -197,7 +197,7 @@ namespace org.pdfclown.samples.cli
 
       // Step 1.
       {
-        colors[1] = new colorSpaces::DeviceRGBColor(80f/255, 25f/255, 0);
+        colors[1] = new colorSpaces::DeviceRGBColor(80 / 255d, 25 / 255d, 0);
         composer.SetFillColor(colors[1]);
         composer.SetStrokeColor(colors[1]);
 
@@ -212,8 +212,8 @@ namespace org.pdfclown.samples.cli
         composer.ShowText(
           "Step 1",
           new PointF(0,pageSize.Height),
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Bottom,
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Bottom,
           0
           );
 
@@ -222,7 +222,7 @@ namespace org.pdfclown.samples.cli
 
       // Step 2.
       {
-        colors[2] = new colorSpaces::DeviceRGBColor(130f/255, 45f/255, 0);
+        colors[2] = new colorSpaces::DeviceRGBColor(130 / 255d, 45 / 255d, 0);
         composer.SetFillColor(colors[2]);
         composer.SetStrokeColor(colors[2]);
 
@@ -240,8 +240,8 @@ namespace org.pdfclown.samples.cli
         composer.ShowText(
           "Step 2",
           new PointF(0,pageSize.Height),
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Bottom,
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Bottom,
           0
           );
 
@@ -250,7 +250,7 @@ namespace org.pdfclown.samples.cli
 
       // Step 3.
       {
-        colors[3] = new colorSpaces::DeviceRGBColor(180f/255, 60f/255, 0);
+        colors[3] = new colorSpaces::DeviceRGBColor(180 / 255d, 60 / 255d, 0);
         composer.SetFillColor(colors[3]);
         composer.SetStrokeColor(colors[3]);
 
@@ -266,8 +266,8 @@ namespace org.pdfclown.samples.cli
         composer.ShowText(
           "Step 3",
           new PointF(0,pageSize.Height),
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Bottom,
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Bottom,
           0
           );
 
@@ -276,7 +276,7 @@ namespace org.pdfclown.samples.cli
 
       // Step 4.
       {
-        colors[4] = new colorSpaces::DeviceRGBColor(230f/255, 75f/255, 0);
+        colors[4] = new colorSpaces::DeviceRGBColor(230 / 255d, 75 / 255d, 0);
         composer.SetFillColor(colors[4]);
         composer.SetStrokeColor(colors[4]);
 
@@ -295,8 +295,8 @@ namespace org.pdfclown.samples.cli
         composer.ShowText(
           "Step 4",
           new PointF(0,pageSize.Height),
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Bottom,
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Bottom,
           0
           );
 

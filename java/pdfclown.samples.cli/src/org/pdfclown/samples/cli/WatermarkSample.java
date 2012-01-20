@@ -6,9 +6,9 @@ import java.awt.geom.Point2D;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.files.File;
@@ -22,7 +22,7 @@ import org.pdfclown.tools.PageStamper;
   <p>The watermark is seamlessly inserted under each page content using the PageStamper class.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/02/12
+  @version 0.1.2, 01/20/12
 */
 public class WatermarkSample
   extends Sample
@@ -104,14 +104,14 @@ public class WatermarkSample
       );
     // Set the color to fill the text characters!
     composer.setFillColor(
-      new DeviceRGBColor(115f / 255, 164f / 255, 232f / 255)
+      new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d)
       );
     // Show the text!
     composer.showText(
       "PDFClown", // Text to show.
       new Point2D.Double(size.getWidth() / 2d, size.getHeight() / 2d), // Anchor location: page center.
-      AlignmentXEnum.Center, // Horizontal placement (relative to the anchor): center.
-      AlignmentYEnum.Middle, // Vertical placement (relative to the anchor): middle.
+      XAlignmentEnum.Center, // Horizontal placement (relative to the anchor): center.
+      YAlignmentEnum.Middle, // Vertical placement (relative to the anchor): middle.
       50 // Rotation: 50-degree-counterclockwise.
       );
     // 2.3. Flush the contents into the watermark!

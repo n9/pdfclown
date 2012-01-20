@@ -1,6 +1,5 @@
 package org.pdfclown.samples.cli;
 
-import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -17,10 +16,10 @@ import org.pdfclown.documents.Pages;
 import org.pdfclown.documents.contents.TextRenderModeEnum;
 import org.pdfclown.documents.contents.colorSpaces.Color;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.entities.Image;
 import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
@@ -32,6 +31,7 @@ import org.pdfclown.documents.interaction.navigation.document.Bookmarks;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.documents.interaction.navigation.document.LocalDestination;
 import org.pdfclown.files.File;
+import org.pdfclown.util.math.geom.Dimension;
 
 /**
   This sample demonstrates <b>how to create a new PDF document populating it with various
@@ -47,12 +47,12 @@ import org.pdfclown.files.File;
   content flow composition), to be made available in the next releases.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/02/12
+  @version 0.1.2, 01/20/12
 */
 public class ComplexTypesettingSample
   extends Sample
 {
-  private static final Color<?> TextColor_Highlight = new DeviceRGBColor(255f/255,50f/255,50f/255);
+  private static final Color<?> TextColor_Highlight = new DeviceRGBColor(255 / 255d, 50 / 255d, 50 / 255d);
 
   @Override
   public boolean run(
@@ -186,14 +186,6 @@ public class ComplexTypesettingSample
       (pageSize.getWidth() - 90 - 20) / 2,
       pageSize.getHeight() - 250
       );
-    // NOTE: If you wanna see the block frame that constrains the text, uncomment this line:
-    /*
-    composer.setStrokeColor(
-      new DeviceRGBColor(115f/255,164f/255,232f/255)
-      );
-    composer.drawRectangle(frame);
-    composer.stroke();
-    */
 
     // Showing the 'GNU' image...
     // Instantiate a jpeg image object!
@@ -204,12 +196,11 @@ public class ComplexTypesettingSample
       new Point2D.Double(
         (pageSize.getWidth() - 90 - image.getWidth()) / 2 + 20,
         pageSize.getHeight() - 100 - image.getHeight()
-        ),
-      new Dimension(0,0)
+        )
       );
 
     // Showing the title...
-    blockComposer.begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Top);
+    blockComposer.begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
     composer.setFont(font,24);
     blockComposer.showText("The Free Software Definition");
     blockComposer.end();
@@ -221,7 +212,7 @@ public class ComplexTypesettingSample
       blockComposer.getBoundBox().getWidth(),
       (pageSize.getHeight() - 100 - image.getHeight() - 10) - (blockComposer.getBoundBox().getY() + blockComposer.getBoundBox().getHeight() + 32)
       );
-    blockComposer.begin(frame,AlignmentXEnum.Justify,AlignmentYEnum.Bottom);
+    blockComposer.begin(frame,XAlignmentEnum.Justify,YAlignmentEnum.Bottom);
     composer.setFont(font,6);
     blockComposer.showText("Copyright 2004, 2005, 2006 Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA Verbatim copying and distribution of this entire article are permitted worldwide, without royalty, in any medium, provided this notice is preserved.");
 
@@ -261,13 +252,13 @@ public class ComplexTypesettingSample
           (pageSize.getHeight() - 100) - 150
           )
       };
-    AlignmentYEnum[] alignmentYs = new AlignmentYEnum[]
+    YAlignmentEnum[] yAlignments = new YAlignmentEnum[]
       {
-        AlignmentYEnum.Top,
-        AlignmentYEnum.Bottom,
-        AlignmentYEnum.Top,
-        AlignmentYEnum.Top,
-        AlignmentYEnum.Top
+        YAlignmentEnum.Top,
+        YAlignmentEnum.Bottom,
+        YAlignmentEnum.Top,
+        YAlignmentEnum.Top,
+        YAlignmentEnum.Top
       };
     String[] paragraphs = new String[]
       {
@@ -334,7 +325,7 @@ public class ComplexTypesettingSample
             blockComposer.setHyphenation(true);
           }
 
-          blockComposer.begin(frames[frameIndex],AlignmentXEnum.Justify,alignmentYs[frameIndex]);
+          blockComposer.begin(frames[frameIndex],XAlignmentEnum.Justify,yAlignments[frameIndex]);
           composer.setFont(font,8.25f);
 
           // Come back to complete the interrupted paragraph!
@@ -352,7 +343,7 @@ public class ComplexTypesettingSample
     }
     blockComposer.end();
 
-    blockComposer.begin(frames[frames.length-1],AlignmentXEnum.Justify,AlignmentYEnum.Bottom);
+    blockComposer.begin(frames[frames.length-1],XAlignmentEnum.Justify,YAlignmentEnum.Bottom);
     composer.setFont(font,6);
     blockComposer.showText("This article was crafted with the nice Traveling_Typewriter font (by Carl Krull, www.carlkrull.dk).");
     blockComposer.end();
@@ -397,7 +388,7 @@ public class ComplexTypesettingSample
       pageSize.getHeight() - 250
       );
     // Begin the block!
-    blockComposer.begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Top);
+    blockComposer.begin(frame,XAlignmentEnum.Center,YAlignmentEnum.Top);
     // Set the font to use!
     composer.setFont(font,56);
     // Set the text rendering mode (outline only)!
@@ -410,7 +401,6 @@ public class ComplexTypesettingSample
     // Showing the clown photo...
     // Instantiate a jpeg image object!
     Image image = Image.get(getInputPath() + java.io.File.separator + "images" + java.io.File.separator + "Clown.jpg"); // Abstract image (entity).
-
     Point2D imageLocation = new Point2D.Double(
       blockComposer.getBoundBox().getX() + blockComposer.getBoundBox().getWidth() - image.getWidth(),
       blockComposer.getBoundBox().getY() + blockComposer.getBoundBox().getHeight() + 25
@@ -418,8 +408,7 @@ public class ComplexTypesettingSample
     // Show the image!
     composer.showXObject(
       image.toXObject(document),
-      imageLocation,
-      new Dimension(0,0)
+      imageLocation
       );
 
     Rectangle2D descriptionFrame = new Rectangle2D.Double(
@@ -435,11 +424,13 @@ public class ComplexTypesettingSample
       blockComposer.getBoundBox().getWidth() - image.getWidth() - 20,
       image.getHeight()
       );
-    blockComposer.begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Middle);
-    composer.setFont(font,30);
-    blockComposer.showText("This is a sample document that merely demonstrates some basic graphics features supported by PDF Clown.");
-    blockComposer.showBreak(AlignmentXEnum.Center);
-    blockComposer.showText("Enjoy!");
+    blockComposer.begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Middle);
+    {
+      composer.setFont(font,30);
+      blockComposer.showText("This is a sample document that merely demonstrates some basic graphics features supported by PDF Clown.");
+      blockComposer.showBreak(XAlignmentEnum.Center);
+      blockComposer.showText("Enjoy!");
+    }
     blockComposer.end();
 
     frame = new Rectangle2D.Double(
@@ -448,49 +439,68 @@ public class ComplexTypesettingSample
       pageSize.getWidth() - 90,
       pageSize.getHeight() - 100 - (blockComposer.getBoundBox().getY()+blockComposer.getBoundBox().getHeight())
       );
-    blockComposer.begin(frame,AlignmentXEnum.Justify,AlignmentYEnum.Bottom);
-    composer.setFont(font,14);
-    blockComposer.showText("PS: As promised, since version 0.0.3 PDF Clown has supported");
-    // Begin local state!
-    /*
-      NOTE: Local state is a powerful feature of PDF format as it lets you nest
-      multiple graphics contexts on the graphics state stack.
-    */
-    composer.beginLocalState();
-    composer.setFillColor(TextColor_Highlight);
-    blockComposer.showText(" embedded latin OpenFont/TrueType and non-embedded Type 1 fonts");
-    // End the innermost local state!
-    composer.end();
-    blockComposer.showText(" along with");
-    composer.beginLocalState();
-    composer.setFillColor(TextColor_Highlight);
-    blockComposer.showText(" paragraph construction facilities");
-    composer.end();
-    blockComposer.showText(" through the BlockComposer class."); blockComposer.showBreak(breakSize);
-    blockComposer.showText("Since version 0.0.4 the content stream stack has been completed, providing ");
-    composer.beginLocalState();
-    composer.setFillColor(TextColor_Highlight);
-    blockComposer.showText("fully object-oriented access to the graphics objects that describe the contents on a page.");
-    composer.end();
-    blockComposer.showText(" It's a great step towards a whole bunch of possibilities, such as text extraction/replacement, that next releases will progressively exploit."); blockComposer.showBreak(breakSize);
-    blockComposer.showText("Since version 0.0.6 it has supported ");
-    composer.beginLocalState();
-    composer.setFillColor(TextColor_Highlight);
-    blockComposer.showText("Unicode");
-    composer.end();
-    blockComposer.showText(" for OpenFont/TrueType fonts."); blockComposer.showBreak(breakSize);
-    composer.setFont(font,8);
-    blockComposer.showText("This page was crafted with the nice");
-    composer.beginLocalState();
-    composer.setFont(font,10);
-    blockComposer.showText(" LazyDog font");
-    composer.end();
-    blockComposer.showText(" (by Paul Neave, www.neave.com)");
+    blockComposer.begin(frame,XAlignmentEnum.Justify,YAlignmentEnum.Bottom);
+    {
+      composer.setFont(font,14);
+      blockComposer.showText("PS: As promised, since version 0.0.3 PDF Clown has supported");
+      // Begin local state!
+      /*
+        NOTE: Local state is a powerful feature of PDF format as it lets you nest
+        multiple graphics contexts on the graphics state stack.
+      */
+      composer.beginLocalState();
+      {
+        composer.setFillColor(TextColor_Highlight);
+        blockComposer.showText(" embedded latin OpenFont/TrueType and non-embedded Type 1 fonts");
+      }
+      composer.end();
+      blockComposer.showText(" along with");
+      composer.beginLocalState();
+      {
+        composer.setFillColor(TextColor_Highlight);
+        blockComposer.showText(" paragraph construction facilities");
+      }
+      composer.end();
+      blockComposer.showText(" through the BlockComposer class.");
+      blockComposer.showBreak(breakSize);
+
+      blockComposer.showText("Since version 0.0.4 the content stream stack has been completed, providing ");
+      composer.beginLocalState();
+      {
+        composer.setFillColor(TextColor_Highlight);
+        blockComposer.showText("fully object-oriented access to the graphics objects that describe the contents on a page.");
+      }
+      composer.end();
+      blockComposer.showText(" It's a great step towards a whole bunch of possibilities, such as text extraction/replacement, that next releases will progressively exploit.");
+      blockComposer.showBreak(breakSize);
+
+      blockComposer.showText("Since version 0.0.6 it has supported ");
+      composer.beginLocalState();
+      {
+        composer.setFillColor(TextColor_Highlight);
+        blockComposer.showText("Unicode");
+      }
+      composer.end();
+      blockComposer.showText(" for OpenFont/TrueType fonts.");
+      blockComposer.showBreak(breakSize);
+
+      composer.setFont(font,8);
+      blockComposer.showText("This page was crafted with the nice");
+      composer.beginLocalState();
+      {
+        composer.setFont(font,10);
+        blockComposer.showText(" LazyDog font");
+      }
+      composer.end();
+      blockComposer.showText(" (by Paul Neave, www.neave.com)");
+    }
     blockComposer.end();
 
-    blockComposer.begin(descriptionFrame,AlignmentXEnum.Right,AlignmentYEnum.Top);
-    composer.setFont(font,8);
-    blockComposer.showText("Source: http://www.wikipedia.org/");
+    blockComposer.begin(descriptionFrame,XAlignmentEnum.Right,YAlignmentEnum.Top);
+    {
+      composer.setFont(font,8);
+      blockComposer.showText("Source: http://www.wikipedia.org/");
+    }
     blockComposer.end();
 
     composer.flush();
@@ -515,17 +525,12 @@ public class ComplexTypesettingSample
     composer.showXObject(
       image.toXObject(document),
       new Point2D.Double(0,0),
-      new Dimension(
-        (int)templateSize.getWidth() - 50,
-        125
-        )
+      new Dimension(templateSize.getWidth() - 50, 125)
       );
 
     // Showing the 'PDFClown' label inside the common content stream...
     composer.beginLocalState();
-    composer.setFillColor(
-      new DeviceRGBColor(115f/255,164f/255,232f/255)
-      );
+    composer.setFillColor(new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d));
     // Set the font to use!
     composer.setFont(
       new StandardType1Font(
@@ -559,39 +564,41 @@ public class ComplexTypesettingSample
 
     // Showing the side text inside the common content stream...
     composer.beginLocalState();
-    composer.setFont(
-      new StandardType1Font(
-        document,
-        StandardType1Font.FamilyEnum.Helvetica,
-        false,
-        false
-        ),
-      8
-      );
-    composer.setFillColor(
-      new DeviceRGBColor(1,1,1)
-      );
-    composer.beginLocalState();
-    composer.rotate(
-      90,
-      new Point2D.Double(
-        templateSize.getWidth() - 50,
-        templateSize.getHeight() - 25
-        )
-      );
-    BlockComposer blockComposer = new BlockComposer(composer);
-    blockComposer.begin(
-      new Rectangle2D.Double(0,0,300,50),
-      AlignmentXEnum.Left,
-      AlignmentYEnum.Middle
-      );
-    blockComposer.showText("Generated by PDF Clown on " + creationDate);
-    blockComposer.showBreak();
-    blockComposer.showText("For more info, visit http://www.pdfclown.org");
-    blockComposer.end();
-    composer.end();
-
-    // End the graphics state!
+    {
+      composer.setFont(
+        new StandardType1Font(
+          document,
+          StandardType1Font.FamilyEnum.Helvetica,
+          false,
+          false
+          ),
+        8
+        );
+      composer.setFillColor(DeviceRGBColor.White);
+      composer.beginLocalState();
+      {
+        composer.rotate(
+          90,
+          new Point2D.Double(
+            templateSize.getWidth() - 50,
+            templateSize.getHeight() - 25
+            )
+          );
+        BlockComposer blockComposer = new BlockComposer(composer);
+        blockComposer.begin(
+          new Rectangle2D.Double(0,0,300,50),
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Middle
+          );
+        {
+          blockComposer.showText("Generated by PDF Clown on " + creationDate);
+          blockComposer.showBreak();
+          blockComposer.showText("For more info, visit http://www.pdfclown.org");
+        }
+        blockComposer.end();
+      }
+      composer.end();
+    }
     composer.end();
 
     composer.flush();

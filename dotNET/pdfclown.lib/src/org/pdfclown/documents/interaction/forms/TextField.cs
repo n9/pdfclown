@@ -338,8 +338,8 @@ namespace org.pdfclown.documents.interaction.forms
       textBox.Height -= 4;
       composer.Begin(
         textBox,
-        Justification.ToAlignmentX(),
-        IsMultiline ? AlignmentYEnum.Top : AlignmentYEnum.Middle
+        Justification.ToXAlignment(),
+        IsMultiline ? YAlignmentEnum.Top : YAlignmentEnum.Middle
         );
       if(scanner.State.Font == null)
       {

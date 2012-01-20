@@ -118,8 +118,8 @@ namespace org.pdfclown.samples.cli
           page.Size.Width - Margin * 2,
           page.Size.Height - Margin * 2
           ),
-        AlignmentXEnum.Justify,
-        AlignmentYEnum.Top
+        XAlignmentEnum.Justify,
+        YAlignmentEnum.Top
         );
       for(
         int index = 0,
@@ -134,11 +134,11 @@ namespace org.pdfclown.samples.cli
 
         composer.SetFont(font,11);
         blockComposer.ShowText(bodies[index]);
-        blockComposer.ShowBreak(AlignmentXEnum.Right);
+        blockComposer.ShowBreak(XAlignmentEnum.Right);
 
         composer.SetFont(font,8);
         blockComposer.ShowText("[Source: " + sources[index] + "]");
-        blockComposer.ShowBreak(breakSize,AlignmentXEnum.Justify);
+        blockComposer.ShowBreak(breakSize,XAlignmentEnum.Justify);
       }
       // End the content block!
       blockComposer.End();

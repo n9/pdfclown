@@ -83,8 +83,8 @@ namespace org.pdfclown.samples.cli
         composer.ShowText(
           "PushButton:",
           new PointF(140, 68),
-          AlignmentXEnum.Right,
-          AlignmentYEnum.Middle,
+          XAlignmentEnum.Right,
+          YAlignmentEnum.Middle,
           0
           );
 
@@ -108,7 +108,7 @@ namespace org.pdfclown.samples.cli
 
         {
           BlockComposer blockComposer = new BlockComposer(composer);
-          blockComposer.Begin(new RectangleF(296,50,page.Size.Width-336,36),AlignmentXEnum.Left,AlignmentYEnum.Middle);
+          blockComposer.Begin(new RectangleF(296,50,page.Size.Width-336,36),XAlignmentEnum.Left,YAlignmentEnum.Middle);
           composer.SetFont(composer.State.Font,7);
           blockComposer.ShowText("If you click this push button, a javascript action should prompt you an alert box responding to the activation event triggered by your PDF viewer.");
           blockComposer.End();
@@ -120,8 +120,8 @@ namespace org.pdfclown.samples.cli
         composer.ShowText(
           "CheckBox:",
           new PointF(140, 118),
-          AlignmentXEnum.Right,
-          AlignmentYEnum.Middle,
+          XAlignmentEnum.Right,
+          YAlignmentEnum.Middle,
           0
           );
         CheckBox field = new CheckBox(
@@ -161,8 +161,8 @@ namespace org.pdfclown.samples.cli
         composer.ShowText(
           "RadioButton:",
           new PointF(140, 168),
-          AlignmentXEnum.Right,
-          AlignmentYEnum.Middle,
+          XAlignmentEnum.Right,
+          YAlignmentEnum.Middle,
           0
           );
         RadioButton field = new RadioButton(
@@ -199,8 +199,8 @@ namespace org.pdfclown.samples.cli
         composer.ShowText(
           "TextField:",
           new PointF(140, 218),
-          AlignmentXEnum.Right,
-          AlignmentYEnum.Middle,
+          XAlignmentEnum.Right,
+          YAlignmentEnum.Middle,
           0
           );
         TextField field = new TextField(
@@ -223,7 +223,7 @@ namespace org.pdfclown.samples.cli
 
         {
           BlockComposer blockComposer = new BlockComposer(composer);
-          blockComposer.Begin(new RectangleF(360,200,page.Size.Width-400,36),AlignmentXEnum.Left,AlignmentYEnum.Middle);
+          blockComposer.Begin(new RectangleF(360,200,page.Size.Width-400,36),XAlignmentEnum.Left,YAlignmentEnum.Middle);
           composer.SetFont(composer.State.Font,7);
           blockComposer.ShowText("If you leave this text field after changing its content, a javascript action should prompt you an alert box responding to the validation event triggered by your PDF viewer.");
           blockComposer.End();
@@ -273,8 +273,8 @@ namespace org.pdfclown.samples.cli
           composer.ShowText(
             "ListBox:",
             new PointF(140, 268),
-            AlignmentXEnum.Right,
-            AlignmentYEnum.Middle,
+            XAlignmentEnum.Right,
+            YAlignmentEnum.Middle,
             0
             );
           ListBox field = new ListBox(
@@ -296,8 +296,8 @@ namespace org.pdfclown.samples.cli
           composer.ShowText(
             "ComboBox:",
             new PointF(140, 350),
-            AlignmentXEnum.Right,
-            AlignmentYEnum.Middle,
+            XAlignmentEnum.Right,
+            YAlignmentEnum.Middle,
             0
             );
           ComboBox field = new ComboBox(

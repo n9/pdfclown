@@ -52,7 +52,7 @@ namespace org.pdfclown.samples.cli
         true,
         false
         );
-      DeviceRGBColor redColor = new DeviceRGBColor(1, 0, 0);
+      DeviceRGBColor redColor = DeviceRGBColor.Get(System.Drawing.Color.Red);
       int margin = 32;
       foreach(Page page in document.Pages)
       {
@@ -78,9 +78,9 @@ namespace org.pdfclown.samples.cli
               pageSize.Height - margin
               ),
             (pageIsEven
-              ? AlignmentXEnum.Left
-              : AlignmentXEnum.Right),
-            AlignmentYEnum.Bottom,
+              ? XAlignmentEnum.Left
+              : XAlignmentEnum.Right),
+            YAlignmentEnum.Bottom,
             0
             );
         }

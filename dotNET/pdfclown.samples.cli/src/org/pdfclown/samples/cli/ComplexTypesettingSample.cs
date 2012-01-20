@@ -34,7 +34,7 @@ namespace org.pdfclown.samples.cli
   public class ComplexTypesettingSample
     : Sample
   {
-    private static readonly colorSpaces::Color TextColor_Highlight = new colorSpaces::DeviceRGBColor(255f/255,50f/255,50f/255);
+    private static readonly colorSpaces::Color TextColor_Highlight = new colorSpaces::DeviceRGBColor(255 / 255d, 50 / 255d, 50 / 255d);
 
     public override bool Run(
       )
@@ -159,17 +159,9 @@ namespace org.pdfclown.samples.cli
       RectangleF frame = new RectangleF(
         20,
         150,
-        (float)(pageSize.Width - 90 - 20) / 2,
-        (float)pageSize.Height - 250
+        (pageSize.Width - 90 - 20) / 2,
+        pageSize.Height - 250
         );
-      // NOTE: If you wanna see the block frame that constrains the text, uncomment this line:
-      /*
-      composer.setStrokeColor(
-        new DeviceRGBColor(115f/255,164f/255,232f/255)
-        );
-      composer.drawRectangle(frame);
-      composer.stroke();
-      */
 
       // Showing the 'GNU' image...
       // Instantiate a jpeg image object!
@@ -178,12 +170,12 @@ namespace org.pdfclown.samples.cli
       composer.ShowXObject(
         image.ToXObject(document),
         new PointF(
-          (float)(pageSize.Width - 90 - image.Width) / 2 + 20,
-          (float)pageSize.Height - 100 - image.Height)
+          (pageSize.Width - 90 - image.Width) / 2 + 20,
+          pageSize.Height - 100 - image.Height)
         );
 
       // Showing the title...
-      blockComposer.Begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Top);
+      blockComposer.Begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
       composer.SetFont(font,24);
       blockComposer.ShowText("The Free Software Definition");
       blockComposer.End();
@@ -195,7 +187,7 @@ namespace org.pdfclown.samples.cli
         (float)blockComposer.BoundBox.Width,
         (float)(pageSize.Height - 100 - image.Height - 10) - (blockComposer.BoundBox.Y + blockComposer.BoundBox.Height + 32)
         );
-      blockComposer.Begin(frame,AlignmentXEnum.Justify,AlignmentYEnum.Bottom);
+      blockComposer.Begin(frame,XAlignmentEnum.Justify,YAlignmentEnum.Bottom);
       composer.SetFont(font,6);
       blockComposer.ShowText("Copyright 2004, 2005, 2006 Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA Verbatim copying and distribution of this entire article are permitted worldwide, without royalty, in any medium, provided this notice is preserved.");
 
@@ -235,13 +227,13 @@ namespace org.pdfclown.samples.cli
             (float)(pageSize.Height - 100) - 150
             )
         };
-      AlignmentYEnum[] alignmentYs = new AlignmentYEnum[]
+      YAlignmentEnum[] yAlignments = new YAlignmentEnum[]
         {
-          AlignmentYEnum.Top,
-          AlignmentYEnum.Bottom,
-          AlignmentYEnum.Top,
-          AlignmentYEnum.Top,
-          AlignmentYEnum.Top
+          YAlignmentEnum.Top,
+          YAlignmentEnum.Bottom,
+          YAlignmentEnum.Top,
+          YAlignmentEnum.Top,
+          YAlignmentEnum.Top
         };
       String[] paragraphs = new String[]
         {
@@ -308,7 +300,7 @@ namespace org.pdfclown.samples.cli
               blockComposer.Hyphenation = true;
             }
 
-            blockComposer.Begin(frames[frameIndex],AlignmentXEnum.Justify,alignmentYs[frameIndex]);
+            blockComposer.Begin(frames[frameIndex],XAlignmentEnum.Justify,yAlignments[frameIndex]);
             composer.SetFont(font,8.25f);
 
             // Come back to complete the interrupted paragraph!
@@ -326,7 +318,7 @@ namespace org.pdfclown.samples.cli
       }
       blockComposer.End();
 
-      blockComposer.Begin(frames[frames.Length-1],AlignmentXEnum.Justify,AlignmentYEnum.Bottom);
+      blockComposer.Begin(frames[frames.Length-1],XAlignmentEnum.Justify,YAlignmentEnum.Bottom);
       composer.SetFont(font,6);
       blockComposer.ShowText("This article was crafted with the nice Traveling_Typewriter font (by Carl Krull, www.carlkrull.dk).");
       blockComposer.End();
@@ -371,7 +363,7 @@ namespace org.pdfclown.samples.cli
         (float)pageSize.Height - 250
         );
       // Begin the block!
-      blockComposer.Begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Top);
+      blockComposer.Begin(frame,XAlignmentEnum.Center,YAlignmentEnum.Top);
       // Set the font to use!
       composer.SetFont(font,56);
       // Set the text rendering mode (outline only)!
@@ -385,14 +377,13 @@ namespace org.pdfclown.samples.cli
       // Instantiate a jpeg image object!
       entities::Image image = entities::Image.Get(InputPath + Path.DirectorySeparatorChar + "images" + Path.DirectorySeparatorChar + "Clown.jpg"); // Abstract image (entity).
       PointF imageLocation = new PointF(
-        (float)blockComposer.BoundBox.X + blockComposer.BoundBox.Width - image.Width,
-        (float)blockComposer.BoundBox.Y + blockComposer.BoundBox.Height + 25
+        blockComposer.BoundBox.X + blockComposer.BoundBox.Width - image.Width,
+        blockComposer.BoundBox.Y + blockComposer.BoundBox.Height + 25
         );
       // Show the image!
       composer.ShowXObject(
         image.ToXObject(document),
-        imageLocation,
-        new SizeF(0,0)
+        imageLocation
         );
 
       RectangleF descriptionFrame = new RectangleF(
@@ -408,62 +399,83 @@ namespace org.pdfclown.samples.cli
         blockComposer.BoundBox.Width - image.Width - 20,
         image.Height
         );
-      blockComposer.Begin(frame,AlignmentXEnum.Left,AlignmentYEnum.Middle);
-      composer.SetFont(font,30);
-      blockComposer.ShowText("This is a sample document that merely demonstrates some basic graphics features supported by PDF Clown.");
-      blockComposer.ShowBreak(AlignmentXEnum.Center);
-      blockComposer.ShowText("Enjoy!");
+      blockComposer.Begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Middle);
+      {
+        composer.SetFont(font,30);
+        blockComposer.ShowText("This is a sample document that merely demonstrates some basic graphics features supported by PDF Clown.");
+        blockComposer.ShowBreak(XAlignmentEnum.Center);
+        blockComposer.ShowText("Enjoy!");
+      }
       blockComposer.End();
 
       frame = new RectangleF(
-        (float)blockComposer.BoundBox.X,
-        (float)blockComposer.BoundBox.Y+blockComposer.BoundBox.Height,
-        (float)pageSize.Width - 90,
-        (float)pageSize.Height - 100 - (blockComposer.BoundBox.Y+blockComposer.BoundBox.Height)
+        blockComposer.BoundBox.X,
+        blockComposer.BoundBox.Y+blockComposer.BoundBox.Height,
+        pageSize.Width - 90,
+        pageSize.Height - 100 - (blockComposer.BoundBox.Y+blockComposer.BoundBox.Height)
         );
-      blockComposer.Begin(frame,AlignmentXEnum.Justify,AlignmentYEnum.Bottom);
-      composer.SetFont(font,14);
-      blockComposer.ShowText("PS: As promised, since version 0.0.3 PDF Clown has supported");
-      // Begin local state!
-      /*
-        NOTE: Local state is a powerful feature of PDF format as it lets you nest
-        multiple graphics contexts on the graphics state stack.
-      */
-      composer.BeginLocalState();
-      composer.SetFillColor(TextColor_Highlight);
-      blockComposer.ShowText(" embedded latin OpenFont/TrueType and non-embedded Type 1 fonts");
-      // End the innermost local state!
-      composer.End();
-      blockComposer.ShowText(" along with");
-      composer.BeginLocalState();
-      composer.SetFillColor(TextColor_Highlight);
-      blockComposer.ShowText(" paragraph construction facilities");
-      composer.End();
-      blockComposer.ShowText(" through the BlockComposer class."); blockComposer.ShowBreak(breakSize);
-      blockComposer.ShowText("Since version 0.0.4 the content stream stack has been completed, providing ");
-      composer.BeginLocalState();
-      composer.SetFillColor(TextColor_Highlight);
-      blockComposer.ShowText("fully object-oriented access to the graphics objects that describe the contents on a page.");
-      composer.End();
-      blockComposer.ShowText(" It's a great step towards a whole bunch of possibilities, such as text extraction/replacement, that next releases will progressively exploit."); blockComposer.ShowBreak(breakSize);
-      blockComposer.ShowText("Since version 0.0.6 it has supported ");
-      composer.BeginLocalState();
-      composer.SetFillColor(TextColor_Highlight);
-      blockComposer.ShowText("Unicode");
-      composer.End();
-      blockComposer.ShowText(" for OpenFont/TrueType fonts."); blockComposer.ShowBreak(breakSize);
-      composer.SetFont(font,8);
-      blockComposer.ShowText("This page was crafted with the nice");
-      composer.BeginLocalState();
-      composer.SetFont(font,10);
-      blockComposer.ShowText(" LazyDog font");
-      composer.End();
-      blockComposer.ShowText(" (by Paul Neave, www.neave.com)");
+      blockComposer.Begin(frame,XAlignmentEnum.Justify,YAlignmentEnum.Bottom);
+      {
+        composer.SetFont(font,14);
+        blockComposer.ShowText("PS: As promised, since version 0.0.3 PDF Clown has supported");
+        // Begin local state!
+        /*
+          NOTE: Local state is a powerful feature of PDF format as it lets you nest
+          multiple graphics contexts on the graphics state stack.
+        */
+        composer.BeginLocalState();
+        {
+          composer.SetFillColor(TextColor_Highlight);
+          blockComposer.ShowText(" embedded latin OpenFont/TrueType and non-embedded Type 1 fonts");
+        }
+        composer.End();
+        blockComposer.ShowText(" along with");
+        composer.BeginLocalState();
+        {
+          composer.SetFillColor(TextColor_Highlight);
+          blockComposer.ShowText(" paragraph construction facilities");
+        }
+        composer.End();
+        blockComposer.ShowText(" through the BlockComposer class.");
+        blockComposer.ShowBreak(breakSize);
+
+        blockComposer.ShowText("Since version 0.0.4 the content stream stack has been completed, providing ");
+        composer.BeginLocalState();
+        {
+          composer.SetFillColor(TextColor_Highlight);
+          blockComposer.ShowText("fully object-oriented access to the graphics objects that describe the contents on a page.");
+        }
+        composer.End();
+        blockComposer.ShowText(" It's a great step towards a whole bunch of possibilities, such as text extraction/replacement, that next releases will progressively exploit.");
+        blockComposer.ShowBreak(breakSize);
+
+        blockComposer.ShowText("Since version 0.0.6 it has supported ");
+        composer.BeginLocalState();
+        {
+          composer.SetFillColor(TextColor_Highlight);
+          blockComposer.ShowText("Unicode");
+        }
+        composer.End();
+        blockComposer.ShowText(" for OpenFont/TrueType fonts.");
+        blockComposer.ShowBreak(breakSize);
+
+        composer.SetFont(font,8);
+        blockComposer.ShowText("This page was crafted with the nice");
+        composer.BeginLocalState();
+        {
+          composer.SetFont(font,10);
+          blockComposer.ShowText(" LazyDog font");
+        }
+        composer.End();
+        blockComposer.ShowText(" (by Paul Neave, www.neave.com)");
+      }
       blockComposer.End();
 
-      blockComposer.Begin(descriptionFrame,AlignmentXEnum.Right,AlignmentYEnum.Top);
-      composer.SetFont(font,8);
-      blockComposer.ShowText("Source: http://www.wikipedia.org/");
+      blockComposer.Begin(descriptionFrame,XAlignmentEnum.Right,YAlignmentEnum.Top);
+      {
+        composer.SetFont(font,8);
+        blockComposer.ShowText("Source: http://www.wikipedia.org/");
+      }
       blockComposer.End();
 
       composer.Flush();
@@ -488,17 +500,12 @@ namespace org.pdfclown.samples.cli
       composer.ShowXObject(
         image.ToXObject(document),
         new PointF(0,0),
-        new SizeF(
-          (float)templateSize.Width - 50,
-          125
-          )
+        new SizeF(templateSize.Width - 50, 125)
         );
 
       // Showing the 'PDFClown' label inside the common content stream...
       composer.BeginLocalState();
-      composer.SetFillColor(
-        new colorSpaces::DeviceRGBColor(115f/255,164f/255,232f/255)
-        );
+      composer.SetFillColor(new colorSpaces::DeviceRGBColor(115f / 255, 164f / 255, 232f / 255));
       // Set the font to use!
       composer.SetFont(
         new fonts::StandardType1Font(
@@ -532,35 +539,41 @@ namespace org.pdfclown.samples.cli
 
       // Showing the side text inside the common content stream...
       composer.BeginLocalState();
-      composer.SetFont(
-        new fonts::StandardType1Font(
-          document,
-          fonts::StandardType1Font.FamilyEnum.Helvetica,
-          false,
-          false
-          ),
-        8
-        );
-      composer.SetFillColor(colorSpaces::DeviceRGBColor.White);
-      composer.BeginLocalState();
-      composer.Rotate(
-        90,
-        new PointF(
-          templateSize.Width - 50,
-          templateSize.Height - 25
-          )
-        );
-      BlockComposer blockComposer = new BlockComposer(composer);
-      blockComposer.Begin(
-        new RectangleF(0,0,300,50),
-        AlignmentXEnum.Left,
-        AlignmentYEnum.Middle
-        );
-      blockComposer.ShowText("Generated by PDF Clown on " + creationDate);
-      blockComposer.ShowBreak();
-      blockComposer.ShowText("For more info, visit http://www.pdfclown.org");
-      blockComposer.End();
-      composer.End();
+      {
+        composer.SetFont(
+          new fonts::StandardType1Font(
+            document,
+            fonts::StandardType1Font.FamilyEnum.Helvetica,
+            false,
+            false
+            ),
+          8
+          );
+        composer.SetFillColor(colorSpaces::DeviceRGBColor.White);
+        composer.BeginLocalState();
+        {
+          composer.Rotate(
+            90,
+            new PointF(
+              templateSize.Width - 50,
+              templateSize.Height - 25
+              )
+            );
+          BlockComposer blockComposer = new BlockComposer(composer);
+          blockComposer.Begin(
+            new RectangleF(0,0,300,50),
+            XAlignmentEnum.Left,
+            YAlignmentEnum.Middle
+            );
+          {
+            blockComposer.ShowText("Generated by PDF Clown on " + creationDate);
+            blockComposer.ShowBreak();
+            blockComposer.ShowText("For more info, visit http://www.pdfclown.org");
+          }
+          blockComposer.End();
+        }
+        composer.End();
+      }
       composer.End();
 
       composer.Flush();

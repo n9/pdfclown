@@ -60,8 +60,8 @@ namespace org.pdfclown.samples.cli
           sourcePage.ToXObject(document), // Converts the source page into a form inside the target document.
           new PointF(targetPageSize.Width * pageMod, 0),
           targetPageSize,
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Top,
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Top,
           0
           );
       }

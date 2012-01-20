@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
   backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 01/20/12
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   implements IPdfObjectWrapper
@@ -210,19 +210,6 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   // </public>
 
   // <protected>
-//TODO:remove?
-//  /**
-//    Checks whether the caller context is compatible with the {@link Document#getVersion() document's conformance version}.
-//    <p>For performance reasons, the relevant feature should be passed as argument to {@link #checkCompatibility(Object)} whenever possible.</p>
-//
-//    @throws RuntimeException In case of version conflict (see {@link org.pdfclown.documents.Document.Configuration.CompatibilityModeEnum#Strict Strict compatibility mode}).
-//    @see #checkCompatibility(Object)
-//    @since 0.1.0
-//  */
-//  protected void checkCompatibility(
-//    )
-//  {checkCompatibility(null);}
-
   /**
     Checks whether the specified feature is compatible with the {@link Document#getVersion() document's conformance version}.
 
@@ -232,7 +219,6 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
         <li>{@link String Property name} resolvable to an {@link AnnotatedElement annotated getter method}</li>
         <li>{@link AnnotatedElement}</li>
       </ul>
-      In case of <code>null</code>, this method tries to retrieve the caller method's compatibility version.
     @throws RuntimeException In case of version conflict (see {@link org.pdfclown.documents.Document.Configuration.CompatibilityModeEnum#Strict Strict compatibility mode}).
     @since 0.1.0
   */
@@ -284,31 +270,6 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
           catch(NoSuchFieldException e)
           {throw new RuntimeException(e);}
         }
-//TODO:remove?
-//        else if(feature == null) // Implicit feature.
-//        {
-//          try
-//          {
-//            /*
-//              NOTE: I know this is a somewhat weird (considering both OO design and performance) technique,
-//              but at the moment I couldn't figure out a better solution for dynamically retrieving
-//              the caller context's annotations in case of no arguments.
-//             */
-//            StackTraceElement callerStackElement = (StackTraceElement)Thread.currentThread().getStackTrace()[2];
-//            Class<?> callerClass = Class.forName(callerStackElement.getClassName());
-//            String callerMethodName = callerStackElement.getMethodName();
-//            for(Method method : callerClass.getMethods())
-//            {
-//              if(method.getName().equals(callerMethodName))
-//              {
-//                feature = method; // NOTE: I assume that any overload of the same method conforms to the same version.
-//                break;
-//              }
-//            }
-//          }
-//          catch(Exception e)
-//          {throw new RuntimeException(e);}
-//        }
         if(!(feature instanceof AnnotatedElement))
           throw new IllegalArgumentException("Feature type '" + feature.getClass().getName() + "' not supported.");
 

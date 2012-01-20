@@ -1,8 +1,11 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
-    * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
+    * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it):
+      - enhancement of [MG]'s line alignment implementation.
+    * Manuel Guilbault (code contributor, manuel.guilbault@gmail.com):
+      - line alignment.
 
   This file should be part of the source code distribution of "PDF Clown library" (the
   Program): see the accompanying README files for more info.
@@ -26,6 +29,7 @@
 using org.pdfclown.bytes;
 using fonts = org.pdfclown.documents.contents.fonts;
 using org.pdfclown.documents.contents.objects;
+using xObjects = org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.objects;
 using org.pdfclown.util.math;
 
@@ -76,6 +80,15 @@ namespace org.pdfclown.documents.contents.composition
     private sealed class Row
     {
       /**
+        <summary>Row base line.</summary>
+      */
+      public double BaseLine;
+      /**
+        <summary>Row's graphics objects container.</summary>
+      */
+      public ContentPlaceholder Container;
+      public double Height;
+      /**
         <summary>Row's objects.</summary>
       */
       public List<RowObject> Objects = new List<RowObject>();
@@ -83,17 +96,11 @@ namespace org.pdfclown.documents.contents.composition
         <summary>Number of space characters.</summary>
       */
       public int SpaceCount = 0;
-      /**
-        <summary>Row's graphics objects container.</summary>
-      */
-      public ContentPlaceholder Container;
-
-      public double Height;
+      public double Width;
       /**
         <summary>Vertical location relative to the block frame.</summary>
       */
       public double Y;
-      public double Width;
 
       internal Row(
         ContentPlaceholder container,
@@ -107,27 +114,46 @@ namespace org.pdfclown.documents.contents.composition
 
     private sealed class RowObject
     {
+      public enum TypeEnum
+      {
+        Text,
+        XObject
+      }
+
       /**
-        <summary>Row object's graphics objects container.</summary>
+        <summary>Base line.</summary>
+      */
+      public double BaseLine;
+      /**
+        <summary>Graphics objects container associated to this object.</summary>
       */
       public ContainerObject Container;
-
       public double Height;
+      /**
+        <summary>Line alignment (can be either LineAlignmentEnum or Double).</summary>
+      */
+      public object LineAlignment;
+      public int SpaceCount;
+      public TypeEnum Type;
       public double Width;
 
-      public int SpaceCount;
-
       internal RowObject(
+        TypeEnum type,
         ContainerObject container,
         double height,
         double width,
-        int spaceCount
+        int spaceCount,
+        object lineAlignment,
+        double baseLine
         )
       {
-        this.Container = container;
-        this.Height = height;
-        this.Width = width;
-        this.SpaceCount = spaceCount;
+        Type = type;
+        Container = container;
+        Height = height;
+        Width = width;
+        SpaceCount = spaceCount;
+        LineAlignment = lineAlignment;
+        BaseLine = baseLine;
       }
     }
     #endregion
@@ -157,11 +183,12 @@ namespace org.pdfclown.documents.contents.composition
     private readonly PrimitiveComposer baseComposer;
     private readonly ContentScanner scanner;
 
-    private AlignmentXEnum alignmentX;
-    private AlignmentYEnum alignmentY;
     private bool hyphenation;
     private char hyphenationCharacter = '-';
+    private LineAlignmentEnum lineAlignment = LineAlignmentEnum.BaseLine;
     private Length lineSpace = new Length(0, Length.UnitModeEnum.Relative);
+    private XAlignmentEnum xAlignment;
+    private YAlignmentEnum yAlignment;
 
     /** <summary>Area available for the block contents.</summary> */
     private RectangleF frame;
@@ -172,6 +199,8 @@ namespace org.pdfclown.documents.contents.composition
     private bool rowEnded;
 
     private LocalGraphicsState container;
+
+    private double lastFontSize;
     #endregion
 
     #region constructors
@@ -197,16 +226,20 @@ namespace org.pdfclown.documents.contents.composition
 
     /**
       <summary>Begins a content block.</summary>
+      <param name="frame">Block boundaries.</param>
+      <param name="xAlignment">Horizontal alignment.</param>
+      <param name="yAlignment">Vertical alignment.</param>
     */
     public void Begin(
       RectangleF frame,
-      AlignmentXEnum alignmentX,
-      AlignmentYEnum alignmentY
+      XAlignmentEnum xAlignment,
+      YAlignmentEnum yAlignment
       )
     {
       this.frame = frame;
-      this.alignmentX = alignmentX;
-      this.alignmentY = alignmentY;
+      this.xAlignment = xAlignment;
+      this.yAlignment = yAlignment;
+      lastFontSize = 0;
 
       // Open the block local state!
       /*
@@ -226,7 +259,7 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
-      <summary>Gets the actual area occupied by the block contents.</summary>
+      <summary>Gets the area occupied by the already-placed block contents.</summary>
     */
     public RectangleF BoundBox
     {
@@ -258,7 +291,7 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
-      <summary>Gets the available area where to render the block contents inside.</summary>
+      <summary>Gets the area where to place the block contents.</summary>
     */
     public RectangleF Frame
     {
@@ -268,6 +301,7 @@ namespace org.pdfclown.documents.contents.composition
 
     /**
       <summary>Gets/Sets whether the hyphenation algorithm has to be applied.</summary>
+      <remarks>Initial value: <code>false</code>.</remarks>
     */
     public bool Hyphenation
     {
@@ -280,6 +314,7 @@ namespace org.pdfclown.documents.contents.composition
     /**
       <summary>Gets/Sets the character shown at the end of the line before a hyphenation break.
       </summary>
+      <remarks>Initial value: hyphen symbol (U+002D, i.e. '-').</remarks>
     */
     public char HyphenationCharacter
     {
@@ -290,7 +325,20 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
+      <summary>Gets/Sets the default line alignment.</summary>
+      <remarks>Initial value: <see cref="LineAlignmentEnum.BaseLine"/>.</remarks>
+    */
+    public LineAlignmentEnum LineAlignment
+    {
+      get
+      {return lineAlignment;}
+      set
+      {lineAlignment = value;}
+    }
+
+    /**
       <summary>Gets/Sets the text interline spacing.</summary>
+      <remarks>Initial value: 0.</remarks>
     */
     public Length LineSpace
     {
@@ -338,39 +386,59 @@ namespace org.pdfclown.documents.contents.composition
     /**
       <summary>Ends current paragraph, specifying the alignment of the next one.</summary>
       <remarks>This functionality allows higher-level features such as paragraph indentation and margin.</remarks>
-      <param name="alignmentX">Horizontal alignment.</param>
+      <param name="xAlignment">Horizontal alignment.</param>
     */
     public void ShowBreak(
-      AlignmentXEnum alignmentX
+      XAlignmentEnum xAlignment
       )
     {
       ShowBreak();
 
-      this.alignmentX = alignmentX;
+      this.xAlignment = xAlignment;
     }
 
     /**
       <summary>Ends current paragraph, specifying the offset and alignment of the next one.</summary>
       <remarks>This functionality allows higher-level features such as paragraph indentation and margin.</remarks>
       <param name="offset">Relative location of the next paragraph.</param>
-      <param name="alignmentX">Horizontal alignment.</param>
+      <param name="xAlignment">Horizontal alignment.</param>
     */
     public void ShowBreak(
       SizeF offset,
-      AlignmentXEnum alignmentX
+      XAlignmentEnum xAlignment
       )
     {
       ShowBreak(offset);
 
-      this.alignmentX = alignmentX;
+      this.xAlignment = xAlignment;
     }
 
     /**
       <summary>Shows text.</summary>
+      <remarks>Default line alignment is applied.</remarks>
+      <param name="text">Text to show.</param>
       <returns>Last shown character index.</returns>
     */
     public int ShowText(
       string text
+      )
+    {return ShowText(text, lineAlignment);}
+
+    /**
+      <summary>Shows text.</summary>
+      <param name="text">Text to show.</param>
+      <param name="lineAlignment">Line alignment. It can be:
+        <list type="bullet">
+          <item><see cref="LineAlignmentEnum"/></item>
+          <item><see cref="Length">: arbitrary super-/sub-script, depending on whether the value is
+          positive or not.</item>
+        </list>
+      </param>
+      <returns>Last shown character index.</returns>
+    */
+    public int ShowText(
+      string text,
+      object lineAlignment
       )
     {
       if(currentRow == null
@@ -381,6 +449,8 @@ namespace org.pdfclown.documents.contents.composition
       fonts::Font font = state.Font;
       double fontSize = state.FontSize;
       double lineHeight = font.GetLineHeight(fontSize);
+      double baseLine = font.GetAscent(fontSize);
+      lineAlignment = ResolveLineAlignment(lineAlignment);
 
       TextFitter textFitter = new TextFitter(
         text,
@@ -395,41 +465,32 @@ namespace org.pdfclown.documents.contents.composition
 
       while(true)
       {
-        // Beginning of current row?
-        if(currentRow.Width == 0)
+        if(currentRow.Width == 0) // Current row has just begun.
         {
           // Removing leading space...
           while(true)
           {
-            // Did we reach the text end?
-            if(index == textLength)
-              goto endTextShowing; // NOTE: I know GOTO is evil, yet in this case it's a much cleaner solution.
-
-            if(text[index] != ' ')
+            if(index == textLength) // Text end reached.
+              goto endTextShowing;
+            else if(text[index] != ' ') // No more leading spaces.
               break;
 
             index++;
           }
         }
 
-        // Does text height exceed current row's height?
-        if(lineHeight > currentRow.Height)
+        if(OperationUtils.Compare(currentRow.Y + lineHeight, frame.Height) == 1) // Text's height exceeds block's remaining vertical space.
         {
-          // Does text height exceed block's remaining vertical space?
-          if(OperationUtils.Compare(currentRow.Y + lineHeight, frame.Height) == 1)
-          {
-            // Terminate the current row!
-            EndRow(false);
-            goto endTextShowing; // NOTE: I know GOTO is evil, yet in this case it's a much cleaner solution.
-          }
-
-          currentRow.Height = lineHeight; // Adapts current row's height.
+          // Terminate the current row and exit!
+          EndRow(false);
+          goto endTextShowing;
         }
 
         // Does the text fit?
         if(textFitter.Fit(
           index,
-          frame.Width - currentRow.Width // Remaining row width.
+          frame.Width - currentRow.Width, // Remaining row width.
+          currentRow.SpaceCount == 0
           ))
         {
           // Get the fitting text!
@@ -440,41 +501,31 @@ namespace org.pdfclown.documents.contents.composition
             (float)currentRow.Y
             );
 
-          // Render the fitting text:
-          // - open the row object's local state!
-          /*
-            NOTE: This device allows a fine-grained control over the row object's representation.
-            It MUST be coupled with a closing statement on row object's end.
-          */
-          RowObject obj = new RowObject(
-            baseComposer.BeginLocalState(),
-            lineHeight,
-            textChunkWidth,
-            CountOccurrence(' ',textChunk)
-            );
-          currentRow.Objects.Add(obj);
-          currentRow.SpaceCount += obj.SpaceCount;
-          // - show the text chunk!
-          baseComposer.ShowText(
-            textChunk,
-            textChunkLocation
-            );
-          // - close the row object's local state!
-          baseComposer.End();
+          // Insert the fitting text!
+          RowObject obj;
+          {
+            obj = new RowObject(
+              RowObject.TypeEnum.Text,
+              baseComposer.BeginLocalState(), // Opens the row object's local state.
+              lineHeight,
+              textChunkWidth,
+              CountOccurrence(' ',textChunk),
+              lineAlignment,
+              baseLine
+              );
+            baseComposer.ShowText(textChunk, textChunkLocation);
+            baseComposer.End();  // Closes the row object's local state.
+          }
+          AddRowObject(obj, lineAlignment);
 
-          // Update ancillary parameters:
-          // - update row width!
-          currentRow.Width += textChunkWidth;
-          // - update cursor position!
           index = textFitter.EndIndex;
         }
 
         // Evaluating trailing text...
         while(true)
         {
-          // Did we reach the text end?
-          if(index == textLength)
-            goto endTextShowing; // NOTE: I know GOTO is evil, yet in this case it's a much cleaner solution.
+          if(index == textLength) // Text end reached.
+            goto endTextShowing;
 
           switch(text[index])
           {
@@ -484,24 +535,158 @@ namespace org.pdfclown.documents.contents.composition
               // New paragraph!
               index++;
               ShowBreak();
-              goto endTrailParsing; // NOTE: I know GOTO is evil, yet in this case it's a much cleaner solution.
+              goto endTrailParsing;
             default:
               // New row (within the same paragraph)!
-              EndRow(false); BeginRow();
-              goto endTrailParsing; // NOTE: I know GOTO is evil, yet in this case it's a much cleaner solution.
+              EndRow(false);
+              BeginRow();
+              goto endTrailParsing;
           }
 
           index++;
         } endTrailParsing:;
       } endTextShowing:;
+      if(index >= 0
+        && lineAlignment.Equals(LineAlignmentEnum.BaseLine))
+      {lastFontSize = fontSize;}
 
       return index;
+    }
+
+    /**
+      <summary>Shows the specified external object.</summary>
+      <remarks>Default line alignment is applied.</remarks>
+      <param name="xObject">External object.</param>
+      <param name="size">Size of the external object.</param>
+      <returns>Whether the external object was successfully shown.</returns>
+    */
+    public bool ShowXObject(
+      xObjects::XObject xObject,
+      SizeF? size
+      )
+    {return ShowXObject(xObject, size, lineAlignment);}
+
+    /**
+      <summary>Shows the specified external object.</summary>
+      <param name="xObject">External object.</param>
+      <param name="size">Size of the external object.</param>
+      <param name="lineAlignment">Line alignment. It can be:
+        <list type="bullet">
+          <item><see cref="LineAlignmentEnum"/></item>
+          <item><see cref="Length">: arbitrary super-/sub-script, depending on whether the value is
+          positive or not.</item>
+        </list>
+      </param>
+      <returns>Whether the external object was successfully shown.</returns>
+    */
+    public bool ShowXObject(
+      xObjects::XObject xObject,
+      SizeF? size,
+      object lineAlignment
+      )
+    {
+      if(currentRow == null
+        || xObject == null)
+        return false;
+
+      if(!size.HasValue)
+      {size = xObject.Size;}
+      lineAlignment = ResolveLineAlignment(lineAlignment);
+
+      while(true)
+      {
+        if(OperationUtils.Compare(currentRow.Y + size.Value.Height, frame.Height) == 1) // Object's height exceeds block's remaining vertical space.
+        {
+          // Terminate current row and exit!
+          EndRow(false);
+          return false;
+        }
+        else if(OperationUtils.Compare(currentRow.Width + size.Value.Width, frame.Width) < 1) // There's room for the object in the current row.
+        {
+          PointF location = new PointF(
+            (float)currentRow.Width,
+            (float)currentRow.Y
+            );
+          RowObject obj;
+          {
+            obj = new RowObject(
+              RowObject.TypeEnum.XObject,
+              baseComposer.BeginLocalState(), // Opens the row object's local state.
+              size.Value.Height,
+              size.Value.Width,
+              0,
+              lineAlignment,
+              size.Value.Height
+              );
+            baseComposer.ShowXObject(xObject, location, size);
+            baseComposer.End(); // Closes the row object's local state.
+          }
+          AddRowObject(obj, lineAlignment);
+
+          return true;
+        }
+        else // There's NOT enough room for the object in the current row.
+        {
+          // Go to next row!
+          EndRow(false);
+          BeginRow();
+        }
+      }
+    }
+
+    /**
+      <summary>Gets the horizontal alignment applied to the current content block.</summary>
+    */
+    public XAlignmentEnum XAlignment
+    {
+      get
+      {return xAlignment;}
+    }
+
+    /**
+      <summary>Gets the vertical alignment applied to the current content block.</summary>
+    */
+    public YAlignmentEnum YAlignment
+    {
+      get
+      {return yAlignment;}
     }
     #endregion
 
     #region private
     /**
-      Begins a content row.
+      <summary>Adds an object to the current row.</summary>
+      <param name="obj">Object to add.</param>
+      <param name="lineAlignment">Object's line alignment.</param>
+    */
+    private void AddRowObject(
+      RowObject obj,
+      object lineAlignment
+      )
+    {
+      currentRow.Objects.Add(obj);
+      currentRow.SpaceCount += obj.SpaceCount;
+      currentRow.Width += obj.Width;
+
+      if(lineAlignment is double || lineAlignment.Equals(LineAlignmentEnum.BaseLine))
+      {
+        double gap = (lineAlignment is double ? (Double)lineAlignment : 0);
+        double superGap = obj.BaseLine + gap - currentRow.BaseLine;
+        if(superGap > 0)
+        {
+          currentRow.Height += superGap;
+          currentRow.BaseLine += superGap;
+        }
+        double subGap = currentRow.BaseLine + (obj.Height - obj.BaseLine) - gap - currentRow.Height;
+        if(subGap > 0)
+        {currentRow.Height += subGap;}
+      }
+      else if(obj.Height > currentRow.Height)
+      {currentRow.Height = obj.Height;}
+    }
+
+    /**
+      <summary>Begins a content row.</summary>
     */
     private void BeginRow(
       )
@@ -560,24 +745,24 @@ namespace org.pdfclown.documents.contents.composition
       List<RowObject> objects = currentRow.Objects;
 
       // Horizontal alignment.
-      AlignmentXEnum alignmentX = this.alignmentX;
-      switch(alignmentX)
+      XAlignmentEnum xAlignment = this.xAlignment;
+      switch(xAlignment)
       {
-        case AlignmentXEnum.Left:
+        case XAlignmentEnum.Left:
           break;
-        case AlignmentXEnum.Right:
+        case XAlignmentEnum.Right:
           rowXOffset = frame.Width - currentRow.Width;
           break;
-        case AlignmentXEnum.Center:
+        case XAlignmentEnum.Center:
           rowXOffset = (frame.Width - currentRow.Width) / 2;
           break;
-        case AlignmentXEnum.Justify:
+        case XAlignmentEnum.Justify:
           // Are there NO spaces?
           if(currentRow.SpaceCount == 0
             || broken) // NO spaces.
           {
             /* NOTE: This situation equals a simple left alignment. */
-            alignmentX = AlignmentXEnum.Left;
+            xAlignment = XAlignmentEnum.Left;
           }
           else // Spaces exist.
           {
@@ -615,16 +800,40 @@ namespace org.pdfclown.documents.contents.composition
 
         // Vertical alignment.
         double objectYOffset = 0;
-        //TODO:IMPL image support!!!
-//         switch(obj.Type)
-//         {
-//           case RowObjectTypeEnum.Text:
-            objectYOffset = -(currentRow.Height - obj.Height); // Linebase-anchored vertical alignment.
-//             break;
-//           case RowObjectTypeEnum.Image:
-//             objectYOffset = -(currentRow.Height - obj.Height) / 2; // Centered vertical alignment.
-//             break;
-//         }
+        {
+          LineAlignmentEnum lineAlignment;
+          double lineRise;
+          {
+            object objectLineAlignment = obj.LineAlignment;
+            if(objectLineAlignment is Double)
+            {
+              lineAlignment = LineAlignmentEnum.BaseLine;
+              lineRise = (double)objectLineAlignment;
+            }
+            else
+            {
+              lineAlignment = (LineAlignmentEnum)objectLineAlignment;
+              lineRise = 0;
+            }
+          }
+          switch (lineAlignment)
+          {
+              case LineAlignmentEnum.Top:
+                  /* NOOP */
+                  break;
+              case LineAlignmentEnum.Middle:
+                  objectYOffset = -(currentRow.Height - obj.Height) / 2;
+                  break;
+              case LineAlignmentEnum.BaseLine:
+                  objectYOffset = -(currentRow.BaseLine - obj.BaseLine - lineRise);
+                  break;
+              case LineAlignmentEnum.Bottom:
+                  objectYOffset = -(currentRow.Height - obj.Height);
+                  break;
+              default:
+                  throw new NotImplementedException("Line alignment " + lineAlignment + " unknown.");
+          }
+        }
 
         IList<ContentObject> containedGraphics = obj.Container.Objects;
         // Word spacing.
@@ -644,24 +853,46 @@ namespace org.pdfclown.documents.contents.composition
       boundBox.Height = (float)(currentRow.Y + currentRow.Height);
 
       // Update the actual block vertical location!
-      double xOffset;
-      switch(alignmentY)
+      double yOffset;
+      switch(yAlignment)
       {
-        case AlignmentYEnum.Bottom:
-          xOffset = frame.Height - boundBox.Height;
+        case YAlignmentEnum.Bottom:
+          yOffset = frame.Height - boundBox.Height;
           break;
-        case AlignmentYEnum.Middle:
-          xOffset = (frame.Height - boundBox.Height) / 2;
+        case YAlignmentEnum.Middle:
+          yOffset = (frame.Height - boundBox.Height) / 2;
           break;
-        case AlignmentYEnum.Top:
+        case YAlignmentEnum.Top:
         default:
-          xOffset = 0;
+          yOffset = 0;
           break;
       }
-      boundBox.Y = (float)(frame.Y + xOffset);
+      boundBox.Y = (float)(frame.Y + yOffset);
 
       // Discard the current row!
       currentRow = null;
+    }
+
+    private object ResolveLineAlignment(
+      object lineAlignment
+      )
+    {
+      if(!(lineAlignment is LineAlignmentEnum
+        || lineAlignment is Length))
+        throw new ArgumentException("MUST be either LineAlignmentEnum or Length.", "lineAlignment");
+
+      if(lineAlignment.Equals(LineAlignmentEnum.Super))
+      {lineAlignment = new Length(0.33, Length.UnitModeEnum.Relative);}
+      else if(lineAlignment.Equals(LineAlignmentEnum.Sub))
+      {lineAlignment = new Length(-0.33, Length.UnitModeEnum.Relative);}
+      if(lineAlignment is Length)
+      {
+        if(lastFontSize == 0)
+        {lastFontSize = baseComposer.State.FontSize;}
+        lineAlignment = ((Length)lineAlignment).GetValue(lastFontSize);
+      }
+
+      return lineAlignment;
     }
     #endregion
     #endregion

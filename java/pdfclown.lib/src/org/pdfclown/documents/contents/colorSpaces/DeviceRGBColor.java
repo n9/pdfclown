@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,7 @@
 
 package org.pdfclown.documents.contents.colorSpaces;
 
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
   Device Red-Green-Blue color value [PDF:1.6:4.5.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 @PDF(VersionEnum.PDF11)
 public final class DeviceRGBColor
@@ -49,8 +50,8 @@ public final class DeviceRGBColor
   // <class>
   // <static>
   // <fields>
-  public static final DeviceRGBColor Black = new DeviceRGBColor(0,0,0);
-  public static final DeviceRGBColor White = new DeviceRGBColor(1,1,1);
+  public static final DeviceRGBColor Black = get(Color.BLACK);
+  public static final DeviceRGBColor White = get(Color.WHITE);
 
   public static final DeviceRGBColor Default = Black;
   // </fields>
@@ -62,15 +63,29 @@ public final class DeviceRGBColor
 
     @param components Color components to convert.
     @since 0.1.0
-   */
+  */
   public static DeviceRGBColor get(
     PdfArray components
     )
   {
     return (components != null
       ? new DeviceRGBColor(components)
-      : Default
-      );
+      : Default);
+  }
+
+  /**
+    Gets the color corresponding to the specified system color.
+
+    @param color System color to convert.
+    @since 0.1.2
+  */
+  public static DeviceRGBColor get(
+    Color color
+    )
+  {
+    return (color != null
+      ? new DeviceRGBColor(color.getRed() / 255d, color.getGreen() / 255d, color.getBlue() / 255d)
+      : Default);
   }
   // </public>
   // </interface>

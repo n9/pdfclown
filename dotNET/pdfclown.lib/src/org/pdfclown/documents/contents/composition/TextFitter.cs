@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -73,14 +73,17 @@ namespace org.pdfclown.documents.contents.composition
     #region public
     /**
       <summary>Fits the text inside the specified width.</summary>
+      <param name="unspacedFitting">Whether fitting of unspaced text is allowed.</param>
       <returns>Whether the operation was successful.</returns>
     */
     public bool Fit(
+      bool unspacedFitting
       )
     {
       return Fit(
         endIndex + 1,
-        width
+        width,
+        unspacedFitting
         );
     }
 
@@ -88,11 +91,13 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Fits the text inside the specified width.</summary>
       <param name="index">Beginning index, inclusive.</param>
       <param name="width">Available width.</param>
+      <param name="unspacedFitting">Whether fitting of unspaced text is allowed.</param>
       <returns>Whether the operation was successful.</returns>
     */
     public bool Fit(
       int index,
-      double width
+      double width,
+      bool unspacedFitting
       )
     {
       beginIndex = index;
@@ -144,8 +149,12 @@ namespace org.pdfclown.documents.contents.composition
             // Remove the current (unfitting) word!
             fittedWidth -= wordWidth;
             wordEndIndex = index;
-            if(!hyphenation && wordEndIndex > beginIndex) // Enough non-hyphenated text fitted.
-              goto endFitting; // NOTE: I know GOTO is evil, but in this case using it sparingly avoids cumbersome boolean flag checks.
+            if(!hyphenation
+              && (wordEndIndex > beginIndex // There's fitted content.
+                || !unspacedFitting // There's no fitted content, but unspaced fitting isn't allowed.
+                || text[beginIndex] == ' ') // Unspaced fitting is allowed, but text starts with a space.
+              ) // Enough non-hyphenated text fitted.
+              goto endFitting;
 
             /*
               NOTE: We need to hyphenate the current (unfitting) word.

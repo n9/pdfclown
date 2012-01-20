@@ -1,11 +1,11 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
 
-  This file should be part of the source code distribution of "PDF Clown library" (the
-  Program): see the accompanying README files for more info.
+  This file should be part of the source code distribution of "PDF Clown library"
+  (the Program): see the accompanying README files for more info.
 
   This Program is free software; you can redistribute it and/or modify it under the terms
   of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -23,15 +23,19 @@
   this list of conditions.
 */
 
-namespace org.pdfclown.documents.contents.composition
+package org.pdfclown.documents.contents.composition;
+
+/**
+  Horizontal alignment.
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.2
+  @version 0.1.2, 01/20/12
+*/
+public enum XAlignmentEnum
 {
-  /**
-    <summary>Vertical alignment.</summary>
-  */
-  public enum AlignmentYEnum
-  {
-    Top,
-    Bottom,
-    Middle
-  };
-}
+  Left,
+  Right,
+  Center,
+  Justify
+};

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -76,7 +76,9 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {
         PdfBoolean openObject = (PdfBoolean)BaseDataObject[PdfName.Open];
-        return openObject != null ? openObject.RawValue : false;
+        return openObject != null
+          ? openObject.BooleanValue
+          : false;
       }
       set
       {BaseDataObject[PdfName.Open] = PdfBoolean.Get(value);}

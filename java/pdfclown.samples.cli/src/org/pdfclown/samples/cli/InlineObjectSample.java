@@ -5,10 +5,10 @@ import java.awt.geom.Rectangle2D;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.entities.Image;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.files.File;
@@ -21,7 +21,7 @@ import org.pdfclown.files.File;
   (XObject); its main advantage is to allow content reuse.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 public class InlineObjectSample
   extends Sample
@@ -61,11 +61,11 @@ public class InlineObjectSample
         new Rectangle2D.Double(
           Margin,
           Margin,
-          (float)pageSize.getWidth() - Margin * 2,
-          (float)pageSize.getHeight() - Margin * 2
+          pageSize.getWidth() - Margin * 2,
+          pageSize.getHeight() - Margin * 2
           ),
-        AlignmentXEnum.Justify,
-        AlignmentYEnum.Top
+        XAlignmentEnum.Justify,
+        YAlignmentEnum.Top
         );
       StandardType1Font bodyFont = new StandardType1Font(
         document,

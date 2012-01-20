@@ -141,7 +141,7 @@ namespace org.pdfclown.documents.interaction.forms.styles
           }
 
           BlockComposer blockComposer = new BlockComposer(composer);
-          blockComposer.Begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Middle);
+          blockComposer.Begin(frame,XAlignmentEnum.Center,YAlignmentEnum.Middle);
           composer.SetFillColor(ForeColor);
           composer.SetFont(
             new StandardType1Font(
@@ -249,7 +249,7 @@ namespace org.pdfclown.documents.interaction.forms.styles
           }
 
           BlockComposer blockComposer = new BlockComposer(composer);
-          blockComposer.Begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Middle);
+          blockComposer.Begin(frame,XAlignmentEnum.Center,YAlignmentEnum.Middle);
           composer.SetFillColor(ForeColor);
           composer.SetFont(
             new StandardType1Font(
@@ -321,7 +321,7 @@ namespace org.pdfclown.documents.interaction.forms.styles
         if(title != null)
         {
           BlockComposer blockComposer = new BlockComposer(composer);
-          blockComposer.Begin(frame,AlignmentXEnum.Center,AlignmentYEnum.Middle);
+          blockComposer.Begin(frame,XAlignmentEnum.Center,YAlignmentEnum.Middle);
           composer.SetFillColor(ForeColor);
           composer.SetFont(
             new StandardType1Font(
@@ -386,8 +386,8 @@ namespace org.pdfclown.documents.interaction.forms.styles
         composer.ShowText(
           (string)field.Value,
           new PointF(0,size.Height/2),
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Middle,
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Middle,
           0
           );
         composer.End();
@@ -442,8 +442,8 @@ namespace org.pdfclown.documents.interaction.forms.styles
         composer.ShowText(
           (string)field.Value,
           new PointF(0,size.Height/2),
-          AlignmentXEnum.Left,
-          AlignmentYEnum.Middle,
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Middle,
           0
           );
         composer.End();

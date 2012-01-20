@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,7 @@ import org.pdfclown.documents.contents.fonts.Font;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.3
-  @version 0.1.2, 12/30/11
+  @version 0.1.2, 01/20/12
 */
 final class TextFitter
 {
@@ -78,27 +78,34 @@ final class TextFitter
   // <public>
   /**
     Fits the text inside the specified width.
+
+    @param unspacedFitting Whether fitting of unspaced text is allowed.
     @return Whether the operation was successful.
   */
   public boolean fit(
+    boolean unspacedFitting
     )
   {
     return fit(
       endIndex + 1,
-      width
+      width,
+      unspacedFitting
       );
     }
 
   /**
     Fits the text inside the specified width.
+
     @param index Beginning index, inclusive.
     @param width Available width.
+    @param unspacedFitting Whether fitting of unspaced text is allowed.
     @return Whether the operation was successful.
     @version 0.0.4
   */
   public boolean fit(
     int index,
-    double width
+    double width,
+    boolean unspacedFitting
     )
   {
     beginIndex = index;
@@ -148,7 +155,11 @@ fitting:
           // Remove the current (unfitting) word!
           fittedWidth -= wordWidth;
           wordEndIndex = index;
-          if(!hyphenation && wordEndIndex > beginIndex) // Enough non-hyphenated text fitted.
+          if(!hyphenation
+            && (wordEndIndex > beginIndex // There's fitted content.
+              || !unspacedFitting // There's no fitted content, but unspaced fitting isn't allowed.
+              || text.charAt(beginIndex) == ' ') // Unspaced fitting is allowed, but text starts with a space.
+            ) // Enough non-hyphenated text fitted.
             break fitting;
 
           /*

@@ -6,8 +6,8 @@ import java.util.EnumSet;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
-import org.pdfclown.documents.contents.composition.AlignmentXEnum;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.files.File;
@@ -20,7 +20,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/20/12
 */
 public class StandardFontSample
   extends Sample
@@ -158,8 +158,8 @@ public class StandardFontSample
             composer.showText(
               fontFamily.name() + " (continued)",
               new Point2D.Double(pageSize.getWidth() - Margin, y),
-              AlignmentXEnum.Right,
-              AlignmentYEnum.Top,
+              XAlignmentEnum.Right,
+              YAlignmentEnum.Top,
               0
               );
             composer.setFont(font,FontBaseSize);

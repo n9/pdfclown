@@ -60,7 +60,7 @@ namespace org.pdfclown.samples.cli
         2.1. Goto-URI link.
       */
       {
-        blockComposer.Begin(new RectangleF(30,100,200,50),AlignmentXEnum.Left,AlignmentYEnum.Middle);
+        blockComposer.Begin(new RectangleF(30,100,200,50),XAlignmentEnum.Left,YAlignmentEnum.Middle);
         composer.SetFont(font,12);
         blockComposer.ShowText("Go-to-URI link");
         composer.SetFont(font,8);
@@ -122,7 +122,7 @@ namespace org.pdfclown.samples.cli
         attachment.Text = "File attachment annotation";
         attachment.IconType = annotations::FileAttachment.IconTypeEnum.PaperClip;
 
-        blockComposer.Begin(new RectangleF(30,170,200,50),AlignmentXEnum.Left,AlignmentYEnum.Middle);
+        blockComposer.Begin(new RectangleF(30,170,200,50),XAlignmentEnum.Left,YAlignmentEnum.Middle);
         composer.SetFont(font,12);
         blockComposer.ShowText("Go-to-embedded link");
         composer.SetFont(font,8);
@@ -166,7 +166,7 @@ namespace org.pdfclown.samples.cli
         2.3. Textual link.
       */
       {
-        blockComposer.Begin(new RectangleF(30,240,200,50),AlignmentXEnum.Left,AlignmentYEnum.Middle);
+        blockComposer.Begin(new RectangleF(30,240,200,50),XAlignmentEnum.Left,YAlignmentEnum.Middle);
         composer.SetFont(font,12);
         blockComposer.ShowText("Textual link");
         composer.SetFont(font,8);
@@ -179,12 +179,12 @@ namespace org.pdfclown.samples.cli
         {
           composer.BeginLocalState();
           composer.SetFont(font,10);
-          composer.SetFillColor(new DeviceRGBColor(0,0,1));
+          composer.SetFillColor(DeviceRGBColor.Get(System.Drawing.Color.Blue));
           composer.ShowText(
             "PDF Clown Project's repository at SourceForge.net",
             new PointF(240,265),
-            AlignmentXEnum.Left,
-            AlignmentYEnum.Middle,
+            XAlignmentEnum.Left,
+            YAlignmentEnum.Middle,
             0,
             new GoToURI(
               document,
@@ -194,8 +194,8 @@ namespace org.pdfclown.samples.cli
           composer.ShowText(
             "PDF Clown Project's home page",
             new PointF(240,285),
-            AlignmentXEnum.Left,
-            AlignmentYEnum.Bottom,
+            XAlignmentEnum.Left,
+            YAlignmentEnum.Bottom,
             -90,
             new GoToURI(
               document,

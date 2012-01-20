@@ -21,9 +21,9 @@ namespace org.pdfclown.samples.cli
   {
     private DeviceRGBColor[] textCharBoxColors = new DeviceRGBColor[]
       {
-        new DeviceRGBColor(200 / 255, 100 / 255, 100 / 255),
-        new DeviceRGBColor(100 / 255, 200 / 255, 100 / 255),
-        new DeviceRGBColor(100 / 255, 100 / 255, 200 / 255)
+        new DeviceRGBColor(200 / 255d, 100 / 255d, 100 / 255d),
+        new DeviceRGBColor(100 / 255d, 200 / 255d, 100 / 255d),
+        new DeviceRGBColor(100 / 255d, 100 / 255d, 200 / 255d)
       };
     private DeviceRGBColor textStringBoxColor = DeviceRGBColor.Black;
 

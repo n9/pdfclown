@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -216,7 +216,7 @@ namespace org.pdfclown.documents.interaction.annotations
       /**
         <summary>Gets/Sets the horizontal alignment of the icon inside the annotation box.</summary>
       */
-      public AlignmentXEnum AlignmentX
+      public XAlignmentEnum XAlignment
       {
         get
         {
@@ -225,13 +225,13 @@ namespace org.pdfclown.documents.interaction.annotations
           */
           PdfArray alignmentObject = (PdfArray)BaseDataObject[PdfName.A];
           if(alignmentObject == null)
-            return AlignmentXEnum.Center;
+            return XAlignmentEnum.Center;
 
           switch((int)Math.Round(((IPdfNumber)alignmentObject[0]).RawValue/.5))
           {
-            case 0: return AlignmentXEnum.Left;
-            case 2: return AlignmentXEnum.Right;
-            default: return AlignmentXEnum.Center;
+            case 0: return XAlignmentEnum.Left;
+            case 2: return XAlignmentEnum.Right;
+            default: return XAlignmentEnum.Center;
           }
         }
         set
@@ -255,8 +255,8 @@ namespace org.pdfclown.documents.interaction.annotations
           double objectValue;
           switch(value)
           {
-            case AlignmentXEnum.Left: objectValue = 0; break;
-            case AlignmentXEnum.Right: objectValue = 1; break;
+            case XAlignmentEnum.Left: objectValue = 0; break;
+            case XAlignmentEnum.Right: objectValue = 1; break;
             default: objectValue = 0.5; break;
           }
           alignmentObject[0] = new PdfReal(objectValue);
@@ -266,7 +266,7 @@ namespace org.pdfclown.documents.interaction.annotations
       /**
         <summary>Gets/Sets the vertical alignment of the icon inside the annotation box.</summary>
       */
-      public AlignmentYEnum AlignmentY
+      public YAlignmentEnum YAlignment
       {
         get
         {
@@ -275,13 +275,13 @@ namespace org.pdfclown.documents.interaction.annotations
           */
           PdfArray alignmentObject = (PdfArray)BaseDataObject[PdfName.A];
           if(alignmentObject == null)
-            return AlignmentYEnum.Middle;
+            return YAlignmentEnum.Middle;
 
           switch((int)Math.Round(((IPdfNumber)alignmentObject[1]).RawValue/.5))
           {
-            case 0: return AlignmentYEnum.Bottom;
-            case 2: return AlignmentYEnum.Top;
-            default: return AlignmentYEnum.Middle;
+            case 0: return YAlignmentEnum.Bottom;
+            case 2: return YAlignmentEnum.Top;
+            default: return YAlignmentEnum.Middle;
           }
         }
         set
@@ -305,8 +305,8 @@ namespace org.pdfclown.documents.interaction.annotations
           double objectValue;
           switch(value)
           {
-            case AlignmentYEnum.Bottom: objectValue = 0; break;
-            case AlignmentYEnum.Top: objectValue = 1; break;
+            case YAlignmentEnum.Bottom: objectValue = 0; break;
+            case YAlignmentEnum.Top: objectValue = 1; break;
             default: objectValue = 0.5; break;
           }
           alignmentObject[1] = new PdfReal(objectValue);
@@ -320,14 +320,10 @@ namespace org.pdfclown.documents.interaction.annotations
       {
         get
         {
-          /*
-            NOTE: 'FB' entry may be undefined.
-          */
           PdfBoolean borderExcludedObject = (PdfBoolean)BaseDataObject[PdfName.FB];
-          if(borderExcludedObject == null)
-            return false;
-
-          return borderExcludedObject.RawValue;
+          return borderExcludedObject != null
+            ? borderExcludedObject.RawValue
+            : false;
         }
         set
         {BaseDataObject[PdfName.FB] = PdfBoolean.Get(value);}

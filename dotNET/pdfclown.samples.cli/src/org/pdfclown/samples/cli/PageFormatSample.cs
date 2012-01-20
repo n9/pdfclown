@@ -69,8 +69,8 @@ namespace org.pdfclown.samples.cli
               pageSize.Width / 2,
               pageSize.Height / 2
               ), // Location: page center.
-            AlignmentXEnum.Center, // Places the text on horizontal center of the location.
-            AlignmentYEnum.Middle, // Places the text on vertical middle of the location.
+            XAlignmentEnum.Center, // Places the text on horizontal center of the location.
+            YAlignmentEnum.Middle, // Places the text on vertical middle of the location.
             45 // Rotates the text 45 degrees counterclockwise.
             );
           composer.Flush();

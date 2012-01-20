@@ -36,9 +36,9 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.ContentScanner;
 import org.pdfclown.documents.contents.FontResources;
 import org.pdfclown.documents.contents.Resources;
-import org.pdfclown.documents.contents.composition.AlignmentYEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.contents.objects.ContentObject;
@@ -64,7 +64,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/02/12
+  @version 0.1.2, 01/20/12
 */
 @PDF(VersionEnum.PDF12)
 public final class TextField
@@ -393,8 +393,8 @@ public final class TextField
       );
     composer.begin(
       textBox,
-      getJustification().toAlignmentX(),
-      isMultiline() ? AlignmentYEnum.Top : AlignmentYEnum.Middle
+      getJustification().toXAlignment(),
+      isMultiline() ? YAlignmentEnum.Top : YAlignmentEnum.Middle
       );
     if(scanner.getState().getFont() == null)
     {
