@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -66,7 +66,7 @@ import org.pdfclown.util.parsers.ParseException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 07/05/11
+  @version 0.1.2, 01/26/12
 */
 public final class ContentParser
   extends BaseParser
@@ -210,15 +210,14 @@ public final class ContentParser
       Buffer data = new Buffer();
       try
       {
+        byte prevByte = 0;
         while(true)
         {
-          byte c1 = stream.readByte();
-          byte c2 = stream.readByte();
-          if(c1 == 'E' && c2 == 'I')
+          byte curByte = stream.readByte();
+          if(prevByte == 'E' && curByte == 'I')
             break;
 
-          data.append(c1);
-          data.append(c2);
+          data.append(prevByte = curByte);
         }
       }
       catch(EOFException e)

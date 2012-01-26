@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -179,15 +179,14 @@ namespace org.pdfclown.documents.contents.tokens
         bytes::IInputStream stream = Stream;
         MoveNext();
         bytes::Buffer data = new bytes::Buffer();
+        byte prevByte = 0;
         while(true)
         {
-          byte c1 = (byte)stream.ReadByte();
-          byte c2 = (byte)stream.ReadByte();
-          if(c1 == 'E' && c2 == 'I')
+          byte curByte = (byte)stream.ReadByte();
+          if(prevByte == 'E' && curByte == 'I')
             break;
 
-          data.Append(c1);
-          data.Append(c2);
+          data.Append(prevByte = curByte);
         }
         body = new InlineImageBody(data);
       }
