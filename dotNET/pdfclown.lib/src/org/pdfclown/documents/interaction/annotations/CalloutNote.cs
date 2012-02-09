@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -74,15 +74,15 @@ namespace org.pdfclown.documents.interaction.annotations
         PdfArray baseDataObject = BaseDataObject;
         {
           double pageHeight = page.Box.Height;
-          baseDataObject.Add(new PdfReal(start.X));
-          baseDataObject.Add(new PdfReal(pageHeight - start.Y));
+          baseDataObject.Add(PdfReal.Get(start.X));
+          baseDataObject.Add(PdfReal.Get(pageHeight - start.Y));
           if(knee.HasValue)
           {
-            baseDataObject.Add(new PdfReal(knee.Value.X));
-            baseDataObject.Add(new PdfReal(pageHeight - knee.Value.Y));
+            baseDataObject.Add(PdfReal.Get(knee.Value.X));
+            baseDataObject.Add(PdfReal.Get(pageHeight - knee.Value.Y));
           }
-          baseDataObject.Add(new PdfReal(end.X));
-          baseDataObject.Add(new PdfReal(pageHeight - end.Y));
+          baseDataObject.Add(PdfReal.Get(end.X));
+          baseDataObject.Add(PdfReal.Get(pageHeight - end.Y));
         }
       }
 

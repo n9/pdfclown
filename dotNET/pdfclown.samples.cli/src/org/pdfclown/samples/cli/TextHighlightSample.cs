@@ -129,7 +129,7 @@ namespace org.pdfclown.samples.cli
       }
 
       // 3. Highlighted file serialization.
-      Serialize(file, false);
+      Serialize(file);
 
       return true;
     }

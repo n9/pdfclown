@@ -35,7 +35,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public class GraphicsSample
   extends Sample
@@ -61,7 +61,7 @@ public class GraphicsSample
     buildTextBlockPage4(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, false, "Composition elements", "applying the composition elements");
+    serialize(file, "Composition elements", "applying the composition elements");
 
     return true;
   }

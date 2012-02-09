@@ -88,7 +88,7 @@ namespace org.pdfclown.documents.interaction.forms.styles
             },
             new PdfDirectObject[]
             {
-              new PdfArray(new PdfDirectObject[]{new PdfReal(0.9412), new PdfReal(0.9412), new PdfReal(0.9412)}),
+              new PdfArray(new PdfDirectObject[]{PdfReal.Get(0.9412), PdfReal.Get(0.9412), PdfReal.Get(0.9412)}),
               new PdfArray(new PdfDirectObject[]{new PdfInteger(0), new PdfInteger(0), new PdfInteger(0)}),
               new PdfString("4")
             }
@@ -101,7 +101,7 @@ namespace org.pdfclown.documents.interaction.forms.styles
             },
             new PdfDirectObject[]
             {
-              new PdfReal(0.8),
+              PdfReal.Get(0.8),
               PdfName.S
             }
             );
@@ -198,7 +198,7 @@ namespace org.pdfclown.documents.interaction.forms.styles
             },
             new PdfDirectObject[]
             {
-              new PdfArray(new PdfDirectObject[]{new PdfReal(0.9412), new PdfReal(0.9412), new PdfReal(0.9412)}),
+              new PdfArray(new PdfDirectObject[]{PdfReal.Get(0.9412), PdfReal.Get(0.9412), PdfReal.Get(0.9412)}),
               new PdfArray(new PdfDirectObject[]{new PdfInteger(0), new PdfInteger(0), new PdfInteger(0)}),
               new PdfString("l")
             }
@@ -211,7 +211,7 @@ namespace org.pdfclown.documents.interaction.forms.styles
             },
             new PdfDirectObject[]
             {
-              new PdfReal(0.8),
+              PdfReal.Get(0.8),
               PdfName.S
             }
             );
@@ -475,7 +475,7 @@ namespace org.pdfclown.documents.interaction.forms.styles
           },
           new PdfDirectObject[]
           {
-            new PdfArray(new PdfDirectObject[]{new PdfReal(.9), new PdfReal(.9), new PdfReal(.9)}),
+            new PdfArray(new PdfDirectObject[]{PdfReal.Get(.9), PdfReal.Get(.9), PdfReal.Get(.9)}),
             new PdfArray(new PdfDirectObject[]{new PdfInteger(0), new PdfInteger(0), new PdfInteger(0)})
           }
           );

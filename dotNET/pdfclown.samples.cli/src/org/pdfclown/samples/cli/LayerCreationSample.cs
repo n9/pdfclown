@@ -26,7 +26,7 @@ namespace org.pdfclown.samples.cli
       Populate(document);
 
       // 3. PDF file serialization.
-      Serialize(file, false, "Layer", "inserting layers");
+      Serialize(file, "Layer", "inserting layers");
 
       return true;
     }

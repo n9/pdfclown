@@ -35,7 +35,7 @@ import org.pdfclown.util.parsers.ParseException;
   to exploit all the available access functionalities.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 02/04/12
 */
 public class ParsingSample
   extends Sample
@@ -63,10 +63,8 @@ public class ParsingSample
     Information info = document.getInformation();
     if(info != null)
     {
-      System.out.println("Author: " + info.getAuthor());
-      System.out.println("Title: " + info.getTitle());
-      System.out.println("Subject: " + info.getSubject());
-      System.out.println("CreationDate: " + info.getCreationDate());
+      for(Map.Entry<PdfName,Object> infoEntry : info.entrySet())
+      {System.out.println(infoEntry.getKey() + ": " + infoEntry.getValue());}
     }
     else
     {System.out.println("No information available (Info dictionary doesn't exist).");}

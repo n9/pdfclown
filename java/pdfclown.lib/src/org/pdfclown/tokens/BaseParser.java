@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,7 +47,7 @@ import org.pdfclown.util.parsers.PostScriptParser;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 02/04/12
 */
 public class BaseParser
   extends PostScriptParser
@@ -144,7 +144,7 @@ public class BaseParser
       }
       case Literal:
         if(getToken() instanceof Date)
-          return new PdfDate((Date)getToken());
+          return PdfDate.get((Date)getToken());
         else
           return new PdfTextString(
             Encoding.encode((String)getToken())
@@ -155,7 +155,7 @@ public class BaseParser
           PdfString.SerializationModeEnum.Hex
           );
       case Real:
-        return new PdfReal((Double)getToken());
+        return PdfReal.get((Double)getToken());
       case Boolean:
         return PdfBoolean.get((Boolean)getToken());
       case Null:

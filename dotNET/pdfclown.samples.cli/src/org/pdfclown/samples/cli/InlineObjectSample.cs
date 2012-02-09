@@ -36,7 +36,7 @@ namespace org.pdfclown.samples.cli
       Populate(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, false, "Inline image", "embedding an image within a content stream");
+      Serialize(file, "Inline image", "embedding an image within a content stream");
 
       return true;
     }

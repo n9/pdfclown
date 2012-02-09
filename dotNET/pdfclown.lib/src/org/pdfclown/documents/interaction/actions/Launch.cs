@@ -25,7 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
-using org.pdfclown.documents.fileSpecs;
+using org.pdfclown.documents.files;
 using org.pdfclown.objects;
 
 using System;
@@ -44,7 +44,7 @@ namespace org.pdfclown.documents.interaction.actions
     /**
       <summary>Windows-specific launch parameters [PDF:1.6:8.5.3].</summary>
     */
-    public class WinParametersObject
+    public class WinTarget
       : PdfObjectWrapper<PdfDictionary>
     {
       #region types
@@ -70,7 +70,7 @@ namespace org.pdfclown.documents.interaction.actions
       #endregion
 
       #region constructors
-      static WinParametersObject()
+      static WinTarget()
       {
         OperationEnumCodes = new Dictionary<OperationEnum,PdfString>();
         OperationEnumCodes[OperationEnum.Open] = new PdfString("open");
@@ -108,27 +108,27 @@ namespace org.pdfclown.documents.interaction.actions
 
       #region dynamic
       #region constructors
-      public WinParametersObject(
+      public WinTarget(
         Document context,
         string fileName
         ) : base(context, new PdfDictionary())
       {FileName = fileName;}
 
-      public WinParametersObject(
+      public WinTarget(
         Document context,
         string fileName,
         OperationEnum operation
         ) : this(context, fileName)
       {Operation = operation;}
 
-      public WinParametersObject(
+      public WinTarget(
         Document context,
         string fileName,
         string parameterString
         ) : this(context, fileName)
       {ParameterString = parameterString;}
 
-      internal WinParametersObject(
+      internal WinTarget(
         PdfDirectObject baseObject
         ) : base(baseObject)
       {}
@@ -200,12 +200,16 @@ namespace org.pdfclown.documents.interaction.actions
     #region dynamic
     #region constructors
     /**
-      <summary>Creates a new action within the given document context.</summary>
+      <summary>Creates a launcher.</summary>
+      <param name="context">Document context.</param>
+      <param name="target">Either a <see cref="FileSpecification"/> or a <see cref="WinTarget"/>
+      representing either an application or a document.</param>
     */
     public Launch(
-      Document context
+      Document context,
+      PdfObjectWrapper target
       ) : base(context, PdfName.Launch)
-    {}
+    {Target = target;}
 
     internal Launch(
       PdfDirectObject baseObject
@@ -219,20 +223,6 @@ namespace org.pdfclown.documents.interaction.actions
       Document context
       )
     {throw new NotImplementedException();}
-
-    /**
-      <summary>Gets/Sets the application to be launched or the document to be opened or printed.</summary>
-    */
-    public FileSpec FileSpec
-    {
-      get
-      {
-        PdfDirectObject fileSpecObject = BaseDataObject[PdfName.F];
-        return fileSpecObject != null ? new FileSpec(fileSpecObject, null) : null;
-      }
-      set
-      {BaseDataObject[PdfName.F] = value.BaseObject;}
-    }
 
     /**
       <summary>Gets/Sets the action options.</summary>
@@ -260,17 +250,30 @@ namespace org.pdfclown.documents.interaction.actions
     }
 
     /**
-      <summary>Gets/Sets the Windows-specific launch parameters.</summary>
+      <summary>Gets/Sets the application to be launched or the document to be opened or printed.
+      </summary>
     */
-    public WinParametersObject WinParameters
+    public PdfObjectWrapper Target
     {
       get
       {
-        PdfDictionary parametersObject = (PdfDictionary)BaseDataObject[PdfName.Win];
-        return parametersObject != null ? new WinParametersObject(parametersObject) : null;
+        PdfDirectObject targetObject;
+        if((targetObject = BaseDataObject[PdfName.F]) != null)
+          return FileSpecification.Wrap(targetObject, null);
+        else if((targetObject = BaseDataObject[PdfName.Win]) != null)
+          return new WinTarget(targetObject);
+        else
+          return null;
       }
       set
-      {BaseDataObject[PdfName.Win] = value.BaseObject;}
+      {
+        if(value is FileSpecification)
+        {BaseDataObject[PdfName.F] = ((FileSpecification)value).BaseObject;}
+        else if(value is WinTarget)
+        {BaseDataObject[PdfName.Win] = ((WinTarget)value).BaseObject;}
+        else
+          throw new ArgumentException("MUST be either FileSpecification or WinTarget");
+      }
     }
     #endregion
     #endregion

@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/25/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF12)
 public abstract class CompositeFont
@@ -556,12 +556,12 @@ public abstract class CompositeFont
       // ItalicAngle.
       fontDescriptor.put(
         PdfName.ItalicAngle,
-        new PdfReal(metrics.italicAngle)
+        PdfReal.get(metrics.italicAngle)
         );
       // Ascent.
       fontDescriptor.put(
         PdfName.Ascent,
-        new PdfReal(
+        PdfReal.get(
           metrics.ascender == 0
             ? metrics.sTypoAscender * metrics.unitNorm
             : metrics.ascender * metrics.unitNorm
@@ -570,7 +570,7 @@ public abstract class CompositeFont
       // Descent.
       fontDescriptor.put(
         PdfName.Descent,
-        new PdfReal(
+        PdfReal.get(
           metrics.descender == 0
             ? metrics.sTypoDescender * metrics.unitNorm
             : metrics.descender * metrics.unitNorm
@@ -579,12 +579,12 @@ public abstract class CompositeFont
       // Leading.
       fontDescriptor.put(
         PdfName.Leading,
-        new PdfReal(metrics.sTypoLineGap * metrics.unitNorm)
+        PdfReal.get(metrics.sTypoLineGap * metrics.unitNorm)
         );
       // CapHeight.
       fontDescriptor.put(
         PdfName.CapHeight,
-        new PdfReal(metrics.sCapHeight * metrics.unitNorm)
+        PdfReal.get(metrics.sCapHeight * metrics.unitNorm)
         );
       // StemV.
       /*

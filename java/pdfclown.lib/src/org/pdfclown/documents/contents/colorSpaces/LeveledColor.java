@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -37,7 +37,7 @@ import org.pdfclown.objects.PdfReal;
   Color value defined by numeric-level components.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 02/04/12
 */
 public abstract class LeveledColor
   extends Color<PdfArray>
@@ -107,7 +107,7 @@ public abstract class LeveledColor
     int index,
     double value
     )
-  {getComponents().set(index, new PdfReal(normalizeComponent(value)));}
+  {getComponents().set(index, PdfReal.get(normalizeComponent(value)));}
   // </protected>
   // </interface>
   // </dynamic>

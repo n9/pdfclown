@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,7 +43,7 @@ import org.pdfclown.util.math.SquareMatrix;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF10)
 public final class ModifyCTM
@@ -96,12 +96,12 @@ public final class ModifyCTM
   {
     super(
       Operator,
-      new PdfReal(a),
-      new PdfReal(b),
-      new PdfReal(c),
-      new PdfReal(d),
-      new PdfReal(e),
-      new PdfReal(f)
+      PdfReal.get(a),
+      PdfReal.get(b),
+      PdfReal.get(c),
+      PdfReal.get(d),
+      PdfReal.get(e),
+      PdfReal.get(f)
       );
   }
 

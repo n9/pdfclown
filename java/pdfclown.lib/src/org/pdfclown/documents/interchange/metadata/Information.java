@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,29 +25,35 @@
 
 package org.pdfclown.documents.interchange.metadata;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.objects.PdfDate;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfSimpleObject;
-import org.pdfclown.objects.PdfTextString;
+import org.pdfclown.util.MapEntry;
 import org.pdfclown.util.NotImplementedException;
 
 /**
   Document information [PDF:1.6:10.2.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Information
   extends PdfObjectWrapper<PdfDictionary>
+  implements Map<PdfName,Object>
 {
   // <class>
   // <dynamic>
@@ -125,76 +131,149 @@ public final class Information
   public void setAuthor(
     String value
     )
-  {
-    onChange();
-    getBaseDataObject().put(PdfName.Author, PdfTextString.get(value));
-  }
+  {put(PdfName.Author, value);}
 
   public void setCreationDate(
     Date value
     )
-  {
-    onChange();
-    getBaseDataObject().put(PdfName.CreationDate, PdfDate.get(value));
-  }
+  {put(PdfName.CreationDate, value);}
 
   public void setCreator(
     String value
     )
-  {
-    onChange();
-    getBaseDataObject().put(PdfName.Creator, PdfTextString.get(value));
-  }
+  {put(PdfName.Creator, value);}
 
   public void setKeywords(
     String value
     )
-  {
-    onChange();
-    getBaseDataObject().put(PdfName.Keywords, PdfTextString.get(value));
-  }
+  {put(PdfName.Keywords, value);}
 
   public void setModificationDate(
     Date value
     )
-  {getBaseDataObject().put(PdfName.ModDate, PdfDate.get(value));}
+  {put(PdfName.ModDate, value);}
 
   public void setProducer(
     String value
     )
-  {
-    onChange();
-    getBaseDataObject().put(PdfName.Producer, PdfTextString.get(value));
-  }
+  {put(PdfName.Producer, value);}
 
   public void setSubject(
     String value
     )
-  {
-    onChange();
-    getBaseDataObject().put(PdfName.Subject, PdfTextString.get(value));
-  }
+  {put(PdfName.Subject, value);}
 
   public void setTitle(
     String value
     )
-  {
-    onChange();
-    getBaseDataObject().put(PdfName.Title, PdfTextString.get(value));
-  }
-  // </public>
+  {put(PdfName.Title, value);}
 
-  // <private>
-  private Object get(
-    PdfName key
+  // <Map>
+  @Override
+  public void clear(
+    )
+  {
+    getBaseDataObject().clear();
+    setModificationDate(new Date());
+  }
+
+  @Override
+  public boolean containsKey(
+    Object key
+    )
+  {return getBaseDataObject().containsKey(key);}
+
+  @Override
+  public boolean containsValue(
+    Object value
+    )
+  {
+    for(PdfDirectObject item : getBaseDataObject().values())
+    {
+      if(value.equals(PdfSimpleObject.getValue(item)))
+        return true;
+    }
+    return false;
+  }
+
+  @Override
+  public Set<java.util.Map.Entry<PdfName,Object>> entrySet(
+    )
+  {
+    Set<Map.Entry<PdfName,Object>> entrySet = new HashSet<Map.Entry<PdfName,Object>>();
+    for(PdfName key : getBaseDataObject().keySet())
+    {entrySet.add(new MapEntry<PdfName,Object>(key, get(key)));}
+    return entrySet;
+  }
+
+  @Override
+  public Object get(
+    Object key
     )
   {return PdfSimpleObject.getValue(getBaseDataObject().get(key));}
 
-  //TODO: Listen to baseDataObject's onChange notification?
-  private void onChange(
+  @Override
+  public boolean isEmpty(
+    )
+  {return getBaseDataObject().isEmpty();}
+
+  @Override
+  public Set<PdfName> keySet(
+    )
+  {return getBaseDataObject().keySet();}
+
+  @Override
+  public Object put(
+    PdfName key,
+    Object value
     )
   {
-    if(!getBaseDataObject().isUpdated())
+    onChange(key);
+    return PdfSimpleObject.getValue(getBaseDataObject().put(key, PdfSimpleObject.get(value)));
+  }
+
+  @Override
+  public void putAll(
+    Map<? extends PdfName,? extends Object> map
+    )
+  {
+    for(Map.Entry<? extends PdfName,? extends Object> entry : map.entrySet())
+    {put(entry.getKey(), entry.getValue());}
+  }
+
+  @Override
+  public Object remove(
+    Object key
+    )
+  {
+    onChange((PdfName)key);
+    return PdfSimpleObject.getValue(getBaseDataObject().remove(key));
+  }
+
+  @Override
+  public int size(
+    )
+  {return getBaseDataObject().size();}
+
+  @Override
+  public Collection<Object> values(
+    )
+  {
+    List<Object> values = new ArrayList<Object>();
+    for(PdfDirectObject item : getBaseDataObject().values())
+    {values.add(PdfSimpleObject.getValue(item));}
+    return values;
+  }
+  // </Map>
+  // </public>
+
+  // <private>
+  //TODO: Listen to baseDataObject's onChange notification?
+  private void onChange(
+    PdfName key
+    )
+  {
+    if(!getBaseDataObject().isUpdated() && !PdfName.ModDate.equals(key))
     {setModificationDate(new Date());}
   }
   // </private>

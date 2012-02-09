@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -419,7 +419,7 @@ namespace org.pdfclown.documents.interaction.navigation.page
         if(value == DefaultDuration)
         {BaseDataObject.Remove(PdfName.D);}
         else
-        {BaseDataObject[PdfName.D] = new PdfReal(value);}
+        {BaseDataObject[PdfName.D] = PdfReal.Get(value);}
       }
     }
 
@@ -473,7 +473,7 @@ namespace org.pdfclown.documents.interaction.navigation.page
         if(value == DefaultScale)
         {BaseDataObject.Remove(PdfName.SS);}
         else
-        {BaseDataObject[PdfName.SS] = new PdfReal(value);}
+        {BaseDataObject[PdfName.SS] = PdfReal.Get(value);}
       }
     }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,7 +45,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF10)
 public final class DrawCurve
@@ -110,12 +110,12 @@ public final class DrawCurve
   {
     super(
       FullOperator,
-      new PdfReal(control1X),
-      new PdfReal(control1Y),
-      new PdfReal(control2X),
-      new PdfReal(control2Y),
-      new PdfReal(pointX),
-      new PdfReal(pointY)
+      PdfReal.get(control1X),
+      PdfReal.get(control1Y),
+      PdfReal.get(control2X),
+      PdfReal.get(control2Y),
+      PdfReal.get(pointX),
+      PdfReal.get(pointY)
       );
   }
 
@@ -135,10 +135,10 @@ public final class DrawCurve
   {
     super(
       operator.equals(InitialOperator) ? InitialOperator : FinalOperator,
-      new PdfReal(control.getX()),
-      new PdfReal(control.getY()),
-      new PdfReal(point.getX()),
-      new PdfReal(point.getY())
+      PdfReal.get(control.getX()),
+      PdfReal.get(control.getY()),
+      PdfReal.get(point.getX()),
+      PdfReal.get(point.getY())
       );
   }
 
@@ -238,13 +238,13 @@ public final class DrawCurve
     if(operator.equals(FinalOperator))
     {
       operator = FullOperator;
-      operands.add(0,new PdfReal(value.getX()));
-      operands.add(1,new PdfReal(value.getY()));
+      operands.add(0,PdfReal.get(value.getX()));
+      operands.add(1,PdfReal.get(value.getY()));
     }
     else
     {
-      operands.set(0, new PdfReal(value.getX()));
-      operands.set(1, new PdfReal(value.getY()));
+      operands.set(0, PdfReal.get(value.getX()));
+      operands.set(1, PdfReal.get(value.getY()));
     }
   }
 
@@ -257,13 +257,13 @@ public final class DrawCurve
   {
     if(operator.equals(FinalOperator))
     {
-      operands.set(0, new PdfReal(value.getX()));
-      operands.set(1, new PdfReal(value.getY()));
+      operands.set(0, PdfReal.get(value.getX()));
+      operands.set(1, PdfReal.get(value.getY()));
     }
     else
     {
-      operands.set(2, new PdfReal(value.getX()));
-      operands.set(3, new PdfReal(value.getY()));
+      operands.set(2, PdfReal.get(value.getX()));
+      operands.set(3, PdfReal.get(value.getY()));
     }
   }
 
@@ -276,13 +276,13 @@ public final class DrawCurve
   {
     if(operator.equals(FullOperator))
     {
-      operands.set(4, new PdfReal(value.getX()));
-      operands.set(5, new PdfReal(value.getY()));
+      operands.set(4, PdfReal.get(value.getX()));
+      operands.set(5, PdfReal.get(value.getY()));
     }
     else
     {
-      operands.set(2, new PdfReal(value.getX()));
-      operands.set(3, new PdfReal(value.getY()));
+      operands.set(2, PdfReal.get(value.getX()));
+      operands.set(3, PdfReal.get(value.getY()));
     }
   }
   // </public>

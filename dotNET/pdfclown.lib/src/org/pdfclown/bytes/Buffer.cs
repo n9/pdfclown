@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -164,10 +164,6 @@ namespace org.pdfclown.bytes
       {return data.Length;}
     }
 
-    public void Clean(
-      )
-    {dirty = false;}
-
     public IBuffer Clone(
       )
     {
@@ -200,6 +196,8 @@ namespace org.pdfclown.bytes
     {
       get
       {return dirty;}
+      set
+      {dirty = value;}
     }
 
     public byte[] Encode(

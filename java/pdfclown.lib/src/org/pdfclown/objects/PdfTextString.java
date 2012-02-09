@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -37,13 +37,17 @@ import org.pdfclown.tokens.CharsetName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.1, 04/28/11
+  @version 0.1.2, 01/29/12
 */
 public final class PdfTextString
   extends PdfString
 {
   // <class>
   // <static>
+  // <fields>
+  public static final PdfTextString Empty = new PdfTextString("");
+  // </fields>
+
   // <interface>
   // <public>
   /**
@@ -68,10 +72,6 @@ public final class PdfTextString
   // </fields>
 
   // <constructors>
-  public PdfTextString(
-    )
-  {}
-
   public PdfTextString(
     byte[] rawValue
     )

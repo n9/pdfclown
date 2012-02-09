@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -464,23 +464,23 @@ namespace org.pdfclown.documents.contents.fonts
           new drawing::PointF(metrics.XMax * metrics.UnitNorm, metrics.YMax * metrics.UnitNorm)
           ).BaseDataObject;
         // ItalicAngle.
-        fontDescriptor[PdfName.ItalicAngle] = new PdfReal(metrics.ItalicAngle);
+        fontDescriptor[PdfName.ItalicAngle] = PdfReal.Get(metrics.ItalicAngle);
         // Ascent.
-        fontDescriptor[PdfName.Ascent] = new PdfReal(
+        fontDescriptor[PdfName.Ascent] = PdfReal.Get(
           metrics.Ascender == 0
             ? metrics.STypoAscender * metrics.UnitNorm
             : metrics.Ascender * metrics.UnitNorm
           );
         // Descent.
-        fontDescriptor[PdfName.Descent] = new PdfReal(
+        fontDescriptor[PdfName.Descent] = PdfReal.Get(
           metrics.Descender == 0
             ? metrics.STypoDescender * metrics.UnitNorm
             : metrics.Descender * metrics.UnitNorm
           );
         // Leading.
-        fontDescriptor[PdfName.Leading] = new PdfReal(metrics.STypoLineGap * metrics.UnitNorm);
+        fontDescriptor[PdfName.Leading] = PdfReal.Get(metrics.STypoLineGap * metrics.UnitNorm);
         // CapHeight.
-        fontDescriptor[PdfName.CapHeight] = new PdfReal(metrics.SCapHeight * metrics.UnitNorm);
+        fontDescriptor[PdfName.CapHeight] = PdfReal.Get(metrics.SCapHeight * metrics.UnitNorm);
         // StemV.
         /*
           NOTE: '100' is just a rule-of-thumb value, 'cause I've still to solve the

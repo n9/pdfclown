@@ -41,9 +41,7 @@
     <Compile Include="src\org\pdfclown\samples\cli\BasicTextExtractionSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\BookmarksParsingSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\ComplexTypesettingSample.cs" />
-    <Compile Include="src\org\pdfclown\samples\cli\ContentRemovalSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\ContentScanningSample.cs" />
-    <Compile Include="src\org\pdfclown\samples\cli\ContentTweakingSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\GraphicsSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\HelloWorldSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\ImageExtractionSample.cs" />
@@ -67,7 +65,6 @@
     <Compile Include="src\org\pdfclown\samples\cli\StandardFontSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\TextFrameSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\TextInfoExtractionSample.cs" />
-    <Compile Include="src\org\pdfclown\samples\cli\TransformationSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\TypesettingSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\Utils.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\WatermarkSample.cs" />
@@ -81,6 +78,7 @@
     <Compile Include="src\org\pdfclown\samples\cli\AcroFormFillingSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\DataSearchSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\PageCombinationSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\StreamExternalizationSample.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PDFClownCLISamples.exe.config">

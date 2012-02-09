@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,7 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
-using org.pdfclown.documents.fileSpecs;
+using org.pdfclown.documents.files;
 using org.pdfclown.objects;
 
 using System;
@@ -38,7 +38,8 @@ namespace org.pdfclown.documents.multimedia
   */
   [PDF(VersionEnum.PDF12)]
   public sealed class Movie
-    : PdfObjectWrapper<PdfDictionary>
+    : PdfObjectWrapper<PdfDictionary>,
+      IFileResource
   {
     #region dynamic
     #region constructors
@@ -47,9 +48,9 @@ namespace org.pdfclown.documents.multimedia
     */
     public Movie(
       Document context,
-      FileSpec fileSpec
+      FileSpecification dataFile
       ) : base(context, new PdfDictionary())
-    {FileSpec = fileSpec;}
+    {DataFile = dataFile;}
 
     internal Movie(
       PdfDirectObject baseObject
@@ -64,16 +65,15 @@ namespace org.pdfclown.documents.multimedia
       )
     {throw new NotImplementedException();}
 
-    /**
-      <summary>Gets/Sets the file associated with this movie.</summary>
-    */
-    public FileSpec FileSpec
+    #region IFileResource
+    public FileSpecification DataFile
     {
       get
-      {return new FileSpec(BaseDataObject[PdfName.F], null);}
+      {return FileSpecification.Wrap(BaseDataObject[PdfName.F], null);}
       set
       {BaseDataObject[PdfName.F] = value.BaseObject;}
     }
+    #endregion
     #endregion
     #endregion
     #endregion

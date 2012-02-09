@@ -32,7 +32,7 @@ namespace org.pdfclown.samples.cli
       Populate(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, false, "AcroForm", "inserting AcroForm fields");
+      Serialize(file, "AcroForm", "inserting AcroForm fields");
 
       return true;
     }

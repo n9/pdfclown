@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,6 +23,7 @@
   this list of conditions.
 */
 
+using org.pdfclown.files;
 using org.pdfclown.objects;
 using org.pdfclown.util.math;
 
@@ -69,7 +70,7 @@ namespace org.pdfclown.documents.functions
       if(baseObject == null)
         return null;
 
-      PdfDataObject dataObject = files.File.Resolve(baseObject);
+      PdfDataObject dataObject = File.Resolve(baseObject);
       PdfDictionary dictionary = GetDictionary(dataObject);
       int functionType = ((PdfInteger)dictionary[PdfName.FunctionType]).RawValue;
       switch(functionType)
@@ -157,7 +158,7 @@ namespace org.pdfclown.documents.functions
           index < length;
           index++
           )
-        {outputs.Add(new PdfReal(outputValues[index]));}
+        {outputs.Add(PdfReal.Get(outputValues[index]));}
       }
       return outputs;
     }

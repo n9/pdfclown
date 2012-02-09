@@ -15,7 +15,7 @@ import org.pdfclown.objects.PdfName;
   through their resource names.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/29/12
 */
 public class ImageSubstitutionSample
   extends Sample
@@ -39,7 +39,7 @@ public class ImageSubstitutionSample
     replaceImages(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, true, "Image substitution", "substituting a document's images");
+    serialize(file, "Image substitution", "substituting a document's images");
 
     return true;
   }

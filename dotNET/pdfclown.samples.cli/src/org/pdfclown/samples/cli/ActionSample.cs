@@ -41,11 +41,7 @@ namespace org.pdfclown.samples.cli
         */
         documentActions.OnOpen = new GoToLocal(
           document,
-          new LocalDestination(
-            document.Pages[1], // Page 2 (zero-based index).
-            Destination.ModeEnum.Fit,
-            null
-            )
+          new LocalDestination(document.Pages[1]) // Page 2 (zero-based index).
           );
       }
       // 2.2. Remote go-to.
@@ -69,7 +65,7 @@ namespace org.pdfclown.samples.cli
       }
 
       // 3. Serialize the PDF file!
-      Serialize(file, true, "Actions", "applying actions");
+      Serialize(file, "Actions", "applying actions");
 
       return true;
     }

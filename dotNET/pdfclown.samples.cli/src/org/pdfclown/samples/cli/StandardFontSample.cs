@@ -31,7 +31,7 @@ namespace org.pdfclown.samples.cli
       Populate(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, false, "Standard Type 1 fonts", "applying standard Type 1 fonts");
+      Serialize(file, "Standard Type 1 fonts", "applying standard Type 1 fonts");
 
       return true;
     }

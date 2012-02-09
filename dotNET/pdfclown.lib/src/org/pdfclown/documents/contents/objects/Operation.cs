@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.bytes;
+using org.pdfclown.files;
 using org.pdfclown.objects;
 using org.pdfclown.tokens;
 
@@ -280,7 +281,7 @@ namespace org.pdfclown.documents.contents.objects
     {
       if(operands != null)
       {
-        files.File fileContext = context.File;
+        File fileContext = context.File;
         foreach(PdfDirectObject operand in operands)
         {operand.WriteTo(stream, fileContext); stream.Write(Chunk.Space);}
       }

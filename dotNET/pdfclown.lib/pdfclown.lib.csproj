@@ -169,10 +169,6 @@
     <Compile Include="src\org\pdfclown\documents\contents\TextRenderModeEnum.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\TextStyle.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\XObjectResources.cs" />
-    <Compile Include="src\org\pdfclown\documents\fileSpecs\EmbeddedFile.cs" />
-    <Compile Include="src\org\pdfclown\documents\fileSpecs\FileSpec.cs" />
-    <Compile Include="src\org\pdfclown\documents\fileSpecs\namespace.cs" />
-    <Compile Include="src\org\pdfclown\documents\fileSpecs\RelatedFiles.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\actions\Action.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\actions\ChainedActions.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\actions\DoTransition.cs" />
@@ -414,6 +410,14 @@
     <Compile Include="src\org\pdfclown\documents\contents\composition\YAlignmentEnum.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\composition\LineAlignmentEnum.cs" />
     <Compile Include="src\org\pdfclown\util\math\geom\GeomUtils.cs" />
+    <Compile Include="src\org\pdfclown\documents\files\EmbeddedFile.cs" />
+    <Compile Include="src\org\pdfclown\documents\files\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\files\RelatedFiles.cs" />
+    <Compile Include="src\org\pdfclown\documents\files\FullFileSpecification.cs" />
+    <Compile Include="src\org\pdfclown\documents\files\FileSpecification.cs" />
+    <Compile Include="src\org\pdfclown\documents\files\IResourceFile.cs" />
+    <Compile Include="src\org\pdfclown\documents\files\SimpleFileSpecification.cs" />
+    <Compile Include="src\org\pdfclown\files\FileIdentifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />

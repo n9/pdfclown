@@ -4,7 +4,7 @@ using org.pdfclown.documents.contents.colorSpaces;
 using org.pdfclown.documents.contents.composition;
 using entities = org.pdfclown.documents.contents.entities;
 using org.pdfclown.documents.contents.fonts;
-using org.pdfclown.documents.fileSpecs;
+using org.pdfclown.documents.files;
 using org.pdfclown.documents.interaction.actions;
 using annotations = org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.documents.interaction.navigation.document;
@@ -33,7 +33,7 @@ namespace org.pdfclown.samples.cli
       BuildLinks(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, true, "Link annotations", "applying link annotations");
+      Serialize(file, "Link annotations", "applying link annotations");
 
       return true;
     }
@@ -110,7 +110,7 @@ namespace org.pdfclown.samples.cli
         annotations::FileAttachment attachment = new annotations::FileAttachment(
           page,
           new Rectangle(0, -20, 10, 10),
-          new FileSpec(
+          FileSpecification.Get(
             EmbeddedFile.Get(
               document,
               filePath
@@ -140,7 +140,7 @@ namespace org.pdfclown.samples.cli
           new Rectangle(240,170,100,50),
           new GoToEmbedded(
             document,
-            new GoToEmbedded.TargetObject(
+            new GoToEmbedded.PathElement(
               document,
               fileAttachmentPageIndex, // Page of the current document containing the file attachment annotation of the target document.
               fileAttachmentName, // Name of the file attachment annotation corresponding to the target document.
@@ -150,7 +150,8 @@ namespace org.pdfclown.samples.cli
               document,
               1, // Show the page 2 of the target document.
               Destination.ModeEnum.Fit, // Show the target document page entirely on the screen.
-              null // No view parameters.
+              null,
+              null
               ) // The destination must be within the target document.
             )
           );

@@ -1,5 +1,5 @@
 using org.pdfclown.documents;
-using org.pdfclown.documents.contents.colorSpaces;
+using colors = org.pdfclown.documents.contents.colorSpaces;
 using org.pdfclown.documents.contents.composition;
 using fonts = org.pdfclown.documents.contents.fonts;
 using org.pdfclown.files;
@@ -25,7 +25,7 @@ namespace org.pdfclown.samples.cli
       Populate(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, false, "Text frame", "getting the actual bounding box of text shown");
+      Serialize(file, "Text frame", "getting the actual bounding box of text shown");
 
       return true;
     }
@@ -44,6 +44,9 @@ namespace org.pdfclown.samples.cli
       // 2. Create a content composer for the page!
       PrimitiveComposer composer = new PrimitiveComposer(page);
 
+      colors::Color textColor = new colors::DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d);
+      composer.SetFillColor(textColor);
+
       BlockComposer blockComposer = new BlockComposer(composer);
       blockComposer.Begin(new RectangleF(300, 400, 200, 100), XAlignmentEnum.Left, YAlignmentEnum.Middle);
       composer.SetFont(
@@ -55,11 +58,8 @@ namespace org.pdfclown.samples.cli
           ),
         12
         );
-      composer.SetFillColor(new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d));
       blockComposer.ShowText("PrimitiveComposer.ShowText(...) methods return the actual bounding box of the text shown, allowing to precisely determine its location on the page.");
       blockComposer.End();
-
-      composer.SetStrokeColor(composer.State.FillColor);
 
       // 3. Inserting contents...
       // Set the font to use!

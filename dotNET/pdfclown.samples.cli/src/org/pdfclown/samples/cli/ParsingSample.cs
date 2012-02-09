@@ -34,10 +34,8 @@ namespace org.pdfclown.samples.cli
       Information info = document.Information;
       if(info != null)
       {
-        Console.WriteLine("Author: " + info.Author);
-        Console.WriteLine("Title: " + info.Title);
-        Console.WriteLine("Subject: " + info.Subject);
-        Console.WriteLine("CreationDate: " + info.CreationDate);
+        foreach(KeyValuePair<PdfName,object> infoEntry in info)
+        {Console.WriteLine(infoEntry.Key + ": " + infoEntry.Value);}
       }
       else
       {Console.WriteLine("No information available (Info dictionary doesn't exist).");}

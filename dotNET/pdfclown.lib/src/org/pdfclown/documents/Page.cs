@@ -309,7 +309,7 @@ namespace org.pdfclown.documents
         return durationObject == null ? 0 : durationObject.RawValue;
       }
       set
-      {BaseDataObject[PdfName.Dur] = (value == 0 ? null : new PdfReal(value));}
+      {BaseDataObject[PdfName.Dur] = (value == 0 ? null : PdfReal.Get(value));}
     }
 
     /**

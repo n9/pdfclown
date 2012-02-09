@@ -16,8 +16,8 @@ import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.composition.XAlignmentEnum;
 import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
-import org.pdfclown.documents.fileSpecs.EmbeddedFile;
-import org.pdfclown.documents.fileSpecs.FileSpec;
+import org.pdfclown.documents.files.EmbeddedFile;
+import org.pdfclown.documents.files.FileSpecification;
 import org.pdfclown.documents.interaction.actions.GoToEmbedded;
 import org.pdfclown.documents.interaction.actions.GoToURI;
 import org.pdfclown.documents.interaction.annotations.Border;
@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public class LinkCreationSample
   extends Sample
@@ -49,7 +49,7 @@ public class LinkCreationSample
     buildLinks(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, true, "Link annotations", "applying link annotations");
+    serialize(file, "Link annotations", "applying link annotations");
 
     return true;
   }
@@ -135,7 +135,7 @@ public class LinkCreationSample
       FileAttachment attachment = new FileAttachment(
         page,
         new Rectangle(0, -20, 10, 10),
-        new FileSpec(
+        FileSpecification.get(
           EmbeddedFile.get(
             document,
             filePath
@@ -165,7 +165,7 @@ public class LinkCreationSample
         new Rectangle(240,170,100,50),
         new GoToEmbedded(
           document,
-          new GoToEmbedded.TargetObject(
+          new GoToEmbedded.PathElement(
             document,
             fileAttachmentPageIndex, // Page of the current document containing the file attachment annotation of the target document.
             fileAttachmentName, // Name of the file attachment annotation corresponding to the target document.
@@ -175,7 +175,8 @@ public class LinkCreationSample
             document,
             1, // Show the page 2 of the target document.
             Destination.ModeEnum.Fit, // Show the target document page entirely on the screen.
-            null // No view parameters.
+            null,
+            null
             ) // The destination must be within the target document.
           )
         );

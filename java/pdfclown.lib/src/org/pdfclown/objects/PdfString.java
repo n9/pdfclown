@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/29/12
 */
 public class PdfString
   extends PdfSimpleObject<byte[]>
@@ -76,6 +76,8 @@ public class PdfString
 
   // <static>
   // <fields>
+  public static final PdfString Empty = new PdfString("");
+
   private static final byte BackspaceCode = 8;
   private static final byte CarriageReturnCode = 13;
   private static final byte FormFeedCode = 12;
@@ -96,10 +98,6 @@ public class PdfString
   // </fields>
 
   // <constructors>
-  public PdfString(
-    )
-  {}
-
   public PdfString(
     byte[] rawValue
     )
@@ -127,6 +125,10 @@ public class PdfString
     setSerializationMode(serializationMode);
     setValue(value);
   }
+
+  protected PdfString(
+    )
+  {}
   // </constructors>
 
   // <interface>
@@ -176,6 +178,21 @@ public class PdfString
   public byte[] toByteArray(
     )
   {return getRawValue().clone();}
+
+  @Override
+  public String toString(
+    )
+  {
+    switch(serializationMode)
+    {
+      case Hex:
+        return "<" + super.toString() + ">";
+      case Literal:
+        return "(" + super.toString() + ")";
+      default:
+        throw new NotImplementedException();
+    }
+  }
 
   @Override
   public void writeTo(

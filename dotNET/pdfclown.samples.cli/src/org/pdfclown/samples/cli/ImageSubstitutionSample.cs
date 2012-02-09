@@ -31,7 +31,7 @@ namespace org.pdfclown.samples.cli
       ReplaceImages(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, true, "Image substitution", "substituting a document's images");
+      Serialize(file, "Image substitution", "substituting a document's images");
 
       return true;
     }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
   <p>The 'Key' component is renamed 'Black' to avoid semantic ambiguities.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF11)
 public final class DeviceCMYKColor
@@ -88,10 +88,10 @@ public final class DeviceCMYKColor
   {
     this(
       Arrays.asList(
-        new PdfReal(normalizeComponent(c)),
-        new PdfReal(normalizeComponent(m)),
-        new PdfReal(normalizeComponent(y)),
-        new PdfReal(normalizeComponent(k))
+        PdfReal.get(normalizeComponent(c)),
+        PdfReal.get(normalizeComponent(m)),
+        PdfReal.get(normalizeComponent(y)),
+        PdfReal.get(normalizeComponent(k))
         )
       );
   }

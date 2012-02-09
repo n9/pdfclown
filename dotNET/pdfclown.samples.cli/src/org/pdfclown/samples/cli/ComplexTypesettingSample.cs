@@ -57,7 +57,7 @@ namespace org.pdfclown.samples.cli
       BuildBookmarks(document);
 
       // 3. Serialization.
-      Serialize(file, false, "Complex Typesetting", "complex typesetting");
+      Serialize(file, "Complex Typesetting", "complex typesetting");
 
       return true;
     }
@@ -74,11 +74,7 @@ namespace org.pdfclown.samples.cli
       Bookmark rootBookmark = new Bookmark(
         document,
         "Creation Sample",
-        new LocalDestination(
-          page,
-          Destination.ModeEnum.Fit,
-          null
-          )
+        new LocalDestination(page)
         );
       bookmarks.Add(rootBookmark);
       bookmarks = rootBookmark.Bookmarks;
@@ -89,7 +85,8 @@ namespace org.pdfclown.samples.cli
         new LocalDestination(
           page,
           Destination.ModeEnum.XYZ,
-          new double?[]{0, 250, 2}
+          new PointF(0, 250),
+          2
           )
         );
       bookmarks.Add(bookmark);
@@ -100,7 +97,8 @@ namespace org.pdfclown.samples.cli
           new LocalDestination(
             page,
             Destination.ModeEnum.XYZ,
-            new double?[]{0, page.Size.Height - 250, 1}
+            new PointF(0, page.Size.Height - 250),
+            1
             )
           )
         );
@@ -112,7 +110,8 @@ namespace org.pdfclown.samples.cli
           new LocalDestination(
             page,
             Destination.ModeEnum.FitHorizontal,
-            new double?[]{0}
+            0,
+            null
             )
           )
         );

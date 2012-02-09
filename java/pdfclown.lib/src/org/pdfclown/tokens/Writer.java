@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -27,13 +27,16 @@ package org.pdfclown.tokens;
 
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.files.File;
+import org.pdfclown.files.FileIdentifier;
 import org.pdfclown.files.SerializationModeEnum;
+import org.pdfclown.objects.PdfDictionary;
+import org.pdfclown.objects.PdfName;
 
 /**
   PDF file writer.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 07/21/11
+  @version 0.1.2, 02/04/12
 */
 public abstract class Writer
 {
@@ -136,6 +139,22 @@ public abstract class Writer
   // </public>
 
   // <protected>
+  /**
+    Updates the specified trailer.
+    NOTE: this method has to be called just before serializing the trailer object.
+  */
+  protected void updateTrailer(
+    PdfDictionary trailer,
+    IOutputStream stream
+    )
+  {
+    // File identifier update.
+    FileIdentifier identifier = FileIdentifier.wrap(trailer.get(PdfName.ID));
+    if(identifier == null)
+    {trailer.put(PdfName.ID, (identifier = new FileIdentifier()).getBaseObject());}
+    identifier.update(this);
+  }
+
   /**
     Serializes the beginning of the file [PDF:1.6:3.4.1].
   */

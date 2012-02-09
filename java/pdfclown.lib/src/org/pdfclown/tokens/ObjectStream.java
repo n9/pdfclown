@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,6 +45,7 @@ import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfStream;
+import org.pdfclown.util.MapEntry;
 
 /**
   Object stream containing a sequence of PDF objects [PDF:1.6:3.4.6].
@@ -54,7 +55,7 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 02/04/12
 */
 public final class ObjectStream
   extends PdfStream
@@ -62,38 +63,6 @@ public final class ObjectStream
 {
   // <class>
   // <classes>
-  private static final class Entry
-    implements Map.Entry<Integer,PdfDataObject>
-  {
-    private final Integer key;
-    private final PdfDataObject value;
-
-    public Entry(
-      Integer key,
-      PdfDataObject value
-      )
-    {
-      this.key = key;
-      this.value = value;
-    }
-
-    @Override
-    public Integer getKey(
-      )
-    {return key;}
-
-    @Override
-    public PdfDataObject getValue(
-      )
-    {return value;}
-
-    @Override
-    public PdfDataObject setValue(
-      PdfDataObject value
-      )
-    {throw new UnsupportedOperationException();}
-  }
-
   private final class ObjectEntry
   {
     private PdfDataObject dataObject;
@@ -206,7 +175,7 @@ public final class ObjectStream
   {
     Set<Map.Entry<Integer,PdfDataObject>> entrySet = new HashSet<Map.Entry<Integer,PdfDataObject>>();
     for(Integer key : getEntries().keySet())
-    {entrySet.add(new Entry(key,get(key)));}
+    {entrySet.add(new MapEntry<Integer,PdfDataObject>(key,get(key)));}
     return entrySet;
   }
 

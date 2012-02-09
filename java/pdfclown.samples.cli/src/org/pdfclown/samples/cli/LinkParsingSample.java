@@ -8,11 +8,11 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.PageAnnotations;
 import org.pdfclown.documents.contents.ITextString;
-import org.pdfclown.documents.fileSpecs.FileSpec;
+import org.pdfclown.documents.files.FileSpecification;
 import org.pdfclown.documents.interaction.actions.Action;
 import org.pdfclown.documents.interaction.actions.GoToDestination;
 import org.pdfclown.documents.interaction.actions.GoToEmbedded;
-import org.pdfclown.documents.interaction.actions.GoToEmbedded.TargetObject;
+import org.pdfclown.documents.interaction.actions.GoToEmbedded.PathElement;
 import org.pdfclown.documents.interaction.actions.GoToNonLocal;
 import org.pdfclown.documents.interaction.actions.GoToURI;
 import org.pdfclown.documents.interaction.annotations.Annotation;
@@ -33,7 +33,7 @@ import org.pdfclown.tools.TextExtractor;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/29/12
 */
 public class LinkParsingSample
   extends Sample
@@ -138,13 +138,13 @@ public class LinkParsingSample
     {
       if(action instanceof GoToNonLocal<?>)
       {
-        FileSpec fileSpec = ((GoToNonLocal<?>)action).getFileSpec();
-        if(fileSpec != null)
-        {System.out.println("    Filename: " + fileSpec.getFilename());}
+        FileSpecification<?> destinationFile = ((GoToNonLocal<?>)action).getDestinationFile();
+        if(destinationFile != null)
+        {System.out.println("    Filename: " + destinationFile.getPath());}
 
         if(action instanceof GoToEmbedded)
         {
-          TargetObject target = ((GoToEmbedded)action).getTarget();
+          PathElement target = ((GoToEmbedded)action).getDestinationPath();
           System.out.println("    EmbeddedFilename: " + target.getEmbeddedFileName() + " Relation: " + target.getRelation());
         }
       }
@@ -161,11 +161,11 @@ public class LinkParsingSample
   {
     System.out.println(destination.getClass().getSimpleName() + " " + destination.getBaseObject());
     System.out.print("    Page ");
-    Object pageRef = destination.getPageRef();
+    Object pageRef = destination.getPage();
     if(pageRef instanceof Page)
     {
-      Page refPage = (Page)pageRef;
-      System.out.println((refPage.getIndex()+1) + " [ID: " + refPage.getBaseObject() + "]");
+      Page page = (Page)pageRef;
+      System.out.println((page.getIndex()+1) + " [ID: " + page.getBaseObject() + "]");
     }
     else
     {System.out.println(((Integer)pageRef+1));}

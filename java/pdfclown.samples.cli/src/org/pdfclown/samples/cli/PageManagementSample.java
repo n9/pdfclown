@@ -19,7 +19,7 @@ import org.pdfclown.tools.PageManager;
   splits of groups of pages.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/29/12
 */
 public class PageManagementSample
   extends Sample
@@ -207,7 +207,7 @@ public class PageManagementSample
         // Serialize the split files!
         int index = 0;
         for(Document splitDocument : splitDocuments)
-        {serialize(splitDocument.getFile(), action, ++index, false);}
+        {serialize(splitDocument.getFile(), action, ++index);}
       } break;
       case DocumentSplitByPageIndex:
       {
@@ -236,7 +236,7 @@ public class PageManagementSample
         // Serialize the split files!
         int index = 0;
         for(Document splitDocument : splitDocuments)
-        {serialize(splitDocument.getFile(), action, ++index, false);}
+        {serialize(splitDocument.getFile(), action, ++index);}
       } break;
       case DocumentSplitOnMaximumFileSize:
       {
@@ -263,7 +263,7 @@ public class PageManagementSample
         // Serialize the split files!
         int index = 0;
         for(Document splitDocument : splitDocuments)
-        {serialize(splitDocument.getFile(), action, ++index, false);}
+        {serialize(splitDocument.getFile(), action, ++index);}
       } break;
     }
 
@@ -294,7 +294,7 @@ public class PageManagementSample
     File file,
     ActionEnum action
     )
-  {serialize(file, action, null, true);}
+  {serialize(file, action, null);}
 
   /**
     Serializes the specified PDF file.
@@ -302,19 +302,17 @@ public class PageManagementSample
     @param file File to serialize.
     @param action Generator.
     @param index File index.
-    @param chooseMode Whether to allow user choice of serialization mode.
   */
   private void serialize(
     File file,
     ActionEnum action,
-    Integer index,
-    boolean chooseMode
+    Integer index
     )
   {
     serialize(
       file,
       getClass().getSimpleName() + "_" + action.name() + (index != null ? "." + index : ""),
-      chooseMode, null, null
+      null, null
       );
   }
 }

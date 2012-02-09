@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -61,14 +61,23 @@ namespace org.pdfclown.objects
     public static PdfReal Get(
       double? value
       )
-    {return value.HasValue ? new PdfReal(value.Value) : null;}
+    {
+      if(!value.HasValue)
+        return null;
+
+      double doubleValue = value.Value;
+      if(Double.IsNaN(doubleValue))
+        return null;
+
+      return new PdfReal(doubleValue);
+    }
     #endregion
     #endregion
     #endregion
 
     #region dynamic
     #region constructors
-    public PdfReal(
+    private PdfReal(
       double value
       )
     {RawValue = value;}

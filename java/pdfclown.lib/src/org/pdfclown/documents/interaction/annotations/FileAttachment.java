@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,7 +31,8 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
-import org.pdfclown.documents.fileSpecs.FileSpec;
+import org.pdfclown.documents.files.FileSpecification;
+import org.pdfclown.documents.files.IFileResource;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.NotImplementedException;
@@ -42,11 +43,12 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF13)
 public final class FileAttachment
   extends Annotation
+  implements IFileResource
 {
   // <class>
   // <classes>
@@ -125,7 +127,7 @@ public final class FileAttachment
   public FileAttachment(
     Page page,
     Rectangle2D box,
-    FileSpec fileSpec
+    FileSpecification<?> dataFile
     )
   {
     super(
@@ -134,8 +136,7 @@ public final class FileAttachment
       box,
       page
       );
-
-    setFileSpec(fileSpec);
+    setDataFile(dataFile);
   }
 
   public FileAttachment(
@@ -153,13 +154,6 @@ public final class FileAttachment
   {throw new NotImplementedException();}
 
   /**
-    Gets the file associated with this annotation.
-  */
-  public FileSpec getFileSpec(
-    )
-  {return new FileSpec(getBaseDataObject().get(PdfName.FS), null);}
-
-  /**
     Gets the icon to be used in displaying the annotation.
   */
   public IconTypeEnum getIconType(
@@ -170,20 +164,25 @@ public final class FileAttachment
   }
 
   /**
-    @see #getFileSpec()
-  */
-  public void setFileSpec(
-    FileSpec value
-    )
-  {getBaseDataObject().put(PdfName.FS, value.getBaseObject());}
-
-  /**
     @see #getIconType()
   */
   public void setIconType(
     IconTypeEnum value
     )
   {getBaseDataObject().put(PdfName.Name, value.getCode());}
+
+  // <IFileResource>
+  @Override
+  public FileSpecification<?> getDataFile(
+    )
+  {return FileSpecification.wrap(getBaseDataObject().get(PdfName.FS), null);}
+
+  @Override
+  public void setDataFile(
+    FileSpecification<?> value
+    )
+  {getBaseDataObject().put(PdfName.FS, value.getBaseObject());}
+  // </IFileResource>
   // </public>
   // </interface>
   // </dynamic>

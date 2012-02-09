@@ -47,7 +47,7 @@ import org.pdfclown.util.math.geom.Dimension;
   content flow composition), to be made available in the next releases.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public class ComplexTypesettingSample
   extends Sample
@@ -76,7 +76,7 @@ public class ComplexTypesettingSample
     buildBookmarks(document);
 
     // 3. Serialization.
-    serialize(file, false, "Complex Typesetting", "complex typesetting");
+    serialize(file, "Complex Typesetting", "complex typesetting");
 
     return true;
   }
@@ -93,11 +93,7 @@ public class ComplexTypesettingSample
     Bookmark rootBookmark = new Bookmark(
       document,
       "Creation Sample",
-      new LocalDestination(
-        page,
-        Destination.ModeEnum.Fit,
-        null
-        )
+      new LocalDestination(page)
       );
     bookmarks.add(rootBookmark);
     bookmarks = rootBookmark.getBookmarks();
@@ -108,7 +104,8 @@ public class ComplexTypesettingSample
       new LocalDestination(
         page,
         Destination.ModeEnum.XYZ,
-        new Double[]{0d, 250d, 2d}
+        new Point2D.Double(0, 250),
+        2d
         )
       );
     bookmarks.add(bookmark);
@@ -119,7 +116,8 @@ public class ComplexTypesettingSample
         new LocalDestination(
           page,
           Destination.ModeEnum.XYZ,
-          new Double[]{0d, page.getSize().getHeight() - 250, 1d}
+          new Point2D.Double(0, page.getSize().getHeight() - 250),
+          1d
           )
         )
       );
@@ -131,7 +129,8 @@ public class ComplexTypesettingSample
         new LocalDestination(
           page,
           Destination.ModeEnum.FitHorizontal,
-          new Double[]{0d}
+          0,
+          null
           )
         )
       );

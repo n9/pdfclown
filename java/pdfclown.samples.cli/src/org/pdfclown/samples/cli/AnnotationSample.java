@@ -12,8 +12,8 @@ import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
-import org.pdfclown.documents.fileSpecs.EmbeddedFile;
-import org.pdfclown.documents.fileSpecs.FileSpec;
+import org.pdfclown.documents.files.EmbeddedFile;
+import org.pdfclown.documents.files.FileSpecification;
 import org.pdfclown.documents.interaction.JustificationEnum;
 import org.pdfclown.documents.interaction.annotations.CalloutNote;
 import org.pdfclown.documents.interaction.annotations.Caret;
@@ -30,7 +30,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public class AnnotationSample
   extends Sample
@@ -47,7 +47,7 @@ public class AnnotationSample
     populate(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, false, "Annotations", "inserting annotations");
+    serialize(file, "Annotations", "inserting annotations");
 
     return true;
   }
@@ -102,7 +102,7 @@ public class AnnotationSample
     FileAttachment attachment = new FileAttachment(
       page,
       new Rectangle(50, 150, 12, 12),
-      new FileSpec(
+      FileSpecification.get(
         EmbeddedFile.get(
           document,
           getInputPath() + java.io.File.separator + "images" + java.io.File.separator + "gnu.jpg"

@@ -12,7 +12,7 @@ import org.pdfclown.files.File;
   This sample is a <b>minimalist introduction to the use of PDF Clown</b>.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/29/12
 */
 public class HelloWorldSample
   extends Sample
@@ -33,7 +33,7 @@ public class HelloWorldSample
     populate(document);
 
     // 4. Serialize the PDF file!
-    serialize(file, false, "Hello world", "a simple 'hello world'");
+    serialize(file, "Hello world", "a simple 'hello world'");
 
     return true;
   }

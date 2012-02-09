@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,13 +25,16 @@
 
 package org.pdfclown.objects;
 
+import java.util.Date;
+
 import org.pdfclown.files.File;
+import org.pdfclown.util.NotImplementedException;
 
 /**
   Abstract PDF simple object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 02/04/12
 */
 public abstract class PdfSimpleObject<TValue>
   extends PdfDirectObject
@@ -40,6 +43,30 @@ public abstract class PdfSimpleObject<TValue>
   // <static>
   // <interface>
   // <public>
+  /**
+    Gets the object equivalent to the given value.
+  */
+  public static PdfSimpleObject<?> get(
+    Object value
+    )
+  {
+    if(value == null)
+      return null;
+
+    if(value instanceof Integer)
+      return PdfInteger.get((Integer)value);
+    else if(value instanceof Number)
+      return PdfReal.get((Number)value);
+    else if(value instanceof String)
+      return PdfTextString.get((String)value);
+    else if(value instanceof Date)
+      return PdfDate.get((Date)value);
+    else if(value instanceof Boolean)
+      return PdfBoolean.get((Boolean)value);
+    else
+      throw new NotImplementedException();
+  }
+
   /**
     Gets the value corresponding to the given object.
 

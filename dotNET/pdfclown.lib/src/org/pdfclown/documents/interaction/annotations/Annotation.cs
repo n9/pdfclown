@@ -369,12 +369,7 @@ namespace org.pdfclown.documents.interaction.annotations
         return (DateTime?)(modificationDateObject is PdfDate ? ((PdfDate)modificationDateObject).Value : null);
       }
       set
-      {
-        if(value.HasValue)
-        {BaseDataObject[PdfName.M] = new PdfDate(value.Value);}
-        else
-        {BaseDataObject.Remove(PdfName.M);}
-      }
+      {BaseDataObject[PdfName.M] = PdfDate.Get(value);}
     }
 
     /**

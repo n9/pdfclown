@@ -16,7 +16,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/29/12
 */
 public class AcroFormFillingSample
   extends Sample
@@ -88,7 +88,7 @@ public class AcroFormFillingSample
     }
 
     // 4. Serialize the PDF file!
-    serialize(file, true);
+    serialize(file);
 
     return true;
   }

@@ -28,7 +28,7 @@ namespace org.pdfclown.samples.cli
       Populate(document);
 
       // 4. Serialize the PDF file!
-      Serialize(file, false, "Hello world", "a simple 'hello world'");
+      Serialize(file, "Hello world", "a simple 'hello world'");
 
       return true;
     }

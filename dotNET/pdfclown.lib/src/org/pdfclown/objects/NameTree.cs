@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -363,10 +363,7 @@ namespace org.pdfclown.objects
       get
       {
         KeysFiller filler = new KeysFiller();
-        Fill(
-          filler,
-          (PdfReference)BaseObject
-          );
+        Fill(filler, (PdfReference)BaseObject);
 
         return filler.Collection;
       }
@@ -462,10 +459,7 @@ namespace org.pdfclown.objects
       get
       {
         ValuesFiller filler = new ValuesFiller(this);
-        Fill(
-          filler,
-          (PdfReference)BaseObject
-          );
+        Fill(filler, (PdfReference)BaseObject);
 
         return filler.Collection;
       }

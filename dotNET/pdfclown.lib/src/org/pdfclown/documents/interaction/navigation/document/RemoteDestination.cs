@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -46,6 +46,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
         context,
         pageIndex,
         ModeEnum.Fit,
+        null,
         null
         )
     {}
@@ -54,12 +55,14 @@ namespace org.pdfclown.documents.interaction.navigation.document
       Document context,
       int pageIndex,
       ModeEnum mode,
-      double?[] viewParams
+      object location,
+      double? zoom
       ) : base(
         context,
-        new PdfInteger(pageIndex),
+        pageIndex,
         mode,
-        viewParams
+        location,
+        zoom
         )
     {}
 
@@ -77,11 +80,21 @@ namespace org.pdfclown.documents.interaction.navigation.document
       )
     {throw new NotImplementedException();}
 
-    public int PageIndex
-    {get{return ((PdfInteger)BaseDataObject[0]).RawValue;}}
+    /**
+      <summary>Gets/Sets the index of the target page.</summary>
+    */
+    public override object Page
+    {
+      get
+      {return ((PdfInteger)BaseDataObject[0]).IntValue;}
+      set
+      {
+        if(!(value is Int32))
+          throw new ArgumentException("It MUST be an integer number.");
 
-    public override object PageRef
-    {get{return PageIndex;}}
+        BaseDataObject[0] = new PdfInteger((int)value);
+      }
+    }
     #endregion
     #endregion
     #endregion

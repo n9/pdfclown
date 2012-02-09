@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -49,20 +49,14 @@ namespace org.pdfclown.documents.interaction.annotations
     public Link(
       Page page,
       RectangleF box,
-      Destination destination
-      ) : this(page,box)
-    {Destination = destination;}
-
-    public Link(
-      Page page,
-      RectangleF box,
-      Action action
-      ) : this(page,box)
-    {
-      AnnotationActions actions = new AnnotationActions(this);
-      actions.OnActivate = action;
-      Actions = actions;
-    }
+      PdfObjectWrapper target
+      ) : base(
+        page.Document,
+        PdfName.Link,
+        box,
+        page
+        )
+    {Target = target;}
 
     public Link(
       PdfDirectObject baseObject
@@ -83,12 +77,6 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new system::NotImplementedException();}
-
-    #region ILink
     public override Action Action
     {
       get
@@ -106,10 +94,38 @@ namespace org.pdfclown.documents.interaction.annotations
       }
     }
 
-    /**
-      <summary>Gets/Sets the destination to jump to.</summary>
-    */
-    public Destination Destination
+    public override object Clone(
+      Document context
+      )
+    {throw new system::NotImplementedException();}
+
+    #region ILink
+    public PdfObjectWrapper Target
+    {
+      get
+      {
+        if(BaseDataObject.ContainsKey(PdfName.Dest))
+          return Destination;
+        else if(BaseDataObject.ContainsKey(PdfName.A))
+          return Action;
+        else
+          return null;
+      }
+      set
+      {
+        if(value is Destination)
+        {Destination = (Destination)value;}
+        else if(value is Action)
+        {Action = (Action)value;}
+        else
+          throw new system::ArgumentException("It MUST be either a Destination or an Action.");
+      }
+    }
+    #endregion
+    #endregion
+
+    #region private
+    private Destination Destination
     {
       get
       {
@@ -134,29 +150,6 @@ namespace org.pdfclown.documents.interaction.annotations
         }
       }
     }
-
-    public PdfObjectWrapper Target
-    {
-      get
-      {
-        if(BaseDataObject.ContainsKey(PdfName.Dest))
-          return Destination;
-        else if(BaseDataObject.ContainsKey(PdfName.A))
-          return Action;
-        else
-          return null;
-      }
-      set
-      {
-        if(value is Destination)
-        {Destination = (Destination)value;}
-        else if(value is Action)
-        {Action = (Action)value;}
-        else
-          throw new system::ArgumentException("It MUST be either a Destination or an Action.");
-      }
-    }
-    #endregion
     #endregion
     #endregion
     #endregion

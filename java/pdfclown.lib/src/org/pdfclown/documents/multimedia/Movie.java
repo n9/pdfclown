@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,7 +28,8 @@ package org.pdfclown.documents.multimedia;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.documents.fileSpecs.FileSpec;
+import org.pdfclown.documents.files.FileSpecification;
+import org.pdfclown.documents.files.IFileResource;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -41,11 +42,12 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF12)
 public final class Movie
   extends PdfObjectWrapper<PdfDictionary>
+  implements IFileResource
 {
   // <class>
   // <dynamic>
@@ -55,11 +57,11 @@ public final class Movie
   */
   public Movie(
     Document context,
-    FileSpec fileSpec
+    FileSpecification<?> dataFile
     )
   {
     super(context, new PdfDictionary());
-    setFileSpec(fileSpec);
+    setDataFile(dataFile);
   }
 
   public Movie(
@@ -76,20 +78,18 @@ public final class Movie
     )
   {throw new NotImplementedException();}
 
-  /**
-    Gets the file associated with this movie.
-  */
-  public FileSpec getFileSpec(
+  // <IFileResource>
+  @Override
+  public FileSpecification<?> getDataFile(
     )
-  {return new FileSpec(getBaseDataObject().get(PdfName.F), null);}
+  {return FileSpecification.wrap(getBaseDataObject().get(PdfName.F), null);}
 
-  /**
-    @see #getFileSpec()
-  */
-  public void setFileSpec(
-    FileSpec value
+  @Override
+  public void setDataFile(
+    FileSpecification<?> value
     )
   {getBaseDataObject().put(PdfName.F, value.getBaseObject());}
+  // </IFileResource>
   // </public>
   // </interface>
   // </dynamic>

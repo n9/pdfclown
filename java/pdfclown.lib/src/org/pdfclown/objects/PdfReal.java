@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
   PDF real number object [PDF:1.6:3.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/14/11
+  @version 0.1.2, 02/04/12
 */
 public final class PdfReal
   extends PdfNumber<Double>
@@ -45,16 +45,25 @@ public final class PdfReal
     Gets the object equivalent to the given value.
   */
   public static PdfReal get(
-    Double value
+    Number value
     )
-  {return value == null ? null : new PdfReal(value);}
+  {
+    if(value == null)
+      return null;
+
+    double doubleValue = value.doubleValue();
+    if(Double.isNaN(doubleValue))
+      return null;
+
+    return new PdfReal(doubleValue);
+  }
   // </public>
   // </interface>
   // </static>
 
   // <dynamic>
   // <constructors>
-  public PdfReal(
+  private PdfReal(
     double value
     )
   {setRawValue(value);}

@@ -88,9 +88,9 @@ namespace org.pdfclown.documents.contents.colorSpaces
         new List<PdfDirectObject>(
           new PdfDirectObject[]
           {
-            new PdfReal(NormalizeComponent(r)),
-            new PdfReal(NormalizeComponent(g)),
-            new PdfReal(NormalizeComponent(b))
+            PdfReal.Get(NormalizeComponent(r)),
+            PdfReal.Get(NormalizeComponent(g)),
+            PdfReal.Get(NormalizeComponent(b))
           }
         )
       )

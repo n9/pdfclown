@@ -4,7 +4,7 @@ using org.pdfclown.documents.contents.composition;
 using org.pdfclown.documents.contents.entities;
 using org.pdfclown.documents.contents.fonts;
 using org.pdfclown.documents.contents.xObjects;
-using org.pdfclown.documents.fileSpecs;
+using org.pdfclown.documents.files;
 using org.pdfclown.documents.interaction;
 using annotations = org.pdfclown.documents.interaction.annotations;
 using files = org.pdfclown.files;
@@ -33,7 +33,7 @@ namespace org.pdfclown.samples.cli
       Populate(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, false, "Annotations", "inserting annotations");
+      Serialize(file, "Annotations", "inserting annotations");
 
       return true;
     }
@@ -85,7 +85,7 @@ namespace org.pdfclown.samples.cli
       annotations::FileAttachment attachment = new annotations::FileAttachment(
         page,
         new Rectangle(50, 150, 12, 12),
-        new FileSpec(
+        FileSpecification.Get(
           EmbeddedFile.Get(
             document,
             InputPath + Path.DirectorySeparatorChar + "images" + Path.DirectorySeparatorChar + "gnu.jpg"

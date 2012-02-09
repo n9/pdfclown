@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,7 +23,7 @@
   this list of conditions.
 */
 
-using org.pdfclown.documents.fileSpecs;
+using org.pdfclown.documents.files;
 using org.pdfclown.documents.interaction.actions;
 using org.pdfclown.documents.interaction.navigation.document;
 using org.pdfclown.objects;
@@ -111,7 +111,7 @@ namespace org.pdfclown.documents
     {
       if(typeof(Destination).IsAssignableFrom(typeof(T)))
         return Destinations[name] as T;
-      else if(typeof(FileSpec).IsAssignableFrom(typeof(T)))
+      else if(typeof(FileSpecification).IsAssignableFrom(typeof(T)))
         return EmbeddedFiles[name] as T;
       else if(typeof(JavaScript).IsAssignableFrom(typeof(T)))
         return JavaScripts[name] as T;

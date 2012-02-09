@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -199,12 +199,32 @@ namespace org.pdfclown.files
     {return hashCode;}
 
     /**
+      <summary>Gets the identifier of this file.</summary>
+    */
+    public FileIdentifier ID
+    {
+      get
+      {return FileIdentifier.Wrap(Trailer[PdfName.ID]);}
+    }
+
+    /**
       <summary>Gets the indirect objects collection.</summary>
     */
     public IndirectObjects IndirectObjects
     {
       get
       {return indirectObjects;}
+    }
+
+    /**
+      <summary>Gets/Sets the file path.</summary>
+    */
+    public string Path
+    {
+      get
+      {return path;}
+      set
+      {path = value;}
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,6 +29,7 @@ using org.pdfclown.objects;
 using org.pdfclown.util;
 
 using System;
+using System.Drawing;
 
 namespace org.pdfclown.documents.interaction.navigation.document
 {
@@ -168,7 +169,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
       else if(pageObject is PdfInteger)
         return new RemoteDestination(baseObject, name);
       else
-        throw new ArgumentException("'baseObject' parameter doesn't represent a valid destination object.");
+        throw new ArgumentException("Not a valid destination object.", "baseObject");
     }
     #endregion
     #endregion
@@ -179,54 +180,24 @@ namespace org.pdfclown.documents.interaction.navigation.document
     /**
       <summary>Creates a new destination within the given document context.</summary>
       <param name="context">Document context.</param>
-      <param name="pageObject">Page reference. It may be either an actual page reference (PdfReference)
-        or a page index (PdfInteger).</param>
+      <param name="page">Page reference. It may be either a <see cref="Page"/> or a page index (int).
+      </param>
       <param name="mode">Destination mode.</param>
-      <param name="viewParams">View parameters. Their actual composition depends on the <code>mode</code>
-        value (see ModeEnum for more info).</param>
+      <param name="location">Destination location.</param>
+      <param name="zoom">Magnification factor to use when displaying the page.</param>
     */
     protected Destination(
       Document context,
-      PdfDirectObject pageObject,
+      object page,
       ModeEnum mode,
-      double?[] viewParams
-      ) : base(context, new PdfArray())
+      object location,
+      double? zoom
+      ) : base(context, new PdfArray(null, null))
     {
-      PdfArray baseDataObject = BaseDataObject;
-      {
-        baseDataObject.Add(pageObject);
-        baseDataObject.Add(mode.GetName());
-        switch(mode)
-        {
-          case ModeEnum.Fit:
-            break;
-          case ModeEnum.FitBoundingBox:
-            break;
-          case ModeEnum.FitBoundingBoxHorizontal:
-            baseDataObject.Add(PdfReal.Get(viewParams[0]));
-            break;
-          case ModeEnum.FitBoundingBoxVertical:
-            baseDataObject.Add(PdfReal.Get(viewParams[0]));
-            break;
-          case ModeEnum.FitHorizontal:
-            baseDataObject.Add(PdfReal.Get(viewParams[0]));
-            break;
-          case ModeEnum.FitRectangle:
-            baseDataObject.Add(PdfReal.Get(viewParams[0]));
-            baseDataObject.Add(PdfReal.Get(viewParams[1]));
-            baseDataObject.Add(PdfReal.Get(viewParams[2]));
-            baseDataObject.Add(PdfReal.Get(viewParams[3]));
-            break;
-          case ModeEnum.FitVertical:
-            baseDataObject.Add(PdfReal.Get(viewParams[0]));
-            break;
-          case ModeEnum.XYZ:
-            baseDataObject.Add(PdfReal.Get(viewParams[0]));
-            baseDataObject.Add(PdfReal.Get(viewParams[1]));
-            baseDataObject.Add(PdfReal.Get(viewParams[2]));
-            break;
-        }
-      }
+      Page = page;
+      Mode = mode;
+      Location = location;
+      Zoom = zoom;
     }
 
     protected Destination(
@@ -244,20 +215,149 @@ namespace org.pdfclown.documents.interaction.navigation.document
     {throw new NotImplementedException();}
 
     /**
+      <summary>Gets/Sets the page location.</summary>
+    */
+    public object Location
+    {
+      get
+      {
+        switch(Mode)
+        {
+          case ModeEnum.FitBoundingBoxHorizontal:
+          case ModeEnum.FitBoundingBoxVertical:
+          case ModeEnum.FitHorizontal:
+          case ModeEnum.FitVertical:
+            return PdfSimpleObject<object>.GetValue(BaseDataObject[2], Double.NaN);
+          case ModeEnum.FitRectangle:
+          {
+            float left = (float)PdfSimpleObject<object>.GetValue(BaseDataObject[2], Double.NaN);
+            float top = (float)PdfSimpleObject<object>.GetValue(BaseDataObject[5], Double.NaN);
+            float width = (float)PdfSimpleObject<object>.GetValue(BaseDataObject[4], Double.NaN) - left;
+            float height = (float)PdfSimpleObject<object>.GetValue(BaseDataObject[3], Double.NaN) - top;
+            return new RectangleF(left, top, width, height);
+          }
+          case ModeEnum.XYZ:
+            return new PointF(
+              (float)PdfSimpleObject<object>.GetValue(BaseDataObject[2], Double.NaN),
+              (float)PdfSimpleObject<object>.GetValue(BaseDataObject[3], Double.NaN)
+              );
+          default:
+            return null;
+        }
+      }
+      set
+      {
+        PdfArray baseDataObject = BaseDataObject;
+        switch(Mode)
+        {
+          case ModeEnum.FitBoundingBoxHorizontal:
+          case ModeEnum.FitBoundingBoxVertical:
+          case ModeEnum.FitHorizontal:
+          case ModeEnum.FitVertical:
+            baseDataObject[2] = PdfReal.Get((double?)Convert.ToDouble(value));
+            break;
+          case ModeEnum.FitRectangle:
+          {
+            RectangleF rectangle = (RectangleF)value;
+            baseDataObject[2] = PdfReal.Get(rectangle.X);
+            baseDataObject[3] = PdfReal.Get(rectangle.Y);
+            baseDataObject[4] = PdfReal.Get(rectangle.Right);
+            baseDataObject[5] = PdfReal.Get(rectangle.Bottom);
+            break;
+          }
+          case ModeEnum.XYZ:
+          {
+            PointF point = (PointF)value;
+            baseDataObject[2] = PdfReal.Get(point.X);
+            baseDataObject[3] = PdfReal.Get(point.Y);
+            break;
+          }
+          default:
+            /* NOOP */
+            break;
+        }
+      }
+    }
+
+    /**
       <summary>Gets the destination mode.</summary>
     */
     public ModeEnum Mode
     {
       get
       {return ModeEnumExtension.Get((PdfName)BaseDataObject[1]).Value;}
+      set
+      {
+        PdfArray baseDataObject = BaseDataObject;
+
+        baseDataObject[1] = value.GetName();
+
+        // Adjusting parameter list...
+        int parametersCount;
+        switch(value)
+        {
+          case ModeEnum.Fit:
+          case ModeEnum.FitBoundingBox:
+            parametersCount = 2;
+            break;
+          case ModeEnum.FitBoundingBoxHorizontal:
+          case ModeEnum.FitBoundingBoxVertical:
+          case ModeEnum.FitHorizontal:
+          case ModeEnum.FitVertical:
+            parametersCount = 3;
+            break;
+          case ModeEnum.XYZ:
+            parametersCount = 5;
+            break;
+          case ModeEnum.FitRectangle:
+            parametersCount = 6;
+            break;
+          default:
+            throw new NotSupportedException("Mode unknown: " + value);
+        }
+        while(baseDataObject.Count < parametersCount)
+        {baseDataObject.Add(null);}
+        while(baseDataObject.Count > parametersCount)
+        {baseDataObject.RemoveAt(baseDataObject.Count - 1);}
+      }
     }
 
     /**
-      <summary>Gets the target page reference.</summary>
+      <summary>Gets/Sets the target page reference.</summary>
     */
-    public abstract object PageRef
+    public abstract object Page
     {
       get;
+      set;
+    }
+
+    /**
+      <summary>Gets the magnification factor to use when displaying the page.</summary>
+    */
+    public double? Zoom
+    {
+      get
+      {
+        switch(Mode)
+        {
+          case ModeEnum.XYZ:
+            return (double?)PdfSimpleObject<object>.GetValue(BaseDataObject[4]);
+          default:
+            return null;
+        }
+      }
+      set
+      {
+        switch(Mode)
+        {
+          case ModeEnum.XYZ:
+            BaseDataObject[4] = PdfReal.Get(value);
+            break;
+          default:
+            /* NOOP */
+            break;
+        }
+      }
     }
     #endregion
     #endregion

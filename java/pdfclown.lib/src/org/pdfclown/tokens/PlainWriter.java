@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF file writer implementing classic cross-reference table [PDF:1.6:3.4.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 02/04/12
 */
 final class PlainWriter
   extends Writer
@@ -324,6 +324,7 @@ final class PlainWriter
     // 2. Body.
     // Update its entries:
     PdfDictionary trailer = file.getTrailer();
+    updateTrailer(trailer, stream);
     // * Size
     trailer.put(PdfName.Size,new PdfInteger(xrefSize));
     // * Prev

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF15)
 public abstract class VertexShape
@@ -120,8 +120,8 @@ public abstract class VertexShape
     double pageHeight = getPage().getBox().getHeight();
     for(Point2D vertex : value)
     {
-      verticesObject.add(new PdfReal(vertex.getX())); // x.
-      verticesObject.add(new PdfReal(pageHeight-vertex.getY())); // y.
+      verticesObject.add(PdfReal.get(vertex.getX())); // x.
+      verticesObject.add(PdfReal.get(pageHeight-vertex.getY())); // y.
     }
 
     getBaseDataObject().put(PdfName.Vertices,verticesObject);

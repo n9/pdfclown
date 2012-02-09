@@ -5,6 +5,7 @@ import java.awt.geom.Rectangle2D;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
+import org.pdfclown.documents.contents.colorSpaces.Color;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
@@ -20,7 +21,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public class TextFrameSample
   extends Sample
@@ -37,7 +38,7 @@ public class TextFrameSample
     populate(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, false, "Text frame", "getting the actual bounding box of text shown");
+    serialize(file, "Text frame", "getting the actual bounding box of text shown");
 
     return true;
   }
@@ -56,6 +57,9 @@ public class TextFrameSample
     // 2. Create a content composer for the page!
     PrimitiveComposer composer = new PrimitiveComposer(page);
 
+    Color<?> textColor = new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d);
+    composer.setFillColor(textColor);
+
     BlockComposer blockComposer = new BlockComposer(composer);
     blockComposer.begin(new Rectangle2D.Double(300,400,200,100),XAlignmentEnum.Left,YAlignmentEnum.Middle);
     try
@@ -72,11 +76,8 @@ public class TextFrameSample
     }
     catch(Exception e)
     {}
-    composer.setFillColor(new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d));
     blockComposer.showText("PrimitiveComposer.showText(...) methods return the actual bounding box of the text shown, allowing to precisely determine its location on the page.");
     blockComposer.end();
-
-    composer.setStrokeColor(composer.getState().getFillColor());
 
     // 3. Inserting contents...
     // Set the font to use!

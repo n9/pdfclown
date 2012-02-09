@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -62,7 +62,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
     {// TODO:normalize parameters!
       IList<PdfDirectObject> componentValues = new List<PdfDirectObject>();
       foreach(double component in components)
-      {componentValues.Add(new PdfReal((component)));}
+      {componentValues.Add(PdfReal.Get((component)));}
       return componentValues;
     }
     #endregion

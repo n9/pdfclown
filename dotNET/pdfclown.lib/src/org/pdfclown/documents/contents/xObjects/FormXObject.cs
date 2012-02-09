@@ -144,8 +144,8 @@ namespace org.pdfclown.documents.contents.xObjects
       set
       {
         PdfArray boxObject = (PdfArray)BaseDataObject.Header.Resolve(PdfName.BBox);
-        boxObject[2] = new PdfReal(value.Width);
-        boxObject[3] = new PdfReal(value.Height);
+        boxObject[2] = PdfReal.Get(value.Width);
+        boxObject[3] = PdfReal.Get(value.Height);
       }
     }
     #endregion

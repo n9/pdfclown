@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,6 +35,20 @@ namespace org.pdfclown.objects
     : PdfSimpleObject<int>,
       IPdfNumber
   {
+    #region static
+    #region interface
+    #region public
+    /**
+      <summary>Gets the object equivalent to the given value.</summary>
+    */
+    public static PdfInteger Get(
+      int? value
+      )
+    {return value.HasValue ? new PdfInteger(value.Value) : null;}
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region constructors
     public PdfInteger(

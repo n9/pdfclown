@@ -9,9 +9,9 @@ import org.pdfclown.documents.PageFormat;
 import org.pdfclown.documents.PageFormat.OrientationEnum;
 import org.pdfclown.documents.PageFormat.SizeEnum;
 import org.pdfclown.documents.Pages;
+import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.composition.XAlignmentEnum;
 import org.pdfclown.documents.contents.composition.YAlignmentEnum;
-import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.files.File;
 
 /**
@@ -22,7 +22,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public class PageCombinationSample
   extends Sample
@@ -82,7 +82,7 @@ public class PageCombinationSample
     composer.flush();
 
     // 4. Serialize the PDF file!
-    serialize(file, false, "Page combination", "combining multiple pages into single bigger ones");
+    serialize(file, "Page combination", "combining multiple pages into single bigger ones");
 
     return true;
   }

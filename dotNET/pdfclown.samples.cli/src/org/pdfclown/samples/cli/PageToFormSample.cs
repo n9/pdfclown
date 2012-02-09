@@ -36,7 +36,7 @@ namespace org.pdfclown.samples.cli
       Populate(document,form);
 
       // 5. Serialize the PDF file!
-      Serialize(file, false, "Page-to-form", "converting a page to a reusable form");
+      Serialize(file, "Page-to-form", "converting a page to a reusable form");
 
       return true;
     }

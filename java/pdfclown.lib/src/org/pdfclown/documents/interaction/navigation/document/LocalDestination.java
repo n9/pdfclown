@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,7 +38,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF10)
 public final class LocalDestination
@@ -54,6 +54,7 @@ public final class LocalDestination
     this(
       page,
       ModeEnum.Fit,
+      null,
       null
       );
   }
@@ -61,14 +62,16 @@ public final class LocalDestination
   public LocalDestination(
     Page page,
     ModeEnum mode,
-    Double[] viewParams
+    Object location,
+    Double zoom
     )
   {
     super(
       page.getDocument(),
-      page.getBaseObject(),
+      page,
       mode,
-      viewParams
+      location,
+      zoom
       );
   }
 
@@ -87,14 +90,24 @@ public final class LocalDestination
     )
   {throw new NotImplementedException();}
 
+  /**
+    Gets the target page.
+  */
+  @Override
   public Page getPage(
     )
   {return Page.wrap(getBaseDataObject().get(0));}
 
   @Override
-  public Object getPageRef(
+  public void setPage(
+    Object value
     )
-  {return getPage();}
+  {
+    if(!(value instanceof Page))
+      throw new IllegalArgumentException("It MUST be a Page object.");
+
+    getBaseDataObject().set(0, ((Page)value).getBaseObject());
+  }
   // </public>
   // </interface>
   // </dynamic>

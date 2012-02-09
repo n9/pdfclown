@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -51,9 +51,9 @@ namespace org.pdfclown.documents.contents.colorSpaces
         new List<PdfDirectObject>(
           new PdfDirectObject[]
           {
-            new PdfReal(NormalizeComponent(l)),//TODO:normalize using the actual color space ranges!!!
-            new PdfReal(NormalizeComponent(a)),
-            new PdfReal(NormalizeComponent(b))
+            PdfReal.Get(NormalizeComponent(l)),//TODO:normalize using the actual color space ranges!!!
+            PdfReal.Get(NormalizeComponent(a)),
+            PdfReal.Get(NormalizeComponent(b))
           }
         )
       )

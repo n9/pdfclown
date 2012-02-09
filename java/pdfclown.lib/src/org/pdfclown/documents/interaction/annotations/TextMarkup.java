@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -51,7 +51,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/28/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF13)
 public final class TextMarkup
@@ -285,14 +285,14 @@ public final class TextMarkup
         NOTE: Despite the spec prescription, Point 3 and Point 4 MUST be inverted.
       */
       Point2D[] markupBoxPoints = markupBox.getPoints();
-      quadPointsObject.add(new PdfReal(markupBoxPoints[0].getX())); // x1.
-      quadPointsObject.add(new PdfReal(pageHeight - markupBoxPoints[0].getY())); // y1.
-      quadPointsObject.add(new PdfReal(markupBoxPoints[1].getX())); // x2.
-      quadPointsObject.add(new PdfReal(pageHeight - markupBoxPoints[1].getY())); // y2.
-      quadPointsObject.add(new PdfReal(markupBoxPoints[3].getX())); // x4.
-      quadPointsObject.add(new PdfReal(pageHeight - markupBoxPoints[3].getY())); // y4.
-      quadPointsObject.add(new PdfReal(markupBoxPoints[2].getX())); // x3.
-      quadPointsObject.add(new PdfReal(pageHeight - markupBoxPoints[2].getY())); // y3.
+      quadPointsObject.add(PdfReal.get(markupBoxPoints[0].getX())); // x1.
+      quadPointsObject.add(PdfReal.get(pageHeight - markupBoxPoints[0].getY())); // y1.
+      quadPointsObject.add(PdfReal.get(markupBoxPoints[1].getX())); // x2.
+      quadPointsObject.add(PdfReal.get(pageHeight - markupBoxPoints[1].getY())); // y2.
+      quadPointsObject.add(PdfReal.get(markupBoxPoints[3].getX())); // x4.
+      quadPointsObject.add(PdfReal.get(pageHeight - markupBoxPoints[3].getY())); // y4.
+      quadPointsObject.add(PdfReal.get(markupBoxPoints[2].getX())); // x3.
+      quadPointsObject.add(PdfReal.get(pageHeight - markupBoxPoints[2].getY())); // y3.
     }
     getBaseDataObject().put(PdfName.QuadPoints, quadPointsObject);
   }

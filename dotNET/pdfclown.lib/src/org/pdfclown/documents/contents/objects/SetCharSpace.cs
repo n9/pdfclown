@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -50,7 +50,7 @@ namespace org.pdfclown.documents.contents.objects
       ) : base(
         OperatorKeyword,
         new List<PdfDirectObject>(
-          new PdfDirectObject[]{new PdfReal(value)}
+          new PdfDirectObject[]{PdfReal.Get(value)}
           )
         )
     {}
@@ -73,7 +73,7 @@ namespace org.pdfclown.documents.contents.objects
       get
       {return ((IPdfNumber)operands[0]).RawValue;}
       set
-      {operands[0] = new PdfReal(value);}
+      {operands[0] = PdfReal.Get(value);}
     }
     #endregion
     #endregion

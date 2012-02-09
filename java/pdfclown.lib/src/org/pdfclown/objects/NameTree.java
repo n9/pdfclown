@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,6 +35,7 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.files.File;
+import org.pdfclown.util.MapEntry;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -42,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF10)
 public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
@@ -73,61 +74,6 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
       this.typeName = typeName;
       this.order = order;
     }
-  }
-
-  private final class Entry
-    implements Map.Entry<PdfString,TValue>,
-      Comparable<Entry>
-  {
-    // <class>
-    // <dynamic>
-    // <fields>
-    private final PdfString key;
-    private final TValue value;
-    // </fields>
-
-    // <constructors>
-    private Entry(
-      PdfString key,
-      TValue value
-      )
-    {
-      this.key = key;
-      this.value = value;
-    }
-    // </constructors>
-
-    // <interface>
-    // <public>
-    // <Comparable>
-    @Override
-    public int compareTo(
-      Entry obj
-      )
-    {return key.compareTo(obj.getKey());}
-    // </Comparable>
-
-    // <Map.Entry>
-    @Override
-    public PdfString getKey(
-      )
-    {return key;}
-
-    @Override
-    public TValue getValue(
-      )
-    {return value;}
-
-    @Override
-    public TValue setValue(
-      TValue value
-      )
-    {throw new UnsupportedOperationException();}
-    // </Map.Entry>
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
   }
 
   private interface IFiller<TCollection extends Collection<?>>
@@ -227,6 +173,7 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
     IFiller<Set<Map.Entry<PdfString,TValue>>> filler = new IFiller<Set<Map.Entry<PdfString,TValue>>>()
       {
         private final Set<Map.Entry<PdfString,TValue>> entrySet = new HashSet<Map.Entry<PdfString,TValue>>();
+
         @Override
         public void add(
           PdfArray names,
@@ -235,19 +182,15 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
         {
           PdfString key = (PdfString)names.get(offset);
           TValue value = wrap(names.get(offset + 1), key);
-          entrySet.add(
-            new Entry(key,value)
-            );
+          entrySet.add(new MapEntry<PdfString,TValue>(key, value));
         }
+
         @Override
         public Set<Map.Entry<PdfString,TValue>> getCollection(
           )
         {return entrySet;}
       };
-    fill(
-      filler,
-      (PdfReference)getBaseObject()
-      );
+    fill(filler, (PdfReference)getBaseObject());
 
     return filler.getCollection();
   }
@@ -351,25 +294,20 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
     IFiller<Set<PdfString>> filler = new IFiller<Set<PdfString>>()
       {
         private final Set<PdfString> keySet = new HashSet<PdfString>();
+
         @Override
         public void add(
           PdfArray names,
           int offset
           )
-        {
-          keySet.add(
-            (PdfString)names.get(offset)
-            );
-        }
+        {keySet.add((PdfString)names.get(offset));}
+
         @Override
         public Set<PdfString> getCollection(
           )
         {return keySet;}
       };
-    fill(
-      filler,
-      (PdfReference)getBaseObject()
-      );
+    fill(filler, (PdfReference)getBaseObject());
 
     return filler.getCollection();
   }
@@ -426,7 +364,7 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
     )
   {
     for(Map.Entry<? extends PdfString,? extends TValue> entry : entries.entrySet())
-    {put(entry.getKey(),entry.getValue());}
+    {put(entry.getKey(), entry.getValue());}
   }
 
   @Override
@@ -447,6 +385,7 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
     IFiller<Collection<TValue>> filler = new IFiller<Collection<TValue>>()
       {
         private final Collection<TValue> values = new ArrayList<TValue>();
+
         @Override
         public void add(
           PdfArray names,
@@ -460,15 +399,13 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
               )
             );
         }
+
         @Override
         public Collection<TValue> getCollection(
           )
         {return values;}
       };
-    fill(
-      filler,
-      (PdfReference)getBaseObject()
-      );
+    fill(filler, (PdfReference)getBaseObject());
 
     return filler.getCollection();
   }
@@ -534,7 +471,7 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
     else // Intermediate node.
     {
       for(PdfDirectObject kidObject : kidsObject)
-      {fill(filler,(PdfReference)kidObject);}
+      {fill(filler, (PdfReference)kidObject);}
     }
   }
 

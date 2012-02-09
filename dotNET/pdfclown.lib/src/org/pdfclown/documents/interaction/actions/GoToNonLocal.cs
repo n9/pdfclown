@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,7 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
-using org.pdfclown.documents.fileSpecs;
+using org.pdfclown.documents.files;
 using org.pdfclown.documents.interaction.navigation.document;
 using org.pdfclown.objects;
 
@@ -46,10 +46,10 @@ namespace org.pdfclown.documents.interaction.actions
     protected GotoNonLocal(
       Document context,
       PdfName actionType,
-      FileSpec fileSpec,
+      FileSpecification destinationFile,
       T destination
       ) : base(context, actionType, destination)
-    {FileSpec = fileSpec;}
+    {DestinationFile = destinationFile;}
 
     protected GotoNonLocal(
       PdfDirectObject baseObject
@@ -62,19 +62,36 @@ namespace org.pdfclown.documents.interaction.actions
     /**
       <summary>Gets/Sets the file in which the destination is located.</summary>
     */
-    public virtual FileSpec FileSpec
+    public virtual FileSpecification DestinationFile
+    {
+      get
+      {return FileSpecification.Wrap(BaseDataObject[PdfName.F], null);}
+      set
+      {BaseDataObject[PdfName.F] = (value != null ? value.BaseObject : null);}
+    }
+
+    /**
+      <summary>Gets/Sets the action options.</summary>
+    */
+    public OptionsEnum Options
     {
       get
       {
-        PdfDirectObject fileSpecObject = BaseDataObject[PdfName.F];
-        return fileSpecObject != null ? new FileSpec(fileSpecObject, null) : null;
+        OptionsEnum options = 0;
+        PdfDirectObject optionsObject = BaseDataObject[PdfName.NewWindow];
+        if(optionsObject != null
+          && ((PdfBoolean)optionsObject).BooleanValue)
+        {options |= OptionsEnum.NewWindow;}
+        return options;
       }
       set
       {
-        if(value == null)
-        {BaseDataObject.Remove(PdfName.F);}
+        if((value & OptionsEnum.NewWindow) == OptionsEnum.NewWindow)
+        {BaseDataObject[PdfName.NewWindow] = PdfBoolean.True;}
+        else if((value & OptionsEnum.SameWindow) == OptionsEnum.SameWindow)
+        {BaseDataObject[PdfName.NewWindow] = PdfBoolean.False;}
         else
-        {BaseDataObject[PdfName.F] = value.BaseObject;}
+        {BaseDataObject.Remove(PdfName.NewWindow);} // NOTE: Forcing the absence of this entry ensures that the viewer application should behave in accordance with the current user preference.
       }
     }
     #endregion

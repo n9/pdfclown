@@ -114,7 +114,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
             )
           {
             components.Add(
-              new PdfReal(((int)baseComponentValues[componentValueIndex++] & 0xff) / 255d)
+              PdfReal.Get(((int)baseComponentValues[componentValueIndex++] & 0xff) / 255d)
               );
           }
         }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -66,8 +66,8 @@ namespace org.pdfclown.documents.contents.objects
       bool leadSet
       ) : base(
         leadSet ? LeadOperatorKeyword : SimpleOperatorKeyword,
-        new PdfReal(offsetX),
-        new PdfReal(offsetY)
+        PdfReal.Get(offsetX),
+        PdfReal.Get(offsetY)
         )
     {}
 
@@ -96,7 +96,7 @@ namespace org.pdfclown.documents.contents.objects
       get
       {return ((IPdfNumber)operands[0]).RawValue;}
       set
-      {operands[0] = new PdfReal(value);}
+      {operands[0] = PdfReal.Get(value);}
     }
 
     public double OffsetY
@@ -104,7 +104,7 @@ namespace org.pdfclown.documents.contents.objects
       get
       {return ((IPdfNumber)operands[1]).RawValue;}
       set
-      {operands[1] = new PdfReal(value);}
+      {operands[1] = PdfReal.Get(value);}
     }
 
     public override void Scan(

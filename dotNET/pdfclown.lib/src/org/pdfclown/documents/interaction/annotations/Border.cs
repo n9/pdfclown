@@ -190,7 +190,7 @@ namespace org.pdfclown.documents.interaction.annotations
               dashIndex < dashLength;
               dashIndex++
               )
-            {dashObject.Add(new PdfReal(dashArray[dashIndex]));}
+            {dashObject.Add(PdfReal.Get(dashArray[dashIndex]));}
           }
           BaseDataObject[PdfName.D] = dashObject;
         }
@@ -230,7 +230,7 @@ namespace org.pdfclown.documents.interaction.annotations
           : widthObject.RawValue;
       }
       set
-      {BaseDataObject[PdfName.W] = new PdfReal(value);}
+      {BaseDataObject[PdfName.W] = PdfReal.Get(value);}
     }
     #endregion
     #endregion

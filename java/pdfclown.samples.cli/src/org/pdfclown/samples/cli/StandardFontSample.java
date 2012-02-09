@@ -6,9 +6,9 @@ import java.util.EnumSet;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
+import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.composition.XAlignmentEnum;
 import org.pdfclown.documents.contents.composition.YAlignmentEnum;
-import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.files.File;
 
@@ -20,7 +20,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public class StandardFontSample
   extends Sample
@@ -40,7 +40,7 @@ public class StandardFontSample
     populate(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, false, "Standard Type 1 fonts", "applying standard Type 1 fonts");
+    serialize(file, "Standard Type 1 fonts", "applying standard Type 1 fonts");
 
     return true;
   }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF10)
 public final class TranslateTextRelative
@@ -77,8 +77,8 @@ public final class TranslateTextRelative
   {
     super(
       leadSet ? LeadOperator : SimpleOperator,
-      new PdfReal(offsetX),
-      new PdfReal(offsetY)
+      PdfReal.get(offsetX),
+      PdfReal.get(offsetY)
       );
   }
 
@@ -128,12 +128,12 @@ public final class TranslateTextRelative
   public void setOffsetX(
     double value
     )
-  {operands.set(0, new PdfReal(value));}
+  {operands.set(0, PdfReal.get(value));}
 
   public void setOffsetY(
     double value
     )
-  {operands.set(1, new PdfReal(value));}
+  {operands.set(1, PdfReal.get(value));}
   // </public>
   // </interface>
   // </dynamic>

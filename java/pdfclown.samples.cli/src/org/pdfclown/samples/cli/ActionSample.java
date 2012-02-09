@@ -8,7 +8,6 @@ import org.pdfclown.documents.Page;
 import org.pdfclown.documents.PageActions;
 import org.pdfclown.documents.interaction.actions.GoToLocal;
 import org.pdfclown.documents.interaction.actions.GoToURI;
-import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.documents.interaction.navigation.document.LocalDestination;
 import org.pdfclown.files.File;
 
@@ -19,7 +18,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/29/12
 */
 public class ActionSample
   extends Sample
@@ -51,11 +50,7 @@ public class ActionSample
       documentActions.setOnOpen(
         new GoToLocal(
           document,
-          new LocalDestination(
-            document.getPages().get(1), // Page 2 (zero-based index).
-            Destination.ModeEnum.Fit,
-            null
-            )
+          new LocalDestination(document.getPages().get(1)) // Page 2 (zero-based index).
           )
         );
     }
@@ -83,7 +78,7 @@ public class ActionSample
     }
 
     // 3. Serialize the PDF file!
-    serialize(file, true, "Actions", "applying actions");
+    serialize(file, "Actions", "applying actions");
 
     return true;
   }

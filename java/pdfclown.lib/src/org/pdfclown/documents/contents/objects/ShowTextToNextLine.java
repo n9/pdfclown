@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -39,7 +39,7 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF10)
 public final class ShowTextToNextLine
@@ -89,8 +89,8 @@ public final class ShowTextToNextLine
   {
     super(
       SpaceOperator,
-      new PdfReal(wordSpace),
-      new PdfReal(charSpace),
+      PdfReal.get(wordSpace),
+      PdfReal.get(charSpace),
       new PdfString(text)
       );
   }
@@ -150,7 +150,7 @@ public final class ShowTextToNextLine
     )
   {
     ensureSpaceOperation();
-    operands.set(1, new PdfReal(value));
+    operands.set(1, PdfReal.get(value));
   }
 
   @Override
@@ -172,7 +172,7 @@ public final class ShowTextToNextLine
     )
   {
     ensureSpaceOperation();
-    operands.set(0, new PdfReal(value));
+    operands.set(0, PdfReal.get(value));
   }
   // </public>
 
@@ -183,8 +183,8 @@ public final class ShowTextToNextLine
     if(operator.equals(SimpleOperator))
     {
       operator = SpaceOperator;
-      operands.add(0,new PdfReal(0));
-      operands.add(1,new PdfReal(0));
+      operands.add(0, PdfReal.get(0));
+      operands.add(1, PdfReal.get(0));
     }
   }
   // </private>

@@ -193,68 +193,117 @@ namespace org.pdfclown.samples.cli
 
     /**
       <summary>Serializes the given PDF Clown file object.</summary>
-      <param name="file">File to serialize.</param>
+      <param name="file">PDF file to serialize.</param>
+      <returns>Serialization path.</returns>
     */
-    protected void Serialize(
+    protected string Serialize(
       files::File file
       )
-    {Serialize(file, true);}
+    {return Serialize(file, null, null, null);}
 
     /**
       <summary>Serializes the given PDF Clown file object.</summary>
-      <param name="file">File to serialize.</param>
-      <param name="chooseMode">Whether to allow user choice of serialization mode.</param>
+      <param name="file">PDF file to serialize.</param>
+      <param name="serializationMode">Serialization mode.</param>
+      <returns>Serialization path.</returns>
     */
-    protected void Serialize(
+    protected string Serialize(
       files::File file,
-      bool chooseMode
+      files::SerializationModeEnum? serializationMode
       )
-    {Serialize(file, chooseMode, null, null);}
+    {return Serialize(file, null, null, serializationMode);}
 
     /**
       <summary>Serializes the given PDF Clown file object.</summary>
-      <param name="file">File to serialize.</param>
-      <param name="chooseMode">Whether to allow user choice of serialization mode.</param>
-      <param name="title">Document title.</param>
-      <param name="subject">Document subject.</param>
-    */
-    protected void Serialize(
-      files::File file,
-      bool chooseMode,
-      string title,
-      string subject
-      )
-    {Serialize(file, GetType().Name, chooseMode, title, subject);}
-
-    /**
-      <summary>Serializes the given PDF Clown file object.</summary>
-      <param name="file">File to serialize.</param>
+      <param name="file">PDF file to serialize.</param>
       <param name="fileName">Output file name.</param>
-      <param name="chooseMode">Whether to allow user choice of serialization mode.</param>
-      <param name="title">Document title.</param>
-      <param name="subject">Document subject.</param>
+      <returns>Serialization path.</returns>
     */
-    protected void Serialize(
+    protected string Serialize(
+      files::File file,
+      string fileName
+      )
+    {return Serialize(file, fileName, null, null);}
+
+    /**
+      <summary>Serializes the given PDF Clown file object.</summary>
+      <param name="file">PDF file to serialize.</param>
+      <param name="fileName">Output file name.</param>
+      <param name="serializationMode">Serialization mode.</param>
+      <returns>Serialization path.</returns>
+    */
+    protected string Serialize(
       files::File file,
       string fileName,
-      bool chooseMode,
+      files::SerializationModeEnum? serializationMode
+      )
+    {return Serialize(file, fileName, null, null, serializationMode);}
+
+    /**
+      <summary>Serializes the given PDF Clown file object.</summary>
+      <param name="file">PDF file to serialize.</param>
+      <param name="title">Document title.</param>
+      <param name="subject">Document subject.</param>
+      <returns>Serialization path.</returns>
+    */
+    protected string Serialize(
+      files::File file,
       string title,
       string subject
+      )
+    {return Serialize(file, title, subject, null);}
+
+    /**
+      <summary>Serializes the given PDF Clown file object.</summary>
+      <param name="file">PDF file to serialize.</param>
+      <param name="title">Document title.</param>
+      <param name="subject">Document subject.</param>
+      <param name="serializationMode">Serialization mode.</param>
+      <returns>Serialization path.</returns>
+    */
+    protected string Serialize(
+      files::File file,
+      string title,
+      string subject,
+      files::SerializationModeEnum? serializationMode
+      )
+    {return Serialize(file, GetType().Name, title, subject, serializationMode);}
+
+    /**
+      <summary>Serializes the given PDF Clown file object.</summary>
+      <param name="file">PDF file to serialize.</param>
+      <param name="fileName">Output file name.</param>
+      <param name="title">Document title.</param>
+      <param name="subject">Document subject.</param>
+      <param name="serializationMode">Serialization mode.</param>
+      <returns>Serialization path.</returns>
+    */
+    protected string Serialize(
+      files::File file,
+      string fileName,
+      string title,
+      string subject,
+      files::SerializationModeEnum? serializationMode
       )
     {
       ApplyDocumentSettings(file.Document, title, subject);
 
       Console.WriteLine();
-      files::SerializationModeEnum serializationMode = files::SerializationModeEnum.Incremental;
-      if(chooseMode)
+
+      if(!serializationMode.HasValue)
       {
-        Console.WriteLine("[0] Standard serialization");
-        Console.WriteLine("[1] Incremental update");
-        Console.Write("Please select a serialization mode: ");
-        try
-        {serializationMode = (files::SerializationModeEnum)Int32.Parse(Console.ReadLine());}
-        catch
-        {/* Default. */}
+        if(file.Reader == null) // New file.
+        {serializationMode = files::SerializationModeEnum.Standard;}
+        else // Existing file.
+        {
+          Console.WriteLine("[0] Standard serialization");
+          Console.WriteLine("[1] Incremental update");
+          Console.Write("Please select a serialization mode: ");
+          try
+          {serializationMode = (files::SerializationModeEnum)Int32.Parse(Console.ReadLine());}
+          catch
+          {serializationMode = files::SerializationModeEnum.Standard;}
+        }
       }
 
       string outputFilePath = outputPath + fileName + "." + serializationMode + ".pdf";
@@ -264,14 +313,15 @@ namespace org.pdfclown.samples.cli
         NOTE: You can also save to a generic target stream (see Save() method overloads).
       */
       try
-      {file.Save(outputFilePath, serializationMode);}
+      {file.Save(outputFilePath, serializationMode.Value);}
       catch(Exception e)
       {
         Console.WriteLine("File writing failed: " + e.Message);
         Console.WriteLine(e.StackTrace);
       }
-
       Console.WriteLine("\nOutput: "+ outputFilePath);
+
+      return outputFilePath;
     }
     #endregion
 

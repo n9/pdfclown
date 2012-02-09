@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Link
@@ -59,35 +59,7 @@ public final class Link
   public Link(
     Page page,
     Rectangle2D box,
-    Destination destination
-    )
-  {
-    this(page,box);
-
-    setDestination(destination);
-  }
-
-  public Link(
-    Page page,
-    Rectangle2D box,
-    Action action
-    )
-  {
-    this(page,box);
-
-    AnnotationActions actions = new AnnotationActions(this);
-    actions.setOnActivate(action);
-    setActions(actions);
-  }
-
-  public Link(
-    PdfDirectObject baseObject
-    )
-  {super(baseObject);}
-
-  private Link(
-    Page page,
-    Rectangle2D box
+    PdfObjectWrapper<?> target
     )
   {
     super(
@@ -96,7 +68,13 @@ public final class Link
       box,
       page
       );
+    setTarget(target);
   }
+
+  public Link(
+    PdfDirectObject baseObject
+    )
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -106,32 +84,6 @@ public final class Link
     Document context
     )
   {throw new NotImplementedException();}
-
-  // <ILink>
-  @Override
-  public Destination getDestination(
-    )
-  {
-    PdfDirectObject destinationObject = getBaseDataObject().get(PdfName.Dest);
-    return destinationObject != null
-      ? getDocument().resolveName(
-        Destination.class,
-        destinationObject
-        )
-      : null;
-  }
-
-  @Override
-  public PdfObjectWrapper<?> getTarget(
-    )
-  {
-    if(getBaseDataObject().containsKey(PdfName.Dest))
-      return getDestination();
-    else if(getBaseDataObject().containsKey(PdfName.A))
-      return getAction();
-    else
-      return null;
-  }
 
   @Override
   public void setAction(
@@ -148,26 +100,17 @@ public final class Link
     super.setAction(value);
   }
 
-  /**
-    @see #getDestination()
-  */
+  // <ILink>
   @Override
-  public void setDestination(
-    Destination value
+  public PdfObjectWrapper<?> getTarget(
     )
   {
-    if(value == null)
-    {getBaseDataObject().remove(PdfName.Dest);}
+    if(getBaseDataObject().containsKey(PdfName.Dest))
+      return getDestination();
+    else if(getBaseDataObject().containsKey(PdfName.A))
+      return getAction();
     else
-    {
-      /*
-        NOTE: This entry is not permitted in link annotations if an 'A' entry is present.
-      */
-      if(getBaseDataObject().containsKey(PdfName.A))
-      {getBaseDataObject().remove(PdfName.A);}
-
-      getBaseDataObject().put(PdfName.Dest,value.getNamedBaseObject());
-    }
+      return null;
   }
 
   @Override
@@ -184,6 +127,38 @@ public final class Link
   }
   // </ILink>
   // </public>
+
+  // <private>
+  private Destination getDestination(
+    )
+  {
+    PdfDirectObject destinationObject = getBaseDataObject().get(PdfName.Dest);
+    return destinationObject != null
+      ? getDocument().resolveName(
+        Destination.class,
+        destinationObject
+        )
+      : null;
+  }
+
+  private void setDestination(
+    Destination value
+    )
+  {
+    if(value == null)
+    {getBaseDataObject().remove(PdfName.Dest);}
+    else
+    {
+      /*
+        NOTE: This entry is not permitted in link annotations if an 'A' entry is present.
+      */
+      if(getBaseDataObject().containsKey(PdfName.A))
+      {getBaseDataObject().remove(PdfName.A);}
+
+      getBaseDataObject().put(PdfName.Dest,value.getNamedBaseObject());
+    }
+  }
+  // </private>
   // </interface>
   // </dynamic>
   // </class>

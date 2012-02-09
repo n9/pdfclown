@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -70,8 +70,8 @@ namespace org.pdfclown.documents.contents.objects
         new List<PdfDirectObject>(
           new PdfDirectObject[]
           {
-            new PdfReal(pointX),
-            new PdfReal(pointY)
+            PdfReal.Get(pointX),
+            PdfReal.Get(pointY)
           }
           )
         )
@@ -99,8 +99,8 @@ namespace org.pdfclown.documents.contents.objects
       }
       set
       {
-        operands[0] = new PdfReal(value.X);
-        operands[1] = new PdfReal(value.Y);
+        operands[0] = PdfReal.Get(value.X);
+        operands[1] = PdfReal.Get(value.Y);
       }
     }
 

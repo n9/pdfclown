@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -91,12 +91,12 @@ namespace org.pdfclown.documents.contents.objects
         new List<PdfDirectObject>(
           new PdfDirectObject[]
           {
-            new PdfReal(a),
-            new PdfReal(b),
-            new PdfReal(c),
-            new PdfReal(d),
-            new PdfReal(e),
-            new PdfReal(f)
+            PdfReal.Get(a),
+            PdfReal.Get(b),
+            PdfReal.Get(c),
+            PdfReal.Get(d),
+            PdfReal.Get(e),
+            PdfReal.Get(f)
           }
           )
         )

@@ -25,14 +25,11 @@
 
 package org.pdfclown.documents.interaction.actions;
 
-import java.util.EnumSet;
-
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.documents.fileSpecs.FileSpec;
+import org.pdfclown.documents.files.FileSpecification;
 import org.pdfclown.documents.interaction.navigation.document.RemoteDestination;
-import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.NotImplementedException;
@@ -43,7 +40,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 @PDF(VersionEnum.PDF11)
 public final class GoToRemote
@@ -57,10 +54,10 @@ public final class GoToRemote
   */
   public GoToRemote(
     Document context,
-    FileSpec fileSpec,
+    FileSpecification<?> destinationFile,
     RemoteDestination destination
     )
-  {super(context, PdfName.GoToR, fileSpec, destination);}
+  {super(context, PdfName.GoToR, destinationFile, destination);}
 
   GoToRemote(
     PdfDirectObject baseObject
@@ -76,49 +73,23 @@ public final class GoToRemote
     )
   {throw new NotImplementedException();}
 
-  /**
-    Gets the action options.
-  */
-  public EnumSet<OptionsEnum> getOptions(
-    )
-  {
-    EnumSet<OptionsEnum> options = EnumSet.noneOf(OptionsEnum.class);
-    PdfDirectObject optionObject = getBaseDataObject().get(PdfName.NewWindow);
-    if(optionObject != null
-      && ((PdfBoolean)optionObject).getValue())
-    {options.add(OptionsEnum.NewWindow);}
-    return options;
-  }
-
   @Override
-  public void setFileSpec(FileSpec value) {
-    if(value == null)
-      throw new IllegalArgumentException("FileSpec cannot be null.");
-
-    super.setFileSpec(value);
-  }
-
-  /**
-    @see #getOptions()
-  */
-  public void setOptions(
-    EnumSet<OptionsEnum> value
+  public void setDestinationFile(
+    FileSpecification<?> value
     )
   {
-    if(value.contains(OptionsEnum.NewWindow))
-    {getBaseDataObject().put(PdfName.NewWindow,PdfBoolean.True);}
-    else if(value.contains(OptionsEnum.SameWindow))
-    {getBaseDataObject().put(PdfName.NewWindow,PdfBoolean.False);}
-    else
-    {getBaseDataObject().remove(PdfName.NewWindow);} // NOTE: Forcing the absence of this entry ensures that the viewer application should behave in accordance with the current user preference.
+    if(value == null)
+      throw new IllegalArgumentException("DestinationFile cannot be null.");
+
+    super.setDestinationFile(value);
   }
   // </public>
 
   // <protected>
   @Override
-  protected Class<RemoteDestination> getDestinationClass() {
-    return RemoteDestination.class;
-  }
+  protected Class<RemoteDestination> getDestinationClass(
+    )
+  {return RemoteDestination.class;}
   // </protected>
   // </interface>
   // </dynamic>

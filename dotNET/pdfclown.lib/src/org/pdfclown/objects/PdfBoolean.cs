@@ -58,10 +58,6 @@ namespace org.pdfclown.objects
 
     #region dynamic
     #region constructors
-    public PdfBoolean(
-      )
-    {}
-
     private PdfBoolean(
       bool value
       )

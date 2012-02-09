@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -109,12 +109,6 @@ namespace org.pdfclown.bytes
     }
 
     /**
-      <summary>Cleans the dirtiness of this buffer.</summary>
-    */
-    void Clean(
-      );
-
-    /**
       <summary>Gets a clone of the buffer.</summary>
       <returns>Deep copy of the buffer.</returns>
     */
@@ -142,11 +136,12 @@ namespace org.pdfclown.bytes
       );
 
     /**
-      <summary>Gets whether this buffer has changed.</summary>
+      <summary>Gets/Sets whether this buffer has changed.</summary>
     */
     bool Dirty
     {
       get;
+      set;
     }
 
     /**

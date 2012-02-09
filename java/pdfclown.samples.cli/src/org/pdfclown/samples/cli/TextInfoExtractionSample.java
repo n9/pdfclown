@@ -21,7 +21,7 @@ import org.pdfclown.tools.PageStamper;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public class TextInfoExtractionSample
   extends Sample
@@ -67,7 +67,7 @@ public class TextInfoExtractionSample
     }
 
     // 3. Decorated version serialization.
-    serialize(file,false);
+    serialize(file);
 
     return true;
   }

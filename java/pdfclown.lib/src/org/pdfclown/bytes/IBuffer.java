@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,7 +33,7 @@ import org.pdfclown.objects.PdfDictionary;
   <p>Its pivotal concept is the array index.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 07/05/11
+  @version 0.1.2, 01/29/12
 */
 public interface IBuffer
   extends IInputStream,
@@ -115,12 +115,6 @@ public interface IBuffer
   */
   IBuffer append(
     IInputStream data
-    );
-
-  /**
-    Cleans the dirtiness of this buffer.
-  */
-  void clean(
     );
 
   /**
@@ -317,6 +311,13 @@ public interface IBuffer
   void replace(
     int index,
     IInputStream data
+    );
+
+  /**
+    @see #isDirty()
+  */
+  void setDirty(
+    boolean value
     );
 
   /**

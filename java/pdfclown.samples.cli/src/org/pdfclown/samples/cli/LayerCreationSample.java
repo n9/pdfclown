@@ -7,10 +7,10 @@ import java.awt.Rectangle;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Document.PageModeEnum;
 import org.pdfclown.documents.Page;
-import org.pdfclown.documents.contents.composition.XAlignmentEnum;
-import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.contents.layers.Layer;
 import org.pdfclown.documents.contents.layers.Layer.StateEnum;
@@ -24,7 +24,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public class LayerCreationSample
   extends Sample
@@ -41,7 +41,7 @@ public class LayerCreationSample
     populate(document);
 
     // 3. PDF file serialization.
-    serialize(file, false, "Layer", "inserting layers");
+    serialize(file, "Layer", "inserting layers");
 
     return true;
   }

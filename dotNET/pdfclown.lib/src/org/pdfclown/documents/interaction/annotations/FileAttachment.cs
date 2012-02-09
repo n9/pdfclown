@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,7 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
-using org.pdfclown.documents.fileSpecs;
+using org.pdfclown.documents.files;
 using org.pdfclown.objects;
 
 using System;
@@ -36,11 +36,13 @@ namespace org.pdfclown.documents.interaction.annotations
 {
   /**
     <summary>File attachment annotation [PDF:1.6:8.4.5].</summary>
-    <remarks>It represents a reference to a file, which typically is embedded in the PDF file.</remarks>
+    <remarks>It represents a reference to a file, which typically is embedded in the PDF file.
+    </remarks>
   */
   [PDF(VersionEnum.PDF13)]
   public sealed class FileAttachment
-    : Annotation
+    : Annotation,
+      IFileResource
   {
     #region types
     /**
@@ -116,14 +118,14 @@ namespace org.pdfclown.documents.interaction.annotations
     public FileAttachment(
       Page page,
       RectangleF box,
-      FileSpec fileSpec
+      FileSpecification dataFile
       ) : base(
         page.Document,
         PdfName.FileAttachment,
         box,
         page
         )
-    {FileSpec = fileSpec;}
+    {DataFile = dataFile;}
 
     public FileAttachment(
       PdfDirectObject baseObject
@@ -139,17 +141,6 @@ namespace org.pdfclown.documents.interaction.annotations
     {throw new NotImplementedException();}
 
     /**
-      <summary>Gets/Sets the file associated with this annotation.</summary>
-    */
-    public FileSpec FileSpec
-    {
-      get
-      {return new FileSpec(BaseDataObject[PdfName.FS], null);}
-      set
-      {BaseDataObject[PdfName.FS] = value.BaseObject;}
-    }
-
-    /**
       <summary>Gets/Sets the icon to be used in displaying the annotation.</summary>
     */
     public IconTypeEnum IconType
@@ -159,6 +150,16 @@ namespace org.pdfclown.documents.interaction.annotations
       set
       {BaseDataObject[PdfName.Name] = ToCode(value);}
     }
+
+    #region IFileResource
+    public FileSpecification DataFile
+    {
+      get
+      {return FileSpecification.Wrap(BaseDataObject[PdfName.FS], null);}
+      set
+      {BaseDataObject[PdfName.FS] = value.BaseObject;}
+    }
+    #endregion
     #endregion
     #endregion
     #endregion

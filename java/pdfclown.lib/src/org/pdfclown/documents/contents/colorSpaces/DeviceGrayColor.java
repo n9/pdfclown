@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,7 +40,7 @@ import org.pdfclown.util.NotImplementedException;
   Device Gray color value [PDF:1.6:4.5.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF11)
 public final class DeviceGrayColor
@@ -84,7 +84,7 @@ public final class DeviceGrayColor
   {
     this(
       Arrays.asList(
-        new PdfReal(normalizeComponent(g))
+        PdfReal.get(normalizeComponent(g))
         )
       );
   }

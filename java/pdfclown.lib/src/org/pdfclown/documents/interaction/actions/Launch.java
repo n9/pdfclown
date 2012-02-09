@@ -30,7 +30,7 @@ import java.util.EnumSet;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.documents.fileSpecs.FileSpec;
+import org.pdfclown.documents.files.FileSpecification;
 import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 @PDF(VersionEnum.PDF11)
 public final class Launch
@@ -55,7 +55,7 @@ public final class Launch
   /**
     Windows-specific launch parameters [PDF:1.6:8.5.3].
   */
-  public static class WinParametersObject
+  public static class WinTarget
     extends PdfObjectWrapper<PdfDictionary>
   {
     // <class>
@@ -124,7 +124,7 @@ public final class Launch
 
     // <dynamic>
     // <constructors>
-    public WinParametersObject(
+    public WinTarget(
       Document context,
       String fileName
       )
@@ -133,7 +133,7 @@ public final class Launch
       setFileName(fileName);
     }
 
-    public WinParametersObject(
+    public WinTarget(
       Document context,
       String fileName,
       OperationEnum operation
@@ -143,7 +143,7 @@ public final class Launch
       setOperation(operation);
     }
 
-    public WinParametersObject(
+    public WinTarget(
       Document context,
       String fileName,
       String parameterString
@@ -153,7 +153,7 @@ public final class Launch
       setParameterString(parameterString);
     }
 
-    private WinParametersObject(
+    private WinTarget(
       PdfDirectObject baseObject
       )
     {super(baseObject);}
@@ -162,7 +162,7 @@ public final class Launch
     // <interface>
     // <public>
     @Override
-    public WinParametersObject clone(
+    public WinTarget clone(
       Document context
       )
     {throw new NotImplementedException();}
@@ -245,12 +245,20 @@ public final class Launch
   // <dynamic>
   // <constructors>
   /**
-    Creates a new action within the given document context.
+    Creates a launcher.
+
+    @param context Document context.
+    @param target Either a {@link FileSpecification} or a {@link WinTarget} representing
+      either an application or a document.
   */
   public Launch(
-    Document context
+    Document context,
+    PdfObjectWrapper<?> target
     )
-  {super(context, PdfName.Launch);}
+  {
+    super(context, PdfName.Launch);
+    setTarget(target);
+  }
 
   Launch(
     PdfDirectObject baseObject
@@ -267,16 +275,6 @@ public final class Launch
   {throw new NotImplementedException();}
 
   /**
-    Gets the application to be launched or the document to be opened or printed.
-  */
-  public FileSpec getFileSpec(
-    )
-  {
-    PdfDirectObject fileSpecObject = getBaseDataObject().get(PdfName.F);
-    return fileSpecObject != null ? new FileSpec(fileSpecObject, null) : null;
-  }
-
-  /**
     Gets the action options.
   */
   public EnumSet<OptionsEnum> getOptions(
@@ -291,22 +289,21 @@ public final class Launch
   }
 
   /**
-    Gets the Windows-specific launch parameters.
+    Gets the application to be launched or the document to be opened or printed.
+
+    @return Either a {@link FileSpecification} or a {@link WinTarget}.
   */
-  public WinParametersObject getWinParameters(
+  public PdfObjectWrapper<?> getTarget(
     )
   {
-    PdfDictionary parametersObject = (PdfDictionary)getBaseDataObject().get(PdfName.Win);
-    return parametersObject != null ? new WinParametersObject(parametersObject) : null;
+    PdfDirectObject targetObject;
+    if((targetObject = getBaseDataObject().get(PdfName.F)) != null)
+      return FileSpecification.wrap(targetObject, null);
+    else if((targetObject = getBaseDataObject().get(PdfName.Win)) != null)
+      return new WinTarget(targetObject);
+    else
+      return null;
   }
-
-  /**
-    @see #getFileSpec()
-  */
-  public void setFileSpec(
-    FileSpec value
-    )
-  {getBaseDataObject().put(PdfName.F, value.getBaseObject());}
 
   /**
     @see #getOptions()
@@ -324,12 +321,19 @@ public final class Launch
   }
 
   /**
-    @see #getWinParameters()
+    @see #getTarget()
   */
-  public void setWinParameters(
-    WinParametersObject value
+  public void setTarget(
+    PdfObjectWrapper<?> value
     )
-  {getBaseDataObject().put(PdfName.Win, value.getBaseObject());}
+  {
+    if(value instanceof FileSpecification<?>)
+    {getBaseDataObject().put(PdfName.F, ((FileSpecification<?>)value).getBaseObject());}
+    else if(value instanceof WinTarget)
+    {getBaseDataObject().put(PdfName.Win, ((WinTarget)value).getBaseObject());}
+    else
+      throw new IllegalArgumentException("MUST be either FileSpecification or WinTarget");
+  }
   // </public>
   // </interface>
   // </dynamic>

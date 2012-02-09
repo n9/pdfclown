@@ -1,7 +1,5 @@
-<html>
-<head>
-<!--
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+/*
+  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,16 +21,51 @@
   Redistribution and use, with or without modification, are permitted provided that such
   redistributions retain the above copyright notice, license and disclaimer, along with
   this list of conditions.
--->
-</head>
-<body>
-<p>File specifications used to reference the contents of other
-(either external or embedded) files [PDF:1.6:3.10].</p>
+*/
 
-<h2>Related Documentation</h2>
-<p>For overviews, tutorials, examples, guides, and tool documentation, please see:</p>
-<ul>
-  <li><a href="http://www.pdfclown.org">PDF Clown Home Page</a>
-</ul>
-</body>
-</html>
+package org.pdfclown.util;
+
+import java.util.AbstractMap.SimpleImmutableEntry;
+
+/**
+  Generic map entry.
+  
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.2
+  @version 0.1.2, 02/04/12
+*/
+public final class MapEntry<TKey extends Comparable<? super TKey>,TValue>
+  extends SimpleImmutableEntry<TKey,TValue>
+  implements Comparable<MapEntry<TKey,TValue>>
+{
+  // <class>
+  // <static>
+  private static final long serialVersionUID = 1L;
+  // </static>
+
+  // <dynamic>
+  // <fields>
+  // </fields>
+
+  // <constructors>
+  public MapEntry(
+    TKey key,
+    TValue value
+    )
+  {super(key, value);}
+  // </constructors>
+
+  // <interface>
+  // <public>
+  // <Comparable>
+  @Override
+  public int compareTo(
+    MapEntry<TKey,TValue> obj
+    )
+  {return getKey().compareTo(obj.getKey());}
+  // </Comparable>
+  // </public>
+  // </interface>
+  // </dynamic>
+  // </class>
+}

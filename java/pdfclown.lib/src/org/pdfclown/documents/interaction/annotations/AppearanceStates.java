@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,6 +41,7 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfStream;
+import org.pdfclown.util.MapEntry;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -48,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF12)
 public final class AppearanceStates
@@ -56,54 +57,6 @@ public final class AppearanceStates
   implements Map<PdfName,FormXObject>
 {
   // <class>
-  // <classes>
-  private class Entry
-    implements Map.Entry<PdfName,FormXObject>
-  {
-    // <class>
-    // <dynamic>
-    // <fields>
-    private final PdfName key;
-    private final FormXObject value;
-    // </fields>
-
-    // <constructors>
-    private Entry(
-      PdfName key,
-      FormXObject value
-      )
-    {
-      this.key = key;
-      this.value = value;
-    }
-    // </constructors>
-
-    // <interface>
-    // <public>
-    // <Map.Entry>
-    @Override
-    public PdfName getKey(
-      )
-    {return key;}
-
-    @Override
-    public FormXObject getValue(
-      )
-    {return value;}
-
-    @Override
-    public FormXObject setValue(
-      FormXObject value
-      )
-    {throw new UnsupportedOperationException();}
-    // </Map.Entry>
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
-  }
-  // </classes>
-
   // <dynamic>
   // <fields>
   private final Appearance appearance;
@@ -199,7 +152,7 @@ public final class AppearanceStates
       else if(baseDataObject instanceof PdfStream) // Single state.
       {
         entrySet.add(
-          new Entry(
+          new MapEntry<PdfName,FormXObject>(
             null,
             new FormXObject(getBaseObject())
             )
@@ -210,7 +163,7 @@ public final class AppearanceStates
         for(Map.Entry<PdfName,PdfDirectObject> entry : ((PdfDictionary)baseDataObject).entrySet())
         {
           entrySet.add(
-            new Entry(
+            new MapEntry<PdfName,FormXObject>(
               entry.getKey(),
               new FormXObject(entry.getValue())
               )

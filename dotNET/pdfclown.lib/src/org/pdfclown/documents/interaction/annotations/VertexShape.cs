@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -99,8 +99,8 @@ namespace org.pdfclown.documents.interaction.annotations
         float pageHeight = Page.Box.Height;
         foreach(PointF vertex in value)
         {
-          verticesObject.Add(new PdfReal(vertex.X)); // x.
-          verticesObject.Add(new PdfReal(pageHeight-vertex.Y)); // y.
+          verticesObject.Add(PdfReal.Get(vertex.X)); // x.
+          verticesObject.Add(PdfReal.Get(pageHeight-vertex.Y)); // y.
         }
 
         BaseDataObject[PdfName.Vertices] = verticesObject;

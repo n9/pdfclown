@@ -46,7 +46,7 @@ namespace org.pdfclown.samples.cli
             Console.WriteLine("Destination '" + key.Value + "' (" + value.Container.Reference + ")");
 
             Console.Write("    Target Page: number = ");
-            object pageRef = value.PageRef;
+            object pageRef = value.Page;
             if(pageRef is Int32) // NOTE: numeric page refs are typical of remote destinations.
             {Console.WriteLine(((int)pageRef) + 1);}
             else // NOTE: explicit page refs are typical of local destinations.

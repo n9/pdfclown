@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -58,10 +58,10 @@ namespace org.pdfclown.documents.contents.objects
         new List<PdfDirectObject>(
           new PdfDirectObject[]
           {
-            new PdfReal(x),
-            new PdfReal(y),
-            new PdfReal(width),
-            new PdfReal(height)
+            PdfReal.Get(x),
+            PdfReal.Get(y),
+            PdfReal.Get(width),
+            PdfReal.Get(height)
           }
           )
         )
@@ -80,7 +80,7 @@ namespace org.pdfclown.documents.contents.objects
       get
       {return ((IPdfNumber)operands[3]).RawValue;}
       set
-      {operands[3] = new PdfReal(value);}
+      {operands[3] = PdfReal.Get(value);}
     }
 
     public override void Scan(
@@ -106,7 +106,7 @@ namespace org.pdfclown.documents.contents.objects
       get
       {return ((IPdfNumber)operands[2]).RawValue;}
       set
-      {operands[2] = new PdfReal(value);}
+      {operands[2] = PdfReal.Get(value);}
     }
 
     public double X
@@ -114,7 +114,7 @@ namespace org.pdfclown.documents.contents.objects
       get
       {return ((IPdfNumber)operands[0]).RawValue;}
       set
-      {operands[0] = new PdfReal(value);}
+      {operands[0] = PdfReal.Get(value);}
     }
 
     public double Y
@@ -122,7 +122,7 @@ namespace org.pdfclown.documents.contents.objects
       get
       {return ((IPdfNumber)operands[1]).RawValue;}
       set
-      {operands[1] = new PdfReal(value);}
+      {operands[1] = PdfReal.Get(value);}
     }
     #endregion
     #endregion

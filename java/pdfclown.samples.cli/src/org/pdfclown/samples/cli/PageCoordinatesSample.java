@@ -31,7 +31,7 @@ import org.pdfclown.objects.PdfName;
   onto the canvas.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public class PageCoordinatesSample
   extends Sample
@@ -63,7 +63,7 @@ public class PageCoordinatesSample
     buildContent(document);
 
     // 4. Serialize the PDF file!
-    serialize(file, false, "Page coordinates", "manipulating the CTM");
+    serialize(file, "Page coordinates", "manipulating the CTM");
 
     return true;
   }

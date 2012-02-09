@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF file writer implementing compressed cross-reference stream [PDF:1.6:3.4.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 02/04/12
 */
 final class CompressedWriter
   extends Writer
@@ -118,6 +118,7 @@ final class CompressedWriter
         xrefStream,
         xrefStreamEntry = new XRefEntry(indirectObjects.size(), 0)
         );
+      updateTrailer(xrefStream.getHeader(), stream);
       xrefStream.getHeader().put(PdfName.Prev,new PdfInteger((int)parser.retrieveXRefOffset()));
       addXRefEntry(
         xrefStreamEntry,
@@ -180,6 +181,7 @@ final class CompressedWriter
       prevFreeEntry.setOffset(0); // Links back to the first free object. NOTE: The first entry in the table (object number 0) is always free.
 
       // 2.2. XRef stream.
+      updateTrailer(xrefStream.getHeader(), stream);
       addXRefEntry(
         xrefStreamEntry,
         xrefStream.getContainer(),

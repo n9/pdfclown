@@ -23,7 +23,7 @@ import org.pdfclown.util.math.geom.GeomUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.5
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public class PageToFormSample
   extends Sample
@@ -53,7 +53,7 @@ public class PageToFormSample
     populate(document,form);
 
     // 5. Serialize the PDF file!
-    serialize(file, false, "Page-to-form", "converting a page to a reusable form");
+    serialize(file, "Page-to-form", "converting a page to a reusable form");
 
     return true;
   }

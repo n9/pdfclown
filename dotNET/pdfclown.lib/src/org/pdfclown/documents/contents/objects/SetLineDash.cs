@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -52,10 +52,10 @@ namespace org.pdfclown.documents.contents.objects
       ) : base(
         OperatorKeyword,
         new PdfArray(
-          new PdfReal(unitsOn),
-          new PdfReal(unitsOff)
+          PdfReal.Get(unitsOn),
+          PdfReal.Get(unitsOff)
           ),
-        new PdfReal(phase)
+        PdfReal.Get(phase)
         )
     {}
 
@@ -102,10 +102,10 @@ namespace org.pdfclown.documents.contents.objects
           index < length;
           index++
           )
-        {baseDashArray[index] = new PdfReal(dashArray[index]);}
+        {baseDashArray[index] = PdfReal.Get(dashArray[index]);}
         operands[0] = baseDashArray;
         // 2. Dash phase.
-        operands[1] = new PdfReal(value.DashPhase);
+        operands[1] = PdfReal.Get(value.DashPhase);
       }
     }
     #endregion

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -101,10 +101,10 @@ namespace org.pdfclown.objects
         new PdfArray(
           new PdfDirectObject[]
           {
-            new PdfReal(left), // Left (X).
-            new PdfReal(top - height), // Bottom (Y).
-            new PdfReal(left + width), // Right.
-            new PdfReal(top) // Top.
+            PdfReal.Get(left), // Left (X).
+            PdfReal.Get(top - height), // Bottom (Y).
+            PdfReal.Get(left + width), // Right.
+            PdfReal.Get(top) // Top.
           }
           )
         )
@@ -123,7 +123,7 @@ namespace org.pdfclown.objects
       get
       {return ((IPdfNumber)BaseDataObject[1]).RawValue;}
       set
-      {BaseDataObject[1] = new PdfReal(value);}
+      {BaseDataObject[1] = PdfReal.Get(value);}
     }
 
     public override object Clone(
@@ -144,7 +144,7 @@ namespace org.pdfclown.objects
       get
       {return ((IPdfNumber)BaseDataObject[0]).RawValue;}
       set
-      {BaseDataObject[0] = new PdfReal(value);}
+      {BaseDataObject[0] = PdfReal.Get(value);}
     }
 
     public double Right
@@ -152,7 +152,7 @@ namespace org.pdfclown.objects
       get
       {return ((IPdfNumber)BaseDataObject[2]).RawValue;}
       set
-      {BaseDataObject[2] = new PdfReal(value);}
+      {BaseDataObject[2] = PdfReal.Get(value);}
     }
 
     public double Top
@@ -160,7 +160,7 @@ namespace org.pdfclown.objects
       get
       {return ((IPdfNumber)BaseDataObject[3]).RawValue;}
       set
-      {BaseDataObject[3] = new PdfReal(value);}
+      {BaseDataObject[3] = PdfReal.Get(value);}
     }
 
     public RectangleF ToRectangleF(

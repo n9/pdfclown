@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF10)
 public final class DrawRectangle
@@ -65,10 +65,10 @@ public final class DrawRectangle
   {
     super(
       Operator,
-      new PdfReal(x),
-      new PdfReal(y),
-      new PdfReal(width),
-      new PdfReal(height)
+      PdfReal.get(x),
+      PdfReal.get(y),
+      PdfReal.get(width),
+      PdfReal.get(height)
       );
   }
 
@@ -119,22 +119,22 @@ public final class DrawRectangle
   public void setHeight(
     double value
     )
-  {operands.set(3, new PdfReal(value));}
+  {operands.set(3, PdfReal.get(value));}
 
   public void setWidth(
     double value
     )
-  {operands.set(2, new PdfReal(value));}
+  {operands.set(2, PdfReal.get(value));}
 
   public void setX(
     double value
     )
-  {operands.set(0, new PdfReal(value));}
+  {operands.set(0, PdfReal.get(value));}
 
   public void setY(
     double value
     )
-  {operands.set(1, new PdfReal(value));}
+  {operands.set(1, PdfReal.get(value));}
   // </public>
   // </interface>
   // </dynamic>

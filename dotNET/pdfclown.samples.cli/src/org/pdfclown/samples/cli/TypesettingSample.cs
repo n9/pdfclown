@@ -31,7 +31,7 @@ namespace org.pdfclown.samples.cli
       Build(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, false, "Typesetting", "demonstrating how to add style to contents");
+      Serialize(file, "Typesetting", "demonstrating how to add style to contents");
 
       return true;
     }

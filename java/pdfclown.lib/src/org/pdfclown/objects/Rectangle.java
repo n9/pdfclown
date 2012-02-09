@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 02/04/12
 */
 public final class Rectangle
   extends PdfObjectWrapper<PdfArray>
@@ -112,10 +112,10 @@ public final class Rectangle
       new PdfArray(
         new PdfDirectObject[]
         {
-          new PdfReal(left), // Left (X).
-          new PdfReal(top - height), // Bottom (Y).
-          new PdfReal(left + width), // Right.
-          new PdfReal(top) // Top.
+          PdfReal.get(left), // Left (X).
+          PdfReal.get(top - height), // Bottom (Y).
+          PdfReal.get(left + width), // Right.
+          PdfReal.get(top) // Top.
         }
         )
       );

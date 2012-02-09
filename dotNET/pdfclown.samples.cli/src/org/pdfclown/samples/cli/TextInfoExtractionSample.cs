@@ -53,7 +53,7 @@ namespace org.pdfclown.samples.cli
       }
 
       // 3. Decorated version serialization.
-      Serialize(file,false);
+      Serialize(file);
 
       return true;
     }

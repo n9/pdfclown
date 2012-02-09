@@ -22,7 +22,7 @@ import org.pdfclown.files.SerializationModeEnum;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/29/12
 */
 public abstract class Sample
 {
@@ -233,72 +233,124 @@ public abstract class Sample
   /**
     Serializes the given PDF Clown file object.
 
-    @param file File to serialize.
+    @param file PDF file to serialize.
+    @return Serialization path.
   */
-  protected void serialize(
+  protected String serialize(
     File file
     )
-  {serialize(file, true);}
+  {return serialize(file, null, null, null);}
 
   /**
     Serializes the given PDF Clown file object.
 
-    @param file File to serialize.
-    @param chooseMode Whether to allow user choice of serialization mode.
+    @param file PDF file to serialize.
+    @param serializationMode Serialization mode.
+    @return Serialization path.
   */
-  protected void serialize(
+  protected String serialize(
     File file,
-    boolean chooseMode
+    SerializationModeEnum serializationMode
     )
-  {serialize(file, chooseMode, null, null);}
+  {return serialize(file, null, null, serializationMode);}
 
   /**
     Serializes the given PDF Clown file object.
 
-    @param file File to serialize.
-    @param chooseMode Whether to allow user choice of serialization mode.
-    @param title Document title.
-    @param subject Document subject.
-  */
-  protected void serialize(
-    File file,
-    boolean chooseMode,
-    String title,
-    String subject
-    )
-  {serialize(file, getClass().getSimpleName(), chooseMode, title, subject);}
-
-  /**
-    Serializes the given PDF Clown file object.
-
-    @param file File to serialize.
+    @param file PDF file to serialize.
     @param fileName Output file name.
-    @param chooseMode Whether to allow user choice of serialization mode.
-    @param title Document title.
-    @param subject Document subject.
+    @return Serialization path.
   */
-  protected void serialize(
+  protected String serialize(
+    File file,
+    String fileName
+    )
+  {return serialize(file, fileName, null, null);}
+
+  /**
+    Serializes the given PDF Clown file object.
+
+    @param file PDF file to serialize.
+    @param fileName Output file name.
+    @param serializationMode Serialization mode.
+    @return Serialization path.
+  */
+  protected String serialize(
     File file,
     String fileName,
-    boolean chooseMode,
+    SerializationModeEnum serializationMode
+    )
+  {return serialize(file, fileName, null, null, serializationMode);}
+
+  /**
+    Serializes the given PDF Clown file object.
+
+    @param file PDF file to serialize.
+    @param title Document title.
+    @param subject Document subject.
+    @return Serialization path.
+  */
+  protected String serialize(
+    File file,
     String title,
     String subject
+    )
+  {return serialize(file, title, subject, null);}
+
+  /**
+    Serializes the given PDF Clown file object.
+
+    @param file PDF file to serialize.
+    @param title Document title.
+    @param subject Document subject.
+    @param serializationMode Serialization mode.
+    @return Serialization path.
+  */
+  protected String serialize(
+    File file,
+    String title,
+    String subject,
+    SerializationModeEnum serializationMode
+    )
+  {return serialize(file, getClass().getSimpleName(), title, subject, serializationMode);}
+
+  /**
+    Serializes the given PDF Clown file object.
+
+    @param file PDF file to serialize.
+    @param fileName Output file name.
+    @param title Document title.
+    @param subject Document subject.
+    @param serializationMode Serialization mode.
+    @return Serialization path.
+  */
+  protected String serialize(
+    File file,
+    String fileName,
+    String title,
+    String subject,
+    SerializationModeEnum serializationMode
     )
   {
     applyDocumentSettings(file.getDocument(), title, subject);
 
     System.out.println();
-    SerializationModeEnum serializationMode = SerializationModeEnum.Incremental;
-    if(chooseMode)
+
+    if(serializationMode == null)
     {
-      Scanner in = new Scanner(System.in);
-      System.out.println("[0] Standard serialization");
-      System.out.println("[1] Incremental update");
-      System.out.print("Please select a serialization mode: ");
-      try
-      {serializationMode = SerializationModeEnum.values()[Integer.parseInt(in.nextLine())];}
-      catch(Exception e)
-      {/* Default. */}
+      if(file.getReader() == null) // New file.
+      {serializationMode = SerializationModeEnum.Standard;}
+      else // Existing file.
+      {
+        Scanner in = new Scanner(System.in);
+        System.out.println("[0] Standard serialization");
+        System.out.println("[1] Incremental update");
+        System.out.print("Please select a serialization mode: ");
+        try
+        {serializationMode = SerializationModeEnum.values()[Integer.parseInt(in.nextLine())];}
+        catch(Exception e)
+        {serializationMode = SerializationModeEnum.Standard;}
+      }
     }
 
     java.io.File outputFile = new java.io.File(outputPath + java.io.File.separator + fileName + "." + serializationMode + ".pdf");
@@ -314,8 +366,9 @@ public abstract class Sample
       System.out.println("File writing failed: " + e.getMessage());
       e.printStackTrace();
     }
-
     System.out.println("\nOutput: " + outputFile.getPath());
+
+    return outputFile.getPath();
   }
   // </protected>
 

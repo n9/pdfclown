@@ -546,7 +546,7 @@ public class Annotation
   public void setModificationDate(
     Date value
     )
-  {getBaseDataObject().put(PdfName.M, new PdfDate(value));}
+  {getBaseDataObject().put(PdfName.M, PdfDate.get(value));}
 
   /**
     @see #getName()

@@ -43,7 +43,6 @@ namespace org.pdfclown.objects
     #region dynamic
     #region fields
     private PdfDirectObject baseObject;
-    private PdfIndirectObject container;
     #endregion
 
     #region constructors
@@ -55,10 +54,7 @@ namespace org.pdfclown.objects
     protected PdfObjectWrapper(
       PdfDirectObject baseObject
       )
-    {
-      BaseObject = baseObject;
-      container = (baseObject != null ? baseObject.Container : null);
-    }
+    {BaseObject = baseObject;}
     #endregion
 
     #region interface
@@ -73,12 +69,11 @@ namespace org.pdfclown.objects
 
     /**
       <summary>Gets the indirect object containing the base object.</summary>
-      <remarks>It's used for update purposes.</remarks>
     */
     public PdfIndirectObject Container
     {
       get
-      {return container;}
+      {return baseObject.Container;}
     }
 
     /**
@@ -106,7 +101,10 @@ namespace org.pdfclown.objects
     public Document Document
     {
       get
-      {return container.File.Document;}
+      {
+        File file = File;
+        return file != null ? file.Document : null;
+      }
     }
 
     /**
@@ -115,7 +113,10 @@ namespace org.pdfclown.objects
     public File File
     {
       get
-      {return container.File;}
+      {
+        PdfIndirectObject container = Container;
+        return container != null ? container.File : null;
+      }
     }
 
     #region IPdfObjectWrapper
@@ -232,14 +233,21 @@ namespace org.pdfclown.objects
     <summary>High-level representation of a strongly-typed PDF object.</summary>
     <remarks>
       <para>Specialized objects don't inherit directly from their low-level counterparts (e.g.
-      <see cref="org.pdfclown.documents.contents.Contents">Contents</see> extends <see cref="org.pdfclown.objects.PdfStream">PdfStream</see>,
-      <see cref="org.pdfclown.documents.Pages">Pages</see> extends <see cref="org.pdfclown.objects.PdfArray">PdfArray</see> and so on) because
-      there's no plain one-to-one mapping between primitive PDF types and specialized instances: the <code>Content</code> entry of <code>Page</code>
-      dictionaries may be a simple reference to a <code>PdfStream</code> or a <code>PdfArray</code> of references to <code>PdfStream</code>-s,
-      <code>Pages</code> collections may be spread across a B-tree instead of a flat <code>PdfArray</code> and so on.</para>
-      <para>So, in order to hide all these annoying inner workings, I chose to adopt a composition pattern instead of the apparently-reasonable
-      (but actually awkward!) inheritance pattern. Nonetheless, users can navigate through the low-level structure getting the
-      <see cref="BaseDataObject">BaseDataObject</see> backing this object.</para>
+        <see cref="org.pdfclown.documents.contents.Contents">Contents</see> extends <see
+        cref="org.pdfclown.objects.PdfStream">PdfStream</see>, <see
+        cref="org.pdfclown.documents.Pages">Pages</see> extends <see
+        cref="org.pdfclown.objects.PdfArray">PdfArray</see> and so on) because there's no plain
+        one-to-one mapping between primitive PDF types and specialized instances: the
+        <code>Content</code> entry of <code>Page</code> dictionaries may be a simple reference to a
+        <code>PdfStream</code> or a <code>PdfArray</code> of references to <code>PdfStream</code>-s,
+        <code>Pages</code> collections may be spread across a B-tree instead of a flat
+        <code>PdfArray</code> and so on.
+      </para>
+      <para>So, in order to hide all these annoying inner workings, I chose to adopt a composition
+        pattern instead of the apparently-reasonable (but actually awkward!) inheritance pattern.
+        Nonetheless, users can navigate through the low-level structure getting the <see
+        cref="BaseDataObject">BaseDataObject</see> backing this object.
+      </para>
     </remarks>
   */
   public abstract class PdfObjectWrapper<TDataObject>
@@ -301,7 +309,7 @@ namespace org.pdfclown.objects
       get
       {return base.BaseObject;}
       protected set
-      {//TODO: assignment should trigger container.setDataObject!!!
+      {
         base.BaseObject = value;
         baseDataObject = (TDataObject)File.Resolve(value);
       }

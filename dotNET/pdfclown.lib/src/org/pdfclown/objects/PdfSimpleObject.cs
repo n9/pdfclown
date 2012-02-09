@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,6 +41,30 @@ namespace org.pdfclown.objects
     #region static
     #region interface
     #region public
+    /**
+      <summary>Gets the object equivalent to the given value.</summary>
+    */
+    public static PdfDirectObject Get(
+      object value
+      )
+    {
+      if(value == null)
+        return null;
+
+      if(value is Int32)
+        return PdfInteger.Get((int)value);
+      else if(value is Double || value is Single)
+        return PdfReal.Get(value);
+      else if(value is string)
+        return PdfTextString.Get((string)value);
+      else if(value is DateTime)
+        return PdfDate.Get((DateTime)value);
+      else if(value is Boolean)
+        return PdfBoolean.Get((Boolean)value);
+      else
+        throw new NotImplementedException();
+    }
+  
     /**
       <summary>Gets the value corresponding to the given object.</summary>
       <param name="obj">Object to extract the value from.</param>

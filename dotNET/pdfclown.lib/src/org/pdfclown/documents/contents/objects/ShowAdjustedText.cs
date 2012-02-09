@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -121,7 +121,7 @@ namespace org.pdfclown.documents.contents.objects
           if(textItemExpected)
           {element = new PdfString((byte[])valueItem);}
           else
-          {element = new PdfReal((double)valueItem);}
+          {element = PdfReal.Get((double)valueItem);}
           elements.Add(element);
 
           textItemExpected = !textItemExpected;

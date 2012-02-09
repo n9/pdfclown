@@ -68,7 +68,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 01/02/12
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Page
@@ -472,7 +472,7 @@ public final class Page
   public void setDuration(
     double value
     )
-  {getBaseDataObject().put(PdfName.Dur, value == 0 ? null : new PdfReal(value));}
+  {getBaseDataObject().put(PdfName.Dur, value == 0 ? null : PdfReal.get(value));}
 
   /**
     @see #getRotation()

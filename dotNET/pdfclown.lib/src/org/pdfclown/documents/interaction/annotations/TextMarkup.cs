@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -251,14 +251,14 @@ namespace org.pdfclown.documents.interaction.annotations
             NOTE: Despite the spec prescription, Point 3 and Point 4 MUST be inverted.
           */
           PointF[] markupBoxPoints = markupBox.Points;
-          quadPointsObject.Add(new PdfReal(markupBoxPoints[0].X)); // x1.
-          quadPointsObject.Add(new PdfReal(pageHeight - markupBoxPoints[0].Y)); // y1.
-          quadPointsObject.Add(new PdfReal(markupBoxPoints[1].X)); // x2.
-          quadPointsObject.Add(new PdfReal(pageHeight - markupBoxPoints[1].Y)); // y2.
-          quadPointsObject.Add(new PdfReal(markupBoxPoints[3].X)); // x4.
-          quadPointsObject.Add(new PdfReal(pageHeight - markupBoxPoints[3].Y)); // y4.
-          quadPointsObject.Add(new PdfReal(markupBoxPoints[2].X)); // x3.
-          quadPointsObject.Add(new PdfReal(pageHeight - markupBoxPoints[2].Y)); // y3.
+          quadPointsObject.Add(PdfReal.Get(markupBoxPoints[0].X)); // x1.
+          quadPointsObject.Add(PdfReal.Get(pageHeight - markupBoxPoints[0].Y)); // y1.
+          quadPointsObject.Add(PdfReal.Get(markupBoxPoints[1].X)); // x2.
+          quadPointsObject.Add(PdfReal.Get(pageHeight - markupBoxPoints[1].Y)); // y2.
+          quadPointsObject.Add(PdfReal.Get(markupBoxPoints[3].X)); // x4.
+          quadPointsObject.Add(PdfReal.Get(pageHeight - markupBoxPoints[3].Y)); // y4.
+          quadPointsObject.Add(PdfReal.Get(markupBoxPoints[2].X)); // x3.
+          quadPointsObject.Add(PdfReal.Get(pageHeight - markupBoxPoints[2].Y)); // y3.
         }
         BaseDataObject[PdfName.QuadPoints] = quadPointsObject;
       }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -50,7 +50,7 @@ namespace org.pdfclown.documents.contents.objects
     public SetFont(
       PdfName name,
       double size
-      ) : base(OperatorKeyword, name, new PdfReal(size))
+      ) : base(OperatorKeyword, name, PdfReal.Get(size))
     {}
 
     public SetFont(
@@ -86,7 +86,7 @@ namespace org.pdfclown.documents.contents.objects
       get
       {return ((IPdfNumber)operands[1]).RawValue;}
       set
-      {operands[1] = new PdfReal(value);}
+      {operands[1] = PdfReal.Get(value);}
     }
 
     #region IResourceReference

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,11 +25,14 @@
 
 package org.pdfclown.documents.interaction.actions;
 
+import java.util.EnumSet;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.documents.fileSpecs.FileSpec;
+import org.pdfclown.documents.files.FileSpecification;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
+import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 
@@ -38,7 +41,7 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/29/12
 */
 @PDF(VersionEnum.PDF11)
 public abstract class GoToNonLocal<T extends Destination>
@@ -49,12 +52,12 @@ public abstract class GoToNonLocal<T extends Destination>
   protected GoToNonLocal(
     Document context,
     PdfName actionType,
-    FileSpec fileSpec,
+    FileSpecification<?> destinationFile,
     T destination
     )
   {
-    super(context,actionType,destination);
-    setFileSpec(fileSpec);
+    super(context, actionType, destination);
+    setDestinationFile(destinationFile);
   }
 
   protected GoToNonLocal(
@@ -68,24 +71,45 @@ public abstract class GoToNonLocal<T extends Destination>
   /**
     Gets the file in which the destination is located.
   */
-  public FileSpec getFileSpec(
+  public FileSpecification<?> getDestinationFile(
+    )
+  {return FileSpecification.wrap(getBaseDataObject().get(PdfName.F), null);}
+
+  /**
+    Gets the action options.
+  */
+  public EnumSet<OptionsEnum> getOptions(
     )
   {
-    PdfDirectObject fileSpecObject = getBaseDataObject().get(PdfName.F);
-    return fileSpecObject != null ? new FileSpec(fileSpecObject, null) : null;
+    EnumSet<OptionsEnum> options = EnumSet.noneOf(OptionsEnum.class);
+    PdfDirectObject optionObject = getBaseDataObject().get(PdfName.NewWindow);
+    if(optionObject != null
+      && ((PdfBoolean)optionObject).getValue())
+    {options.add(OptionsEnum.NewWindow);}
+    return options;
   }
 
   /**
-    @see #getFileSpec()
+    @see #getDestinationFile()
   */
-  public void setFileSpec(
-    FileSpec value
+  public void setDestinationFile(
+    FileSpecification<?> value
+    )
+  {getBaseDataObject().put(PdfName.F, value != null ? value.getBaseObject() : null);}
+
+  /**
+    @see #getOptions()
+  */
+  public void setOptions(
+    EnumSet<OptionsEnum> value
     )
   {
-    if(value == null)
-    {getBaseDataObject().remove(PdfName.F);}
+    if(value.contains(OptionsEnum.NewWindow))
+    {getBaseDataObject().put(PdfName.NewWindow,PdfBoolean.True);}
+    else if(value.contains(OptionsEnum.SameWindow))
+    {getBaseDataObject().put(PdfName.NewWindow,PdfBoolean.False);}
     else
-    {getBaseDataObject().put(PdfName.F, value.getBaseObject());}
+    {getBaseDataObject().remove(PdfName.NewWindow);} // NOTE: Forcing the absence of this entry ensures that the viewer application should behave in accordance with the current user preference.
   }
   // </public>
   // </interface>

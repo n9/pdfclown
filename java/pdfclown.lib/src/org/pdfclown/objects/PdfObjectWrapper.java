@@ -44,21 +44,21 @@ import org.pdfclown.util.NotImplementedException;
 
 /**
   High-level representation of a PDF object.
-  <h3>Remarks</h3>
   <p>Specialized objects don't inherit directly from their low-level counterparts
-  (e.g. {@link org.pdfclown.documents.contents.Contents Contents} extends {@link org.pdfclown.objects.PdfStream PdfStream},
-  {@link org.pdfclown.documents.Pages Pages} extends {@link org.pdfclown.objects.PdfArray PdfArray}
-  and so on) because there's no plain one-to-one mapping between primitive PDF types and specialized instances:
-  the <code>Content</code> entry of <code>Page</code> dictionaries may be a simple reference to a <code>PdfStream</code>
-  or a <code>PdfArray</code> of references to <code>PdfStream</code>-s, <code>Pages</code> collections may be spread
-  across a B-tree instead of a flat <code>PdfArray</code> and so on.</p>
-  <p>So, <i>in order to hide all these annoying inner workings, I chose to adopt a composition pattern instead of
-  the apparently-reasonable (but actually awkward!) inheritance pattern</i>.
-  Nonetheless, users can navigate through the low-level structure getting the {@link #getBaseDataObject() baseDataObject}
-  backing this object.</p>
+  (e.g. {@link org.pdfclown.documents.contents.Contents Contents} extends
+  {@link org.pdfclown.objects.PdfStream PdfStream}, {@link org.pdfclown.documents.Pages Pages}
+  extends {@link org.pdfclown.objects.PdfArray PdfArray} and so on) because there's no plain one-to
+  one mapping between primitive PDF types and specialized instances: the <code>Content</code> entry
+  of <code>Page</code> dictionaries may be a simple reference to a <code>PdfStream</code> or a
+  <code>PdfArray</code> of references to <code>PdfStream</code>-s, <code>Pages</code> collections
+  may be spread across a B-tree instead of a flat <code>PdfArray</code> and so on.</p>
+  <p>So, <i>in order to hide all these annoying inner workings, I chose to adopt a composition
+  pattern instead of the apparently-reasonable (but actually awkward!) inheritance pattern</i>.
+  Nonetheless, users can navigate through the low-level structure getting the
+  {@link #getBaseDataObject() baseDataObject} backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 02/04/12
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   implements IPdfObjectWrapper
@@ -68,7 +68,6 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   // <fields>
   private TDataObject baseDataObject;
   private PdfDirectObject baseObject;
-  private PdfIndirectObject container;
   // </fields>
 
   // <constructors>
@@ -105,10 +104,7 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   protected PdfObjectWrapper(
     PdfDirectObject baseObject
     )
-  {
-    setBaseObject(baseObject);
-    container = (baseObject != null ? baseObject.getContainer() : null);
-  }
+  {setBaseObject(baseObject);}
   // </constructors>
 
   // <interface>
@@ -152,26 +148,30 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
 
   /**
     Gets the indirect object containing the base object.
-    <h3>Remarks</h3>
-    <p>It's used for update purposes.</p>
   */
   public PdfIndirectObject getContainer(
     )
-  {return container;}
+  {return baseObject.getContainer();}
 
   /**
     Gets the document context.
   */
   public Document getDocument(
     )
-  {return container.getFile().getDocument();}
+  {
+    File file = getFile();
+    return file != null ? file.getDocument() : null;
+  }
 
   /**
     Gets the file context.
   */
   public File getFile(
     )
-  {return container.getFile();}
+  {
+    PdfIndirectObject container = getContainer();
+    return container != null ? container.getFile() : null;
+  }
 
   /**
     Gets the metadata associated to this object.
@@ -315,7 +315,7 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   protected void setBaseObject(
     PdfDirectObject value
     )
-  {//TODO: assignment should trigger container.setDataObject!!!
+  {
     baseObject = value;
     baseDataObject = (TDataObject)File.resolve(baseObject);
   }

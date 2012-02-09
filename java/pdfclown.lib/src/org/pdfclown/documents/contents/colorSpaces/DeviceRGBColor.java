@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
   Device Red-Green-Blue color value [PDF:1.6:4.5.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF11)
 public final class DeviceRGBColor
@@ -101,9 +101,9 @@ public final class DeviceRGBColor
   {
     this(
       Arrays.asList(
-        new PdfReal(normalizeComponent(r)),
-        new PdfReal(normalizeComponent(g)),
-        new PdfReal(normalizeComponent(b))
+        PdfReal.get(normalizeComponent(r)),
+        PdfReal.get(normalizeComponent(g)),
+        PdfReal.get(normalizeComponent(b))
         )
       );
   }

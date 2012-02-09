@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,6 +44,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
       ) : this(
         page,
         ModeEnum.Fit,
+        null,
         null
         )
     {}
@@ -51,12 +52,14 @@ namespace org.pdfclown.documents.interaction.navigation.document
     public LocalDestination(
       Page page,
       ModeEnum mode,
-      double?[] viewParams
+      object location,
+      double? zoom
       ) : base(
         page.Document,
-        page.BaseObject,
+        page,
         mode,
-        viewParams
+        location,
+        zoom
         )
     {}
 
@@ -74,14 +77,21 @@ namespace org.pdfclown.documents.interaction.navigation.document
       )
     {throw new NotImplementedException();}
 
-    public Page Page
+    /**
+      <summary>Gets/Sets the target page.</summary>
+    */
+    public override object Page
     {
       get
-      {return Page.Wrap(BaseDataObject[0]);}
-    }
+      {return documents.Page.Wrap(BaseDataObject[0]);}
+      set
+      {
+        if(!(value is Page))
+          throw new ArgumentException("It MUST be a Page object.");
 
-    public override object PageRef
-    {get{return Page;}}
+        BaseDataObject[0] = ((Page)value).BaseObject;
+      }
+    }
     #endregion
     #endregion
     #endregion

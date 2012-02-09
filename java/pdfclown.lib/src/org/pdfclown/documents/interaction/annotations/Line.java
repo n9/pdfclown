@@ -48,7 +48,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF13)
 public final class Line
@@ -180,7 +180,7 @@ public final class Line
 
     getBaseDataObject().put(
       PdfName.L,
-      new PdfArray(new PdfDirectObject[]{new PdfReal(0),new PdfReal(0),new PdfReal(0),new PdfReal(0)})
+      new PdfArray(new PdfDirectObject[]{PdfReal.get(0), PdfReal.get(0), PdfReal.get(0), PdfReal.get(0)})
       );
     setStartPoint(startPoint);
     setEndPoint(endPoint);
@@ -324,8 +324,8 @@ public final class Line
     )
   {
     PdfArray coordinatesObject = (PdfArray)getBaseDataObject().get(PdfName.L);
-    coordinatesObject.set(2,new PdfReal(value.getX()));
-    coordinatesObject.set(3,new PdfReal(getPage().getBox().getHeight()-value.getY()));
+    coordinatesObject.set(2, PdfReal.get(value.getX()));
+    coordinatesObject.set(3, PdfReal.get(getPage().getBox().getHeight() - value.getY()));
   }
 
   /**
@@ -351,7 +351,7 @@ public final class Line
     double value
     )
   {
-    getBaseDataObject().put(PdfName.LLE, new PdfReal(value));
+    getBaseDataObject().put(PdfName.LLE, PdfReal.get(value));
     /*
       NOTE: If leader line extension entry is present, leader line MUST be too.
     */
@@ -365,7 +365,7 @@ public final class Line
   public void setLeaderLineLength(
     double value
     )
-  {getBaseDataObject().put(PdfName.LL,new PdfReal(-value));}
+  {getBaseDataObject().put(PdfName.LL,PdfReal.get(-value));}
 
   /**
     @see #getStartPoint()
@@ -375,8 +375,8 @@ public final class Line
     )
   {
     PdfArray coordinatesObject = (PdfArray)getBaseDataObject().get(PdfName.L);
-    coordinatesObject.set(0,new PdfReal(value.getX()));
-    coordinatesObject.set(1,new PdfReal(getPage().getBox().getHeight()-value.getY()));
+    coordinatesObject.set(0, PdfReal.get(value.getX()));
+    coordinatesObject.set(1, PdfReal.get(getPage().getBox().getHeight() - value.getY()));
   }
 
   /**

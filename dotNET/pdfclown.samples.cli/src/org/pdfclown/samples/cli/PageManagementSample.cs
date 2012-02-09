@@ -170,7 +170,7 @@ namespace org.pdfclown.samples.cli
           // Serialize the split files!
           int index = 0;
           foreach(Document splitDocument in splitDocuments)
-          {Serialize(splitDocument.File, action, ++index, false);}
+          {Serialize(splitDocument.File, action, ++index);}
         } break;
         case ActionEnum.DocumentSplitByPageIndex:
         {
@@ -200,7 +200,7 @@ namespace org.pdfclown.samples.cli
           {
             int index = 0;
             foreach(Document splitDocument in splitDocuments)
-            {Serialize(splitDocument.File, action, ++index, false);}
+            {Serialize(splitDocument.File, action, ++index);}
           }
         } break;
         case ActionEnum.DocumentSplitOnMaximumFileSize:
@@ -229,7 +229,7 @@ namespace org.pdfclown.samples.cli
           {
             int index = 0;
             foreach(Document splitDocument in splitDocuments)
-            {Serialize(splitDocument.File, action, ++index, false);}
+            {Serialize(splitDocument.File, action, ++index);}
           }
         } break;
       }
@@ -265,26 +265,24 @@ namespace org.pdfclown.samples.cli
       File file,
       ActionEnum action
       )
-    {Serialize(file, action, null, true);}
+    {Serialize(file, action, null);}
 
     /**
       <summary>Serializes the specified PDF file.</summary>
       <param name="file">File to serialize.</param>
       <param name="action">Generator.</param>
       <param name="index">File index.</param>
-      <param name="chooseMode">Whether to allow user choice of serialization mode.</param>
     */
     private void Serialize(
       File file,
       ActionEnum action,
-      int? index,
-      bool chooseMode
+      int? index
       )
     {
       Serialize(
         file,
         GetType().Name + "_" + action.ToString() + (index.HasValue ? "." + index.Value : ""),
-        chooseMode, null, null
+        null, null
         );
     }
   }

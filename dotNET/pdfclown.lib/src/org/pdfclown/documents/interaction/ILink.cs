@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,25 +35,8 @@ namespace org.pdfclown.documents.interaction
   public interface ILink
   {
     /**
-      <summary>Gets/Sets the action to be performed when the link is activated.</summary>
-    */
-    Action Action
-    {
-      get;
-      set;
-    }
-
-    /**
-      <summary>Gets/Sets the destination to jump to when the link is activated.</summary>
-    */
-    Destination Destination
-    {
-      get;
-      set;
-    }
-
-    /**
-      <summary>Gets/Sets the link target (either a Destination or an Action).</summary>
+      <summary>Gets/Sets the link target.</summary>
+      <returns>Either a <see cref="Destination"/> or an <see cref="Action"/>.</returns>
     */
     PdfObjectWrapper Target
     {

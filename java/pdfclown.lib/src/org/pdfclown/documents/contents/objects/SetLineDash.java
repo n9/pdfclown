@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF10)
 public final class SetLineDash
@@ -65,10 +65,10 @@ public final class SetLineDash
     super(
       Operator,
       new PdfArray(
-        new PdfReal(unitsOn),
-        new PdfReal(unitsOff)
+        PdfReal.get(unitsOn),
+        PdfReal.get(unitsOff)
         ),
-      new PdfReal(phase)
+      PdfReal.get(phase)
       );
   }
 
@@ -118,10 +118,10 @@ public final class SetLineDash
       index < length;
       index++
       )
-    {baseDashArray.set(index, new PdfReal(dashArray[index]));}
+    {baseDashArray.set(index, PdfReal.get(dashArray[index]));}
     operands.set(0,baseDashArray);
     // 2. Dash phase.
-    operands.set(1, new PdfReal(value.getDashPhase()));
+    operands.set(1, PdfReal.get(value.getDashPhase()));
   }
   // </public>
   // </interface>

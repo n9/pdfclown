@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -61,7 +61,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF document [PDF:1.6:3.6.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/14/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Document
@@ -700,8 +700,8 @@ public final class Document
       // Assign the media box to the document!
       ((PdfDictionary)getBaseDataObject().resolve(PdfName.Pages)).put(PdfName.MediaBox,mediaBox);
     }
-    mediaBox.set(2,new PdfReal(value.getWidth()));
-    mediaBox.set(3,new PdfReal(value.getHeight()));
+    mediaBox.set(2, PdfReal.get(value.getWidth()));
+    mediaBox.set(3, PdfReal.get(value.getHeight()));
   }
 
   /**

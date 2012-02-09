@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,7 +23,7 @@
   this list of conditions.
 */
 
-package org.pdfclown.documents.fileSpecs;
+package org.pdfclown.documents.files;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,6 +39,7 @@ import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfTextString;
+import org.pdfclown.util.MapEntry;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -46,7 +47,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 01/29/12
 */
 @PDF(VersionEnum.PDF13)
 public final class RelatedFiles
@@ -54,53 +55,16 @@ public final class RelatedFiles
   implements Map<String,EmbeddedFile>
 {
   // <class>
-  // <classes>
-  private class Entry
-    implements Map.Entry<String,EmbeddedFile>
-  {
-    // <class>
-    // <dynamic>
-    // <fields>
-    private final String key;
-    private final EmbeddedFile value;
-    // </fields>
-
-    // <constructors>
-    private Entry(
-      String key,
-      EmbeddedFile value
-      )
-    {
-      this.key = key;
-      this.value = value;
-    }
-    // </constructors>
-
-    // <interface>
-    // <public>
-    // <Map.Entry>
-    @Override
-    public String getKey(
-      )
-    {return key;}
-
-    @Override
-    public EmbeddedFile getValue(
-      )
-    {return value;}
-
-    @Override
-    public EmbeddedFile setValue(
-      EmbeddedFile value
-      )
-    {throw new UnsupportedOperationException();}
-    // </Map.Entry>
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
-  }
-  // </classes>
+  // <static>
+  // <interface>
+  // <public>
+  public static RelatedFiles wrap(
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new RelatedFiles(baseObject) : null;}
+  // </public>
+  // </interface>
+  // </static>
 
   // <dynamic>
   // <constructors>
@@ -109,7 +73,7 @@ public final class RelatedFiles
     )
   {super(context, new PdfArray());}
 
-  RelatedFiles(
+  private RelatedFiles(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -183,9 +147,9 @@ public final class RelatedFiles
       )
     {
       entrySet.add(
-        new Entry(
+        new MapEntry<String,EmbeddedFile>(
           ((PdfTextString)itemPairs.get(index)).getValue(),
-          new EmbeddedFile(itemPairs.get(index+1))
+          EmbeddedFile.wrap(itemPairs.get(index+1))
           )
         );
     }
@@ -213,7 +177,7 @@ public final class RelatedFiles
       )
     {
       if(((PdfTextString)itemPairs.get(index)).getValue().equals(key))
-        return new EmbeddedFile(itemPairs.get(index+1));
+        return EmbeddedFile.wrap(itemPairs.get(index+1));
     }
 
     return null;
@@ -267,7 +231,7 @@ public final class RelatedFiles
       // Already existing entry?
       if(((PdfTextString)itemPairs.get(index)).getValue().equals(key))
       {
-        EmbeddedFile oldEmbeddedFile = new EmbeddedFile(itemPairs.get(index+1));
+        EmbeddedFile oldEmbeddedFile = EmbeddedFile.wrap(itemPairs.get(index+1));
 
         itemPairs.set(index+1,value.getBaseObject());
 
@@ -305,7 +269,7 @@ public final class RelatedFiles
       {
         itemPairs.remove(index); // Key removed.
 
-        return new EmbeddedFile(itemPairs.remove(index)); // Value removed.
+        return EmbeddedFile.wrap(itemPairs.remove(index)); // Value removed.
       }
     }
 
@@ -329,11 +293,7 @@ public final class RelatedFiles
       index < length;
       index += 2
       )
-    {
-      values.add(
-        new EmbeddedFile(itemPairs.get(index))
-        );
-    }
+    {values.add(EmbeddedFile.wrap(itemPairs.get(index)));}
 
     return values;
   }

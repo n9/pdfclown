@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,6 +38,7 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
+import org.pdfclown.util.MapEntry;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -45,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 07/05/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF10)
 public abstract class ResourceItems<TValue extends PdfObjectWrapper<?>>
@@ -53,40 +54,6 @@ public abstract class ResourceItems<TValue extends PdfObjectWrapper<?>>
   implements Map<PdfName,TValue>
 {
   // <class>
-  // <classes>
-  private static final class Entry<TValue extends PdfObjectWrapper<?>>
-    implements Map.Entry<PdfName,TValue>
-  {
-    private final PdfName key;
-    private final TValue value;
-
-    private Entry(
-      PdfName key,
-      TValue value
-      )
-    {
-      this.key = key;
-      this.value = value;
-    }
-
-    @Override
-    public PdfName getKey(
-      )
-    {return key;}
-
-    @Override
-    public TValue getValue(
-      )
-    {return value;}
-
-    @Override
-    public TValue setValue(
-      TValue value
-      )
-    {throw new UnsupportedOperationException();}
-  }
-  // </classes>
-
   // <dynamic>
   // <constructors>
   protected ResourceItems(
@@ -146,7 +113,7 @@ public abstract class ResourceItems<TValue extends PdfObjectWrapper<?>>
       // Populating the high-level collection...
       entries = new HashSet<Map.Entry<PdfName,TValue>>(entryObjects.size());
       for(Map.Entry<PdfName,PdfDirectObject> entryObject : entryObjects)
-      {entries.add(new Entry<TValue>(entryObject.getKey(), wrap(entryObject.getValue())));}
+      {entries.add(new MapEntry<PdfName,TValue>(entryObject.getKey(), wrap(entryObject.getValue())));}
     }
     return entries;
   }

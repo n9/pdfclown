@@ -21,7 +21,7 @@ import org.pdfclown.files.File;
   (XObject); its main advantage is to allow content reuse.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public class InlineObjectSample
   extends Sample
@@ -40,7 +40,7 @@ public class InlineObjectSample
     populate(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, false, "Inline image", "embedding an image within a content stream");
+    serialize(file, "Inline image", "embedding an image within a content stream");
 
     return true;
   }

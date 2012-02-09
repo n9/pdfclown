@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF11)
 public final class Border
@@ -245,7 +245,7 @@ public final class Border
         dashIndex < dashLength;
         dashIndex++
         )
-      {dashObject.add(new PdfReal(dashArray[dashIndex]));}
+      {dashObject.add(PdfReal.get(dashArray[dashIndex]));}
 
       getBaseDataObject().put(PdfName.D, dashObject);
     }
@@ -271,7 +271,7 @@ public final class Border
   public void setWidth(
     double value
     )
-  {getBaseDataObject().put(PdfName.W, new PdfReal(value));}
+  {getBaseDataObject().put(PdfName.W, PdfReal.get(value));}
   // </public>
   // </interface>
   // </dynamic>

@@ -1,6 +1,6 @@
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
-using org.pdfclown.documents.fileSpecs;
+using org.pdfclown.documents.files;
 using org.pdfclown.documents.contents;
 using actions = org.pdfclown.documents.interaction.actions;
 using org.pdfclown.documents.interaction.annotations;
@@ -125,13 +125,13 @@ namespace org.pdfclown.samples.cli
       {
         if(action.Is(typeof(actions::GotoNonLocal<>)))
         {
-          FileSpec fileSpec = (FileSpec)action.Get("FileSpec");
-          if(fileSpec != null)
-          {Console.WriteLine("    Filename: " + fileSpec.Filename);}
+          FileSpecification destinationFile = (FileSpecification)action.Get("DestinationFile");
+          if(destinationFile != null)
+          {Console.WriteLine("    Filename: " + destinationFile.Path);}
 
           if(action is actions::GoToEmbedded)
           {
-            actions::GoToEmbedded.TargetObject target = ((actions::GoToEmbedded)action).Target;
+            actions::GoToEmbedded.PathElement target = ((actions::GoToEmbedded)action).DestinationPath;
             Console.WriteLine("    EmbeddedFilename: " + target.EmbeddedFileName + " Relation: " + target.Relation);
           }
         }
@@ -148,11 +148,11 @@ namespace org.pdfclown.samples.cli
     {
       Console.WriteLine(destination.GetType().Name + " " + destination.BaseObject);
       Console.Write("    Page ");
-      object pageRef = destination.PageRef;
+      object pageRef = destination.Page;
       if(pageRef is Page)
       {
-        Page refPage = (Page)pageRef;
-        Console.WriteLine((refPage.Index+1) + " [ID: " + refPage.BaseObject + "]");
+        Page page = (Page)pageRef;
+        Console.WriteLine((page.Index+1) + " [ID: " + page.BaseObject + "]");
       }
       else
       {Console.WriteLine((int)pageRef+1);}

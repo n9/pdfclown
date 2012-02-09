@@ -36,7 +36,7 @@ import org.pdfclown.tokens.Keyword;
   PDF name object [PDF:1.6:3.2.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public final class PdfName
   extends PdfSimpleObject<String>
@@ -189,7 +189,9 @@ public final class PdfName
   public static final PdfName F = new PdfName("F");
   public static final PdfName Fade = new PdfName("Fade");
   public static final PdfName FB = new PdfName("FB");
+  public static final PdfName FDecodeParms = new PdfName("FDecodeParms");
   public static final PdfName Ff = new PdfName("Ff");
+  public static final PdfName FFilter = new PdfName("FFilter");
   public static final PdfName Fields = new PdfName("Fields");
   public static final PdfName FileAttachment = new PdfName("FileAttachment");
   public static final PdfName Filespec = new PdfName("Filespec");
@@ -349,6 +351,7 @@ public final class PdfName
   public static final PdfName PaintType = new PdfName("PaintType");
   public static final PdfName Paperclip = new PdfName("Paperclip");
   public static final PdfName Paragraph = new PdfName("Paragraph");
+  public static final PdfName Params = new PdfName("Params");
   public static final PdfName Parent = new PdfName("Parent");
   public static final PdfName Pattern = new PdfName("Pattern");
   public static final PdfName PatternType = new PdfName("PatternType");
@@ -446,6 +449,7 @@ public final class PdfName
   public static final PdfName Underline = new PdfName("Underline");
   public static final PdfName Unix = new PdfName("Unix");
   public static final PdfName URI = new PdfName("URI");
+  public static final PdfName URL = new PdfName("URL");
   public static final PdfName Usage = new PdfName("Usage");
   public static final PdfName UseAttachments = new PdfName("UseAttachments");
   public static final PdfName UseNone = new PdfName("UseNone");

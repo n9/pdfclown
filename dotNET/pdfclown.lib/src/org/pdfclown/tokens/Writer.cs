@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -139,6 +139,22 @@ namespace org.pdfclown.tokens
     #endregion
 
     #region protected
+    /**
+      <summary>Updates the specified trailer.</summary>
+      <remarks>This method has to be called just before serializing the trailer object.</remarks>
+    */
+    protected void UpdateTrailer(
+      PdfDictionary trailer,
+      IOutputStream stream
+      )
+    {
+      // File identifier update.
+      FileIdentifier identifier = FileIdentifier.Wrap(trailer[PdfName.ID]);
+      if(identifier == null)
+      {trailer[PdfName.ID] = (identifier = new FileIdentifier()).BaseObject;}
+      identifier.Update(this);
+    }
+
     /**
       <summary>Serializes the beginning of the file [PDF:1.6:3.4.1].</summary>
     */

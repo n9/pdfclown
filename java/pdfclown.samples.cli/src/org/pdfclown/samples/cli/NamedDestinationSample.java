@@ -1,5 +1,7 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.geom.Point2D;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.NamedDestinations;
 import org.pdfclown.documents.Names;
@@ -14,7 +16,7 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/29/12
 */
 public class NamedDestinationSample
   extends Sample
@@ -47,14 +49,14 @@ public class NamedDestinationSample
     destinations.put(new PdfString("First page"), new LocalDestination(pages.get(0)));
     if(pages.size() > 1)
     {
-      destinations.put(new PdfString("Second page"), new LocalDestination(pages.get(1), Destination.ModeEnum.FitHorizontal, new Double[]{0d}));
+      destinations.put(new PdfString("Second page"), new LocalDestination(pages.get(1), Destination.ModeEnum.FitHorizontal, 0, null));
 
       if(pages.size() > 2)
-      {destinations.put(new PdfString("Third page"), new LocalDestination(pages.get(2), Destination.ModeEnum.XYZ, new Double[]{50d, null, null}));}
+      {destinations.put(new PdfString("Third page"), new LocalDestination(pages.get(2), Destination.ModeEnum.XYZ, new Point2D.Double(50, Double.NaN), null));}
     }
 
     // 3. Serialize the PDF file!
-    serialize(file, true, "Named destinations", "manipulating named destinations");
+    serialize(file, "Named destinations", "manipulating named destinations");
 
     return true;
   }

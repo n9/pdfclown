@@ -34,7 +34,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF boolean object [PDF:1.6:3.2.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public final class PdfBoolean
   extends PdfSimpleObject<Boolean>
@@ -61,10 +61,6 @@ public final class PdfBoolean
 
   // <dynamic>
   // <constructors>
-  public PdfBoolean(
-    )
-  {}
-
   private PdfBoolean(
     boolean value
     )

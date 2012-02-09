@@ -25,7 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
-using org.pdfclown.documents.fileSpecs;
+using org.pdfclown.documents.files;
 using org.pdfclown.documents.interaction.navigation.document;
 using org.pdfclown.objects;
 
@@ -48,9 +48,9 @@ namespace org.pdfclown.documents.interaction.actions
     */
     public GoToRemote(
       Document context,
-      FileSpec fileSpec,
+      FileSpecification destinationFile,
       RemoteDestination destination
-      ) : base(context, PdfName.GoToR, fileSpec, destination)
+      ) : base(context, PdfName.GoToR, destinationFile, destination)
     {}
 
     internal GoToRemote(
@@ -66,41 +66,16 @@ namespace org.pdfclown.documents.interaction.actions
       )
     {throw new NotImplementedException();}
 
-    public override FileSpec FileSpec
+    public override FileSpecification DestinationFile
     {
       get
-      {return base.FileSpec;}
+      {return base.DestinationFile;}
       set
       {
         if(value == null)
-          throw new ArgumentException("FileSpec cannot be null.");
+          throw new ArgumentNullException("value");
 
-        base.FileSpec = value;
-      }
-    }
-
-    /**
-      <summary>Gets/Sets the action options.</summary>
-    */
-    public OptionsEnum Options
-    {
-      get
-      {
-        OptionsEnum options = 0;
-        PdfDirectObject optionsObject = BaseDataObject[PdfName.NewWindow];
-        if(optionsObject != null
-          && ((PdfBoolean)optionsObject).BooleanValue)
-        {options |= OptionsEnum.NewWindow;}
-        return options;
-      }
-      set
-      {
-        if((value & OptionsEnum.NewWindow) == OptionsEnum.NewWindow)
-        {BaseDataObject[PdfName.NewWindow] = PdfBoolean.True;}
-        else if((value & OptionsEnum.SameWindow) == OptionsEnum.SameWindow)
-        {BaseDataObject[PdfName.NewWindow] = PdfBoolean.False;}
-        else
-        {BaseDataObject.Remove(PdfName.NewWindow);} // NOTE: Forcing the absence of this entry ensures that the viewer application should behave in accordance with the current user preference.
+        base.DestinationFile = value;
       }
     }
     #endregion

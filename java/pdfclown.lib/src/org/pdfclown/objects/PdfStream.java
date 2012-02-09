@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,12 +25,17 @@
 
 package org.pdfclown.objects;
 
+import java.io.IOException;
 import java.util.Iterator;
 
+import org.pdfclown.PDF;
+import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.IBuffer;
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.bytes.filters.Filter;
+import org.pdfclown.documents.files.FileSpecification;
+import org.pdfclown.documents.files.IFileResource;
 import org.pdfclown.files.File;
 import org.pdfclown.tokens.Encoding;
 import org.pdfclown.tokens.Keyword;
@@ -40,10 +45,11 @@ import org.pdfclown.tokens.Symbol;
   PDF stream object [PDF:1.6:3.2.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 02/04/12
 */
 public class PdfStream
   extends PdfDataObject
+  implements IFileResource
 {
   // <class>
   // <static>
@@ -61,6 +67,12 @@ public class PdfStream
   private PdfObject parent;
   private boolean updated;
   private boolean updateable = true;
+
+  /**
+    Indicates whether {@link #body} has already been resolved and therefore contains the actual
+    stream data.
+  */
+  private boolean bodyResolved;
   // </fields>
 
   // <constructors>
@@ -101,7 +113,7 @@ public class PdfStream
     this.header = (PdfDictionary)include(header);
 
     this.body = body;
-    body.clean();
+    body.setDirty(false);
     body.addListener(new IBuffer.IListener()
     {
       @Override
@@ -151,41 +163,61 @@ public class PdfStream
     boolean decode
     )
   {
+    if(!bodyResolved)
+    {
+      /*
+        NOTE: In case of stream data from external file, a copy to the local buffer has to be done.
+      */
+      FileSpecification<?> dataFile = getDataFile();
+      if(dataFile != null)
+      {
+        setUpdateable(false);
+        body.setLength(0);
+        body.write(dataFile.getInputStream());
+        body.setDirty(false);
+        setUpdateable(true);
+      }
+      bodyResolved = true;
+    }
     if(decode)
     {
-      // Get 'Filter' entry!
-      /*
-        NOTE: It defines possible encodings applied to the stream.
-      */
-      PdfDataObject filterObject = header.resolve(PdfName.Filter);
-      if(filterObject != null) // Stream encoded.
+      PdfDataObject filter = getFilter();
+      if(filter != null) // Stream encoded.
       {
         header.setUpdateable(false);
-        /*
-          NOTE: If the stream is encoded, we must decode it before continuing.
-        */
-        PdfDataObject decodeParms = header.resolve(PdfName.DecodeParms);
-        if(filterObject instanceof PdfName) // Single filter.
+        PdfDataObject parameters = getParameters();
+        if(filter instanceof PdfName) // Single filter.
         {
-          PdfDictionary filterDecodeParms = (PdfDictionary)decodeParms;
-          body.decode(Filter.get((PdfName)filterObject), filterDecodeParms);
+          body.decode(
+            Filter.get((PdfName)filter),
+            (PdfDictionary)parameters
+            );
         }
         else // Multiple filters.
         {
-          Iterator<PdfDirectObject> filterObjIterator = ((PdfArray)filterObject).iterator();
-          Iterator<PdfDirectObject> decodeParmsIterator = (decodeParms != null ? ((PdfArray)decodeParms).iterator() : null);
-          while(filterObjIterator.hasNext())
+          Iterator<PdfDirectObject> filterIterator = ((PdfArray)filter).iterator();
+          Iterator<PdfDirectObject> parametersIterator = (parameters != null ? ((PdfArray)parameters).iterator() : null);
+          while(filterIterator.hasNext())
           {
-            PdfDictionary filterDecodeParms = (PdfDictionary)(decodeParmsIterator != null ? File.resolve(decodeParmsIterator.next()) : null);
-            body.decode(Filter.get((PdfName)File.resolve(filterObjIterator.next())), filterDecodeParms);
+            body.decode(
+              Filter.get((PdfName)File.resolve(filterIterator.next())),
+              (PdfDictionary)(parametersIterator != null ? File.resolve(parametersIterator.next()) : null)
+              );
           }
         }
-        // Update 'Filter' entry!
-        header.put(PdfName.Filter,null); // The stream is free from encodings.
+        setFilter(null); // The stream is free from encodings.
         header.setUpdateable(true);
       }
     }
     return body;
+  }
+
+  public PdfDirectObject getFilter(
+    )
+  {
+    return (PdfDirectObject)(header.get(PdfName.F) == null
+      ? header.resolve(PdfName.Filter)
+      : header.resolve(PdfName.FFilter));
   }
 
   /**
@@ -194,6 +226,14 @@ public class PdfStream
   public PdfDictionary getHeader(
     )
   {return header;}
+
+  public PdfDirectObject getParameters(
+    )
+  {
+    return (PdfDirectObject)(header.get(PdfName.F) == null
+      ? header.resolve(PdfName.DecodeParms)
+      : header.resolve(PdfName.FDecodeParms));
+  }
 
   @Override
   public PdfObject getParent(
@@ -210,6 +250,97 @@ public class PdfStream
     )
   {return updated;}
 
+  /**
+    @param overwrite Indicates whether the data from the old data source substitutes the new one.
+      This way data can be imported to/exported from local or preserved in case of external file
+      location changed.
+    @see #setDataFile(FileSpecification)
+  */
+  public void setDataFile(
+    FileSpecification<?> value,
+    boolean overwrite
+    )
+  {
+    /*
+      NOTE: If overwrite argument is set to true, body's dirtiness MUST be forced in order to ensure
+      data serialization to the new external location.
+
+      Old data source | New data source | overwrite | Action
+      ----------------------------------------------------------------------------------------------
+      local           | not null        | false     | A. Substitute local with new file.
+      local           | not null        | true      | B. Export local to new file.
+      external        | not null        | false     | C. Substitute old file with new file.
+      external        | not null        | true      | D. Copy old file data to new file.
+      local           | null            | (any)     | E. No action.
+      external        | null            | false     | F. Empty local.
+      external        | null            | true      | G. Import old file to local.
+      ----------------------------------------------------------------------------------------------
+    */
+    FileSpecification<?> oldDataFile = getDataFile();
+    PdfDirectObject dataFileObject = (value != null ? value.getBaseObject() : null);
+    if(value != null)
+    {
+      if(overwrite)
+      {
+        if(oldDataFile != null) // Case D (copy old file data to new file).
+        {
+          if(!bodyResolved)
+          {
+            // Transfer old file data to local!
+            getBody(false); // Ensures that external data is loaded as-is into the local buffer.
+          }
+        }
+        else // Case B (export local to new file).
+        {
+          // Transfer local settings to file!
+          header.put(PdfName.FFilter, header.remove(PdfName.Filter));
+          header.put(PdfName.FDecodeParms, header.remove(PdfName.DecodeParms));
+          // Ensure local data represents actual data (otherwise it would be substituted by resolved file data)!
+          bodyResolved = true;
+        }
+        // Ensure local data has to be serialized to new file!
+        body.setDirty(true);
+      }
+      else // Case A/C (substitute local/old file with new file).
+      {
+        // Dismiss local/old file data!
+        body.setLength(0);
+        // Dismiss local/old file settings!
+        setFilter(null);
+        setParameters(null);
+        // Ensure local data has to be loaded from new file!
+        bodyResolved = false;
+      }
+    }
+    else
+    {
+      if(oldDataFile != null)
+      {
+        if(overwrite) // Case G (import old file to local).
+        {
+          // Transfer old file data to local!
+          getBody(false); // Ensures that external data is loaded as-is into the local buffer.
+          // Transfer old file settings to local!
+          header.put(PdfName.Filter, header.remove(PdfName.FFilter));
+          header.put(PdfName.DecodeParms, header.remove(PdfName.FDecodeParms));
+        }
+        else // Case F (empty local).
+        {
+          // Dismiss old file data!
+          body.setLength(0);
+          // Dismiss old file settings!
+          setFilter(null);
+          setParameters(null);
+          // Ensure local data represents actual data (otherwise it would be substituted by resolved file data)!
+          bodyResolved = true;
+        }
+      }
+      else // E (no action).
+      { /* NOOP */ }
+    }
+    header.put(PdfName.F, dataFileObject);
+  }
+
   @Override
   public void setUpdateable(
     boolean value
@@ -222,52 +353,84 @@ public class PdfStream
     File context
     )
   {
+    /*
+      NOTE: The header is temporarily tweaked to accommodate serialization settings.
+    */
     header.setUpdateable(false);
 
-    boolean unencodedBody;
     byte[] bodyData;
-    int bodyLength;
-
-    // 1. Header.
-    // Encoding.
-    PdfDirectObject filterObject = header.get(PdfName.Filter);
-    if(filterObject == null) // Unencoded body.
     {
-      /*
-        NOTE: Header entries related to stream body encoding are temporary, instrumental to the
-        current serialization process only.
-      */
-      unencodedBody = true;
+      boolean bodyUnencoded;
+      {
+        FileSpecification<?> dataFile = getDataFile();
+        /*
+          NOTE: In case of external file, the body buffer has to be saved back only if the file was
+          actually resolved (that is brought into the body buffer) and modified.
+        */
+        boolean encodeBody = (dataFile == null || (bodyResolved && body.isDirty()));
+        if(encodeBody)
+        {
+          PdfDirectObject filterObject = getFilter();
+          if(filterObject == null) // Unencoded body.
+          {
+            /*
+              NOTE: Header entries related to stream body encoding are temporary, instrumental to
+              the current serialization process only.
+            */
+            bodyUnencoded = true;
 
-      // Set the filter to apply!
-      filterObject = PdfName.FlateDecode; // zlib/deflate filter.
-      // Get encoded body data applying the filter to the stream!
-      bodyData = body.encode(Filter.get((PdfName)filterObject), null);
-      // Set encoded length!
-      bodyLength = bodyData.length;
-      // Update 'Filter' entry!
-      header.put(PdfName.Filter, filterObject);
-    }
-    else // Encoded body.
-    {
-      unencodedBody = false;
+            // Set the filter to apply!
+            filterObject = PdfName.FlateDecode; // zlib/deflate filter.
+            // Get encoded body data applying the filter to the stream!
+            bodyData = body.encode(Filter.get((PdfName)filterObject), null);
+            // Set 'Filter' entry!
+            setFilter(filterObject);
+          }
+          else // Encoded body.
+          {
+            bodyUnencoded = false;
 
-      // Get encoded body data!
-      bodyData = body.toByteArray();
-      // Set encoded length!
-      bodyLength = (int)body.getLength();
-    }
-    // Set encoded length!
-    header.put(PdfName.Length, new PdfInteger(bodyLength));
+            // Get encoded body data!
+            bodyData = body.toByteArray();
+          }
 
-    header.writeTo(stream, context);
+          if(dataFile != null)
+          {
+            /*
+              NOTE: In case of external file, body data has to be serialized there, leaving empty
+              its representation within this stream.
+            */
+            try
+            {
+              IOutputStream dataFileOutputStream = dataFile.getOutputStream();
+              dataFileOutputStream.write(bodyData);
+              dataFileOutputStream.close();
+            }
+            catch(IOException e)
+            {throw new RuntimeException("Data writing into " + dataFile.getPath() + " failed.", e);}
+            // Local serialization is empty!
+            bodyData = new byte[]{};
+          }
+        }
+        else
+        {
+          bodyUnencoded = false;
+          bodyData = new byte[]{};
+        }
+      }
 
-    // Is the body free from encodings?
-    if(unencodedBody)
-    {
-      // Restore actual header entries!
-      header.put(PdfName.Length, new PdfInteger((int)body.getLength()));
-      header.put(PdfName.Filter, null);
+      // Set the encoded data length!
+      header.put(PdfName.Length, new PdfInteger(bodyData.length));
+
+      // 1. Header.
+      header.writeTo(stream, context);
+
+      if(bodyUnencoded)
+      {
+        // Restore actual header entries!
+        header.put(PdfName.Length, new PdfInteger((int)body.getLength()));
+        setFilter(null);
+      }
     }
 
     // 2. Body.
@@ -277,6 +440,20 @@ public class PdfStream
 
     header.setUpdateable(true);
   }
+
+  // <IFileResource>
+  @Override
+  @PDF(VersionEnum.PDF12)
+  public FileSpecification<?> getDataFile(
+    )
+  {return FileSpecification.wrap(header.get(PdfName.F), null);}
+
+  @Override
+  public void setDataFile(
+    FileSpecification<?> value
+    )
+  {setDataFile(value, false);}
+  // </IFileResource>
   // </public>
 
   // <protected>
@@ -284,6 +461,36 @@ public class PdfStream
   protected boolean isVirtual(
     )
   {return false;}
+
+  /**
+    @see #getFilter()
+  */
+  protected void setFilter(
+    PdfDirectObject value
+    )
+  {
+    header.put(
+      header.get(PdfName.F) == null
+        ? PdfName.Filter
+        : PdfName.FFilter,
+      value
+      );
+  }
+
+  /**
+    @see #getParameters()
+  */
+  protected void setParameters(
+    PdfDirectObject value
+    )
+  {
+    header.put(
+      header.get(PdfName.F) == null
+        ? PdfName.DecodeParms
+        : PdfName.FDecodeParms,
+      value
+      );
+  }
 
   @Override
   protected void setUpdated(

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,9 +25,13 @@
 
 package org.pdfclown.documents.interaction.navigation.document;
 
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
+import org.pdfclown.documents.Page;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
@@ -36,6 +40,7 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNamedObjectWrapper;
 import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.PdfReference;
+import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.util.NotImplementedException;
 
@@ -49,7 +54,7 @@ import org.pdfclown.util.NotImplementedException;
   </ul>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/29/12
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Destination
@@ -212,55 +217,24 @@ public abstract class Destination
     Creates a new destination within the given document context.
 
     @param context Document context.
-    @param pageObject Page reference. It may be either an actual page reference (PdfReference)
-      or a page index (PdfInteger).
+    @param page Page reference. It may be either a {@link Page} or a page index (int).
     @param mode Destination mode.
-    @param viewParams View parameters. Their actual composition depends on the <code>mode</code> value
-      (see ModeEnum for more info).
+    @param location Destination location.
+    @param zoom Magnification factor to use when displaying the page.
   */
   protected Destination(
     Document context,
-    PdfDirectObject pageObject,
+    Object page,
     ModeEnum mode,
-    Double[] viewParams
+    Object location,
+    Double zoom
     )
   {
-    super(context, new PdfArray());
-    PdfArray baseDataObject = getBaseDataObject();
-    {
-      baseDataObject.add(pageObject);
-      baseDataObject.add(mode.getName());
-      switch(mode)
-      {
-        case Fit:
-          break;
-        case FitBoundingBox:
-          break;
-        case FitBoundingBoxHorizontal:
-          baseDataObject.add(PdfReal.get(viewParams[0]));
-          break;
-        case FitBoundingBoxVertical:
-          baseDataObject.add(PdfReal.get(viewParams[0]));
-          break;
-        case FitHorizontal:
-          baseDataObject.add(PdfReal.get(viewParams[0]));
-          break;
-        case FitRectangle:
-          baseDataObject.add(PdfReal.get(viewParams[0]));
-          baseDataObject.add(PdfReal.get(viewParams[1]));
-          baseDataObject.add(PdfReal.get(viewParams[2]));
-          baseDataObject.add(PdfReal.get(viewParams[3]));
-          break;
-        case FitVertical:
-          baseDataObject.add(PdfReal.get(viewParams[0]));
-          break;
-        case XYZ:
-          baseDataObject.add(PdfReal.get(viewParams[0]));
-          baseDataObject.add(PdfReal.get(viewParams[1]));
-          baseDataObject.add(PdfReal.get(viewParams[2]));
-          break;
-      }
-    }
+    super(context, new PdfArray(null, null));
+    setPage(page);
+    setMode(mode);
+    setLocation(location);
+    setZoom(zoom);
   }
 
   protected Destination(
@@ -279,6 +253,37 @@ public abstract class Destination
   {throw new NotImplementedException();}
 
   /**
+    Gets the page location.
+  */
+  public Object getLocation(
+    )
+  {
+    switch(getMode())
+    {
+      case FitBoundingBoxHorizontal:
+      case FitBoundingBoxVertical:
+      case FitHorizontal:
+      case FitVertical:
+        return PdfSimpleObject.getValue(getBaseDataObject().get(2), Double.NaN);
+      case FitRectangle:
+      {
+        Double left = (Double)PdfSimpleObject.getValue(getBaseDataObject().get(2), Double.NaN);
+        Double top = (Double)PdfSimpleObject.getValue(getBaseDataObject().get(5), Double.NaN);
+        Double width = (Double)PdfSimpleObject.getValue(getBaseDataObject().get(4), Double.NaN) - left;
+        Double height = (Double)PdfSimpleObject.getValue(getBaseDataObject().get(3), Double.NaN) - top;
+        return new Rectangle2D.Double(left, top, width, height);
+      }
+      case XYZ:
+        return new Point2D.Double(
+          (Double)PdfSimpleObject.getValue(getBaseDataObject().get(2), Double.NaN),
+          (Double)PdfSimpleObject.getValue(getBaseDataObject().get(3), Double.NaN)
+          );
+      default:
+        return null;
+    }
+  }
+
+  /**
     Gets the destination mode.
   */
   public ModeEnum getMode(
@@ -288,8 +293,126 @@ public abstract class Destination
   /**
     Gets the target page reference.
   */
-  public abstract Object getPageRef(
+  public abstract Object getPage(
     );
+
+  /**
+    Gets the magnification factor to use when displaying the page.
+  */
+  public Double getZoom(
+    )
+  {
+    switch(getMode())
+    {
+      case XYZ:
+        return (Double)PdfSimpleObject.getValue(getBaseDataObject().get(4));
+      default:
+        return null;
+    }
+  }
+
+  /**
+    @see #getLocation()
+  */
+  public void setLocation(
+    Object value
+    )
+  {
+    PdfArray baseDataObject = getBaseDataObject();
+    switch(getMode())
+    {
+      case FitBoundingBoxHorizontal:
+      case FitBoundingBoxVertical:
+      case FitHorizontal:
+      case FitVertical:
+        baseDataObject.set(2, PdfReal.get((Number)value));
+        break;
+      case FitRectangle:
+      {
+        Rectangle2D rectangle = (Rectangle2D)value;
+        baseDataObject.set(2, PdfReal.get(rectangle.getMinX()));
+        baseDataObject.set(3, PdfReal.get(rectangle.getMinY()));
+        baseDataObject.set(4, PdfReal.get(rectangle.getMaxX()));
+        baseDataObject.set(5, PdfReal.get(rectangle.getMaxY()));
+        break;
+      }
+      case XYZ:
+      {
+        Point2D point = (Point2D)value;
+        baseDataObject.set(2, PdfReal.get(point.getX()));
+        baseDataObject.set(3, PdfReal.get(point.getY()));
+        break;
+      }
+      default:
+        /* NOOP */
+        break;
+    }
+  }
+
+  /**
+    @see #getMode()
+  */
+  public void setMode(
+    ModeEnum value
+    )
+  {
+    PdfArray baseDataObject = getBaseDataObject();
+
+    baseDataObject.set(1, value.getName());
+
+    // Adjusting parameter list...
+    int parametersCount;
+    switch(value)
+    {
+      case Fit:
+      case FitBoundingBox:
+        parametersCount = 2;
+        break;
+      case FitBoundingBoxHorizontal:
+      case FitBoundingBoxVertical:
+      case FitHorizontal:
+      case FitVertical:
+        parametersCount = 3;
+        break;
+      case XYZ:
+        parametersCount = 5;
+        break;
+      case FitRectangle:
+        parametersCount = 6;
+        break;
+      default:
+        throw new UnsupportedOperationException("Mode unknown: " + value);
+    }
+    while(baseDataObject.size() < parametersCount)
+    {baseDataObject.add(null);}
+    while(baseDataObject.size() > parametersCount)
+    {baseDataObject.remove(baseDataObject.size() - 1);}
+  }
+
+  /**
+    @see #getPage()
+  */
+  public abstract void setPage(
+    Object value
+    );
+
+  /**
+    @see #getZoom()
+  */
+  public void setZoom(
+    Double value
+    )
+  {
+    switch(getMode())
+    {
+      case XYZ:
+        getBaseDataObject().set(4, PdfReal.get(value));
+        break;
+      default:
+        /* NOOP */
+        break;
+    }
+  }
   // </public>
   // </interface>
   // </dynamic>

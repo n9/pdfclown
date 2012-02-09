@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -69,7 +69,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
         new List<PdfDirectObject>(
           new PdfDirectObject[]
           {
-            new PdfReal(intensity) //TODO:normalize value (see devicecolor)!
+            PdfReal.Get(intensity) //TODO:normalize value (see devicecolor)!
           }
         )
       )

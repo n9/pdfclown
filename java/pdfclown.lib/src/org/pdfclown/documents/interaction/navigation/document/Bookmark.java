@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,7 +47,7 @@ import org.pdfclown.util.NotImplementedException;
   Outline item [PDF:1.6:8.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 07/05/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Bookmark
@@ -314,25 +314,6 @@ public final class Bookmark
 
   // <ILink>
   @Override
-  @PDF(VersionEnum.PDF11)
-  public Action getAction(
-    )
-  {return Action.wrap(getBaseDataObject().get(PdfName.A));}
-
-  @Override
-  public Destination getDestination(
-    )
-  {
-    PdfDirectObject destinationObject = getBaseDataObject().get(PdfName.Dest);
-    return destinationObject != null
-      ? getDocument().resolveName(
-        LocalDestination.class,
-        destinationObject
-        )
-      : null;
-  }
-
-  @Override
   public PdfObjectWrapper<?> getTarget(
     )
   {
@@ -345,7 +326,39 @@ public final class Bookmark
   }
 
   @Override
-  public void setAction(
+  public void setTarget(
+    PdfObjectWrapper<?> value
+    )
+  {
+    if(value instanceof Destination)
+    {setDestination((Destination)value);}
+    else if(value instanceof Action)
+    {setAction((Action)value);}
+    else
+      throw new IllegalArgumentException("It MUST be either a Destination or an Action.");
+  }
+  // </ILink>
+  // </public>
+
+  // <private>
+  @PDF(VersionEnum.PDF11)
+  private Action getAction(
+    )
+  {return Action.wrap(getBaseDataObject().get(PdfName.A));}
+
+  private Destination getDestination(
+    )
+  {
+    PdfDirectObject destinationObject = getBaseDataObject().get(PdfName.Dest);
+    return destinationObject != null
+      ? getDocument().resolveName(
+        LocalDestination.class,
+        destinationObject
+        )
+      : null;
+  }
+
+  private void setAction(
     Action value
     )
   {
@@ -365,8 +378,7 @@ public final class Bookmark
     }
   }
 
-  @Override
-  public void setDestination(
+  private void setDestination(
     Destination value
     )
   {
@@ -383,21 +395,7 @@ public final class Bookmark
       getBaseDataObject().put(PdfName.Dest,value.getNamedBaseObject());
     }
   }
-
-  @Override
-  public void setTarget(
-    PdfObjectWrapper<?> value
-    )
-  {
-    if(value instanceof Destination)
-    {setDestination((Destination)value);}
-    else if(value instanceof Action)
-    {setAction((Action)value);}
-    else
-      throw new IllegalArgumentException("It MUST be either a Destination or an Action.");
-  }
-  // </ILink>
-  // </public>
+  // </private>
   // </interface>
   // </dynamic>
   // </class>

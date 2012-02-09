@@ -187,7 +187,9 @@ namespace org.pdfclown.objects
     public static readonly PdfName F = new PdfName("F");
     public static readonly PdfName Fade = new PdfName("Fade");
     public static readonly PdfName FB = new PdfName("FB");
+    public static readonly PdfName FDecodeParms = new PdfName("FDecodeParms");
     public static readonly PdfName Ff = new PdfName("Ff");
+    public static readonly PdfName FFilter = new PdfName("FFilter");
     public static readonly PdfName Fields = new PdfName("Fields");
     public static readonly PdfName FileAttachment = new PdfName("FileAttachment");
     public static readonly PdfName Filespec = new PdfName("Filespec");
@@ -347,6 +349,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName PaintType = new PdfName("PaintType");
     public static readonly PdfName Paperclip = new PdfName("Paperclip");
     public static readonly PdfName Paragraph = new PdfName("Paragraph");
+    public static readonly PdfName Params = new PdfName("Params");
     public static readonly PdfName Parent = new PdfName("Parent");
     public static readonly PdfName Pattern = new PdfName("Pattern");
     public static readonly PdfName PatternType = new PdfName("PatternType");
@@ -444,6 +447,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName Underline = new PdfName("Underline");
     public static readonly PdfName Unix = new PdfName("Unix");
     public static readonly PdfName URI = new PdfName("URI");
+    public static readonly PdfName URL = new PdfName("URL");
     public static readonly PdfName Usage = new PdfName("Usage");
     public static readonly PdfName UseAttachments = new PdfName("UseAttachments");
     public static readonly PdfName UseNone = new PdfName("UseNone");

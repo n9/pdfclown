@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -99,12 +99,12 @@ namespace org.pdfclown.documents.contents.objects
         new List<PdfDirectObject>(
           new PdfDirectObject[]
           {
-            new PdfReal(control1X),
-            new PdfReal(control1Y),
-            new PdfReal(control2X),
-            new PdfReal(control2Y),
-            new PdfReal(pointX),
-            new PdfReal(pointY)
+            PdfReal.Get(control1X),
+            PdfReal.Get(control1Y),
+            PdfReal.Get(control2X),
+            PdfReal.Get(control2Y),
+            PdfReal.Get(pointX),
+            PdfReal.Get(pointY)
           }
           )
         )
@@ -126,10 +126,10 @@ namespace org.pdfclown.documents.contents.objects
         new List<PdfDirectObject>(
           new PdfDirectObject[]
           {
-            new PdfReal(control.X),
-            new PdfReal(control.Y),
-            new PdfReal(point.X),
-            new PdfReal(point.Y)
+            PdfReal.Get(control.X),
+            PdfReal.Get(control.Y),
+            PdfReal.Get(point.X),
+            PdfReal.Get(point.Y)
           }
           )
         )
@@ -164,13 +164,13 @@ namespace org.pdfclown.documents.contents.objects
         if(operator_.Equals(FinalOperatorKeyword))
         {
           operator_ = FullOperatorKeyword;
-          operands.Insert(0,new PdfReal(value.Value.X));
-          operands.Insert(1,new PdfReal(value.Value.Y));
+          operands.Insert(0,PdfReal.Get(value.Value.X));
+          operands.Insert(1,PdfReal.Get(value.Value.Y));
         }
         else
         {
-          operands[0] = new PdfReal(value.Value.X);
-          operands[1] = new PdfReal(value.Value.Y);
+          operands[0] = PdfReal.Get(value.Value.X);
+          operands[1] = PdfReal.Get(value.Value.Y);
         }
       }
     }
@@ -197,13 +197,13 @@ namespace org.pdfclown.documents.contents.objects
       {
         if(operator_.Equals(FinalOperatorKeyword))
         {
-          operands[0] = new PdfReal(value.Value.X);
-          operands[1] = new PdfReal(value.Value.Y);
+          operands[0] = PdfReal.Get(value.Value.X);
+          operands[1] = PdfReal.Get(value.Value.Y);
         }
         else
         {
-          operands[2] = new PdfReal(value.Value.X);
-          operands[3] = new PdfReal(value.Value.Y);
+          operands[2] = PdfReal.Get(value.Value.X);
+          operands[3] = PdfReal.Get(value.Value.Y);
         }
       }
     }
@@ -230,13 +230,13 @@ namespace org.pdfclown.documents.contents.objects
       {
         if(operator_.Equals(FullOperatorKeyword))
         {
-          operands[4] = new PdfReal(value.X);
-          operands[5] = new PdfReal(value.Y);
+          operands[4] = PdfReal.Get(value.X);
+          operands[5] = PdfReal.Get(value.Y);
         }
         else
         {
-          operands[2] = new PdfReal(value.X);
-          operands[3] = new PdfReal(value.Y);
+          operands[2] = PdfReal.Get(value.X);
+          operands[3] = PdfReal.Get(value.Y);
         }
       }
     }

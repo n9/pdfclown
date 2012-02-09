@@ -7,10 +7,10 @@ import java.awt.geom.Rectangle2D;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
-import org.pdfclown.documents.contents.composition.XAlignmentEnum;
-import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
+import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.files.File;
 
@@ -19,7 +19,7 @@ import org.pdfclown.files.File;
   from the beginning of "Alice in Wonderland", Chapter 1 ("Down the Rabbit-Hole").
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public class TypesettingSample
   extends Sample
@@ -39,7 +39,7 @@ public class TypesettingSample
     build(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, false, "Typesetting", "demonstrating how to add style to contents");
+    serialize(file, "Typesetting", "demonstrating how to add style to contents");
 
     return true;
   }

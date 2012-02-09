@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -57,7 +57,7 @@ import org.pdfclown.util.StringUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 01/29/12
 */
 public final class File
   implements Closeable
@@ -212,11 +212,25 @@ public final class File
   {return document;}
 
   /**
+    Gets the identifier of this file.
+  */
+  public FileIdentifier getID(
+    )
+  {return FileIdentifier.wrap(getTrailer().get(PdfName.ID));}
+
+  /**
     Gets the indirect objects collection.
   */
   public IndirectObjects getIndirectObjects(
     )
   {return indirectObjects;}
+
+  /**
+    Gets the file path.
+  */
+  public String getPath(
+    )
+  {return path;}
 
   /**
     Gets the data reader backing this file.
@@ -279,7 +293,7 @@ public final class File
       throw new FileNotFoundException("No valid source path available.");
 
     /*
-      NOTE: The document file cannot be directly overwritten as it's locked for reading by the open 
+      NOTE: The document file cannot be directly overwritten as it's locked for reading by the open
       stream; its update is therefore delayed to its disposal, when the temporary file will overwrite
       it (see close() method).
     */
@@ -354,6 +368,14 @@ public final class File
     Writer writer = Writer.get(this, stream);
     writer.write(mode);
   }
+
+  /**
+    @see #getPath()
+  */
+  public void setPath(
+    String value
+    )
+  {path = value;}
 
   /**
     Unregisters an <b>internal object</b>.

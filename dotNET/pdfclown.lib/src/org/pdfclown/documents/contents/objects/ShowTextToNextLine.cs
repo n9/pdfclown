@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -77,8 +77,8 @@ namespace org.pdfclown.documents.contents.objects
       double charSpace
       ) : base(
         SpaceOperatorKeyword,
-        new PdfReal(wordSpace),
-        new PdfReal(charSpace),
+        PdfReal.Get(wordSpace),
+        PdfReal.Get(charSpace),
         new PdfString(text)
         )
     {}
@@ -110,7 +110,7 @@ namespace org.pdfclown.documents.contents.objects
       set
       {
         EnsureSpaceOperation();
-        operands[1] = new PdfReal(value.Value);
+        operands[1] = PdfReal.Get(value.Value);
       }
     }
 
@@ -145,7 +145,7 @@ namespace org.pdfclown.documents.contents.objects
       set
       {
         EnsureSpaceOperation();
-        operands[0] = new PdfReal(value.Value);
+        operands[0] = PdfReal.Get(value.Value);
       }
     }
     #endregion
@@ -157,8 +157,8 @@ namespace org.pdfclown.documents.contents.objects
       if(operator_.Equals(SimpleOperatorKeyword))
       {
         operator_ = SpaceOperatorKeyword;
-        operands.Insert(0,new PdfReal(0));
-        operands.Insert(1,new PdfReal(0));
+        operands.Insert(0,PdfReal.Get(0));
+        operands.Insert(1,PdfReal.Get(0));
       }
     }
     #endregion

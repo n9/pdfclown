@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -114,8 +114,8 @@ namespace org.pdfclown.documents.interaction.annotations
           PdfArray pathObject = new PdfArray();
           foreach(PointF point in path)
           {
-            pathObject.Add(new PdfReal(point.X)); // x.
-            pathObject.Add(new PdfReal(pageHeight-point.Y)); // y.
+            pathObject.Add(PdfReal.Get(point.X)); // x.
+            pathObject.Add(PdfReal.Get(pageHeight-point.Y)); // y.
           }
           pathsObject.Add(pathObject);
         }

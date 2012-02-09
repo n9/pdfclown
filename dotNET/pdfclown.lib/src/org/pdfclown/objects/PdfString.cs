@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -72,6 +72,8 @@ namespace org.pdfclown.objects
 
     #region static
     #region fields
+    public static readonly PdfString Empty = new PdfString("");
+
     private const byte BackspaceCode = 8;
     private const byte CarriageReturnCode = 13;
     private const byte FormFeedCode = 12;
@@ -92,10 +94,6 @@ namespace org.pdfclown.objects
     #endregion
 
     #region constructors
-    public PdfString(
-      )
-    {}
-
     public PdfString(
       byte[] rawValue
       )
@@ -123,6 +121,10 @@ namespace org.pdfclown.objects
       SerializationMode = serializationMode;
       Value = value;
     }
+
+    protected PdfString(
+      )
+    {}
     #endregion
 
     #region interface
@@ -149,6 +151,20 @@ namespace org.pdfclown.objects
     public byte[] ToByteArray(
       )
     {return (byte[])RawValue.Clone();}
+
+    public override string ToString(
+      )
+    {
+      switch(serializationMode)
+      {
+        case SerializationModeEnum.Hex:
+          return "<" + base.ToString() + ">";
+        case SerializationModeEnum.Literal:
+          return "(" + base.ToString() + ")";
+        default:
+          throw new NotImplementedException();
+      }
+    }
 
     public override object Value
     {

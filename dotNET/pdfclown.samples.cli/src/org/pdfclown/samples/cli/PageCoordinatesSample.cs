@@ -47,7 +47,7 @@ namespace org.pdfclown.samples.cli
       BuildContent(document);
 
       // 4. Serialize the PDF file!
-      Serialize(file, false, "Page coordinates", "manipulating the CTM");
+      Serialize(file, "Page coordinates", "manipulating the CTM");
 
       return true;
     }

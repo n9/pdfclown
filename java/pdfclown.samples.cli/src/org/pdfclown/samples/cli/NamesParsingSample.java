@@ -16,7 +16,7 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 02/04/12
 */
 public class NamesParsingSample extends Sample
 {
@@ -58,7 +58,7 @@ public class NamesParsingSample extends Sample
           System.out.println("Destination '" + key.getValue() + "' (" + value.getContainer().getReference() + ")");
 
           System.out.print("    Target Page: number = ");
-          Object pageRef = value.getPageRef();
+          Object pageRef = value.getPage();
           if(pageRef instanceof Integer) // NOTE: numeric page refs are typical of remote destinations.
           {System.out.println(((Integer)pageRef) + 1);}
           else // NOTE: explicit page refs are typical of local destinations.

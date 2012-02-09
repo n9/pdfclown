@@ -245,8 +245,8 @@ namespace org.pdfclown.documents.interaction.annotations
             alignmentObject = new PdfArray(
               new PdfDirectObject[]
               {
-                new PdfReal(0.5),
-                new PdfReal(0.5)
+                PdfReal.Get(0.5),
+                PdfReal.Get(0.5)
               }
               );
             BaseDataObject[PdfName.A] = alignmentObject;
@@ -259,7 +259,7 @@ namespace org.pdfclown.documents.interaction.annotations
             case XAlignmentEnum.Right: objectValue = 1; break;
             default: objectValue = 0.5; break;
           }
-          alignmentObject[0] = new PdfReal(objectValue);
+          alignmentObject[0] = PdfReal.Get(objectValue);
         }
       }
 
@@ -295,8 +295,8 @@ namespace org.pdfclown.documents.interaction.annotations
             alignmentObject = new PdfArray(
               new PdfDirectObject[]
               {
-                new PdfReal(0.5),
-                new PdfReal(0.5)
+                PdfReal.Get(0.5),
+                PdfReal.Get(0.5)
               }
               );
             BaseDataObject[PdfName.A] = alignmentObject;
@@ -309,7 +309,7 @@ namespace org.pdfclown.documents.interaction.annotations
             case YAlignmentEnum.Top: objectValue = 1; break;
             default: objectValue = 0.5; break;
           }
-          alignmentObject[1] = new PdfReal(objectValue);
+          alignmentObject[1] = PdfReal.Get(objectValue);
         }
       }
 

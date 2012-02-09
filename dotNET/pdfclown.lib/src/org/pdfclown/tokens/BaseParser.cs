@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -127,7 +127,7 @@ namespace org.pdfclown.tokens
         }
         case TokenTypeEnum.Literal:
           if(Token is DateTime)
-            return new PdfDate((DateTime)Token);
+            return PdfDate.Get((DateTime)Token);
           else
             return new PdfTextString(
               Encoding.Encode((string)Token)
@@ -138,7 +138,7 @@ namespace org.pdfclown.tokens
             PdfString.SerializationModeEnum.Hex
             );
         case TokenTypeEnum.Real:
-          return new PdfReal((double)Token);
+          return PdfReal.Get((double)Token);
         case TokenTypeEnum.Boolean:
           return PdfBoolean.Get((bool)Token);
         case TokenTypeEnum.Null:

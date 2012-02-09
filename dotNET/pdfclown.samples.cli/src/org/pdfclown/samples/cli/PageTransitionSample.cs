@@ -44,7 +44,7 @@ namespace org.pdfclown.samples.cli
       }
 
       // 3. Serialize the PDF file!
-      Serialize(file, true, "Transition", "applying visual transitions to pages");
+      Serialize(file, "Transition", "applying visual transitions to pages");
 
       return true;
     }

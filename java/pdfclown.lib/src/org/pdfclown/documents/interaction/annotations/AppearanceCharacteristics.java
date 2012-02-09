@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF12)
 public final class AppearanceCharacteristics
@@ -404,8 +404,8 @@ public final class AppearanceCharacteristics
         alignmentObject = new PdfArray(
           new PdfDirectObject[]
           {
-            new PdfReal(0.5f),
-            new PdfReal(0.5f)
+            PdfReal.get(0.5),
+            PdfReal.get(0.5)
           }
           );
         getBaseDataObject().put(PdfName.A, alignmentObject);
@@ -424,7 +424,7 @@ public final class AppearanceCharacteristics
           objectValue = 0.5;
           break;
       }
-      alignmentObject.set(0, new PdfReal(objectValue));
+      alignmentObject.set(0, PdfReal.get(objectValue));
     }
 
     /**
@@ -445,8 +445,8 @@ public final class AppearanceCharacteristics
         alignmentObject = new PdfArray(
           new PdfDirectObject[]
           {
-            new PdfReal(0.5f),
-            new PdfReal(0.5f)
+            PdfReal.get(0.5),
+            PdfReal.get(0.5)
           }
           );
         getBaseDataObject().put(PdfName.A, alignmentObject);
@@ -465,7 +465,7 @@ public final class AppearanceCharacteristics
           objectValue = 0.5;
           break;
       }
-      alignmentObject.set(1, new PdfReal(objectValue));
+      alignmentObject.set(1, PdfReal.get(objectValue));
     }
 
     /**

@@ -31,7 +31,7 @@ namespace org.pdfclown.samples.cli
       Populate(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, false, "Unicode", "using Unicode fonts");
+      Serialize(file, "Unicode", "using Unicode fonts");
 
       return true;
     }

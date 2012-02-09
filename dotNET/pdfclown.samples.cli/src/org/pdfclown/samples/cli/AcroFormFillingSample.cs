@@ -79,7 +79,7 @@ namespace org.pdfclown.samples.cli
       }
 
       // 4. Serialize the PDF file!
-      Serialize(file, true);
+      Serialize(file);
 
       return true;
     }

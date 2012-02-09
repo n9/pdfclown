@@ -39,14 +39,14 @@ namespace org.pdfclown.samples.cli
       destinations[new PdfString("First page")] = new LocalDestination(pages[0]);
       if(pages.Count > 1)
       {
-        destinations[new PdfString("Second page")] = new LocalDestination(pages[1], Destination.ModeEnum.FitHorizontal, new double?[]{0});
+        destinations[new PdfString("Second page")] = new LocalDestination(pages[1], Destination.ModeEnum.FitHorizontal, 0, null);
 
         if(pages.Count > 2)
-        {destinations[new PdfString("Third page")] = new LocalDestination(pages[2], Destination.ModeEnum.XYZ, new double?[]{50,null,null});}
+        {destinations[new PdfString("Third page")] = new LocalDestination(pages[2], Destination.ModeEnum.XYZ, new PointF(50, Single.NaN), null);}
       }
 
       // 3. Serialize the PDF file!
-      Serialize(file, true, "Named destinations", "manipulating named destinations");
+      Serialize(file, "Named destinations", "manipulating named destinations");
 
       return true;
     }

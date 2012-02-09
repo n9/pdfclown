@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -500,8 +500,8 @@ namespace org.pdfclown.documents
           // Assign the media box to the document!
           ((PdfDictionary)BaseDataObject.Resolve(PdfName.Pages))[PdfName.MediaBox] = mediaBox;
         }
-        mediaBox[2] = new PdfReal(value.Value.Width);
-        mediaBox[3] = new PdfReal(value.Value.Height);
+        mediaBox[2] = PdfReal.Get(value.Value.Width);
+        mediaBox[3] = PdfReal.Get(value.Value.Height);
       }
     }
 

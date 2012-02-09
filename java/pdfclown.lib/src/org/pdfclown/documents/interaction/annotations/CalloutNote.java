@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -50,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 02/04/12
 */
 @PDF(VersionEnum.PDF13)
 public final class CalloutNote
@@ -90,15 +90,15 @@ public final class CalloutNote
       PdfArray baseDataObject = getBaseDataObject();
       {
         double pageHeight = page.getBox().getHeight();
-        baseDataObject.add(new PdfReal(start.getX()));
-        baseDataObject.add(new PdfReal(pageHeight - start.getY()));
+        baseDataObject.add(PdfReal.get(start.getX()));
+        baseDataObject.add(PdfReal.get(pageHeight - start.getY()));
         if(knee != null)
         {
-          baseDataObject.add(new PdfReal(knee.getX()));
-          baseDataObject.add(new PdfReal(pageHeight - knee.getY()));
+          baseDataObject.add(PdfReal.get(knee.getX()));
+          baseDataObject.add(PdfReal.get(pageHeight - knee.getY()));
         }
-        baseDataObject.add(new PdfReal(end.getX()));
-        baseDataObject.add(new PdfReal(pageHeight - end.getY()));
+        baseDataObject.add(PdfReal.get(end.getX()));
+        baseDataObject.add(PdfReal.get(pageHeight - end.getY()));
       }
     }
 

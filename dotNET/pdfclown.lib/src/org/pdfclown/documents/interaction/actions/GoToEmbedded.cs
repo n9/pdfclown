@@ -25,7 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
-using org.pdfclown.documents.fileSpecs;
+using org.pdfclown.documents.files;
 using org.pdfclown.documents.interaction.navigation.document;
 using org.pdfclown.objects;
 
@@ -35,8 +35,8 @@ using System.Collections.Generic;
 namespace org.pdfclown.documents.interaction.actions
 {
   /**
-    <summary>'Change the view to a specified destination in a PDF file
-    embedded in another PDF file' action [PDF:1.6:8.5.3].</summary>
+    <summary>'Change the view to a specified destination in a PDF file embedded in another PDF file'
+    action [PDF:1.6:8.5.3].</summary>
   */
   [PDF(VersionEnum.PDF11)]
   public sealed class GoToEmbedded
@@ -46,7 +46,7 @@ namespace org.pdfclown.documents.interaction.actions
     /**
       <summary>Path information to the target document [PDF:1.6:8.5.3].</summary>
     */
-    public class TargetObject
+    public class PathElement
       : PdfObjectWrapper<PdfDictionary>
     {
       #region types
@@ -72,7 +72,7 @@ namespace org.pdfclown.documents.interaction.actions
       #endregion
 
       #region constructors
-      static TargetObject()
+      static PathElement()
       {
         RelationEnumCodes = new Dictionary<RelationEnum,PdfName>();
         RelationEnumCodes[RelationEnum.Parent] = PdfName.P;
@@ -111,76 +111,79 @@ namespace org.pdfclown.documents.interaction.actions
       #region dynamic
       #region constructors
       /**
-        <summary>Creates a new target representing the parent of the document.</summary>
+        <summary>Creates a new path element representing the parent of the document.</summary>
       */
-      public TargetObject(
+      public PathElement(
         Document context,
-        TargetObject target
+        PathElement next
         ) : this(
           context,
           RelationEnum.Parent,
           null,
           null,
           null,
-          target
+          next
           )
       {}
 
       /**
-        <summary>Creates a new target located in the embedded files collection of the document.</summary>
+        <summary>Creates a new path element located in the embedded files collection of the document.</summary>
       */
-      public TargetObject(
+      public PathElement(
         Document context,
         string embeddedFileName,
-        TargetObject target
+        PathElement next
         ) : this(
           context,
           RelationEnum.Child,
           embeddedFileName,
           null,
           null,
-          target
+          next
           )
       {}
 
       /**
-        <summary>Creates a new target associated with a file attachment annotation.</summary>
+        <summary>Creates a new path element associated with a file attachment annotation.</summary>
       */
-      public TargetObject(
+      public PathElement(
         Document context,
         object annotationPageRef,
         object annotationRef,
-        TargetObject target
+        PathElement next
         ) : this(
           context,
           RelationEnum.Child,
           null,
           annotationPageRef,
           annotationRef,
-          target
+          next
           )
       {}
 
       /**
-        <summary>Creates a new target.</summary>
+        <summary>Creates a new path element.</summary>
       */
-      private TargetObject(
+      private PathElement(
         Document context,
         RelationEnum relation,
         string embeddedFileName,
         object annotationPageRef,
         object annotationRef,
-        TargetObject target
+        PathElement next
         ) : base(context, new PdfDictionary())
       {
         Relation = relation;
         EmbeddedFileName = embeddedFileName;
         AnnotationPageRef = annotationPageRef;
         AnnotationRef = annotationRef;
-        Target = target;
+        Next = next;
       }
 
-      internal TargetObject(
+      /**
+        <summary>Instantiates an existing path element.</summary>
+      */
+      internal PathElement(
         PdfDirectObject baseObject
         ) : base(baseObject)
       {}
@@ -300,12 +303,12 @@ namespace org.pdfclown.documents.interaction.actions
       /**
         <summary>Gets/Sets a further path information to the target document.</summary>
       */
-      public TargetObject Target
+      public PathElement Next
       {
         get
         {
           PdfDirectObject targetObject = BaseDataObject[PdfName.T];
-          return targetObject != null ? new TargetObject(targetObject) : null;
+          return targetObject != null ? new PathElement(targetObject) : null;
         }
         set
         {
@@ -324,52 +327,64 @@ namespace org.pdfclown.documents.interaction.actions
     #region dynamic
     #region constructors
     /**
-      <summary>Creates a new embedded-goto action within the given document context,
-      pointing to a destination within a target document embedded within the same document.</summary>
+      <summary>Creates a new instance within the specified document context, pointing to a
+      destination within an embedded document.</summary>
+      <param name="context">Document context.</param>
+      <param name="destinationPath">Path information to the target document within the destination
+      file.</param>
+      <param name="destination">Destination within the target document.</param>
     */
     public GoToEmbedded(
       Document context,
-      TargetObject target,
+      PathElement destinationPath,
       Destination destination
       ) : this(
         context,
         null,
-        target,
+        destinationPath,
         destination
         )
     {}
 
     /**
-      <summary>Creates a new embedded-goto action within the given document context,
-      pointing to a destination within another document.</summary>
+      <summary>Creates a new instance within the specified document context, pointing to a
+      destination within another document.</summary>
+      <param name="context">Document context.</param>
+      <param name="destinationFile">File in which the destination is located.</param>
+      <param name="destination">Destination within the target document.</param>
     */
     public GoToEmbedded(
       Document context,
-      FileSpec fileSpec,
+      FileSpecification destinationFile,
       Destination destination
       ) : this(
         context,
-        fileSpec,
+        destinationFile,
         null,
         destination
         )
     {}
 
     /**
-      <summary>Creates a new embedded-goto action within the given document context.</summary>
+      <summary>Creates a new instance within the specified document context.</summary>
+      <param name="context">Document context.</param>
+      <param name="destinationFile">File in which the destination is located.</param>
+      <param name="destinationPath">Path information to the target document within the destination
+      file.</param>
+      <param name="destination">Destination within the target document.</param>
     */
     public GoToEmbedded(
       Document context,
-      FileSpec fileSpec,
-      TargetObject target,
+      FileSpecification destinationFile,
+      PathElement destinationPath,
       Destination destination
       ) : base(
         context,
         PdfName.GoToE,
-        fileSpec,
+        destinationFile,
         destination
         )
-    {Target = target;}
+    {DestinationPath = destinationPath;}
 
     internal GoToEmbedded(
       PdfDirectObject baseObject
@@ -385,39 +400,14 @@ namespace org.pdfclown.documents.interaction.actions
     {throw new NotImplementedException();}
 
     /**
-      <summary>Gets/Sets the action options.</summary>
-    */
-    public OptionsEnum Options
-    {
-      get
-      {
-        OptionsEnum options = 0;
-        PdfDirectObject optionsObject = BaseDataObject[PdfName.NewWindow];
-        if(optionsObject != null
-          && ((PdfBoolean)optionsObject).BooleanValue)
-        {options |= OptionsEnum.NewWindow;}
-        return options;
-      }
-      set
-      {
-        if((value & OptionsEnum.NewWindow) == OptionsEnum.NewWindow)
-        {BaseDataObject[PdfName.NewWindow] = PdfBoolean.True;}
-        else if((value & OptionsEnum.SameWindow) == OptionsEnum.SameWindow)
-        {BaseDataObject[PdfName.NewWindow] = PdfBoolean.False;}
-        else
-        {BaseDataObject.Remove(PdfName.NewWindow);} // NOTE: Forcing the absence of this entry ensures that the viewer application should behave in accordance with the current user preference.
-      }
-    }
-
-    /**
       <summary>Gets/Sets the path information to the target document.</summary>
     */
-    public TargetObject Target
+    public PathElement DestinationPath
     {
       get
       {
         PdfDirectObject targetObject = BaseDataObject[PdfName.T];
-        return targetObject != null ? new TargetObject(targetObject) : null;
+        return targetObject != null ? new PathElement(targetObject) : null;
       }
       set
       {

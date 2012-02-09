@@ -33,7 +33,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 public class AcroFormCreationSample
   extends Sample
@@ -50,7 +50,7 @@ public class AcroFormCreationSample
     populate(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, false, "AcroForm", "inserting AcroForm fields");
+    serialize(file, "AcroForm", "inserting AcroForm fields");
 
     return true;
   }

@@ -25,14 +25,11 @@
 
 package org.pdfclown.documents.interaction.actions;
 
-import java.util.EnumSet;
-
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.documents.fileSpecs.FileSpec;
+import org.pdfclown.documents.files.FileSpecification;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
-import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
@@ -44,12 +41,12 @@ import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.NotImplementedException;
 
 /**
-  'Change the view to a specified destination in a PDF file
-  embedded in another PDF file' action [PDF:1.6:8.5.3].
+  'Change the view to a specified destination in a PDF file embedded in another PDF file' action
+  [PDF:1.6:8.5.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 01/29/12
 */
 @PDF(VersionEnum.PDF11)
 public final class GoToEmbedded
@@ -60,7 +57,7 @@ public final class GoToEmbedded
   /**
     Path information to the target document [PDF:1.6:8.5.3].
   */
-  public static class TargetObject
+  public static class PathElement
     extends PdfObjectWrapper<PdfDictionary>
   {
     // <class>
@@ -130,11 +127,11 @@ public final class GoToEmbedded
     // <dynamic>
     // <constructors>
     /**
-      Creates a new target representing the parent of the document.
+      Creates a new path element representing the parent of the document.
     */
-    public TargetObject(
+    public PathElement(
       Document context,
-      TargetObject target
+      PathElement next
       )
     {
       this(
@@ -143,17 +140,17 @@ public final class GoToEmbedded
         null,
         null,
         null,
-        target
+        next
         );
     }
 
     /**
-      Creates a new target located in the embedded files collection of the document.
+      Creates a new path element located in the embedded files collection of the document.
     */
-    public TargetObject(
+    public PathElement(
       Document context,
       String embeddedFileName,
-      TargetObject target
+      PathElement next
       )
     {
       this(
@@ -162,18 +159,18 @@ public final class GoToEmbedded
         embeddedFileName,
         null,
         null,
-        target
+        next
         );
     }
 
     /**
-      Creates a new target associated with a file attachment annotation.
+      Creates a new path element associated with a file attachment annotation.
     */
-    public TargetObject(
+    public PathElement(
       Document context,
       Object annotationPageRef,
       Object annotationRef,
-      TargetObject target
+      PathElement next
       )
     {
       this(
@@ -182,20 +179,20 @@ public final class GoToEmbedded
         null,
         annotationPageRef,
         annotationRef,
-        target
+        next
         );
     }
 
     /**
-      Creates a new target.
+      Creates a new path element.
     */
-    private TargetObject(
+    private PathElement(
       Document context,
       RelationEnum relation,
       String embeddedFileName,
       Object annotationPageRef,
       Object annotationRef,
-      TargetObject target
+      PathElement next
       )
     {
       super(context, new PdfDictionary());
@@ -203,10 +200,13 @@ public final class GoToEmbedded
       setEmbeddedFileName(embeddedFileName);
       setAnnotationPageRef(annotationPageRef);
       setAnnotationRef(annotationRef);
-      setTarget(target);
+      setNext(next);
     }
 
-    private TargetObject(
+    /**
+      Instantiates an existing path element.
+    */
+    private PathElement(
       PdfDirectObject baseObject
       )
     {super(baseObject);}
@@ -215,7 +215,7 @@ public final class GoToEmbedded
     // <interface>
     // <public>
     @Override
-    public TargetObject clone(
+    public PathElement clone(
       Document context
       )
     {throw new NotImplementedException();}
@@ -267,11 +267,11 @@ public final class GoToEmbedded
     /**
       Gets a further path information to the target document.
     */
-    public TargetObject getTarget(
+    public PathElement getNext(
       )
     {
       PdfDirectObject targetObject = getBaseDataObject().get(PdfName.T);
-      return targetObject != null ? new TargetObject(targetObject) : null;
+      return targetObject != null ? new PathElement(targetObject) : null;
     }
 
     /**
@@ -342,10 +342,10 @@ public final class GoToEmbedded
     {getBaseDataObject().put(PdfName.R, value.getCode());}
 
     /**
-      @see #getTarget()
+      @see #getNext()
     */
-    public void setTarget(
-      TargetObject value
+    public void setNext(
+      PathElement value
       )
     {
       if(value == null)
@@ -363,58 +363,71 @@ public final class GoToEmbedded
   // <dynamic>
   // <constructors>
   /**
-    Creates a new embedded-goto action within the given document context,
-    pointing to a destination within a target document embedded within the same document.
+    Creates a new instance within the specified document context, pointing to a destination within
+    an embedded document.
+
+    @param context Document context.
+    @param destinationPath Path information to the target document within the destination file.
+    @param destination Destination within the target document.
   */
   public GoToEmbedded(
     Document context,
-    TargetObject target,
+    PathElement destinationPath,
     Destination destination
     )
   {
     this(
       context,
       null,
-      target,
+      destinationPath,
       destination
       );
   }
 
   /**
-    Creates a new embedded-goto action within the given document context,
-    pointing to a destination within another document.
+    Creates a new instance within the specified document context, pointing to a destination within
+    another document.
+
+    @param context Document context.
+    @param destinationFile File in which the destination is located.
+    @param destination Destination within the target document.
   */
   public GoToEmbedded(
     Document context,
-    FileSpec fileSpec,
+    FileSpecification<?> destinationFile,
     Destination destination
     )
   {
     this(
       context,
-      fileSpec,
+      destinationFile,
       null,
       destination
       );
   }
 
   /**
-    Creates a new embedded-goto action within the given document context.
+    Creates a new instance within the specified document context.
+
+    @param context Document context.
+    @param destinationFile File in which the destination is located.
+    @param destinationPath Path information to the target document within the destination file.
+    @param destination Destination within the target document.
   */
   public GoToEmbedded(
     Document context,
-    FileSpec fileSpec,
-    TargetObject target,
+    FileSpecification<?> destinationFile,
+    PathElement destinationPath,
     Destination destination
     )
   {
     super(
       context,
       PdfName.GoToE,
-      fileSpec,
+      destinationFile,
       destination
       );
-    setTarget(target);
+    setDestinationPath(destinationPath);
   }
 
   GoToEmbedded(
@@ -432,49 +445,20 @@ public final class GoToEmbedded
   {throw new NotImplementedException();}
 
   /**
-    Gets the action options.
-  */
-  public EnumSet<OptionsEnum> getOptions(
-    )
-  {
-    EnumSet<OptionsEnum> options = EnumSet.noneOf(OptionsEnum.class);
-    PdfDirectObject optionsObject = getBaseDataObject().get(PdfName.NewWindow);
-    if(optionsObject != null
-      && ((PdfBoolean)optionsObject).getValue())
-    {options.add(OptionsEnum.NewWindow);}
-    return options;
-  }
-
-  /**
     Gets the path information to the target document.
   */
-  public TargetObject getTarget(
+  public PathElement getDestinationPath(
     )
   {
     PdfDirectObject targetObject = getBaseDataObject().get(PdfName.T);
-    return targetObject != null ? new TargetObject(targetObject) : null;
+    return targetObject != null ? new PathElement(targetObject) : null;
   }
 
   /**
-    @see #getOptions()
+    @see #getDestinationPath()
   */
-  public void setOptions(
-    EnumSet<OptionsEnum> value
-    )
-  {
-    if(value.contains(OptionsEnum.NewWindow))
-    {getBaseDataObject().put(PdfName.NewWindow,PdfBoolean.True);}
-    else if(value.contains(OptionsEnum.SameWindow))
-    {getBaseDataObject().put(PdfName.NewWindow,PdfBoolean.False);}
-    else
-    {getBaseDataObject().remove(PdfName.NewWindow);} // NOTE: Forcing the absence of this entry ensures that the viewer application should behave in accordance with the current user preference.
-  }
-
-  /**
-    @see #getTarget()
-  */
-  public void setTarget(
-    TargetObject value
+  public void setDestinationPath(
+    PathElement value
     )
   {
     if(value == null)

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -26,6 +26,7 @@
 using org.pdfclown.documents;
 using org.pdfclown.documents.contents.colorSpaces;
 using org.pdfclown.documents.interaction;
+using actions = org.pdfclown.documents.interaction.actions;
 using org.pdfclown.files;
 using org.pdfclown.objects;
 
@@ -207,8 +208,32 @@ namespace org.pdfclown.documents.interaction.navigation.document
     }
 
     #region ILink
-    [PDF(VersionEnum.PDF11)]
-    public actions.Action Action
+    public PdfObjectWrapper Target
+    {
+      get
+      {
+        if(BaseDataObject.ContainsKey(PdfName.Dest))
+          return Destination;
+        else if(BaseDataObject.ContainsKey(PdfName.A))
+          return Action;
+        else
+          return null;
+      }
+      set
+      {
+        if(value is Destination)
+        {Destination = (Destination)value;}
+        else if(value is actions.Action)
+        {Action = (actions::Action)value;}
+        else
+          throw new ArgumentException("It MUST be either a Destination or an Action.");
+      }
+    }
+    #endregion
+    #endregion
+
+    #region private
+    private actions::Action Action
     {
       get
       {return actions.Action.Wrap(BaseDataObject[PdfName.A]);}
@@ -218,7 +243,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
         {BaseDataObject.Remove(PdfName.A);}
         else
         {
-          CheckCompatibility("Action");
+          CheckCompatibility(VersionEnum.PDF11);
 
           /*
             NOTE: This entry is not permitted in bookmarks if a 'Dest' entry already exists.
@@ -231,7 +256,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
       }
     }
 
-    public Destination Destination
+    private Destination Destination
     {
       get
       {
@@ -256,29 +281,6 @@ namespace org.pdfclown.documents.interaction.navigation.document
         }
       }
     }
-
-    public PdfObjectWrapper Target
-    {
-      get
-      {
-        if(BaseDataObject.ContainsKey(PdfName.Dest))
-          return Destination;
-        else if(BaseDataObject.ContainsKey(PdfName.A))
-          return Action;
-        else
-          return null;
-      }
-      set
-      {
-        if(value is Destination)
-        {Destination = (Destination)value;}
-        else if(value is actions.Action)
-        {Action = (actions.Action)value;}
-        else
-          throw new ArgumentException("It MUST be either a Destination or an Action.");
-      }
-    }
-    #endregion
     #endregion
     #endregion
     #endregion

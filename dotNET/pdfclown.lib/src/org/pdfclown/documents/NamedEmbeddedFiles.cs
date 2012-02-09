@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -24,7 +24,7 @@
 */
 
 using org.pdfclown.documents;
-using org.pdfclown.documents.fileSpecs;
+using org.pdfclown.documents.files;
 using org.pdfclown.files;
 using org.pdfclown.objects;
 
@@ -37,7 +37,7 @@ namespace org.pdfclown.documents
   */
   [PDF(VersionEnum.PDF14)]
   public sealed class NamedEmbeddedFiles
-    : NameTree<FileSpec>
+    : NameTree<FileSpecification>
   {
     #region dynamic
     #region constructors
@@ -61,11 +61,11 @@ namespace org.pdfclown.documents
     #endregion
 
     #region protected
-    protected override FileSpec Wrap(
+    protected override FileSpecification Wrap(
       PdfDirectObject baseObject,
       PdfString name
       )
-    {return new FileSpec(baseObject, name);}
+    {return FileSpecification.Wrap(baseObject, name);}
     #endregion
     #endregion
     #endregion

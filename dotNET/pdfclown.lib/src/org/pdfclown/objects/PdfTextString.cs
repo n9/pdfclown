@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -39,6 +39,10 @@ namespace org.pdfclown.objects
     : PdfString
   {
     #region static
+    #region fields
+    public static readonly new PdfTextString Empty = new PdfTextString("");
+    #endregion
+  
     #region interface
     #region public
     /**
@@ -63,10 +67,6 @@ namespace org.pdfclown.objects
     #endregion
 
     #region constructors
-    public PdfTextString(
-      )
-    {}
-
     public PdfTextString(
       byte[] rawValue
       ) : base(rawValue)

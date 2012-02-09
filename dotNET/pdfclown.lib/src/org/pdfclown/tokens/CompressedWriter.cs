@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -110,6 +110,7 @@ namespace org.pdfclown.tokens
           xrefStream,
           xrefStreamEntry = new XRefEntry(indirectObjects.Count, 0)
           );
+        UpdateTrailer(xrefStream.Header, stream);
         xrefStream.Header[PdfName.Prev] = new PdfInteger((int)parser.RetrieveXRefOffset());
         AddXRefEntry(
           xrefStreamEntry,
@@ -170,6 +171,7 @@ namespace org.pdfclown.tokens
         prevFreeEntry.Offset = 0; // Links back to the first free object. NOTE: The first entry in the table (object number 0) is always free.
 
         // 2.2. XRef stream.
+        UpdateTrailer(xrefStream.Header, stream);
         AddXRefEntry(
           xrefStreamEntry,
           xrefStream.Container,

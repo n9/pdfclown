@@ -164,7 +164,7 @@ namespace org.pdfclown.documents.interaction.annotations
         page
         )
     {
-      BaseDataObject[PdfName.L] = new PdfArray(new PdfDirectObject[]{new PdfReal(0),new PdfReal(0),new PdfReal(0),new PdfReal(0)});
+      BaseDataObject[PdfName.L] = new PdfArray(new PdfDirectObject[]{PdfReal.Get(0),PdfReal.Get(0),PdfReal.Get(0),PdfReal.Get(0)});
       StartPoint = startPoint;
       EndPoint = endPoint;
     }
@@ -214,8 +214,8 @@ namespace org.pdfclown.documents.interaction.annotations
       set
       {
         PdfArray coordinatesObject = (PdfArray)BaseDataObject[PdfName.L];
-        coordinatesObject[2] = new PdfReal(value.X);
-        coordinatesObject[3] = new PdfReal(Page.Box.Height-value.Y);
+        coordinatesObject[2] = PdfReal.Get(value.X);
+        coordinatesObject[3] = PdfReal.Get(Page.Box.Height-value.Y);
       }
     }
 
@@ -271,7 +271,7 @@ namespace org.pdfclown.documents.interaction.annotations
       }
       set
       {
-        BaseDataObject[PdfName.LLE] = new PdfReal(value);
+        BaseDataObject[PdfName.LLE] = PdfReal.Get(value);
         /*
           NOTE: If leader line extension entry is present, leader line MUST be too.
         */
@@ -297,7 +297,7 @@ namespace org.pdfclown.documents.interaction.annotations
           : DefaultLeaderLineLength;
       }
       set
-      {BaseDataObject[PdfName.LL] = new PdfReal(-value);}
+      {BaseDataObject[PdfName.LL] = PdfReal.Get(-value);}
     }
 
     /**
@@ -316,8 +316,8 @@ namespace org.pdfclown.documents.interaction.annotations
       set
       {
         PdfArray coordinatesObject = (PdfArray)BaseDataObject[PdfName.L];
-        coordinatesObject[0] = new PdfReal(value.X);
-        coordinatesObject[1] = new PdfReal(Page.Box.Height-value.Y);
+        coordinatesObject[0] = PdfReal.Get(value.X);
+        coordinatesObject[1] = PdfReal.Get(Page.Box.Height-value.Y);
       }
     }
 
