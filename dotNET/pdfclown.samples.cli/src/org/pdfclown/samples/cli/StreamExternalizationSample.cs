@@ -74,7 +74,7 @@ namespace org.pdfclown.samples.cli
           if(dataObject is PdfStream)
           {
             PdfStream stream = (PdfStream)dataObject;
-            if(stream.DataFile != null) // Internal stream to externalize.
+            if(stream.DataFile != null) // External stream to internalize.
             {
               stream.SetDataFile(
                 null,

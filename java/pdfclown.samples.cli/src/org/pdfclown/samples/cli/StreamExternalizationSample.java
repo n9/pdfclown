@@ -88,7 +88,7 @@ public class StreamExternalizationSample
         if(dataObject instanceof PdfStream)
         {
           PdfStream stream = (PdfStream)dataObject;
-          if(stream.getDataFile() != null) // Internal stream to externalize.
+          if(stream.getDataFile() != null) // External stream to internalize.
           {
             stream.setDataFile(
               null,
