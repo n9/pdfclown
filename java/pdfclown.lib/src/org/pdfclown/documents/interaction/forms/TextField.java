@@ -38,6 +38,7 @@ import org.pdfclown.documents.contents.FontResources;
 import org.pdfclown.documents.contents.Resources;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.composition.XAlignmentEnum;
 import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
@@ -64,7 +65,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 02/13/12
 */
 @PDF(VersionEnum.PDF12)
 public final class TextField
@@ -114,17 +115,13 @@ public final class TextField
 
   /**
     Gets the maximum length of this field's text, in characters.
+    <p>It corresponds to the maximum integer value in case no explicit limit is defined.</p>
   */
   public int getMaxLength(
     )
   {
-    PdfInteger maxLengthObject = (PdfInteger)File.resolve(
-      getInheritableAttribute(PdfName.MaxLen)
-      );
-    if(maxLengthObject == null)
-      return Integer.MAX_VALUE;//TODO:verify!!!
-
-    return maxLengthObject.getRawValue();
+    PdfInteger maxLengthObject = (PdfInteger)File.resolve(getInheritableAttribute(PdfName.MaxLen));
+    return maxLengthObject != null ? maxLengthObject.getValue() : Integer.MAX_VALUE;
   }
 
   /**
@@ -162,7 +159,7 @@ public final class TextField
   public void setMaxLength(
     int value
     )
-  {throw new NotImplementedException();}
+  {getBaseDataObject().put(PdfName.MaxLen, value != Integer.MAX_VALUE ? new PdfInteger(value) : null);}
 
   /**
     @see #isMultiline()
@@ -214,6 +211,14 @@ public final class TextField
     Object value
     )
   {
+    String stringValue = (String)value;
+    if(stringValue != null)
+    {
+      int maxLength = getMaxLength();
+      if(stringValue.length() > maxLength)
+      {stringValue = stringValue.substring(0, maxLength);}
+    }
+
     getBaseDataObject().put(PdfName.V,new PdfTextString((String)value));
     refreshAppearance();
   }
@@ -385,17 +390,6 @@ public final class TextField
     PrimitiveComposer baseComposer = composer.getBaseComposer();
     ContentScanner scanner = baseComposer.getScanner();
     Rectangle2D textBox = scanner.getContentContext().getBox();
-    textBox.setRect(
-      textBox.getX() + 2,
-      textBox.getY() + 2,
-      textBox.getWidth() - 4,
-      textBox.getHeight() - 4
-      );
-    composer.begin(
-      textBox,
-      getJustification().toXAlignment(),
-      isMultiline() ? YAlignmentEnum.Top : YAlignmentEnum.Middle
-      );
     if(scanner.getState().getFont() == null)
     {
       /*
@@ -403,10 +397,74 @@ public final class TextField
         a function of the height of the annotation rectangle.
       */
       if(fontSize == 0)
-      {fontSize = textBox.getHeight() * 0.9;}
+      {fontSize = textBox.getHeight() * 0.65;}
       baseComposer.setFont(fontName, fontSize);
     }
-    composer.showText((String)getValue());
+
+    String text = (String)getValue();
+
+    EnumSet<FlagsEnum> flags = getFlags();
+    if(flags.contains(FlagsEnum.Comb)
+      && !flags.contains(FlagsEnum.FileSelect)
+      && !flags.contains(FlagsEnum.Multiline)
+      && !flags.contains(FlagsEnum.Password))
+    {
+      int maxLength = getMaxLength();
+      if(maxLength > 0)
+      {
+        textBox.setRect(
+          textBox.getX(),
+          textBox.getY(),
+          textBox.getWidth() / maxLength,
+          textBox.getHeight()
+          );
+        for(int index = 0, length = text.length(); index < length; index++)
+        {
+          composer.begin(
+            textBox,
+            XAlignmentEnum.Center,
+            YAlignmentEnum.Middle
+            );
+          composer.showText(Character.toString(text.charAt(index)));
+          composer.end();
+          textBox.setRect(
+            textBox.getX() + textBox.getWidth(),
+            textBox.getY(),
+            textBox.getWidth(),
+            textBox.getHeight()
+            );
+        }
+        return;
+      }
+    }
+
+    textBox.setRect(
+      textBox.getX() + 2,
+      textBox.getY(),
+      textBox.getWidth() - 4,
+      textBox.getHeight()
+      );
+    YAlignmentEnum yAlignment;
+    if(flags.contains(FlagsEnum.Multiline))
+    {
+      yAlignment = YAlignmentEnum.Top;
+      textBox.setRect(
+        textBox.getX(),
+        textBox.getY() + fontSize * .35,
+        textBox.getWidth(),
+        textBox.getHeight() - fontSize * .7
+        );
+    }
+    else
+    {
+      yAlignment = YAlignmentEnum.Middle;
+    }
+    composer.begin(
+      textBox,
+      getJustification().toXAlignment(),
+      yAlignment
+      );
+    composer.showText(text);
     composer.end();
   }
   // </private>
