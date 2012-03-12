@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -65,21 +65,21 @@ namespace org.pdfclown.documents.contents.layers
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets the layer configurations used under particular circumstances.</summary>
     */
     public Array<LayerConfiguration> AlternateConfigurations
     {
       get
-      {return new Array<LayerConfiguration>(BaseDataObject.Ensure<PdfArray>(PdfName.Configs));}
+      {return new Array<LayerConfiguration>(BaseDataObject.Get<PdfArray>(PdfName.Configs));}
       set
       {BaseDataObject[PdfName.Configs] = value.BaseObject;}
     }
+
+    public override object Clone(
+      Document context
+      )
+    {throw new NotImplementedException();}
 
     /**
       <summary>Gets the default layer configuration, that is the initial state of the optional
@@ -94,14 +94,6 @@ namespace org.pdfclown.documents.contents.layers
     }
 
     #region ILayerConfiguration
-    public BaseStateEnum BaseState
-    {
-      get
-      {return DefaultConfiguration.BaseState;}
-      set
-      {DefaultConfiguration.BaseState = value;}
-    }
-
     public string Creator
     {
       get
@@ -138,6 +130,14 @@ namespace org.pdfclown.documents.contents.layers
       {return DefaultConfiguration.Title;}
       set
       {DefaultConfiguration.Title = value;}
+    }
+
+    public bool? Visible
+    {
+      get
+      {return DefaultConfiguration.Visible;}
+      set
+      {DefaultConfiguration.Visible = value;}
     }
     #endregion
     #endregion

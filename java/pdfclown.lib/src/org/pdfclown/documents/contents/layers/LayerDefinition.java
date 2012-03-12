@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 03/12/12
 */
 @PDF(VersionEnum.PDF15)
 public class LayerDefinition
@@ -91,7 +91,7 @@ public class LayerDefinition
   */
   public Array<LayerConfiguration> getAlternateConfigurations(
     )
-  {return new Array<LayerConfiguration>(LayerConfiguration.class, getBaseDataObject().ensure(PdfName.Configs, PdfArray.class));}
+  {return new Array<LayerConfiguration>(LayerConfiguration.class, getBaseDataObject().get(PdfName.Configs, PdfArray.class));}
 
   /**
     Gets the default layer configuration, that is the initial state of the optional content groups
@@ -119,11 +119,6 @@ public class LayerDefinition
 
   // <ILayerConfiguration>
   @Override
-  public BaseStateEnum getBaseState(
-    )
-  {return getDefaultConfiguration().getBaseState();}
-
-  @Override
   public String getCreator(
     )
   {return getDefaultConfiguration().getCreator();}
@@ -149,10 +144,9 @@ public class LayerDefinition
   {return getDefaultConfiguration().getTitle();}
 
   @Override
-  public void setBaseState(
-    BaseStateEnum value
+  public Boolean isVisible(
     )
-  {getDefaultConfiguration().setBaseState(value);}
+  {return getDefaultConfiguration().isVisible();}
 
   @Override
   public void setCreator(
@@ -177,6 +171,12 @@ public class LayerDefinition
     String value
     )
   {getDefaultConfiguration().setTitle(value);}
+
+  @Override
+  public void setVisible(
+    Boolean value
+    )
+  {getDefaultConfiguration().setVisible(value);}
   // </ILayerConfiguration>
   // </public>
 

@@ -36,7 +36,7 @@ import org.pdfclown.tokens.Keyword;
   PDF name object [PDF:1.6:3.2.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 03/12/12
 */
 public final class PdfName
   extends PdfSimpleObject<String>
@@ -113,6 +113,7 @@ public final class PdfName
   public static final PdfName CapHeight = new PdfName("CapHeight");
   public static final PdfName Caret = new PdfName("Caret");
   public static final PdfName Catalog = new PdfName("Catalog");
+  public static final PdfName Category = new PdfName("Category");
   public static final PdfName CCF = new PdfName("CCF");
   public static final PdfName CCITTFaxDecode = new PdfName("CCITTFaxDecode");
   public static final PdfName CenterWindow = new PdfName("CenterWindow");
@@ -180,6 +181,7 @@ public final class PdfName
   public static final PdfName Encode = new PdfName("Encode");
   public static final PdfName Encoding = new PdfName("Encoding");
   public static final PdfName Encrypt = new PdfName("Encrypt");
+  public static final PdfName Event = new PdfName("Event");
   public static final PdfName Experimental = new PdfName("Experimental");
   public static final PdfName Expired = new PdfName("Expired");
   public static final PdfName Export = new PdfName("Export");
@@ -485,6 +487,18 @@ public final class PdfName
 
   private static final byte[] NamePrefixChunk = org.pdfclown.tokens.Encoding.encode(Keyword.NamePrefix);
   // </fields>
+
+  // <interface>
+  // <public>
+  /**
+    Gets the object equivalent to the given value.
+  */
+  public static PdfName get(
+    String value
+    )
+  {return value == null ? null : new PdfName(value);}
+  // </public>
+  // </interface>
   // </static>
 
   // <dynamic>

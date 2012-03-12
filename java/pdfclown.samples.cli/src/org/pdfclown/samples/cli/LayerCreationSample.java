@@ -13,7 +13,6 @@ import org.pdfclown.documents.contents.composition.XAlignmentEnum;
 import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.contents.layers.Layer;
-import org.pdfclown.documents.contents.layers.Layer.StateEnum;
 import org.pdfclown.documents.contents.layers.LayerDefinition;
 import org.pdfclown.documents.contents.layers.LayerGroup;
 import org.pdfclown.documents.contents.layers.Layers;
@@ -24,7 +23,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 03/12/12
 */
 public class LayerCreationSample
   extends Sample
@@ -135,15 +134,15 @@ public class LayerCreationSample
 
       Layer radio1 = new Layer(document, "Radiogrouped layer 1");
       radioGroup.add(radio1);
-      radio1.setViewState(StateEnum.On);
+      radio1.setVisible(true);
 
       Layer radio2 = new Layer(document, "Radiogrouped layer 2");
       radioGroup.add(radio2);
-      radio2.setViewState(StateEnum.Off);
+      radio2.setVisible(false);
 
       Layer radio3 = new Layer(document, "Radiogrouped layer 3");
       radioGroup.add(radio3);
-      radio3.setViewState(StateEnum.Off);
+      radio3.setVisible(false);
 
       // Register this option group in the layer configuration!
       LayerGroup options = new LayerGroup(document);
@@ -175,6 +174,19 @@ public class LayerCreationSample
       composer.end();
 
       blockComposer.end();
+    }
+
+    // 4. Print-only layer.
+    {
+      Layer printOnlyLayer = new Layer(document, "Print-only layer");
+      printOnlyLayer.setVisible(false);
+      printOnlyLayer.setPrintable(true);
+      printOnlyLayer.setLocked(true);
+      rootLayers.add(printOnlyLayer);
+
+      composer.beginLayer(printOnlyLayer);
+      composer.showText(printOnlyLayer.getTitle(), new Point(50, 270));
+      composer.end();
     }
     composer.flush();
   }

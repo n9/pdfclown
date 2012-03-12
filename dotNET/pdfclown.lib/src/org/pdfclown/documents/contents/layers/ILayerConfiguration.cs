@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,16 +35,6 @@ namespace org.pdfclown.documents.contents.layers
   public interface ILayerConfiguration
     : IPdfObjectWrapper
   {
-    /**
-      <summary>Gets/Sets the state used to initialize the states of all the layers in a document
-      when this configuration is applied.</summary>
-    */
-    BaseStateEnum BaseState
-    {
-      get;
-      set;
-    }
-
     /**
       <summary>Gets/Sets the name of the application or feature that created this configuration.
       </summary>
@@ -87,6 +77,16 @@ namespace org.pdfclown.documents.contents.layers
       <summary>Gets/Sets the configuration name.</summary>
     */
     string Title
+    {
+      get;
+      set;
+    }
+
+    /**
+      <summary>Gets/Sets whether all the layers in the document are initialize to be visible when
+      this configuration is applied.</summary>
+    */
+    bool? Visible
     {
       get;
       set;

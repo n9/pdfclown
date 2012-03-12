@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,18 +33,11 @@ import org.pdfclown.objects.IPdfObjectWrapper;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 03/12/12
 */
 public interface ILayerConfiguration
   extends IPdfObjectWrapper
 {
-  /**
-    Gets the state used to initialize the states of all the layers in a document when this
-    configuration is applied.
-  */
-  BaseStateEnum getBaseState(
-    );
-
   /**
     Gets the name of the application or feature that created this configuration.
   */
@@ -77,10 +70,10 @@ public interface ILayerConfiguration
     );
 
   /**
-    @see #getBaseState()
+    Gets whether all the layers in the document are initialized to be visible when this configuration
+    is applied.
   */
-  void setBaseState(
-    BaseStateEnum value
+  Boolean isVisible(
     );
 
   /**
@@ -109,5 +102,12 @@ public interface ILayerConfiguration
   */
   void setTitle(
     String value
+    );
+
+  /**
+    @see #isVisible()
+  */
+  void setVisible(
+    Boolean value
     );
 }

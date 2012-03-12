@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,7 +28,6 @@ package org.pdfclown.documents.contents.layers;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.Array;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDictionary;
@@ -44,13 +43,80 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 03/12/12
 */
 @PDF(VersionEnum.PDF15)
 public class LayerConfiguration
   extends PdfObjectWrapper<PdfDictionary>
   implements ILayerConfiguration
 {
+  /**
+    Base state used to initialize the states of all the layers in a document when this configuration
+    is applied.
+  */
+  private enum BaseStateEnum
+  {
+    /**
+      All the layers are enabled.
+    */
+    On(PdfName.ON, true),
+    /**
+      All the layers are disabled.
+    */
+    Off(PdfName.OFF, false),
+    /**
+      All the layers are left unchanged.
+    */
+    Unchanged(PdfName.Unchanged, null);
+
+    public static BaseStateEnum valueOf(
+      PdfName name
+      )
+    {
+      if(name == null)
+        return BaseStateEnum.On;
+
+      for(BaseStateEnum value : values())
+      {
+        if(value.getName().equals(name))
+          return value;
+      }
+      throw new UnsupportedOperationException("Base state unknown: " + name);
+    }
+
+    public static BaseStateEnum valueOf(
+      Boolean enabled
+      )
+    {
+      for(BaseStateEnum value : values())
+      {
+        if((enabled != null && enabled.equals(value.isEnabled())) || enabled == value.isEnabled())
+          return value;
+      }
+      throw new UnsupportedOperationException();
+    }
+
+    private PdfName name;
+    private Boolean enabled;
+
+    private BaseStateEnum(
+      PdfName name,
+      Boolean enabled
+      )
+    {
+      this.name = name;
+      this.enabled = enabled;
+    }
+
+    public PdfName getName(
+      )
+    {return name;}
+
+    public Boolean isEnabled(
+      )
+    {return enabled;}
+  }
+
   // <class>
   // <dynamic>
   // <constructors>
@@ -75,11 +141,6 @@ public class LayerConfiguration
 
   // <ILayerConfiguration>
   @Override
-  public BaseStateEnum getBaseState(
-    )
-  {return BaseStateEnum.valueOf((PdfName)getBaseDataObject().get(PdfName.BaseState));}
-
-  @Override
   public String getCreator(
     )
   {return (String)PdfSimpleObject.getValue(getBaseDataObject().get(PdfName.Creator));}
@@ -87,7 +148,7 @@ public class LayerConfiguration
   @Override
   public Layers getLayers(
     )
-  {return new Layers(getBaseDataObject().ensure(PdfName.Order, PdfArray.class));}
+  {return new Layers(getBaseDataObject().get(PdfName.Order, PdfArray.class));}
 
   @Override
   public ListModeEnum getListMode(
@@ -97,7 +158,7 @@ public class LayerConfiguration
   @Override
   public Array<LayerGroup> getOptionGroups(
     )
-  {return new Array<LayerGroup>(LayerGroup.class, getBaseDataObject().ensure(PdfName.RBGroups, PdfArray.class));}
+  {return new Array<LayerGroup>(LayerGroup.class, getBaseDataObject().get(PdfName.RBGroups, PdfArray.class));}
 
   @Override
   public String getTitle(
@@ -105,10 +166,9 @@ public class LayerConfiguration
   {return (String)PdfSimpleObject.getValue(getBaseDataObject().get(PdfName.Name));}
 
   @Override
-  public void setBaseState(
-    BaseStateEnum value
+  public Boolean isVisible(
     )
-  {getBaseDataObject().put(PdfName.BaseState, value.getName());}
+  {return BaseStateEnum.valueOf((PdfName)getBaseDataObject().get(PdfName.BaseState)).isEnabled();}
 
   @Override
   public void setCreator(
@@ -133,24 +193,135 @@ public class LayerConfiguration
     String value
     )
   {getBaseDataObject().put(PdfName.Name, PdfTextString.get(value));}
+
+  @Override
+  public void setVisible(
+    Boolean value
+    )
+  {
+    /*
+      NOTE: Base state can be altered only in case of alternate configuration; default ones MUST be
+      set to default state (that is ON).
+    */
+    if(!(getBaseObject().getParent() instanceof PdfDictionary)) // Not the default configuration?
+    {getBaseDataObject().put(PdfName.BaseState, BaseStateEnum.valueOf(value).getName());}
+  }
   // </ILayerConfiguration>
   // </public>
 
   // <internal>
+  boolean isVisible(
+    Layer layer
+    )
+  {
+    Boolean defaultVisible = isVisible();
+    if(defaultVisible == null || defaultVisible)
+      return !getOffLayersObject().contains(layer.getBaseObject());
+    else
+      return getOnLayersObject().contains(layer.getBaseObject());
+  }
+
+  /**
+    Sets the usage application for the specified factors.
+
+    @param event Situation in which this usage application should be used. May be
+      {@link PdfName#View View}, {@link PdfName#Print Print} or {@link PdfName#Export Export}.
+    @param category Layer usage entry to consider when managing the states of the layer.
+    @param layer Layer which should have its state automatically managed based on its usage
+      information.
+    @param retain Whether this usage application has to be kept or removed.
+  */
+  void setUsageApplication(
+    PdfName event,
+    PdfName category,
+    Layer layer,
+    boolean retain
+    )
+  {
+    boolean matched = false;
+    PdfArray usages = getBaseDataObject().resolve(PdfName.AS, PdfArray.class);
+    for(PdfDirectObject usage : usages)
+    {
+      PdfDictionary usageDictionary = (PdfDictionary)usage;
+      if(usageDictionary.get(PdfName.Event).equals(event)
+        && ((PdfArray)usageDictionary.get(PdfName.Category)).contains(category))
+      {
+        PdfArray usageLayers = usageDictionary.resolve(PdfName.OCGs, PdfArray.class);
+        if(usageLayers.contains(layer.getBaseObject()))
+        {
+          if(!retain)
+          {usageLayers.remove(layer.getBaseObject());}
+        }
+        else
+        {
+          if(retain)
+          {usageLayers.add(layer.getBaseObject());}
+        }
+        matched = true;
+      }
+    }
+    if(!matched && retain)
+    {
+      PdfDictionary usageDictionary = new PdfDictionary();
+      {
+        usageDictionary.put(PdfName.Event, event);
+        usageDictionary.resolve(PdfName.Category, PdfArray.class).add(category);
+        usageDictionary.resolve(PdfName.OCGs, PdfArray.class).add(layer.getBaseObject());
+      }
+      usages.add(usageDictionary);
+    }
+  }
+
+  void setVisible(
+    Layer layer,
+    boolean value
+    )
+  {
+    PdfDirectObject layerObject = layer.getBaseObject();
+    PdfArray offLayersObject = getOffLayersObject();
+    PdfArray onLayersObject = getOnLayersObject();
+    Boolean defaultVisible = isVisible();
+    if(defaultVisible == null)
+    {
+      if(value && !onLayersObject.contains(layerObject))
+      {
+        onLayersObject.add(layerObject);
+        offLayersObject.remove(layerObject);
+      }
+      else if(!value && !offLayersObject.contains(layerObject))
+      {
+        offLayersObject.add(layerObject);
+        onLayersObject.remove(layerObject);
+      }
+    }
+    else if(!defaultVisible)
+    {
+      if(value && !onLayersObject.contains(layerObject))
+      {onLayersObject.add(layerObject);}
+    }
+    else
+    {
+      if(!value && !offLayersObject.contains(layerObject))
+      {offLayersObject.add(layerObject);}
+    }
+  }
+  // <internal>
+
+  // <private>
   /**
     Gets the collection of the layer objects whose state is set to OFF.
   */
-  PdfArray getOffLayersObject(
+  private PdfArray getOffLayersObject(
     )
-  {return (PdfArray)File.resolve(getBaseDataObject().ensure(PdfName.OFF, PdfArray.class));}
+  {return getBaseDataObject().resolve(PdfName.OFF, PdfArray.class);}
 
   /**
     Gets the collection of the layer objects whose state is set to ON.
   */
-  PdfArray getOnLayersObject(
+  private PdfArray getOnLayersObject(
     )
-  {return (PdfArray)File.resolve(getBaseDataObject().ensure(PdfName.ON, PdfArray.class));}
-  // <internal>
+  {return getBaseDataObject().resolve(PdfName.ON, PdfArray.class);}
+  // </private>
   // </interface>
   // </dynamic>
   // </class>

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -115,16 +115,13 @@ namespace org.pdfclown.objects
     {throw new NotImplementedException();}
 
     /**
-      Gets the value corresponding to the given key, forcing its instantiation in case of missing
-      entry.
-  
-      @param key Key whose associated value is to be returned.
-      @param valueClass Class to use for instantiating the value in case of missing entry.
-      @since 0.1.1
+      <summary>Gets the value corresponding to the given key, forcing its instantiation in case of
+      missing entry.</summary>
+      <param name="key">Key whose associated value is to be returned.</param>
     */
-    public PdfDirectObject Ensure<T>(
+    public PdfDirectObject Get<T>(
       PdfName key
-      ) where T : PdfDirectObject, new()
+      ) where T : PdfDataObject, new()
     {
       PdfDirectObject value = this[key];
       if(value == null)
@@ -166,15 +163,14 @@ namespace org.pdfclown.objects
       )
     {
       /*
-        NOTE: Current PdfDictionary implementation doesn't support bidirectional
-        maps, to say that the only currently-available way to retrieve a key from a
-        value is to iterate the whole map (really poor performance!).
-        NOTE: Complex high-level matches are not verified (too expensive!), to say that
-        if the searched high-level object (font, xobject, colorspace etc.) has a
-        PdfReference base object while some high-level objects in the
-        collection have other direct type (PdfName, for example) base objects, they
-        won't match in any case (even if they represent the SAME high-level object --
-        but that should be a rare case...).
+        NOTE: Current PdfDictionary implementation doesn't support bidirectional maps, to say that
+        the only currently-available way to retrieve a key from a value is to iterate the whole map
+        (really poor performance!).
+        NOTE: Complex high-level matches are not verified (too expensive!), to say that if the
+        searched high-level object (font, xobject, colorspace etc.) has a PdfReference base object
+        while some high-level objects in the collection have other direct type (PdfName, for example)
+        base objects, they won't match in any case (even if they represent the SAME high-level object
+        -- but that should be a rare case...).
       */
       foreach(KeyValuePair<PdfName,PdfDirectObject> entry in entries)
       {
@@ -194,7 +190,8 @@ namespace org.pdfclown.objects
 
     /**
       <summary>Gets the dereferenced value corresponding to the given key.</summary>
-      <remarks>This method takes care to resolve the value returned by <see cref="this[PdfName]">this[PdfName]</see>.</remarks>
+      <remarks>This method takes care to resolve the value returned by <see cref="this[PdfName]">
+      this[PdfName]</see>.</remarks>
       <param name="key">Key whose associated value is to be returned.</param>
       <returns>null, if the map contains no mapping for this key.</returns>
     */
@@ -202,6 +199,19 @@ namespace org.pdfclown.objects
       PdfName key
       )
     {return File.Resolve(this[key]);}
+
+    /**
+      <summary>Gets the dereferenced value corresponding to the given key, forcing its instantiation
+      in case of missing entry.</summary>
+      <remarks>This method takes care to resolve the value returned by <see cref="Get(PdfName)"/>.
+      </remarks>
+      <param name="key">Key whose associated value is to be returned.</param>
+      <returns>null, if the map contains no mapping for this key.</returns>
+    */
+    public T Resolve<T>(
+      PdfName key
+      ) where T : PdfDataObject, new()
+    {return (T)File.Resolve(Get<T>(key));}
 
     public override string ToString(
       )

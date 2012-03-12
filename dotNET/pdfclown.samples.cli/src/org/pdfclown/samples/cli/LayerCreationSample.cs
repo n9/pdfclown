@@ -123,15 +123,15 @@ namespace org.pdfclown.samples.cli
 
         Layer radio1 = new Layer(document, "Radiogrouped layer 1");
         radioGroup.Add(radio1);
-        radio1.ViewState = Layer.StateEnum.On;
+        radio1.Visible = true;
 
         Layer radio2 = new Layer(document, "Radiogrouped layer 2");
         radioGroup.Add(radio2);
-        radio2.ViewState = Layer.StateEnum.Off;
+        radio2.Visible = false;
 
         Layer radio3 = new Layer(document, "Radiogrouped layer 3");
         radioGroup.Add(radio3);
-        radio3.ViewState = Layer.StateEnum.Off;
+        radio3.Visible = false;
 
         // Register this option group in the layer configuration!
         LayerGroup options = new LayerGroup(document);
@@ -163,6 +163,19 @@ namespace org.pdfclown.samples.cli
         composer.End();
 
         blockComposer.End();
+      }
+
+      // 4. Print-only layer.
+      {
+        Layer printOnlyLayer = new Layer(document, "Print-only layer");
+        printOnlyLayer.Visible = false;
+        printOnlyLayer.Printable = true;
+        printOnlyLayer.Locked = true;
+        rootLayers.Add(printOnlyLayer);
+
+        composer.BeginLayer(printOnlyLayer);
+        composer.ShowText(printOnlyLayer.Title, new PointF(50, 270));
+        composer.End();
       }
       composer.Flush();
     }

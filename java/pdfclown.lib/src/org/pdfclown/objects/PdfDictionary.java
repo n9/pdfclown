@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 03/12/12
 */
 public final class PdfDictionary
   extends PdfDirectObject
@@ -139,9 +139,9 @@ public final class PdfDictionary
 
     @param key Key whose associated value is to be returned.
     @param valueClass Class to use for instantiating the value in case of missing entry.
-    @since 0.1.1
+    @since 0.1.2
   */
-  public <T extends PdfDirectObject> PdfDirectObject ensure(
+  public <T extends PdfDataObject> PdfDirectObject get(
     PdfName key,
     Class<T> valueClass
     )
@@ -173,15 +173,14 @@ public final class PdfDictionary
     )
   {
     /*
-      NOTE: Current PdfDictionary implementation doesn't support bidirectional
-      maps, to say that the only currently-available way to retrieve a key from a
-      value is to iterate the whole map (really poor performance!).
-      NOTE: Complex high-level matches are not verified (too expensive!), to say that
-      if the searched high-level object (font, xobject, colorspace etc.) has a
-      PdfReference base object while some high-level objects in the
-      collection have other direct type (PdfName, for example) base objects, they
-      won't match in any case (even if they represent the SAME high-level object --
-      but that should be a rare case...).
+      NOTE: Current PdfDictionary implementation doesn't support bidirectional maps, to say that the
+      only currently-available way to retrieve a key from a value is to iterate the whole map (really
+      poor performance!).
+      NOTE: Complex high-level matches are not verified (too expensive!), to say that if the searched
+      high-level object (font, xobject, colorspace etc.) has a PdfReference base object while some
+      high-level objects in the collection have other direct type (PdfName, for example) base objects,
+      they won't match in any case (even if they represent the SAME high-level object -- but that
+      should be a rare case...).
     */
     for(Map.Entry<PdfName,PdfDirectObject> entry : entries.entrySet())
     {
@@ -219,6 +218,23 @@ public final class PdfDictionary
     PdfName key
     )
   {return File.resolve(get(key));}
+
+  /**
+    Gets the dereferenced value corresponding to the given key, forcing its instantiation in case of
+    missing entry.
+    <p>This method takes care to resolve the value returned by {@link #get(PdfName, Class)}.</p>
+
+    @param key Key whose associated value is to be returned.
+    @param valueClass Class to use for instantiating the value in case of missing entry.
+    @return null, if the map contains no mapping for this key.
+    @since 0.1.2
+  */
+  @SuppressWarnings("unchecked")
+  public <T extends PdfDataObject> T resolve(
+    PdfName key,
+    Class<T> valueClass
+    )
+  {return (T)File.resolve(get(key,valueClass));}
 
   @Override
   public void setUpdateable(

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 03/12/12
 */
 public final class PdfArray
   extends PdfDirectObject
@@ -126,21 +126,20 @@ public final class PdfArray
 
   /**
     Gets the value corresponding to the given index, forcing its instantiation in case of missing
-    item.
+    entry.
 
-    @param index Index of item to return.
+    @param index Index of the item to return.
     @param itemClass Class to use for instantiating the item in case of missing entry.
-    @since 0.1.1
+    @since 0.1.2
   */
-  public <T extends PdfDirectObject> PdfDirectObject ensure(
+  public <T extends PdfDataObject> PdfDirectObject get(
     int index,
     Class<T> itemClass
     )
   {
     PdfDirectObject item;
     if(index == size()
-      || (item = get(index)) == null
-      || !item.getClass().equals(itemClass))
+      || (item = get(index)) == null)
     {
       /*
         NOTE: The null-object placeholder MUST NOT perturb the existing structure; therefore:
@@ -152,10 +151,8 @@ public final class PdfArray
         item = (PdfDirectObject)include(itemClass.newInstance());
         if(index == size())
         {items.add(item);}
-        else if(item == null)
-        {items.set(index, item);}
         else
-        {items.add(index, item);}
+        {items.set(index, item);}
         item.setVirtual(true);
       }
       catch(Exception e)
@@ -183,13 +180,29 @@ public final class PdfArray
     Gets the dereferenced value corresponding to the given index.
     <p>This method takes care to resolve the value returned by {@link #get(int)}.</p>
 
-    @param index Index of item to return.
+    @param index Index of the item to return.
     @since 0.0.8
    */
   public PdfDataObject resolve(
     int index
     )
   {return File.resolve(get(index));}
+
+  /**
+    Gets the dereferenced value corresponding to the given index, forcing its instantiation in case
+    of missing entry.
+    <p>This method takes care to resolve the value returned by {@link #get(int, Class)}.</p>
+
+    @param index Index of the item to return.
+    @param itemClass Class to use for instantiating the item in case of missing entry.
+    @since 0.1.2
+  */
+  @SuppressWarnings("unchecked")
+  public <T extends PdfDataObject> T resolve(
+    int index,
+    Class<T> itemClass
+    )
+  {return (T)File.resolve(get(index, itemClass));}
 
   @Override
   public void setUpdateable(

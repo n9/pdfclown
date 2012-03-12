@@ -400,7 +400,6 @@
     <Compile Include="src\org\pdfclown\objects\Array.cs" />
     <Compile Include="src\org\pdfclown\objects\IPdfObjectWrapper.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\actions\SetLayerState.cs" />
-    <Compile Include="src\org\pdfclown\documents\contents\layers\BaseStateEnum.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\layers\ListModeEnum.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\JustificationEnum.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\layers\namespace.cs" />

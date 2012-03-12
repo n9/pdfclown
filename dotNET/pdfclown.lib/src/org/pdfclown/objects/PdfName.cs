@@ -111,6 +111,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName CapHeight = new PdfName("CapHeight");
     public static readonly PdfName Caret = new PdfName("Caret");
     public static readonly PdfName Catalog = new PdfName("Catalog");
+    public static readonly PdfName Category = new PdfName("Category");
     public static readonly PdfName CCF = new PdfName("CCF");
     public static readonly PdfName CCITTFaxDecode = new PdfName("CCITTFaxDecode");
     public static readonly PdfName CenterWindow = new PdfName("CenterWindow");
@@ -178,6 +179,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName Encode = new PdfName("Encode");
     public static readonly PdfName Encoding = new PdfName("Encoding");
     public static readonly PdfName Encrypt = new PdfName("Encrypt");
+    public static readonly PdfName Event = new PdfName("Event");
     public static readonly PdfName Experimental = new PdfName("Experimental");
     public static readonly PdfName Expired = new PdfName("Expired");
     public static readonly PdfName Export = new PdfName("Export");
@@ -483,6 +485,18 @@ namespace org.pdfclown.objects
     #pragma warning restore 0108
 
     private static readonly byte[] NamePrefixChunk = tokens.Encoding.Encode(tokens.Keyword.NamePrefix);
+    #endregion
+
+    #region interface
+    #region public
+    /**
+      <summary>Gets the object equivalent to the given value.</summary>
+    */
+    public static PdfName Get(
+      string value
+      )
+    {return value == null ? null : new PdfName(value);}
+    #endregion
     #endregion
     #endregion
 

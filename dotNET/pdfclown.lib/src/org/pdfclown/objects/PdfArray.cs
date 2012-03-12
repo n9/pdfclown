@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -112,19 +112,16 @@ namespace org.pdfclown.objects
 
     /**
       <summary>Gets the value corresponding to the given index, forcing its instantiation in case
-      of missing item.</summary>
-      <param name="index">Index of item to return.</param>
-      <param name="valueClass Class to use for instantiating the value in case of missing entry.
-      @since 0.1.1
+      of missing entry.</summary>
+      <param name="index">Index of the item to return.</param>
     */
-    public PdfDirectObject Ensure<T>(
+    public PdfDirectObject Get<T>(
       int index
-      ) where T : PdfDirectObject, new()
+      ) where T : PdfDataObject, new()
     {
       PdfDirectObject item;
       if(index == Count
-        || (item = this[index]) == null
-        || !item.GetType().Equals(typeof(T)))
+        || (item = this[index]) == null)
       {
         /*
           NOTE: The null-object placeholder MUST NOT perturb the existing structure; therefore:
@@ -136,10 +133,8 @@ namespace org.pdfclown.objects
           item = (PdfDirectObject)Include(new T());
           if(index == Count)
           {items.Add(item);}
-          else if(item == null)
-          {items[index] = item;}
           else
-          {items.Insert(index, item);}
+          {items[index] = item;}
           item.Virtual = true;
         }
         catch(Exception e)
@@ -171,13 +166,26 @@ namespace org.pdfclown.objects
 
     /**
       <summary>Gets the dereferenced value corresponding to the given index.</summary>
-      <remarks>This method takes care to resolve the value returned by <see cref="this[int]">this[int]</see>.</remarks>
-      <param name="index">Index of item to return.</param>
+      <remarks>This method takes care to resolve the value returned by
+      <see cref="this[int]">this[int]</see>.</remarks>
+      <param name="index">Index of the item to return.</param>
     */
     public PdfDataObject Resolve(
       int index
       )
     {return File.Resolve(this[index]);}
+
+    /**
+      <summary>Gets the dereferenced value corresponding to the given index, forcing its
+      instantiation in case of missing entry.</summary>
+      <remarks>This method takes care to resolve the value returned by
+      <see cref="Get<T>">Get<T></see>.</remarks>
+      <param name="index">Index of the item to return.</param>
+    */
+    public T Resolve<T>(
+      int index
+      ) where T : PdfDataObject, new()
+    {return (T)File.Resolve(Get<T>(index));}
 
     public override string ToString(
       )
