@@ -106,7 +106,7 @@ namespace org.pdfclown.documents
     }
 
     public T Resolve<T>(
-      PdfString name
+      string name
       ) where T : PdfObjectWrapper
     {
       if(typeof(Destination).IsAssignableFrom(typeof(T)))

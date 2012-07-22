@@ -28,12 +28,12 @@ package org.pdfclown.objects;
 import java.io.UnsupportedEncodingException;
 
 import org.pdfclown.tokens.CharsetName;
+import org.pdfclown.tokens.PdfDocEncoding;
 
 /**
   PDF text string object [PDF:1.6:3.8.1].
-  <p>Text strings are meaningful only as part of the document hierarchy;
-  they cannot appear within content streams.
-  They represent information that is intended to be human-readable.</p>
+  <p>Text strings are meaningful only as part of the document hierarchy; they cannot appear within
+  content streams. They represent information that is intended to be human-readable.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
@@ -42,6 +42,10 @@ import org.pdfclown.tokens.CharsetName;
 public final class PdfTextString
   extends PdfString
 {
+  /*
+    NOTE: Text strings are string objects encoded in either PdfDocEncoding (superset of the ISO
+    Latin 1 encoding [PDF:1.6:D]) or 16-bit big-endian Unicode character encoding (see [UCS:4]).
+  */
   // <class>
   // <static>
   // <fields>
@@ -61,14 +65,9 @@ public final class PdfTextString
   // </interface>
   // </static>
 
-  /*
-    NOTE: Text strings are string objects encoded in either
-    PDFDocEncoding (superset of the ISO Latin 1 encoding [PDF:1.6:D])
-    or 16-bit big-endian Unicode character encoding (see [UCS:4]).
-  */
   // <dynamic>
   // <fields>
-  private String encoding;
+  private boolean unicoded;
   // </fields>
 
   // <constructors>
@@ -97,30 +96,22 @@ public final class PdfTextString
 
   // <interface>
   // <public>
-  public String getEncoding(
-    )
-  {return encoding;}
-
   @Override
   public String getValue(
     )
   {
-    try
+    if(getSerializationMode() == SerializationModeEnum.Literal && unicoded)
     {
-      byte[] valueBytes = getRawValue();
-      byte[] buffer;
-      if(encoding == CharsetName.UTF16BE)
+      try
       {
-        // Excluding UTF marker...
-        buffer = new byte[valueBytes.length - 2];
-        System.arraycopy(valueBytes, 2, buffer, 0, buffer.length);
+        byte[] valueBytes = getRawValue();
+        return new String(valueBytes, 2, valueBytes.length - 2, CharsetName.UTF16BE);
       }
-      else
-      {buffer = valueBytes;}
-      return new String(buffer, encoding);
+      catch(UnsupportedEncodingException e)
+      {throw new RuntimeException(e);} // NOTE: It should NEVER happen.
     }
-    catch(UnsupportedEncodingException e)
-    {throw new RuntimeException(e);} // NOTE: It should NEVER happen.
+    else
+      return (String)super.getValue();
   }
   // </public>
 
@@ -130,12 +121,7 @@ public final class PdfTextString
     byte[] value
     )
   {
-    if(value.length >= 2
-      && value[0] == (byte)254
-      && value[1] == (byte)255) // Multi-byte (Unicode).
-    {encoding = CharsetName.UTF16BE;}
-    else // Single byte (PDFDocEncoding).
-    {encoding = CharsetName.ISO88591;}
+    unicoded = (value.length >= 2 && value[0] == (byte)254 && value[1] == (byte)255);
     super.setRawValue(value);
   }
 
@@ -148,18 +134,22 @@ public final class PdfTextString
     {
       case Literal:
       {
-        byte[] buffer;
-        try
+        String literalValue = (String)value;
+        byte[] valueBytes = PdfDocEncoding.get().encode(literalValue);
+        if(valueBytes == null)
         {
-          // Prepending UTF marker...
-          byte[] valueBytes = ((String)value).getBytes(CharsetName.UTF16BE);
-          buffer = new byte[valueBytes.length + 2];
-          buffer[0] = (byte)254; buffer[1] = (byte)255;
-          System.arraycopy(valueBytes, 0, buffer, 2, valueBytes.length);
+          try
+          {
+            byte[] valueBaseBytes = literalValue.getBytes(CharsetName.UTF16BE);
+            // Prepending UTF marker...
+            valueBytes = new byte[valueBaseBytes.length + 2];
+            valueBytes[0] = (byte)254; valueBytes[1] = (byte)255;
+            System.arraycopy(valueBaseBytes, 0, valueBytes, 2, valueBaseBytes.length);
+          }
+          catch(UnsupportedEncodingException e)
+          {throw new RuntimeException(e);}
         }
-        catch(UnsupportedEncodingException e)
-        {throw new RuntimeException(e);}
-        setRawValue(buffer);
+        setRawValue(valueBytes);
       }
         break;
       case Hex:

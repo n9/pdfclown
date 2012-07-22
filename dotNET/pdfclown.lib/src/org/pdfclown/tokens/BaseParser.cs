@@ -130,7 +130,7 @@ namespace org.pdfclown.tokens
             return PdfDate.Get((DateTime)Token);
           else
             return new PdfTextString(
-              Encoding.Encode((string)Token)
+              Encoding.Pdf.Encode((string)Token)
               );
         case TokenTypeEnum.Hex:
           return new PdfTextString(

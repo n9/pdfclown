@@ -26,6 +26,7 @@
 using org.pdfclown.objects;
 using org.pdfclown.util;
 
+using System;
 using System.Collections.Generic;
 
 namespace org.pdfclown.documents.contents.fonts
@@ -33,6 +34,7 @@ namespace org.pdfclown.documents.contents.fonts
   /**
     <summary>Predefined encodings [PDF:1.6:5.5.5,D].</summary>
   */
+  // TODO: This hierarchy is going to be superseded by org.pdfclown.tokens.Encoding.
   internal class Encoding
   {
     #region static

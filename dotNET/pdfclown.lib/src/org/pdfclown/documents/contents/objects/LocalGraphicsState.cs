@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,8 +45,8 @@ namespace org.pdfclown.documents.contents.objects
     public static readonly string BeginOperatorKeyword = SaveGraphicsState.OperatorKeyword;
     public static readonly string EndOperatorKeyword = RestoreGraphicsState.OperatorKeyword;
 
-    private static readonly byte[] BeginChunk = Encoding.Encode(BeginOperatorKeyword + Symbol.LineFeed);
-    private static readonly byte[] EndChunk = Encoding.Encode(EndOperatorKeyword + Symbol.LineFeed);
+    private static readonly byte[] BeginChunk = Encoding.Pdf.Encode(BeginOperatorKeyword + Symbol.LineFeed);
+    private static readonly byte[] EndChunk = Encoding.Pdf.Encode(EndOperatorKeyword + Symbol.LineFeed);
     #endregion
     #endregion
 

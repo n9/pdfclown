@@ -18,32 +18,32 @@ namespace org.pdfclown.samples.cli
       )
     {
       // 1. Opening the PDF file...
-      string filePath = PromptPdfFileChoice("Please select a PDF file");
+      string filePath = PromptFileChoice("Please select a PDF file");
       File file = new File(filePath);
       Document document = file.Document;
 
       // 2. Named objects extraction.
       Names names = document.Names;
       if(names == null)
-      {Console.WriteLine("No names dictionary.");}
+      {Console.WriteLine("\nNo names dictionary.");}
       else
       {
-        Console.WriteLine("Names dictionary found (" + names.Container.Reference + ")");
+        Console.WriteLine("\nNames dictionary found (" + names.Container.Reference + ")");
 
         NamedDestinations namedDestinations = names.Destinations;
         if(namedDestinations == null)
-        {Console.WriteLine("No named destinations.");}
+        {Console.WriteLine("\nNo named destinations.");}
         else
         {
-          Console.WriteLine("Named destinations found (" + namedDestinations.Container.Reference + ")");
+          Console.WriteLine("\nNamed destinations found (" + namedDestinations.Container.Reference + ")");
 
           // Parsing the named destinations...
-          foreach(KeyValuePair<PdfString,Destination> namedDestination in namedDestinations)
+          foreach(KeyValuePair<string,Destination> namedDestination in namedDestinations)
           {
-            PdfString key = namedDestination.Key;
+            string key = namedDestination.Key;
             Destination value = namedDestination.Value;
 
-            Console.WriteLine("Destination '" + key.Value + "' (" + value.Container.Reference + ")");
+            Console.WriteLine("  Destination '" + key + "' (" + value.Container.Reference + ")");
 
             Console.Write("    Target Page: number = ");
             object pageRef = value.Page;

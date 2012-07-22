@@ -34,7 +34,7 @@ public class PageCombinationSample
     // 1. Instantiate the source PDF file!
     File sourceFile;
     {
-      String filePath = promptPdfFileChoice("Please select a PDF file to use as source");
+      String filePath = promptFileChoice("Please select a PDF file to use as source");
       try
       {sourceFile = new File(filePath);}
       catch(Exception e)

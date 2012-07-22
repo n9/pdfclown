@@ -302,7 +302,7 @@ namespace org.pdfclown.documents
     {throw new NotImplementedException();}
 
     /**
-      <summary>Gets the configuration of this document.</summary>
+      <summary>Gets/Sets the configuration of this document.</summary>
     */
     public ConfigurationImpl Configuration
     {
@@ -443,7 +443,22 @@ namespace org.pdfclown.documents
     }
 
     /**
-      <summary>Gets the page layout to be used when the document is opened.</summary>
+      <summary>Gets/Sets the page label ranges.</summary>
+    */
+    [PDF(VersionEnum.PDF13)]
+    public PageLabels PageLabels
+    {
+      get
+      {return PageLabels.Wrap(BaseDataObject[PdfName.PageLabels]);}
+      set
+      {
+        CheckCompatibility("PageLabels");
+        BaseDataObject[PdfName.PageLabels] = value.BaseObject;
+      }
+    }
+
+    /**
+      <summary>Gets/Sets the page layout to be used when the document is opened.</summary>
     */
     public PageLayoutEnum PageLayout
     {
@@ -454,7 +469,7 @@ namespace org.pdfclown.documents
     }
 
     /**
-      <summary>Gets the page mode, that is how the document should be displayed when is opened.</summary>
+      <summary>Gets/Sets the page mode, that is how the document should be displayed when is opened.</summary>
     */
     public PageModeEnum PageMode
     {
@@ -514,7 +529,7 @@ namespace org.pdfclown.documents
       ) where T : PdfObjectWrapper
     {
       if(namedBaseObject is PdfString) // Named object.
-        return Names.Resolve<T>((PdfString)namedBaseObject);
+        return Names.Resolve<T>(((PdfString)namedBaseObject).StringValue);
       else // Explicit object.
         return Resolve<T>(namedBaseObject);
     }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,13 +33,13 @@ namespace org.pdfclown.util
   /**
     <summary>Bidirectional bijective map.</summary>
   */
-  public sealed class BiDictionary<TKey,TValue>
+  public class BiDictionary<TKey,TValue>
     : IDictionary<TKey,TValue>
   {
     #region dynamic
     #region fields
-    private Dictionary<TKey,TValue> dictionary;
-    private Dictionary<TValue,TKey> inverseDictionary;
+    private readonly Dictionary<TKey,TValue> dictionary;
+    private readonly Dictionary<TValue,TKey> inverseDictionary;
     #endregion
 
     #region constructors
@@ -78,7 +78,7 @@ namespace org.pdfclown.util
       )
     {return inverseDictionary.ContainsKey(value);}
 
-    public TKey GetKey(
+    public virtual TKey GetKey(
       TValue value
       )
     {TKey key; inverseDictionary.TryGetValue(value,out key); return key;}
@@ -105,7 +105,10 @@ namespace org.pdfclown.util
     {return dictionary.ContainsKey(key);}
 
     public ICollection<TKey> Keys
-    {get{return dictionary.Keys;}}
+    {
+      get
+      {return dictionary.Keys;}
+    }
 
     public bool Remove(
       TKey key
@@ -120,7 +123,7 @@ namespace org.pdfclown.util
       return true;
     }
 
-    public TValue this[
+    public virtual TValue this[
       TKey key
       ]
     {
@@ -155,7 +158,10 @@ namespace org.pdfclown.util
     {return dictionary.TryGetValue(key,out value);}
 
     public ICollection<TValue> Values
-    {get{return dictionary.Values;}}
+    {
+      get
+      {return dictionary.Values;}
+    }
 
     #region ICollection
     void ICollection<KeyValuePair<TKey,TValue>>.Add(
@@ -181,11 +187,17 @@ namespace org.pdfclown.util
       )
     {throw new NotImplementedException();}
 
-    public int Count
-    {get{return dictionary.Count;}}
+    public virtual int Count
+    {
+      get
+      {return dictionary.Count;}
+    }
 
     public bool IsReadOnly
-    {get{return false;}}
+    {
+      get
+      {return false;}
+    }
 
     public bool Remove(
       KeyValuePair<TKey,TValue> keyValuePair

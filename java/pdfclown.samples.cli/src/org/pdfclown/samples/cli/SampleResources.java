@@ -9,23 +9,24 @@ import java.io.FilenameFilter;
 */
 class SampleResources
 {
-  private File resourceDir;
+  private final File resourceDir;
 
   private class ExtensionFilter
     implements FilenameFilter
   {
-    private String extension;
+    private final String extension;
 
     private ExtensionFilter(
       String extension
       )
-    {this.extension = "." + extension;}
+    {this.extension = "." + extension.toLowerCase();}
 
+    @Override
     public boolean accept(
       File dir,
       String name
       )
-    {return name.endsWith(extension);}
+    {return name.toLowerCase().endsWith(extension);}
   }
 
   public SampleResources(

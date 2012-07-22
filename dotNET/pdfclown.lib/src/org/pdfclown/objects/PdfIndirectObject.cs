@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,6 +28,7 @@ using org.pdfclown.files;
 using org.pdfclown.tokens;
 
 using System;
+using System.Text;
 
 namespace org.pdfclown.objects
 {
@@ -40,8 +41,8 @@ namespace org.pdfclown.objects
   {
     #region static
     #region fields
-    private static readonly byte[] BeginIndirectObjectChunk = Encoding.Encode(Symbol.Space + Keyword.BeginIndirectObject + Symbol.LineFeed);
-    private static readonly byte[] EndIndirectObjectChunk = Encoding.Encode(Symbol.LineFeed + Keyword.EndIndirectObject + Symbol.LineFeed);
+    private static readonly byte[] BeginIndirectObjectChunk = tokens.Encoding.Pdf.Encode(Symbol.Space + Keyword.BeginIndirectObject + Symbol.LineFeed);
+    private static readonly byte[] EndIndirectObjectChunk = tokens.Encoding.Pdf.Encode(Symbol.LineFeed + Keyword.EndIndirectObject + Symbol.LineFeed);
     #endregion
     #endregion
 
@@ -276,6 +277,7 @@ namespace org.pdfclown.objects
         if(xrefEntry.Generation == XRefEntry.GenerationUnreusable)
           throw new Exception("Unreusable entry.");
 
+        Exclude(dataObject);
         dataObject = Include(value);
         xrefEntry.Usage = XRefEntry.UsageEnum.InUse;
         Update();
@@ -306,6 +308,19 @@ namespace org.pdfclown.objects
     {
       get
       {return reference;}
+    }
+
+    public override string ToString(
+      )
+    {
+      StringBuilder buffer = new StringBuilder();
+      {
+        // Header.
+        buffer.Append(reference.Id).Append(" obj").Append(Symbol.LineFeed);
+        // Body.
+        buffer.Append(DataObject);
+      }
+      return buffer.ToString();
     }
     #endregion
     #endregion

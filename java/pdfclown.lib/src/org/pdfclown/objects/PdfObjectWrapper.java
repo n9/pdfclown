@@ -66,7 +66,6 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   // <class>
   // <dynamic>
   // <fields>
-  private TDataObject baseDataObject;
   private PdfDirectObject baseObject;
   // </fields>
 
@@ -142,9 +141,10 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   /**
     Gets the underlying data object.
   */
+  @SuppressWarnings("unchecked")
   public TDataObject getBaseDataObject(
     )
-  {return baseDataObject;}
+  {return (TDataObject)File.resolve(baseObject);}
 
   /**
     Gets the indirect object containing the base object.
@@ -311,14 +311,10 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
     }
   }
 
-  @SuppressWarnings("unchecked")
   protected void setBaseObject(
     PdfDirectObject value
     )
-  {
-    baseObject = value;
-    baseDataObject = (TDataObject)File.resolve(baseObject);
-  }
+  {baseObject = value;}
   // </protected>
 
   // <private>

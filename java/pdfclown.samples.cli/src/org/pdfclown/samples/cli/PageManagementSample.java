@@ -58,7 +58,7 @@ public class PageManagementSample
     final ActionEnum action = promptAction();
 
     // Opening the PDF file...
-    final String mainFilePath = promptPdfFileChoice("Please select a PDF file");
+    final String mainFilePath = promptFileChoice("Please select a PDF file");
     final File mainFile;
     try
     {mainFile = new File(mainFilePath);}
@@ -100,7 +100,7 @@ public class PageManagementSample
         // Source file.
         File sourceFile;
         {
-          String sourceFilePath = promptPdfFileChoice("Select the source PDF file");
+          String sourceFilePath = promptFileChoice("Select the source PDF file");
           try
           {sourceFile = new File(sourceFilePath);}
           catch(Exception e)
@@ -186,7 +186,7 @@ public class PageManagementSample
         // Source file.
         File sourceFile;
         {
-          String sourceFilePath = promptPdfFileChoice("Select the source PDF file");
+          String sourceFilePath = promptFileChoice("Select the source PDF file");
           try
           {sourceFile = new File(sourceFilePath);}
           catch(Exception e)

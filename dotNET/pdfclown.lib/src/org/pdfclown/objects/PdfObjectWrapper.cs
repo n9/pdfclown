@@ -255,10 +255,6 @@ namespace org.pdfclown.objects
     where TDataObject : PdfDataObject
   {
     #region dynamic
-    #region fields
-    private TDataObject baseDataObject;
-    #endregion
-
     #region constructors
     /**
       <summary>Creates a new wrapper into the specified document context.</summary>
@@ -301,18 +297,7 @@ namespace org.pdfclown.objects
     public TDataObject BaseDataObject
     {
       get
-      {return baseDataObject;}
-    }
-
-    public override PdfDirectObject BaseObject
-    {
-      get
-      {return base.BaseObject;}
-      protected set
-      {
-        base.BaseObject = value;
-        baseDataObject = (TDataObject)File.Resolve(value);
-      }
+      {return (TDataObject)File.Resolve(BaseObject);}
     }
 
     /**

@@ -35,7 +35,7 @@ public class PageToFormSample
     // 1. Instantiate the form source file!
     File formFile;
     {
-      String filePath = promptPdfFileChoice("Please select a PDF file to use as form");
+      String filePath = promptFileChoice("Please select a PDF file to use as form");
       try
       {formFile = new File(filePath);}
       catch(Exception e)

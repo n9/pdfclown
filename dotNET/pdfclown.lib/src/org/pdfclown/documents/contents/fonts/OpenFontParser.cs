@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -27,6 +27,7 @@ using bytes = org.pdfclown.bytes;
 using org.pdfclown.documents;
 using org.pdfclown.files;
 using org.pdfclown.objects;
+using org.pdfclown.tokens;
 using org.pdfclown.util.io;
 using org.pdfclown.util.parsers;
 
@@ -811,7 +812,7 @@ namespace org.pdfclown.documents.contents.fonts
     private string ReadAsciiString(
       int length
       )
-    {return ReadString(length, org.pdfclown.tokens.Encoding.ISO88591);}
+    {return ReadString(length, Charset.ISO88591);}
 
     /**
       <summary>Reads a string.</summary>
@@ -851,7 +852,7 @@ namespace org.pdfclown.documents.contents.fonts
     private string ReadUnicodeString(
       int length
       )
-    {return ReadString(length, org.pdfclown.tokens.Encoding.UTF16LE);}
+    {return ReadString(length, Charset.UTF16LE);}
     #endregion
     #endregion
     #endregion

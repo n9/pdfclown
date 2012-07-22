@@ -50,6 +50,7 @@ public final class PdfReference
   private final int objectNumber;
 
   private File file;
+  private PdfObject parent;
   // </fields>
 
   // <constructors>
@@ -137,7 +138,7 @@ public final class PdfReference
   @Override
   public PdfObject getParent(
     )
-  {return null;} // NOTE: As references are immutable, no parent can be associated.
+  {return parent;}
 
   @Override
   public int hashCode(
@@ -244,7 +245,7 @@ public final class PdfReference
   void setParent(
     PdfObject value
     )
-  {/* NOOP: As references are immutable, no parent can be associated. */}
+  {parent = value;}
   // </internal>
   // </interface>
   // </dynamic>

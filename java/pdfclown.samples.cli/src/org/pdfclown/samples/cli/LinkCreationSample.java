@@ -122,7 +122,7 @@ public class LinkCreationSample
     */
     {
       // Get the path of the PDF file to attach!
-      String filePath = promptPdfFileChoice("Please select a PDF file to attach");
+      String filePath = promptFileChoice("Please select a PDF file to attach");
 
       /*
         NOTE: These statements instruct PDF Clown to attach a PDF file to the current document.

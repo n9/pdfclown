@@ -43,7 +43,7 @@ public abstract class PdfDirectObject
   // <class>
   // <static>
   // <fields>
-  private static final byte[] NullChunk = Encoding.encode(Keyword.Null);
+  private static final byte[] NullChunk = Encoding.Pdf.encode(Keyword.Null);
   // </fields>
 
   // <interface>

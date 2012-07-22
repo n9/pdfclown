@@ -135,7 +135,7 @@ namespace org.pdfclown.files
       */
       using (MD5 md5 = MD5.Create())
       {
-        using(BinaryWriter buffer = new BinaryWriter(new MemoryStream(), Encoding.ISO88591))
+        using(BinaryWriter buffer = new BinaryWriter(new MemoryStream(), Charset.ISO88591))
         {
           File file = writer.File;
           try

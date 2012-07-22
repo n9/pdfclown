@@ -44,8 +44,8 @@ namespace org.pdfclown.objects
   {
     #region static
     #region fields
-    private static readonly byte[] BeginStreamBodyChunk = tokens.Encoding.Encode(Symbol.LineFeed + Keyword.BeginStream + Symbol.LineFeed);
-    private static readonly byte[] EndStreamBodyChunk = tokens.Encoding.Encode(Symbol.LineFeed + Keyword.EndStream);
+    private static readonly byte[] BeginStreamBodyChunk = Encoding.Pdf.Encode(Symbol.LineFeed + Keyword.BeginStream + Symbol.LineFeed);
+    private static readonly byte[] EndStreamBodyChunk = Encoding.Pdf.Encode(Symbol.LineFeed + Keyword.EndStream);
     #endregion
     #endregion
 

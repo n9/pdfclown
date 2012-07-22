@@ -43,8 +43,8 @@ namespace org.pdfclown.objects
   {
     #region static
     #region fields
-    private static readonly byte[] BeginDictionaryChunk = Encoding.Encode(Keyword.BeginDictionary);
-    private static readonly byte[] EndDictionaryChunk = Encoding.Encode(Keyword.EndDictionary);
+    private static readonly byte[] BeginDictionaryChunk = Encoding.Pdf.Encode(Keyword.BeginDictionary);
+    private static readonly byte[] EndDictionaryChunk = Encoding.Pdf.Encode(Keyword.EndDictionary);
     #endregion
     #endregion
 

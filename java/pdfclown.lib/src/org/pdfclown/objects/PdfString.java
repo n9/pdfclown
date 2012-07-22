@@ -29,7 +29,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.files.File;
-import org.pdfclown.tokens.Encoding;
+import org.pdfclown.tokens.PdfDocEncoding;
 import org.pdfclown.util.ConvertUtils;
 import org.pdfclown.util.IDataWrapper;
 import org.pdfclown.util.NotImplementedException;
@@ -151,6 +151,10 @@ public class PdfString
     )
   {return serializationMode;}
 
+  public String getStringValue(
+    )
+  {return (String)getValue();}
+
   @Override
   public Object getValue(
     )
@@ -158,7 +162,7 @@ public class PdfString
     switch(serializationMode)
     {
       case Literal:
-        return Encoding.decode(getRawValue());
+        return PdfDocEncoding.get().decode(getRawValue());
       case Hex:
         return ConvertUtils.byteArrayToHex(getRawValue());
       default:
@@ -249,7 +253,7 @@ public class PdfString
           break;
         case Hex:
           buffer.write(HexLeftDelimiterCode);
-          byte[] value = Encoding.encode(ConvertUtils.byteArrayToHex(rawValue));
+          byte[] value = PdfDocEncoding.get().encode(ConvertUtils.byteArrayToHex(rawValue));
           buffer.write(value,0,value.length);
           buffer.write(HexRightDelimiterCode);
           break;
@@ -270,7 +274,7 @@ public class PdfString
     switch(serializationMode)
     {
       case Literal:
-        setRawValue(Encoding.encode((String)value));
+        setRawValue(PdfDocEncoding.get().encode((String)value));
         break;
       case Hex:
         setRawValue(ConvertUtils.hexToByteArray((String)value));

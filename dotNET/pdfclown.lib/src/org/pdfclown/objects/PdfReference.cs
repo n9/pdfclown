@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -46,6 +46,7 @@ namespace org.pdfclown.objects
     private int objectNumber;
 
     private File file;
+    private PdfObject parent;
     #endregion
 
     #region constructors
@@ -144,9 +145,9 @@ namespace org.pdfclown.objects
     public override PdfObject Parent
     {
       get
-      {return null;} // NOTE: As references are immutable, no parent can be associated.
+      {return parent;}
       internal set
-      {/* NOOP: As references are immutable, no parent can be associated. */}
+      {parent = value;}
     }
 
     public override string ToString(

@@ -34,7 +34,6 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.objects.PdfString;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -106,7 +105,7 @@ public final class Names
   @SuppressWarnings("unchecked")
   public <T extends PdfObjectWrapper<?>> T resolve(
     Class<T> type,
-    PdfString name
+    String name
     )
   {
     if(Destination.class.isAssignableFrom(type))

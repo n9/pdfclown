@@ -43,10 +43,10 @@ public abstract class Writer
   // <class>
   // <static>
   // <fields>
-  private static final byte[] BOFChunk = Encoding.encode(Keyword.BOF);
-  private static final byte[] EOFChunk = Encoding.encode(Symbol.LineFeed + Keyword.EOF + Symbol.CarriageReturn + Symbol.LineFeed);
+  private static final byte[] BOFChunk = Encoding.Pdf.encode(Keyword.BOF);
+  private static final byte[] EOFChunk = Encoding.Pdf.encode(Symbol.LineFeed + Keyword.EOF + Symbol.CarriageReturn + Symbol.LineFeed);
   private static final byte[] HeaderBinaryHintChunk = new byte[]{(byte)Symbol.LineFeed,(byte)Symbol.Percent,(byte)0x80,(byte)0x80,(byte)0x80,(byte)0x80,(byte)Symbol.LineFeed}; // NOTE: Arbitrary binary characters (code >= 128) for ensuring proper behavior of file transfer applications [PDF:1.6:3.4.1].
-  private static final byte[] StartXRefChunk = Encoding.encode(Keyword.StartXRef + Symbol.LineFeed);
+  private static final byte[] StartXRefChunk = Encoding.Pdf.encode(Keyword.StartXRef + Symbol.LineFeed);
   // </fields>
 
   // <interface>

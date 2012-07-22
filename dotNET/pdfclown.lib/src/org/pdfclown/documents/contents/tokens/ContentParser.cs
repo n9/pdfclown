@@ -141,7 +141,7 @@ namespace org.pdfclown.documents.contents.tokens
         case TokenTypeEnum.Literal:
           if(Token is string)
             return new PdfString(
-              org.pdfclown.tokens.Encoding.Encode((string)Token),
+              Encoding.Pdf.Encode((string)Token),
               PdfString.SerializationModeEnum.Literal
               );
           break;

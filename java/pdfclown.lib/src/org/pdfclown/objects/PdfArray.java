@@ -53,8 +53,8 @@ public final class PdfArray
   // <class>
   // <static>
   // <fields>
-  private static final byte[] BeginArrayChunk = Encoding.encode(Keyword.BeginArray);
-  private static final byte[] EndArrayChunk = Encoding.encode(Keyword.EndArray);
+  private static final byte[] BeginArrayChunk = Encoding.Pdf.encode(Keyword.BeginArray);
+  private static final byte[] EndArrayChunk = Encoding.Pdf.encode(Keyword.EndArray);
   // </fields>
   // </static>
 
@@ -352,7 +352,10 @@ public final class PdfArray
   @Override
   public void clear(
     )
-  {removeAll(items);}
+  {
+    while(!items.isEmpty())
+    {remove(0);}
+  }
 
   @Override
   public boolean contains(

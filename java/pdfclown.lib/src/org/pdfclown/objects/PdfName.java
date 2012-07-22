@@ -59,6 +59,7 @@ public final class PdfName
   private static final Pattern UnescapedPattern = java.util.regex.Pattern.compile("[\\s\\(\\)<>\\[\\]{}/%#]");
 
   public static final PdfName A = new PdfName("A");
+  public static final PdfName a = new PdfName("a");
   public static final PdfName A85 = new PdfName("A85");
   public static final PdfName AA = new PdfName("AA");
   public static final PdfName AC = new PdfName("AC");
@@ -326,6 +327,7 @@ public final class PdfName
   public static final PdfName NotApproved = new PdfName("NotApproved");
   public static final PdfName Note = new PdfName("Note");
   public static final PdfName NotForPublicRelease = new PdfName("NotForPublicRelease");
+  public static final PdfName Nums = new PdfName("Nums");
   public static final PdfName O = new PdfName("O");
   public static final PdfName ObjStm = new PdfName("ObjStm");
   public static final PdfName OC = new PdfName("OC");
@@ -347,6 +349,8 @@ public final class PdfName
   public static final PdfName Outlines = new PdfName("Outlines");
   public static final PdfName P = new PdfName("P");
   public static final PdfName Page = new PdfName("Page");
+  public static final PdfName PageLabel = new PdfName("PageLabel");
+  public static final PdfName PageLabels = new PdfName("PageLabels");
   public static final PdfName PageLayout = new PdfName("PageLayout");
   public static final PdfName PageMode = new PdfName("PageMode");
   public static final PdfName Pages = new PdfName("Pages");
@@ -358,6 +362,7 @@ public final class PdfName
   public static final PdfName Pattern = new PdfName("Pattern");
   public static final PdfName PatternType = new PdfName("PatternType");
   public static final PdfName PC = new PdfName("PC");
+  public static final PdfName PDFDocEncoding = new PdfName("PdfDocEncoding");
   public static final PdfName PI = new PdfName("PI");
   public static final PdfName PO = new PdfName("PO");
   public static final PdfName Polygon = new PdfName("Polygon");
@@ -376,6 +381,7 @@ public final class PdfName
   public static final PdfName Q = new PdfName("Q");
   public static final PdfName QuadPoints = new PdfName("QuadPoints");
   public static final PdfName R = new PdfName("R");
+  public static final PdfName r = new PdfName("r");
   public static final PdfName R2L = new PdfName("R2L");
   public static final PdfName Range = new PdfName("Range");
   public static final PdfName RBGroups = new PdfName("RBGroups");
@@ -409,6 +415,7 @@ public final class PdfName
   public static final PdfName Square = new PdfName("Square");
   public static final PdfName Squiggly = new PdfName("Squiggly");
   public static final PdfName SS = new PdfName("SS");
+  public static final PdfName St = new PdfName("St");
   public static final PdfName Stamp = new PdfName("Stamp");
   public static final PdfName StandardEncoding = new PdfName("StandardEncoding");
   public static final PdfName State = new PdfName("State");
@@ -485,7 +492,7 @@ public final class PdfName
   public static final PdfName YStep = new PdfName("YStep");
   public static final PdfName Zoom = new PdfName("Zoom");
 
-  private static final byte[] NamePrefixChunk = org.pdfclown.tokens.Encoding.encode(Keyword.NamePrefix);
+  private static final byte[] NamePrefixChunk = org.pdfclown.tokens.Encoding.Pdf.encode(Keyword.NamePrefix);
   // </fields>
 
   // <interface>

@@ -57,6 +57,7 @@ public final class OutputStream
   // <interface>
   // <public>
   // <IOutputStream>
+  @Override
   public void write(
     byte[] data
     )
@@ -69,6 +70,7 @@ public final class OutputStream
     length += data.length;
   }
 
+  @Override
   public void write(
     byte[] data,
     int offset,
@@ -83,18 +85,20 @@ public final class OutputStream
     this.length += length;
   }
 
+  @Override
   public void write(
     String data
     )
   {
     try
-    {stream.write(Encoding.encode(data));}
+    {stream.write(Encoding.Pdf.encode(data));}
     catch(IOException e)
     {throw new RuntimeException(e);}
 
     length += data.length();
   }
 
+  @Override
   public void write(
     IInputStream data
     )
@@ -115,11 +119,13 @@ public final class OutputStream
   }
 
   // <IStream>
+  @Override
   public long getLength(
     )
   {return length;}
-  
+
   // <Closeable>
+  @Override
   public void close(
     ) throws IOException
   {
@@ -133,7 +139,7 @@ public final class OutputStream
   // </IStream>
   // </IOutputStream>
   // </public>
-  
+
   // <protected>
   @Override
   protected void finalize(

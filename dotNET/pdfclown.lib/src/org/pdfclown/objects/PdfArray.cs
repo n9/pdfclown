@@ -46,8 +46,8 @@ namespace org.pdfclown.objects
   {
     #region static
     #region fields
-    private static readonly byte[] BeginArrayChunk = Encoding.Encode(Keyword.BeginArray);
-    private static readonly byte[] EndArrayChunk = Encoding.Encode(Keyword.EndArray);
+    private static readonly byte[] BeginArrayChunk = Encoding.Pdf.Encode(Keyword.BeginArray);
+    private static readonly byte[] EndArrayChunk = Encoding.Pdf.Encode(Keyword.EndArray);
     #endregion
     #endregion
 
@@ -290,8 +290,8 @@ namespace org.pdfclown.objects
     public void Clear(
       )
     {
-      foreach(PdfDirectObject item in items)
-      {Remove(item);}
+      while(items.Count > 0)
+      {RemoveAt(0);}
     }
 
     public bool Contains(

@@ -243,8 +243,6 @@ namespace org.pdfclown.documents.interaction.navigation.document
         {BaseDataObject.Remove(PdfName.A);}
         else
         {
-          CheckCompatibility(VersionEnum.PDF11);
-
           /*
             NOTE: This entry is not permitted in bookmarks if a 'Dest' entry already exists.
           */

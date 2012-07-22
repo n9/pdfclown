@@ -139,7 +139,7 @@ namespace org.pdfclown.bytes
     public IBuffer Append(
       string data
       )
-    {return Append(Encoding.Encode(data));}
+    {return Append(Encoding.Pdf.Encode(data));}
 
     public IBuffer Append(
       IInputStream data
@@ -225,7 +225,7 @@ namespace org.pdfclown.bytes
       int index,
       int length
       )
-    {return Encoding.Decode(data, index, length);}
+    {return Encoding.Pdf.Decode(data, index, length);}
 
     public void Insert(
       int index,
@@ -253,7 +253,7 @@ namespace org.pdfclown.bytes
       int index,
       string data
       )
-    {Insert(index, Encoding.Encode(data));}
+    {Insert(index, Encoding.Pdf.Encode(data));}
 
     public void Insert(
       int index,
@@ -285,7 +285,7 @@ namespace org.pdfclown.bytes
       int index,
       string data
       )
-    {Replace(index, Encoding.Encode(data));}
+    {Replace(index, Encoding.Pdf.Encode(data));}
 
     public void Replace(
       int index,
@@ -404,7 +404,7 @@ namespace org.pdfclown.bytes
       int length
       )
     {
-      string data = Encoding.Decode(this.data, position, length);
+      string data = Encoding.Pdf.Decode(this.data, position, length);
       position += length;
       return data;
     }

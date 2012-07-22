@@ -28,7 +28,7 @@ package org.pdfclown.objects;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.pdfclown.tokens.Encoding;
+import org.pdfclown.tokens.PdfDocEncoding;
 import org.pdfclown.util.parsers.ParseException;
 
 /**
@@ -43,7 +43,7 @@ public final class PdfDate
   // <class>
   // <static>
   // <fields>
-  protected static final SimpleDateFormat formatter;
+  private static final SimpleDateFormat formatter;
   // </fields>
 
   // <constructors>
@@ -120,7 +120,13 @@ public final class PdfDate
   @Override
   public Date getValue(
     )
-  {return toDate(Encoding.decode(getRawValue()));}
+  {return toDate((String)super.getValue());}
+
+  @Override
+  public void setSerializationMode(
+    SerializationModeEnum value
+    )
+  {/* NOOP: Serialization MUST be kept literal. */}
   // </public>
 
   // <protected>
@@ -131,7 +137,7 @@ public final class PdfDate
   {
     byte[] buffer = new byte[23];
     {
-      byte[] valueBytes = Encoding.encode(formatter.format(value));
+      byte[] valueBytes = PdfDocEncoding.get().encode(formatter.format(value));
       buffer[0] = 68; buffer[1] = 58;
       System.arraycopy(valueBytes, 0, buffer, 2, 17);
       buffer[19] = 39;

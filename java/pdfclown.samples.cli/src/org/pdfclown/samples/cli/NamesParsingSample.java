@@ -9,7 +9,6 @@ import org.pdfclown.documents.Page;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfReference;
-import org.pdfclown.objects.PdfString;
 
 /**
   This sample demonstrates <b>how to inspect the object names</b> within a PDF document.
@@ -26,7 +25,7 @@ public class NamesParsingSample extends Sample
     // 1. Opening the PDF file...
     File file;
     {
-      String filePath = promptPdfFileChoice("Please select a PDF file");
+      String filePath = promptFileChoice("Please select a PDF file");
       try
       {file = new File(filePath);}
       catch(Exception e)
@@ -37,25 +36,25 @@ public class NamesParsingSample extends Sample
     // 2. Named objects extraction.
     Names names = document.getNames();
     if(names == null)
-    {System.out.println("No names dictionary.");}
+    {System.out.println("\nNo names dictionary.");}
     else
     {
-      System.out.println("Names dictionary found (" + names.getContainer().getReference() + ")");
+      System.out.println("\nNames dictionary found (" + names.getContainer().getReference() + ")");
 
       NamedDestinations namedDestinations = names.getDestinations();
       if(namedDestinations == null)
-      {System.out.println("No named destinations.");}
+      {System.out.println("\nNo named destinations.");}
       else
       {
-        System.out.println("Named destinations found (" + namedDestinations.getContainer().getReference() + ")");
+        System.out.println("\nNamed destinations found (" + namedDestinations.getContainer().getReference() + ")");
 
         // Parsing the named destinations...
-        for(Map.Entry<PdfString,Destination> namedDestination : namedDestinations.entrySet())
+        for(Map.Entry<String,Destination> namedDestination : namedDestinations.entrySet())
         {
-          PdfString key = namedDestination.getKey();
+          String key = namedDestination.getKey();
           Destination value = namedDestination.getValue();
 
-          System.out.println("Destination '" + key.getValue() + "' (" + value.getContainer().getReference() + ")");
+          System.out.println("  Destination '" + key + "' (" + value.getContainer().getReference() + ")");
 
           System.out.print("    Target Page: number = ");
           Object pageRef = value.getPage();

@@ -29,7 +29,7 @@ namespace org.pdfclown.samples.cli
       )
     {
       // 1. Open the PDF file!
-      string filePath = PromptPdfFileChoice("Please select a PDF file");
+      string filePath = PromptFileChoice("Please select a PDF file");
       files::File file = new files::File(filePath);
       Document document = file.Document;
 

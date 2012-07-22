@@ -54,8 +54,8 @@ public class PdfStream
   // <class>
   // <static>
   // <fields>
-  private static final byte[] BeginStreamBodyChunk = Encoding.encode(Symbol.LineFeed + Keyword.BeginStream + Symbol.LineFeed);
-  private static final byte[] EndStreamBodyChunk = Encoding.encode(Symbol.LineFeed + Keyword.EndStream);
+  private static final byte[] BeginStreamBodyChunk = Encoding.Pdf.encode(Symbol.LineFeed + Keyword.BeginStream + Symbol.LineFeed);
+  private static final byte[] EndStreamBodyChunk = Encoding.Pdf.encode(Symbol.LineFeed + Keyword.EndStream);
   // </fields>
   // </static>
 

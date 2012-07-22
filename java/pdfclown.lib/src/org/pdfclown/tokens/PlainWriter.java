@@ -52,7 +52,7 @@ final class PlainWriter
   // <class>
   // <static>
   // <fields>
-  private static final byte[] TrailerChunk = Encoding.encode(Keyword.Trailer + Symbol.LineFeed);
+  private static final byte[] TrailerChunk = Encoding.Pdf.encode(Keyword.Trailer + Symbol.LineFeed);
   private static final String XRefChunk = Keyword.XRef + Symbol.LineFeed;
   private static final String XRefEOLChunk = "" + Symbol.CarriageReturn + Symbol.LineFeed;
 

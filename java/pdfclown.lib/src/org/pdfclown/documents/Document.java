@@ -461,6 +461,14 @@ public final class Document
   }
 
   /**
+    Gets the page label ranges.
+  */
+  @PDF(VersionEnum.PDF13)
+  public PageLabels getPageLabels(
+    )
+  {return PageLabels.wrap(getBaseDataObject().get(PdfName.PageLabels));}
+
+  /**
     Gets the page layout to be used when the document is opened.
   */
   public PageLayoutEnum getPageLayout(
@@ -594,7 +602,7 @@ public final class Document
     )
   {
     if(namedBaseObject instanceof PdfString) // Named object.
-      return getNames().resolve(type, (PdfString)namedBaseObject);
+      return getNames().resolve(type, ((PdfString)namedBaseObject).getStringValue());
     else // Explicit object.
       return resolve(type, namedBaseObject);
   }
@@ -659,6 +667,17 @@ public final class Document
   {
     checkCompatibility("layer");
     getBaseDataObject().put(PdfName.OCProperties, value.getBaseObject());
+  }
+
+  /**
+    @see #getPageLabels()
+  */
+  public void setPageLabels(
+    PageLabels value
+    )
+  {
+    checkCompatibility("pageLabels");
+    getBaseDataObject().put(PdfName.PageLabels, value.getBaseObject());
   }
 
   /**

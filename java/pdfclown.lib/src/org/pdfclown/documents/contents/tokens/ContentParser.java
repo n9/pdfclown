@@ -175,7 +175,7 @@ public final class ContentParser
       case Literal:
         if(getToken() instanceof String)
           return new PdfString(
-            Encoding.encode((String)getToken()),
+            Encoding.Pdf.encode((String)getToken()),
             PdfString.SerializationModeEnum.Literal
             );
         break;

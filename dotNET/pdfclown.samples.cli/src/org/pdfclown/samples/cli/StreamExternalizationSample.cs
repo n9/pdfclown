@@ -27,7 +27,7 @@ namespace org.pdfclown.samples.cli
       string externalizedFilePath;
       {
         // 1.1. Opening the PDF file...
-        string filePath = PromptPdfFileChoice("Please select a PDF file");
+        string filePath = PromptFileChoice("Please select a PDF file");
         files::File file = new files::File(filePath);
         Document document = file.Document;
         /*

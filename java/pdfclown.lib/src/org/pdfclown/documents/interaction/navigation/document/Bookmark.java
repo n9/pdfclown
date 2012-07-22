@@ -341,7 +341,6 @@ public final class Bookmark
   // </public>
 
   // <private>
-  @PDF(VersionEnum.PDF11)
   private Action getAction(
     )
   {return Action.wrap(getBaseDataObject().get(PdfName.A));}
@@ -366,8 +365,6 @@ public final class Bookmark
     {getBaseDataObject().remove(PdfName.A);}
     else
     {
-      checkCompatibility("action");
-
       /*
         NOTE: This entry is not permitted in bookmarks if a 'Dest' entry already exists.
       */

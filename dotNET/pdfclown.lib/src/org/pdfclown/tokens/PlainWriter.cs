@@ -42,7 +42,7 @@ namespace org.pdfclown.tokens
   {
     #region static
     #region fields
-    private static readonly byte[] TrailerChunk = Encoding.Encode(Keyword.Trailer + Symbol.LineFeed);
+    private static readonly byte[] TrailerChunk = Encoding.Pdf.Encode(Keyword.Trailer + Symbol.LineFeed);
     private static readonly string XRefChunk = Keyword.XRef + Symbol.LineFeed;
     private static readonly string XRefEOLChunk = "" + Symbol.CarriageReturn + Symbol.LineFeed;
 

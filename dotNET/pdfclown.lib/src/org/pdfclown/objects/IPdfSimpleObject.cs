@@ -27,18 +27,22 @@ using System;
 
 namespace org.pdfclown.objects
 {
-  /**
-    <summary>PDF atomic object interface.</summary>
-  */
-  public interface IPdfSimpleObject<TValue>
+  public interface IPdfSimpleObject
     : IComparable<PdfDirectObject>
   {
-    TValue RawValue
+    object Value
     {
       get;
     }
+  }
 
-    object Value
+  /**
+    <summary>PDF simple object interface.</summary>
+  */
+  public interface IPdfSimpleObject<TValue>
+    : IPdfSimpleObject
+  {
+    TValue RawValue
     {
       get;
     }

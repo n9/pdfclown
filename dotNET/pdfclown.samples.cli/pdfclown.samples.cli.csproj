@@ -79,6 +79,7 @@
     <Compile Include="src\org\pdfclown\samples\cli\DataSearchSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\PageCombinationSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\StreamExternalizationSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\PageLabelSample.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PDFClownCLISamples.exe.config">

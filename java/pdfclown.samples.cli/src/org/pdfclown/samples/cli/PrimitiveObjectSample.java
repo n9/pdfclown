@@ -28,7 +28,7 @@ public class PrimitiveObjectSample
     // 1. Opening the PDF file...
     File file;
     {
-      String filePath = promptPdfFileChoice("Please select a PDF file");
+      String filePath = promptFileChoice("Please select a PDF file");
       try
       {file = new File(filePath);}
       catch(Exception e)

@@ -97,7 +97,7 @@ namespace org.pdfclown.samples.cli
         2.2. Embedded-goto link.
       */
       {
-        string filePath = PromptPdfFileChoice("Please select a PDF file to attach");
+        string filePath = PromptFileChoice("Please select a PDF file to attach");
 
         /*
           NOTE: These statements instruct PDF Clown to attach a PDF file to the current document.

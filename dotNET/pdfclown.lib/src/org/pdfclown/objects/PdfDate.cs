@@ -23,6 +23,7 @@
   this list of conditions.
 */
 
+using tokens = org.pdfclown.tokens;
 using org.pdfclown.util.parsers;
 
 using System;
@@ -38,6 +39,10 @@ namespace org.pdfclown.objects
     : PdfString
   {
     #region static
+    #region fields
+    private const string FormatString = "yyyyMMddHHmmsszzz";
+    #endregion
+
     #region interface
     #region public
     /**
@@ -88,7 +93,7 @@ namespace org.pdfclown.objects
       {
         return DateTime.ParseExact(
           dateBuilder.ToString(),
-          "yyyyMMddHHmmsszzz",
+          FormatString,
           new CultureInfo("en-US")
           );
       }
@@ -101,7 +106,7 @@ namespace org.pdfclown.objects
     private static string Format(
       DateTime value
       )
-    {return ("D:" + value.ToString("yyyyMMddHHmmsszzz").Replace(':','\'') + "'");}
+    {return ("D:" + value.ToString(FormatString).Replace(':','\'') + "'");}
     #endregion
     #endregion
     #endregion
@@ -116,12 +121,21 @@ namespace org.pdfclown.objects
 
     #region interface
     #region public
+    public override SerializationModeEnum SerializationMode {
+      get
+      {return base.SerializationMode;}
+      set
+      {/* NOOP: Serialization MUST be kept literal. */}
+    }
+
     public override object Value
     {
       get
-      {return ToDate(tokens.Encoding.Decode(RawValue));}
+      // FIXME: proper call to base.StringValue could NOT be done due to an unexpected Mono runtime SIGSEGV (TOO BAD).
+//            {return ToDate(base.StringValue);}
+      {return ToDate((string)base.Value);}
       protected set
-      {RawValue = tokens.Encoding.Encode(Format((DateTime)value));}
+      {RawValue = tokens::Encoding.Pdf.Encode(Format((DateTime)value));}
     }
     #endregion
     #endregion

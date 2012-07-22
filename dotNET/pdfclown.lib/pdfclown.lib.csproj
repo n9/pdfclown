@@ -318,7 +318,6 @@
     <Compile Include="src\org\pdfclown\namespace.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\actions\GoToNonLocal.cs" />
-    <Compile Include="src\org\pdfclown\tokens\Encoding.cs" />
     <Compile Include="src\org\pdfclown\util\IDataWrapper.cs" />
     <Compile Include="src\org\pdfclown\PDF.cs" />
     <Compile Include="src\org\pdfclown\Version.cs" />
@@ -417,11 +416,19 @@
     <Compile Include="src\org\pdfclown\documents\files\IResourceFile.cs" />
     <Compile Include="src\org\pdfclown\documents\files\SimpleFileSpecification.cs" />
     <Compile Include="src\org\pdfclown\files\FileIdentifier.cs" />
+    <Compile Include="src\org\pdfclown\objects\NumberTree.cs" />
+    <Compile Include="src\org\pdfclown\objects\Tree.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\navigation\page\PageLabel.cs" />
+    <Compile Include="src\org\pdfclown\documents\PageLabels.cs" />
+    <Compile Include="src\org\pdfclown\tokens\Charset.cs" />
+    <Compile Include="src\org\pdfclown\tokens\LatinEncoding.cs" />
+    <Compile Include="src\org\pdfclown\tokens\PdfDocEncoding.cs" />
+    <Compile Include="src\org\pdfclown\tokens\PdfEncoding.cs" />
+    <Compile Include="src\org\pdfclown\tokens\Encoding.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />
     <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>

@@ -25,6 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.files;
+using tokens = org.pdfclown.tokens;
 using org.pdfclown.util;
 
 using System;
@@ -136,16 +137,24 @@ namespace org.pdfclown.objects
       if(!(obj is PdfString))
         throw new ArgumentException("Object MUST be a PdfString");
 
-      return ((string)Value).CompareTo(((PdfString)obj).Value);
+      return String.CompareOrdinal(StringValue, ((PdfString)obj).StringValue);
     }
 
     /**
       <summary>Gets/Sets the serialization mode.</summary>
     */
-    public SerializationModeEnum SerializationMode
+    public virtual SerializationModeEnum SerializationMode
     {
-      get{return serializationMode;}
-      set{serializationMode = value;}
+      get
+      {return serializationMode;}
+      set
+      {serializationMode = value;}
+    }
+
+    public string StringValue
+    {
+      get
+      {return (string)Value;}
     }
 
     public byte[] ToByteArray(
@@ -173,7 +182,7 @@ namespace org.pdfclown.objects
         switch(serializationMode)
         {
           case SerializationModeEnum.Literal:
-            return tokens.Encoding.Decode(RawValue);
+            return tokens::Encoding.Pdf.Decode(RawValue);
           case SerializationModeEnum.Hex:
             return ConvertUtils.ByteArrayToHex(RawValue);
           default:
@@ -185,7 +194,7 @@ namespace org.pdfclown.objects
         switch(serializationMode)
         {
           case SerializationModeEnum.Literal:
-            RawValue = tokens.Encoding.Encode((string)value);
+            RawValue = tokens::Encoding.Pdf.Encode((string)value);
             break;
           case SerializationModeEnum.Hex:
             RawValue = ConvertUtils.HexToByteArray((string)value);
@@ -250,7 +259,7 @@ namespace org.pdfclown.objects
             break;
           case SerializationModeEnum.Hex:
             buffer.WriteByte(HexLeftDelimiterCode);
-            byte[] value = tokens.Encoding.Encode(ConvertUtils.ByteArrayToHex(rawValue));
+            byte[] value = tokens::Encoding.Pdf.Encode(ConvertUtils.ByteArrayToHex(rawValue));
             buffer.Write(value,0,value.Length);
             buffer.WriteByte(HexRightDelimiterCode);
             break;

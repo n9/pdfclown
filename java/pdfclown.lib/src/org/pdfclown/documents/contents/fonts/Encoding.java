@@ -39,6 +39,7 @@ import org.pdfclown.util.ByteArray;
   @since 0.0.8
   @version 0.1.1, 11/01/11
 */
+// TODO: This hierarchy is going to be superseded by org.pdfclown.tokens.Encoding.
 class Encoding
 {
   // <static>

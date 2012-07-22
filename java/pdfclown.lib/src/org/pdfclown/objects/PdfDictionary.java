@@ -51,8 +51,8 @@ public final class PdfDictionary
   // <class>
   // <static>
   // <fields>
-  private static final byte[] BeginDictionaryChunk = Encoding.encode(Keyword.BeginDictionary);
-  private static final byte[] EndDictionaryChunk = Encoding.encode(Keyword.EndDictionary);
+  private static final byte[] BeginDictionaryChunk = Encoding.Pdf.encode(Keyword.BeginDictionary);
+  private static final byte[] EndDictionaryChunk = Encoding.Pdf.encode(Keyword.EndDictionary);
   // </fields>
   // </static>
 

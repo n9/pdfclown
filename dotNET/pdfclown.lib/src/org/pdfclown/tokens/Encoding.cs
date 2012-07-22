@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,60 +29,29 @@ using text = System.Text;
 namespace org.pdfclown.tokens
 {
   /**
-    <summary>PDF serialization encoding [PDF:1.6:3.1].</summary>
-    <remarks>PDF can be entirely represented using byte values corresponding to the visible
-    printable subset of the ASCII character set, plus white space characters such as
-    space, tab, carriage return, and line feed characters. However, a PDF file is
-    not restricted to the ASCII character set; it can contain arbitrary 8-bit bytes.</remarks>
+    <summary>Abstract encoding.</summary>
   */
-  internal static class Encoding
+  public abstract class Encoding
   {
-    internal static readonly text::Encoding ISO88591 = text::Encoding.GetEncoding("ISO-8859-1");
-    internal static readonly text::Encoding UTF16BE = text::Encoding.BigEndianUnicode;
-    internal static readonly text::Encoding UTF16LE = text::Encoding.Unicode;
+    public static readonly Encoding Pdf = new PdfEncoding();
 
-    /**
-      <summary>Gets the PDF decoding of the specified data.</summary>
-      <param name="value">Byte array to decode.</param>
-      <returns>Decoded string.</returns>
-    */
-    public static string Decode(
+    public abstract string Decode(
       byte[] value
-      )
-    {return ISO88591.GetString(value);}
+      );
 
-    /**
-      <summary>Gets the PDF decoding of the specified data.</summary>
-      <param name="value">Byte array to decode.</param>
-      <param name="index">Location at which the string has to begin.</param>
-      <param name="length">Number of bytes to convert.</param>
-      <returns>Decoded string starting at the specified location.</returns>
-    */
-    public static string Decode(
+    public abstract string Decode(
       byte[] value,
       int index,
       int length
-      )
-    {return ISO88591.GetString(value, index, length);}
+      );
 
-    /**
-      <summary>Gets the PDF encoding of the specified character.</summary>
-      <param name="value">Character to encode.</param>
-      <returns>Byte array representation of the specified character.</returns>
-    */
-    public static byte[] Encode(
+    public abstract byte[] Encode(
+      string value
+      );
+
+    public byte[] Encode(
       char value
       )
-    {return Encode(value.ToString());}
-
-    /**
-      <summary>Gets the PDF encoding of the specified string.</summary>
-      <param name="value">String to encode.</param>
-      <returns>Byte array representation of the specified string.</returns>
-    */
-    public static byte[] Encode(
-      string value
-      )
-    {return ISO88591.GetBytes(value);}
+    {return Encode(value);}
   }
 }

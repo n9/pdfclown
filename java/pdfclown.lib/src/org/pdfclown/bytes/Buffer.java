@@ -201,7 +201,7 @@ public final class Buffer
   public IBuffer append(
     String data
     )
-  {return append(Encoding.encode(data));}
+  {return append(Encoding.Pdf.encode(data));}
 
   @Override
   public IBuffer append(
@@ -269,7 +269,7 @@ public final class Buffer
     int index,
     int length
     )
-  {return Encoding.decode(data, index, length);}
+  {return Encoding.Pdf.decode(data, index, length);}
 
   @Override
   public int getCapacity(
@@ -305,7 +305,7 @@ public final class Buffer
     int index,
     String data
     )
-  {insert(index, Encoding.encode(data));}
+  {insert(index, Encoding.Pdf.encode(data));}
 
   @Override
   public void insert(
@@ -352,7 +352,7 @@ public final class Buffer
     int index,
     String data
     )
-  {replace(index, Encoding.encode(data));}
+  {replace(index, Encoding.Pdf.encode(data));}
 
   @Override
   public void replace(
@@ -480,7 +480,7 @@ public final class Buffer
     int length
     )
   {
-    String data = Encoding.decode(this.data, position, length);
+    String data = Encoding.Pdf.decode(this.data, position, length);
     position += length;
     return data;
   }

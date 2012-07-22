@@ -34,6 +34,6 @@ package org.pdfclown.tokens;
 */
 public final class Chunk
 {
-  public static final byte[] Space = Encoding.encode(Symbol.Space);
-  public static final byte[] LineFeed = Encoding.encode(Symbol.LineFeed);
+  public static final byte[] Space = Encoding.Pdf.encode(Symbol.Space);
+  public static final byte[] LineFeed = Encoding.Pdf.encode(Symbol.LineFeed);
 }

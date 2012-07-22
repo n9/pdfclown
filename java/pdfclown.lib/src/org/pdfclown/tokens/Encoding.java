@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,81 +25,33 @@
 
 package org.pdfclown.tokens;
 
-import java.io.UnsupportedEncodingException;
-
 /**
-  PDF serialization encoding [PDF:1.6:3.1].
-  <p>PDF can be entirely represented using byte values corresponding to the visible
-  printable subset of the ASCII character set, plus white space characters such as
-  space, tab, carriage return, and line feed characters. However, a PDF file is
-  not restricted to the ASCII character set; it can contain arbitrary 8-bit bytes.</p>
+  Abstract encoding.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/25/11
+  @version 0.1.2, 02/20/12
 */
-public final class Encoding
+public abstract class Encoding
 {
-  /**
-    Gets the PDF decoding of the specified data.
-
-    @param value Byte array to decode.
-    @return Decoded string.
-  */
-  public static String decode(
+  public static final Encoding Pdf = new PdfEncoding();
+  
+  public abstract String decode(
     byte[] value
-    )
-  {
-    try
-    {return new String(value, CharsetName.ISO88591);}
-    catch(UnsupportedEncodingException e)
-    {throw new RuntimeException(e);}
-  }
+    );
 
-  /**
-    Gets the PDF decoding of the specified data.
-
-    @param value Byte array to decode.
-    @param index Location at which the string has to begin.
-    @param length Number of bytes to convert.
-    @return Decoded string starting at the specified location.
-  */
-  public static String decode(
+  public abstract String decode(
     byte[] value,
     int index,
     int length
-    )
-  {
-    try
-    {return new String(value, index, length, CharsetName.ISO88591);}
-    catch(UnsupportedEncodingException e)
-    {throw new RuntimeException(e);}
-  }
+    );
 
-  /**
-    Gets the PDF encoding of the specified character.
+  public abstract byte[] encode(
+    String value
+    );
 
-    @param value Character to encode.
-    @return Byte array representation of the specified character.
-  */
-  public static byte[] encode(
+  public byte[] encode(
     char value
     )
   {return encode(Character.toString(value));}
-
-  /**
-    Gets the PDF encoding of the specified string.
-
-    @param value String to encode.
-    @return Byte array representation of the specified string.
-  */
-  public static byte[] encode(
-    String value
-    )
-  {
-    try
-    {return value.getBytes(CharsetName.ISO88591);}
-    catch(UnsupportedEncodingException e)
-    {throw new RuntimeException(e);}
-  }
 }

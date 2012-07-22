@@ -35,7 +35,7 @@ import java.util.Map;
   @since 0.0.8
   @version 0.1.0
 */
-public final class BiMap<K,V>
+public class BiMap<K,V>
   extends Hashtable<K,V>
 {
   // <class>
@@ -44,10 +44,10 @@ public final class BiMap<K,V>
   private static final long serialVersionUID = 1L;
   // </fields>
   // </static>
-  
+
   // <dynamic>
   // <fields>
-  private Hashtable<V,K> inverseMap = new Hashtable<V,K>();
+  private final Hashtable<V,K> inverseMap = new Hashtable<V,K>();
   // </fields>
 
   // <constructors>

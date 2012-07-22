@@ -48,8 +48,8 @@ public final class PdfIndirectObject
   // <class>
   // <static>
   // <fields>
-  private static final byte[] BeginIndirectObjectChunk = Encoding.encode(Symbol.Space + Keyword.BeginIndirectObject + Symbol.LineFeed);
-  private static final byte[] EndIndirectObjectChunk = Encoding.encode(Symbol.LineFeed + Keyword.EndIndirectObject + Symbol.LineFeed);
+  private static final byte[] BeginIndirectObjectChunk = Encoding.Pdf.encode(Symbol.Space + Keyword.BeginIndirectObject + Symbol.LineFeed);
+  private static final byte[] EndIndirectObjectChunk = Encoding.Pdf.encode(Symbol.LineFeed + Keyword.EndIndirectObject + Symbol.LineFeed);
   // </fields>
   // </static>
 
@@ -186,6 +186,20 @@ public final class PdfIndirectObject
     )
   {updateable = value;}
 
+  @Override
+  public String toString(
+    )
+  {
+    StringBuilder buffer = new StringBuilder();
+    {
+      // Header.
+      buffer.append(reference.getId()).append(" obj").append(Symbol.LineFeed);
+      // Body.
+      buffer.append(getDataObject());
+    }
+    return buffer.toString();
+  }
+
   /**
     Removes the {@link #getDataObject() data object} from its object stream [PDF:1.6:3.4.6].
   */
@@ -295,6 +309,7 @@ public final class PdfIndirectObject
     if(xrefEntry.getGeneration() == XRefEntry.GenerationUnreusable)
       throw new RuntimeException("Unreusable entry.");
 
+    exclude(dataObject);
     dataObject = include(value);
     xrefEntry.setUsage(UsageEnum.InUse);
     update();

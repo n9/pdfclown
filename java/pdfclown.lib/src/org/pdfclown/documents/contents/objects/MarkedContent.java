@@ -51,7 +51,7 @@ public final class MarkedContent
   // <fields>
   public static final String EndOperator = EndMarkedContent.Operator;
 
-  private static final byte[] EndChunk = Encoding.encode(EndOperator + Symbol.LineFeed);
+  private static final byte[] EndChunk = Encoding.Pdf.encode(EndOperator + Symbol.LineFeed);
   // </fields>
   // </static>
 

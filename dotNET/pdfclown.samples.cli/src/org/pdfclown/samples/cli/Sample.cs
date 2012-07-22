@@ -97,30 +97,28 @@ namespace org.pdfclown.samples.cli
     }
 
     protected string PromptFileChoice(
-      string fileExtension,
-      string listDescription,
       string inputDescription
       )
     {
-      Console.WriteLine("\n" + listDescription + ":");
+      string resourcePath = Path.GetFullPath(inputPath + "pdf");
+      Console.WriteLine("\nAvailable PDF files (" + resourcePath + "):");
 
       // Get the list of available PDF files!
-      string[] filePaths = Directory.GetFiles(inputPath + "pdf" + Path.DirectorySeparatorChar,"*." + fileExtension);
+      string[] filePaths = Directory.GetFiles(resourcePath + Path.DirectorySeparatorChar,"*.pdf");
 
       // Display files!
-      for(
-        int i = 0;
-        i < filePaths.Length;
-        i++
-        )
-      {Console.WriteLine("[" + i + "] {0}", System.IO.Path.GetFileName(filePaths[i]));}
+      for(int index = 0; index < filePaths.Length; index++)
+      {Console.WriteLine("[{0}] {1}", index, System.IO.Path.GetFileName(filePaths[index]));}
 
-      // Get the user's choice!
-      Console.Write(inputDescription + ": ");
-      try
-      {return filePaths[Int32.Parse(Console.ReadLine())];}
-      catch
-      {return filePaths[0];}
+      while(true)
+      {
+        // Get the user's choice!
+        Console.Write(inputDescription + ": ");
+        try
+        {return filePaths[Int32.Parse(Console.ReadLine())];}
+        catch
+        {/* NOOP */}
+      }
     }
 
     /**
@@ -185,11 +183,6 @@ namespace org.pdfclown.samples.cli
 
       return pageIndex;
     }
-
-    protected string PromptPdfFileChoice(
-      string inputDescription
-      )
-    {return PromptFileChoice("pdf", "Available PDF files", inputDescription);}
 
     /**
       <summary>Serializes the given PDF Clown file object.</summary>

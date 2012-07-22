@@ -147,7 +147,7 @@ public class BaseParser
           return PdfDate.get((Date)getToken());
         else
           return new PdfTextString(
-            Encoding.encode((String)getToken())
+            Encoding.Pdf.encode((String)getToken())
             );
       case Hex:
         return new PdfTextString(

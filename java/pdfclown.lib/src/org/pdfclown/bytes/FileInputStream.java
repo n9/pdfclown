@@ -178,7 +178,7 @@ public final class FileInputStream
     try
     {
       file.readFully(data);
-      return Encoding.decode(data, 0, length);
+      return Encoding.Pdf.decode(data, 0, length);
     }
     catch(EOFException e)
     {throw e;}

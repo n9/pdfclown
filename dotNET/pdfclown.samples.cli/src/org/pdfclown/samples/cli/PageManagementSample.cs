@@ -37,7 +37,7 @@ namespace org.pdfclown.samples.cli
       ActionEnum action = PromptAction();
 
       // Opening the PDF file...
-      string mainFilePath = PromptPdfFileChoice("Please select a PDF file");
+      string mainFilePath = PromptFileChoice("Please select a PDF file");
       File mainFile = new File(mainFilePath);
       Document mainDocument = mainFile.Document;
       Pages mainPages = mainDocument.Pages;
@@ -73,7 +73,7 @@ namespace org.pdfclown.samples.cli
         case ActionEnum.PageAddition:
         {
           // Source file.
-          string sourceFilePath = PromptPdfFileChoice("Select the source PDF file");
+          string sourceFilePath = PromptFileChoice("Select the source PDF file");
           File sourceFile = new File(sourceFilePath);
           // Source page collection.
           Pages sourcePages = sourceFile.Document.Pages;
@@ -153,7 +153,7 @@ namespace org.pdfclown.samples.cli
         case ActionEnum.DocumentMerge:
         {
           // Source file.
-          string sourceFilePath = PromptPdfFileChoice("Select the source PDF file");
+          string sourceFilePath = PromptFileChoice("Select the source PDF file");
           File sourceFile = new File(sourceFilePath);
 
           // Append the chosen source document to the main document!

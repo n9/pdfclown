@@ -25,6 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.files;
+using tokens = org.pdfclown.tokens;
 
 using System;
 using System.Globalization;
@@ -57,6 +58,7 @@ namespace org.pdfclown.objects
 
     #pragma warning disable 0108
     public static readonly PdfName A = new PdfName("A");
+    public static readonly PdfName a = new PdfName("a");
     public static readonly PdfName A85 = new PdfName("A85");
     public static readonly PdfName AA = new PdfName("AA");
     public static readonly PdfName AC = new PdfName("AC");
@@ -324,6 +326,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName NotApproved = new PdfName("NotApproved");
     public static readonly PdfName Note = new PdfName("Note");
     public static readonly PdfName NotForPublicRelease = new PdfName("NotForPublicRelease");
+    public static readonly PdfName Nums = new PdfName("Nums");
     public static readonly PdfName O = new PdfName("O");
     public static readonly PdfName ObjStm = new PdfName("ObjStm");
     public static readonly PdfName OC = new PdfName("OC");
@@ -345,6 +348,8 @@ namespace org.pdfclown.objects
     public static readonly PdfName Outlines = new PdfName("Outlines");
     public static readonly PdfName P = new PdfName("P");
     public static readonly PdfName Page = new PdfName("Page");
+    public static readonly PdfName PageLabel = new PdfName("PageLabel");
+    public static readonly PdfName PageLabels = new PdfName("PageLabels");
     public static readonly PdfName PageLayout = new PdfName("PageLayout");
     public static readonly PdfName PageMode = new PdfName("PageMode");
     public static readonly PdfName Pages = new PdfName("Pages");
@@ -356,6 +361,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName Pattern = new PdfName("Pattern");
     public static readonly PdfName PatternType = new PdfName("PatternType");
     public static readonly PdfName PC = new PdfName("PC");
+    public static readonly PdfName PDFDocEncoding = new PdfName("PdfDocEncoding");
     public static readonly PdfName PI = new PdfName("PI");
     public static readonly PdfName PO = new PdfName("PO");
     public static readonly PdfName Polygon = new PdfName("Polygon");
@@ -374,6 +380,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName Q = new PdfName("Q");
     public static readonly PdfName QuadPoints = new PdfName("QuadPoints");
     public static readonly PdfName R = new PdfName("R");
+    public static readonly PdfName r = new PdfName("r");
     public static readonly PdfName R2L = new PdfName("R2L");
     public static readonly PdfName Range = new PdfName("Range");
     public static readonly PdfName RBGroups = new PdfName("RBGroups");
@@ -407,6 +414,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName Square = new PdfName("Square");
     public static readonly PdfName Squiggly = new PdfName("Squiggly");
     public static readonly PdfName SS = new PdfName("SS");
+    public static readonly PdfName St = new PdfName("St");
     public static readonly PdfName Stamp = new PdfName("Stamp");
     public static readonly PdfName StandardEncoding = new PdfName("StandardEncoding");
     public static readonly PdfName State = new PdfName("State");
@@ -484,7 +492,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName Zoom = new PdfName("Zoom");
     #pragma warning restore 0108
 
-    private static readonly byte[] NamePrefixChunk = tokens.Encoding.Encode(tokens.Keyword.NamePrefix);
+    private static readonly byte[] NamePrefixChunk = tokens::Encoding.Pdf.Encode(tokens.Keyword.NamePrefix);
     #endregion
 
     #region interface

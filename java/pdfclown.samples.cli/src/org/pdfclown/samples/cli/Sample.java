@@ -1,5 +1,6 @@
 package org.pdfclown.samples.cli;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -120,29 +121,34 @@ public abstract class Sample
   }
 
   protected String promptFileChoice(
-    String fileExtension,
-    String listDescription,
     String inputDescription
     )
   {
     Scanner in = new Scanner(System.in);
 
-    System.out.println("\n" + listDescription + ":");
-    SampleResources resources = new SampleResources(new java.io.File(inputPath + java.io.File.separator + "pdf" + java.io.File.separator));
+    java.io.File resourceFolder = new java.io.File(inputPath + java.io.File.separator + "pdf");
+    try
+    {System.out.println("\nAvailable PDF files (" + resourceFolder.getCanonicalPath() + "):");}
+    catch(IOException e1)
+    {/* NOOP */}
 
     // Get the list of available PDF files!
-    List<String> filePaths = Arrays.asList(resources.filter(fileExtension));
-    Collections.sort(filePaths);
+    SampleResources resources = new SampleResources(resourceFolder);
+    List<String> fileNames = Arrays.asList(resources.filter("pdf"));
+    Collections.sort(fileNames);
 
     // Display files!
-    resources.printList((String[])filePaths.toArray());
+    resources.printList((String[])fileNames.toArray());
 
-    // Get the user's choice!
-    System.out.print(inputDescription + ": ");
-    try
-    {return inputPath + java.io.File.separator + "pdf" + java.io.File.separator + filePaths.get(Integer.parseInt(in.nextLine()));}
-    catch(Exception e)
-    {return inputPath + java.io.File.separator + "pdf" + java.io.File.separator + filePaths.get(0);}
+    while(true)
+    {
+      // Get the user's choice!
+      System.out.print(inputDescription + ": ");
+      try
+      {return resourceFolder.getPath() + java.io.File.separator + fileNames.get(Integer.parseInt(in.nextLine()));}
+      catch(Exception e)
+      {/* NOOP */}
+    }
   }
 
   /**
@@ -210,11 +216,6 @@ public abstract class Sample
 
     return pageIndex;
   }
-
-  protected String promptPdfFileChoice(
-    String inputDescription
-    )
-  {return promptFileChoice("pdf", "Available PDF files", inputDescription);}
 
   /**
     Gets the source path used to load input PDF files.

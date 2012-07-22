@@ -54,8 +54,8 @@ public final class LocalGraphicsState
   public static final String BeginOperator = SaveGraphicsState.Operator;
   public static final String EndOperator = RestoreGraphicsState.Operator;
 
-  private static final byte[] BeginChunk = Encoding.encode(BeginOperator + Symbol.LineFeed);
-  private static final byte[] EndChunk = Encoding.encode(EndOperator + Symbol.LineFeed);
+  private static final byte[] BeginChunk = Encoding.Pdf.encode(BeginOperator + Symbol.LineFeed);
+  private static final byte[] EndChunk = Encoding.Pdf.encode(EndOperator + Symbol.LineFeed);
   // </fields>
   // </static>
 
