@@ -106,7 +106,7 @@ namespace org.pdfclown.documents.interaction.forms
           BaseObject = baseDataObject = new PdfArray(
               new PdfDirectObject[]{oldBaseDataObject}
               );
-          ((PdfArray)baseDataObject).Add(PdfTextString.Empty);
+          ((PdfArray)baseDataObject).Add(PdfTextString.Default);
 
           if(items != null)
           {

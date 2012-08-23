@@ -38,7 +38,7 @@ namespace org.pdfclown.samples.cli
           // Define the location of the document window on the page (fit vertically)!
           destination.Add(new PdfName("FitV"));
           // Define window left-edge horizontal coordinate!
-          destination.Add(new PdfInteger(-32768));
+          destination.Add(PdfInteger.Get(-32768));
           // Associate the destination to the action!
           action[new PdfName("D")] = destination;
         }

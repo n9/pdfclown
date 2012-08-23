@@ -33,7 +33,7 @@ import org.pdfclown.objects.PdfInteger;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 08/23/12
 */
 public enum JustificationEnum
 {
@@ -43,15 +43,15 @@ public enum JustificationEnum
   /**
     Left.
   */
-  Left(new PdfInteger(0)),
+  Left(PdfInteger.get(0)),
   /**
     Center.
   */
-  Center(new PdfInteger(1)),
+  Center(PdfInteger.get(1)),
   /**
     Right.
   */
-  Right(new PdfInteger(2));
+  Right(PdfInteger.get(2));
   // </fields>
 
   // <interface>

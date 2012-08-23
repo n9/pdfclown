@@ -24,6 +24,9 @@
 */
 
 using org.pdfclown.documents;
+using org.pdfclown.documents.contents.colorSpaces;
+using org.pdfclown.documents.contents.fonts;
+using org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.files;
 using org.pdfclown.objects;
 
@@ -74,10 +77,7 @@ namespace org.pdfclown.documents.contents
     public ColorSpaceResources ColorSpaces
     {
       get
-      {
-        PdfDirectObject colorSpaceObject = BaseDataObject[PdfName.ColorSpace];
-        return colorSpaceObject != null ? new ColorSpaceResources(colorSpaceObject) : null;
-      }
+      {return new ColorSpaceResources(BaseDataObject.Get<PdfDictionary>(PdfName.ColorSpace));}
       set
       {BaseDataObject[PdfName.ColorSpace] = value.BaseObject;}
     }
@@ -85,10 +85,7 @@ namespace org.pdfclown.documents.contents
     public ExtGStateResources ExtGStates
     {
       get
-      {
-        PdfDirectObject extGStateObject = BaseDataObject[PdfName.ExtGState];
-        return extGStateObject != null ? new ExtGStateResources(extGStateObject) : null;
-      }
+      {return new ExtGStateResources(BaseDataObject.Get<PdfDictionary>(PdfName.ExtGState));}
       set
       {BaseDataObject[PdfName.ExtGState] = value.BaseObject;}
     }
@@ -96,21 +93,42 @@ namespace org.pdfclown.documents.contents
     public FontResources Fonts
     {
       get
-      {
-        PdfDirectObject fontObject = BaseDataObject[PdfName.Font];
-        return fontObject != null ? new FontResources(fontObject) : null;
-      }
+      {return new FontResources(BaseDataObject.Get<PdfDictionary>(PdfName.Font));}
       set
       {BaseDataObject[PdfName.Font] = value.BaseObject;}
     }
 
+    public ResourceItems<T> Get<T>(
+      ) where T : PdfObjectWrapper
+    {
+      Type type = typeof(T);
+      if(typeof(ColorSpace).IsAssignableFrom(type))
+        return (ResourceItems<T>)(object)ColorSpaces;
+      else if(typeof(ExtGState).IsAssignableFrom(type))
+        return (ResourceItems<T>)(object)ExtGStates;
+      else if(typeof(Font).IsAssignableFrom(type))
+        return (ResourceItems<T>)(object)Fonts;
+      else if(typeof(Pattern).IsAssignableFrom(type))
+        return (ResourceItems<T>)(object)Patterns;
+      else if(typeof(PropertyList).IsAssignableFrom(type))
+        return (ResourceItems<T>)(object)PropertyLists;
+      else if(typeof(Shading).IsAssignableFrom(type))
+        return (ResourceItems<T>)(object)Shadings;
+      else if(typeof(XObject).IsAssignableFrom(type))
+        return (ResourceItems<T>)(object)XObjects;
+      else
+        throw new ArgumentException(type.Name + " does NOT represent a valid resource class.");
+    }
+
+    public T Get<T>(
+      PdfName name
+      ) where T : PdfObjectWrapper
+    {return Get<T>()[name];}
+
     public PatternResources Patterns
     {
       get
-      {
-        PdfDirectObject patternObject = BaseDataObject[PdfName.Pattern];
-        return patternObject != null ? new PatternResources(patternObject) : null;
-      }
+      {return new PatternResources(BaseDataObject.Get<PdfDictionary>(PdfName.Pattern));}
       set
       {BaseDataObject[PdfName.Pattern] = value.BaseObject;}
     }
@@ -119,10 +137,7 @@ namespace org.pdfclown.documents.contents
     public PropertyListResources PropertyLists
     {
       get
-      {
-        PdfDirectObject propertiesObject = BaseDataObject[PdfName.Properties];
-        return propertiesObject != null ? new PropertyListResources(propertiesObject) : null;
-      }
+      {return new PropertyListResources(BaseDataObject.Get<PdfDictionary>(PdfName.Properties));}
       set
       {
         CheckCompatibility("PropertyLists");
@@ -134,10 +149,7 @@ namespace org.pdfclown.documents.contents
     public ShadingResources Shadings
     {
       get
-      {
-        PdfDirectObject shadingObject = BaseDataObject[PdfName.Shading];
-        return shadingObject != null ? new ShadingResources(shadingObject) : null;
-      }
+      {return new ShadingResources(BaseDataObject.Get<PdfDictionary>(PdfName.Shading));}
       set
       {BaseDataObject[PdfName.Shading] = value.BaseObject;}
     }
@@ -145,10 +157,7 @@ namespace org.pdfclown.documents.contents
     public XObjectResources XObjects
     {
       get
-      {
-        PdfDirectObject xObjectObject = BaseDataObject[PdfName.XObject];
-        return xObjectObject != null ? new XObjectResources(xObjectObject) : null;
-      }
+      {return new XObjectResources(BaseDataObject.Get<PdfDictionary>(PdfName.XObject));}
       set
       {BaseDataObject[PdfName.XObject] = value.BaseObject;}
     }

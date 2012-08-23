@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF15)
 public final class Polyline
@@ -52,15 +52,10 @@ public final class Polyline
   // <constructors>
   public Polyline(
     Page page,
-    Rectangle2D box
+    Rectangle2D box,
+    String text
     )
-  {
-    super(
-      page,
-      box,
-      PdfName.PolyLine
-      );
-  }
+  {super(page, box, text, PdfName.PolyLine);}
 
   public Polyline(
     PdfDirectObject baseObject

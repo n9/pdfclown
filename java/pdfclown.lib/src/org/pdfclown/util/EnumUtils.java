@@ -4,8 +4,8 @@
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
 
-  This file should be part of the source code distribution of "PDF Clown library" (the
-  Program): see the accompanying README files for more info.
+  This file should be part of the source code distribution of "PDF Clown library"
+  (the Program): see the accompanying README files for more info.
 
   This Program is free software; you can redistribute it and/or modify it under the terms
   of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -23,50 +23,37 @@
   this list of conditions.
 */
 
-using org.pdfclown.documents;
-using org.pdfclown.files;
+package org.pdfclown.util;
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
+import java.util.EnumSet;
 
-namespace org.pdfclown.objects
+/**
+  Enumeration utility.
+
+  @author Stefano Chizzolini (http://www.stefanochizzolini.it)
+  @since 0.1.2
+  @version 0.1.2, 08/23/12
+*/
+public final class EnumUtils
 {
-  /**
-    <summary>Number tree [PDF:1.7:3.8.6].</summary>
-  */
-  [PDF(VersionEnum.PDF10)]
-  public abstract class NumberTree<TValue>
-    : Tree<int, PdfInteger, int, TValue>
-    where TValue : PdfObjectWrapper
+  // <class>
+  // <static>
+  // <interface>
+  // <public>
+  public static <T extends Enum<T>> EnumSet<T> mask(
+    EnumSet<T> map,
+    T key,
+    boolean enabled
+    )
   {
-    #region dynamic
-    #region constructors
-    protected NumberTree(
-      Document context
-      ) : base(context)
-    {}
-
-    protected NumberTree(
-      PdfDirectObject baseObject
-      ) : base(baseObject)
-    {}
-    #endregion
-
-    #region interface
-    #region protected
-    protected override PdfName PairsKey
-    {
-      get
-      {return PdfName.Nums;}
-    }
-
-    protected override PdfInteger WrapKey(
-      int key
-      )
-    {return PdfInteger.Get(key);}
-    #endregion
-    #endregion
-    #endregion
+    if(enabled)
+    {map.add(key);}
+    else
+    {map.remove(key);}
+    return map;
   }
+  // </public>
+  // </interface>
+  // </static>
+  // </class>
 }

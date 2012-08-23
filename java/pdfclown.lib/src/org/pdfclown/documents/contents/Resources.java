@@ -28,6 +28,11 @@ package org.pdfclown.documents.contents;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
+import org.pdfclown.documents.contents.colorSpaces.ColorSpace;
+import org.pdfclown.documents.contents.colorSpaces.Pattern;
+import org.pdfclown.documents.contents.colorSpaces.Shading;
+import org.pdfclown.documents.contents.fonts.Font;
+import org.pdfclown.documents.contents.xObjects.XObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -37,7 +42,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
   Resources collection [PDF:1.6:3.7.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/02/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Resources
@@ -78,56 +83,64 @@ public final class Resources
     )
   {return new Resources((PdfDirectObject)getBaseObject().clone(context.getFile()));}
 
-  public ColorSpaceResources getColorSpaces(
+  @SuppressWarnings("unchecked")
+  public <T extends PdfObjectWrapper<?>> ResourceItems<T> get(
+    Class<T> resourceClass
     )
   {
-    PdfDirectObject colorSpaceObject = getBaseDataObject().get(PdfName.ColorSpace);
-    return colorSpaceObject != null ? new ColorSpaceResources(colorSpaceObject) : null;
+    if(ColorSpace.class.isAssignableFrom(resourceClass))
+      return (ResourceItems<T>)getColorSpaces();
+    else if(ExtGState.class.isAssignableFrom(resourceClass))
+      return (ResourceItems<T>)getExtGStates();
+    else if(Font.class.isAssignableFrom(resourceClass))
+      return (ResourceItems<T>)getFonts();
+    else if(Pattern.class.isAssignableFrom(resourceClass))
+      return (ResourceItems<T>)getPatterns();
+    else if(PropertyList.class.isAssignableFrom(resourceClass))
+      return (ResourceItems<T>)getPropertyLists();
+    else if(Shading.class.isAssignableFrom(resourceClass))
+      return (ResourceItems<T>)getShadings();
+    else if(XObject.class.isAssignableFrom(resourceClass))
+      return (ResourceItems<T>)getXObjects();
+    else
+      throw new IllegalArgumentException("'resourceClass' parameter value does NOT represent a valid resource class.");
   }
+
+  public <T extends PdfObjectWrapper<?>> T get(
+    PdfName name,
+    Class<T> resourceClass
+    )
+  {return get(resourceClass).get(name);}
+
+  public ColorSpaceResources getColorSpaces(
+    )
+  {return new ColorSpaceResources(getBaseDataObject().get(PdfName.ColorSpace, PdfDictionary.class));}
 
   public ExtGStateResources getExtGStates(
     )
-  {
-    PdfDirectObject extGStateObject = getBaseDataObject().get(PdfName.ExtGState);
-    return extGStateObject != null ? new ExtGStateResources(extGStateObject) : null;
-  }
+  {return new ExtGStateResources(getBaseDataObject().get(PdfName.ExtGState, PdfDictionary.class));}
 
   public FontResources getFonts(
     )
-  {
-    PdfDirectObject fontObject = getBaseDataObject().get(PdfName.Font);
-    return fontObject != null ? new FontResources(fontObject) : null;
-  }
+  {return new FontResources(getBaseDataObject().get(PdfName.Font, PdfDictionary.class));}
 
   public PatternResources getPatterns(
     )
-  {
-    PdfDirectObject patternObject = getBaseDataObject().get(PdfName.Pattern);
-    return patternObject != null ? new PatternResources(patternObject) : null;
-  }
+  {return new PatternResources(getBaseDataObject().get(PdfName.Pattern, PdfDictionary.class));}
 
   @PDF(VersionEnum.PDF12)
   public PropertyListResources getPropertyLists(
     )
-  {
-    PdfDirectObject propertiesObject = getBaseDataObject().get(PdfName.Properties);
-    return propertiesObject != null ? new PropertyListResources(propertiesObject) : null;
-  }
+  {return new PropertyListResources(getBaseDataObject().get(PdfName.Properties, PdfDictionary.class));}
 
   @PDF(VersionEnum.PDF13)
   public ShadingResources getShadings(
     )
-  {
-    PdfDirectObject shadingObject = getBaseDataObject().get(PdfName.Shading);
-    return shadingObject != null ? new ShadingResources(shadingObject) : null;
-  }
+  {return new ShadingResources(getBaseDataObject().get(PdfName.Shading, PdfDictionary.class));}
 
   public XObjectResources getXObjects(
     )
-  {
-    PdfDirectObject xObjectObject = getBaseDataObject().get(PdfName.XObject);
-    return xObjectObject != null ? new XObjectResources(xObjectObject) : null;
-  }
+  {return new XObjectResources(getBaseDataObject().get(PdfName.XObject, PdfDictionary.class));}
 
   public void setColorSpaces(
     ColorSpaceResources value

@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF file writer implementing classic cross-reference table [PDF:1.6:3.4.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 final class PlainWriter
   extends Writer
@@ -326,12 +326,12 @@ final class PlainWriter
     PdfDictionary trailer = file.getTrailer();
     updateTrailer(trailer, stream);
     // * Size
-    trailer.put(PdfName.Size,new PdfInteger(xrefSize));
+    trailer.put(PdfName.Size, PdfInteger.get(xrefSize));
     // * Prev
     if(parser == null)
     {trailer.remove(PdfName.Prev);} // [FIX:0.0.4:5] It (wrongly) kept the 'Prev' entry of multiple-section xref tables.
     else
-    {trailer.put(PdfName.Prev,new PdfInteger((int)parser.retrieveXRefOffset()));}
+    {trailer.put(PdfName.Prev, PdfInteger.get((int)parser.retrieveXRefOffset()));}
     // Serialize its contents!
     trailer.writeTo(stream, file); stream.write(Chunk.LineFeed);
 

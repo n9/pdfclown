@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF13)
 public final class FileAttachment
@@ -127,15 +127,11 @@ public final class FileAttachment
   public FileAttachment(
     Page page,
     Rectangle2D box,
+    String text,
     FileSpecification<?> dataFile
     )
   {
-    super(
-      page.getDocument(),
-      PdfName.FileAttachment,
-      box,
-      page
-      );
+    super(page.getDocument(), PdfName.FileAttachment, box, text, page);
     setDataFile(dataFile);
   }
 

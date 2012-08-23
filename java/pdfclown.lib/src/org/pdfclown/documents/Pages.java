@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -50,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
   Document pages collection [PDF:1.6:3.6.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Pages
@@ -82,7 +82,7 @@ public final class Pages
         {
           PdfName.Pages,
           new PdfArray(),
-          new PdfInteger(0)
+          PdfInteger.Default
         }
         )
       );
@@ -313,7 +313,7 @@ public final class Pages
       // Get the page collection counter!
       PdfInteger countObject = (PdfInteger)parentData.get(PdfName.Count);
       // Decrement the counter at the current level!
-      parentData.put(PdfName.Count, new PdfInteger(countObject.getValue()-1));
+      parentData.put(PdfName.Count, PdfInteger.get(countObject.getValue()-1));
 
       // Iterate upward!
       parent = parentData.get(PdfName.Parent);
@@ -541,7 +541,7 @@ public final class Pages
       // Get the page collection counter!
       PdfInteger countObject = (PdfInteger)parentData.get(PdfName.Count);
       // Increment the counter at the current level!
-      parentData.put(PdfName.Count, new PdfInteger(countObject.getValue()+pages.size()));
+      parentData.put(PdfName.Count, PdfInteger.get(countObject.getValue()+pages.size()));
 
       // Iterate upward!
       parent = parentData.get(PdfName.Parent);

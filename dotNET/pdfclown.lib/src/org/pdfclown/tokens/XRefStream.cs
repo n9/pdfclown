@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -293,8 +293,8 @@ namespace org.pdfclown.tokens
             else
             {
               subsectionBounds = new PdfArray();
-              subsectionBounds.Add(new PdfInteger(0));
-              subsectionBounds.Add(new PdfInteger(size));
+              subsectionBounds.Add(PdfInteger.Get(0));
+              subsectionBounds.Add(PdfInteger.Get(size));
             }
 
             body.ByteOrder = ByteOrderEnum.BigEndian;
@@ -397,8 +397,8 @@ namespace org.pdfclown.tokens
           if(entryNumber - prevObjectNumber != 1) // Current subsection terminated.
           {
             if(indexArray.Count > 0)
-            {indexArray.Add(new PdfInteger(prevObjectNumber - ((PdfInteger)indexArray[indexArray.Count - 1]).IntValue + 1));} // Number of entries in the previous subsection.
-            indexArray.Add(new PdfInteger(entryNumber)); // First object number in the next subsection.
+            {indexArray.Add(PdfInteger.Get(prevObjectNumber - ((PdfInteger)indexArray[indexArray.Count - 1]).IntValue + 1));} // Number of entries in the previous subsection.
+            indexArray.Add(PdfInteger.Get(entryNumber)); // First object number in the next subsection.
           }
           prevObjectNumber = entryNumber;
 
@@ -423,18 +423,18 @@ namespace org.pdfclown.tokens
               throw new NotSupportedException();
           }
         }
-        indexArray.Add(new PdfInteger(prevObjectNumber - ((PdfInteger)indexArray[indexArray.Count - 1]).IntValue + 1)); // Number of entries in the previous subsection.
+        indexArray.Add(PdfInteger.Get(prevObjectNumber - ((PdfInteger)indexArray[indexArray.Count - 1]).IntValue + 1)); // Number of entries in the previous subsection.
       }
 
       // 2. Header.
       {
         PdfDictionary header = Header;
         header[PdfName.Index] = indexArray;
-        header[PdfName.Size] = new PdfInteger(File.IndirectObjects.Count+1);
+        header[PdfName.Size] = PdfInteger.Get(File.IndirectObjects.Count+1);
         header[PdfName.W] = new PdfArray(
-          new PdfInteger(entryFieldSizes[0]),
-          new PdfInteger(entryFieldSizes[1]),
-          new PdfInteger(entryFieldSizes[2])
+          PdfInteger.Get(entryFieldSizes[0]),
+          PdfInteger.Get(entryFieldSizes[1]),
+          PdfInteger.Get(entryFieldSizes[2])
           );
       }
     }

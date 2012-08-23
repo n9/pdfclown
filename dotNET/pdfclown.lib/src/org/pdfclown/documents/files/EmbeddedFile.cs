@@ -179,7 +179,7 @@ namespace org.pdfclown.documents.files
         return sizeObject != null ? sizeObject.IntValue : 0;
       }
       set
-      {SetInfo(PdfName.Size, new PdfInteger(value));}
+      {SetInfo(PdfName.Size, PdfInteger.Get(value));}
     }
     #endregion
 
@@ -191,9 +191,15 @@ namespace org.pdfclown.documents.files
     private PdfDirectObject GetInfo(
       PdfName key
       )
+    {return Params[key];}
+
+    /**
+      <summary>Gets the file parameters.</summary>
+    */
+    private PdfDictionary Params
     {
-      PdfDictionary info = (PdfDictionary)BaseDataObject.Header.Resolve(PdfName.Params);
-      return info != null ? info[key] : null;
+      get
+      {return BaseDataObject.Header.Resolve<PdfDictionary>(PdfName.Params);}
     }
 
     /**
@@ -203,12 +209,7 @@ namespace org.pdfclown.documents.files
       PdfName key,
       PdfDirectObject value
       )
-    {
-      PdfDictionary info = (PdfDictionary)BaseDataObject.Header.Resolve(PdfName.Params);
-      if(info == null)
-      {BaseDataObject.Header[PdfName.Params] = info = new PdfDictionary();}
-      info[key] = value;
-    }
+    {Params[key] = value;}
     #endregion
     #endregion
     #endregion

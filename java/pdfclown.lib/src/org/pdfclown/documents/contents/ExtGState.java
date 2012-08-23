@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,18 +25,25 @@
 
 package org.pdfclown.documents.contents;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
 import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.objects.PdfArray;
+import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfObjectWrapper;
+import org.pdfclown.objects.PdfReal;
+import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -44,7 +51,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/14/11
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF12)
 public final class ExtGState
@@ -71,10 +78,9 @@ public final class ExtGState
   // <dynamic>
   // <constructors>
   public ExtGState(
-    Document context,
-    PdfDictionary baseDataObject
+    Document context
     )
-  {super(context, baseDataObject);}
+  {super(context, new PdfDictionary());}
 
   ExtGState(
     PdfDirectObject baseObject
@@ -105,6 +111,8 @@ public final class ExtGState
       {state.setLineWidth(getLineWidth());}
       else if(parameterName.equals(PdfName.ML))
       {state.setMiterLimit(getMiterLimit());}
+      else if(parameterName.equals(PdfName.BM))
+      {state.setBlendMode(getBlendMode());}
       //TODO:extend supported parameters!!!
     }
   }
@@ -114,6 +122,25 @@ public final class ExtGState
     Document context
     )
   {throw new NotImplementedException();}
+
+  @PDF(VersionEnum.PDF14)
+  public List<BlendModeEnum> getBlendMode(
+    )
+  {
+    PdfDirectObject blendModeObject = getBaseDataObject().get(PdfName.BM);
+    if(blendModeObject == null)
+      return Collections.emptyList();
+
+    List<BlendModeEnum> blendMode = new ArrayList<BlendModeEnum>();
+    if(blendModeObject instanceof PdfName)
+    {blendMode.add(BlendModeEnum.get((PdfName)blendModeObject));}
+    else // MUST be an array.
+    {
+      for(PdfDirectObject alternateBlendModeObject : (PdfArray)blendModeObject)
+      {blendMode.add(BlendModeEnum.get((PdfName)alternateBlendModeObject));}
+    }
+    return blendMode;
+  }
 
   @PDF(VersionEnum.PDF13)
   public Font getFont(
@@ -186,6 +213,98 @@ public final class ExtGState
     PdfNumber<?> miterLimitObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.ML);
     return miterLimitObject != null ? miterLimitObject.getDoubleValue() : null;
   }
+
+  /**
+    Gets whether the current soft mask and alpha constant are to be interpreted as shape values
+    instead of opacity values.
+  */
+  @PDF(VersionEnum.PDF14)
+  public Boolean isAlphaShape(
+    )
+  {return (Boolean)PdfSimpleObject.getValue(getBaseDataObject().get(PdfName.AIS));}
+
+  public void setAlphaShape(
+    Boolean value
+    )
+  {getBaseDataObject().put(PdfName.AIS, PdfBoolean.get(value));}
+
+  public void setBlendMode(
+    List<BlendModeEnum> value
+    )
+  {
+    PdfDirectObject blendModeObject;
+    if(value == null || value.isEmpty())
+    {blendModeObject = null;}
+    else if(value.size() == 1)
+    {blendModeObject = value.get(0).getCode();}
+    else
+    {
+      PdfArray blendModeArray = new PdfArray();
+      for(BlendModeEnum blendMode : value)
+      {blendModeArray.add(blendMode.getCode());}
+      blendModeObject = blendModeArray;
+    }
+    getBaseDataObject().put(PdfName.BM, blendModeObject);
+  }
+
+  public void setFont(
+    Font value
+    )
+  {
+    PdfArray fontObject = (PdfArray)getBaseDataObject().get(PdfName.Font);
+    if(fontObject == null)
+    {fontObject = new PdfArray(PdfObjectWrapper.getBaseObject(value), PdfInteger.Default);}
+    else
+    {fontObject.set(0, PdfObjectWrapper.getBaseObject(value));}
+    getBaseDataObject().put(PdfName.Font, fontObject);
+  }
+
+  public void setFontSize(
+    Double value
+    )
+  {
+    PdfArray fontObject = (PdfArray)getBaseDataObject().get(PdfName.Font);
+    if(fontObject == null)
+    {fontObject = new PdfArray(null, PdfReal.get(value));}
+    else
+    {fontObject.set(1, PdfReal.get(value));}
+    getBaseDataObject().put(PdfName.Font, fontObject);
+  }
+
+  public void setLineCap(
+    LineCapEnum value
+    )
+  {getBaseDataObject().put(PdfName.LC, value != null ? PdfInteger.get(value.getCode()) : null);}
+
+  public void setLineDash(
+    LineDash value
+    )
+  {
+    PdfArray lineDashObject = new PdfArray();
+    {
+      PdfArray dashArrayObject = new PdfArray();
+      for(double dashArrayItem : value.getDashArray())
+      {dashArrayObject.add(PdfReal.get(dashArrayItem));}
+      lineDashObject.add(dashArrayObject);
+      lineDashObject.add(PdfReal.get(value.getDashPhase()));
+    }
+    getBaseDataObject().put(PdfName.D, lineDashObject);
+  }
+
+  public void setLineJoin(
+    LineJoinEnum value
+    )
+  {getBaseDataObject().put(PdfName.LJ, value != null ? PdfInteger.get(value.getCode()) : null);}
+
+  public void setLineWidth(
+    Double value
+    )
+  {getBaseDataObject().put(PdfName.LW, PdfReal.get(value));}
+
+  public void setMiterLimit(
+    Double value
+    )
+  {getBaseDataObject().put(PdfName.ML, PdfReal.get(value));}
   // </public>
   // </interface>
   // </dynamic>

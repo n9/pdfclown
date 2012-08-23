@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,8 +25,6 @@
 
 package org.pdfclown.documents.interaction.forms;
 
-import java.util.EnumSet;
-
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -34,6 +32,7 @@ import org.pdfclown.documents.interaction.annotations.DualWidget;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.util.EnumUtils;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -41,7 +40,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF12)
 public final class RadioButton
@@ -59,20 +58,17 @@ public final class RadioButton
     String value
     )
   {
-    super(
-      name,
-      widgets[0]
+    super(name, widgets[0]);
+    setFlags(
+      EnumUtils.mask(
+        EnumUtils.mask(getFlags(), FlagsEnum.Radio, true),
+        FlagsEnum.NoToggleToOff,
+        true
+        )
       );
 
-    EnumSet<FlagsEnum> flags = getFlags(); flags.add(FlagsEnum.Radio); flags.add(FlagsEnum.NoToggleToOff); setFlags(flags);
-
     FieldWidgets fieldWidgets = getWidgets();
-    for(
-      int index = 1,
-        length = widgets.length;
-      index < length;
-      index++
-      )
+    for(int index = 1, length = widgets.length; index < length; index++)
     {fieldWidgets.add(widgets[index]);}
 
     setValue(value);
@@ -105,14 +101,7 @@ public final class RadioButton
   public void setToggleable(
     boolean value
     )
-  {
-    EnumSet<FlagsEnum> flags = getFlags();
-    if(value)
-    {flags.remove(FlagsEnum.NoToggleToOff);}
-    else
-    {flags.add(FlagsEnum.NoToggleToOff);}
-    setFlags(flags);
-  }
+  {setFlags(EnumUtils.mask(getFlags(), FlagsEnum.NoToggleToOff, !value));}
 
   @Override
   public void setValue(

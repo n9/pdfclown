@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -67,7 +67,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
       int index
       ) : this(
         new List<PdfDirectObject>(
-          new PdfDirectObject[]{new PdfInteger(index)}
+          new PdfDirectObject[]{PdfInteger.Get(index)}
           )
         )
     {}
@@ -102,7 +102,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
       get
       {return ((PdfInteger)((PdfArray)BaseDataObject)[0]).IntValue;}
       set
-      {((PdfArray)BaseDataObject)[0] = new PdfInteger(value);}
+      {((PdfArray)BaseDataObject)[0] = PdfInteger.Get(value);}
     }
     #endregion
     #endregion

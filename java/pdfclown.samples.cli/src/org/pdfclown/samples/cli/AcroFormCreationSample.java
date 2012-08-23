@@ -33,7 +33,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 08/23/12
 */
 public class AcroFormCreationSample
   extends Sample
@@ -265,8 +265,10 @@ public class AcroFormCreationSample
       items.add("Carmen Consoli");
       items.add("Ani DiFranco");
       items.add("Cristina Dona'");
+      items.add("Nathalie Giannitrapani");
       items.add("PJ Harvey");
       items.add("Billie Holiday");
+      items.add("Joan As Police Woman");
       items.add("Janis Joplin");
       items.add("Angelique Kidjo");
       items.add("Patrizia Laquidara");
@@ -286,6 +288,7 @@ public class AcroFormCreationSample
       items.add("Skin");
       items.add("Patti Smith");
       items.add("Fatima Spar");
+      items.add("Thony");
       items.add("Paola Turci");
       items.add("Sarah Vaughan");
       items.add("Nina Zilli");

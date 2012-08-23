@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,26 +31,27 @@ using System.Collections.Generic;
 namespace org.pdfclown.documents.contents.objects
 {
   /**
-    <summary>'Set the line cap style' operation [PDF:1.6:4.3.3].</summary>
+    <summary>'Set the specified graphics state parameters' operation [PDF:1.6:4.3.3].</summary>
   */
-  [PDF(VersionEnum.PDF10)]
-  public sealed class SetLineCap
-    : Operation
+  [PDF(VersionEnum.PDF12)]
+  public sealed class ApplyExtGState
+    : Operation,
+      IResourceReference<ExtGState>
   {
     #region static
     #region fields
-    public static readonly string OperatorKeyword = "J";
+    public static readonly string OperatorKeyword = "gs";
     #endregion
     #endregion
 
     #region dynamic
     #region constructors
-    public SetLineCap(
-      LineCapEnum value
-      ) : base(OperatorKeyword, PdfInteger.Get((int)value))
+    public ApplyExtGState(
+      PdfName name
+      ) : base(OperatorKeyword, name)
     {}
 
-    public SetLineCap(
+    public ApplyExtGState(
       IList<PdfDirectObject> operands
       ) : base(OperatorKeyword, operands)
     {}
@@ -58,18 +59,38 @@ namespace org.pdfclown.documents.contents.objects
 
     #region interface
     #region public
+    /**
+      <summary>Gets the <see cref="ExtGState">graphics state parameters</see> resource to be set.
+      </summary>
+      <param name="context">Content context.</param>
+    */
+    public ExtGState GetExtGState(
+      IContentContext context
+      )
+    {return GetResource(context);}
+
     public override void Scan(
       ContentScanner.GraphicsState state
       )
-    {state.LineCap = Value;}
+    {
+      ExtGState extGState = GetExtGState(state.Scanner.ContentContext);
+      extGState.ApplyTo(state);
+    }
 
-    public LineCapEnum Value
+    #region IResourceReference
+    public ExtGState GetResource(
+      IContentContext context
+      )
+    {return context.Resources.ExtGStates[Name];}
+
+    public PdfName Name
     {
       get
-      {return (LineCapEnum)((IPdfNumber)operands[0]).Value;}
+      {return (PdfName)operands[0];}
       set
-      {operands[0] = PdfInteger.Get((int)value);}
+      {operands[0] = value;}
     }
+    #endregion
     #endregion
     #endregion
     #endregion

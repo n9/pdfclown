@@ -37,7 +37,7 @@ import org.pdfclown.tokens.PdfDocEncoding;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 08/23/12
 */
 public final class PdfTextString
   extends PdfString
@@ -49,7 +49,7 @@ public final class PdfTextString
   // <class>
   // <static>
   // <fields>
-  public static final PdfTextString Empty = new PdfTextString("");
+  public static final PdfTextString Default = new PdfTextString("");
   // </fields>
 
   // <interface>

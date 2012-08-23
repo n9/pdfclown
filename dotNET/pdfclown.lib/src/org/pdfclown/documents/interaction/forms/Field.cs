@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,6 +28,7 @@ using org.pdfclown.documents;
 using org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.files;
 using org.pdfclown.objects;
+using org.pdfclown.util;
 
 using System;
 using System.Collections.Generic;
@@ -205,7 +206,7 @@ namespace org.pdfclown.documents.interaction.forms
       } while(dictionary != null);
       // Default.
       if(key.Equals(PdfName.Ff))
-        return new PdfInteger(0);
+        return PdfInteger.Default;
       else
         return null;
     }
@@ -283,16 +284,9 @@ namespace org.pdfclown.documents.interaction.forms
     public bool Exportable
     {
       get
-      {return !((Flags & FlagsEnum.NoExport) == FlagsEnum.NoExport);}
+      {return (Flags & FlagsEnum.NoExport) != FlagsEnum.NoExport;}
       set
-      {
-        FlagsEnum flags = Flags;
-        if(value)
-        {flags ^= FlagsEnum.NoExport;}
-        else
-        {flags |= FlagsEnum.NoExport;}
-        Flags = flags;
-      }
+      {Flags = EnumUtils.Mask(Flags, FlagsEnum.NoExport, !value);}
     }
 
     /**
@@ -309,7 +303,7 @@ namespace org.pdfclown.documents.interaction.forms
           );
       }
       set
-      {BaseDataObject[PdfName.Ff] = new PdfInteger((int)value);}
+      {BaseDataObject[PdfName.Ff] = PdfInteger.Get((int)value);}
     }
 
     /**
@@ -359,35 +353,21 @@ namespace org.pdfclown.documents.interaction.forms
     public bool ReadOnly
     {
       get
-      {return ((Flags & FlagsEnum.ReadOnly) == FlagsEnum.ReadOnly);}
+      {return (Flags & FlagsEnum.ReadOnly) == FlagsEnum.ReadOnly;}
       set
-      {
-        FlagsEnum flags = Flags;
-        if(value)
-        {flags |= FlagsEnum.ReadOnly;}
-        else
-        {flags ^= FlagsEnum.ReadOnly;}
-        Flags = flags;
-      }
+      {Flags = EnumUtils.Mask(Flags, FlagsEnum.ReadOnly, value);}
     }
 
     /**
-      <summary>Gets/Sets whether the field must have a value at the time
-      it is exported by a submit-form action.</summary>
+      <summary>Gets/Sets whether the field must have a value at the time it is exported by a
+      submit-form action.</summary>
     */
     public bool Required
     {
       get
-      {return ((Flags & FlagsEnum.Required) == FlagsEnum.Required);}
+      {return (Flags & FlagsEnum.Required) == FlagsEnum.Required;}
       set
-      {
-        FlagsEnum flags = Flags;
-        if(value)
-        {flags |= FlagsEnum.Required;}
-        else
-        {flags ^= FlagsEnum.Required;}
-        Flags = flags;
-      }
+      {Flags = EnumUtils.Mask(Flags, FlagsEnum.Required, value);}
     }
 
     /**

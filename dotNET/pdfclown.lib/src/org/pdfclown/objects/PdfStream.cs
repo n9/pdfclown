@@ -431,7 +431,7 @@ namespace org.pdfclown.objects
         }
 
         // Set the encoded data length!
-        header[PdfName.Length] = new PdfInteger(bodyData.Length);
+        header[PdfName.Length] = PdfInteger.Get(bodyData.Length);
 
         // 1. Header.
         header.WriteTo(stream, context);
@@ -439,7 +439,7 @@ namespace org.pdfclown.objects
         if(bodyUnencoded)
         {
           // Restore actual header entries!
-          header[PdfName.Length] = new PdfInteger((int)body.Length);
+          header[PdfName.Length] = PdfInteger.Get((int)body.Length);
           Filter = null;
         }
       }

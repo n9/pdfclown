@@ -40,6 +40,21 @@ namespace org.pdfclown.objects
   public abstract class PdfObjectWrapper
     : IPdfObjectWrapper
   {
+    #region static
+    #region interface
+    #region public
+    /**
+      <summary>Gets the PDF object backing the specified wrapper.</summary>
+      <param name="wrapper">Object to extract the base from.</param>
+    */
+    public static PdfDirectObject GetBaseObject(
+      PdfObjectWrapper wrapper
+      )
+    {return (wrapper != null ? wrapper.BaseObject : null);}
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region fields
     private PdfDirectObject baseObject;

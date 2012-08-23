@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -34,6 +34,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.pdfclown.documents.contents.colorSpaces.Color;
@@ -66,7 +67,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 08/23/12
 */
 public final class ContentScanner
 {
@@ -98,6 +99,7 @@ public final class ContentScanner
     // <class>
     // <dynamic>
     // <fields>
+    private List<BlendModeEnum> blendMode;
     private double charSpace;
     private AffineTransform ctm;
     private Color<?> fillColor;
@@ -167,6 +169,7 @@ public final class ContentScanner
       GraphicsState state
       )
     {
+      state.blendMode = blendMode;
       state.charSpace = charSpace;
       state.ctm = (AffineTransform)ctm.clone();
       state.fillColor = fillColor;
@@ -197,6 +200,14 @@ public final class ContentScanner
       }
       state.wordSpace = wordSpace;
     }
+
+    /**
+      Gets the current blend mode to be used in the transparent imaging model [PDF:1.6:5.2.1].
+      <p>The application should use the first blend mode in the list that it recognizes.</p>
+    */
+    public List<BlendModeEnum> getBlendMode(
+      )
+    {return blendMode;}
 
     /**
       Gets the current character spacing [PDF:1.6:5.2.1].
@@ -396,6 +407,14 @@ public final class ContentScanner
     public double getWordSpace(
       )
     {return wordSpace;}
+
+    /**
+      @see #getBlendMode()
+    */
+    public void setBlendMode(
+      List<BlendModeEnum> value
+      )
+    {blendMode = value;}
 
     /**
       @see #getCharSpace()
@@ -618,6 +637,7 @@ public final class ContentScanner
       )
     {
       // State parameters initialization.
+      blendMode = Collections.emptyList();
       charSpace = 0;
       ctm = getInitialCtm();
       fillColor = DeviceGrayColor.Default;

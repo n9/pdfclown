@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,7 +47,7 @@ import org.pdfclown.util.NotImplementedException;
   Collection of bookmarks [PDF:1.6:8.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Bookmarks
@@ -72,7 +72,7 @@ public final class Bookmarks
         new PdfDirectObject[]
         {
           PdfName.Outlines,
-          new PdfInteger(0)
+          PdfInteger.Default
         }
         )
       );
@@ -190,7 +190,7 @@ public final class Bookmarks
     {
       getBaseDataObject().put(PdfName.First, bookmark.getBaseObject());
       getBaseDataObject().put(PdfName.Last, bookmark.getBaseObject());
-      getBaseDataObject().put(PdfName.Count, new PdfInteger(countObject.getValue()+1));
+      getBaseDataObject().put(PdfName.Count, PdfInteger.get(countObject.getValue()+1));
     }
     else // Non-first bookmark.
     {
@@ -202,7 +202,7 @@ public final class Bookmarks
         NOTE: The Count entry is a relative number (whose sign represents
         the node open state).
       */
-      getBaseDataObject().put(PdfName.Count, new PdfInteger(countObject.getValue()+(int)Math.signum(countObject.getValue())));
+      getBaseDataObject().put(PdfName.Count, PdfInteger.get(countObject.getValue() + (int)Math.signum(countObject.getValue())));
     }
 
     return true;
@@ -359,7 +359,7 @@ public final class Bookmarks
     */
     PdfInteger countObject = (PdfInteger)getBaseDataObject().get(PdfName.Count);
     if(countObject == null)
-      getBaseDataObject().put(PdfName.Count,countObject = new PdfInteger(0));
+    {getBaseDataObject().put(PdfName.Count, countObject = PdfInteger.Default);}
 
     return countObject;
   }

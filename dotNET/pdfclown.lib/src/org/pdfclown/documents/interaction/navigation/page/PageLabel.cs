@@ -136,7 +136,7 @@ namespace org.pdfclown.documents.interaction.navigation.page
       get
       {return (int)PdfSimpleObject<object>.GetValue(BaseDataObject[PdfName.St], DefaultNumberBase);}
       set
-      {BaseDataObject[PdfName.St] = value <= DefaultNumberBase ? null : new PdfInteger(value);}
+      {BaseDataObject[PdfName.St] = value <= DefaultNumberBase ? null : PdfInteger.Get(value);}
     }
 
     /**

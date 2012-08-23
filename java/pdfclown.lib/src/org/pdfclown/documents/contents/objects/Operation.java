@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,7 @@ import org.pdfclown.tokens.Chunk;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.2
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Operation
@@ -188,8 +188,8 @@ public abstract class Operation
       return BeginInlineImage.Value;
     else if(operator.equals(EndInlineImage.Operator))
       return EndInlineImage.Value;
-    else if(operator.equals(SetExtGState.Operator))
-      return new SetExtGState(operands);
+    else if(operator.equals(ApplyExtGState.Operator))
+      return new ApplyExtGState(operands);
     else // No explicit operation implementation available.
       return new GenericOperation(operator, operands);
   }

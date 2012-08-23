@@ -54,45 +54,21 @@ namespace org.pdfclown.documents.contents.xObjects
     public FormXObject(
       Document context,
       drawing::SizeF size
-      ) : this(context, size, null)
-    {}
-
-    /**
-      <summary>Creates a new form within the specified document context.</summary>
-      <param name="context">Document where to place this form.</param>
-      <param name="size">Form size.</param>
-      <param name="resources">Form resources. In case of <code>null</code>, creates a new collection.
-      </param>
-    */
-    public FormXObject(
-      Document context,
-      drawing::SizeF size,
-      Resources resources
-      ) : this(context, new drawing::RectangleF(new drawing::PointF(0, 0), size), resources)
+      ) : this(context, new drawing::RectangleF(new drawing::PointF(0, 0), size))
     {}
 
     /**
       <summary>Creates a new form within the specified document context.</summary>
       <param name="context">Document where to place this form.</param>
       <param name="box">Form box.</param>
-      <param name="resources">Form resources. In case of <code>null</code>, creates a new collection.
-      </param>
     */
     public FormXObject(
       Document context,
-      drawing::RectangleF box,
-      Resources resources
+      drawing::RectangleF box
       ) : base(context)
     {
-      PdfDictionary header = BaseDataObject.Header;
-      header[PdfName.Subtype] = PdfName.Form;
-      header[PdfName.BBox] = new Rectangle(box).BaseDataObject;
-
-      // No resources collection?
-      /* NOTE: Resources collection is mandatory. */
-      if(resources == null)
-      {resources = new Resources(context);}
-      header[PdfName.Resources] = resources.BaseObject;
+      BaseDataObject.Header[PdfName.Subtype] = PdfName.Form;
+      Box = box;
     }
 
     internal FormXObject(
@@ -129,6 +105,19 @@ namespace org.pdfclown.documents.contents.xObjects
             ((IPdfNumber)matrix[5]).FloatValue
             );
       }
+      set
+      {
+        BaseDataObject.Header[PdfName.Matrix] = value != null
+          ? new PdfArray(
+            PdfReal.Get(value.Elements[0]),
+            PdfReal.Get(value.Elements[1]),
+            PdfReal.Get(value.Elements[2]),
+            PdfReal.Get(value.Elements[3]),
+            PdfReal.Get(value.Elements[4]),
+            PdfReal.Get(value.Elements[5])
+            )
+          : null;
+      }
     }
 
     public override drawing::SizeF Size
@@ -155,15 +144,9 @@ namespace org.pdfclown.documents.contents.xObjects
     public drawing::RectangleF Box
     {
       get
-      {
-        PdfArray box = (PdfArray)BaseDataObject.Header.Resolve(PdfName.BBox);
-        return new drawing::RectangleF(
-          (float)((IPdfNumber)box[0]).RawValue,
-          (float)((IPdfNumber)box[1]).RawValue,
-          (float)((IPdfNumber)box[2]).RawValue,
-          (float)((IPdfNumber)box[3]).RawValue
-          );
-      }
+      {return new Rectangle(BaseDataObject.Header[PdfName.BBox]).ToRectangleF();}
+      set
+      {BaseDataObject.Header[PdfName.BBox] = new Rectangle(value).BaseDataObject;}
     }
 
     public Contents Contents
@@ -184,9 +167,9 @@ namespace org.pdfclown.documents.contents.xObjects
     public Resources Resources
     {
       get
-      {return Resources.Wrap(BaseDataObject.Header[PdfName.Resources]);}
+      {return Resources.Wrap(BaseDataObject.Header.Get<PdfDictionary>(PdfName.Resources));}
       set
-      {BaseDataObject.Header[PdfName.Resources] = value.BaseObject;}
+      {BaseDataObject.Header[PdfName.Resources] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     public RotationEnum Rotation

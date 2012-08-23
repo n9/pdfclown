@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF file writer implementing compressed cross-reference stream [PDF:1.6:3.4.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 final class CompressedWriter
   extends Writer
@@ -119,7 +119,7 @@ final class CompressedWriter
         xrefStreamEntry = new XRefEntry(indirectObjects.size(), 0)
         );
       updateTrailer(xrefStream.getHeader(), stream);
-      xrefStream.getHeader().put(PdfName.Prev,new PdfInteger((int)parser.retrieveXRefOffset()));
+      xrefStream.getHeader().put(PdfName.Prev, PdfInteger.get((int)parser.retrieveXRefOffset()));
       addXRefEntry(
         xrefStreamEntry,
         xrefStream.getContainer(),

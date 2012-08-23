@@ -35,7 +35,14 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
+import org.pdfclown.documents.contents.BlendModeEnum;
+import org.pdfclown.documents.contents.ExtGState;
+import org.pdfclown.documents.contents.ExtGStateResources;
+import org.pdfclown.documents.contents.LineCapEnum;
+import org.pdfclown.documents.contents.LineJoinEnum;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
+import org.pdfclown.documents.contents.composition.PrimitiveComposer;
+import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -46,12 +53,12 @@ import org.pdfclown.util.math.geom.Quad;
 
 /**
   Text markup annotation [PDF:1.6:8.4.5].
-  <p>It displays highlights, underlines, strikeouts, or jagged ("squiggly") underlines
-  in the text of a document.</p>
+  <p>It displays highlights, underlines, strikeouts, or jagged ("squiggly") underlines in the text
+  of a document.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF13)
 public final class TextMarkup
@@ -133,63 +140,50 @@ public final class TextMarkup
   }
   // </classes>
 
+  // <static>
+  // <fields>
+  private static final PdfName HighlightExtGStateName = new PdfName("highlight");
+  // </fields>
+
+  // <interface>
+  private static double getMarkupBoxMargin(
+    double boxHeight
+    )
+  {return boxHeight * .25;}
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <constructors>
   /**
     Creates a new text markup on the specified page, making it printable by default.
 
     @param page Page to annotate.
+    @param text Annotation text.
     @param markupType Markup type.
     @param markupBox Quadrilateral encompassing a word or group of contiguous words in the text
       underlying the annotation.
   */
   public TextMarkup(
     Page page,
+    String text,
     MarkupTypeEnum markupType,
     Quad markupBox
     )
-  {
-    this(
-      page,
-      markupType,
-      Arrays.asList(markupBox)
-      );
-  }
+  {this(page, text, markupType, Arrays.asList(markupBox));}
 
   /**
     Creates a new text markup on the specified page, making it printable by default.
 
     @param page Page to annotate.
+    @param text Annotation text.
     @param markupType Markup type.
     @param markupBoxes Quadrilaterals encompassing a word or group of contiguous words in the text
       underlying the annotation.
   */
   public TextMarkup(
     Page page,
-    MarkupTypeEnum markupType,
-    List<Quad> markupBoxes
-    )
-  {
-    this(
-      page,
-      markupBoxes.get(0).getBounds2D(),
-      markupType,
-      markupBoxes
-      );
-  }
-
-  /**
-    Creates a new text markup on the specified page, making it printable by default.
-
-    @param page Page to annotate.
-    @param box Annotation location on the page.
-    @param markupType Markup type.
-    @param markupBoxes Quadrilaterals encompassing a word or group of contiguous words in the text
-      underlying the annotation.
-  */
-  public TextMarkup(
-    Page page,
-    Rectangle2D box,
+    String text,
     MarkupTypeEnum markupType,
     List<Quad> markupBoxes
     )
@@ -197,7 +191,8 @@ public final class TextMarkup
     super(
       page.getDocument(),
       markupType.getCode(),
-      box,
+      markupBoxes.get(0).getBounds2D(),
+      text,
       page
       );
     setMarkupType(markupType);
@@ -220,45 +215,48 @@ public final class TextMarkup
   {throw new NotImplementedException();}
 
   /**
-    Gets the quadrilaterals encompassing a word or group of contiguous words
-    in the text underlying the annotation.
+    Gets the quadrilaterals encompassing a word or group of contiguous words in the text underlying
+    the annotation.
   */
   public List<Quad> getMarkupBoxes(
     )
   {
-    PdfArray quadPointsObject = (PdfArray)getBaseDataObject().get(PdfName.QuadPoints);
     List<Quad> markupBoxes = new ArrayList<Quad>();
-    double pageHeight = getPage().getBox().getHeight();
-    for(
-      int index = 0,
-        length = quadPointsObject.size();
-      index < length;
-      index += 8
-      )
+    PdfArray quadPointsObject = (PdfArray)getBaseDataObject().get(PdfName.QuadPoints);
+    if(quadPointsObject != null)
     {
-      /*
-        NOTE: Despite the spec prescription, Point 3 and Point 4 MUST be inverted.
-      */
-      markupBoxes.add(
-        new Quad(
-          new Point2D.Double(
-            ((PdfNumber<?>)quadPointsObject.get(index)).getDoubleValue(),
-            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 1)).getDoubleValue()
-            ),
-          new Point2D.Double(
-            ((PdfNumber<?>)quadPointsObject.get(index + 2)).getDoubleValue(),
-            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 3)).getDoubleValue()
-            ),
-          new Point2D.Double(
-            ((PdfNumber<?>)quadPointsObject.get(index + 6)).getDoubleValue(),
-            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 7)).getDoubleValue()
-            ),
-          new Point2D.Double(
-            ((PdfNumber<?>)quadPointsObject.get(index + 4)).getDoubleValue(),
-            pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 5)).getDoubleValue()
+      double pageHeight = getPage().getBox().getHeight();
+      for(
+        int index = 0,
+          length = quadPointsObject.size();
+        index < length;
+        index += 8
+        )
+      {
+        /*
+          NOTE: Despite the spec prescription, Point 3 and Point 4 MUST be inverted.
+        */
+        markupBoxes.add(
+          new Quad(
+            new Point2D.Double(
+              ((PdfNumber<?>)quadPointsObject.get(index)).getDoubleValue(),
+              pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 1)).getDoubleValue()
+              ),
+            new Point2D.Double(
+              ((PdfNumber<?>)quadPointsObject.get(index + 2)).getDoubleValue(),
+              pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 3)).getDoubleValue()
+              ),
+            new Point2D.Double(
+              ((PdfNumber<?>)quadPointsObject.get(index + 6)).getDoubleValue(),
+              pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 7)).getDoubleValue()
+              ),
+            new Point2D.Double(
+              ((PdfNumber<?>)quadPointsObject.get(index + 4)).getDoubleValue(),
+              pageHeight - ((PdfNumber<?>)quadPointsObject.get(index + 5)).getDoubleValue()
+              )
             )
-          )
-        );
+          );
+      }
     }
     return markupBoxes;
   }
@@ -279,6 +277,7 @@ public final class TextMarkup
   {
     PdfArray quadPointsObject = new PdfArray();
     double pageHeight = getPage().getBox().getHeight();
+    Rectangle2D box = null;
     for(Quad markupBox : value)
     {
       /*
@@ -293,8 +292,21 @@ public final class TextMarkup
       quadPointsObject.add(PdfReal.get(pageHeight - markupBoxPoints[3].getY())); // y4.
       quadPointsObject.add(PdfReal.get(markupBoxPoints[2].getX())); // x3.
       quadPointsObject.add(PdfReal.get(pageHeight - markupBoxPoints[2].getY())); // y3.
+      if(box == null)
+      {box = markupBox.getBounds2D();}
+      else
+      {box.add(markupBox.getBounds2D());}
     }
     getBaseDataObject().put(PdfName.QuadPoints, quadPointsObject);
+
+    /*
+      NOTE: Box width is expanded to make room for end decorations (e.g. rounded highlight caps).
+    */
+    double markupBoxMargin = getMarkupBoxMargin(box.getHeight());
+    box.setRect(box.getX() - markupBoxMargin, box.getY(), box.getWidth() + markupBoxMargin * 2, box.getHeight());
+    setBox(box);
+
+    refreshAppearance();
   }
 
   /**
@@ -317,8 +329,150 @@ public final class TextMarkup
         setColor(new DeviceRGBColor(0, 0, 0));
         break;
     }
+    refreshAppearance();
   }
   // </public>
+
+  // <private>
+  /*
+    TODO: refresh should happen just before serialization, on document event (e.g. onWrite())
+  */
+  private void refreshAppearance(
+    )
+  {
+    FormXObject normalAppearance;
+    Rectangle2D box = new org.pdfclown.objects.Rectangle(getBaseDataObject().get(PdfName.Rect)).toRectangle2D();
+    {
+      AppearanceStates normalAppearances = getAppearance().getNormal();
+      normalAppearance = normalAppearances.get(null);
+      if(normalAppearance != null)
+      {
+        normalAppearance.setBox(box);
+        normalAppearance.getBaseDataObject().getBody().setLength(0);
+      }
+      else
+      {normalAppearances.put(null, normalAppearance = new FormXObject(getDocument(), box));}
+    }
+
+    PrimitiveComposer composer = new PrimitiveComposer(normalAppearance);
+    {
+      double yOffset = box.getHeight() - getPage().getBox().getHeight();
+      MarkupTypeEnum markupType = getMarkupType();
+      switch(markupType)
+      {
+        case Highlight:
+        {
+          ExtGState defaultExtGState;
+          {
+            ExtGStateResources extGStates = normalAppearance.getResources().getExtGStates();
+            defaultExtGState = extGStates.get(HighlightExtGStateName);
+            if(defaultExtGState == null)
+            {
+              if(!extGStates.isEmpty())
+              {extGStates.clear();}
+
+              extGStates.put(HighlightExtGStateName, defaultExtGState = new ExtGState(getDocument()));
+              defaultExtGState.setAlphaShape(false);
+              defaultExtGState.setBlendMode(Arrays.asList(BlendModeEnum.Multiply));
+            }
+          }
+
+          composer.applyState(defaultExtGState);
+          composer.setFillColor(getColor());
+          {
+            for(Quad markupBox : getMarkupBoxes())
+            {
+              Point2D[] points = markupBox.getPoints();
+              double markupBoxHeight = points[3].getY() - points[0].getY();
+              double markupBoxMargin = getMarkupBoxMargin(markupBoxHeight);
+              composer.drawCurve(
+                new Point2D.Double(points[3].getX(), points[3].getY() + yOffset),
+                new Point2D.Double(points[0].getX(), points[0].getY() + yOffset),
+                new Point2D.Double(points[3].getX() - markupBoxMargin, points[3].getY() - markupBoxMargin + yOffset),
+                new Point2D.Double(points[0].getX() - markupBoxMargin, points[0].getY() + markupBoxMargin + yOffset)
+                );
+              composer.drawLine(
+                new Point2D.Double(points[1].getX(), points[1].getY() + yOffset)
+                );
+              composer.drawCurve(
+                new Point2D.Double(points[2].getX(), points[2].getY() + yOffset),
+                new Point2D.Double(points[1].getX() + markupBoxMargin, points[1].getY() + markupBoxMargin + yOffset),
+                new Point2D.Double(points[2].getX() + markupBoxMargin, points[2].getY() - markupBoxMargin + yOffset)
+                );
+              composer.fill();
+            }
+          }
+        }
+          break;
+        case Squiggly:
+        {
+          composer.setStrokeColor(getColor());
+          composer.setLineCap(LineCapEnum.Round);
+          composer.setLineJoin(LineJoinEnum.Round);
+          {
+            for(Quad markupBox : getMarkupBoxes())
+            {
+              Point2D[] points = markupBox.getPoints();
+              double markupBoxHeight = points[3].getY() - points[0].getY();
+              double lineWidth = markupBoxHeight * .02;
+              double step = markupBoxHeight * .125;
+              double boxXOffset = points[3].getX();
+              double boxYOffset = points[3].getY() + yOffset - lineWidth;
+              boolean phase = false;
+              composer.setLineWidth(lineWidth);
+              for(double x = 0, xEnd = points[2].getX() - boxXOffset; x < xEnd || !phase; x += step)
+              {
+                Point2D point = new Point2D.Double(x + boxXOffset, (phase ? -step : 0) + boxYOffset);
+                if(x == 0)
+                {composer.startPath(point);}
+                else
+                {composer.drawLine(point);}
+                phase = !phase;
+              }
+            }
+            composer.stroke();
+          }
+        }
+          break;
+        case StrikeOut:
+        case Underline:
+        {
+          composer.setStrokeColor(getColor());
+          {
+            double lineYRatio;
+            switch(markupType)
+            {
+              case StrikeOut:
+                lineYRatio = .575;
+                break;
+              case Underline:
+                lineYRatio = .85;
+                break;
+              default:
+                throw new NotImplementedException();
+            }
+            for(Quad markupBox : getMarkupBoxes())
+            {
+              Point2D[] points = markupBox.getPoints();
+              double markupBoxHeight = points[3].getY() - points[0].getY();
+              double boxYOffset = markupBoxHeight * lineYRatio + yOffset;
+              composer.setLineWidth(markupBoxHeight * .065);
+              composer.drawLine(
+                new Point2D.Double(points[3].getX(), points[0].getY() + boxYOffset),
+                new Point2D.Double(points[2].getX(), points[1].getY() + boxYOffset)
+                );
+            }
+            composer.stroke();
+          }
+        }
+          break;
+        default:
+          throw new NotImplementedException();
+      }
+    }
+    composer.flush();
+  }
+  // </private>
   // </interface>
   // </dynamic>
   // </class>

@@ -73,7 +73,7 @@ namespace org.pdfclown.objects
 
     #region static
     #region fields
-    public static readonly PdfString Empty = new PdfString("");
+    public static readonly PdfString Default = new PdfString("");
 
     private const byte BackspaceCode = 8;
     private const byte CarriageReturnCode = 13;

@@ -268,7 +268,7 @@ namespace org.pdfclown.documents.contents.fonts
           {
             new PdfTextString("Adobe"),
             new PdfTextString("Identity"),
-            new PdfInteger(0)
+            PdfInteger.Get(0)
           }
           ); // Generic predefined CMap (Identity-H/V (Adobe-Identity-0)) [PDF:1.6:5.6.4].
 
@@ -387,7 +387,7 @@ namespace org.pdfclown.documents.contents.fonts
         {width = 0;}
         else if(width > 1000)
         {width = 1000;}
-        widthsObject.Add(new PdfInteger(width));
+        widthsObject.Add(PdfInteger.Get(width));
       }
       cmapBuffer.Append(
         "endcidchar\n"
@@ -413,7 +413,7 @@ namespace org.pdfclown.documents.contents.fonts
         {
           new PdfTextString("Adobe"),
           new PdfTextString("Identity"),
-          new PdfInteger(0)
+          PdfInteger.Get(0)
         }
         ); // Generic predefined CMap (Identity-H/V (Adobe-Identity-0)) [PDF:1.6:5.6.4].
       font[PdfName.Encoding] = File.Register(cmapStream);
@@ -421,7 +421,7 @@ namespace org.pdfclown.documents.contents.fonts
       PdfStream gIdStream = new PdfStream(gIdBuffer);
       cidFont[PdfName.CIDToGIDMap] = File.Register(gIdStream);
 
-      cidFont[PdfName.W] = new PdfArray(new PdfDirectObject[]{new PdfInteger(1),widthsObject});
+      cidFont[PdfName.W] = new PdfArray(new PdfDirectObject[]{PdfInteger.Get(1),widthsObject});
 
       toUnicodeBuffer.Append(
         "endbfchar\n"
@@ -447,8 +447,10 @@ namespace org.pdfclown.documents.contents.fonts
 
         // Type.
         fontDescriptor[PdfName.Type] = PdfName.FontDescriptor;
+
         // FontName.
         fontDescriptor[PdfName.FontName] = BaseDataObject[PdfName.BaseFont];
+
         // Flags [PDF:1.6:5.7.1].
         FlagsEnum flags = 0;
         if(metrics.IsFixedPitch)
@@ -457,37 +459,45 @@ namespace org.pdfclown.documents.contents.fonts
         {flags |= FlagsEnum.Symbolic;}
         else
         {flags |= FlagsEnum.Nonsymbolic;}
-        fontDescriptor[PdfName.Flags] = new PdfInteger(Convert.ToInt32(flags));
+        fontDescriptor[PdfName.Flags] = PdfInteger.Get(Convert.ToInt32(flags));
+
         // FontBBox.
         fontDescriptor[PdfName.FontBBox] = new Rectangle(
           new drawing::PointF(metrics.XMin * metrics.UnitNorm, metrics.YMin * metrics.UnitNorm),
           new drawing::PointF(metrics.XMax * metrics.UnitNorm, metrics.YMax * metrics.UnitNorm)
           ).BaseDataObject;
+
         // ItalicAngle.
         fontDescriptor[PdfName.ItalicAngle] = PdfReal.Get(metrics.ItalicAngle);
+
         // Ascent.
         fontDescriptor[PdfName.Ascent] = PdfReal.Get(
           metrics.Ascender == 0
             ? metrics.STypoAscender * metrics.UnitNorm
             : metrics.Ascender * metrics.UnitNorm
           );
+
         // Descent.
         fontDescriptor[PdfName.Descent] = PdfReal.Get(
           metrics.Descender == 0
             ? metrics.STypoDescender * metrics.UnitNorm
             : metrics.Descender * metrics.UnitNorm
           );
+
         // Leading.
         fontDescriptor[PdfName.Leading] = PdfReal.Get(metrics.STypoLineGap * metrics.UnitNorm);
+
         // CapHeight.
         fontDescriptor[PdfName.CapHeight] = PdfReal.Get(metrics.SCapHeight * metrics.UnitNorm);
+
         // StemV.
         /*
           NOTE: '100' is just a rule-of-thumb value, 'cause I've still to solve the
           'cvt' table puzzle (such a harsh headache!) for TrueType fonts...
           TODO:IMPL TrueType and CFF stemv real value to extract!!!
         */
-        fontDescriptor[PdfName.StemV] = new PdfInteger(100);
+        fontDescriptor[PdfName.StemV] = PdfInteger.Get(100);
+
         // FontFile.
         fontDescriptor[PdfName.FontFile2] = File.Register(
           new PdfStream(new bytes::Buffer(parser.FontData.ToByteArray()))

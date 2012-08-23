@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,6 +43,7 @@ import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
+import org.pdfclown.util.EnumUtils;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -50,7 +51,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Field
@@ -261,7 +262,7 @@ public abstract class Field
     } while(dictionary != null);
     // Default.
     if(key.equals(PdfName.Ff))
-      return new PdfInteger(0);
+      return PdfInteger.Default;
     else
       return null;
   }
@@ -433,14 +434,7 @@ public abstract class Field
   public void setExportable(
     boolean value
     )
-  {
-    EnumSet<FlagsEnum> flags = getFlags();
-    if(value)
-    {flags.remove(FlagsEnum.NoExport);}
-    else
-    {flags.add(FlagsEnum.NoExport);}
-    setFlags(flags);
-  }
+  {setFlags(EnumUtils.mask(getFlags(), FlagsEnum.NoExport, !value));}
 
   /**
     @see #getFlags()
@@ -448,7 +442,7 @@ public abstract class Field
   public void setFlags(
     EnumSet<FlagsEnum> value
     )
-  {getBaseDataObject().put(PdfName.Ff, new PdfInteger(FlagsEnum.toInt(value)));}
+  {getBaseDataObject().put(PdfName.Ff, PdfInteger.get(FlagsEnum.toInt(value)));}
 
   /**
     @see #getName()
@@ -464,14 +458,7 @@ public abstract class Field
   public void setReadOnly(
     boolean value
     )
-  {
-    EnumSet<FlagsEnum> flags = getFlags();
-    if(value)
-    {flags.add(FlagsEnum.ReadOnly);}
-    else
-    {flags.remove(FlagsEnum.ReadOnly);}
-    setFlags(flags);
-  }
+  {setFlags(EnumUtils.mask(getFlags(), FlagsEnum.ReadOnly, value));}
 
   /**
     @see #isRequired()
@@ -479,14 +466,7 @@ public abstract class Field
   public void setRequired(
     boolean value
     )
-  {
-    EnumSet<FlagsEnum> flags = getFlags();
-    if(value)
-    {flags.add(FlagsEnum.Required);}
-    else
-    {flags.remove(FlagsEnum.Required);}
-    setFlags(flags);
-  }
+  {setFlags(EnumUtils.mask(getFlags(), FlagsEnum.Required, value));}
 
   /**
     @see #getValue()

@@ -477,7 +477,7 @@ namespace org.pdfclown.documents
         return RotationEnumExtension.Get(rotationObject);
       }
       set
-      {BaseDataObject[PdfName.Rotate] = new PdfInteger((int)value);}
+      {BaseDataObject[PdfName.Rotate] = PdfInteger.Get((int)value);}
     }
 
     #region IContentEntity
@@ -492,12 +492,10 @@ namespace org.pdfclown.documents
     {
       xObjects::FormXObject form;
       {
-        form = new xObjects::FormXObject(
-          context,
-          Box,
-          (Resources)(context.Equals(Document)
-            ? Resources // Same document: reuses the existing resources.
-            : Resources.Clone(context)) // Alien document: clones the resources.
+        form = new xObjects::FormXObject(context, Box);
+        form.Resources = (Resources)(context.Equals(Document)
+          ? Resources // Same document: reuses the existing resources.
+          : Resources.Clone(context) // Alien document: clones the resources.
           );
 
         // Body (contents).

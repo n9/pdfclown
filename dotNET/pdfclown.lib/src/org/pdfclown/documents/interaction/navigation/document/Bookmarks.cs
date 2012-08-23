@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -57,7 +57,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
           new PdfDirectObject[2]
           {
             PdfName.Outlines,
-            new PdfInteger(0)
+            PdfInteger.Default
           }
           )
         )
@@ -136,7 +136,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
         BaseDataObject[PdfName.Last]
           = BaseDataObject[PdfName.First]
           = bookmark.BaseObject;
-        BaseDataObject[PdfName.Count] = new PdfInteger(countObject.IntValue+1);
+        BaseDataObject[PdfName.Count] = PdfInteger.Get(countObject.IntValue+1);
       }
       else // Non-first bookmark.
       {
@@ -150,7 +150,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
           NOTE: The Count entry is a relative number (whose sign represents
           the node open state).
         */
-        BaseDataObject[PdfName.Count] = new PdfInteger(countObject.IntValue + Math.Sign(countObject.IntValue));
+        BaseDataObject[PdfName.Count] = PdfInteger.Get(countObject.IntValue + Math.Sign(countObject.IntValue));
       }
     }
 
@@ -231,7 +231,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
       */
       PdfInteger countObject = (PdfInteger)BaseDataObject[PdfName.Count];
       if(countObject == null)
-        BaseDataObject[PdfName.Count] = countObject = new PdfInteger(0);
+      {BaseDataObject[PdfName.Count] = countObject = PdfInteger.Default;}
 
       return countObject;
     }

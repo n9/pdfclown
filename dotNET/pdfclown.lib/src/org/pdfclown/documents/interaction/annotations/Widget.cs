@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -26,6 +26,7 @@
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
 using org.pdfclown.objects;
+using org.pdfclown.util;
 
 using System;
 using System.Collections.Generic;
@@ -119,13 +120,8 @@ namespace org.pdfclown.documents.interaction.annotations
     public Widget(
       Page page,
       RectangleF box
-      ) : base(
-        page.Document,
-        PdfName.Widget,
-        box,
-        page
-        )
-    {FlagsEnum flags = Flags; flags |= FlagsEnum.Print; Flags = flags;}
+      ) : base(page.Document, PdfName.Widget, box, null, page)
+    {Flags = EnumUtils.Mask(Flags, FlagsEnum.Print, true);}
 
     public Widget(
       PdfDirectObject baseObject

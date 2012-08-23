@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF13)
 public final class EmbeddedFile
@@ -230,7 +230,7 @@ public final class EmbeddedFile
   public void setSize(
     int value
     )
-  {setInfo(PdfName.Size, new PdfInteger(value));}
+  {setInfo(PdfName.Size, PdfInteger.get(value));}
   // </public>
 
   // <private>
@@ -242,10 +242,14 @@ public final class EmbeddedFile
   private PdfDirectObject getInfo(
     PdfName key
     )
-  {
-    PdfDictionary info = (PdfDictionary)getBaseDataObject().getHeader().resolve(PdfName.Params);
-    return info != null ? info.get(key) : null;
-  }
+  {return getParams().get(key);}
+
+  /**
+    Gets the file parameters.
+  */
+  private PdfDictionary getParams(
+    )
+  {return getBaseDataObject().getHeader().resolve(PdfName.Params, PdfDictionary.class);}
 
   /**
     @see #getInfo(PdfName)
@@ -254,12 +258,7 @@ public final class EmbeddedFile
     PdfName key,
     PdfDirectObject value
     )
-  {
-    PdfDictionary info = (PdfDictionary)getBaseDataObject().getHeader().resolve(PdfName.Params);
-    if(info == null)
-    {getBaseDataObject().getHeader().put(PdfName.Params, info = new PdfDictionary());}
-    info.put(key, value);
-  }
+  {getParams().put(key, value);}
   // </private>
   // </interface>
   // </dynamic>

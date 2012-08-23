@@ -151,7 +151,8 @@ namespace org.pdfclown.documents.interaction.annotations
     public Line(
       Page page,
       PointF startPoint,
-      PointF endPoint
+      PointF endPoint,
+      string text
       ) : base(
         page.Document,
         PdfName.Line,
@@ -161,6 +162,7 @@ namespace org.pdfclown.documents.interaction.annotations
           endPoint.X-startPoint.X,
           endPoint.Y-startPoint.Y
           ),
+        text,
         page
         )
     {

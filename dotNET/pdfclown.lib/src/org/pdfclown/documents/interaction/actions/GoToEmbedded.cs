@@ -222,7 +222,7 @@ namespace org.pdfclown.documents.interaction.actions
           {
             PdfDirectObject pageRefObject;
             if(value is int)
-            {pageRefObject = new PdfInteger((int)value);}
+            {pageRefObject = PdfInteger.Get((int)value);}
             else if(value is string)
             {pageRefObject = new PdfString((string)value);}
             else
@@ -259,7 +259,7 @@ namespace org.pdfclown.documents.interaction.actions
           {
             PdfDirectObject annotationRefObject;
             if(value is int)
-            {annotationRefObject = new PdfInteger((int)value);}
+            {annotationRefObject = PdfInteger.Get((int)value);}
             else if(value is string)
             {annotationRefObject = new PdfTextString((string)value);}
             else

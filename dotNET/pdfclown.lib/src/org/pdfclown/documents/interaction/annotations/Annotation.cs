@@ -31,6 +31,7 @@ using org.pdfclown.documents.contents.layers;
 using org.pdfclown.documents.interaction.actions;
 using org.pdfclown.files;
 using org.pdfclown.objects;
+using org.pdfclown.util;
 
 using System;
 using System.Drawing;
@@ -171,6 +172,7 @@ namespace org.pdfclown.documents.interaction.annotations
       Document context,
       PdfName subtype,
       RectangleF box,
+      string text,
       Page page
       ) : base(
         context,
@@ -187,17 +189,15 @@ namespace org.pdfclown.documents.interaction.annotations
             PdfName.Annot,
             subtype,
             page.BaseObject,
-            new PdfArray(new PdfDirectObject[]{new PdfInteger(0),new PdfInteger(0),new PdfInteger(0)}) // NOTE: Hide border by default.
+            new PdfArray(new PdfDirectObject[]{PdfInteger.Default, PdfInteger.Default, PdfInteger.Default}) // NOTE: Hide border by default.
           }
           )
         )
     {
       Box = box;
-
-      PdfArray pageAnnotsObject = (PdfArray)page.BaseDataObject.Resolve(PdfName.Annots);
-      if(pageAnnotsObject == null)
-      {page.BaseDataObject[PdfName.Annots] = pageAnnotsObject = new PdfArray();}
-      pageAnnotsObject.Add(BaseObject);
+      Text = text;
+      // Insert this annotation into the page!
+      page.BaseDataObject.Resolve<PdfArray>(PdfName.Annots).Add(BaseObject);
     }
 
     protected Annotation(
@@ -217,12 +217,7 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {return actions.Action.Wrap(BaseDataObject[PdfName.A]);}
       set
-      {
-        if(value == null)
-        {BaseDataObject.Remove(PdfName.A);}
-        else
-        {BaseDataObject[PdfName.A] = value.BaseObject;}
-      }
+      {BaseDataObject[PdfName.A] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
@@ -232,17 +227,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public virtual AnnotationActions Actions
     {
       get
-      {
-        PdfDirectObject actionsObject = BaseDataObject[PdfName.AA];
-        return actionsObject != null ? new AnnotationActions(this, actionsObject) : null;
-      }
+      {return new AnnotationActions(this, BaseDataObject.Get<PdfDictionary>(PdfName.AA));}
       set
-      {
-        if(value == null)
-        {BaseDataObject.Remove(PdfName.AA);}
-        else
-        {BaseDataObject[PdfName.AA] = value.BaseObject;}
-      }
+      {BaseDataObject[PdfName.AA] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
@@ -252,17 +239,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public Appearance Appearance
     {
       get
-      {
-        PdfDirectObject appearanceObject = BaseDataObject[PdfName.AP];
-        return appearanceObject != null ? new Appearance(appearanceObject) : null;
-      }
+      {return new Appearance(BaseDataObject.Get<PdfDictionary>(PdfName.AP));}
       set
-      {
-        if(value == null)
-        {BaseDataObject.Remove(PdfName.AP);}
-        else
-        {BaseDataObject[PdfName.AP] = value.BaseObject;}
-      }
+      {BaseDataObject[PdfName.AP] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
@@ -272,19 +251,12 @@ namespace org.pdfclown.documents.interaction.annotations
     public Border Border
     {
       get
-      {
-        PdfDirectObject borderObject = BaseDataObject[PdfName.BS];
-        return borderObject != null ? new Border(borderObject) : null;
-      }
+      {return new Border(BaseDataObject.Get<PdfDictionary>(PdfName.BS));}
       set
       {
-        if(value == null)
-        {BaseDataObject.Remove(PdfName.BS);}
-        else
-        {
-          BaseDataObject[PdfName.BS] = value.BaseObject;
-          BaseDataObject.Remove(PdfName.Border);
-        }
+        BaseDataObject[PdfName.BS] = PdfObjectWrapper.GetBaseObject(value);
+        if(value != null)
+        {BaseDataObject.Remove(PdfName.Border);}
       }
     }
 
@@ -329,15 +301,7 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {return DeviceColor.Get((PdfArray)BaseDataObject[PdfName.C]);}
       set
-      {
-        if(value == null)
-        {BaseDataObject.Remove(PdfName.C);}
-        else
-        {
-          CheckCompatibility("Color");
-          BaseDataObject[PdfName.C] = value.BaseObject;
-        }
-      }
+      {BaseDataObject[PdfName.C] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
@@ -354,7 +318,7 @@ namespace org.pdfclown.documents.interaction.annotations
           : (FlagsEnum)Enum.ToObject(typeof(FlagsEnum), flagsObject.RawValue);
       }
       set
-      {BaseDataObject[PdfName.F] = new PdfInteger((int)value);}
+      {BaseDataObject[PdfName.F] = PdfInteger.Get((int)value);}
     }
 
     /**
@@ -365,6 +329,9 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
+        /*
+          NOTE: Despite PDF date being the preferred format, loose formats are tolerated by the spec.
+        */
         PdfDirectObject modificationDateObject = BaseDataObject[PdfName.M];
         return (DateTime?)(modificationDateObject is PdfDate ? ((PdfDate)modificationDateObject).Value : null);
       }
@@ -380,12 +347,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public string Name
     {
       get
-      {
-        PdfTextString nameObject = (PdfTextString)BaseDataObject[PdfName.NM];
-        return nameObject != null ? (string)nameObject.Value : null;
-      }
+      {return (string)PdfSimpleObject<Object>.GetValue(BaseDataObject[PdfName.NM]);}
       set
-      {BaseDataObject[PdfName.NM] = new PdfTextString(value);}
+      {BaseDataObject[PdfName.NM] = PdfTextString.Get(value);}
     }
 
     /**
@@ -401,27 +365,6 @@ namespace org.pdfclown.documents.interaction.annotations
     }
 
     /**
-      <summary>Gets/Sets the annotation text.</summary>
-      <remarks>Depending on the annotation type, the text may be either directly displayed
-      or (in case of non-textual annotations) used as alternate description.</remarks>
-    */
-    public string Text
-    {
-      get
-      {
-        PdfTextString textObject = (PdfTextString)BaseDataObject[PdfName.Contents];
-        return textObject != null ? (string)textObject.Value : null;
-      }
-      set
-      {
-        if(value == null)
-        {BaseDataObject.Remove(PdfName.Contents);}
-        else
-        {BaseDataObject[PdfName.Contents] = new PdfTextString(value);}
-      }
-    }
-
-    /**
       <summary>Gets/Sets whether to print the annotation when the page is printed.</summary>
     */
     [PDF(VersionEnum.PDF11)]
@@ -430,13 +373,24 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {return (Flags & FlagsEnum.Print) == FlagsEnum.Print;}
       set
+      {Flags = EnumUtils.Mask(Flags, FlagsEnum.Print, value);}
+    }
+
+    /**
+      <summary>Gets/Sets the annotation text.</summary>
+      <remarks>Depending on the annotation type, the text may be either directly displayed
+      or (in case of non-textual annotations) used as alternate description.</remarks>
+    */
+    public string Text
+    {
+      get
+      {return (string)PdfSimpleObject<Object>.GetValue(BaseDataObject[PdfName.Contents]);}
+      set
       {
-        FlagsEnum flags = Flags;
-        if(value)
-        {flags |= FlagsEnum.Print;}
+        if(value == null)
+        {BaseDataObject.Remove(PdfName.Contents);}
         else
-        {flags ^= FlagsEnum.Print;}
-        Flags = flags;
+        {BaseDataObject[PdfName.Contents] = PdfTextString.Get(value);}
       }
     }
 
@@ -447,16 +401,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public bool Visible
     {
       get
-      {return ((Flags & FlagsEnum.Hidden) == 0);}
+      {return (Flags & FlagsEnum.Hidden) != FlagsEnum.Hidden;}
       set
-      {
-        FlagsEnum flags = Flags;
-        if(value)
-        {flags ^= FlagsEnum.Hidden;}
-        else
-        {flags |= FlagsEnum.Hidden;}
-        Flags = flags;
-      }
+      {Flags = EnumUtils.Mask(Flags, FlagsEnum.Hidden, !value);}
     }
 
     #region ILayerable
@@ -466,7 +413,7 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {return (LayerEntity)PropertyList.Wrap(BaseDataObject[PdfName.OC]);}
       set
-      {BaseDataObject[PdfName.OC] = value.BaseObject;}
+      {BaseDataObject[PdfName.OC] = PdfObjectWrapper.GetBaseObject(value);}
     }
     #endregion
     #endregion

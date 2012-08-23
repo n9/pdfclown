@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 08/23/12
 */
 public enum RotationEnum
 {
@@ -45,19 +45,19 @@ public enum RotationEnum
   /**
     Downward (0° clockwise).
   */
-  Downward(new PdfInteger(0)),
+  Downward(PdfInteger.get(0)),
   /**
     Leftward (90° clockwise).
   */
-  Leftward(new PdfInteger(90)),
+  Leftward(PdfInteger.get(90)),
   /**
     Upward (180° clockwise).
   */
-  Upward(new PdfInteger(180)),
+  Upward(PdfInteger.get(180)),
   /**
     Rightward (270° clockwise).
   */
-  Rightward(new PdfInteger(270));
+  Rightward(PdfInteger.get(270));
   // </fields>
 
   // <interface>

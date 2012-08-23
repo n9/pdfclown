@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -64,10 +64,10 @@ namespace org.pdfclown.documents.contents.entities
             new List<PdfDirectObject>(
               new PdfDirectObject[]
               {
-                PdfName.W, new PdfInteger(Width),
-                PdfName.H, new PdfInteger(Height),
+                PdfName.W, PdfInteger.Get(Width),
+                PdfName.H, PdfInteger.Get(Height),
                 PdfName.CS, PdfName.RGB,
-                PdfName.BPC, new PdfInteger(BitsPerComponent),
+                PdfName.BPC, PdfInteger.Get(BitsPerComponent),
                 PdfName.F, PdfName.DCT
               }
               )
@@ -97,9 +97,9 @@ namespace org.pdfclown.documents.contents.entities
             },
             new PdfDirectObject[]
             {
-              new PdfInteger(Width),
-              new PdfInteger(Height),
-              new PdfInteger(BitsPerComponent),
+              PdfInteger.Get(Width),
+              PdfInteger.Get(Height),
+              PdfInteger.Get(BitsPerComponent),
               PdfName.DeviceRGB,
               PdfName.DCTDecode
             }

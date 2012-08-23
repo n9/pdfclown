@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF11)
 public final class GoToEmbedded
@@ -287,7 +287,7 @@ public final class GoToEmbedded
       {
         PdfDirectObject pageRefObject;
         if(value instanceof Integer)
-        {pageRefObject = new PdfInteger((Integer)value);}
+        {pageRefObject = PdfInteger.get((Integer)value);}
         else if(value instanceof String)
         {pageRefObject = new PdfString((String)value);}
         else
@@ -310,9 +310,9 @@ public final class GoToEmbedded
       {
         PdfDirectObject annotationRefObject;
         if(value instanceof Integer)
-        {annotationRefObject = new PdfInteger((Integer)value);}
+        {annotationRefObject = PdfInteger.get((Integer)value);}
         else if(value instanceof String)
-        {annotationRefObject = new PdfTextString((String)value);}
+        {annotationRefObject = PdfTextString.get((String)value);}
         else
           throw new IllegalArgumentException("Wrong argument type: it MUST be either an annotation index Integer or an annotation name String.");
 

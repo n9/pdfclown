@@ -23,7 +23,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 08/23/12
 */
 public class TextHighlightSample
   extends Sample
@@ -107,7 +107,7 @@ public class TextHighlightSample
               highlightQuads.add(Quad.get(textBox));
             }
             // Highlight the text pattern match!
-            new TextMarkup(page, MarkupTypeEnum.Highlight, highlightQuads);
+            new TextMarkup(page, null, MarkupTypeEnum.Highlight, highlightQuads);
           }
 
           @Override

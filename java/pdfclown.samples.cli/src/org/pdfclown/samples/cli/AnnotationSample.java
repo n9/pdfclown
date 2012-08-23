@@ -30,7 +30,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 08/23/12
 */
 public class AnnotationSample
   extends Sample
@@ -102,6 +102,7 @@ public class AnnotationSample
     FileAttachment attachment = new FileAttachment(
       page,
       new Rectangle(50, 150, 12, 12),
+      "File attachment annotation",
       FileSpecification.get(
         EmbeddedFile.get(
           document,
@@ -110,7 +111,6 @@ public class AnnotationSample
         "happyGNU.jpg"
         )
       );
-    attachment.setText("File attachment annotation");
     attachment.setIconType(FileAttachment.IconTypeEnum.PaperClip);
 
     composer.beginLocalState();
@@ -122,12 +122,12 @@ public class AnnotationSample
     Line line = new Line(
       page,
       new Point(50, 260),
-      new Point(200,210)
+      new Point(200,210),
+      "Arrow line annotation"
       );
     line.setFillColor(DeviceRGBColor.get(Color.RED));
     line.setStartStyle(Line.LineEndStyleEnum.Circle);
     line.setEndStyle(Line.LineEndStyleEnum.ClosedArrow);
-    line.setText("Arrow line annotation");
     line.setCaptionVisible(true);
 
     // Dimension line.
@@ -135,11 +135,11 @@ public class AnnotationSample
     line = new Line(
       page,
       new Point(300,220),
-      new Point(500,220)
+      new Point(500,220),
+      "Dimension line annotation"
       );
     line.setLeaderLineLength(20);
     line.setLeaderLineExtensionLength(10);
-    line.setText("Dimension line annotation");
     line.setCaptionVisible(true);
 
     composer.end();
@@ -149,6 +149,7 @@ public class AnnotationSample
     Scribble scribble = new Scribble(
       page,
       new Rectangle(50, 300, 100, 30),
+      "Scribble annotation",
       Arrays.asList(
         Arrays.asList(
           (Point2D)new Point(50,300),
@@ -157,42 +158,41 @@ public class AnnotationSample
           )
         )
       );
-    scribble.setText("Scribble annotation");
 
     // Rectangle.
     composer.showText("Rectangle annotation:", new Point(35,335));
     org.pdfclown.documents.interaction.annotations.Rectangle rectangle = new org.pdfclown.documents.interaction.annotations.Rectangle(
       page,
-      new Rectangle(50, 350, 100, 30)
+      new Rectangle(50, 350, 100, 30),
+      "Rectangle annotation"
       );
     rectangle.setFillColor(DeviceRGBColor.get(Color.RED));
-    rectangle.setText("Rectangle annotation");
 
     // Ellipse.
     composer.showText("Ellipse annotation:", new Point(35,385));
     Ellipse ellipse = new Ellipse(
       page,
-      new Rectangle(50, 400, 100, 30)
+      new Rectangle(50, 400, 100, 30),
+      "Ellipse annotation"
       );
     ellipse.setFillColor(DeviceRGBColor.get(Color.BLUE));
-    ellipse.setText("Ellipse annotation");
 
     // Rubber stamp.
     composer.showText("Rubber stamp annotation:", new Point(35,435));
     RubberStamp rubberStamp = new RubberStamp(
       page,
       new Rectangle(50, 450, 100, 30),
+      "Rubber stamp annotation",
       RubberStamp.IconTypeEnum.Approved
       );
-    rubberStamp.setText("Rubber stamp annotation");
 
     // Caret.
     composer.showText("Caret annotation:", new Point(35,485));
     Caret caret = new Caret(
       page,
-      new Rectangle(50, 500, 100, 30)
+      new Rectangle(50, 500, 100, 30),
+      "Caret annotation"
       );
-    caret.setText("Caret annotation");
     caret.setSymbolType(Caret.SymbolTypeEnum.NewParagraph);
 
     composer.flush();

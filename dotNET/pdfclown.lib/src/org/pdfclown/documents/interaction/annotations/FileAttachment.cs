@@ -118,13 +118,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public FileAttachment(
       Page page,
       RectangleF box,
+      string text,
       FileSpecification dataFile
-      ) : base(
-        page.Document,
-        PdfName.FileAttachment,
-        box,
-        page
-        )
+      ) : base(page.Document, PdfName.FileAttachment, box, text, page)
     {DataFile = dataFile;}
 
     public FileAttachment(

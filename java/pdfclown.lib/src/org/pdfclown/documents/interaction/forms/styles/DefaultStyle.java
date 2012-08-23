@@ -63,7 +63,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 public final class DefaultStyle
   extends FieldStyle
@@ -121,7 +121,7 @@ public final class DefaultStyle
             new PdfDirectObject[]
             {
               new PdfArray(new PdfDirectObject[]{PdfReal.get(0.9412), PdfReal.get(0.9412), PdfReal.get(0.9412)}),
-              new PdfArray(new PdfDirectObject[]{new PdfInteger(0), new PdfInteger(0), new PdfInteger(0)}),
+              new PdfArray(new PdfDirectObject[]{PdfInteger.Default, PdfInteger.Default, PdfInteger.Default}),
               new PdfString("4")
             }
             )
@@ -243,7 +243,7 @@ public final class DefaultStyle
             new PdfDirectObject[]
             {
               new PdfArray(new PdfDirectObject[]{PdfReal.get(0.9412), PdfReal.get(0.9412), PdfReal.get(0.9412)}),
-              new PdfArray(new PdfDirectObject[]{new PdfInteger(0), new PdfInteger(0), new PdfInteger(0)}),
+              new PdfArray(new PdfDirectObject[]{PdfInteger.Default, PdfInteger.Default, PdfInteger.Default}),
               new PdfString("l")
             }
             )
@@ -538,7 +538,7 @@ public final class DefaultStyle
           new PdfDirectObject[]
           {
             new PdfArray(new PdfDirectObject[]{PdfReal.get(.9), PdfReal.get(.9), PdfReal.get(.9)}),
-            new PdfArray(new PdfDirectObject[]{new PdfInteger(0), new PdfInteger(0), new PdfInteger(0)})
+            new PdfArray(new PdfDirectObject[]{PdfInteger.Default, PdfInteger.Default, PdfInteger.Default})
           }
           )
         );

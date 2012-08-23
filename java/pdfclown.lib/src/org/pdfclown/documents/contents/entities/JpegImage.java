@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,11 @@
 
 package org.pdfclown.documents.contents.entities;
 
+import java.io.EOFException;
+import java.nio.ByteOrder;
+import java.util.Arrays;
+import java.util.List;
+
 import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.documents.Document;
@@ -41,16 +46,11 @@ import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfStream;
 
-import java.io.EOFException;
-import java.nio.ByteOrder;
-import java.util.Arrays;
-import java.util.List;
-
 /**
   JPEG image object [ISO 10918-1;JFIF:1.02].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/25/11
+  @version 0.1.2, 08/23/12
 */
 public final class JpegImage
   extends Image
@@ -83,10 +83,10 @@ public final class JpegImage
       new InlineImage(
         new InlineImageHeader(
           (List<PdfDirectObject>)(List<? extends PdfDirectObject>)Arrays.asList(
-            PdfName.W, new PdfInteger(getWidth()),
-            PdfName.H, new PdfInteger(getHeight()),
+            PdfName.W, PdfInteger.get(getWidth()),
+            PdfName.H, PdfInteger.get(getHeight()),
             PdfName.CS, PdfName.RGB,
-            PdfName.BPC, new PdfInteger(getBitsPerComponent()),
+            PdfName.BPC, PdfInteger.get(getBitsPerComponent()),
             PdfName.F, PdfName.DCT
             )
           ),
@@ -116,9 +116,9 @@ public final class JpegImage
           },
           new PdfDirectObject[]
           {
-            new PdfInteger(getWidth()),
-            new PdfInteger(getHeight()),
-            new PdfInteger(getBitsPerComponent()),
+            PdfInteger.get(getWidth()),
+            PdfInteger.get(getHeight()),
+            PdfInteger.get(getBitsPerComponent()),
             PdfName.DeviceRGB,
             PdfName.DCTDecode
           }

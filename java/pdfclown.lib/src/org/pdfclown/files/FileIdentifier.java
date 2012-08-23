@@ -47,7 +47,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 08/23/12
 */
 public final class FileIdentifier
   extends PdfObjectWrapper<PdfArray>
@@ -69,7 +69,7 @@ public final class FileIdentifier
   // <private>
   private static PdfArray createBaseDataObject(
     )
-  {return new PdfArray(PdfString.Empty, PdfString.Empty);}
+  {return new PdfArray(PdfString.Default, PdfString.Default);}
 
   private static void digest(
     MessageDigest digest,
@@ -190,7 +190,7 @@ public final class FileIdentifier
     */
     PdfString versionID = new PdfString(md5.digest(), SerializationModeEnum.Hex);
     getBaseDataObject().set(1, versionID);
-    if(getBaseDataObject().get(0).equals(PdfString.Empty))
+    if(getBaseDataObject().get(0).equals(PdfString.Default))
     {getBaseDataObject().set(0, versionID);}
   }
   // </public>

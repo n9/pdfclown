@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 08/23/12
 */
 public class PdfString
   extends PdfSimpleObject<byte[]>
@@ -76,7 +76,7 @@ public class PdfString
 
   // <static>
   // <fields>
-  public static final PdfString Empty = new PdfString("");
+  public static final PdfString Default = new PdfString("");
 
   private static final byte BackspaceCode = 8;
   private static final byte CarriageReturnCode = 13;

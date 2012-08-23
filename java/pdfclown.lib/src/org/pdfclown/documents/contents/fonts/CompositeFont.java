@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF12)
 public abstract class CompositeFont
@@ -311,9 +311,9 @@ public abstract class CompositeFont
           },
           new PdfDirectObject[]
           {
-            new PdfTextString("Adobe"),
-            new PdfTextString("Identity"),
-            new PdfInteger(0)
+            PdfTextString.get("Adobe"),
+            PdfTextString.get("Identity"),
+            PdfInteger.get(0)
           }
           )
         ); // Generic predefined CMap (Identity-H/V (Adobe-Identity-0)) [PDF:1.6:5.6.4].
@@ -444,7 +444,7 @@ public abstract class CompositeFont
       {width = 0;}
       else if(width > 1000)
       {width=1000;}
-      widthsObject.add(new PdfInteger(width));
+      widthsObject.add(PdfInteger.get(width));
     }
     cmapBuffer.append(
       "endcidchar\n"
@@ -476,9 +476,9 @@ public abstract class CompositeFont
         },
         new PdfDirectObject[]
         {
-          new PdfTextString("Adobe"),
-          new PdfTextString("Identity"),
-          new PdfInteger(0)
+          PdfTextString.get("Adobe"),
+          PdfTextString.get("Identity"),
+          PdfInteger.get(0)
         }
         )
       ); // Generic predefined CMap (Identity-H/V (Adobe-Identity-0)) [PDF:1.6:5.6.4].
@@ -495,7 +495,7 @@ public abstract class CompositeFont
 
     cidFont.put(
       PdfName.W,
-      new PdfArray(new PdfDirectObject[]{new PdfInteger(1),widthsObject})
+      new PdfArray(new PdfDirectObject[]{PdfInteger.get(1), widthsObject})
       );
 
     toUnicodeBuffer.append(
@@ -524,15 +524,11 @@ public abstract class CompositeFont
       OpenFontParser.FontMetrics metrics = parser.metrics;
 
       // Type.
-      fontDescriptor.put(
-        PdfName.Type,
-        PdfName.FontDescriptor
-        );
+      fontDescriptor.put(PdfName.Type, PdfName.FontDescriptor);
+
       // FontName.
-      fontDescriptor.put(
-        PdfName.FontName,
-        getBaseDataObject().get(PdfName.BaseFont)
-        );
+      fontDescriptor.put(PdfName.FontName, getBaseDataObject().get(PdfName.BaseFont));
+
       // Flags [PDF:1.6:5.7.1].
       int flags = 0;
       if(metrics.isFixedPitch)
@@ -541,10 +537,8 @@ public abstract class CompositeFont
       {flags |= FlagsEnum.Symbolic.getCode();}
       else
       {flags |= FlagsEnum.Nonsymbolic.getCode();}
-      fontDescriptor.put(
-        PdfName.Flags,
-        new PdfInteger(flags)
-        );
+      fontDescriptor.put(PdfName.Flags, PdfInteger.get(flags));
+
       // FontBBox.
       fontDescriptor.put(
         PdfName.FontBBox,
@@ -553,11 +547,10 @@ public abstract class CompositeFont
           new Point2D.Double(metrics.xMax * metrics.unitNorm, metrics.yMax * metrics.unitNorm)
           ).getBaseDataObject()
         );
+
       // ItalicAngle.
-      fontDescriptor.put(
-        PdfName.ItalicAngle,
-        PdfReal.get(metrics.italicAngle)
-        );
+      fontDescriptor.put(PdfName.ItalicAngle, PdfReal.get(metrics.italicAngle));
+
       // Ascent.
       fontDescriptor.put(
         PdfName.Ascent,
@@ -567,6 +560,7 @@ public abstract class CompositeFont
             : metrics.ascender * metrics.unitNorm
           )
         );
+
       // Descent.
       fontDescriptor.put(
         PdfName.Descent,
@@ -576,26 +570,27 @@ public abstract class CompositeFont
             : metrics.descender * metrics.unitNorm
           )
         );
+
       // Leading.
       fontDescriptor.put(
         PdfName.Leading,
         PdfReal.get(metrics.sTypoLineGap * metrics.unitNorm)
         );
+
       // CapHeight.
       fontDescriptor.put(
         PdfName.CapHeight,
         PdfReal.get(metrics.sCapHeight * metrics.unitNorm)
         );
+
       // StemV.
       /*
         NOTE: '100' is just a rule-of-thumb value, 'cause I've still to solve the
         'cvt' table puzzle (such a harsh headache!) for TrueType fonts...
         TODO:IMPL TrueType and CFF stemv real value to extract!!!
       */
-      fontDescriptor.put(
-        PdfName.StemV,
-        new PdfInteger(100)
-        );
+      fontDescriptor.put(PdfName.StemV, PdfInteger.get(100));
+
       // FontFile.
       fontDescriptor.put(
         PdfName.FontFile2,

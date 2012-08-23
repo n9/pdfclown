@@ -111,7 +111,7 @@ namespace org.pdfclown.tokens
           xrefStreamEntry = new XRefEntry(indirectObjects.Count, 0)
           );
         UpdateTrailer(xrefStream.Header, stream);
-        xrefStream.Header[PdfName.Prev] = new PdfInteger((int)parser.RetrieveXRefOffset());
+        xrefStream.Header[PdfName.Prev] = PdfInteger.Get((int)parser.RetrieveXRefOffset());
         AddXRefEntry(
           xrefStreamEntry,
           xrefStream.Container,

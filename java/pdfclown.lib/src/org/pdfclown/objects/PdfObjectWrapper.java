@@ -58,12 +58,28 @@ import org.pdfclown.util.NotImplementedException;
   {@link #getBaseDataObject() baseDataObject} backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   implements IPdfObjectWrapper
 {
   // <class>
+  // <static>
+  // <interface>
+  // <public>
+  /**
+    Gets the PDF object backing the specified wrapper.
+
+    @param wrapper Object to extract the base from.
+  */
+  public static PdfDirectObject getBaseObject(
+    PdfObjectWrapper<?> wrapper
+    )
+  {return (wrapper != null ? wrapper.getBaseObject() : null);}
+  // </public>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <fields>
   private PdfDirectObject baseObject;

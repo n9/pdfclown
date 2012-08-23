@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,6 +28,7 @@ using org.pdfclown.documents.contents.fonts;
 using org.pdfclown.objects;
 
 using System;
+using System.Collections.Generic;
 
 namespace org.pdfclown.documents.contents
 {
@@ -39,6 +40,10 @@ namespace org.pdfclown.documents.contents
     : PdfObjectWrapper<PdfDictionary>
   {
     #region static
+    #region fields
+    internal static readonly IList<BlendModeEnum> DefaultBlendMode = new BlendModeEnum[0];
+    #endregion
+
     #region interface
     #region public
     /**
@@ -58,9 +63,8 @@ namespace org.pdfclown.documents.contents
     #region dynamic
     #region constructors
     public ExtGState(
-      Document context,
-      PdfDictionary baseDataObject
-      ) : base(context, baseDataObject)
+      Document context
+      ) : base(context, new PdfDictionary())
     {}
 
     internal ExtGState(
@@ -71,6 +75,19 @@ namespace org.pdfclown.documents.contents
 
     #region interface
     #region public
+    /**
+      <summary>Gets/Sets whether the current soft mask and alpha constant are to be interpreted as
+      shape values instead of opacity values.</summary>
+    */
+    [PDF(VersionEnum.PDF14)]
+    public bool? AlphaShape
+    {
+      get
+      {return (bool?)PdfSimpleObject<object>.GetValue(BaseDataObject[PdfName.AIS]);}
+      set
+      {BaseDataObject[PdfName.AIS] = PdfBoolean.Get(value);}
+    }
+
     public void ApplyTo(
       ContentScanner.GraphicsState state
       )
@@ -92,7 +109,46 @@ namespace org.pdfclown.documents.contents
         {state.LineWidth = LineWidth.Value;}
         else if(parameterName.Equals(PdfName.ML))
         {state.MiterLimit = MiterLimit.Value;}
+        else if(parameterName.Equals(PdfName.BM))
+        {state.BlendMode = BlendMode;}
         //TODO:extend supported parameters!!!
+      }
+    }
+
+    [PDF(VersionEnum.PDF14)]
+    public IList<BlendModeEnum> BlendMode
+    {
+      get
+      {
+        PdfDirectObject blendModeObject = BaseDataObject[PdfName.BM];
+        if(blendModeObject == null)
+          return DefaultBlendMode;
+
+        IList<BlendModeEnum> blendMode = new List<BlendModeEnum>();
+        if(blendModeObject is PdfName)
+        {blendMode.Add(BlendModeEnumExtension.Get((PdfName)blendModeObject).Value);}
+        else // MUST be an array.
+        {
+          foreach(PdfDirectObject alternateBlendModeObject in (PdfArray)blendModeObject)
+          {blendMode.Add(BlendModeEnumExtension.Get((PdfName)alternateBlendModeObject).Value);}
+        }
+        return blendMode;
+      }
+      set
+      {
+        PdfDirectObject blendModeObject;
+        if(value == null || value.Count == 0)
+        {blendModeObject = null;}
+        else if(value.Count == 1)
+        {blendModeObject = value[0].GetName();}
+        else
+        {
+          PdfArray blendModeArray = new PdfArray();
+          foreach(BlendModeEnum blendMode in value)
+          {blendModeArray.Add(blendMode.GetName());}
+          blendModeObject = blendModeArray;
+        }
+        BaseDataObject[PdfName.BM] = blendModeObject;
       }
     }
 
@@ -109,6 +165,15 @@ namespace org.pdfclown.documents.contents
         PdfArray fontObject = (PdfArray)BaseDataObject[PdfName.Font];
         return fontObject != null ? Font.Wrap(fontObject[0]) : null;
       }
+      set
+      {
+        PdfArray fontObject = (PdfArray)BaseDataObject[PdfName.Font];
+        if(fontObject == null)
+        {fontObject = new PdfArray(PdfObjectWrapper.GetBaseObject(value), PdfInteger.Default);}
+        else
+        {fontObject[0] = PdfObjectWrapper.GetBaseObject(value);}
+        BaseDataObject[PdfName.Font] = fontObject;
+      }
     }
 
     [PDF(VersionEnum.PDF13)]
@@ -118,6 +183,15 @@ namespace org.pdfclown.documents.contents
       {
         PdfArray fontObject = (PdfArray)BaseDataObject[PdfName.Font];
         return fontObject != null ? ((IPdfNumber)fontObject[1]).RawValue : (double?)null;
+      }
+      set
+      {
+        PdfArray fontObject = (PdfArray)BaseDataObject[PdfName.Font];
+        if(fontObject == null)
+        {fontObject = new PdfArray(null, PdfReal.Get(value));}
+        else
+        {fontObject[1] = PdfReal.Get(value);}
+        BaseDataObject[PdfName.Font] = fontObject;
       }
     }
 
@@ -129,6 +203,8 @@ namespace org.pdfclown.documents.contents
         PdfInteger lineCapObject = (PdfInteger)BaseDataObject[PdfName.LC];
         return lineCapObject != null ? (LineCapEnum)lineCapObject.RawValue : (LineCapEnum?)null;
       }
+      set
+      {BaseDataObject[PdfName.LC] = value.HasValue ? PdfInteger.Get(value.Value) : null;}
     }
 
     [PDF(VersionEnum.PDF13)]
@@ -155,6 +231,18 @@ namespace org.pdfclown.documents.contents
         double dashPhase = ((IPdfNumber)lineDashObject[1]).RawValue;
         return new LineDash(dashArray,dashPhase);
       }
+      set
+      {
+        PdfArray lineDashObject = new PdfArray();
+        {
+          PdfArray dashArrayObject = new PdfArray();
+          foreach(double dashArrayItem in value.DashArray)
+          {dashArrayObject.Add(PdfReal.Get(dashArrayItem));}
+          lineDashObject.Add(dashArrayObject);
+          lineDashObject.Add(PdfReal.Get(value.DashPhase));
+        }
+        BaseDataObject[PdfName.D] = lineDashObject;
+      }
     }
 
     [PDF(VersionEnum.PDF13)]
@@ -165,6 +253,8 @@ namespace org.pdfclown.documents.contents
         PdfInteger lineJoinObject = (PdfInteger)BaseDataObject[PdfName.LJ];
         return lineJoinObject != null ? (LineJoinEnum)lineJoinObject.RawValue : (LineJoinEnum?)null;
       }
+      set
+      {BaseDataObject[PdfName.LJ] = value.HasValue ? PdfInteger.Get(value.Value) : null;}
     }
 
     [PDF(VersionEnum.PDF13)]
@@ -175,6 +265,8 @@ namespace org.pdfclown.documents.contents
         IPdfNumber lineWidthObject = (IPdfNumber)BaseDataObject[PdfName.LW];
         return lineWidthObject != null ? lineWidthObject.RawValue : (double?)null;
       }
+      set
+      {BaseDataObject[PdfName.LW] = PdfReal.Get(value);}
     }
 
     [PDF(VersionEnum.PDF13)]
@@ -185,6 +277,8 @@ namespace org.pdfclown.documents.contents
         IPdfNumber miterLimitObject = (IPdfNumber)BaseDataObject[PdfName.ML];
         return miterLimitObject != null ? miterLimitObject.RawValue : (double?)null;
       }
+      set
+      {BaseDataObject[PdfName.ML] = PdfReal.Get(value);}
     }
   }
   #endregion

@@ -156,13 +156,8 @@ namespace org.pdfclown.documents.interaction.annotations
       Page page,
       RectangleF box,
       string text
-      ) : base(
-        page.Document,
-        PdfName.FreeText,
-        box,
-        page
-        )
-    {Text = text;}
+      ) : base(page.Document, PdfName.FreeText, box, text, page)
+    {}
 
     public CalloutNote(
       PdfDirectObject baseObject

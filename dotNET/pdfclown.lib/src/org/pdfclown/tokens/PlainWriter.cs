@@ -310,12 +310,12 @@ namespace org.pdfclown.tokens
       PdfDictionary trailer = file.Trailer;
       UpdateTrailer(trailer, stream);
       // * Size
-      trailer[PdfName.Size] = new PdfInteger(xrefSize);
+      trailer[PdfName.Size] = PdfInteger.Get(xrefSize);
       // * Prev
       if(parser == null)
       {trailer.Remove(PdfName.Prev);} // [FIX:0.0.4:5] It (wrongly) kept the 'Prev' entry of multiple-section xref tables.
       else
-      {trailer[PdfName.Prev] = new PdfInteger((int)parser.RetrieveXRefOffset());}
+      {trailer[PdfName.Prev] = PdfInteger.Get((int)parser.RetrieveXRefOffset());}
       // Serialize its contents!
       trailer.WriteTo(stream, file); stream.Write(Chunk.LineFeed);
 

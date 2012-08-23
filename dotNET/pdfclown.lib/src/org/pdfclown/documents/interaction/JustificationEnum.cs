@@ -59,9 +59,9 @@ namespace org.pdfclown.documents.interaction
       )
     {
       codes = new BiDictionary<JustificationEnum,PdfInteger>();
-      codes[JustificationEnum.Left] = new PdfInteger(0);
-      codes[JustificationEnum.Center] = new PdfInteger(1);
-      codes[JustificationEnum.Right] = new PdfInteger(2);
+      codes[JustificationEnum.Left] = PdfInteger.Get(0);
+      codes[JustificationEnum.Center] = PdfInteger.Get(1);
+      codes[JustificationEnum.Right] = PdfInteger.Get(2);
     }
 
     /**

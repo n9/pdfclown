@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -27,6 +27,7 @@ using org.pdfclown.bytes;
 using org.pdfclown.documents;
 using org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.objects;
+using org.pdfclown.util;
 
 using System;
 
@@ -47,11 +48,8 @@ namespace org.pdfclown.documents.interaction.forms
     public ComboBox(
       string name,
       Widget widget
-      ) : base(
-        name,
-        widget
-        )
-    {FlagsEnum flags = Flags; flags |= FlagsEnum.Combo; Flags = flags;}
+      ) : base(name, widget)
+    {Flags = EnumUtils.Mask(Flags, FlagsEnum.Combo, true);}
 
     public ComboBox(
       PdfDirectObject baseObject
@@ -72,16 +70,9 @@ namespace org.pdfclown.documents.interaction.forms
     public bool Editable
     {
       get
-      {return ((Flags & FlagsEnum.Edit) == FlagsEnum.Edit);}
+      {return (Flags & FlagsEnum.Edit) == FlagsEnum.Edit;}
       set
-      {
-        FlagsEnum flags = Flags;
-        if(value)
-        {flags |= FlagsEnum.Edit;}
-        else
-        {flags ^= FlagsEnum.Edit;}
-        Flags = flags;
-      }
+      {Flags = EnumUtils.Mask(Flags, FlagsEnum.Edit, value);}
     }
 
     /**
@@ -90,16 +81,9 @@ namespace org.pdfclown.documents.interaction.forms
     public bool SpellChecked
     {
       get
-      {return !((Flags & FlagsEnum.DoNotSpellCheck) == FlagsEnum.DoNotSpellCheck);}
+      {return (Flags & FlagsEnum.DoNotSpellCheck) != FlagsEnum.DoNotSpellCheck;}
       set
-      {
-        FlagsEnum flags = Flags;
-        if(value)
-        {flags ^= FlagsEnum.DoNotSpellCheck;}
-        else
-        {flags |= FlagsEnum.DoNotSpellCheck;}
-        Flags = flags;
-      }
+      {Flags = EnumUtils.Mask(Flags, FlagsEnum.DoNotSpellCheck, !value);}
     }
     #endregion
     #endregion

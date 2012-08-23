@@ -143,7 +143,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
         /*
           NOTE: Positive Count entry means open, negative Count entry means closed [PDF:1.6:8.2.2].
         */
-        BaseDataObject[PdfName.Count] = new PdfInteger((value ? 1 : -1) * Math.Abs(countObject.IntValue));
+        BaseDataObject[PdfName.Count] = PdfInteger.Get((value ? 1 : -1) * Math.Abs(countObject.IntValue));
       }
     }
 
@@ -171,7 +171,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
         else
         {
           CheckCompatibility(value);
-          BaseDataObject[PdfName.F] = new PdfInteger((int)value);
+          BaseDataObject[PdfName.F] = PdfInteger.Get((int)value);
         }
       }
     }

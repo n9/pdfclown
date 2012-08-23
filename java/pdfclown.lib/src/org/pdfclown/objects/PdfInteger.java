@@ -32,13 +32,17 @@ import org.pdfclown.files.File;
   PDF integer number object [PDF:1.6:3.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 public final class PdfInteger
   extends PdfNumber<Integer>
 {
   // <class>
   // <static>
+  // <fields>
+  public static final PdfInteger Default = new PdfInteger(0);
+  // </fields>
+
   // <interface>
   // <public>
   /**
@@ -54,7 +58,7 @@ public final class PdfInteger
 
   // <dynamic>
   // <constructors>
-  public PdfInteger(
+  private PdfInteger(
     int value
     )
   {setRawValue(value);}

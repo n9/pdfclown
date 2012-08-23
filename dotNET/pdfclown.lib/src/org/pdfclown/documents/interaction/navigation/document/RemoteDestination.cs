@@ -92,7 +92,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
         if(!(value is Int32))
           throw new ArgumentException("It MUST be an integer number.");
 
-        BaseDataObject[0] = new PdfInteger((int)value);
+        BaseDataObject[0] = PdfInteger.Get((int)value);
       }
     }
     #endregion

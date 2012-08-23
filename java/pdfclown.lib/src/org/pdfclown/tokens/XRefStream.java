@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -52,7 +52,7 @@ import org.pdfclown.util.parsers.ParseException;
   <p>It is alternative to the classic cross-reference table.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 08/23/12
 */
 public final class XRefStream
   extends PdfStream
@@ -268,8 +268,8 @@ public final class XRefStream
         if(entryNumber - prevObjectNumber != 1) // Current subsection terminated.
         {
           if(!indexArray.isEmpty())
-          {indexArray.add(new PdfInteger(prevObjectNumber - ((PdfInteger)indexArray.get(indexArray.size() - 1)).getValue() + 1));} // Number of entries in the previous subsection.
-          indexArray.add(new PdfInteger(entryNumber)); // First object number in the next subsection.
+          {indexArray.add(PdfInteger.get(prevObjectNumber - ((PdfInteger)indexArray.get(indexArray.size() - 1)).getValue() + 1));} // Number of entries in the previous subsection.
+          indexArray.add(PdfInteger.get(entryNumber)); // First object number in the next subsection.
         }
         prevObjectNumber = entryNumber;
 
@@ -294,7 +294,7 @@ public final class XRefStream
             throw new UnsupportedOperationException();
         }
       }
-      indexArray.add(new PdfInteger(prevObjectNumber - ((PdfInteger)indexArray.get(indexArray.size() - 1)).getValue() + 1)); // Number of entries in the previous subsection.
+      indexArray.add(PdfInteger.get(prevObjectNumber - ((PdfInteger)indexArray.get(indexArray.size() - 1)).getValue() + 1)); // Number of entries in the previous subsection.
     }
 
     // 2. Header.
@@ -306,14 +306,14 @@ public final class XRefStream
         );
       header.put(
         PdfName.Size,
-        new PdfInteger(getFile().getIndirectObjects().size()+1)
+        PdfInteger.get(getFile().getIndirectObjects().size()+1)
         );
       header.put(
         PdfName.W,
         new PdfArray(
-          new PdfInteger(entryFieldSizes[0]),
-          new PdfInteger(entryFieldSizes[1]),
-          new PdfInteger(entryFieldSizes[2])
+          PdfInteger.get(entryFieldSizes[0]),
+          PdfInteger.get(entryFieldSizes[1]),
+          PdfInteger.get(entryFieldSizes[2])
           )
         );
     }
@@ -345,8 +345,8 @@ public final class XRefStream
         else
         {
           subsectionBounds = new PdfArray();
-          subsectionBounds.add(new PdfInteger(0));
-          subsectionBounds.add(new PdfInteger(size));
+          subsectionBounds.add(PdfInteger.get(0));
+          subsectionBounds.add(PdfInteger.get(size));
         }
 
         body.setByteOrder(ByteOrder.BIG_ENDIAN);

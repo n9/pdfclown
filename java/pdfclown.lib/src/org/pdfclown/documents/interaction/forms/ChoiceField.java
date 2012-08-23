@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,8 +25,6 @@
 
 package org.pdfclown.documents.interaction.forms;
 
-import java.util.EnumSet;
-
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -34,6 +32,7 @@ import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.util.EnumUtils;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -41,7 +40,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF12)
 public abstract class ChoiceField
@@ -57,13 +56,7 @@ public abstract class ChoiceField
     String name,
     Widget widget
     )
-  {
-    super(
-      PdfName.Ch,
-      name,
-      widget
-      );
-  }
+  {super(PdfName.Ch, name, widget);}
 
   protected ChoiceField(
     PdfDirectObject baseObject
@@ -81,10 +74,7 @@ public abstract class ChoiceField
 
   public ChoiceItems getItems(
     )
-  {
-    PdfArray items = (PdfArray)getBaseDataObject().resolve(PdfName.Opt);
-    return items != null ? new ChoiceItems(items) : null;
-  }
+  {return new ChoiceItems(getBaseDataObject().get(PdfName.Opt, PdfArray.class));}
 
   /**
     Gets whether more than one of the field's items may be selected simultaneously.
@@ -107,7 +97,7 @@ public abstract class ChoiceField
   public void setItems(
     ChoiceItems value
     )
-  {getBaseDataObject().put(PdfName.Opt,value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.Opt, value.getBaseObject());}
 
   /**
     @see #isMultiSelect()
@@ -115,14 +105,7 @@ public abstract class ChoiceField
   public void setMultiSelect(
     boolean value
     )
-  {
-    EnumSet<FlagsEnum> flags = getFlags();
-    if(value)
-    {flags.add(FlagsEnum.MultiSelect);}
-    else
-    {flags.remove(FlagsEnum.MultiSelect);}
-    setFlags(flags);
-  }
+  {setFlags(EnumUtils.mask(getFlags(), FlagsEnum.MultiSelect, value));}
 
   /**
     @see #isValidatedOnChange()
@@ -130,14 +113,7 @@ public abstract class ChoiceField
   public void setValidatedOnChange(
     boolean value
     )
-  {
-    EnumSet<FlagsEnum> flags = getFlags();
-    if(value)
-    {flags.add(FlagsEnum.CommitOnSelChange);}
-    else
-    {flags.remove(FlagsEnum.CommitOnSelChange);}
-    setFlags(flags);
-  }
+  {setFlags(EnumUtils.mask(getFlags(), FlagsEnum.CommitOnSelChange, value));}
   // </public>
   // </interface>
   // </dynamic>

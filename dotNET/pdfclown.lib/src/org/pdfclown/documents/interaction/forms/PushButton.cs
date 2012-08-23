@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -27,6 +27,7 @@ using org.pdfclown.bytes;
 using org.pdfclown.documents;
 using org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.objects;
+using org.pdfclown.util;
 
 using System;
 
@@ -48,12 +49,9 @@ namespace org.pdfclown.documents.interaction.forms
       string name,
       Widget widget,
       string caption
-      ) : base(
-        name,
-        widget
-        )
+      ) : base(name, widget)
     {
-      FlagsEnum flags = Flags; flags |= FlagsEnum.Pushbutton; Flags = flags;
+      Flags = EnumUtils.Mask(Flags, FlagsEnum.Pushbutton, true);
       Value = caption;
     }
 

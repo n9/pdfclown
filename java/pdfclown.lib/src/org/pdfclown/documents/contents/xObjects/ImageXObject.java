@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
   Image external object [PDF:1.6:4.8.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF10)
 public final class ImageXObject
@@ -136,6 +136,12 @@ public final class ImageXObject
       ((PdfInteger)header.get(PdfName.Height)).getRawValue()
       );
   }
+
+  @Override
+  public void setMatrix(
+    AffineTransform value
+    )
+  {/* NOOP. */}
 
   @Override
   public void setSize(

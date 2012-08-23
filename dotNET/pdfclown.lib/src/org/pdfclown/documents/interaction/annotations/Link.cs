@@ -49,29 +49,14 @@ namespace org.pdfclown.documents.interaction.annotations
     public Link(
       Page page,
       RectangleF box,
+      string text,
       PdfObjectWrapper target
-      ) : base(
-        page.Document,
-        PdfName.Link,
-        box,
-        page
-        )
+      ) : base(page.Document, PdfName.Link, box, text, page)
     {Target = target;}
 
     public Link(
       PdfDirectObject baseObject
       ) : base(baseObject)
-    {}
-
-    private Link(
-      Page page,
-      RectangleF box
-      ) : base(
-        page.Document,
-        PdfName.Link,
-        box,
-        page
-        )
     {}
     #endregion
 

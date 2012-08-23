@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -109,6 +109,8 @@ namespace org.pdfclown.documents.contents.xObjects
           0
           );
       }
+      set
+      {/* NOOP. */}
     }
 
     /**

@@ -77,6 +77,7 @@ namespace org.pdfclown.samples.cli
           annotations::Link link = new annotations::Link(
             page,
             new Rectangle(240,100,100,50),
+            "Link annotation",
             new GoToURI(
               document,
               new Uri("http://www.sourceforge.net/projects/clown")
@@ -110,6 +111,7 @@ namespace org.pdfclown.samples.cli
         annotations::FileAttachment attachment = new annotations::FileAttachment(
           page,
           new Rectangle(0, -20, 10, 10),
+          "File attachment annotation",
           FileSpecification.Get(
             EmbeddedFile.Get(
               document,
@@ -119,7 +121,6 @@ namespace org.pdfclown.samples.cli
             )
           );
         attachment.Name = fileAttachmentName;
-        attachment.Text = "File attachment annotation";
         attachment.IconType = annotations::FileAttachment.IconTypeEnum.PaperClip;
 
         blockComposer.Begin(new RectangleF(30,170,200,50),XAlignmentEnum.Left,YAlignmentEnum.Middle);
@@ -138,6 +139,7 @@ namespace org.pdfclown.samples.cli
         annotations::Link link = new annotations::Link(
           page,
           new Rectangle(240,170,100,50),
+          "Link annotation",
           new GoToEmbedded(
             document,
             new GoToEmbedded.PathElement(

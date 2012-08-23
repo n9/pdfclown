@@ -47,7 +47,7 @@ import org.pdfclown.util.parsers.PostScriptParser;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 public class BaseParser
   extends PostScriptParser
@@ -107,7 +107,7 @@ public class BaseParser
     switch(getTokenType())
     {
       case Integer:
-        return new PdfInteger((Integer)getToken());
+        return PdfInteger.get((Integer)getToken());
       case Name:
         return new PdfName((String)getToken(),true);
       case DictionaryBegin:

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,13 +45,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public Movie(
       Page page,
       RectangleF box,
+      string text,
       multimedia::Movie content
-      ) : base(
-        page.Document,
-        PdfName.Movie,
-        box,
-        page
-        )
+      ) : base(page.Document, PdfName.Movie, box, text, page)
     {Content = content;}
 
     public Movie(

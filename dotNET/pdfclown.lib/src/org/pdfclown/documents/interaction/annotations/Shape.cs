@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,13 +45,9 @@ namespace org.pdfclown.documents.interaction.annotations
     protected Shape(
       Page page,
       RectangleF box,
+      string text,
       PdfName subtype
-      ) : base(
-        page.Document,
-        subtype,
-        box,
-        page
-        )
+      ) : base(page.Document, subtype, box, text, page)
     {}
 
     protected Shape(

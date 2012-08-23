@@ -214,6 +214,49 @@ namespace org.pdfclown.documents.interaction.annotations
       #region interface
       #region public
       /**
+        <summary>Gets/Sets whether not to take into consideration the line width of the border.</summary>
+      */
+      public bool BorderExcluded
+      {
+        get
+        {
+          PdfBoolean borderExcludedObject = (PdfBoolean)BaseDataObject[PdfName.FB];
+          return borderExcludedObject != null
+            ? borderExcludedObject.RawValue
+            : false;
+        }
+        set
+        {BaseDataObject[PdfName.FB] = PdfBoolean.Get(value);}
+      }
+
+      public override object Clone(
+        Document context
+        )
+      {throw new NotImplementedException();}
+
+      /**
+        <summary>Gets/Sets the circumstances under which the icon should be scaled inside the annotation box.</summary>
+      */
+      public ScaleModeEnum ScaleMode
+      {
+        get
+        {return ToScaleModeEnum((PdfName)BaseDataObject[PdfName.SW]);}
+        set
+        {BaseDataObject[PdfName.SW] = ToCode(value);}
+      }
+
+      /**
+        <summary>Gets/Sets the type of scaling to use.</summary>
+      */
+      public ScaleTypeEnum ScaleType
+      {
+        get
+        {return ToScaleTypeEnum((PdfName)BaseDataObject[PdfName.S]);}
+        set
+        {BaseDataObject[PdfName.S] = ToCode(value);}
+      }
+
+      /**
         <summary>Gets/Sets the horizontal alignment of the icon inside the annotation box.</summary>
       */
       public XAlignmentEnum XAlignment
@@ -311,49 +354,6 @@ namespace org.pdfclown.documents.interaction.annotations
           }
           alignmentObject[1] = PdfReal.Get(objectValue);
         }
-      }
-
-      /**
-        <summary>Gets/Sets whether not to take into consideration the line width of the border.</summary>
-      */
-      public bool BorderExcluded
-      {
-        get
-        {
-          PdfBoolean borderExcludedObject = (PdfBoolean)BaseDataObject[PdfName.FB];
-          return borderExcludedObject != null
-            ? borderExcludedObject.RawValue
-            : false;
-        }
-        set
-        {BaseDataObject[PdfName.FB] = PdfBoolean.Get(value);}
-      }
-
-      public override object Clone(
-        Document context
-        )
-      {throw new NotImplementedException();}
-
-      /**
-        <summary>Gets/Sets the circumstances under which the icon should be scaled inside the annotation box.</summary>
-      */
-      public ScaleModeEnum ScaleMode
-      {
-        get
-        {return ToScaleModeEnum((PdfName)BaseDataObject[PdfName.SW]);}
-        set
-        {BaseDataObject[PdfName.SW] = ToCode(value);}
-      }
-
-      /**
-        <summary>Gets/Sets the type of scaling to use.</summary>
-      */
-      public ScaleTypeEnum ScaleType
-      {
-        get
-        {return ToScaleTypeEnum((PdfName)BaseDataObject[PdfName.S]);}
-        set
-        {BaseDataObject[PdfName.S] = ToCode(value);}
       }
       #endregion
       #endregion
@@ -469,7 +469,7 @@ namespace org.pdfclown.documents.interaction.annotations
         return captionPositionObject != null ? (CaptionPositionEnum)captionPositionObject.RawValue : CaptionPositionEnum.CaptionOnly;
       }
       set
-      {BaseDataObject[PdfName.TP] = new PdfInteger((int)value);}
+      {BaseDataObject[PdfName.TP] = PdfInteger.Get((int)value);}
     }
 
     /**
@@ -486,7 +486,7 @@ namespace org.pdfclown.documents.interaction.annotations
         return iconFitObject != null ? new IconFitObject(iconFitObject) : null;
       }
       set
-      {BaseDataObject[PdfName.IF] = value.BaseObject;}
+      {BaseDataObject[PdfName.IF] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
@@ -501,7 +501,7 @@ namespace org.pdfclown.documents.interaction.annotations
         return normalCaptionObject != null ? (string)normalCaptionObject.Value : null;
       }
       set
-      {BaseDataObject[PdfName.CA] = new PdfTextString(value);}
+      {BaseDataObject[PdfName.CA] = PdfTextString.Get(value);}
     }
 
     /**
@@ -516,7 +516,7 @@ namespace org.pdfclown.documents.interaction.annotations
         return normalIconObject != null ? new FormXObject(normalIconObject) : null;
       }
       set
-      {BaseDataObject[PdfName.I] = value.BaseObject;}
+      {BaseDataObject[PdfName.I] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
@@ -530,7 +530,7 @@ namespace org.pdfclown.documents.interaction.annotations
         return orientationObject != null ? (OrientationEnum)orientationObject.RawValue : OrientationEnum.Up;
       }
       set
-      {BaseDataObject[PdfName.R] = new PdfInteger((int)value);}
+      {BaseDataObject[PdfName.R] = PdfInteger.Get((int)value);}
     }
 
     /**
@@ -546,7 +546,7 @@ namespace org.pdfclown.documents.interaction.annotations
         return rolloverCaptionObject != null ? (string)rolloverCaptionObject.Value : null;
       }
       set
-      {BaseDataObject[PdfName.RC] = new PdfTextString(value);}
+      {BaseDataObject[PdfName.RC] = PdfTextString.Get(value);}
     }
 
     /**
@@ -562,7 +562,7 @@ namespace org.pdfclown.documents.interaction.annotations
         return rolloverIconObject != null ? new FormXObject(rolloverIconObject) : null;
       }
       set
-      {BaseDataObject[PdfName.RI] = value.BaseObject;}
+      {BaseDataObject[PdfName.RI] = PdfObjectWrapper.GetBaseObject(value);}
     }
     #endregion
 
@@ -576,12 +576,7 @@ namespace org.pdfclown.documents.interaction.annotations
       PdfName key,
       DeviceColor value
       )
-    {
-      if(value == null)
-      {BaseDataObject.Remove(key);}
-      else
-      {BaseDataObject[key] = value.BaseObject;}
-    }
+    {BaseDataObject[key] = PdfObjectWrapper.GetBaseObject(value);}
     #endregion
     #endregion
     #endregion

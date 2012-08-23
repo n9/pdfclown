@@ -45,13 +45,9 @@ namespace org.pdfclown.documents.interaction.annotations
     public Scribble(
       Page page,
       RectangleF box,
+      string text,
       IList<IList<PointF>> paths
-      ) : base(
-        page.Document,
-        PdfName.Ink,
-        box,
-        page
-        )
+      ) : base(page.Document, PdfName.Ink, box, text, page)
     {Paths = paths;}
 
     public Scribble(

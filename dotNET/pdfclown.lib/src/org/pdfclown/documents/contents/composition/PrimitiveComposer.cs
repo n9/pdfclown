@@ -116,6 +116,33 @@ namespace org.pdfclown.documents.contents.composition
     {Add(new objects::ModifyCTM(a,b,c,d,e,f));}
 
     /**
+      <summary>Applies the specified state parameters [PDF:1.6:4.3.4].</summary>
+      <param name="name">Resource identifier of the state parameters object.</param>
+    */
+    public void ApplyState(
+      PdfName name
+      )
+    {
+      // Doesn't the state exist in the context resources?
+      if(!scanner.ContentContext.Resources.ExtGStates.ContainsKey(name))
+        throw new ArgumentException("No state resource associated to the given argument.", "name");
+
+      ApplyState_(name);
+    }
+
+    /**
+      <summary>Applies the specified state parameters [PDF:1.6:4.3.4].</summary>
+      <remarks>The <code>value</code> is checked for presence in the current resource dictionary: if
+      it isn't available, it's automatically added. If you need to avoid such a behavior, use
+      <see cref="ApplyState(PdfName)"/>.</remarks>
+      <param name="state">State parameters object.</param>
+    */
+    public void ApplyState(
+      ExtGState state
+      )
+    {ApplyState_(GetResourceName(state));}
+
+    /**
       <summary>Adds a composite object beginning it.</summary>
       <returns>Added composite object.</returns>
       <seealso cref="End()"/>
@@ -141,7 +168,7 @@ namespace org.pdfclown.documents.contents.composition
     public objects::MarkedContent BeginLayer(
       LayerEntity layer
       )
-    {return BeginLayer(GetPropertyListName(layer.Membership));}
+    {return BeginLayer(GetResourceName(layer.Membership));}
 
     /**
       <summary>Begins a new layered-content sequence [PDF:1.6:4.10.2].</summary>
@@ -186,7 +213,7 @@ namespace org.pdfclown.documents.contents.composition
       PdfName tag,
       PropertyList propertyList
       )
-    {return BeginMarkedContent(tag, GetPropertyListName(propertyList));}
+    {return BeginMarkedContent_(tag, GetResourceName(propertyList));}
 
     /**
       <summary>Begins a new marked-content sequence [PDF:1.6:10.5].</summary>
@@ -201,11 +228,11 @@ namespace org.pdfclown.documents.contents.composition
       PdfName propertyListName
       )
     {
-      return (objects::MarkedContent)Begin(
-        new objects::MarkedContent(
-          new objects::BeginMarkedContent(tag, propertyListName)
-          )
-        );
+      // Doesn't the property list exist in the context resources?
+      if(!scanner.ContentContext.Resources.PropertyLists.ContainsKey(propertyListName))
+        throw new ArgumentException("No property list resource associated to the given argument.", "name");
+
+      return BeginMarkedContent_(tag, propertyListName);
     }
 
     /**
@@ -303,7 +330,7 @@ namespace org.pdfclown.documents.contents.composition
       PointF endControl
       )
     {
-      BeginSubpath(startPoint);
+      StartPath(startPoint);
       DrawCurve(endPoint,startControl,endControl);
     }
 
@@ -347,7 +374,7 @@ namespace org.pdfclown.documents.contents.composition
       PointF endPoint
       )
     {
-      BeginSubpath(startPoint);
+      StartPath(startPoint);
       DrawLine(endPoint);
     }
 
@@ -376,7 +403,7 @@ namespace org.pdfclown.documents.contents.composition
       PointF[] points
       )
     {
-      BeginSubpath(points[0]);
+      StartPath(points[0]);
       for(
         int index = 1,
           length = points.Length;
@@ -445,7 +472,7 @@ namespace org.pdfclown.documents.contents.composition
               xArc =- radius * 2;
               yArc =- radius;
 
-              BeginSubpath(new PointF((float)x1,(float)y1));
+              StartPath(new PointF((float)x1,(float)y1));
             }
             else
             {
@@ -645,13 +672,7 @@ namespace org.pdfclown.documents.contents.composition
       if(!scanner.State.FillColorSpace.Equals(value.ColorSpace))
       {
         // Set filling color space!
-        Add(
-          new objects::SetFillColorSpace(
-            GetColorSpaceName(
-              value.ColorSpace
-              )
-            )
-          );
+        Add(new objects::SetFillColorSpace(GetResourceName(value.ColorSpace)));
       }
 
       Add(new objects::SetFillColor(value));
@@ -671,7 +692,7 @@ namespace org.pdfclown.documents.contents.composition
       if(!scanner.ContentContext.Resources.Fonts.ContainsKey(name))
         throw new ArgumentException("No font resource associated to the given argument.","name");
 
-      Add(new objects::SetFont(name,size));
+      SetFont_(name,size);
     }
 
     /**
@@ -686,7 +707,7 @@ namespace org.pdfclown.documents.contents.composition
       fonts::Font value,
       double size
       )
-    {SetFont(GetFontName(value),size);}
+    {SetFont_(GetResourceName(value),size);}
 
     /**
       <summary>Sets the text horizontal scaling [PDF:1.6:5.2.3].</summary>
@@ -797,13 +818,7 @@ namespace org.pdfclown.documents.contents.composition
       if(!scanner.State.StrokeColorSpace.Equals(value.ColorSpace))
       {
         // Set stroking color space!
-        Add(
-          new objects::SetStrokeColorSpace(
-            GetColorSpaceName(
-              value.ColorSpace
-              )
-            )
-          );
+        Add(new objects::SetStrokeColorSpace(GetResourceName(value.ColorSpace)));
       }
 
       Add(new objects::SetStrokeColor(value));
@@ -1098,6 +1113,7 @@ namespace org.pdfclown.documents.contents.composition
       return new Link(
         (Page)contentContext,
         linkBox,
+        null,
         action
         );
     }
@@ -1121,7 +1137,7 @@ namespace org.pdfclown.documents.contents.composition
     public void ShowXObject(
       XObject value
       )
-    {ShowXObject(GetXObjectName(value));}
+    {ShowXObject(GetResourceName(value));}
 
     /**
       <summary>Shows the specified external object at the specified position [PDF:1.6:4.7].</summary>
@@ -1154,7 +1170,7 @@ namespace org.pdfclown.documents.contents.composition
       )
     {
       ShowXObject(
-        GetXObjectName(value),
+        GetResourceName(value),
         location
         );
     }
@@ -1197,7 +1213,7 @@ namespace org.pdfclown.documents.contents.composition
       )
     {
       ShowXObject(
-        GetXObjectName(value),
+        GetResourceName(value),
         location,
         size
         );
@@ -1307,12 +1323,28 @@ namespace org.pdfclown.documents.contents.composition
       )
     {
       ShowXObject(
-        GetXObjectName(value),
+        GetResourceName(value),
         location,
         size,
         xAlignment,
         yAlignment,
         rotation
+        );
+    }
+
+    /**
+      <summary>Begins a subpath [PDF:1.6:4.4.1].</summary>
+      <param name="startPoint">Starting point.</param>
+    */
+    public void StartPath(
+      PointF startPoint
+      )
+    {
+      Add(
+        new objects::BeginSubpath(
+          startPoint.X,
+          scanner.ContentContext.Box.Height - startPoint.Y
+          )
         );
     }
 
@@ -1339,18 +1371,19 @@ namespace org.pdfclown.documents.contents.composition
     #endregion
 
     #region private
-    /**
-      <summary>Begins a subpath [PDF:1.6:4.4.1].</summary>
-      <param name="startPoint">Starting point.</param>
-    */
-    private void BeginSubpath(
-      PointF startPoint
+    private void ApplyState_(
+      PdfName name
+      )
+    {Add(new objects::ApplyExtGState(name));}
+
+    private objects::MarkedContent BeginMarkedContent_(
+      PdfName tag,
+      PdfName propertyListName
       )
     {
-      Add(
-        new objects::BeginSubpath(
-          startPoint.X,
-          scanner.ContentContext.Box.Height - startPoint.Y
+      return (objects::MarkedContent)Begin(
+        new objects::MarkedContent(
+          new objects::BeginMarkedContent(tag, propertyListName)
           )
         );
     }
@@ -1402,7 +1435,7 @@ namespace org.pdfclown.documents.contents.composition
         );
 
       if(beginPath)
-      {BeginSubpath(point1);}
+      {StartPath(point1);}
 
       double endRadians = (Math.PI / 180) * endAngle;
       double quadrantRadians = Math.PI / 2;
@@ -1476,105 +1509,34 @@ namespace org.pdfclown.documents.contents.composition
       }
     }
 
-    private PdfName GetColorSpaceName(
-      colors::ColorSpace value
-      )
+    private PdfName GetResourceName<T>(
+      T value
+      ) where T : PdfObjectWrapper
     {
       if(value is colors::DeviceGrayColorSpace)
-      {return PdfName.DeviceGray;}
+        return PdfName.DeviceGray;
       else if(value is colors::DeviceRGBColorSpace)
-      {return PdfName.DeviceRGB;}
+        return PdfName.DeviceRGB;
       else if(value is colors::DeviceCMYKColorSpace)
-      {return PdfName.DeviceCMYK;}
+        return PdfName.DeviceCMYK;
       else
-        throw new NotImplementedException("colorSpace MUST be converted to its associated name; you need to implement a method in PdfDictionary that, given a PdfDirectObject, returns its associated key.");
-    }
-
-    private PdfName GetFontName(
-      fonts::Font value
-      )
-    {
-      // Ensuring that the font exists within the context resources...
-      Resources resources = scanner.ContentContext.Resources;
-      FontResources fonts = resources.Fonts;
-      // No font resources collection?
-      if(fonts == null)
       {
-        // Create the font resources collection!
-        fonts = new FontResources(scanner.Contents.Document);
-        resources.Fonts = fonts;
+        // Ensuring that the resource exists within the context resources...
+        ResourceItems<T> resourceItems = (ResourceItems<T>)scanner.ContentContext.Resources.Get<T>();
+        // Get the key associated to the resource!
+        PdfName name = resourceItems.BaseDataObject.GetKey(value.BaseObject);
+        // No key found?
+        if(name == null)
+        {
+          // Insert the resource within the collection!
+          int resourceIndex = resourceItems.Count;
+          do
+          {name = new PdfName((++resourceIndex).ToString());}
+          while(resourceItems.ContainsKey(name));
+          resourceItems[name] = value;
+        }
+        return name;
       }
-      // Get the key associated to the font!
-      PdfName name = fonts.BaseDataObject.GetKey(value.BaseObject);
-      // No key found?
-      if(name == null)
-      {
-        // Insert the font within the resources!
-        int fontIndex = fonts.Count;
-        do
-        {name = new PdfName((++fontIndex).ToString());}
-        while(fonts.ContainsKey(name));
-        fonts[name] = value;
-      }
-      return name;
-    }
-
-    private PdfName GetPropertyListName(
-      PropertyList value
-      )
-    {
-      // Ensuring that the property list exists within the context resources...
-      Resources resources = scanner.ContentContext.Resources;
-      PropertyListResources propertyLists = resources.PropertyLists;
-      // No property list resources collection?
-      if(propertyLists == null)
-      {
-        // Create the property list resources collection!
-        propertyLists = new PropertyListResources(scanner.Contents.Document);
-        resources.PropertyLists = propertyLists;
-      }
-      // Get the key associated to the property list!
-      PdfName name = propertyLists.BaseDataObject.GetKey(value.BaseObject);
-      // No key found?
-      if(name == null)
-      {
-        // Insert the property list within the resources!
-        int propertyListIndex = propertyLists.Count;
-        do
-        {name = new PdfName((++propertyListIndex).ToString());}
-        while(propertyLists.ContainsKey(name));
-        propertyLists[name] = (PropertyList)value;
-      }
-      return name;
-    }
-
-    private PdfName GetXObjectName(
-      XObject value
-      )
-    {
-      // Ensuring that the external object exists within the context resources...
-      Resources resources = scanner.ContentContext.Resources;
-      XObjectResources xObjects = resources.XObjects;
-      // No external object resources collection?
-      if(xObjects == null)
-      {
-        // Create the external object resources collection!
-        xObjects = new XObjectResources(scanner.Contents.Document);
-        resources.XObjects = xObjects;
-      }
-      // Get the key associated to the external object!
-      PdfName name = xObjects.BaseDataObject.GetKey(value.BaseObject);
-      // No key found?
-      if(name == null)
-      {
-        // Insert the external object within the resources!
-        int xObjectIndex = xObjects.Count;
-        do
-        {name = new PdfName((++xObjectIndex).ToString());}
-        while(xObjects.ContainsKey(name));
-        xObjects[name] = value;
-      }
-      return name;
     }
 
     /**
@@ -1604,6 +1566,12 @@ namespace org.pdfclown.documents.contents.composition
       double ratioY
       )
     {SetTextMatrix(ratioX, 0, 0, ratioY, 0, 0);}
+
+    private void SetFont_(
+      PdfName name,
+      double size
+      )
+    {Add(new objects::SetFont(name,size));}
 
     /**
       <summary>Sets the transformation of the coordinate system from text space to user space

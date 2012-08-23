@@ -47,7 +47,7 @@ import org.pdfclown.util.NotImplementedException;
   Outline item [PDF:1.6:8.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Bookmark
@@ -284,7 +284,7 @@ public final class Bookmark
     */
     getBaseDataObject().put(
       PdfName.Count,
-      new PdfInteger((value ? 1 : -1) * Math.abs(countObject.getValue()))
+      PdfInteger.get((value ? 1 : -1) * Math.abs(countObject.getValue()))
       );
   }
 
@@ -300,7 +300,7 @@ public final class Bookmark
     else
     {
       checkCompatibility(value);
-      getBaseDataObject().put(PdfName.F, new PdfInteger(FlagsEnum.toInt(value)));
+      getBaseDataObject().put(PdfName.F, PdfInteger.get(FlagsEnum.toInt(value)));
     }
   }
 

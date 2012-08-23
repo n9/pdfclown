@@ -55,7 +55,7 @@ import org.pdfclown.util.MapEntry;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 public final class ObjectStream
   extends PdfStream
@@ -313,11 +313,11 @@ public final class ObjectStream
       final PdfDictionary header = getHeader();
       header.put(
         PdfName.N,
-        new PdfInteger(getEntries().size())
+        PdfInteger.get(getEntries().size())
         );
       header.put(
         PdfName.First,
-        new PdfInteger(dataByteOffset)
+        PdfInteger.get(dataByteOffset)
         );
     }
   }

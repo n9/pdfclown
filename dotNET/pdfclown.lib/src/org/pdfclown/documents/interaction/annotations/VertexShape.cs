@@ -45,12 +45,9 @@ namespace org.pdfclown.documents.interaction.annotations
     protected VertexShape(
       Page page,
       RectangleF box,
+      string text,
       PdfName subtype
-      ) : base(
-        page,
-        box,
-        subtype
-        )
+      ) : base(page, box, text, subtype)
     {}
 
     protected VertexShape(

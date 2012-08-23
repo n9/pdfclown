@@ -62,7 +62,7 @@ namespace org.pdfclown.files
 
     private static PdfArray CreateBaseDataObject(
       )
-    {return new PdfArray(PdfString.Empty, PdfString.Empty);}
+    {return new PdfArray(PdfString.Default, PdfString.Default);}
     #endregion
     #endregion
 
@@ -180,7 +180,7 @@ namespace org.pdfclown.files
             PdfString.SerializationModeEnum.Hex
             );
           BaseDataObject[1] = versionID;
-          if(BaseDataObject[0].Equals(PdfString.Empty))
+          if(BaseDataObject[0].Equals(PdfString.Default))
           {BaseDataObject[0] = versionID;}
         }
       }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,52 +23,31 @@
   this list of conditions.
 */
 
-using org.pdfclown.bytes;
-using org.pdfclown.objects;
+using System;
 
-using System.Collections.Generic;
-
-namespace org.pdfclown.documents.contents.objects
+namespace org.pdfclown.util
 {
   /**
-    <summary>'Set the line cap style' operation [PDF:1.6:4.3.3].</summary>
+    <summary>Enumeration utility.</summary>
   */
-  [PDF(VersionEnum.PDF10)]
-  public sealed class SetLineCap
-    : Operation
+  public static class EnumUtils
   {
     #region static
-    #region fields
-    public static readonly string OperatorKeyword = "J";
-    #endregion
-    #endregion
-
-    #region dynamic
-    #region constructors
-    public SetLineCap(
-      LineCapEnum value
-      ) : base(OperatorKeyword, PdfInteger.Get((int)value))
-    {}
-
-    public SetLineCap(
-      IList<PdfDirectObject> operands
-      ) : base(OperatorKeyword, operands)
-    {}
-    #endregion
-
     #region interface
     #region public
-    public override void Scan(
-      ContentScanner.GraphicsState state
-      )
-    {state.LineCap = Value;}
-
-    public LineCapEnum Value
+    public static T Mask<T>(
+      T map,
+      T key,
+      bool enabled
+      ) where T : struct
     {
-      get
-      {return (LineCapEnum)((IPdfNumber)operands[0]).Value;}
-      set
-      {operands[0] = PdfInteger.Get((int)value);}
+      int mapValue = (int)(object)map;
+      int keyValue = (int)(object)key;
+      if(enabled)
+      {mapValue |= keyValue;}
+      else
+      {mapValue ^= keyValue;}
+      return (T)(object)mapValue;
     }
     #endregion
     #endregion

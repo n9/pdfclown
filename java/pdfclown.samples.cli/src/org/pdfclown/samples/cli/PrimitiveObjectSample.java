@@ -16,7 +16,7 @@ import org.pdfclown.objects.PdfName;
   by PDF Clown (you don't need to work at the low level shown here!).</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 08/23/12
 */
 public class PrimitiveObjectSample
   extends Sample
@@ -51,7 +51,7 @@ public class PrimitiveObjectSample
         // Define the location of the document window on the page (fit vertically)!
         destination.add(new PdfName("FitV"));
         // Define the window's left-edge horizontal coordinate!
-        destination.add(new PdfInteger(-32768));
+        destination.add(PdfInteger.get(-32768));
         // Associate the destination to the action!
         action.put(new PdfName("D"),destination);
       }

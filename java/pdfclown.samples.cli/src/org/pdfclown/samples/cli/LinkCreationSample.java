@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 08/23/12
 */
 public class LinkCreationSample
   extends Sample
@@ -99,6 +99,7 @@ public class LinkCreationSample
         Link link = new Link(
           page,
           new Rectangle(240,100,100,50),
+          "Link annotation",
           new GoToURI(
             document,
             new URI("http://www.sourceforge.net/projects/clown")
@@ -135,6 +136,7 @@ public class LinkCreationSample
       FileAttachment attachment = new FileAttachment(
         page,
         new Rectangle(0, -20, 10, 10),
+        "File attachment annotation",
         FileSpecification.get(
           EmbeddedFile.get(
             document,
@@ -144,7 +146,6 @@ public class LinkCreationSample
           )
         );
       attachment.setName(fileAttachmentName);
-      attachment.setText("File attachment annotation");
       attachment.setIconType(FileAttachment.IconTypeEnum.PaperClip);
 
       blockComposer.begin(new Rectangle2D.Double(30,170,200,50),XAlignmentEnum.Left,YAlignmentEnum.Middle);
@@ -163,6 +164,7 @@ public class LinkCreationSample
       Link link = new Link(
         page,
         new Rectangle(240,170,100,50),
+        "Link annotation",
         new GoToEmbedded(
           document,
           new GoToEmbedded.PathElement(

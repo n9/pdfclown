@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -349,8 +349,8 @@ namespace org.pdfclown.tokens
       // 2. Header.
       {
         PdfDictionary header = Header;
-        header[PdfName.N] = new PdfInteger(Entries.Count);
-        header[PdfName.First] = new PdfInteger(dataByteOffset);
+        header[PdfName.N] = PdfInteger.Get(Entries.Count);
+        header[PdfName.First] = PdfInteger.Get(dataByteOffset);
       }
     }
     #endregion

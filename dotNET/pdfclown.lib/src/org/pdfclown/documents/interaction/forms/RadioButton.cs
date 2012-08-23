@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -27,6 +27,7 @@ using org.pdfclown.bytes;
 using org.pdfclown.documents;
 using org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.objects;
+using org.pdfclown.util;
 
 using System;
 
@@ -48,20 +49,16 @@ namespace org.pdfclown.documents.interaction.forms
       string name,
       DualWidget[] widgets,
       string value
-      ) : base(
-        name,
-        widgets[0]
-        )
+      ) : base(name, widgets[0])
     {
-      FlagsEnum flags = Flags; flags |= FlagsEnum.Radio; flags |= FlagsEnum.NoToggleToOff; Flags = flags;
+      Flags = EnumUtils.Mask(
+        EnumUtils.Mask(Flags, FlagsEnum.Radio, true),
+        FlagsEnum.NoToggleToOff,
+        true
+        );
 
       FieldWidgets fieldWidgets = Widgets;
-      for(
-        int index = 1,
-          length = widgets.Length;
-        index < length;
-        index++
-        )
+      for(int index = 1, length = widgets.Length; index < length; index++)
       {fieldWidgets.Add(widgets[index]);}
 
       Value = value;
@@ -86,16 +83,9 @@ namespace org.pdfclown.documents.interaction.forms
     public bool Toggleable
     {
       get
-      {return !((Flags & FlagsEnum.NoToggleToOff) == FlagsEnum.NoToggleToOff);}
+      {return (Flags & FlagsEnum.NoToggleToOff) != FlagsEnum.NoToggleToOff;}
       set
-      {
-        FlagsEnum flags = Flags;
-        if(value)
-        {flags ^= FlagsEnum.NoToggleToOff;}
-        else
-        {flags |= FlagsEnum.NoToggleToOff;}
-        Flags = flags;
-      }
+      {Flags = EnumUtils.Mask(Flags, FlagsEnum.NoToggleToOff, !value);}
     }
 
     public override object Value

@@ -39,7 +39,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF12)
 public final class ChoiceItem
@@ -133,7 +133,7 @@ public final class ChoiceItem
           new PdfDirectObject[]{oldBaseDataObject}
           )
         );
-      ((PdfArray)baseDataObject).add(PdfTextString.Empty);
+      ((PdfArray)baseDataObject).add(PdfTextString.Default);
 
       if(items != null)
       {

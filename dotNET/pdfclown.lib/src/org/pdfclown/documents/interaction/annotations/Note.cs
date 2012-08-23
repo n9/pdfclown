@@ -135,9 +135,10 @@ namespace org.pdfclown.documents.interaction.annotations
         page.Document,
         PdfName.Text,
         new RectangleF(location.X,location.Y,0,0),
+        text,
         page
         )
-    {Text = text;}
+    {}
 
     public Note(
       PdfDirectObject baseObject

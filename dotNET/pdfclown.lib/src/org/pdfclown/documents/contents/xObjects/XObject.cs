@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -101,11 +101,12 @@ namespace org.pdfclown.documents.contents.xObjects
     #region interface
     #region public
     /**
-      <summary>Gets the mapping from external-object space to user space.</summary>
+      <summary>Gets/Sets the mapping from external-object space to user space.</summary>
     */
     public abstract Matrix Matrix
     {
       get;
+      set;
     }
 
     /**

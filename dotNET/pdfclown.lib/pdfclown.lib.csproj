@@ -120,7 +120,6 @@
     <Compile Include="src\org\pdfclown\documents\contents\objects\RestoreGraphicsState.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\objects\SaveGraphicsState.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\objects\SetCharSpace.cs" />
-    <Compile Include="src\org\pdfclown\documents\contents\objects\SetExtGState.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\objects\SetFillColor.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\objects\SetFillColorSpace.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\objects\SetFont.cs" />
@@ -425,6 +424,9 @@
     <Compile Include="src\org\pdfclown\tokens\PdfDocEncoding.cs" />
     <Compile Include="src\org\pdfclown\tokens\PdfEncoding.cs" />
     <Compile Include="src\org\pdfclown\tokens\Encoding.cs" />
+    <Compile Include="src\org\pdfclown\util\EnumUtils.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\ApplyExtGState.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\BlendModeEnum.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />

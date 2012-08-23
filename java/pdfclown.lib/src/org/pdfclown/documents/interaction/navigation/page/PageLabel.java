@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 02/14/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF13)
 public final class PageLabel
@@ -191,7 +191,7 @@ public final class PageLabel
   public void setNumberBase(
     int value
     )
-  {getBaseDataObject().put(PdfName.St, value <= DefaultNumberBase ? null : new PdfInteger(value));}
+  {getBaseDataObject().put(PdfName.St, value <= DefaultNumberBase ? null : PdfInteger.get(value));}
 
   /**
     @see #getNumberStyle()
@@ -207,7 +207,7 @@ public final class PageLabel
   public void setPrefix(
     String value
     )
-  {getBaseDataObject().put(PdfName.P, value != null ? new PdfTextString(value) : null);}
+  {getBaseDataObject().put(PdfName.P, PdfTextString.get(value));}
   // </interface>
   // </dynamic>
 }

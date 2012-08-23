@@ -57,6 +57,7 @@ import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
+import org.pdfclown.util.EnumUtils;
 import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.geom.Dimension;
 
@@ -65,7 +66,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 02/13/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF12)
 public final class TextField
@@ -159,7 +160,7 @@ public final class TextField
   public void setMaxLength(
     int value
     )
-  {getBaseDataObject().put(PdfName.MaxLen, value != Integer.MAX_VALUE ? new PdfInteger(value) : null);}
+  {getBaseDataObject().put(PdfName.MaxLen, value != Integer.MAX_VALUE ? PdfInteger.get(value) : null);}
 
   /**
     @see #isMultiline()
@@ -167,14 +168,7 @@ public final class TextField
   public void setMultiline(
     boolean value
     )
-  {
-    EnumSet<FlagsEnum> flags = getFlags();
-    if(value)
-    {flags.add(FlagsEnum.Multiline);}
-    else
-    {flags.remove(FlagsEnum.Multiline);}
-    setFlags(flags);
-  }
+  {setFlags(EnumUtils.mask(getFlags(), FlagsEnum.Multiline, value));}
 
   /**
     @see #isPassword()
@@ -182,14 +176,7 @@ public final class TextField
   public void setPassword(
     boolean value
     )
-  {
-    EnumSet<FlagsEnum> flags = getFlags();
-    if(value)
-    {flags.add(FlagsEnum.Password);}
-    else
-    {flags.remove(FlagsEnum.Password);}
-    setFlags(flags);
-  }
+  {setFlags(EnumUtils.mask(getFlags(), FlagsEnum.Password, value));}
 
   /**
     @see #isSpellChecked()
@@ -197,14 +184,7 @@ public final class TextField
   public void setSpellChecked(
     boolean value
     )
-  {
-    EnumSet<FlagsEnum> flags = getFlags();
-    if(value)
-    {flags.remove(FlagsEnum.DoNotSpellCheck);}
-    else
-    {flags.add(FlagsEnum.DoNotSpellCheck);}
-    setFlags(flags);
-  }
+  {setFlags(EnumUtils.mask(getFlags(), FlagsEnum.DoNotSpellCheck, !value));}
 
   @Override
   public void setValue(

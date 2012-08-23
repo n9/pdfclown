@@ -182,11 +182,11 @@ namespace org.pdfclown.documents.interaction.navigation.page
     {
       //TODO: transfer to extension methods!
       DirectionEnumCodes = new Dictionary<DirectionEnum,PdfDirectObject>();
-      DirectionEnumCodes[DirectionEnum.LeftToRight] = new PdfInteger(0);
-      DirectionEnumCodes[DirectionEnum.BottomToTop] = new PdfInteger(90);
-      DirectionEnumCodes[DirectionEnum.RightToLeft] = new PdfInteger(180);
-      DirectionEnumCodes[DirectionEnum.TopToBottom] = new PdfInteger(270);
-      DirectionEnumCodes[DirectionEnum.TopLeftToBottomRight] = new PdfInteger(315);
+      DirectionEnumCodes[DirectionEnum.LeftToRight] = PdfInteger.Get(0);
+      DirectionEnumCodes[DirectionEnum.BottomToTop] = PdfInteger.Get(90);
+      DirectionEnumCodes[DirectionEnum.RightToLeft] = PdfInteger.Get(180);
+      DirectionEnumCodes[DirectionEnum.TopToBottom] = PdfInteger.Get(270);
+      DirectionEnumCodes[DirectionEnum.TopLeftToBottomRight] = PdfInteger.Get(315);
       DirectionEnumCodes[DirectionEnum.None] = PdfName.None;
 
       OrientationEnumCodes = new Dictionary<OrientationEnum,PdfName>();

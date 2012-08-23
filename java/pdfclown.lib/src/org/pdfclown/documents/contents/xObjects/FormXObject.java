@@ -45,6 +45,7 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
+import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.Rectangle;
 import org.pdfclown.util.NotImplementedException;
@@ -54,7 +55,7 @@ import org.pdfclown.util.math.geom.Dimension;
   Form external object [PDF:1.6:4.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF10)
 public final class FormXObject
@@ -74,46 +75,23 @@ public final class FormXObject
     Document context,
     Dimension2D size
     )
-  {this(context, size, null);}
-
-  /**
-    Creates a new form within the specified document context.
-
-    @param context Document where to place this form.
-    @param size Form size.
-    @param resources Form resources. In case of <code>null</code>, creates a new collection.
-  */
-  public FormXObject(
-    Document context,
-    Dimension2D size,
-    Resources resources
-    )
-  {this(context, new Rectangle2D.Double(0, 0, size.getWidth(), size.getHeight()), resources);}
+  {this(context, new Rectangle2D.Double(0, 0, size.getWidth(), size.getHeight()));}
 
   /**
     Creates a new form within the specified document context.
 
     @param context Document where to place this form.
     @param box Form box.
-    @param resources Form resources. In case of <code>null</code>, creates a new collection.
   */
   public FormXObject(
     Document context,
-    Rectangle2D box,
-    Resources resources
+    Rectangle2D box
     )
   {
     super(context);
 
-    PdfDictionary header = getBaseDataObject().getHeader();
-    header.put(PdfName.Subtype, PdfName.Form);
-    header.put(PdfName.BBox, new Rectangle(box).getBaseDataObject());
-
-    // No resources collection?
-    /* NOTE: Resources collection is mandatory. */
-    if(resources == null)
-    {resources = new Resources(context);}
-    header.put(PdfName.Resources, resources.getBaseObject());
+    getBaseDataObject().getHeader().put(PdfName.Subtype, PdfName.Form);
+    setBox(box);
   }
 
   /**
@@ -170,20 +148,42 @@ public final class FormXObject
   }
 
   /**
-    Sets the resources associated to the form.
+    @see #getBox()
   */
-  public void setResources(
-    Resources value
+  public void setBox(
+    Rectangle2D value
+    )
+  {getBaseDataObject().getHeader().put(PdfName.BBox, new Rectangle(value).getBaseDataObject());}
+
+  public void setMatrix(
+    AffineTransform value
     )
   {
     getBaseDataObject().getHeader().put(
-      PdfName.Resources,
-      value.getBaseObject()
+      PdfName.Matrix,
+      value != null
+        ? new PdfArray(
+            PdfReal.get(value.getScaleX()),
+            PdfReal.get(value.getShearY()),
+            PdfReal.get(value.getShearX()),
+            PdfReal.get(value.getScaleY()),
+            PdfReal.get(value.getTranslateX()),
+            PdfReal.get(value.getTranslateY())
+          )
+        : null
       );
   }
 
   /**
-    Sets the form size.
+    @see #getResources()
+  */
+  public void setResources(
+    Resources value
+    )
+  {getBaseDataObject().getHeader().put(PdfName.Resources, PdfObjectWrapper.getBaseObject(value));}
+
+  /**
+    @see #getSize()
   */
   @Override
   public void setSize(
@@ -199,15 +199,7 @@ public final class FormXObject
   @Override
   public Rectangle2D getBox(
     )
-  {
-    PdfArray box = (PdfArray)getBaseDataObject().getHeader().resolve(PdfName.BBox);
-    return new Rectangle2D.Double(
-      ((PdfNumber<?>)box.get(0)).getDoubleValue(),
-      ((PdfNumber<?>)box.get(1)).getDoubleValue(),
-      ((PdfNumber<?>)box.get(2)).getDoubleValue(),
-      ((PdfNumber<?>)box.get(3)).getDoubleValue()
-      );
-  }
+  {return new Rectangle(getBaseDataObject().getHeader().get(PdfName.BBox)).toRectangle2D();}
 
   @Override
   public Contents getContents(
@@ -217,7 +209,7 @@ public final class FormXObject
   @Override
   public Resources getResources(
     )
-  {return Resources.wrap(getBaseDataObject().getHeader().get(PdfName.Resources));}
+  {return Resources.wrap(getBaseDataObject().getHeader().get(PdfName.Resources, PdfDictionary.class));}
 
   @Override
   public RotationEnum getRotation(

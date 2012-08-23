@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,7 +47,7 @@ namespace org.pdfclown.documents.contents.objects
     #region constructors
     public SetLineJoin(
       LineJoinEnum value
-      ) : base(OperatorKeyword, new PdfInteger((int)value))
+      ) : base(OperatorKeyword, PdfInteger.Get((int)value))
     {}
 
     public SetLineJoin(
@@ -68,7 +68,7 @@ namespace org.pdfclown.documents.contents.objects
       get
       {return (LineJoinEnum)((IPdfNumber)operands[0]).Value;}
       set
-      {operands[0] = new PdfInteger((int)value);}
+      {operands[0] = PdfInteger.Get((int)value);}
     }
     #endregion
     #endregion

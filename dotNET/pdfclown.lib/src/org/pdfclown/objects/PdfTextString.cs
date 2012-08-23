@@ -45,7 +45,7 @@ namespace org.pdfclown.objects
     */
     #region static
     #region fields
-    public static readonly new PdfTextString Empty = new PdfTextString("");
+    public static readonly new PdfTextString Default = new PdfTextString("");
     #endregion
   
     #region interface

@@ -180,8 +180,8 @@ namespace org.pdfclown.documents.contents.objects
         return BeginInlineImage.Value;
       else if(operator_.Equals(EndInlineImage.OperatorKeyword))
         return EndInlineImage.Value;
-      else if(operator_.Equals(SetExtGState.OperatorKeyword))
-        return new SetExtGState(operands);
+      else if(operator_.Equals(ApplyExtGState.OperatorKeyword))
+        return new ApplyExtGState(operands);
       else // No explicit operation implementation available.
         return new GenericOperation(operator_, operands);
     }

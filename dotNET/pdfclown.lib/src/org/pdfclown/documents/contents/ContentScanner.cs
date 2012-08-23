@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -79,6 +79,7 @@ namespace org.pdfclown.documents.contents
     {
       #region dynamic
       #region fields
+      private IList<BlendModeEnum> blendMode;
       private double charSpace;
       private Matrix ctm;
       private colors::Color fillColor;
@@ -143,6 +144,7 @@ namespace org.pdfclown.documents.contents
         GraphicsState state
         )
       {
+        state.blendMode = blendMode;
         state.charSpace = charSpace;
         state.ctm = (Matrix)ctm.Clone();
         state.fillColor = fillColor;
@@ -172,6 +174,20 @@ namespace org.pdfclown.documents.contents
           state.tm = new Matrix();
         }
         state.wordSpace = wordSpace;
+      }
+
+      /**
+        <summary>Gets/Sets the current blend mode to be used in the transparent imaging model
+        [PDF:1.6:5.2.1].</summary>
+        <remarks>The application should use the first blend mode in the list that it recognizes.
+        </remarks>
+      */
+      public IList<BlendModeEnum> BlendMode
+      {
+        get
+        {return blendMode;}
+        set
+        {blendMode = value;}
       }
 
       /**
@@ -517,6 +533,7 @@ namespace org.pdfclown.documents.contents
         )
       {
         // State parameters initialization.
+        blendMode = ExtGState.DefaultBlendMode;
         charSpace = 0;
         ctm = GetInitialCtm();
         fillColor = colors::DeviceGrayColor.Default;

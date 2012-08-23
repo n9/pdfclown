@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF15)
 public abstract class VertexShape
@@ -58,15 +58,10 @@ public abstract class VertexShape
   protected VertexShape(
     Page page,
     Rectangle2D box,
+    String text,
     PdfName subtype
     )
-  {
-    super(
-      page,
-      box,
-      subtype
-      );
-  }
+  {super(page, box, text, subtype);}
 
   protected VertexShape(
     PdfDirectObject baseObject

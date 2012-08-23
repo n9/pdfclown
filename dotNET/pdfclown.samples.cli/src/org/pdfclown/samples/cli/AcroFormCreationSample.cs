@@ -243,8 +243,10 @@ namespace org.pdfclown.samples.cli
         items.Add("Carmen Consoli");
         items.Add("Ani DiFranco");
         items.Add("Cristina Dona'");
+        items.Add("Nathalie Giannitrapani");
         items.Add("PJ Harvey");
         items.Add("Billie Holiday");
+        items.Add("Joan As Police Woman");
         items.Add("Janis Joplin");
         items.Add("Angelique Kidjo");
         items.Add("Patrizia Laquidara");
@@ -264,6 +266,7 @@ namespace org.pdfclown.samples.cli
         items.Add("Skin");
         items.Add("Patti Smith");
         items.Add("Fatima Spar");
+        items.Add("Thony");
         items.Add("Paola Turci");
         items.Add("Sarah Vaughan");
         items.Add("Nina Zilli");

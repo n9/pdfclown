@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Note
@@ -145,10 +145,9 @@ public final class Note
       page.getDocument(),
       PdfName.Text,
       new Rectangle2D.Double(location.getX(),location.getY(),0,0),
+      text,
       page
       );
-
-    setText(text);
   }
 
   public Note(

@@ -90,7 +90,7 @@ namespace org.pdfclown.tokens
       switch(TokenType)
       {
         case TokenTypeEnum.Integer:
-          return new PdfInteger((int)Token);
+          return PdfInteger.Get((int)Token);
         case TokenTypeEnum.Name:
           return new PdfName((string)Token,true);
         case TokenTypeEnum.DictionaryBegin:

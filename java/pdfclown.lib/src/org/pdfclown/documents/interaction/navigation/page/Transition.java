@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF11)
 public final class Transition
@@ -62,23 +62,23 @@ public final class Transition
     /**
       Left to right.
     */
-    LeftToRight(new PdfInteger(0)),
+    LeftToRight(PdfInteger.get(0)),
     /**
       Bottom to top.
     */
-    BottomToTop(new PdfInteger(90)),
+    BottomToTop(PdfInteger.get(90)),
     /**
       Right to left.
     */
-    RightToLeft(new PdfInteger(180)),
+    RightToLeft(PdfInteger.get(180)),
     /**
       Top to bottom.
     */
-    TopToBottom(new PdfInteger(270)),
+    TopToBottom(PdfInteger.get(270)),
     /**
       Top-left to bottom-right.
     */
-    TopLeftToBottomRight(new PdfInteger(315)),
+    TopLeftToBottomRight(PdfInteger.get(315)),
     /**
       None.
     */

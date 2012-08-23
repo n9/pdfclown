@@ -32,7 +32,7 @@ import org.pdfclown.documents.Document;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 02/15/12
+  @version 0.1.2, 08/23/12
 */
 public abstract class NumberTree<TValue extends PdfObjectWrapper<?>>
   extends Tree<Integer, PdfInteger, TValue>
@@ -62,7 +62,7 @@ public abstract class NumberTree<TValue extends PdfObjectWrapper<?>>
   protected PdfInteger wrapKey(
     Integer key
     )
-  {return new PdfInteger(key);}
+  {return PdfInteger.get(key);}
   // </protected>
   // </interface>
   // </dynamic>

@@ -33,22 +33,20 @@ import java.awt.geom.RectangularShape;
 
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.ContentScanner;
-import org.pdfclown.documents.contents.FontResources;
+import org.pdfclown.documents.contents.ExtGState;
 import org.pdfclown.documents.contents.IContentContext;
 import org.pdfclown.documents.contents.LineCapEnum;
 import org.pdfclown.documents.contents.LineJoinEnum;
 import org.pdfclown.documents.contents.PropertyList;
-import org.pdfclown.documents.contents.PropertyListResources;
-import org.pdfclown.documents.contents.Resources;
+import org.pdfclown.documents.contents.ResourceItems;
 import org.pdfclown.documents.contents.TextRenderModeEnum;
-import org.pdfclown.documents.contents.XObjectResources;
 import org.pdfclown.documents.contents.colorSpaces.Color;
-import org.pdfclown.documents.contents.colorSpaces.ColorSpace;
 import org.pdfclown.documents.contents.colorSpaces.DeviceCMYKColorSpace;
 import org.pdfclown.documents.contents.colorSpaces.DeviceGrayColorSpace;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColorSpace;
 import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.documents.contents.layers.LayerEntity;
+import org.pdfclown.documents.contents.objects.ApplyExtGState;
 import org.pdfclown.documents.contents.objects.BeginMarkedContent;
 import org.pdfclown.documents.contents.objects.BeginSubpath;
 import org.pdfclown.documents.contents.objects.CloseSubpath;
@@ -88,21 +86,20 @@ import org.pdfclown.documents.contents.xObjects.XObject;
 import org.pdfclown.documents.interaction.actions.Action;
 import org.pdfclown.documents.interaction.annotations.Link;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.util.NotImplementedException;
+import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.util.math.geom.Quad;
 
 /**
   Content stream primitive composer.
   <p>It provides the basic (primitive) operations described by the PDF specification for graphics
   content composition.</p>
-  <h3>Remarks</h3>
   <p>This class leverages the object-oriented content stream modelling infrastructure, which
   encompasses 1st-level content stream objects (operations), 2nd-level content stream objects
   (graphics objects) and full graphics state support.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 08/23/12
 */
 public final class PrimitiveComposer
 {
@@ -147,7 +144,6 @@ public final class PrimitiveComposer
 
   /**
     Applies a transformation to the coordinate system from user space to device space [PDF:1.6:4.3.3].
-    <h3>Remarks</h3>
     <p>The transformation is applied to the current transformation matrix (CTM) by concatenation,
     i.e. it doesn't replace it.</p>
 
@@ -168,6 +164,35 @@ public final class PrimitiveComposer
     double f
     )
   {add(new ModifyCTM(a,b,c,d,e,f));}
+
+  /**
+    Applies the specified state parameters [PDF:1.6:4.3.4].
+  
+    @param name Resource identifier of the state parameters object.
+  */
+  public void applyState(
+    PdfName name
+    )
+  {
+    // Doesn't the state exist in the context resources?
+    if(!scanner.getContentContext().getResources().getExtGStates().containsKey(name))
+      throw new IllegalArgumentException("No state resource associated to the given argument (name:'name'; value:'" + name + "';)");
+
+    applyState_(name);
+  }
+
+  /**
+    Applies the specified state parameters [PDF:1.6:4.3.4].
+    <p>The <code>value</code> is checked for presence in the current resource
+    dictionary: if it isn't available, it's automatically added. If you need to
+    avoid such a behavior, use {@link #applyState(PdfName) #applyState(PdfName)}.</p>
+  
+    @param state State parameters object.
+  */
+  public void applyState(
+    ExtGState state
+    )
+  {applyState_(getResourceName(state));}
 
   /**
     Adds a composite object beginning it.
@@ -197,7 +222,7 @@ public final class PrimitiveComposer
   public MarkedContent beginLayer(
     LayerEntity layer
     )
-  {return beginLayer(getPropertyListName(layer.getMembership()));}
+  {return beginLayer(getResourceName(layer.getMembership()));}
 
   /**
     Begins a new layered-content sequence [PDF:1.6:4.10.2].
@@ -245,7 +270,7 @@ public final class PrimitiveComposer
     PdfName tag,
     PropertyList propertyList
     )
-  {return beginMarkedContent(tag, getPropertyListName(propertyList));}
+  {return beginMarkedContent_(tag, getResourceName(propertyList));}
 
   /**
     Begins a new marked-content sequence [PDF:1.6:10.5].
@@ -261,16 +286,15 @@ public final class PrimitiveComposer
     PdfName propertyListName
     )
   {
-    return (MarkedContent)begin(
-      new MarkedContent(
-        new BeginMarkedContent(tag, propertyListName)
-        )
-      );
+    // Doesn't the property list exist in the context resources?
+    if(!scanner.getContentContext().getResources().getPropertyLists().containsKey(propertyListName))
+      throw new IllegalArgumentException("No property list resource associated to the given argument (name:'name'; value:'" + propertyListName + "';)");
+
+    return beginMarkedContent_(tag, propertyListName);
   }
 
   /**
     Modifies the current clipping path by intersecting it with the current path [PDF:1.6:4.4.1].
-    <h3>Remarks</h3>
     <p>It can be validly called only just before painting the current path.</p>
   */
   public void clip(
@@ -366,7 +390,7 @@ public final class PrimitiveComposer
     Point2D endControl
     )
   {
-    beginSubpath(startPoint);
+    startPath(startPoint);
     drawCurve(endPoint,startControl,endControl);
   }
 
@@ -413,13 +437,12 @@ public final class PrimitiveComposer
     Point2D endPoint
     )
   {
-    beginSubpath(startPoint);
+    startPath(startPoint);
     drawLine(endPoint);
   }
 
   /**
     Draws a polygon.
-    <h3>Remarks</h3>
     <p>A polygon is the same as a multiple line except that it's a closed path.</p>
 
     @param points Points.
@@ -445,7 +468,7 @@ public final class PrimitiveComposer
     Point2D[] points
     )
   {
-    beginSubpath(points[0]);
+    startPath(points[0]);
     for(
       int index = 1,
         length = points.length;
@@ -516,7 +539,7 @@ public final class PrimitiveComposer
             xArc =- radius * 2;
             yArc =- radius;
 
-            beginSubpath(new Point2D.Double(x1,y1));
+            startPath(new Point2D.Double(x1,y1));
           }
           else
           {
@@ -715,15 +738,8 @@ public final class PrimitiveComposer
     if(!scanner.getState().getFillColorSpace().equals(value.getColorSpace()))
     {
       // Set filling color space!
-      add(
-        new SetFillColorSpace(
-          getColorSpaceName(
-            value.getColorSpace()
-            )
-          )
-        );
+      add(new SetFillColorSpace(getResourceName(value.getColorSpace())));
     }
-
     add(new SetFillColor(value));
   }
 
@@ -742,12 +758,11 @@ public final class PrimitiveComposer
     if(!scanner.getContentContext().getResources().getFonts().containsKey(name))
       throw new IllegalArgumentException("No font resource associated to the given argument (name:'name'; value:'" + name + "';)");
 
-    add(new SetFont(name,size));
+    setFont_(name,size);
   }
 
   /**
     Sets the font [PDF:1.6:5.2].
-    <h3>Remarks</h3>
     <p>The <code>value</code> is checked for presence in the current resource
     dictionary: if it isn't available, it's automatically added. If you need to
     avoid such a behavior, use {@link #setFont(PdfName,double) setFont(PdfName,double)}.</p>
@@ -759,7 +774,7 @@ public final class PrimitiveComposer
     Font value,
     double size
     )
-  {setFont(getFontName(value),size);}
+  {setFont_(getResourceName(value),size);}
 
   /**
     Sets the text horizontal scaling [PDF:1.6:5.2.3].
@@ -829,7 +844,6 @@ public final class PrimitiveComposer
 
   /**
     Sets the transformation of the coordinate system from user space to device space [PDF:1.6:4.3.3].
-    <h3>Remarks</h3>
     <p>The transformation replaces the current transformation matrix (CTM).</p>
 
     @param a Item 0,0 of the matrix.
@@ -883,13 +897,7 @@ public final class PrimitiveComposer
     if(!scanner.getState().getStrokeColorSpace().equals(value.getColorSpace()))
     {
       // Set stroking color space!
-      add(
-        new SetStrokeColorSpace(
-          getColorSpaceName(
-            value.getColorSpace()
-            )
-          )
-        );
+      add(new SetStrokeColorSpace(getResourceName(value.getColorSpace())));
     }
 
     add(new SetStrokeColor(value));
@@ -1184,6 +1192,7 @@ public final class PrimitiveComposer
     return new Link(
       (Page)contentContext,
       linkBox,
+      null,
       action
       );
   }
@@ -1200,7 +1209,6 @@ public final class PrimitiveComposer
 
   /**
     Shows the specified external object [PDF:1.6:4.7].
-    <h3>Remarks</h3>
     <p>The <code>value</code> is checked for presence in the current resource
     dictionary: if it isn't available, it's automatically added. If you need to
     avoid such a behavior, use {@link #showXObject(PdfName) #showXObject(PdfName)}.</p>
@@ -1210,7 +1218,7 @@ public final class PrimitiveComposer
   public void showXObject(
     XObject value
     )
-  {showXObject(getXObjectName(value));}
+  {showXObject(getResourceName(value));}
 
   /**
     Shows the specified external object at the specified position [PDF:1.6:4.7].
@@ -1232,7 +1240,6 @@ public final class PrimitiveComposer
 
   /**
     Shows the specified external object at the specified position [PDF:1.6:4.7].
-    <h3>Remarks</h3>
     <p>The <code>value</code> is checked for presence in the current resource
     dictionary: if it isn't available, it's automatically added. If you need to
     avoid such a behavior, use {@link #showXObject(PdfName,Point2D) #showXObject(PdfName,Point2D)}.</p>
@@ -1246,7 +1253,7 @@ public final class PrimitiveComposer
     )
   {
     showXObject(
-      getXObjectName(value),
+      getResourceName(value),
       location
       );
   }
@@ -1276,7 +1283,6 @@ public final class PrimitiveComposer
 
   /**
     Shows the specified external object at the specified position [PDF:1.6:4.7].
-    <h3>Remarks</h3>
     <p>The <code>value</code> is checked for presence in the current resource
     dictionary: if it isn't available, it's automatically added. If you need to
     avoid such a behavior, use {@link #showXObject(PdfName,Point2D,Dimension2D)
@@ -1293,7 +1299,7 @@ public final class PrimitiveComposer
     )
   {
     showXObject(
-      getXObjectName(value),
+      getResourceName(value),
       location,
       size
       );
@@ -1320,7 +1326,7 @@ public final class PrimitiveComposer
   {
     XObject xObject = scanner.getContentContext().getResources().getXObjects().get(name);
     Dimension2D xObjectSize = xObject.getSize();
-    
+
     if(size == null)
     {size = xObjectSize;}
 
@@ -1383,7 +1389,6 @@ public final class PrimitiveComposer
 
   /**
     Shows the specified external object at the specified position [PDF:1.6:4.7].
-    <h3>Remarks</h3>
     <p>The <code>value</code> is checked for presence in the current resource
     dictionary: if it isn't available, it's automatically added. If you need to
     avoid such a behavior, use {@link #showXObject(PdfName,Point2D,Dimension2D,XAlignmentEnum,
@@ -1406,12 +1411,29 @@ public final class PrimitiveComposer
     )
   {
     showXObject(
-      getXObjectName(value),
+      getResourceName(value),
       location,
       size,
       xAlignment,
       yAlignment,
       rotation
+      );
+  }
+
+  /**
+    Begins a subpath [PDF:1.6:4.4.1].
+
+    @param startPoint Starting point.
+  */
+  public void startPath(
+    Point2D startPoint
+    )
+  {
+    add(
+      new BeginSubpath(
+        startPoint.getX(),
+        scanner.getContentContext().getBox().getHeight() - startPoint.getY()
+        )
       );
   }
 
@@ -1440,19 +1462,19 @@ public final class PrimitiveComposer
   // </public>
 
   // <private>
-  /**
-    Begins a subpath [PDF:1.6:4.4.1].
+  private void applyState_(
+    PdfName name
+    )
+  {add(new ApplyExtGState(name));}
 
-    @param startPoint Starting point.
-  */
-  private void beginSubpath(
-    Point2D startPoint
+  private MarkedContent beginMarkedContent_(
+    PdfName tag,
+    PdfName propertyListName
     )
   {
-    add(
-      new BeginSubpath(
-        startPoint.getX(),
-        scanner.getContentContext().getBox().getHeight() - startPoint.getY()
+    return (MarkedContent)begin(
+      new MarkedContent(
+        new BeginMarkedContent(tag, propertyListName)
         )
       );
   }
@@ -1505,7 +1527,7 @@ public final class PrimitiveComposer
       );
 
     if(beginPath)
-    {beginSubpath(point1);}
+    {startPath(point1);}
 
     final double endRadians = Math.toRadians(endAngle);
     final double quadrantRadians = Math.PI / 2;
@@ -1579,105 +1601,35 @@ public final class PrimitiveComposer
     }
   }
 
-  private PdfName getColorSpaceName(
-    ColorSpace<?> value
+  private <T extends PdfObjectWrapper<?>> PdfName getResourceName(
+    T value
     )
   {
     if(value instanceof DeviceGrayColorSpace)
-    {return PdfName.DeviceGray;}
+      return PdfName.DeviceGray;
     else if(value instanceof DeviceRGBColorSpace)
-    {return PdfName.DeviceRGB;}
+      return PdfName.DeviceRGB;
     else if(value instanceof DeviceCMYKColorSpace)
-    {return PdfName.DeviceCMYK;}
+      return PdfName.DeviceCMYK;
     else
-      throw new NotImplementedException("colorSpace MUST be converted to its associated name; you need to implement a method in PdfDictionary that, given a PdfDirectObject, returns its associated key.");
-  }
-
-  private PdfName getFontName(
-    Font value
-    )
-  {
-    // Ensuring that the font exists within the context resources...
-    Resources resources = scanner.getContentContext().getResources();
-    FontResources fonts = resources.getFonts();
-    // No font resources collection?
-    if(fonts == null)
     {
-      // Create the font resources collection!
-      fonts = new FontResources(scanner.getContents().getDocument());
-      resources.setFonts(fonts);
+      // Ensuring that the resource exists within the context resources...
+      @SuppressWarnings("unchecked")
+      ResourceItems<T> resourceItems = (ResourceItems<T>)scanner.getContentContext().getResources().get(value.getClass());
+      // Get the key associated to the resource!
+      PdfName name = resourceItems.getBaseDataObject().getKey(value.getBaseObject());
+      // No key found?
+      if(name == null)
+      {
+        // Insert the resource within the collection!
+        int resourceIndex = resourceItems.size();
+        do
+        {name = new PdfName(String.valueOf(++resourceIndex));}
+        while(resourceItems.containsKey(name));
+        resourceItems.put(name,value);
+      }
+      return name;
     }
-    // Get the key associated to the font!
-    PdfName name = fonts.getBaseDataObject().getKey(value.getBaseObject());
-    // No key found?
-    if(name == null)
-    {
-      // Insert the font within the resources!
-      int fontIndex = fonts.size();
-      do
-      {name = new PdfName(String.valueOf(++fontIndex));}
-      while(fonts.containsKey(name));
-      fonts.put(name,value);
-    }
-    return name;
-  }
-
-  private PdfName getPropertyListName(
-    PropertyList value
-    )
-  {
-    // Ensuring that the property list exists within the context resources...
-    Resources resources = scanner.getContentContext().getResources();
-    PropertyListResources propertyLists = resources.getPropertyLists();
-    // No property list resources collection?
-    if(propertyLists == null)
-    {
-      // Create the property list resources collection!
-      propertyLists = new PropertyListResources(scanner.getContents().getDocument());
-      resources.setPropertyLists(propertyLists);
-    }
-    // Get the key associated to the property list!
-    PdfName name = propertyLists.getBaseDataObject().getKey(value.getBaseObject());
-    // No key found?
-    if(name == null)
-    {
-      // Insert the property list within the resources!
-      int propertyListIndex = propertyLists.size();
-      do
-      {name = new PdfName(String.valueOf(++propertyListIndex));}
-      while(propertyLists.containsKey(name));
-      propertyLists.put(name,value);
-    }
-    return name;
-  }
-
-  private PdfName getXObjectName(
-    XObject value
-    )
-  {
-    // Ensuring that the external object exists within the context resources...
-    Resources resources = scanner.getContentContext().getResources();
-    XObjectResources xObjects = resources.getXObjects();
-    // No external object resources collection?
-    if(xObjects == null)
-    {
-      // Create the external object resources collection!
-      xObjects = new XObjectResources(scanner.getContents().getDocument());
-      resources.setXObjects(xObjects);
-    }
-    // Get the key associated to the external object!
-    PdfName name = xObjects.getBaseDataObject().getKey(value.getBaseObject());
-    // No key found?
-    if(name == null)
-    {
-      // Insert the external object within the resources!
-      int xObjectIndex = xObjects.size();
-      do
-      {name = new PdfName(String.valueOf(++xObjectIndex));}
-      while(xObjects.containsKey(name));
-      xObjects.put(name,value);
-    }
-    return name;
   }
 
   /**
@@ -1710,9 +1662,14 @@ public final class PrimitiveComposer
     )
   {setTextMatrix(ratioX, 0, 0, ratioY, 0, 0);}
 
+  private void setFont_(
+    PdfName name,
+    double size
+    )
+  {add(new SetFont(name,size));}
+
   /**
     Sets the transformation of the coordinate system from text space to user space [PDF:1.6:5.3.1].
-    <h3>Remarks</h3>
     <p>The transformation replaces the current text matrix.</p>
 
     @param a Item 0,0 of the matrix.

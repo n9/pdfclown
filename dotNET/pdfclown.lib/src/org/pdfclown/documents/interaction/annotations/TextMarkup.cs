@@ -25,7 +25,10 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
+using org.pdfclown.documents.contents;
 using org.pdfclown.documents.contents.colorSpaces;
+using org.pdfclown.documents.contents.composition;
+using org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.objects;
 using org.pdfclown.util.math.geom;
 
@@ -37,8 +40,8 @@ namespace org.pdfclown.documents.interaction.annotations
 {
   /**
     <summary>Text markup annotation [PDF:1.6:8.4.5].</summary>
-    <remarks>It displays highlights, underlines, strikeouts, or jagged ("squiggly") underlines
-    in the text of a document.</remarks>
+    <remarks>It displays highlights, underlines, strikeouts, or jagged ("squiggly") underlines in
+    the text of a document.</remarks>
   */
   [PDF(VersionEnum.PDF13)]
   public sealed class TextMarkup
@@ -117,65 +120,57 @@ namespace org.pdfclown.documents.interaction.annotations
     #endregion
     #endregion
 
+    #region static
+    #region fields
+    private static readonly PdfName HighlightExtGStateName = new PdfName("highlight");
+    #endregion
+
+    #region interface
+    private static float GetMarkupBoxMargin(
+      float boxHeight
+      )
+    {return boxHeight * .25f;}
+    #endregion
+    #endregion
+
     #region dynamic
     #region constructors
     /**
       <summary>Creates a new text markup on the specified page, making it printable by default.
       </summary>
       <param name="page">Page to annotate.</param>
+      <param name="text">Annotation text.</param>
       <param name="markupType">Markup type.</param>
       <param name="markupBox">Quadrilateral encompassing a word or group of contiguous words in the
       text underlying the annotation.</param>
     */
     public TextMarkup(
       Page page,
+      string text,
       MarkupTypeEnum markupType,
       Quad markupBox
-      ) : this(
-        page,
-        markupType,
-        new List<Quad>(){markupBox}
-        )
+      ) : this(page, text, markupType, new List<Quad>(){markupBox})
     {}
 
     /**
       <summary>Creates a new text markup on the specified page, making it printable by default.
       </summary>
       <param name="page">Page to annotate.</param>
+      <param name="text">Annotation text.</param>
       <param name="markupType">Markup type.</param>
       <param name="markupBoxes">Quadrilaterals encompassing a word or group of contiguous words in
       the text underlying the annotation.</param>
     */
     public TextMarkup(
       Page page,
-      MarkupTypeEnum markupType,
-      IList<Quad> markupBoxes
-      ) : this(
-        page,
-        markupBoxes[0].GetBounds(),
-        markupType,
-        markupBoxes
-        )
-    {}
-
-    /**
-      <summary>Creates a new text markup on the specified page, making it printable by default.
-      </summary>
-      <param name="page">Page to annotate.</param>
-      <param name="box">Annotation location on the page.</param>
-      <param name="markupType">Markup type.</param>
-      <param name="markupBoxes">Quadrilaterals encompassing a word or group of contiguous words in
-      the text underlying the annotation.</param>
-    */
-    public TextMarkup(
-      Page page,
-      RectangleF box,
+      string text,
       MarkupTypeEnum markupType,
       IList<Quad> markupBoxes
       ) : base(
         page.Document,
         ToCode(markupType),
-        box,
+        markupBoxes[0].GetBounds(),
+        text,
         page
         )
     {
@@ -198,53 +193,57 @@ namespace org.pdfclown.documents.interaction.annotations
     {throw new NotImplementedException();}
 
     /**
-      <summary>Gets/Sets the quadrilaterals encompassing a word or group of contiguous words
-      in the text underlying the annotation.</summary>
+      <summary>Gets/Sets the quadrilaterals encompassing a word or group of contiguous words in the
+      text underlying the annotation.</summary>
     */
     public IList<Quad> MarkupBoxes
     {
       get
       {
-        PdfArray quadPointsObject = (PdfArray)BaseDataObject[PdfName.QuadPoints];
         IList<Quad> markupBoxes = new List<Quad>();
-        float pageHeight = Page.Box.Height;
-        for(
-          int index = 0,
-            length = quadPointsObject.Count;
-          index < length;
-          index += 8
-          )
+        PdfArray quadPointsObject = (PdfArray)BaseDataObject[PdfName.QuadPoints];
+        if(quadPointsObject != null)
         {
-          /*
-            NOTE: Despite the spec prescription, Point 3 and Point 4 MUST be inverted.
-          */
-          markupBoxes.Add(
-            new Quad(
-              new PointF(
-                ((IPdfNumber)quadPointsObject[index]).FloatValue,
-                pageHeight - ((IPdfNumber)quadPointsObject[index + 1]).FloatValue
-                ),
-              new PointF(
-                ((IPdfNumber)quadPointsObject[index + 2]).FloatValue,
-                pageHeight - ((IPdfNumber)quadPointsObject[index + 3]).FloatValue
-                ),
-              new PointF(
-                ((IPdfNumber)quadPointsObject[index + 6]).FloatValue,
-                pageHeight - ((IPdfNumber)quadPointsObject[index + 7]).FloatValue
-                ),
-              new PointF(
-                ((IPdfNumber)quadPointsObject[index + 4]).FloatValue,
-                pageHeight - ((IPdfNumber)quadPointsObject[index + 5]).FloatValue
+          float pageHeight = Page.Box.Height;
+          for(
+            int index = 0,
+              length = quadPointsObject.Count;
+            index < length;
+            index += 8
+            )
+          {
+            /*
+              NOTE: Despite the spec prescription, Point 3 and Point 4 MUST be inverted.
+            */
+            markupBoxes.Add(
+              new Quad(
+                new PointF(
+                  ((IPdfNumber)quadPointsObject[index]).FloatValue,
+                  pageHeight - ((IPdfNumber)quadPointsObject[index + 1]).FloatValue
+                  ),
+                new PointF(
+                  ((IPdfNumber)quadPointsObject[index + 2]).FloatValue,
+                  pageHeight - ((IPdfNumber)quadPointsObject[index + 3]).FloatValue
+                  ),
+                new PointF(
+                  ((IPdfNumber)quadPointsObject[index + 6]).FloatValue,
+                  pageHeight - ((IPdfNumber)quadPointsObject[index + 7]).FloatValue
+                  ),
+                new PointF(
+                  ((IPdfNumber)quadPointsObject[index + 4]).FloatValue,
+                  pageHeight - ((IPdfNumber)quadPointsObject[index + 5]).FloatValue
+                  )
                 )
-              )
-            );
+              );
+          }
         }
         return markupBoxes;
       }
       set
       {
         PdfArray quadPointsObject = new PdfArray();
-        double pageHeight = Page.Box.Height;
+        float pageHeight = Page.Box.Height;
+        RectangleF box;
         foreach(Quad markupBox in value)
         {
           /*
@@ -259,8 +258,22 @@ namespace org.pdfclown.documents.interaction.annotations
           quadPointsObject.Add(PdfReal.Get(pageHeight - markupBoxPoints[3].Y)); // y4.
           quadPointsObject.Add(PdfReal.Get(markupBoxPoints[2].X)); // x3.
           quadPointsObject.Add(PdfReal.Get(pageHeight - markupBoxPoints[2].Y)); // y3.
+          if(box.IsEmpty)
+          {box = markupBox.GetBounds();}
+          else
+          {box = RectangleF.Union(box, markupBox.GetBounds());}
         }
         BaseDataObject[PdfName.QuadPoints] = quadPointsObject;
+
+        /*
+          NOTE: Box width is expanded to make room for end decorations (e.g. rounded highlight caps).
+        */
+        float markupBoxMargin = GetMarkupBoxMargin(box.Height);
+        box.X -= markupBoxMargin;
+        box.Width += markupBoxMargin * 2;
+        Box = box;
+
+        RefreshAppearance();
       }
     }
 
@@ -286,7 +299,149 @@ namespace org.pdfclown.documents.interaction.annotations
             Color = new DeviceRGBColor(0, 0, 0);
             break;
         }
+        RefreshAppearance();
       }
+    }
+    #endregion
+
+    #region private
+    /*
+      TODO: refresh should happen just before serialization, on document event (e.g. OnWrite())
+    */
+    private void RefreshAppearance(
+      )
+    {
+      FormXObject normalAppearance;
+      RectangleF box = new org.pdfclown.objects.Rectangle(BaseDataObject[PdfName.Rect]).ToRectangleF();
+      {
+        AppearanceStates normalAppearances = Appearance.Normal;
+        normalAppearance = normalAppearances[null];
+        if(normalAppearance != null)
+        {
+          normalAppearance.Box = box;
+          normalAppearance.BaseDataObject.Body.SetLength(0);
+        }
+        else
+        {normalAppearances[null] = normalAppearance = new FormXObject(Document, box);}
+      }
+
+      PrimitiveComposer composer = new PrimitiveComposer(normalAppearance);
+      {
+        float yOffset = box.Height - Page.Box.Height;
+        MarkupTypeEnum markupType = MarkupType;
+        switch(markupType)
+        {
+          case MarkupTypeEnum.Highlight:
+          {
+            ExtGState defaultExtGState;
+            {
+              ExtGStateResources extGStates = normalAppearance.Resources.ExtGStates;
+              defaultExtGState = extGStates[HighlightExtGStateName];
+              if(defaultExtGState == null)
+              {
+                if(extGStates.Count > 0)
+                {extGStates.Clear();}
+
+                extGStates[HighlightExtGStateName] = defaultExtGState = new ExtGState(Document);
+                defaultExtGState.AlphaShape = false;
+                defaultExtGState.BlendMode = new List<BlendModeEnum>(new BlendModeEnum[]{BlendModeEnum.Multiply});
+              }
+            }
+
+            composer.ApplyState(defaultExtGState);
+            composer.SetFillColor(Color);
+            {
+              foreach(Quad markupBox in MarkupBoxes)
+              {
+                PointF[] points = markupBox.Points;
+                float markupBoxHeight = points[3].Y - points[0].Y;
+                float markupBoxMargin = GetMarkupBoxMargin(markupBoxHeight);
+                composer.DrawCurve(
+                  new PointF(points[3].X, points[3].Y + yOffset),
+                  new PointF(points[0].X, points[0].Y + yOffset),
+                  new PointF(points[3].X - markupBoxMargin, points[3].Y - markupBoxMargin + yOffset),
+                  new PointF(points[0].X - markupBoxMargin, points[0].Y + markupBoxMargin + yOffset)
+                  );
+                composer.DrawLine(
+                  new PointF(points[1].X, points[1].Y + yOffset)
+                  );
+                composer.DrawCurve(
+                  new PointF(points[2].X, points[2].Y + yOffset),
+                  new PointF(points[1].X + markupBoxMargin, points[1].Y + markupBoxMargin + yOffset),
+                  new PointF(points[2].X + markupBoxMargin, points[2].Y - markupBoxMargin + yOffset)
+                  );
+                composer.Fill();
+              }
+            }
+          }
+            break;
+          case MarkupTypeEnum.Squiggly:
+          {
+            composer.SetStrokeColor(Color);
+            composer.SetLineCap(LineCapEnum.Round);
+            composer.SetLineJoin(LineJoinEnum.Round);
+            {
+              foreach(Quad markupBox in MarkupBoxes)
+              {
+                PointF[] points = markupBox.Points;
+                float markupBoxHeight = points[3].Y - points[0].Y;
+                float lineWidth = markupBoxHeight * .02f;
+                float step = markupBoxHeight * .125f;
+                float boxXOffset = points[3].X;
+                float boxYOffset = points[3].Y + yOffset - lineWidth;
+                bool phase = false;
+                composer.SetLineWidth(lineWidth);
+                for(float x = 0, xEnd = points[2].X - boxXOffset; x < xEnd || !phase; x += step)
+                {
+                  PointF point = new PointF(x + boxXOffset, (phase ? -step : 0) + boxYOffset);
+                  if(x == 0)
+                  {composer.StartPath(point);}
+                  else
+                  {composer.DrawLine(point);}
+                  phase = !phase;
+                }
+              }
+              composer.Stroke();
+            }
+          }
+            break;
+          case MarkupTypeEnum.StrikeOut:
+          case MarkupTypeEnum.Underline:
+          {
+            composer.SetStrokeColor(Color);
+            {
+              float lineYRatio = 0;
+              switch(markupType)
+              {
+                case MarkupTypeEnum.StrikeOut:
+                  lineYRatio = .575f;
+                  break;
+                case MarkupTypeEnum.Underline:
+                  lineYRatio = .85f;
+                  break;
+                default:
+                  throw new NotImplementedException();
+              }
+              foreach(Quad markupBox in MarkupBoxes)
+              {
+                PointF[] points = markupBox.Points;
+                float markupBoxHeight = points[3].Y - points[0].Y;
+                float boxYOffset = markupBoxHeight * lineYRatio + yOffset;
+                composer.SetLineWidth(markupBoxHeight * .065);
+                composer.DrawLine(
+                  new PointF(points[3].X, points[0].Y + boxYOffset),
+                  new PointF(points[2].X, points[1].Y + boxYOffset)
+                  );
+              }
+              composer.Stroke();
+            }
+          }
+            break;
+          default:
+            throw new NotImplementedException();
+        }
+      }
+      composer.Flush();
     }
     #endregion
     #endregion

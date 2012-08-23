@@ -85,6 +85,7 @@ namespace org.pdfclown.samples.cli
       annotations::FileAttachment attachment = new annotations::FileAttachment(
         page,
         new Rectangle(50, 150, 12, 12),
+        "File attachment annotation",
         FileSpecification.Get(
           EmbeddedFile.Get(
             document,
@@ -93,7 +94,6 @@ namespace org.pdfclown.samples.cli
           "happyGNU.jpg"
           )
         );
-      attachment.Text = "File attachment annotation";
       attachment.IconType = annotations::FileAttachment.IconTypeEnum.PaperClip;
 
       composer.BeginLocalState();
@@ -105,12 +105,12 @@ namespace org.pdfclown.samples.cli
       annotations::Line line = new annotations::Line(
         page,
         new Point(50, 260),
-        new Point(200,210)
+        new Point(200,210),
+        "Arrow line annotation"
         );
       line.FillColor = new DeviceRGBColor(1,0,0);
       line.StartStyle = annotations::Line.LineEndStyleEnum.Circle;
       line.EndStyle = annotations::Line.LineEndStyleEnum.ClosedArrow;
-      line.Text = "Arrow line annotation";
       line.CaptionVisible = true;
 
       // Dimension line.
@@ -118,20 +118,21 @@ namespace org.pdfclown.samples.cli
       line = new annotations::Line(
         page,
         new Point(300,220),
-        new Point(500,220)
+        new Point(500,220),
+        "Dimension line annotation"
         );
       line.LeaderLineLength = 20;
       line.LeaderLineExtensionLength = 10;
-      line.Text = "Dimension line annotation";
       line.CaptionVisible = true;
 
       composer.End();
 
       // Scribble.
       composer.ShowText("Scribble annotation:", new Point(35,285));
-      annotations::Scribble scribble = new annotations::Scribble(
+      new annotations::Scribble(
         page,
         new RectangleF(50, 300, 100, 30),
+        "Scribble annotation",
         new List<IList<PointF>>(
           new List<PointF>[]
           {
@@ -146,42 +147,41 @@ namespace org.pdfclown.samples.cli
           }
           )
         );
-      scribble.Text = "Scribble annotation";
 
       // Rectangle.
       composer.ShowText("Rectangle annotation:", new Point(35,335));
       annotations::Rectangle rectangle = new annotations::Rectangle(
         page,
-        new Rectangle(50, 350, 100, 30)
+        new Rectangle(50, 350, 100, 30),
+        "Rectangle annotation"
         );
       rectangle.FillColor = new DeviceRGBColor(1,0,0);
-      rectangle.Text = "Rectangle annotation";
 
       // Ellipse.
       composer.ShowText("Ellipse annotation:", new Point(35,385));
       annotations::Ellipse ellipse = new annotations::Ellipse(
         page,
-        new Rectangle(50, 400, 100, 30)
+        new Rectangle(50, 400, 100, 30),
+        "Ellipse annotation"
         );
       ellipse.FillColor = new DeviceRGBColor(0,0,1);
-      ellipse.Text = "Ellipse annotation";
 
       // Rubber stamp.
       composer.ShowText("Rubber stamp annotation:", new Point(35,435));
-      annotations::RubberStamp rubberStamp = new annotations::RubberStamp(
+      new annotations::RubberStamp(
         page,
         new Rectangle(50, 450, 100, 30),
+        "Rubber stamp annotation",
         annotations::RubberStamp.IconTypeEnum.Approved
         );
-      rubberStamp.Text = "Rubber stamp annotation";
 
       // Caret.
       composer.ShowText("Caret annotation:", new Point(35,485));
       annotations::Caret caret = new annotations::Caret(
         page,
-        new Rectangle(50, 500, 100, 30)
+        new Rectangle(50, 500, 100, 30),
+        "Caret annotation"
         );
-      caret.Text = "Caret annotation";
       caret.SymbolType = annotations::Caret.SymbolTypeEnum.NewParagraph;
 
       composer.Flush();

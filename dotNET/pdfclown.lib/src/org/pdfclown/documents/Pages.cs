@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -193,7 +193,7 @@ namespace org.pdfclown.documents
           {
             PdfName.Pages,
             new PdfArray(),
-            new PdfInteger(0)
+            PdfInteger.Default
           }
           )
         )
@@ -415,7 +415,7 @@ namespace org.pdfclown.documents
         // Get the page collection counter!
         PdfInteger countObject = (PdfInteger)parentData[PdfName.Count];
         // Decrement the counter at the current level!
-        parentData[PdfName.Count] = new PdfInteger(countObject.IntValue-1);
+        parentData[PdfName.Count] = PdfInteger.Get(countObject.IntValue-1);
 
         // Iterate upward!
         parent = parentData[PdfName.Parent];
@@ -508,7 +508,7 @@ namespace org.pdfclown.documents
         // Get the page collection counter!
         PdfInteger countObject = (PdfInteger)parentData[PdfName.Count];
         // Increment the counter at the current level!
-        parentData[PdfName.Count] = new PdfInteger(countObject.IntValue+pages.Count);
+        parentData[PdfName.Count] = PdfInteger.Get(countObject.IntValue+pages.Count);
 
         // Iterate upward!
         parent = parentData[PdfName.Parent];

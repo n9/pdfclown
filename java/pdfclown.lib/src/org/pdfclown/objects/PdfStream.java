@@ -45,7 +45,7 @@ import org.pdfclown.tokens.Symbol;
   PDF stream object [PDF:1.6:3.2.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 public class PdfStream
   extends PdfDataObject
@@ -420,7 +420,7 @@ public class PdfStream
       }
 
       // Set the encoded data length!
-      header.put(PdfName.Length, new PdfInteger(bodyData.length));
+      header.put(PdfName.Length, PdfInteger.get(bodyData.length));
 
       // 1. Header.
       header.writeTo(stream, context);
@@ -428,7 +428,7 @@ public class PdfStream
       if(bodyUnencoded)
       {
         // Restore actual header entries!
-        header.put(PdfName.Length, new PdfInteger((int)body.getLength()));
+        header.put(PdfName.Length, PdfInteger.get((int)body.getLength()));
         setFilter(null);
       }
     }

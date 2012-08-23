@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,6 +28,7 @@ using org.pdfclown.documents;
 using org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.files;
 using org.pdfclown.objects;
+using org.pdfclown.util;
 
 using System;
 using System.Collections;
@@ -50,11 +51,7 @@ namespace org.pdfclown.documents.interaction.forms
     protected ChoiceField(
       string name,
       Widget widget
-      ) : base(
-        PdfName.Ch,
-        name,
-        widget
-        )
+      ) : base(PdfName.Ch, name, widget)
     {}
 
     protected ChoiceField(
@@ -73,30 +70,21 @@ namespace org.pdfclown.documents.interaction.forms
     public ChoiceItems Items
     {
       get
-      {
-        PdfArray items = (PdfArray)BaseDataObject.Resolve(PdfName.Opt);
-        return items != null ? new ChoiceItems(items) :null;
-      }
+      {return new ChoiceItems(BaseDataObject.Get<PdfArray>(PdfName.Opt));}
       set
       {BaseDataObject[PdfName.Opt] = value.BaseObject;}
     }
 
     /**
-      <summary>Gets/Sets whether more than one of the field's items may be selected simultaneously.</summary>
+      <summary>Gets/Sets whether more than one of the field's items may be selected simultaneously.
+      </summary>
     */
     public bool MultiSelect
     {
       get
-      {return ((Flags & FlagsEnum.MultiSelect) == FlagsEnum.MultiSelect);}
+      {return (Flags & FlagsEnum.MultiSelect) == FlagsEnum.MultiSelect;}
       set
-      {
-        FlagsEnum flags = Flags;
-        if(value)
-        {flags |= FlagsEnum.MultiSelect;}
-        else
-        {flags ^= FlagsEnum.MultiSelect;}
-        Flags = flags;
-      }
+      {Flags = EnumUtils.Mask(Flags, FlagsEnum.MultiSelect, value);}
     }
 
     /**
@@ -106,16 +94,9 @@ namespace org.pdfclown.documents.interaction.forms
     public bool ValidatedOnChange
     {
       get
-      {return ((Flags & FlagsEnum.CommitOnSelChange) == FlagsEnum.CommitOnSelChange);}
+      {return (Flags & FlagsEnum.CommitOnSelChange) == FlagsEnum.CommitOnSelChange;}
       set
-      {
-        FlagsEnum flags = Flags;
-        if(value)
-        {flags |= FlagsEnum.CommitOnSelChange;}
-        else
-        {flags ^= FlagsEnum.CommitOnSelChange;}
-        Flags = flags;
-      }
+      {Flags = EnumUtils.Mask(Flags, FlagsEnum.CommitOnSelChange, value);}
     }
     #endregion
     #endregion

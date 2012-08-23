@@ -46,13 +46,9 @@ namespace org.pdfclown.documents.interaction.annotations
     #region constructors
     public Popup(
       Page page,
-      RectangleF box
-      ) : base(
-        page.Document,
-        PdfName.Popup,
-        box,
-        page
-        )
+      RectangleF box,
+      string text
+      ) : base(page.Document, PdfName.Popup, box, text, page)
     {}
 
     public Popup(

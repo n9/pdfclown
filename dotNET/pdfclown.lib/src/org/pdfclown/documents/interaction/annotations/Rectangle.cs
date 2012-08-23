@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,12 +44,9 @@ namespace org.pdfclown.documents.interaction.annotations
     #region constructors
     public Rectangle(
       Page page,
-      RectangleF box
-      ) : base(
-        page,
-        box,
-        PdfName.Square
-        )
+      RectangleF box,
+      string text
+      ) : base(page, box, text, PdfName.Square)
     {}
 
     public Rectangle(

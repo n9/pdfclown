@@ -38,7 +38,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF10)
 public final class RemoteDestination
@@ -109,7 +109,7 @@ public final class RemoteDestination
     if(!(value instanceof Integer))
       throw new IllegalArgumentException("It MUST be an integer number.");
 
-    getBaseDataObject().set(0, new PdfInteger((Integer)value));
+    getBaseDataObject().set(0, PdfInteger.get((Integer)value));
   }
   // </public>
   // </interface>

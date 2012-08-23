@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Link
@@ -59,15 +59,11 @@ public final class Link
   public Link(
     Page page,
     Rectangle2D box,
+    String text,
     PdfObjectWrapper<?> target
     )
   {
-    super(
-      page.getDocument(),
-      PdfName.Link,
-      box,
-      page
-      );
+    super(page.getDocument(), PdfName.Link, box, text, page);
     setTarget(target);
   }
 

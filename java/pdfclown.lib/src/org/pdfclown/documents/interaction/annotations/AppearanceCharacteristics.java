@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF12)
 public final class AppearanceCharacteristics
@@ -301,6 +301,38 @@ public final class AppearanceCharacteristics
     {throw new NotImplementedException();}
 
     /**
+      Gets the circumstances under which the icon should be scaled inside the annotation box.
+    */
+    public ScaleModeEnum getScaleMode(
+      )
+    {
+      /*
+        NOTE: 'SW' entry may be undefined.
+      */
+      PdfName scaleModeObject = (PdfName)getBaseDataObject().get(PdfName.SW);
+      if(scaleModeObject == null)
+        return ScaleModeEnum.Always;
+
+      return ScaleModeEnum.get(scaleModeObject);
+    }
+
+    /**
+      Gets the type of scaling to use.
+    */
+    public ScaleTypeEnum getScaleType(
+      )
+    {
+      /*
+        NOTE: 'S' entry may be undefined.
+      */
+      PdfName scaleTypeObject = (PdfName)getBaseDataObject().get(PdfName.S);
+      if(scaleTypeObject == null)
+        return ScaleTypeEnum.Proportional;
+
+      return ScaleTypeEnum.get(scaleTypeObject);
+    }
+
+    /**
       Gets the horizontal alignment of the icon inside the annotation box.
     */
     public XAlignmentEnum getXAlignment(
@@ -343,38 +375,6 @@ public final class AppearanceCharacteristics
     }
 
     /**
-      Gets the circumstances under which the icon should be scaled inside the annotation box.
-    */
-    public ScaleModeEnum getScaleMode(
-      )
-    {
-      /*
-        NOTE: 'SW' entry may be undefined.
-      */
-      PdfName scaleModeObject = (PdfName)getBaseDataObject().get(PdfName.SW);
-      if(scaleModeObject == null)
-        return ScaleModeEnum.Always;
-
-      return ScaleModeEnum.get(scaleModeObject);
-    }
-
-    /**
-      Gets the type of scaling to use.
-    */
-    public ScaleTypeEnum getScaleType(
-      )
-    {
-      /*
-        NOTE: 'S' entry may be undefined.
-      */
-      PdfName scaleTypeObject = (PdfName)getBaseDataObject().get(PdfName.S);
-      if(scaleTypeObject == null)
-        return ScaleTypeEnum.Proportional;
-
-      return ScaleTypeEnum.get(scaleTypeObject);
-    }
-
-    /**
       Gets whether not to take into consideration the line width of the border.
     */
     public boolean isBorderExcluded(
@@ -385,6 +385,36 @@ public final class AppearanceCharacteristics
         ? borderExcludedObject.getValue()
         : false;
     }
+
+    /**
+      Sets whether not to take into consideration the line width of the border.
+
+      @see #isBorderExcluded()
+    */
+    public void setBorderExcluded(
+      boolean value
+      )
+    {getBaseDataObject().put(PdfName.FB, PdfBoolean.get(value));}
+
+    /**
+      Sets the circumstances under which the icon should be scaled inside the annotation box.
+
+      @see #getScaleMode()
+    */
+    public void setScaleMode(
+      ScaleModeEnum value
+      )
+    {getBaseDataObject().put(PdfName.SW, value.getCode());}
+
+    /**
+      Sets the type of scaling to use.
+
+      @see #getScaleType()
+    */
+    public void setScaleType(
+      ScaleTypeEnum value
+      )
+    {getBaseDataObject().put(PdfName.S, value.getCode());}
 
     /**
       Sets the horizontal alignment of the icon inside the annotation box.
@@ -467,36 +497,6 @@ public final class AppearanceCharacteristics
       }
       alignmentObject.set(1, PdfReal.get(objectValue));
     }
-
-    /**
-      Sets whether not to take into consideration the line width of the border.
-
-      @see #isBorderExcluded()
-    */
-    public void setBorderExcluded(
-      boolean value
-      )
-    {getBaseDataObject().put(PdfName.FB, PdfBoolean.get(value));}
-
-    /**
-      Sets the circumstances under which the icon should be scaled inside the annotation box.
-
-      @see #getScaleMode()
-    */
-    public void setScaleMode(
-      ScaleModeEnum value
-      )
-    {getBaseDataObject().put(PdfName.SW, value.getCode());}
-
-    /**
-      Sets the type of scaling to use.
-
-      @see #getScaleType()
-    */
-    public void setScaleType(
-      ScaleTypeEnum value
-      )
-    {getBaseDataObject().put(PdfName.S, value.getCode());}
     // </public>
     // </interface>
     // </class>
@@ -763,7 +763,7 @@ public final class AppearanceCharacteristics
   public void setCaptionPosition(
     CaptionPositionEnum value
     )
-  {getBaseDataObject().put(PdfName.TP, new PdfInteger(value.getCode()));}
+  {getBaseDataObject().put(PdfName.TP, PdfInteger.get(value.getCode()));}
 
   /**
     Sets the icon fit specifying how to display the widget annotation's icon
@@ -774,7 +774,7 @@ public final class AppearanceCharacteristics
   public void setIconFit(
     IconFitObject value
     )
-  {getBaseDataObject().put(PdfName.IF, value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.IF, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     Sets the widget annotation's normal caption.
@@ -784,7 +784,7 @@ public final class AppearanceCharacteristics
   public void setNormalCaption(
     String value
     )
-  {getBaseDataObject().put(PdfName.CA, new PdfTextString(value));}
+  {getBaseDataObject().put(PdfName.CA, PdfTextString.get(value));}
 
   /**
     Sets the widget annotation's normal icon definition.
@@ -794,7 +794,7 @@ public final class AppearanceCharacteristics
   public void setNormalIcon(
     FormXObject value
     )
-  {getBaseDataObject().put(PdfName.I, value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.I, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     Sets the widget annotation's orientation.
@@ -804,7 +804,7 @@ public final class AppearanceCharacteristics
   public void setOrientation(
     OrientationEnum value
     )
-  {getBaseDataObject().put(PdfName.R, new PdfInteger(value.getCode()));}
+  {getBaseDataObject().put(PdfName.R, PdfInteger.get(value.getCode()));}
 
   /**
     Sets the widget annotation's rollover caption.
@@ -814,7 +814,7 @@ public final class AppearanceCharacteristics
   public void setRolloverCaption(
     String value
     )
-  {getBaseDataObject().put(PdfName.RC, new PdfTextString(value));}
+  {getBaseDataObject().put(PdfName.RC, PdfTextString.get(value));}
 
   /**
     Sets the widget annotation's rollover icon definition.
@@ -824,7 +824,7 @@ public final class AppearanceCharacteristics
   public void setRolloverIcon(
     FormXObject value
     )
-  {getBaseDataObject().put(PdfName.RI, value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.RI, PdfObjectWrapper.getBaseObject(value));}
   // </public>
 
   // <private>
@@ -837,12 +837,7 @@ public final class AppearanceCharacteristics
     PdfName key,
     DeviceColor value
     )
-  {
-    if(value == null)
-    {getBaseDataObject().remove(key);}
-    else
-    {getBaseDataObject().put(key, value.getBaseObject());}
-  }
+  {getBaseDataObject().put(key, PdfObjectWrapper.getBaseObject(value));}
   // </private>
   // </interface>
   // </dynamic>

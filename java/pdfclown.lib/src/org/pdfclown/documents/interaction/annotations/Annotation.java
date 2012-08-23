@@ -46,7 +46,9 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
+import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfTextString;
+import org.pdfclown.util.EnumUtils;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -54,7 +56,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/02/12
+  @version 0.1.2, 08/23/12
 */
 @PDF(VersionEnum.PDF10)
 public class Annotation
@@ -258,6 +260,7 @@ public class Annotation
     Document context,
     PdfName subtype,
     Rectangle2D box,
+    String text,
     Page page
     )
   {
@@ -276,18 +279,14 @@ public class Annotation
           PdfName.Annot,
           subtype,
           page.getBaseObject(),
-          new PdfArray(new PdfDirectObject[]{new PdfInteger(0),new PdfInteger(0),new PdfInteger(0)}) // NOTE: Hide border by default.
+          new PdfArray(new PdfDirectObject[]{PdfInteger.Default,PdfInteger.Default,PdfInteger.Default}) // NOTE: Hide border by default.
         }
         )
       );
-    {
-      setBox(box);
-
-      PdfArray pageAnnotsObject = (PdfArray)page.getBaseDataObject().resolve(PdfName.Annots);
-      if(pageAnnotsObject == null)
-      {page.getBaseDataObject().put(PdfName.Annots,pageAnnotsObject = new PdfArray());}
-      pageAnnotsObject.add(getBaseObject());
-    }
+    setBox(box);
+    setText(text);
+    // Insert this annotation into the page!
+    page.getBaseDataObject().resolve(PdfName.Annots, PdfArray.class).add(getBaseObject());
   }
 
   protected Annotation(
@@ -318,10 +317,7 @@ public class Annotation
   @PDF(VersionEnum.PDF12)
   public AnnotationActions getActions(
     )
-  {
-    PdfDirectObject actionsObject = getBaseDataObject().get(PdfName.AA);
-    return actionsObject != null ? new AnnotationActions(this, actionsObject) : null;
-  }
+  {return new AnnotationActions(this, getBaseDataObject().get(PdfName.AA, PdfDictionary.class));}
 
   /**
     Gets the appearance specifying how the annotation is presented visually on the page.
@@ -329,10 +325,7 @@ public class Annotation
   @PDF(VersionEnum.PDF12)
   public Appearance getAppearance(
     )
-  {
-    PdfDirectObject appearanceObject = getBaseDataObject().get(PdfName.AP);
-    return appearanceObject != null ? new Appearance(appearanceObject) : null;
-  }
+  {return new Appearance(getBaseDataObject().get(PdfName.AP, PdfDictionary.class));}
 
   /**
     Gets the border style.
@@ -340,10 +333,7 @@ public class Annotation
   @PDF(VersionEnum.PDF11)
   public Border getBorder(
     )
-  {
-    PdfDirectObject borderObject = getBaseDataObject().get(PdfName.BS);
-    return borderObject != null ? new Border(borderObject) : null;
-  }
+  {return new Border(getBaseDataObject().get(PdfName.BS, PdfDictionary.class));}
 
   /**
     Gets the location of the annotation on the page in default user space units.
@@ -390,6 +380,9 @@ public class Annotation
   public Date getModificationDate(
     )
   {
+    /*
+      NOTE: Despite PDF date being the preferred format, loose formats are tolerated by the spec.
+    */
     PdfDirectObject modificationDateObject = getBaseDataObject().get(PdfName.M);
     return modificationDateObject instanceof PdfDate ? ((PdfDate)modificationDateObject).getValue() : null;
   }
@@ -401,10 +394,7 @@ public class Annotation
   @PDF(VersionEnum.PDF14)
   public String getName(
     )
-  {
-    PdfTextString nameObject = (PdfTextString)getBaseDataObject().get(PdfName.NM);
-    return nameObject != null ? nameObject.getValue() : null;
-  }
+  {return (String)PdfSimpleObject.getValue(getBaseDataObject().get(PdfName.NM));}
 
   /**
     Gets the associated page.
@@ -416,16 +406,12 @@ public class Annotation
 
   /**
     Gets the annotation text.
-    <h3>Remarks</h3>
-    <p>Depending on the annotation type, the text may be either directly displayed
-    or (in case of non-textual annotations) used as alternate description.</p>
+    <p>Depending on the annotation type, the text may be either directly displayed or (in case of
+    non-textual annotations) used as alternate description.</p>
   */
   public String getText(
     )
-  {
-    PdfTextString textObject = (PdfTextString)getBaseDataObject().get(PdfName.Contents);
-    return textObject != null ? textObject.getValue() : null;
-  }
+  {return (String)PdfSimpleObject.getValue(getBaseDataObject().get(PdfName.Contents));}
 
   /**
     Gets whether to print the annotation when the page is printed.
@@ -449,12 +435,7 @@ public class Annotation
   public void setAction(
     Action value
     )
-  {
-    if(value == null)
-    {getBaseDataObject().remove(PdfName.A);}
-    else
-    {getBaseDataObject().put(PdfName.A,value.getBaseObject());}
-  }
+  {getBaseDataObject().put(PdfName.A, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     @see #getActions()
@@ -462,12 +443,7 @@ public class Annotation
   public void setActions(
     AnnotationActions value
     )
-  {
-    if(value == null)
-    {getBaseDataObject().remove(PdfName.AA);}
-    else
-    {getBaseDataObject().put(PdfName.AA,value.getBaseObject());}
-  }
+  {getBaseDataObject().put(PdfName.AA, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     @see #getAppearance()
@@ -475,12 +451,7 @@ public class Annotation
   public void setAppearance(
     Appearance value
     )
-  {
-    if(value == null)
-    {getBaseDataObject().remove(PdfName.AP);}
-    else
-    {getBaseDataObject().put(PdfName.AP, value.getBaseObject());}
-  }
+  {getBaseDataObject().put(PdfName.AP, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     @see #getBorder()
@@ -489,13 +460,9 @@ public class Annotation
     Border value
     )
   {
-    if(value == null)
-    {getBaseDataObject().remove(PdfName.BS);}
-    else
-    {
-      getBaseDataObject().put(PdfName.BS, value.getBaseObject());
-      getBaseDataObject().remove(PdfName.Border);
-    }
+    getBaseDataObject().put(PdfName.BS, PdfObjectWrapper.getBaseObject(value));
+    if(value != null)
+    {getBaseDataObject().remove(PdfName.Border);}
   }
 
   /**
@@ -522,15 +489,7 @@ public class Annotation
   public void setColor(
     DeviceColor value
     )
-  {
-    if(value == null)
-    {getBaseDataObject().remove(PdfName.C);}
-    else
-    {
-      checkCompatibility("color");
-      getBaseDataObject().put(PdfName.C, value.getBaseObject());
-    }
-  }
+  {getBaseDataObject().put(PdfName.C, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     @see #getFlags()
@@ -538,7 +497,7 @@ public class Annotation
   public void setFlags(
     EnumSet<FlagsEnum> value
     )
-  {getBaseDataObject().put(PdfName.F, new PdfInteger(FlagsEnum.toInt(value)));}
+  {getBaseDataObject().put(PdfName.F, PdfInteger.get(FlagsEnum.toInt(value)));}
 
   /**
     @see #getModificationDate()
@@ -554,7 +513,7 @@ public class Annotation
   public void setName(
     String value
     )
-  {getBaseDataObject().put(PdfName.NM, new PdfTextString(value));}
+  {getBaseDataObject().put(PdfName.NM, PdfTextString.get(value));}
 
   /**
     @see #getPage()
@@ -570,14 +529,7 @@ public class Annotation
   public void setPrintable(
     boolean value
     )
-  {
-    EnumSet<FlagsEnum> flags = getFlags();
-    if(value)
-    {flags.add(FlagsEnum.Print);}
-    else
-    {flags.remove(FlagsEnum.Print);}
-    setFlags(flags);
-  }
+  {setFlags(EnumUtils.mask(getFlags(), FlagsEnum.Print, value));}
 
   /**
     @see #getText()
@@ -585,12 +537,7 @@ public class Annotation
   public void setText(
     String value
     )
-  {
-    if(value == null)
-    {getBaseDataObject().remove(PdfName.Contents);}
-    else
-    {getBaseDataObject().put(PdfName.Contents, new PdfTextString(value));}
-  }
+  {getBaseDataObject().put(PdfName.Contents, PdfTextString.get(value));}
 
   /**
     @see #isVisible()
@@ -598,14 +545,7 @@ public class Annotation
   public void setVisible(
     boolean value
     )
-  {
-    EnumSet<FlagsEnum> flags = getFlags();
-    if(value)
-    {flags.remove(FlagsEnum.Hidden);}
-    else
-    {flags.add(FlagsEnum.Hidden);}
-    setFlags(flags);
-  }
+  {setFlags(EnumUtils.mask(getFlags(), FlagsEnum.Hidden, !value));}
 
   // <ILayerable>
   @Override
@@ -618,7 +558,7 @@ public class Annotation
   public void setLayer(
     LayerEntity value
     )
-  {getBaseDataObject().put(PdfName.OC, value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.OC, PdfObjectWrapper.getBaseObject(value));}
   // </ILayerable>
   // </public>
 

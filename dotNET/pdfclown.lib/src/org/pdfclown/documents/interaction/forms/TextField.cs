@@ -34,6 +34,7 @@ using org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.files;
 using org.pdfclown.objects;
+using org.pdfclown.util;
 
 using System;
 using System.Collections.Generic;
@@ -83,16 +84,9 @@ namespace org.pdfclown.documents.interaction.forms
     public bool IsMultiline
     {
       get
-      {return ((Flags & FlagsEnum.Multiline) == FlagsEnum.Multiline);}
+      {return (Flags & FlagsEnum.Multiline) == FlagsEnum.Multiline;}
       set
-      {
-        FlagsEnum flags = Flags;
-        if(value)
-        {flags |= FlagsEnum.Multiline;}
-        else
-        {flags ^= FlagsEnum.Multiline;}
-        Flags = flags;
-      }
+      {Flags = EnumUtils.Mask(Flags, FlagsEnum.Multiline, value);}
     }
 
     /**
@@ -101,16 +95,9 @@ namespace org.pdfclown.documents.interaction.forms
     public bool IsPassword
     {
       get
-      {return ((Flags & FlagsEnum.Password) == FlagsEnum.Password);}
+      {return (Flags & FlagsEnum.Password) == FlagsEnum.Password;}
       set
-      {
-        FlagsEnum flags = Flags;
-        if(value)
-        {flags |= FlagsEnum.Password;}
-        else
-        {flags ^= FlagsEnum.Password;}
-        Flags = flags;
-      }
+      {Flags = EnumUtils.Mask(Flags, FlagsEnum.Password, value);}
     }
 
     /**
@@ -136,7 +123,7 @@ namespace org.pdfclown.documents.interaction.forms
         return maxLengthObject != null ? maxLengthObject.IntValue : Int32.MaxValue;
       }
       set
-      {BaseDataObject[PdfName.MaxLen] = (value != Int32.MaxValue ? new PdfInteger(value) : null);}
+      {BaseDataObject[PdfName.MaxLen] = (value != Int32.MaxValue ? PdfInteger.Get(value) : null);}
     }
 
     /**
@@ -145,16 +132,9 @@ namespace org.pdfclown.documents.interaction.forms
     public bool SpellChecked
     {
       get
-      {return !((Flags & FlagsEnum.DoNotSpellCheck) == FlagsEnum.DoNotSpellCheck);}
+      {return (Flags & FlagsEnum.DoNotSpellCheck) != FlagsEnum.DoNotSpellCheck;}
       set
-      {
-        FlagsEnum flags = Flags;
-        if(value)
-        {flags ^= FlagsEnum.DoNotSpellCheck;}
-        else
-        {flags |= FlagsEnum.DoNotSpellCheck;}
-        Flags = flags;
-      }
+      {Flags = EnumUtils.Mask(Flags, FlagsEnum.DoNotSpellCheck, !value);}
     }
 
     public override object Value

@@ -36,6 +36,10 @@ namespace org.pdfclown.objects
       IPdfNumber
   {
     #region static
+    #region fields
+    public static readonly PdfInteger Default = new PdfInteger(0);
+    #endregion
+
     #region interface
     #region public
     /**
@@ -51,7 +55,7 @@ namespace org.pdfclown.objects
 
     #region dynamic
     #region constructors
-    public PdfInteger(
+    private PdfInteger(
       int value
       )
     {RawValue = value;}
