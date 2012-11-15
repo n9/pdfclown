@@ -30,7 +30,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.interaction.navigation.page.PageLabel;
 import org.pdfclown.objects.NumberTree;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -38,29 +37,13 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 02/15/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF13)
 public final class PageLabels
   extends NumberTree<PageLabel>
 {
   // <class>
-  // <static>
-  // <interface>
-  // <public>
-  /**
-    Gets existing page label ranges.
-
-    @param baseObject Base object to wrap.
-  */
-  public static PageLabels wrap(
-    PdfDirectObject baseObject
-    )
-  {return baseObject != null ? new PageLabels(baseObject) : null;}
-  // </public>
-  // </interface>
-  // </static>
-
   // <dynamic>
   // <constructors>
   public PageLabels(
@@ -68,7 +51,7 @@ public final class PageLabels
     )
   {super(context);}
 
-  private PageLabels(
+  PageLabels(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -85,9 +68,8 @@ public final class PageLabels
 
   // <protected>
   @Override
-  protected PageLabel wrap(
-    PdfDirectObject baseObject,
-    PdfInteger keyObject
+  protected PageLabel wrapValue(
+    PdfDirectObject baseObject
     )
   {return PageLabel.wrap(baseObject);}
   // </protected>

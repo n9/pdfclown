@@ -32,10 +32,10 @@ import org.pdfclown.documents.Document;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 09/24/12
 */
 public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
-  extends Tree<String, PdfString, TValue>
+  extends Tree<PdfString, TValue>
 {
   // <class>
   // <dynamic>
@@ -57,12 +57,6 @@ public abstract class NameTree<TValue extends PdfObjectWrapper<?>>
   protected PdfName getPairsKey(
     )
   {return PdfName.Names;}
-
-  @Override
-  protected PdfString wrapKey(
-    String key
-    )
-  {return new PdfString(key);}
   // </protected>
   // </interface>
   // </dynamic>

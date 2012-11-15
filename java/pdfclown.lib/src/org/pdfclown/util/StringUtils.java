@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,7 +30,7 @@ package org.pdfclown.util;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 09/24/12
 */
 public final class StringUtils
 {
@@ -38,6 +38,21 @@ public final class StringUtils
   // <static>
   // <interface>
   // <public>
+  public static String join(
+    char separator,
+    String ...values
+    )
+  {
+    StringBuilder builder = new  StringBuilder();
+    for(String value : values)
+    {
+      if(builder.length() > 0)
+      {builder.append(separator);}
+      builder.append(value);
+    }
+    return builder.toString();
+  }
+
   public static String repeat(
     String value,
     int count

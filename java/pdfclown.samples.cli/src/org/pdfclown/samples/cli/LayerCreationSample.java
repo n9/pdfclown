@@ -23,13 +23,13 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 03/12/12
+  @version 0.1.2, 09/24/12
 */
 public class LayerCreationSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. PDF file instantiation.
@@ -41,8 +41,6 @@ public class LayerCreationSample
 
     // 3. PDF file serialization.
     serialize(file, "Layer", "inserting layers");
-
-    return true;
   }
 
   private void populate(

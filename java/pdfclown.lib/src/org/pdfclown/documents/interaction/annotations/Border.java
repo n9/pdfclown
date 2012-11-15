@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF11)
 public final class Border
@@ -138,18 +138,21 @@ public final class Border
   // <dynamic>
   // <constructors>
   public Border(
-    Document context
-    )
-  {super(context, new PdfDictionary());}
-
-  public Border(
     Document context,
     double width,
     StyleEnum style,
     LineDash pattern
     )
   {
-    this(context);
+    super(
+      context,
+      new PdfDictionary(
+        new PdfName[]
+        {PdfName.Type},
+        new PdfDirectObject[]
+        {PdfName.Border}
+        )
+      );
     setWidth(width);
     setStyle(style);
     setPattern(pattern);

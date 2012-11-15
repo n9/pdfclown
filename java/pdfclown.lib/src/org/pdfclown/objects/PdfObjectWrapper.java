@@ -50,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
   extends {@link org.pdfclown.objects.PdfArray PdfArray} and so on) because there's no plain one-to
   one mapping between primitive PDF types and specialized instances: the <code>Content</code> entry
   of <code>Page</code> dictionaries may be a simple reference to a <code>PdfStream</code> or a
-  <code>PdfArray</code> of references to <code>PdfStream</code>-s, <code>Pages</code> collections
+  <code>PdfArray</code> of references to <code>PdfStream</code>s, <code>Pages</code> collections
   may be spread across a B-tree instead of a flat <code>PdfArray</code> and so on.</p>
   <p>So, <i>in order to hide all these annoying inner workings, I chose to adopt a composition
   pattern instead of the apparently-reasonable (but actually awkward!) inheritance pattern</i>.
@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
   {@link #getBaseDataObject() baseDataObject} backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   implements IPdfObjectWrapper
@@ -87,10 +87,30 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
 
   // <constructors>
   /**
-    Creates a new wrapper into the specified document context.
+    Instantiates an empty wrapper.
+  */
+  protected PdfObjectWrapper(
+    )
+  {}
+
+  /**
+    Instantiates a wrapper from the specified base object.
+
+    @param baseObject PDF object backing this wrapper. MUST be a {@link PdfReference reference}
+    every time available.
+  */
+  protected PdfObjectWrapper(
+    PdfDirectObject baseObject
+    )
+  {setBaseObject(baseObject);}
+
+  /**
+    Instantiates a wrapper registering the specified base data object into the specified document
+    context.
 
     @param context Document context into which the specified data object has to be registered.
     @param baseDataObject PDF data object backing this wrapper.
+    @see #PdfObjectWrapper(File, PdfDataObject)
   */
   protected PdfObjectWrapper(
     Document context,
@@ -99,27 +119,18 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   {this(context.getFile(), baseDataObject);}
 
   /**
-    Creates a new wrapper into the specified file context.
+    Instantiates a wrapper registering the specified base data object into the specified file
+    context.
 
     @param context File context into which the specified data object has to be registered.
     @param baseDataObject PDF data object backing this wrapper.
+    @see #PdfObjectWrapper(Document, PdfDataObject)
   */
   protected PdfObjectWrapper(
     File context,
     TDataObject baseDataObject
     )
   {this(context.register(baseDataObject));}
-
-  /**
-    Instantiates a wrapper in case of reference or mutable data object.
-
-    @param baseObject PDF object backing this wrapper. MUST be a {@link PdfReference reference}
-    everytime available.
-  */
-  protected PdfObjectWrapper(
-    PdfDirectObject baseObject
-    )
-  {setBaseObject(baseObject);}
   // </constructors>
 
   // <interface>
@@ -135,7 +146,6 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
 
   /**
     Removes the object from its document context.
-    <h3>Remarks</h3>
     <p>The object is no more usable after this method returns.</p>
 
     @return Whether the object was actually decontextualized (only indirect objects can be
@@ -152,6 +162,16 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
     }
     else // Direct object.
     {return false;}
+  }
+
+  @Override
+  public boolean equals(
+    Object obj
+    )
+  {
+    return obj != null
+      && obj.getClass().equals(getClass())
+      && ((PdfObjectWrapper<?>)obj).baseObject.equals(baseObject);
   }
 
   /**
@@ -327,6 +347,26 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
     }
   }
 
+  /**
+    Retrieves the name possibly associated to this object, walking through the document's name
+    dictionary.
+  */
+  @SuppressWarnings("unchecked")
+  protected PdfString retrieveName(
+    )
+  {return retrieveNameHelper(getDocument().getNames().get(getClass()));}
+
+  /**
+    Retrieves the object name, if available; otherwise, behaves like
+    {@link PdfObjectWrapper#getBaseObject() getBaseObject()}.
+  */
+  protected PdfDirectObject retrieveNamedBaseObject(
+    )
+  {
+    PdfString name = retrieveName();
+    return name != null ? name : getBaseObject();
+  }
+
   protected void setBaseObject(
     PdfDirectObject value
     )
@@ -337,13 +377,23 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   private PdfDictionary getDictionary(
     )
   {
-    if(getBaseDataObject() instanceof PdfDictionary)
-      return (PdfDictionary)getBaseDataObject();
-    else if(getBaseDataObject() instanceof PdfStream)
-      return ((PdfStream)getBaseDataObject()).getHeader();
+    TDataObject baseDataObject = getBaseDataObject();
+    if(baseDataObject instanceof PdfDictionary)
+      return (PdfDictionary)baseDataObject;
+    else if(baseDataObject instanceof PdfStream)
+      return ((PdfStream)baseDataObject).getHeader();
     else
       return null;
   }
+
+  /*
+    NOTE: Generics capture helper method.
+  */
+  @SuppressWarnings("unchecked")
+  private <T extends PdfObjectWrapper<TDataObject>> PdfString retrieveNameHelper(
+    NameTree<T> names
+    )
+  {return names != null ? names.getKey((T)this) : null;}
   // </private>
   // </interface>
   // </dynamic>

@@ -20,7 +20,7 @@ namespace org.pdfclown.samples.cli
     private static readonly int Margin_X = 50;
     private static readonly int Margin_Y = 50;
 
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. PDF file instantiation.
@@ -32,8 +32,6 @@ namespace org.pdfclown.samples.cli
 
       // 3. Serialize the PDF file!
       Serialize(file, "Typesetting", "demonstrating how to add style to contents");
-
-      return true;
     }
 
     private void Build(
@@ -82,7 +80,7 @@ namespace org.pdfclown.samples.cli
       blockComposer.Begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
       fonts::Font decorativeFont = fonts::Font.Get(
         document,
-        InputPath + Path.DirectorySeparatorChar + "fonts" + Path.DirectorySeparatorChar + "Ruritania-Outline.ttf"
+        GetResourcePath("fonts" + Path.DirectorySeparatorChar + "Ruritania-Outline.ttf")
         );
       composer.SetFont(decorativeFont,56);
       blockComposer.ShowText("Chapter 1");
@@ -102,7 +100,7 @@ namespace org.pdfclown.samples.cli
       blockComposer.Begin(frame,XAlignmentEnum.Justify,YAlignmentEnum.Bottom);
       fonts::Font bodyFont = fonts::Font.Get(
         document,
-        InputPath + Path.DirectorySeparatorChar + "fonts" + Path.DirectorySeparatorChar + "TravelingTypewriter.otf"
+        GetResourcePath("fonts" + Path.DirectorySeparatorChar + "TravelingTypewriter.otf")
         );
       composer.SetFont(bodyFont,14);
       composer.BeginLocalState();

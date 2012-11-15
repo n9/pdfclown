@@ -33,13 +33,13 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 public class AcroFormCreationSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. PDF file instantiation.
@@ -51,8 +51,6 @@ public class AcroFormCreationSample
 
     // 3. Serialize the PDF file!
     serialize(file, "AcroForm", "inserting AcroForm fields");
-
-    return true;
   }
 
   private void populate(
@@ -269,6 +267,7 @@ public class AcroFormCreationSample
       items.add("PJ Harvey");
       items.add("Billie Holiday");
       items.add("Joan As Police Woman");
+      items.add("Joan Jett");
       items.add("Janis Joplin");
       items.add("Angelique Kidjo");
       items.add("Patrizia Laquidara");
@@ -288,7 +287,7 @@ public class AcroFormCreationSample
       items.add("Skin");
       items.add("Patti Smith");
       items.add("Fatima Spar");
-      items.add("Thony");
+      items.add("Thony (F.V.Caiozzo)");
       items.add("Paola Turci");
       items.add("Sarah Vaughan");
       items.add("Nina Zilli");

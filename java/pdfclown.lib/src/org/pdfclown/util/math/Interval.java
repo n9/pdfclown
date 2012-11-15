@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,38 +30,32 @@ package org.pdfclown.util.math;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.0
+  @version 0.1.2, 09/24/12
 */
-public final class Interval<T extends Comparable<T>>
+public final class Interval<T extends Comparable<? super T>>
 {
-  /**
-    Containment mode.
-  */
-  public enum ContainModeEnum
-  {
-    Inclusive,
-    Exclusive
-  }
-
-  private ContainModeEnum containMode;
-  private T low = null;
   private T high = null;
+  private boolean highInclusive;
+  private T low = null;
+  private boolean lowInclusive;
 
   public Interval(
     T low,
     T high
     )
-  {this(low, high, ContainModeEnum.Inclusive);}
+  {this(low, high, true, true);}
 
   public Interval(
     T low,
     T high,
-    ContainModeEnum containMode
+    boolean lowInclusive,
+    boolean highInclusive
     )
   {
     this.low = low;
     this.high = high;
-    this.containMode = containMode;
+    this.lowInclusive = lowInclusive;
+    this.highInclusive = highInclusive;
   }
 
   /**
@@ -73,20 +67,13 @@ public final class Interval<T extends Comparable<T>>
     T value
     )
   {
-    int lowCompare = low.compareTo(value);
-    int highCompare = high.compareTo(value);
+    int lowCompare = (low != null ? low.compareTo(value) : -1);
+    int highCompare = (high != null ? high.compareTo(value) : 1);
     return (lowCompare < 0
-        || (lowCompare == 0 && containMode == ContainModeEnum.Inclusive))
+        || (lowCompare == 0 && lowInclusive))
       && (highCompare > 0
-        || (highCompare == 0 && containMode == ContainModeEnum.Inclusive));
+        || (highCompare == 0 && highInclusive));
   }
-
-  /**
-    Gets the way a value must be compared for containment against this interval's endpoints.
-  */
-  public ContainModeEnum getContainMode(
-    )
-  {return containMode;}
 
   /**
     Gets the higher interval endpoint.
@@ -103,12 +90,18 @@ public final class Interval<T extends Comparable<T>>
   {return low;}
 
   /**
-    @see #getContainMode()
+    Gets whether the higher endpoint is inclusive.
   */
-  public void setContainMode(
-    ContainModeEnum value
+  public boolean isHighInclusive(
     )
-  {containMode = value;}
+  {return highInclusive;}
+
+  /**
+    Gets whether the lower endpoint is inclusive.
+  */
+  public boolean isLowInclusive(
+    )
+  {return lowInclusive;}
 
   /**
     @see #getHigh()
@@ -119,10 +112,26 @@ public final class Interval<T extends Comparable<T>>
   {high = value;}
 
   /**
+    @see #isHighInclusive()
+  */
+  public void setHighInclusive(
+    boolean value
+    )
+  {highInclusive = value;}
+
+  /**
     @see #getLow()
   */
   public void setLow(
     T value
     )
   {low = value;}
+
+  /**
+    @see #isLowInclusive()
+  */
+  public void setLowInclusive(
+    boolean value
+    )
+  {lowInclusive = value;}
 }

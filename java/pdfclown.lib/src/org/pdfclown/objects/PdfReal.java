@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
   PDF real number object [PDF:1.6:3.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 09/24/12
 */
 public final class PdfReal
   extends PdfNumber<Double>
@@ -63,7 +63,7 @@ public final class PdfReal
 
   // <dynamic>
   // <constructors>
-  private PdfReal(
+  public PdfReal(
     double value
     )
   {setRawValue(value);}
@@ -71,6 +71,13 @@ public final class PdfReal
 
   // <interface>
   // <public>
+  @Override
+  public boolean accept(
+    IVisitor visitor,
+    Object data
+    )
+  {return visitor.visit(this, data);}
+
   @Override
   public double getDoubleValue(
     )

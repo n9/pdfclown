@@ -36,7 +36,7 @@ namespace org.pdfclown.samples.cli
   {
     private static readonly colorSpaces::Color TextColor_Highlight = new colorSpaces::DeviceRGBColor(255 / 255d, 50 / 255d, 50 / 255d);
 
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. PDF file instantiation.
@@ -58,8 +58,6 @@ namespace org.pdfclown.samples.cli
 
       // 3. Serialization.
       Serialize(file, "Complex Typesetting", "complex typesetting");
-
-      return true;
     }
 
     private void BuildBookmarks(
@@ -152,7 +150,7 @@ namespace org.pdfclown.samples.cli
       // Add the font to the document!
       fonts::Font font = fonts::Font.Get(
         document,
-        InputPath + Path.DirectorySeparatorChar + "fonts" + Path.DirectorySeparatorChar + "TravelingTypewriter.otf"
+        GetResourcePath("fonts" + Path.DirectorySeparatorChar + "TravelingTypewriter.otf")
         );
 
       RectangleF frame = new RectangleF(
@@ -164,7 +162,7 @@ namespace org.pdfclown.samples.cli
 
       // Showing the 'GNU' image...
       // Instantiate a jpeg image object!
-      entities::Image image = entities::Image.Get(InputPath + Path.DirectorySeparatorChar + "images" + Path.DirectorySeparatorChar + "gnu.jpg"); // Abstract image (entity).
+      entities::Image image = entities::Image.Get(GetResourcePath("images" + Path.DirectorySeparatorChar + "gnu.jpg")); // Abstract image (entity).
       // Show the image!
       composer.ShowXObject(
         image.ToXObject(document),
@@ -350,7 +348,7 @@ namespace org.pdfclown.samples.cli
       // Instantiate the page body's font!
       fonts::Font font = fonts::Font.Get(
         document,
-        InputPath + Path.DirectorySeparatorChar + "fonts" + Path.DirectorySeparatorChar + "lazyDog.ttf"
+        GetResourcePath("fonts" + Path.DirectorySeparatorChar + "lazyDog.ttf")
         );
 
       // Showing the page title...
@@ -374,7 +372,7 @@ namespace org.pdfclown.samples.cli
 
       // Showing the clown photo...
       // Instantiate a jpeg image object!
-      entities::Image image = entities::Image.Get(InputPath + Path.DirectorySeparatorChar + "images" + Path.DirectorySeparatorChar + "Clown.jpg"); // Abstract image (entity).
+      entities::Image image = entities::Image.Get(GetResourcePath("images" + Path.DirectorySeparatorChar + "Clown.jpg")); // Abstract image (entity).
       PointF imageLocation = new PointF(
         blockComposer.BoundBox.X + blockComposer.BoundBox.Width - image.Width,
         blockComposer.BoundBox.Y + blockComposer.BoundBox.Height + 25
@@ -494,7 +492,7 @@ namespace org.pdfclown.samples.cli
 
       // Showing the header image inside the common content stream...
       // Instantiate a jpeg image object!
-      entities::Image image = entities::Image.Get(InputPath + Path.DirectorySeparatorChar + "images" + Path.DirectorySeparatorChar + "mountains.jpg"); // Abstract image (entity).
+      entities::Image image = entities::Image.Get(GetResourcePath("images" + Path.DirectorySeparatorChar + "mountains.jpg")); // Abstract image (entity).
       // Show the image inside the common content stream!
       composer.ShowXObject(
         image.ToXObject(document),

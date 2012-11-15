@@ -33,11 +33,12 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.files.File;
+import org.pdfclown.objects.IPdfNamedObjectWrapper;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.objects.PdfNamedObjectWrapper;
+import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfSimpleObject;
@@ -54,11 +55,12 @@ import org.pdfclown.util.NotImplementedException;
   </ul>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Destination
-  extends PdfNamedObjectWrapper<PdfArray>
+  extends PdfObjectWrapper<PdfArray>
+  implements IPdfNamedObjectWrapper
 {
   // <class>
   // <classes>
@@ -187,12 +189,10 @@ public abstract class Destination
     Wraps a destination base object into a destination object.
 
     @param baseObject Destination base object.
-    @param name Destination name.
     @return Destination object associated to the base object.
   */
   public static final Destination wrap(
-    PdfDirectObject baseObject,
-    PdfString name
+    PdfDirectObject baseObject
     )
   {
     if(baseObject == null)
@@ -201,9 +201,9 @@ public abstract class Destination
     PdfArray dataObject = (PdfArray)File.resolve(baseObject);
     PdfDirectObject pageObject = dataObject.get(0);
     if(pageObject instanceof PdfReference)
-      return new LocalDestination(baseObject, name);
+      return new LocalDestination(baseObject);
     else if(pageObject instanceof PdfInteger)
-      return new RemoteDestination(baseObject, name);
+      return new RemoteDestination(baseObject);
     else
       throw new IllegalArgumentException("'baseObject' parameter doesn't represent a valid destination object.");
   }
@@ -238,10 +238,9 @@ public abstract class Destination
   }
 
   protected Destination(
-    PdfDirectObject baseObject,
-    PdfString name
+    PdfDirectObject baseObject
     )
-  {super(baseObject, name);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -413,6 +412,18 @@ public abstract class Destination
         break;
     }
   }
+
+  // <IPdfNamedObjectWrapper>
+  @Override
+  public PdfString getName(
+    )
+  {return retrieveName();}
+
+  @Override
+  public PdfDirectObject getNamedBaseObject(
+    )
+  {return retrieveNamedBaseObject();}
+  // </IPdfNamedObjectWrapper>
   // </public>
   // </interface>
   // </dynamic>

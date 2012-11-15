@@ -37,7 +37,7 @@ namespace org.pdfclown.objects
   */
   [PDF(VersionEnum.PDF10)]
   public abstract class NameTree<TValue>
-    : Tree<string, PdfString, byte[], TValue>
+    : Tree<PdfString, TValue>
     where TValue : PdfObjectWrapper
   {
     #region dynamic
@@ -60,11 +60,6 @@ namespace org.pdfclown.objects
       get
       {return PdfName.Names;}
     }
-
-    protected override PdfString WrapKey(
-      string key
-      )
-    {return new PdfString(key);}
     #endregion
     #endregion
     #endregion

@@ -119,6 +119,12 @@ namespace org.pdfclown.tokens
 
     #region interface
     #region public
+    public override bool Accept(
+      IVisitor visitor,
+      object data
+      )
+    {return visitor.Visit(this, data);}
+
     /**
       <summary>Gets the byte offset from the beginning of the file
       to the beginning of the previous cross-reference stream.</summary>

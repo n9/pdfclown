@@ -30,7 +30,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
-import org.pdfclown.objects.PdfString;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -38,7 +37,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF10)
 public final class RemoteDestination
@@ -79,10 +78,9 @@ public final class RemoteDestination
   }
 
   public RemoteDestination(
-    PdfDirectObject baseObject,
-    PdfString name
+    PdfDirectObject baseObject
     )
-  {super(baseObject, name);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>

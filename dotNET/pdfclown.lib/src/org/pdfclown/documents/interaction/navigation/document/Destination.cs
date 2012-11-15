@@ -46,7 +46,8 @@ namespace org.pdfclown.documents.interaction.navigation.document
   */
   [PDF(VersionEnum.PDF10)]
   public abstract class Destination
-    : PdfNamedObjectWrapper<PdfArray>
+    : PdfObjectWrapper<PdfArray>,
+      IPdfNamedObjectWrapper
   {
     #region types
     /**
@@ -151,12 +152,10 @@ namespace org.pdfclown.documents.interaction.navigation.document
     /**
       <summary>Wraps a destination base object into a destination object.</summary>
       <param name="baseObject">Destination base object.</param>
-      <param name="name">Destination name.</param>
       <returns>Destination object associated to the base object.</returns>
     */
     public static Destination Wrap(
-      PdfDirectObject baseObject,
-      PdfString name
+      PdfDirectObject baseObject
       )
     {
       if(baseObject == null)
@@ -165,9 +164,9 @@ namespace org.pdfclown.documents.interaction.navigation.document
       PdfArray dataObject = (PdfArray)File.Resolve(baseObject);
       PdfDirectObject pageObject = dataObject[0];
       if(pageObject is PdfReference)
-        return new LocalDestination(baseObject, name);
+        return new LocalDestination(baseObject);
       else if(pageObject is PdfInteger)
-        return new RemoteDestination(baseObject, name);
+        return new RemoteDestination(baseObject);
       else
         throw new ArgumentException("Not a valid destination object.", "baseObject");
     }
@@ -201,9 +200,8 @@ namespace org.pdfclown.documents.interaction.navigation.document
     }
 
     protected Destination(
-      PdfDirectObject baseObject,
-      PdfString name
-      ) : base(baseObject, name)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -359,6 +357,20 @@ namespace org.pdfclown.documents.interaction.navigation.document
         }
       }
     }
+
+    #region IPdfNamedObjectWrapper
+    public PdfString Name
+    {
+      get
+      {return RetrieveName();}
+    }
+
+    public PdfDirectObject NamedBaseObject
+    {
+      get
+      {return RetrieveNamedBaseObject();}
+    }
+    #endregion
     #endregion
     #endregion
     #endregion

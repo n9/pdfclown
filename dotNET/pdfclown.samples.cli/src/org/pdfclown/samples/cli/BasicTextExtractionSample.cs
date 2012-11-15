@@ -19,26 +19,29 @@ namespace org.pdfclown.samples.cli
   public class BasicTextExtractionSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      File file = new File(filePath);
-      Document document = file.Document;
-
-      // 2. Text extraction from the document pages.
-      foreach(Page page in document.Pages)
+      using(File file = new File(filePath))
       {
-        if(!PromptNextPage(page, false))
-          return false;
+        Document document = file.Document;
 
-        Extract(
-          new ContentScanner(page) // Wraps the page contents into a scanner.
-          );
+        // 2. Text extraction from the document pages.
+        foreach(Page page in document.Pages)
+        {
+          if(!PromptNextPage(page, false))
+          {
+            Quit();
+            break;
+          }
+
+          Extract(
+            new ContentScanner(page) // Wraps the page contents into a scanner.
+            );
+        }
       }
-
-      return true;
     }
 
     /**

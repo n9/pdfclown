@@ -114,6 +114,12 @@ namespace org.pdfclown.tokens
 
     #region interface
     #region public
+    public override bool Accept(
+      IVisitor visitor,
+      object data
+      )
+    {return visitor.Visit(this, data);}
+
     /**
       <summary>Gets/Sets the object stream extended by this one.</summary>
       <remarks>Both streams are considered part of a collection of object streams  whose links form

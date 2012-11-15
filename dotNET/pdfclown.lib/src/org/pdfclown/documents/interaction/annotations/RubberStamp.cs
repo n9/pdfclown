@@ -168,10 +168,10 @@ namespace org.pdfclown.documents.interaction.annotations
       RectangleF box,
       string text,
       IconTypeEnum iconType
-      ) : base(page.Document, PdfName.Stamp, box, text, page)
+      ) : base(page, PdfName.Stamp, box, text)
     {IconType = iconType;}
 
-    public RubberStamp(
+    internal RubberStamp(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

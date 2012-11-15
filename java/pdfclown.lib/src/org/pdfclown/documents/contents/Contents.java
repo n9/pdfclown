@@ -578,6 +578,7 @@ public final class Contents
   private void load(
     )
   {
+    @SuppressWarnings("resource")
     ContentParser parser = new ContentParser(new ContentStream(getBaseDataObject()));
     items = parser.parseContentObjects();
   }

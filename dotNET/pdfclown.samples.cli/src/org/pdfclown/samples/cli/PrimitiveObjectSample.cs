@@ -15,41 +15,40 @@ namespace org.pdfclown.samples.cli
   public class PrimitiveObjectSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      File file = new File(filePath);
-
-      // 2. Modifying the document...
-      Document document = file.Document;
+      using(File file = new File(filePath))
       {
-        // Create the action dictionary!
-        PdfDictionary action = new PdfDictionary();
-        // Define the action type (in this case: go-to)!
-        action[new PdfName("S")] = new PdfName("GoTo");
-        // Defining the action destination...
+        // 2. Modifying the document...
+        Document document = file.Document;
         {
-          // Create the destination array!
-          PdfArray destination = new PdfArray();
-          // Define the 2nd page as the destination target!
-          destination.Add(document.Pages[1].BaseObject);
-          // Define the location of the document window on the page (fit vertically)!
-          destination.Add(new PdfName("FitV"));
-          // Define window left-edge horizontal coordinate!
-          destination.Add(PdfInteger.Get(-32768));
-          // Associate the destination to the action!
-          action[new PdfName("D")] = destination;
+          // Create the action dictionary!
+          PdfDictionary action = new PdfDictionary();
+          // Define the action type (in this case: go-to)!
+          action[new PdfName("S")] = new PdfName("GoTo");
+          // Defining the action destination...
+          {
+            // Create the destination array!
+            PdfArray destination = new PdfArray();
+            // Define the 2nd page as the destination target!
+            destination.Add(document.Pages[1].BaseObject);
+            // Define the location of the document window on the page (fit vertically)!
+            destination.Add(new PdfName("FitV"));
+            // Define window left-edge horizontal coordinate!
+            destination.Add(PdfInteger.Get(-32768));
+            // Associate the destination to the action!
+            action[new PdfName("D")] = destination;
+          }
+          // Associate the action to the document!
+          document.BaseDataObject[new PdfName("OpenAction")] = file.Register(action);  // Adds the action to the file, returning its reference.
         }
-        // Associate the action to the document!
-        document.BaseDataObject[new PdfName("OpenAction")] = file.Register(action);  // Adds the action to the file, returning its reference.
+  
+        // 3. Serialize the PDF file!
+        Serialize(file, "Primitive objects", "manipulating a document at primitive object level");
       }
-
-      // 3. Serialize the PDF file!
-      Serialize(file, "Primitive objects", "manipulating a document at primitive object level");
-
-      return true;
     }
   }
 }

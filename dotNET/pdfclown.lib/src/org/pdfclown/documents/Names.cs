@@ -26,10 +26,12 @@
 using org.pdfclown.documents.files;
 using org.pdfclown.documents.interaction.actions;
 using org.pdfclown.documents.interaction.navigation.document;
+using org.pdfclown.documents.multimedia;
 using org.pdfclown.objects;
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace org.pdfclown.documents
 {
@@ -38,7 +40,8 @@ namespace org.pdfclown.documents
   */
   [PDF(VersionEnum.PDF12)]
   public sealed class Names
-    : PdfObjectWrapper<PdfDictionary>
+    : PdfObjectWrapper<PdfDictionary>,
+      ICompositeDictionary<PdfString>
   {
     #region dynamic
     #region constructors
@@ -67,6 +70,8 @@ namespace org.pdfclown.documents
     public NamedDestinations Destinations
     {
       get
+//TODO: virtual indirect reference to be managed!
+//      {return new NamedDestinations(BaseDataObject.Get<PdfDictionary>(PdfName.Dests));}
       {
         PdfDirectObject destinationsObject = BaseDataObject[PdfName.Dests];
         return destinationsObject != null ? new NamedDestinations(destinationsObject) : null;
@@ -82,6 +87,8 @@ namespace org.pdfclown.documents
     public NamedEmbeddedFiles EmbeddedFiles
     {
       get
+//TODO: virtual indirect reference to be managed!
+//      {return new NamedEmbeddedFiles(BaseDataObject.Get<PdfDictionary>(PdfName.EmbeddedFiles));}
       {
         PdfDirectObject embeddedFilesObject = BaseDataObject[PdfName.EmbeddedFiles];
         return embeddedFilesObject != null ? new NamedEmbeddedFiles(embeddedFilesObject) : null;
@@ -97,6 +104,8 @@ namespace org.pdfclown.documents
     public NamedJavaScripts JavaScripts
     {
       get
+//TODO: virtual indirect reference to be managed!
+//      {return new NamedJavaScripts(BaseDataObject.Get<PdfDictionary>(PdfName.JavaScript));}
       {
         PdfDirectObject javaScriptsObject = BaseDataObject[PdfName.JavaScript];
         return javaScriptsObject != null ? new NamedJavaScripts(javaScriptsObject) : null;
@@ -105,19 +114,46 @@ namespace org.pdfclown.documents
       {BaseDataObject[PdfName.JavaScript] = value.BaseObject;}
     }
 
-    public T Resolve<T>(
-      string name
-      ) where T : PdfObjectWrapper
+    /**
+      <summary>Gets/Sets the named renditions.</summary>
+    */
+    [PDF(VersionEnum.PDF15)]
+    public NamedRenditions Renditions
     {
-      if(typeof(Destination).IsAssignableFrom(typeof(T)))
-        return Destinations[name] as T;
-      else if(typeof(FileSpecification).IsAssignableFrom(typeof(T)))
-        return EmbeddedFiles[name] as T;
-      else if(typeof(JavaScript).IsAssignableFrom(typeof(T)))
-        return JavaScripts[name] as T;
-      else
-        throw new NotSupportedException("Named type '" + typeof(T).Name + "' is not supported.");
+      get
+//TODO: virtual indirect reference to be managed!
+//      {return new NamedRenditions(BaseDataObject.Get<PdfDictionary>(PdfName.Renditions));}
+      {
+        PdfDirectObject renditionsObject = BaseDataObject[PdfName.Renditions];
+        return renditionsObject != null ? new NamedRenditions(renditionsObject) : null;
+      }
+      set
+      {BaseDataObject[PdfName.Renditions] = value.BaseObject;}
     }
+
+    #region ICompositeDictionary
+    public PdfObjectWrapper Get(
+      Type type
+      )
+    {
+      if(typeof(Destination).IsAssignableFrom(type))
+        return Destinations;
+      else if(typeof(FileSpecification).IsAssignableFrom(type))
+        return EmbeddedFiles;
+      else if(typeof(JavaScript).IsAssignableFrom(type))
+        return JavaScripts;
+      else if(typeof(Rendition).IsAssignableFrom(type))
+        return Renditions;
+      else
+        return null;
+    }
+
+    public PdfObjectWrapper Get(
+      Type type,
+      PdfString key
+      )
+    {return (PdfObjectWrapper)type.GetMethod("get_Item", BindingFlags.Public | BindingFlags.Instance).Invoke(Get(type), new object[]{ key });}
+    #endregion
     #endregion
     #endregion
     #endregion

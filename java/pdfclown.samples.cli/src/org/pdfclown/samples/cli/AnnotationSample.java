@@ -30,13 +30,13 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 public class AnnotationSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. PDF file instantiation.
@@ -48,8 +48,6 @@ public class AnnotationSample
 
     // 3. Serialize the PDF file!
     serialize(file, "Annotations", "inserting annotations");
-
-    return true;
   }
 
   @SuppressWarnings("unchecked")
@@ -106,7 +104,7 @@ public class AnnotationSample
       FileSpecification.get(
         EmbeddedFile.get(
           document,
-          getInputPath() + java.io.File.separator + "images" + java.io.File.separator + "gnu.jpg"
+          getResourcePath("images" + java.io.File.separator + "gnu.jpg")
           ),
         "happyGNU.jpg"
         )
@@ -146,6 +144,7 @@ public class AnnotationSample
 
     // Scribble.
     composer.showText("Scribble annotation:", new Point(35,285));
+    @SuppressWarnings("unused")
     Scribble scribble = new Scribble(
       page,
       new Rectangle(50, 300, 100, 30),
@@ -179,6 +178,7 @@ public class AnnotationSample
 
     // Rubber stamp.
     composer.showText("Rubber stamp annotation:", new Point(35,435));
+    @SuppressWarnings("unused")
     RubberStamp rubberStamp = new RubberStamp(
       page,
       new Rectangle(50, 450, 100, 30),

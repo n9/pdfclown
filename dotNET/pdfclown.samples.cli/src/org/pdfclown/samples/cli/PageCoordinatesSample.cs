@@ -33,7 +33,7 @@ namespace org.pdfclown.samples.cli
       return maxValue;
     }
 
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Instantiate a new PDF file!
@@ -48,8 +48,6 @@ namespace org.pdfclown.samples.cli
 
       // 4. Serialize the PDF file!
       Serialize(file, "Page coordinates", "manipulating the CTM");
-
-      return true;
     }
 
     private void BuildContent(

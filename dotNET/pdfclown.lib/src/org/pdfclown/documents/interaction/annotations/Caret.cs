@@ -106,10 +106,10 @@ namespace org.pdfclown.documents.interaction.annotations
       Page page,
       RectangleF box,
       string text
-      ) : base(page.Document, PdfName.Caret, box, text, page)
+      ) : base(page, PdfName.Caret, box, text)
     {}
 
-    public Caret(
+    internal Caret(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

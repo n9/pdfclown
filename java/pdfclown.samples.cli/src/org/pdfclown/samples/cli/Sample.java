@@ -23,7 +23,7 @@ import org.pdfclown.files.SerializationModeEnum;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public abstract class Sample
 {
@@ -32,16 +32,25 @@ public abstract class Sample
   // <fields>
   private String inputPath;
   private String outputPath;
+
+  private boolean quit;
   // </fields>
 
   // <interface>
   // <public>
   /**
+    Gets whether the sample was exited before its completion.
+  */
+  public boolean isQuit(
+    )
+  {return quit;}
+
+  /**
     Executes the sample.
 
     @return Whether the sample has been completed.
   */
-  public abstract boolean run(
+  public abstract void run(
     );
   // </public>
 
@@ -55,6 +64,33 @@ public abstract class Sample
     {indentationBuilder.append(' ');}
     return indentationBuilder.toString();
   }
+
+  /**
+    Gets the path used to serialize output files.
+  */
+  protected String getOutputPath(
+    )
+  {return getOutputPath(null);}
+
+  /**
+    Gets the path used to serialize output files.
+
+    @param fileName Relative output file path.
+  */
+  protected String getOutputPath(
+    String fileName
+    )
+  {return outputPath + (fileName != null ? java.io.File.separator + fileName : "");}
+
+  /**
+    Gets the path to a sample resource.
+
+    @param resourceName Relative resource path.
+  */
+  protected String getResourcePath(
+    String resourceName
+    )
+  {return inputPath + java.io.File.separator + resourceName;}
 
   /**
     Prompts a message to the user.
@@ -218,18 +254,11 @@ public abstract class Sample
   }
 
   /**
-    Gets the source path used to load input PDF files.
+    Indicates that the sample was exited before its completion.
   */
-  protected String getInputPath(
+  protected void quit(
     )
-  {return inputPath;}
-
-  /**
-    Gets the target path used to serialize output PDF files.
-  */
-  protected String getOutputPath(
-    )
-  {return outputPath;}
+  {quit = true;}
 
   /**
     Serializes the given PDF Clown file object.
@@ -400,8 +429,11 @@ public abstract class Sample
     view.setDisplayDocTitle(true);
 
     // Document metadata.
-    Information info = new Information(document);
-    document.setInformation(info);
+    Information info = document.getInformation();
+    if(info == null)
+    {document.setInformation(info = new Information(document));}
+    else
+    {info.clear();}
     info.setAuthor("Stefano Chizzolini");
     info.setCreationDate(new Date());
     info.setCreator(getClass().getName());

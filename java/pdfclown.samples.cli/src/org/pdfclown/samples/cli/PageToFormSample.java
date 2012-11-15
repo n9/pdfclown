@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
@@ -23,39 +24,51 @@ import org.pdfclown.util.math.geom.GeomUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.5
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class PageToFormSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
-    // 1. Instantiate the form source file!
-    File formFile;
+    File formFile = null;
+    try
     {
-      String filePath = promptFileChoice("Please select a PDF file to use as form");
-      try
-      {formFile = new File(filePath);}
-      catch(Exception e)
-      {throw new RuntimeException(filePath + " file access error.",e);}
+      // 1. Opening the form source file...
+      {
+        String filePath = promptFileChoice("Please select a PDF file to use as form");
+        try
+        {formFile = new File(filePath);}
+        catch(Exception e)
+        {throw new RuntimeException(filePath + " file access error.",e);}
+      }
+
+      // 2. Instantiate a new PDF file!
+      File file = new File();
+      Document document = file.getDocument();
+
+      // 3. Convert the first page of the source file into a form inside the new document!
+      XObject form = formFile.getDocument().getPages().get(0).toXObject(document);
+
+      // 4. Insert the contents into the new document!
+      populate(document,form);
+
+      // 5. Serialize the PDF file!
+      serialize(file, "Page-to-form", "converting a page to a reusable form");
     }
-
-    // 2. Instantiate a new PDF file!
-    File file = new File();
-    Document document = file.getDocument();
-
-    // 3. Convert the first page of the source file into a form inside the new document!
-    XObject form = formFile.getDocument().getPages().get(0).toXObject(document);
-
-    // 4. Insert the contents into the new document!
-    populate(document,form);
-
-    // 5. Serialize the PDF file!
-    serialize(file, "Page-to-form", "converting a page to a reusable form");
-
-    return true;
+    finally
+    {
+      // 6. Closing the PDF file...
+      if(formFile != null)
+      {
+        try
+        {formFile.close();}
+        catch(IOException e)
+        {/* NOOP */}
+      }
+    }
   }
 
   /**

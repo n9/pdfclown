@@ -25,24 +25,24 @@ namespace org.pdfclown.samples.cli
   public class WatermarkSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Open the PDF file!
       string filePath = PromptFileChoice("Please select a PDF file");
-      files::File file = new files::File(filePath);
-      Document document = file.Document;
-
-      // 2. Create a watermark!
-      FormXObject watermark = CreateWatermark(document);
-
-      // 3. Apply the watermark to the pages of the document!
-      ApplyWatermark(watermark);
-
-      // 4. Serialize the PDF file!
-      Serialize(file, "Watermark", "how to place some content behind existing pages");
-
-      return true;
+      using(files::File file = new files::File(filePath))
+      {
+        Document document = file.Document;
+  
+        // 2. Create a watermark!
+        FormXObject watermark = CreateWatermark(document);
+  
+        // 3. Apply the watermark to the pages of the document!
+        ApplyWatermark(watermark);
+  
+        // 4. Serialize the PDF file!
+        Serialize(file, "Watermark", "how to place some content behind existing pages");
+      }
     }
 
     private void ApplyWatermark(

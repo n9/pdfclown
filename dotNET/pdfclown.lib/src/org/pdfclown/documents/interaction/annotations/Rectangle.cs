@@ -49,7 +49,7 @@ namespace org.pdfclown.documents.interaction.annotations
       ) : base(page, box, text, PdfName.Square)
     {}
 
-    public Rectangle(
+    internal Rectangle(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

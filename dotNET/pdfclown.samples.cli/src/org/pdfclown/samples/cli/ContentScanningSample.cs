@@ -21,25 +21,25 @@ namespace org.pdfclown.samples.cli
   public class ContentScanningSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      File file = new File(filePath);
-      Document document = file.Document;
-
-      // 2. Parsing the document...
-      Console.WriteLine("\nLooking for images...");
-      foreach(Page page in document.Pages)
+      using(File file = new File(filePath))
       {
-        Scan(
-          new ContentScanner(page), // Wraps the page contents into the scanner.
-          page
-          );
+        Document document = file.Document;
+  
+        // 2. Parsing the document...
+        Console.WriteLine("\nLooking for images...");
+        foreach(Page page in document.Pages)
+        {
+          Scan(
+            new ContentScanner(page), // Wraps the page contents into the scanner.
+            page
+            );
+        }
       }
-
-      return true;
     }
 
     /**

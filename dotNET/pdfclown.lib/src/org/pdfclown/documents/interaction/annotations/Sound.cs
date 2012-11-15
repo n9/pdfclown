@@ -108,10 +108,10 @@ namespace org.pdfclown.documents.interaction.annotations
       RectangleF box,
       string text,
       multimedia::Sound content
-      ) : base(page.Document, PdfName.Sound, box, text, page)
+      ) : base(page, PdfName.Sound, box, text)
     {Content = content;}
 
-    public Sound(
+    internal Sound(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

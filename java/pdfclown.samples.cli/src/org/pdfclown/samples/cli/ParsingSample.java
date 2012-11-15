@@ -1,5 +1,6 @@
 package org.pdfclown.samples.cli;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
@@ -35,96 +36,109 @@ import org.pdfclown.util.parsers.ParseException;
   to exploit all the available access functionalities.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 09/24/12
 */
 public class ParsingSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
-    // 1. Opening the PDF file...
-    File file;
+    File file = null;
+    try
     {
-      String filePath = promptFileChoice("Please select a PDF file");
-      try
-      {file = new File(filePath);}
-      catch(ParseException e)
-      {throw new RuntimeException(filePath + " file parsing failed.",e);}
-      catch(Exception e)
-      {throw new RuntimeException(filePath + " file access error.",e);}
-    }
-    Document document = file.getDocument();
-
-    // 2. Document parsing.
-    // 2.1.1. Basic metadata.
-    System.out.println("\nDocument information:");
-    Information info = document.getInformation();
-    if(info != null)
-    {
-      for(Map.Entry<PdfName,Object> infoEntry : info.entrySet())
-      {System.out.println(infoEntry.getKey() + ": " + infoEntry.getValue());}
-    }
-    else
-    {System.out.println("No information available (Info dictionary doesn't exist).");}
-
-    // 2.1.2. Advanced metadata.
-    System.out.println("\nDocument metadata (XMP):");
-    Metadata metadata = document.getMetadata();
-    if(metadata != null)
-    {
-      try
+      // 1. Opening the PDF file...
       {
-        org.w3c.dom.Document metadataContent = metadata.getContent();
-        System.out.println(toString(metadataContent));
+        String filePath = promptFileChoice("Please select a PDF file");
+        try
+        {file = new File(filePath);}
+        catch(ParseException e)
+        {throw new RuntimeException(filePath + " file parsing failed.",e);}
+        catch(Exception e)
+        {throw new RuntimeException(filePath + " file access error.",e);}
       }
-      catch (Exception e)
-      {System.out.println("Metadata extraction failed: " + e.getMessage());}
-    }
-    else
-    {System.out.println("No metadata available (Metadata stream doesn't exist).");}
+      Document document = file.getDocument();
 
-    System.out.println("\nIterating through the indirect-object collection (please wait)...");
-
-    // 2.2. Counting the indirect objects, grouping them by type...
-    HashMap<String,Integer> objCounters = new HashMap<String,Integer>();
-    objCounters.put("xref free entry",0);
-    for(PdfIndirectObject object : file.getIndirectObjects())
-    {
-      if(object.isInUse()) // In-use entry.
+      // 2. Parsing the document...
+      // 2.1. Metadata.
+      // 2.1.1. Basic metadata.
+      System.out.println("\nDocument information:");
+      Information info = document.getInformation();
+      if(info != null)
       {
-        String typeName = object.getDataObject().getClass().getSimpleName();
-        if(objCounters.containsKey(typeName))
-        {objCounters.put(typeName, objCounters.get(typeName) + 1);}
-        else
-        {objCounters.put(typeName, 1);}
+        for(Map.Entry<PdfName,Object> infoEntry : info.entrySet())
+        {System.out.println(infoEntry.getKey() + ": " + infoEntry.getValue());}
       }
-      else // Free entry.
-      {objCounters.put("xref free entry", objCounters.get("xref free entry") + 1);}
-    }
-    System.out.println("\nIndirect objects partial counts (grouped by PDF object type):");
-    for(Map.Entry<String,Integer> entry : objCounters.entrySet())
-    {System.out.println(" " + entry.getKey() + ": " + entry.getValue());}
-    System.out.println("Indirect objects total count: " + file.getIndirectObjects().size());
+      else
+      {System.out.println("No information available (Info dictionary doesn't exist).");}
 
-    // 2.3. Showing some page information...
-    Pages pages = document.getPages();
-    int pageCount = pages.size();
-    System.out.println("\nPage count: " + pageCount);
+      // 2.1.2. Advanced metadata.
+      System.out.println("\nDocument metadata (XMP):");
+      Metadata metadata = document.getMetadata();
+      if(metadata != null)
+      {
+        try
+        {
+          org.w3c.dom.Document metadataContent = metadata.getContent();
+          System.out.println(toString(metadataContent));
+        }
+        catch (Exception e)
+        {System.out.println("Metadata extraction failed: " + e.getMessage());}
+      }
+      else
+      {System.out.println("No metadata available (Metadata stream doesn't exist).");}
 
-    int pageIndex = (int)Math.floor(pageCount / 2d);
-    System.out.println("Mid page:");
-    printPageInfo(pages.get(pageIndex),pageIndex);
+      System.out.println("\nIterating through the indirect-object collection (please wait)...");
 
-    pageIndex++;
-    if(pageIndex < pageCount)
-    {
-      System.out.println("Next page:");
+      // 2.2. Counting the indirect objects, grouping them by type...
+      HashMap<String,Integer> objCounters = new HashMap<String,Integer>();
+      objCounters.put("xref free entry",0);
+      for(PdfIndirectObject object : file.getIndirectObjects())
+      {
+        if(object.isInUse()) // In-use entry.
+        {
+          String typeName = object.getDataObject().getClass().getSimpleName();
+          if(objCounters.containsKey(typeName))
+          {objCounters.put(typeName, objCounters.get(typeName) + 1);}
+          else
+          {objCounters.put(typeName, 1);}
+        }
+        else // Free entry.
+        {objCounters.put("xref free entry", objCounters.get("xref free entry") + 1);}
+      }
+      System.out.println("\nIndirect objects partial counts (grouped by PDF object type):");
+      for(Map.Entry<String,Integer> entry : objCounters.entrySet())
+      {System.out.println(" " + entry.getKey() + ": " + entry.getValue());}
+      System.out.println("Indirect objects total count: " + file.getIndirectObjects().size());
+
+      // 2.3. Showing some page information...
+      Pages pages = document.getPages();
+      int pageCount = pages.size();
+      System.out.println("\nPage count: " + pageCount);
+
+      int pageIndex = (int)Math.floor(pageCount / 2d);
+      System.out.println("Mid page:");
       printPageInfo(pages.get(pageIndex),pageIndex);
-    }
 
-    return true;
+      pageIndex++;
+      if(pageIndex < pageCount)
+      {
+        System.out.println("Next page:");
+        printPageInfo(pages.get(pageIndex),pageIndex);
+      }
+    }
+    finally
+    {
+      // 3. Closing the PDF file...
+      if(file != null)
+      {
+        try
+        {file.close();}
+        catch(IOException e)
+        {/* NOOP */}
+      }
+    }
   }
 
   private void printPageInfo(

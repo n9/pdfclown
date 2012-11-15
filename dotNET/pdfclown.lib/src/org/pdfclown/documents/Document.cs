@@ -214,7 +214,7 @@ namespace org.pdfclown.documents
       ) where T : PdfObjectWrapper
     {
       if(typeof(Destination).IsAssignableFrom(typeof(T)))
-        return Destination.Wrap(baseObject, null) as T;
+        return Destination.Wrap(baseObject) as T;
       else
         throw new NotSupportedException("Type '" + typeof(T).Name + "' wrapping is not supported.");
     }
@@ -279,7 +279,7 @@ namespace org.pdfclown.documents
         return actionsObject != null ? new DocumentActions(actionsObject) : null;
       }
       set
-      {BaseDataObject[PdfName.AA] = value.BaseObject;}
+      {BaseDataObject[PdfName.AA] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
@@ -293,7 +293,7 @@ namespace org.pdfclown.documents
         return bookmarksObject != null ? new Bookmarks(bookmarksObject) : null;
       }
       set
-      {BaseDataObject[PdfName.Outlines] = value.BaseObject;}
+      {BaseDataObject[PdfName.Outlines] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     public override object Clone(
@@ -343,12 +343,9 @@ namespace org.pdfclown.documents
     public Form Form
     {
       get
-      {
-        PdfDirectObject formObject = BaseDataObject[PdfName.AcroForm];
-        return formObject != null ? new Form(formObject) : null;
-      }
+      {return new Form(BaseDataObject.Get<PdfDictionary>(PdfName.AcroForm));}
       set
-      {BaseDataObject[PdfName.AcroForm] = value.BaseObject;}
+      {BaseDataObject[PdfName.AcroForm] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
@@ -406,7 +403,7 @@ namespace org.pdfclown.documents
         return informationObject != null ? new Information(informationObject) : null;
       }
       set
-      {File.Trailer[PdfName.Info] = value.BaseObject;}
+      {File.Trailer[PdfName.Info] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
@@ -423,7 +420,7 @@ namespace org.pdfclown.documents
       set
       {
         CheckCompatibility("Layer");
-        BaseDataObject[PdfName.OCProperties] = value.BaseObject;
+        BaseDataObject[PdfName.OCProperties] = PdfObjectWrapper.GetBaseObject(value);
       }
     }
 
@@ -434,12 +431,9 @@ namespace org.pdfclown.documents
     public Names Names
     {
       get
-      {
-        PdfDirectObject namesObject = BaseDataObject[PdfName.Names];
-        return namesObject != null ? new Names(namesObject) : null;
-      }
+      {return new Names(BaseDataObject.Get<PdfDictionary>(PdfName.Names));}
       set
-      {BaseDataObject[PdfName.Names] = value.BaseObject;}
+      {BaseDataObject[PdfName.Names] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
@@ -449,11 +443,16 @@ namespace org.pdfclown.documents
     public PageLabels PageLabels
     {
       get
-      {return PageLabels.Wrap(BaseDataObject[PdfName.PageLabels]);}
+//TODO: support virtual indirect objects.
+//      {return new PageLabels(BaseDataObject.Get<PdfDictionary>(PdfName.PageLabels));}
+      {
+        PdfDirectObject pageLabelsObject = BaseDataObject[PdfName.PageLabels];
+        return pageLabelsObject != null ? new PageLabels(pageLabelsObject) : null;
+      }
       set
       {
         CheckCompatibility("PageLabels");
-        BaseDataObject[PdfName.PageLabels] = value.BaseObject;
+        BaseDataObject[PdfName.PageLabels] = PdfObjectWrapper.GetBaseObject(value);
       }
     }
 
@@ -487,7 +486,7 @@ namespace org.pdfclown.documents
       get
       {return new Pages(BaseDataObject[PdfName.Pages]);}
       set
-      {BaseDataObject[PdfName.Pages] = value.BaseObject;}
+      {BaseDataObject[PdfName.Pages] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
@@ -529,7 +528,7 @@ namespace org.pdfclown.documents
       ) where T : PdfObjectWrapper
     {
       if(namedBaseObject is PdfString) // Named object.
-        return Names.Resolve<T>(((PdfString)namedBaseObject).StringValue);
+        return (T)Names.Get(typeof(T), (PdfString)namedBaseObject);
       else // Explicit object.
         return Resolve<T>(namedBaseObject);
     }
@@ -545,7 +544,7 @@ namespace org.pdfclown.documents
       get
       {return Resources.Wrap(((PdfDictionary)BaseDataObject.Resolve(PdfName.Pages))[PdfName.Resources]);}
       set
-      {((PdfDictionary)BaseDataObject.Resolve(PdfName.Pages))[PdfName.Resources] = value.BaseObject;}
+      {((PdfDictionary)BaseDataObject.Resolve(PdfName.Pages))[PdfName.Resources] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
@@ -566,7 +565,7 @@ namespace org.pdfclown.documents
         if(versionObject == null)
           return fileVersion;
 
-        Version version = Version.Get(versionObject.RawValue);
+        Version version = Version.Get(versionObject);
         if(File.Reader == null)
           return version;
 
@@ -587,7 +586,7 @@ namespace org.pdfclown.documents
         return viewerPreferencesObject != null ? new ViewerPreferences(viewerPreferencesObject) : null;
       }
       set
-      {BaseDataObject[PdfName.ViewerPreferences] = value.BaseObject;}
+      {BaseDataObject[PdfName.ViewerPreferences] = PdfObjectWrapper.GetBaseObject(value);}
     }
     #endregion
 

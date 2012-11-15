@@ -167,11 +167,10 @@ namespace org.pdfclown.documents.interaction.annotations
       MarkupTypeEnum markupType,
       IList<Quad> markupBoxes
       ) : base(
-        page.Document,
+        page,
         ToCode(markupType),
         markupBoxes[0].GetBounds(),
-        text,
-        page
+        text
         )
     {
       MarkupType = markupType;
@@ -179,7 +178,7 @@ namespace org.pdfclown.documents.interaction.annotations
       Printable = true;
     }
 
-    public TextMarkup(
+    internal TextMarkup(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

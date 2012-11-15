@@ -23,13 +23,13 @@ import org.pdfclown.tools.PageStamper;
   etc.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class PageNumberingSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. Opening the PDF file...
@@ -48,8 +48,6 @@ public class PageNumberingSample
 
     // 3. Serialize the PDF file!
     serialize(file, "Page numbering", "numbering a document's pages");
-
-    return true;
   }
 
   private void stamp(

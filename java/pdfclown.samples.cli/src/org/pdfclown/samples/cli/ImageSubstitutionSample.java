@@ -15,13 +15,13 @@ import org.pdfclown.objects.PdfName;
   through their resource names.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class ImageSubstitutionSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. Opening the PDF file...
@@ -40,8 +40,6 @@ public class ImageSubstitutionSample
 
     // 3. Serialize the PDF file!
     serialize(file, "Image substitution", "substituting a document's images");
-
-    return true;
   }
 
   private void replaceImages(
@@ -49,7 +47,7 @@ public class ImageSubstitutionSample
     )
   {
     // Get the image used to replace existing ones!
-    Image image = Image.get(getInputPath() + java.io.File.separator + "images" + java.io.File.separator + "gnu.jpg"); // Image is an abstract entity, as it still has to be included into the pdf document.
+    Image image = Image.get(getResourcePath("images" + java.io.File.separator + "gnu.jpg")); // Image is an abstract entity, as it still has to be included into the pdf document.
     // Add the image to the document!
     XObject imageXObject = image.toXObject(document); // XObject (i.e. external object) is, in PDF spec jargon, a reusable object.
     // Looking for images to replace...

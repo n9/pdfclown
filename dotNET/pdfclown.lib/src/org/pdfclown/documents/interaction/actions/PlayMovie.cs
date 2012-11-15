@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,7 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
-using org.pdfclown.documents.multimedia;
+using org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.objects;
 
 using System;
@@ -52,7 +52,7 @@ namespace org.pdfclown.documents.interaction.actions
 
     internal PlayMovie(
       PdfDirectObject baseObject
-      ) : base(baseObject, null)
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -76,7 +76,7 @@ namespace org.pdfclown.documents.interaction.actions
           annotationObject = BaseDataObject[PdfName.T];
           throw new NotImplementedException("No by-title movie annotation support currently: we have to implement a hook to the page of the referenced movie to get it from its annotations collection.");
         }
-        return new Movie(annotationObject);
+        return (Movie)Annotation.Wrap(annotationObject);
       }
       set
       {

@@ -1,6 +1,7 @@
 package org.pdfclown.samples.cli;
 
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.util.List;
 
 import org.pdfclown.documents.Document;
@@ -16,13 +17,13 @@ import org.pdfclown.tools.TextExtractor;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 09/24/12
 */
 public class AdvancedTextExtractionSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. Opening the PDF file...
@@ -41,7 +42,10 @@ public class AdvancedTextExtractionSample
     for(Page page : document.getPages())
     {
       if(!promptNextPage(page, false))
-        return false;
+      {
+        quit();
+        break;
+      }
 
       List<ITextString> textStrings = extractor.extract(page).get(null);
       for(ITextString textString : textStrings)
@@ -58,6 +62,10 @@ public class AdvancedTextExtractionSample
       }
     }
 
-    return true;
+    // 3. Closing the PDF file...
+    try
+    {file.close();}
+    catch(IOException e)
+    {throw new RuntimeException(file.getPath() + " file could not be closed.",e);}
   }
 }

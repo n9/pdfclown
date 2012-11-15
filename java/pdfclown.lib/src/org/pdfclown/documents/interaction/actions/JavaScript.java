@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,7 +29,9 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.IBuffer;
 import org.pdfclown.documents.Document;
+import org.pdfclown.objects.IPdfNamedObjectWrapper;
 import org.pdfclown.objects.PdfDataObject;
+import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfStream;
@@ -42,13 +44,63 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF13)
 public final class JavaScript
   extends Action
+  implements IPdfNamedObjectWrapper
 {
   // <class>
+  // <static>
+  // <interface>
+  // <internal>
+  /**
+    Gets the Javascript script from the specified base data object.
+  */
+  static String getScript(
+    PdfDictionary baseDataObject,
+    PdfName key
+    )
+  {
+    PdfDataObject scriptObject = baseDataObject.resolve(key);
+    if(scriptObject == null)
+      return null;
+    else if(scriptObject instanceof PdfTextString)
+      return ((PdfTextString)scriptObject).getValue();
+    else
+    {
+      IBuffer scriptBuffer = ((PdfStream)scriptObject).getBody();
+      return scriptBuffer.getString(0,(int)scriptBuffer.getLength());
+    }
+  }
+
+  /**
+    Sets the Javascript script into the specified base data object.
+  */
+  static void setScript(
+    PdfDictionary baseDataObject,
+    PdfName key,
+    String value
+    )
+  {
+    PdfDataObject scriptObject = baseDataObject.resolve(key);
+    if(!(scriptObject instanceof PdfStream) && value.length() > 256)
+    {baseDataObject.put(key, baseDataObject.getFile().register(scriptObject = new PdfStream()));}
+    // Insert the script!
+    if(scriptObject instanceof PdfStream)
+    {
+      IBuffer scriptBuffer = ((PdfStream)scriptObject).getBody();
+      scriptBuffer.setLength(0);
+      scriptBuffer.append(value);
+    }
+    else
+    {baseDataObject.put(key, new PdfTextString(value));}
+  }
+  // </internal>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <constructors>
   /**
@@ -60,14 +112,13 @@ public final class JavaScript
     )
   {
     super(context, PdfName.JavaScript);
-    getBaseDataObject().put(PdfName.JS,new PdfTextString(script));
+    setScript(script);
   }
 
   JavaScript(
-    PdfDirectObject baseObject,
-    PdfString name
+    PdfDirectObject baseObject
     )
-  {super(baseObject, name);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -78,21 +129,12 @@ public final class JavaScript
     )
   {throw new NotImplementedException();}
 
+  /**
+    Gets the JavaScript script to be executed.
+  */
   public String getScript(
     )
-  {
-    /*
-      NOTE: 'JS' entry MUST be defined.
-    */
-    PdfDataObject scriptObject = getBaseDataObject().get(PdfName.JS);
-    if(scriptObject instanceof PdfTextString)
-    {return ((PdfTextString)scriptObject).getValue();}
-    else
-    {
-      IBuffer scriptBuffer = ((PdfStream)scriptObject).getBody();
-      return scriptBuffer.getString(0,(int)scriptBuffer.getLength());
-    }
-  }
+  {return getScript(getBaseDataObject(), PdfName.JS);}
 
   /**
     @see #getScript()
@@ -100,20 +142,19 @@ public final class JavaScript
   public void setScript(
     String value
     )
-  {
-    /*
-      NOTE: 'JS' entry MUST be defined.
-    */
-    PdfDataObject scriptObject = getBaseDataObject().get(PdfName.JS);
-    if(scriptObject instanceof PdfStream)
-    {
-      IBuffer scriptBuffer = ((PdfStream)scriptObject).getBody();
-      scriptBuffer.setLength(0);
-      scriptBuffer.append(value);
-    }
-    else
-    {getBaseDataObject().put(PdfName.JS, new PdfTextString(value));}
-  }
+  {setScript(getBaseDataObject(), PdfName.JS, value);}
+
+  // <IPdfNamedObjectWrapper>
+  @Override
+  public PdfString getName(
+    )
+  {return retrieveName();}
+
+  @Override
+  public PdfDirectObject getNamedBaseObject(
+    )
+  {return retrieveNamedBaseObject();}
+  // </IPdfNamedObjectWrapper>
   // </public>
   // </interface>
   // </dynamic>

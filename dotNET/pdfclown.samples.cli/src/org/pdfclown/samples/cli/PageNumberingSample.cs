@@ -20,21 +20,21 @@ namespace org.pdfclown.samples.cli
   public class PageNumberingSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      File file = new File(filePath);
-      Document document = file.Document;
-
-      // 2. Stamp the document!
-      Stamp(document);
-
-      // 3. Serialize the PDF file!
-      Serialize(file, "Page numbering", "numbering a document's pages");
-
-      return true;
+      using(File file = new File(filePath))
+      {
+        Document document = file.Document;
+  
+        // 2. Stamp the document!
+        Stamp(document);
+  
+        // 3. Serialize the PDF file!
+        Serialize(file, "Page numbering", "numbering a document's pages");
+      }
     }
 
     private void Stamp(

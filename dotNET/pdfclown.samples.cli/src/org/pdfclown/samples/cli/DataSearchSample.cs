@@ -23,34 +23,33 @@ namespace org.pdfclown.samples.cli
   public class DataSearchSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      File file = new File(filePath);
-
-      // 2. Define the text pattern to look for!
-      string textRegEx = PromptChoice("Please enter the pattern to look for: ");
-      Regex pattern = new Regex(textRegEx, RegexOptions.IgnoreCase);
-
-      // 3. Search.
-      /*
-        NOTE: In order to navigate through the file data, we can either (a) descend from the document
-        root or (b) iterate through the indirect objects collection.
-      */
-      // 3.a. Searching from the document root object.
-      Console.WriteLine("We can alternatively search starting from the document root object or iterating through the file's indirect objects collection.");
-      Console.WriteLine("\nApproach 1: Search starting from the document root object...");
-      Search(pattern, file.Document.BaseObject, "", new HashSet<PdfReference>());
-
-      // 3.b. Searching through the file's indirect objects.
-      Console.WriteLine("\nApproach 2: Search iterating through the file's indirect objects collection...");
-      HashSet<PdfReference> visitedReferences = new HashSet<PdfReference>();
-      foreach(PdfIndirectObject obj in file.IndirectObjects)
-      {Search(pattern, obj.Reference, "", visitedReferences);}
-
-      return true;
+      using(File file = new File(filePath))
+      {
+        // 2. Define the text pattern to look for!
+        string textRegEx = PromptChoice("Please enter the pattern to look for: ");
+        Regex pattern = new Regex(textRegEx, RegexOptions.IgnoreCase);
+  
+        // 3. Search.
+        /*
+          NOTE: In order to navigate through the file data, we can either (a) descend from the document
+          root or (b) iterate through the indirect objects collection.
+        */
+        // 3.a. Searching from the document root object.
+        Console.WriteLine("We can alternatively search starting from the document root object or iterating through the file's indirect objects collection.");
+        Console.WriteLine("\nApproach 1: Search starting from the document root object...");
+        Search(pattern, file.Document.BaseObject, "", new HashSet<PdfReference>());
+  
+        // 3.b. Searching through the file's indirect objects.
+        Console.WriteLine("\nApproach 2: Search iterating through the file's indirect objects collection...");
+        HashSet<PdfReference> visitedReferences = new HashSet<PdfReference>();
+        foreach(PdfIndirectObject obj in file.IndirectObjects)
+        {Search(pattern, obj.Reference, "", visitedReferences);}
+      }
     }
 
     private void Search(

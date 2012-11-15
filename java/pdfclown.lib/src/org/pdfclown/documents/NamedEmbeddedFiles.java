@@ -30,7 +30,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.files.FileSpecification;
 import org.pdfclown.objects.NameTree;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfString;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -38,7 +37,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF14)
 public final class NamedEmbeddedFiles
@@ -69,11 +68,10 @@ public final class NamedEmbeddedFiles
 
   // <protected>
   @Override
-  protected FileSpecification<?> wrap(
-    PdfDirectObject baseObject,
-    PdfString name
+  protected FileSpecification<?> wrapValue(
+    PdfDirectObject baseObject
     )
-  {return FileSpecification.wrap(baseObject, name);}
+  {return FileSpecification.wrap(baseObject);}
   // </protected>
   // </interface>
   // </dynamic>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -9,7 +9,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>org.pdfclown</RootNamespace>
     <AssemblyName>PDFClown</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -191,7 +190,6 @@
     <Compile Include="src\org\pdfclown\documents\interaction\actions\OptionsEnum.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\actions\PlayMovie.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\actions\PlaySound.cs" />
-    <Compile Include="src\org\pdfclown\documents\interaction\actions\Rendition.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\actions\ResetForm.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\actions\SubmitForm.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\actions\ToggleVisibility.cs" />
@@ -288,7 +286,6 @@
     <Compile Include="src\org\pdfclown\objects\PdfIndirectObject.cs" />
     <Compile Include="src\org\pdfclown\objects\PdfInteger.cs" />
     <Compile Include="src\org\pdfclown\objects\PdfName.cs" />
-    <Compile Include="src\org\pdfclown\objects\PdfNamedObjectWrapper.cs" />
     <Compile Include="src\org\pdfclown\objects\PdfObject.cs" />
     <Compile Include="src\org\pdfclown\objects\PdfObjectWrapper.cs" />
     <Compile Include="src\org\pdfclown\objects\PdfReal.cs" />
@@ -427,12 +424,40 @@
     <Compile Include="src\org\pdfclown\util\EnumUtils.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\objects\ApplyExtGState.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\BlendModeEnum.cs" />
+    <Compile Include="src\org\pdfclown\objects\ICompositeDictionary.cs" />
+    <Compile Include="src\org\pdfclown\objects\IPdfNamedObjectWrapper.cs" />
+    <Compile Include="src\org\pdfclown\objects\IVisitable.cs" />
+    <Compile Include="src\org\pdfclown\objects\IVisitor.cs" />
+    <Compile Include="src\org\pdfclown\documents\NamedRenditions.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\actions\Render.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Screen.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\MediaClip.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\MediaClipData.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\MediaClipSection.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\MediaOffset.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\MediaPlayer.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\MediaPlayers.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\MediaPlayParameters.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\MediaRendition.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\MediaScreenParameters.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\MonitorSpecifierEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\Rendition.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\SelectorRendition.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\SoftwareIdentifier.cs" />
+    <Compile Include="src\org\pdfclown\documents\multimedia\Timespan.cs" />
+    <Compile Include="src\org\pdfclown\objects\Visitor.cs" />
+    <Compile Include="src\org\pdfclown\tools\Optimizer.cs" />
+    <Compile Include="src\org\pdfclown\documents\interchange\access\namespace.cs" />
+    <Compile Include="src\org\pdfclown\documents\interchange\access\LanguageIdentifier.cs" />
+    <Compile Include="src\org\pdfclown\util\metadata\IVersion.cs" />
+    <Compile Include="src\org\pdfclown\util\metadata\VersionUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -527,5 +552,7 @@
     <Folder Include="src\org\pdfclown\util\math\geom\" />
     <Folder Include="src\org\pdfclown\tokens\" />
     <Folder Include="src\org\pdfclown\documents\contents\layers\" />
+    <Folder Include="src\org\pdfclown\util\metadata\" />
+    <Folder Include="src\org\pdfclown\documents\interchange\access\" />
   </ItemGroup>
 </Project>

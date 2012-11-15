@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,6 +23,9 @@
   this list of conditions.
 */
 
+using org.pdfclown.objects;
+using org.pdfclown.util.metadata;
+
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -34,7 +37,7 @@ namespace org.pdfclown
     <seealso cref="VersionEnum"/>
   */
   public sealed class Version
-    : IComparable<Version>
+    : IVersion
   {
     #region static
     #region fields
@@ -44,6 +47,11 @@ namespace org.pdfclown
 
     #region interface
     #region public
+    public static Version Get(
+      PdfName version
+      )
+    {return Get(version.RawValue);}
+
     public static Version Get(
       string version
       )
@@ -83,26 +91,34 @@ namespace org.pdfclown
     #region interface
     #region public
     public int Major
-    {get{return major;}}
+    {
+      get
+      {return major;}
+    }
 
     public int Minor
-    {get{return minor;}}
+    {
+      get
+      {return minor;}
+    }
 
     public override string ToString(
       )
-    {return major + "." + minor;}
+    {return VersionUtils.ToString(this);}
+
+    #region IVersion
+    public IList<int> Numbers
+    {
+      get
+      {return new List<int>{major, minor};}
+    }
 
     #region IComparable
     public int CompareTo(
-      Version value
+      IVersion value
       )
-    {
-      int comparison = major-value.major;
-      if(comparison == 0)
-      {comparison = minor-value.minor;}
-
-      return (int)Math.Sign(comparison);
-    }
+    {return VersionUtils.CompareTo(this, value);}
+    #endregion
     #endregion
     #endregion
     #endregion

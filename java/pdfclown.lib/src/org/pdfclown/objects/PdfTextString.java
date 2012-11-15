@@ -37,7 +37,7 @@ import org.pdfclown.tokens.PdfDocEncoding;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 public final class PdfTextString
   extends PdfString
@@ -96,6 +96,13 @@ public final class PdfTextString
 
   // <interface>
   // <public>
+  @Override
+  public boolean accept(
+    IVisitor visitor,
+    Object data
+    )
+  {return visitor.visit(this, data);}
+
   @Override
   public String getValue(
     )

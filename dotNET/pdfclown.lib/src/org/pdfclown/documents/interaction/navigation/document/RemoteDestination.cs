@@ -67,9 +67,8 @@ namespace org.pdfclown.documents.interaction.navigation.document
     {}
 
     internal RemoteDestination(
-      PdfDirectObject baseObject,
-      PdfString name
-      ) : base(baseObject, name)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 

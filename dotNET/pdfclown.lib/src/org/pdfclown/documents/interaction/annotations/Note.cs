@@ -132,15 +132,14 @@ namespace org.pdfclown.documents.interaction.annotations
       PointF location,
       string text
       ) : base(
-        page.Document,
+        page,
         PdfName.Text,
         new RectangleF(location.X,location.Y,0,0),
-        text,
-        page
+        text
         )
     {}
 
-    public Note(
+    internal Note(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

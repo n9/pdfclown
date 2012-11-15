@@ -25,6 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
+using org.pdfclown.documents.interaction.forms;
 using org.pdfclown.objects;
 using org.pdfclown.util;
 
@@ -88,6 +89,19 @@ namespace org.pdfclown.documents.interaction.annotations
     #endregion
 
     #region interface
+    #region public
+    public static Widget Wrap(
+      PdfDirectObject baseObject,
+      Field field
+      )
+    {
+      return field is CheckBox
+          || field is RadioButton
+        ? new DualWidget(baseObject)
+        : new Widget(baseObject);
+    }
+    #endregion
+
     #region private
     /**
       <summary>Gets the code corresponding to the given value.</summary>
@@ -120,10 +134,10 @@ namespace org.pdfclown.documents.interaction.annotations
     public Widget(
       Page page,
       RectangleF box
-      ) : base(page.Document, PdfName.Widget, box, null, page)
+      ) : base(page, PdfName.Widget, box, null)
     {Flags = EnumUtils.Mask(Flags, FlagsEnum.Print, true);}
 
-    public Widget(
+    internal protected Widget(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

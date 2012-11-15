@@ -15,13 +15,13 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 09/24/12
 */
 public class IndirectObjectEditingSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. Opening the PDF file...
@@ -97,7 +97,5 @@ public class IndirectObjectEditingSample
 
     // 3. Serialize the PDF file!
     serialize(file);
-
-    return true;
   }
 }

@@ -21,7 +21,7 @@ import org.pdfclown.files.File;
   (XObject); its main advantage is to allow content reuse.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class InlineObjectSample
   extends Sample
@@ -29,7 +29,7 @@ public class InlineObjectSample
   private static final float Margin = 36;
 
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. PDF file instantiation.
@@ -41,8 +41,6 @@ public class InlineObjectSample
 
     // 3. Serialize the PDF file!
     serialize(file, "Inline image", "embedding an image within a content stream");
-
-    return true;
   }
 
   private void populate(
@@ -82,7 +80,7 @@ public class InlineObjectSample
     // Showing the 'GNU' image...
     {
       // Instantiate the image!
-      Image image = Image.get(getInputPath() + java.io.File.separator + "images" + java.io.File.separator + "gnu.jpg");
+      Image image = Image.get(getResourcePath("images" + java.io.File.separator + "gnu.jpg"));
       // Set the position of the image in the page!
       composer.applyMatrix(200,0,0,200,(pageSize.getWidth()-200)/2,(pageSize.getHeight()-200)/2);
       // Show the image!

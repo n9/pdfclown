@@ -31,6 +31,9 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
+import org.pdfclown.documents.interaction.forms.CheckBox;
+import org.pdfclown.documents.interaction.forms.Field;
+import org.pdfclown.documents.interaction.forms.RadioButton;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.EnumUtils;
@@ -41,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF12)
 public class Widget
@@ -123,6 +126,23 @@ public class Widget
   }
   // </classes>
 
+  // <static>
+  // <interface>
+  // <public>
+  public static Widget wrap(
+    PdfDirectObject baseObject,
+    Field field
+    )
+  {
+    return field instanceof CheckBox
+        || field instanceof RadioButton
+      ? new DualWidget(baseObject)
+      : new Widget(baseObject);
+  }
+  // </public>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <constructors>
   public Widget(
@@ -130,11 +150,11 @@ public class Widget
     Rectangle2D box
     )
   {
-    super(page.getDocument(), PdfName.Widget, box, null, page);
+    super(page, PdfName.Widget, box, null);
     setFlags(EnumUtils.mask(getFlags(), FlagsEnum.Print, true));
   }
 
-  public Widget(
+  protected Widget(
     PdfDirectObject baseObject
     )
   {super(baseObject);}

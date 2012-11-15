@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -127,7 +127,7 @@ namespace org.pdfclown.documents
         if(onOpenObject is PdfDictionary) // Action (dictionary).
           return Action.Wrap(onOpenObject);
         else // Destination (array).
-          return Destination.Wrap(onOpenObject, null);
+          return Destination.Wrap(onOpenObject);
       }
       set
       {

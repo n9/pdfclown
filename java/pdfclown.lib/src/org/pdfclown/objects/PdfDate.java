@@ -35,7 +35,7 @@ import org.pdfclown.util.parsers.ParseException;
   PDF date object [PDF:1.6:3.8.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public final class PdfDate
   extends PdfString
@@ -109,7 +109,7 @@ public final class PdfDate
 
   // <dynamic>
   // <constructors>
-  private PdfDate(
+  public PdfDate(
     Date value
     )
   {setValue(value);}
@@ -117,6 +117,13 @@ public final class PdfDate
 
   // <interface>
   // <public>
+  @Override
+  public boolean accept(
+    IVisitor visitor,
+    Object data
+    )
+  {return visitor.visit(this, data);}
+
   @Override
   public Date getValue(
     )

@@ -20,7 +20,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class StandardFontSample
   extends Sample
@@ -29,7 +29,7 @@ public class StandardFontSample
   private static final int Margin = 50;
 
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. PDF file instantiation.
@@ -41,8 +41,6 @@ public class StandardFontSample
 
     // 3. Serialize the PDF file!
     serialize(file, "Standard Type 1 fonts", "applying standard Type 1 fonts");
-
-    return true;
   }
 
   private void populate(

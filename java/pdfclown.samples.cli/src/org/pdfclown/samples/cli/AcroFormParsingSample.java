@@ -1,6 +1,7 @@
 package org.pdfclown.samples.cli;
 
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,71 +17,83 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 09/24/12
 */
 public class AcroFormParsingSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
-    // 1. Opening the PDF file...
-    File file;
+    File file = null;
+    try
     {
-      String filePath = promptFileChoice("Please select a PDF file");
-      try
-      {file = new File(filePath);}
-      catch(Exception e)
-      {throw new RuntimeException(filePath + " file access error.",e);}
-    }
-    Document document = file.getDocument();
-
-    // 2. Get the acroform!
-    Form form = document.getForm();
-    if(form == null)
-    {System.out.println("\nNo acroform available (AcroForm dictionary not found).");}
-    else
-    {
-      System.out.println("\nIterating through the fields collection...\n");
-
-      // 3. Showing the acroform fields...
-      HashMap<String,Integer> objCounters = new HashMap<String,Integer>();
-      for(Field field : form.getFields().values())
+      // 1. Opening the PDF file...
       {
-        System.out.println("* Field '" + field.getFullName() + "' (" + field.getBaseObject() + ")");
-
-        String typeName = field.getClass().getSimpleName();
-        System.out.println("    Type: " + typeName);
-        System.out.println("    Value: " + field.getValue());
-        System.out.println("    Data: " + field.getBaseDataObject().toString());
-
-        int widgetIndex = 0;
-        for(Widget widget : field.getWidgets())
-        {
-          System.out.println("    Widget " + (++widgetIndex) + ":");
-          Page widgetPage = widget.getPage();
-          System.out.println("      Page: " + (widgetPage == null ? "undefined" : (widgetPage.getIndex() + 1) + " (" + widgetPage.getBaseObject() + ")"));
-
-          Rectangle2D widgetBox = widget.getBox();
-          System.out.println("      Coordinates: {x:" + Math.round(widgetBox.getX()) + "; y:" + Math.round(widgetBox.getY()) + "; width:" + Math.round(widgetBox.getWidth()) + "; height:" + Math.round(widgetBox.getHeight()) + "}");
-        }
-
-        objCounters.put(typeName, (objCounters.containsKey(typeName) ? objCounters.get(typeName) : 0) + 1);
+        String filePath = promptFileChoice("Please select a PDF file");
+        try
+        {file = new File(filePath);}
+        catch(Exception e)
+        {throw new RuntimeException(filePath + " file access error.",e);}
       }
+      Document document = file.getDocument();
 
-      int fieldCount = form.getFields().size();
-      if(fieldCount == 0)
-      {System.out.println("No field available.");}
+      // 2. Get the acroform!
+      Form form = document.getForm();
+      if(form == null)
+      {System.out.println("\nNo acroform available (AcroForm dictionary not found).");}
       else
       {
-        System.out.println("\nFields partial counts (grouped by type):");
-        for(Map.Entry<String,Integer> entry : objCounters.entrySet())
-        {System.out.println(" " + entry.getKey() + ": " + entry.getValue());}
-        System.out.println("Fields total count: " + fieldCount);
+        System.out.println("\nIterating through the fields collection...\n");
+
+        // 3. Showing the acroform fields...
+        HashMap<String,Integer> objCounters = new HashMap<String,Integer>();
+        for(Field field : form.getFields().values())
+        {
+          System.out.println("* Field '" + field.getFullName() + "' (" + field.getBaseObject() + ")");
+
+          String typeName = field.getClass().getSimpleName();
+          System.out.println("    Type: " + typeName);
+          System.out.println("    Value: " + field.getValue());
+          System.out.println("    Data: " + field.getBaseDataObject().toString());
+
+          int widgetIndex = 0;
+          for(Widget widget : field.getWidgets())
+          {
+            System.out.println("    Widget " + (++widgetIndex) + ":");
+            Page widgetPage = widget.getPage();
+            System.out.println("      Page: " + (widgetPage == null ? "undefined" : (widgetPage.getIndex() + 1) + " (" + widgetPage.getBaseObject() + ")"));
+
+            Rectangle2D widgetBox = widget.getBox();
+            System.out.println("      Coordinates: {x:" + Math.round(widgetBox.getX()) + "; y:" + Math.round(widgetBox.getY()) + "; width:" + Math.round(widgetBox.getWidth()) + "; height:" + Math.round(widgetBox.getHeight()) + "}");
+          }
+
+          objCounters.put(typeName, (objCounters.containsKey(typeName) ? objCounters.get(typeName) : 0) + 1);
+        }
+
+        int fieldCount = form.getFields().size();
+        if(fieldCount == 0)
+        {System.out.println("No field available.");}
+        else
+        {
+          System.out.println("\nFields partial counts (grouped by type):");
+          for(Map.Entry<String,Integer> entry : objCounters.entrySet())
+          {System.out.println(" " + entry.getKey() + ": " + entry.getValue());}
+          System.out.println("Fields total count: " + fieldCount);
+        }
       }
     }
-
-    return true;
+    finally
+    {
+      // 4. Closing the PDF file...
+      if(file != null)
+      {
+        try
+        {file.close();}
+        catch(IOException e)
+        {/* NOOP */}
+      }
+    }
   }
 }

@@ -49,7 +49,7 @@ namespace org.pdfclown.documents.interaction.annotations
       ) : base(page, box, text, PdfName.Circle)
     {}
 
-    public Ellipse(
+    internal Ellipse(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

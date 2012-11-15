@@ -5,6 +5,7 @@ import java.awt.geom.Rectangle2D;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.ContentScanner;
+import org.pdfclown.documents.contents.LineDash;
 import org.pdfclown.documents.contents.TextChar;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
@@ -21,7 +22,7 @@ import org.pdfclown.tools.PageStamper;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class TextInfoExtractionSample
   extends Sample
@@ -35,7 +36,7 @@ public class TextInfoExtractionSample
   private final DeviceRGBColor textStringBoxColor = DeviceRGBColor.Black;
 
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. Opening the PDF file...
@@ -68,8 +69,6 @@ public class TextInfoExtractionSample
 
     // 3. Decorated version serialization.
     serialize(file);
-
-    return true;
   }
 
   /**
@@ -122,7 +121,7 @@ public class TextInfoExtractionSample
 
           // Drawing text string bounding box...
           composer.beginLocalState();
-          composer.setLineDash(0, 5);
+          composer.setLineDash(new LineDash(new double[]{5,5}));
           composer.setStrokeColor(textStringBoxColor);
           composer.drawRectangle(textString.getBox());
           composer.stroke();

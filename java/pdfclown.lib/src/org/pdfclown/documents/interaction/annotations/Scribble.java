@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF13)
 public final class Scribble
@@ -62,11 +62,11 @@ public final class Scribble
     List<List<Point2D>> paths
     )
   {
-    super(page.getDocument(), PdfName.Ink, box, text, page);
+    super(page, PdfName.Ink, box, text);
     setPaths(paths);
   }
 
-  public Scribble(
+  Scribble(
     PdfDirectObject baseObject
     )
   {super(baseObject);}

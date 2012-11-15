@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -59,11 +59,10 @@ namespace org.pdfclown.documents
     #endregion
 
     #region protected
-    protected override JavaScript Wrap(
-      PdfDirectObject baseObject,
-      PdfString name
+    protected override JavaScript WrapValue(
+      PdfDirectObject baseObject
       )
-    {return (JavaScript)interaction.actions.Action.Wrap(baseObject, name);}
+    {return (JavaScript)interaction.actions.Action.Wrap(baseObject);}
     #endregion
     #endregion
     #endregion

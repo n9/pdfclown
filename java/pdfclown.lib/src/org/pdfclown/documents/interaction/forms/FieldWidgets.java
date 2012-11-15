@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,6 @@ import java.util.NoSuchElementException;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.documents.interaction.annotations.DualWidget;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
@@ -51,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 07/05/11
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF12)
 public final class FieldWidgets
@@ -68,8 +67,6 @@ public final class FieldWidgets
   // <dynamic>
   // <fields>
   private final Field field;
-
-  private final boolean dual;
   // </fields>
 
   // <constructors>
@@ -79,10 +76,7 @@ public final class FieldWidgets
     )
   {
     super(baseObject);
-
     this.field = field;
-    dual = (field instanceof CheckBox
-      || field instanceof RadioButton);
   }
   // </constructors>
 
@@ -470,11 +464,7 @@ public final class FieldWidgets
   private Widget newWidget(
     PdfDirectObject baseObject
     )
-  {
-    return dual
-      ? new DualWidget(baseObject)
-      : new Widget(baseObject);
-  }
+  {return Widget.wrap(baseObject, field);}
   // </private>
   // </interface>
   // </dynamic>

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF12)
 public final class Form
@@ -84,7 +84,7 @@ public final class Form
   */
   public Fields getFields(
     )
-  {return new Fields(getBaseDataObject().get(PdfName.Fields));}
+  {return new Fields(getBaseDataObject().get(PdfName.Fields, PdfArray.class));}
 
   /**
     Gets the default resources used by fields.

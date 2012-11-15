@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF11)
 public abstract class GoToNonLocal<T extends Destination>
@@ -73,7 +73,7 @@ public abstract class GoToNonLocal<T extends Destination>
   */
   public FileSpecification<?> getDestinationFile(
     )
-  {return FileSpecification.wrap(getBaseDataObject().get(PdfName.F), null);}
+  {return FileSpecification.wrap(getBaseDataObject().get(PdfName.F));}
 
   /**
     Gets the action options.

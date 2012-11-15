@@ -108,6 +108,12 @@ namespace org.pdfclown.objects
 
     #region interface
     #region public
+    public override bool Accept(
+      IVisitor visitor,
+      object data
+      )
+    {return visitor.Visit(this, data);}
+
     /**
       <summary>Gets the decoded stream body.</summary>
     */
@@ -252,21 +258,21 @@ namespace org.pdfclown.objects
     }
 
     /**
-      <param name="overwrite">Indicates whether the data from the old data source substitutes the
+      <param name="preserve">Indicates whether the data from the old data source substitutes the
       new one. This way data can be imported to/exported from local or preserved in case of external
       file location changed.</param>
       <seealso cref="DataFile"/>
     */
     public void SetDataFile(
       FileSpecification value,
-      bool overwrite
+      bool preserve
       )
     {
       /*
-        NOTE: If overwrite argument is set to true, body's dirtiness MUST be forced in order to ensure
+        NOTE: If preserve argument is set to true, body's dirtiness MUST be forced in order to ensure
         data serialization to the new external location.
 
-        Old data source | New data source | overwrite | Action
+        Old data source | New data source | preserve | Action
         ----------------------------------------------------------------------------------------------
         local           | not null        | false     | A. Substitute local with new file.
         local           | not null        | true      | B. Export local to new file.
@@ -281,7 +287,7 @@ namespace org.pdfclown.objects
       PdfDirectObject dataFileObject = (value != null ? value.BaseObject : null);
       if(value != null)
       {
-        if(overwrite)
+        if(preserve)
         {
           if(oldDataFile != null) // Case D (copy old file data to new file).
           {
@@ -318,7 +324,7 @@ namespace org.pdfclown.objects
       {
         if(oldDataFile != null)
         {
-          if(overwrite) // Case G (import old file to local).
+          if(preserve) // Case G (import old file to local).
           {
             // Transfer old file data to local!
             GetBody(false); // Ensures that external data is loaded as-is into the local buffer.
@@ -457,7 +463,7 @@ namespace org.pdfclown.objects
     public FileSpecification DataFile
     {
       get
-      {return FileSpecification.Wrap(header[PdfName.F], null);}
+      {return FileSpecification.Wrap(header[PdfName.F]);}
       set
       {SetDataFile(value, false);}
     }

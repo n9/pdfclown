@@ -25,6 +25,7 @@
 
 package org.pdfclown.objects;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 03/12/12
+  @version 0.1.2, 09/24/12
 */
 public final class PdfDictionary
   extends PdfDirectObject
@@ -109,6 +110,13 @@ public final class PdfDictionary
   // <interface>
   // <public>
   @Override
+  public boolean accept(
+    IVisitor visitor,
+    Object data
+    )
+  {return visitor.visit(this, data);}
+
+  @Override
   public PdfDictionary clone(
     File context
     )
@@ -166,7 +174,7 @@ public final class PdfDictionary
   }
 
   /**
-    Gets the key associated to a given value.
+    Gets the key associated to the specified value.
   */
   public PdfName getKey(
     PdfDirectObject value
@@ -176,19 +184,13 @@ public final class PdfDictionary
       NOTE: Current PdfDictionary implementation doesn't support bidirectional maps, to say that the
       only currently-available way to retrieve a key from a value is to iterate the whole map (really
       poor performance!).
-      NOTE: Complex high-level matches are not verified (too expensive!), to say that if the searched
-      high-level object (font, xobject, colorspace etc.) has a PdfReference base object while some
-      high-level objects in the collection have other direct type (PdfName, for example) base objects,
-      they won't match in any case (even if they represent the SAME high-level object -- but that
-      should be a rare case...).
     */
     for(Map.Entry<PdfName,PdfDirectObject> entry : entries.entrySet())
     {
       if(entry.getValue().equals(value))
-        return entry.getKey(); // Found.
+        return entry.getKey();
     }
-
-    return null; // Not found.
+    return null;
   }
 
   @Override
@@ -295,7 +297,7 @@ public final class PdfDictionary
   public void clear(
     )
   {
-    for(PdfName key : entries.keySet())
+    for(PdfName key : new ArrayList<PdfName>(entries.keySet()))
     {remove(key);}
   }
 

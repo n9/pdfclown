@@ -17,37 +17,40 @@ namespace org.pdfclown.samples.cli
   public class AdvancedTextExtractionSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      File file = new File(filePath);
-      Document document = file.Document;
-
-      // 2. Text extraction from the document pages.
-      TextExtractor extractor = new TextExtractor();
-      foreach(Page page in document.Pages)
+      using(File file = new File(filePath))
       {
-        if(!PromptNextPage(page, false))
-          return false;
-
-        IList<ITextString> textStrings = extractor.Extract(page)[TextExtractor.DefaultArea];
-        foreach(ITextString textString in textStrings)
+        Document document = file.Document;
+  
+        // 2. Text extraction from the document pages.
+        TextExtractor extractor = new TextExtractor();
+        foreach(Page page in document.Pages)
         {
-          RectangleF textStringBox = textString.Box.Value;
-          Console.WriteLine(
-            "Text ["
-              + "x:" + Math.Round(textStringBox.X) + ","
-              + "y:" + Math.Round(textStringBox.Y) + ","
-              + "w:" + Math.Round(textStringBox.Width) + ","
-              + "h:" + Math.Round(textStringBox.Height)
-              + "]: " + textString.Text
-              );
+          if(!PromptNextPage(page, false))
+          {
+            Quit();
+            break;
+          }
+
+          IList<ITextString> textStrings = extractor.Extract(page)[TextExtractor.DefaultArea];
+          foreach(ITextString textString in textStrings)
+          {
+            RectangleF textStringBox = textString.Box.Value;
+            Console.WriteLine(
+              "Text ["
+                + "x:" + Math.Round(textStringBox.X) + ","
+                + "y:" + Math.Round(textStringBox.Y) + ","
+                + "w:" + Math.Round(textStringBox.Width) + ","
+                + "h:" + Math.Round(textStringBox.Height)
+                + "]: " + textString.Text
+                );
+          }
         }
       }
-
-      return true;
     }
   }
 }

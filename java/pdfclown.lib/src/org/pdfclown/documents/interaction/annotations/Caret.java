@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF15)
 public final class Caret
@@ -118,9 +118,9 @@ public final class Caret
     Rectangle2D box,
     String text
     )
-  {super(page.getDocument(), PdfName.Caret, box, text, page);}
+  {super(page, PdfName.Caret, box, text);}
 
-  public Caret(
+  Caret(
     PdfDirectObject baseObject
     )
   {super(baseObject);}

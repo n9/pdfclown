@@ -66,7 +66,7 @@ public final class GoToURI
   GoToURI(
     PdfDirectObject baseObject
     )
-  {super(baseObject, null);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>

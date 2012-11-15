@@ -44,13 +44,12 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 02/15/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Tree<
-    TKey extends Comparable<? super TKey>,
-    TKeyObject extends PdfSimpleObject<?>,
-    TValue extends PdfObjectWrapper<?>
+    TKey extends PdfSimpleObject<?>,
+    TValue extends PdfObjectWrapper<? extends PdfDataObject>
     >
   extends PdfObjectWrapper<PdfDictionary>
   implements Map<TKey,TValue>
@@ -174,6 +173,7 @@ public abstract class Tree<
     /**
       Gets whether the collection size is within the order limits.
     */
+    @SuppressWarnings("unused")
     public boolean isValid(
       )
     {return !(isUndersized() || isOversized());}
@@ -230,10 +230,30 @@ public abstract class Tree<
   // <interface>
   // <public>
   @Override
-  public Tree<TKey,TKeyObject,TValue> clone(
+  public Tree<TKey,TValue> clone(
     Document context
     )
   {throw new NotImplementedException();}
+
+  /**
+    Gets the key associated to the specified value.
+  */
+  public TKey getKey(
+    TValue value
+    )
+  {
+    /*
+      NOTE: Current implementation doesn't support bidirectional maps, to say that the only
+      currently-available way to retrieve a key from a value is to iterate the whole map (really
+      poor performance!).
+    */
+    for(Map.Entry<TKey,TValue> entry : entrySet())
+    {
+      if(entry.getValue().equals(value))
+        return entry.getKey();
+    }
+    return null;
+  }
 
   // <Map>
   @Override
@@ -273,9 +293,9 @@ public abstract class Tree<
           int offset
           )
         {
-          TKeyObject keyObject = (TKeyObject)pairs.get(offset);
-          TValue value = wrap(pairs.get(offset + 1), keyObject);
-          entrySet.add(new MapEntry<TKey,TValue>((TKey)keyObject.getValue(), value));
+          TKey key = (TKey)pairs.get(offset);
+          TValue value = wrapValue(pairs.get(offset + 1));
+          entrySet.add(new MapEntry<TKey,TValue>(key, value));
         }
 
         @Override
@@ -300,7 +320,7 @@ public abstract class Tree<
     Object key
     )
   {
-    TKeyObject keyObject = wrapKey((TKey)key);
+    TKey keyObject = (TKey)key;
     PdfDictionary parent = getBaseDataObject();
     while(true)
     {
@@ -322,10 +342,7 @@ public abstract class Tree<
           else
           {
             // We got it!
-            return wrap(
-              children.items.get(mid + 1),
-              (TKeyObject)children.items.get(mid)
-              );
+            return wrapValue(children.items.get(mid + 1));
           }
         }
       }
@@ -385,7 +402,7 @@ public abstract class Tree<
           PdfArray pairs,
           int offset
           )
-        {keySet.add((TKey)((TKeyObject)pairs.get(offset)).getValue());}
+        {keySet.add((TKey)pairs.get(offset));}
 
         @Override
         public Set<TKey> getCollection(
@@ -426,7 +443,7 @@ public abstract class Tree<
     }
 
     // Set the entry under the root node!
-    return put(wrapKey(key), value, rootReference);
+    return put(key, value, rootReference);
   }
 
   @Override
@@ -444,7 +461,7 @@ public abstract class Tree<
     Object key
     )
   {
-    TKeyObject keyObject = wrapKey((TKey)key);
+    TKey keyObject = (TKey)key;
     PdfDictionary node = getBaseDataObject();
     Stack<PdfReference> nodeReferenceStack = new Stack<PdfReference>();
     while(true)
@@ -467,10 +484,8 @@ public abstract class Tree<
           else // Key matched.
           {
             // We got it!
-            TValue oldValue = wrap(
-              nodeChildren.items.remove(mid + 1),
-              (TKeyObject)nodeChildren.items.remove(mid)
-              );
+            TValue oldValue = wrapValue(nodeChildren.items.remove(mid + 1)); // Removes value.
+            nodeChildren.items.remove(mid); // Removes key.
             if(mid == 0 || mid == nodeChildren.items.size()) // Limits changed.
             {
               // Update key limits!
@@ -608,19 +623,11 @@ public abstract class Tree<
         private final Collection<TValue> values = new ArrayList<TValue>();
 
         @Override
-        @SuppressWarnings("unchecked")
         public void add(
           PdfArray pairs,
           int offset
           )
-        {
-          values.add(
-            wrap(
-              pairs.get(offset + 1),
-              (TKeyObject)pairs.get(offset)
-              )
-            );
-        }
+        {values.add(wrapValue(pairs.get(offset + 1)));}
 
         @Override
         public Collection<TValue> getCollection(
@@ -644,16 +651,8 @@ public abstract class Tree<
   /**
     Wraps a base object within its corresponding high-level representation.
   */
-  protected abstract TValue wrap(
-    PdfDirectObject baseObject,
-    TKeyObject keyObject
-    );
-
-  /**
-    Wraps a key value within a key object.
-  */
-  protected abstract TKeyObject wrapKey(
-    TKey key
+  protected abstract TValue wrapValue(
+    PdfDirectObject baseObject
     );
   // </protected>
 
@@ -720,9 +719,8 @@ public abstract class Tree<
     @param value New entry's value.
     @param nodeReference Current node reference.
   */
-  @SuppressWarnings("unchecked")
   private TValue put(
-    TKeyObject key,
+    TKey key,
     TValue value,
     PdfReference nodeReference
     )
@@ -762,10 +760,7 @@ public abstract class Tree<
         {low = mid + 2;}
         else // Matching entry.
         {
-          oldValue = wrap(
-            children.items.get(mid + 1),
-            (TKeyObject)children.items.get(mid)
-            );
+          oldValue = wrapValue(children.items.get(mid + 1));
           // Overwrite the entry!
           children.items.set(mid, key);
           children.items.set(++mid, value.getBaseObject());

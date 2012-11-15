@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,45 +23,29 @@
   this list of conditions.
 */
 
-using org.pdfclown.bytes;
-using org.pdfclown.documents;
-using org.pdfclown.objects;
-
 using System;
+using System.Collections.Generic;
 
-namespace org.pdfclown.documents.interaction.actions
+namespace org.pdfclown.objects
 {
   /**
-    <summary>'Control the playing of multimedia content' action [PDF:1.6:8.5.3].</summary>
+    <summary>Composite dictionary.</summary>
   */
-  [PDF(VersionEnum.PDF15)]
-  public sealed class Rendition
-    : Action
+  public interface ICompositeDictionary<TKey>
   {
-    #region dynamic
-    #region constructors
     /**
-      <summary>Creates a new action within the given document context.</summary>
+      <summary>Gets the value dictionary associated to the specified type.</summary>
     */
-    public Rendition(
-      Document context
-      ) : base(context, PdfName.Rendition)
-    {}
+    PdfObjectWrapper Get(
+      Type type
+      );
 
-    internal Rendition(
-      PdfDirectObject baseObject
-      ) : base(baseObject, null)
-    {}
-    #endregion
-
-    #region interface
-    #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-    #endregion
-    #endregion
-    #endregion
+    /**
+      <summary>Gets the value associated to the specified key for the specified type.</summary>
+    */
+    PdfObjectWrapper Get(
+      Type type,
+      TKey key
+      );
   }
 }

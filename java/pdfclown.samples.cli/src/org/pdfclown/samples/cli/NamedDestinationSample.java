@@ -9,19 +9,20 @@ import org.pdfclown.documents.Pages;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.documents.interaction.navigation.document.LocalDestination;
 import org.pdfclown.files.File;
+import org.pdfclown.objects.PdfString;
 
 /**
   This sample demonstrates <b>how to manipulate the named destinations</b> within a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class NamedDestinationSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. Opening the PDF file...
@@ -45,26 +46,24 @@ public class NamedDestinationSample
     if(destinations == null)
     {names.setDestinations(destinations = new NamedDestinations(document));}
 
-    destinations.put("d31e1142", new LocalDestination(pages.get(0)));
+    destinations.put(new PdfString("d31e1142"), new LocalDestination(pages.get(0)));
     if(pages.size() > 1)
     {
-      destinations.put("N84afaba6", new LocalDestination(pages.get(1), Destination.ModeEnum.FitHorizontal, 0, null));
-      destinations.put("d38e1142", new LocalDestination(pages.get(1)));
-      destinations.put("M38e1142", new LocalDestination(pages.get(1)));
-      destinations.put("d3A8e1142", new LocalDestination(pages.get(1)));
-      destinations.put("z38e1142", new LocalDestination(pages.get(1)));
-      destinations.put("f38e1142", new LocalDestination(pages.get(1)));
-      destinations.put("e38e1142", new LocalDestination(pages.get(1)));
-      destinations.put("B84afaba6", new LocalDestination(pages.get(1)));
-      destinations.put("Z38e1142", new LocalDestination(pages.get(1)));
+      destinations.put(new PdfString("N84afaba6"), new LocalDestination(pages.get(1), Destination.ModeEnum.FitHorizontal, 0, null));
+      destinations.put(new PdfString("d38e1142"), new LocalDestination(pages.get(1)));
+      destinations.put(new PdfString("M38e1142"), new LocalDestination(pages.get(1)));
+      destinations.put(new PdfString("d3A8e1142"), new LocalDestination(pages.get(1)));
+      destinations.put(new PdfString("z38e1142"), new LocalDestination(pages.get(1)));
+      destinations.put(new PdfString("f38e1142"), new LocalDestination(pages.get(1)));
+      destinations.put(new PdfString("e38e1142"), new LocalDestination(pages.get(1)));
+      destinations.put(new PdfString("B84afaba6"), new LocalDestination(pages.get(1)));
+      destinations.put(new PdfString("Z38e1142"), new LocalDestination(pages.get(1)));
 
       if(pages.size() > 2)
-      {destinations.put("1845505298", new LocalDestination(pages.get(2), Destination.ModeEnum.XYZ, new Point2D.Double(50, Double.NaN), null));}
+      {destinations.put(new PdfString("1845505298"), new LocalDestination(pages.get(2), Destination.ModeEnum.XYZ, new Point2D.Double(50, Double.NaN), null));}
     }
 
     // 3. Serialize the PDF file!
     serialize(file, "Named destinations", "manipulating named destinations");
-
-    return true;
   }
 }

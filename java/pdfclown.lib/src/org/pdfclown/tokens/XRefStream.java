@@ -38,6 +38,7 @@ import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.IBuffer;
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.files.File;
+import org.pdfclown.objects.IVisitor;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
@@ -52,7 +53,7 @@ import org.pdfclown.util.parsers.ParseException;
   <p>It is alternative to the classic cross-reference table.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 public final class XRefStream
   extends PdfStream
@@ -137,6 +138,13 @@ public final class XRefStream
 
   // <interface>
   // <public>
+  @Override
+  public boolean accept(
+    IVisitor visitor,
+    Object data
+    )
+  {return visitor.visit(this, data);}
+
   /**
     Gets the byte offset from the beginning of the file
     to the beginning of the previous cross-reference stream.

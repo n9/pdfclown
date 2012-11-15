@@ -15,22 +15,21 @@ namespace org.pdfclown.samples.cli
   public class PrintingSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      File file = new File(filePath);
-
-      // 2. Print the document!
-      Renderer renderer = new Renderer();
-      bool silent = false;
-      if(renderer.Print(file.Document, silent))
-      {Console.WriteLine("Print fulfilled.");}
-      else
-      {Console.WriteLine("Print discarded.");}
-
-      return true;
+      using(File file = new File(filePath))
+      {
+        // 2. Printing the document...
+        Renderer renderer = new Renderer();
+        bool silent = false;
+        if(renderer.Print(file.Document, silent))
+        {Console.WriteLine("Print fulfilled.");}
+        else
+        {Console.WriteLine("Print discarded.");}
+      }
     }
   }
 }

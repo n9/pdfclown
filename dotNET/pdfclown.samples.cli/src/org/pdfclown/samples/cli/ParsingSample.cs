@@ -20,84 +20,83 @@ namespace org.pdfclown.samples.cli
   public class ParsingSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      File file = new File(filePath);
-      Document document = file.Document;
-
-      // 2. Document parsing.
-      // 2.1.1. Basic metadata.
-      Console.WriteLine("\nDocument information:");
-      Information info = document.Information;
-      if(info != null)
+      using(File file = new File(filePath))
       {
-        foreach(KeyValuePair<PdfName,object> infoEntry in info)
-        {Console.WriteLine(infoEntry.Key + ": " + infoEntry.Value);}
-      }
-      else
-      {Console.WriteLine("No information available (Info dictionary doesn't exist).");}
-
-      // 2.1.2. Advanced metadata.
-      Console.WriteLine("\nDocument metadata (XMP):");
-      Metadata metadata = document.Metadata;
-      if(metadata != null)
-      {
-        try
+        Document document = file.Document;
+  
+        // 2. Parsing the document...
+        // 2.1. Metadata.
+        // 2.1.1. Basic metadata.
+        Console.WriteLine("\nDocument information:");
+        Information info = document.Information;
+        if(info != null)
         {
-          XmlDocument metadataContent = metadata.Content;
-          Console.WriteLine(ToString(metadataContent));
+          foreach(KeyValuePair<PdfName,object> infoEntry in info)
+          {Console.WriteLine(infoEntry.Key + ": " + infoEntry.Value);}
         }
-        catch (Exception e)
-        {Console.WriteLine("Metadata extraction failed: " + e.Message);}
-      }
-      else
-      {Console.WriteLine("No metadata available (Metadata stream doesn't exist).");}
-
-      Console.WriteLine("\nIterating through the indirect-object collection (please wait)...");
-
-      // 2.2. Counting the indirect objects, grouping them by type...
-      Dictionary<string,int> objCounters = new Dictionary<string,int>();
-      objCounters["xref free entry"] = 0;
-      foreach(PdfIndirectObject obj in file.IndirectObjects)
-      {
-        if(obj.IsInUse()) // In-use entry.
+        else
+        {Console.WriteLine("No information available (Info dictionary doesn't exist).");}
+  
+        // 2.1.2. Advanced metadata.
+        Console.WriteLine("\nDocument metadata (XMP):");
+        Metadata metadata = document.Metadata;
+        if(metadata != null)
         {
-          string typeName = obj.DataObject.GetType().Name;
-          if(objCounters.ContainsKey(typeName))
-          {objCounters[typeName]++;}
-          else
-          {objCounters[typeName] = 1;}
+          try
+          {
+            XmlDocument metadataContent = metadata.Content;
+            Console.WriteLine(ToString(metadataContent));
+          }
+          catch (Exception e)
+          {Console.WriteLine("Metadata extraction failed: " + e.Message);}
         }
-        else // Free entry.
-        {objCounters["xref free entry"]++;}
-      }
-      Console.WriteLine("\nIndirect objects partial counts (grouped by PDF object type):");
-      foreach(KeyValuePair<string,int> keyValuePair in objCounters)
-      {Console.WriteLine(" " + keyValuePair.Key + ": " + keyValuePair.Value);}
-      Console.WriteLine("Indirect objects total count: " + file.IndirectObjects.Count);
+        else
+        {Console.WriteLine("No metadata available (Metadata stream doesn't exist).");}
+  
+        Console.WriteLine("\nIterating through the indirect-object collection (please wait)...");
 
-      // 2.3. Showing some page information...
-      Pages pages = document.Pages;
-      int pageCount = pages.Count;
-      Console.WriteLine("\nPage count: " + pageCount);
-
-      int pageIndex = (int)Math.Round(pageCount / 2d);
-      Console.WriteLine("Mid page:");
-      PrintPageInfo(pages[pageIndex],pageIndex);
-
-      pageIndex++;
-      if(pageIndex < pageCount)
-      {
-        Console.WriteLine("Next page:");
+        // 2.2. Counting the indirect objects, grouping them by type...
+        Dictionary<string,int> objCounters = new Dictionary<string,int>();
+        objCounters["xref free entry"] = 0;
+        foreach(PdfIndirectObject obj in file.IndirectObjects)
+        {
+          if(obj.IsInUse()) // In-use entry.
+          {
+            string typeName = obj.DataObject.GetType().Name;
+            if(objCounters.ContainsKey(typeName))
+            {objCounters[typeName]++;}
+            else
+            {objCounters[typeName] = 1;}
+          }
+          else // Free entry.
+          {objCounters["xref free entry"]++;}
+        }
+        Console.WriteLine("\nIndirect objects partial counts (grouped by PDF object type):");
+        foreach(KeyValuePair<string,int> keyValuePair in objCounters)
+        {Console.WriteLine(" " + keyValuePair.Key + ": " + keyValuePair.Value);}
+        Console.WriteLine("Indirect objects total count: " + file.IndirectObjects.Count);
+  
+        // 2.3. Showing some page information...
+        Pages pages = document.Pages;
+        int pageCount = pages.Count;
+        Console.WriteLine("\nPage count: " + pageCount);
+  
+        int pageIndex = (int)Math.Round(pageCount / 2d);
+        Console.WriteLine("Mid page:");
         PrintPageInfo(pages[pageIndex],pageIndex);
+  
+        pageIndex++;
+        if(pageIndex < pageCount)
+        {
+          Console.WriteLine("Next page:");
+          PrintPageInfo(pages[pageIndex],pageIndex);
+        }
       }
-
-      file.Dispose();
-
-      return true;
     }
 
     private void PrintPageInfo(

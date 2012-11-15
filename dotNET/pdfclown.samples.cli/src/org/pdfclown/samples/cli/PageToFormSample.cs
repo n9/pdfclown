@@ -18,27 +18,26 @@ namespace org.pdfclown.samples.cli
   public class PageToFormSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
-      // 1. Instantiate the form source file!
+      // 1. Opening the form source file...
       string filePath = PromptFileChoice("Please select a PDF file to use as form");
-      File formFile = new File(filePath);
-
-      // 2. Instantiate a new PDF file!
-      File file = new File();
-      Document document = file.Document;
-
-      // 3. Convert the first page of the source file into a form inside the new document!
-      XObject form = formFile.Document.Pages[0].ToXObject(document);
-
-      // 4. Insert the contents into the new document!
-      Populate(document,form);
-
-      // 5. Serialize the PDF file!
-      Serialize(file, "Page-to-form", "converting a page to a reusable form");
-
-      return true;
+      using(File formFile = new File(filePath))
+      {
+        // 2. Instantiate a new PDF file!
+        File file = new File();
+        Document document = file.Document;
+  
+        // 3. Convert the first page of the source file into a form inside the new document!
+        XObject form = formFile.Document.Pages[0].ToXObject(document);
+  
+        // 4. Insert the contents into the new document!
+        Populate(document,form);
+  
+        // 5. Serialize the PDF file!
+        Serialize(file, "Page-to-form", "converting a page to a reusable form");
+      }
     }
 
     /**

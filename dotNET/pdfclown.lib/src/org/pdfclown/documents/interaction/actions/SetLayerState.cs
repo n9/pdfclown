@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -494,7 +494,7 @@ namespace org.pdfclown.documents.interaction.actions
 
     internal SetLayerState(
       PdfDirectObject baseObject
-      ) : base(baseObject, null)
+      ) : base(baseObject)
     {}
     #endregion
 

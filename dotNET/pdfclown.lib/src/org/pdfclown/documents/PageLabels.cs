@@ -39,21 +39,6 @@ namespace org.pdfclown.documents
   public sealed class PageLabels
     : NumberTree<PageLabel>
   {
-    #region static
-    #region interface
-    #region public
-    /**
-      <summary>Gets existing page label ranges.</summary>
-      <param name="baseObject">Base object to wrap.</param>
-    */
-    public static PageLabels Wrap(
-      PdfDirectObject baseObject
-      )
-    {return baseObject != null ? new PageLabels(baseObject) : null;}
-    #endregion
-    #endregion
-    #endregion
-
     #region dynamic
     #region constructors
     public PageLabels(
@@ -61,7 +46,7 @@ namespace org.pdfclown.documents
       ) : base(context)
     {}
 
-    private PageLabels(
+    internal PageLabels(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -76,9 +61,8 @@ namespace org.pdfclown.documents
     #endregion
 
     #region protected
-    protected override PageLabel Wrap(
-      PdfDirectObject baseObject,
-      PdfInteger keyObject
+    protected override PageLabel WrapValue(
+      PdfDirectObject baseObject
       )
     {return PageLabel.Wrap(baseObject);}
     #endregion

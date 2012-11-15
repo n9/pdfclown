@@ -21,7 +21,7 @@ namespace org.pdfclown.samples.cli
   public class AcroFormCreationSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. PDF file instantiation.
@@ -33,8 +33,6 @@ namespace org.pdfclown.samples.cli
 
       // 3. Serialize the PDF file!
       Serialize(file, "AcroForm", "inserting AcroForm fields");
-
-      return true;
     }
 
     private void Populate(
@@ -247,6 +245,7 @@ namespace org.pdfclown.samples.cli
         items.Add("PJ Harvey");
         items.Add("Billie Holiday");
         items.Add("Joan As Police Woman");
+        items.Add("Joan Jett");
         items.Add("Janis Joplin");
         items.Add("Angelique Kidjo");
         items.Add("Patrizia Laquidara");
@@ -266,7 +265,7 @@ namespace org.pdfclown.samples.cli
         items.Add("Skin");
         items.Add("Patti Smith");
         items.Add("Fatima Spar");
-        items.Add("Thony");
+        items.Add("Thony (F.V.Caiozzo)");
         items.Add("Paola Turci");
         items.Add("Sarah Vaughan");
         items.Add("Nina Zilli");

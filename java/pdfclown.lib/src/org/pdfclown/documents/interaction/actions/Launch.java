@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF11)
 public final class Launch
@@ -263,7 +263,7 @@ public final class Launch
   Launch(
     PdfDirectObject baseObject
     )
-  {super(baseObject, null);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -298,7 +298,7 @@ public final class Launch
   {
     PdfDirectObject targetObject;
     if((targetObject = getBaseDataObject().get(PdfName.F)) != null)
-      return FileSpecification.wrap(targetObject, null);
+      return FileSpecification.wrap(targetObject);
     else if((targetObject = getBaseDataObject().get(PdfName.Win)) != null)
       return new WinTarget(targetObject);
     else

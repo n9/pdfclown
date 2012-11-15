@@ -120,7 +120,8 @@ namespace org.pdfclown.samples.cli
         // Run the sample!
         try
         {
-          if(sample.Run())
+          sample.Run();
+          if(!sample.IsQuit())
           {Utils.Prompt("Sample finished.");}
         }
         catch(Exception e)

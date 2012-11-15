@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,6 +28,7 @@ package org.pdfclown.documents.interaction.actions;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
+import org.pdfclown.documents.interaction.annotations.Annotation;
 import org.pdfclown.documents.interaction.annotations.Movie;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -38,7 +39,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF12)
 public final class PlayMovie
@@ -62,7 +63,7 @@ public final class PlayMovie
   PlayMovie(
     PdfDirectObject baseObject
     )
-  {super(baseObject, null);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -85,7 +86,7 @@ public final class PlayMovie
       annotationObject = getBaseDataObject().get(PdfName.T);
       throw new NotImplementedException("No by-title movie annotation support currently: we have to implement a hook to the page of the referenced movie to get it from its annotations collection.");
     }
-    return new Movie(annotationObject);
+    return (Movie)Annotation.wrap(annotationObject);
   }
 
   /**

@@ -50,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF12)
 public final class ToggleVisibility
@@ -76,7 +76,7 @@ public final class ToggleVisibility
   ToggleVisibility(
     PdfDirectObject baseObject
     )
-  {super(baseObject, null);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>

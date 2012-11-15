@@ -27,35 +27,35 @@ namespace org.pdfclown.samples.cli
       };
     private DeviceRGBColor textStringBoxColor = DeviceRGBColor.Black;
 
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      File file = new File(filePath);
-      Document document = file.Document;
-
-      PageStamper stamper = new PageStamper(); // NOTE: Page stamper is used to draw contents on existing pages.
-
-      // 2. Iterating through the document pages...
-      foreach(Page page in document.Pages)
+      using(File file = new File(filePath))
       {
-        Console.WriteLine("\nScanning page " + (page.Index+1) + "...\n");
-
-        stamper.Page = page;
-
-        Extract(
-          new ContentScanner(page), // Wraps the page contents into a scanner.
-          stamper.Foreground
-          );
-
-        stamper.Flush();
+        Document document = file.Document;
+  
+        PageStamper stamper = new PageStamper(); // NOTE: Page stamper is used to draw contents on existing pages.
+  
+        // 2. Iterating through the document pages...
+        foreach(Page page in document.Pages)
+        {
+          Console.WriteLine("\nScanning page " + (page.Index+1) + "...\n");
+  
+          stamper.Page = page;
+  
+          Extract(
+            new ContentScanner(page), // Wraps the page contents into a scanner.
+            stamper.Foreground
+            );
+  
+          stamper.Flush();
+        }
+  
+        // 3. Decorated version serialization.
+        Serialize(file);
       }
-
-      // 3. Decorated version serialization.
-      Serialize(file);
-
-      return true;
     }
 
     /**
@@ -108,7 +108,7 @@ namespace org.pdfclown.samples.cli
 
             // Drawing text string bounding box...
             composer.BeginLocalState();
-            composer.SetLineDash(0, 5);
+            composer.SetLineDash(new LineDash(new double[]{5,5}));
             composer.SetStrokeColor(textStringBoxColor);
             composer.DrawRectangle(textString.Box.Value);
             composer.Stroke();

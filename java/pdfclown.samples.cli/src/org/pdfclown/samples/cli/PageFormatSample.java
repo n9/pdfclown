@@ -19,13 +19,13 @@ import org.pdfclown.files.File;
   <i>varying both in size and orientation</i>.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class PageFormatSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. PDF file instantiation.
@@ -37,8 +37,6 @@ public class PageFormatSample
 
     // 3. Serialize the PDF file!
     serialize(file, "Page Format", "page formats");
-
-    return true;
   }
 
   private void populate(

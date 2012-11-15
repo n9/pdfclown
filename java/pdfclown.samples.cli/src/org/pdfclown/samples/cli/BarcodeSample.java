@@ -23,7 +23,7 @@ import org.pdfclown.util.math.geom.GeomUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class BarcodeSample
   extends Sample
@@ -31,7 +31,7 @@ public class BarcodeSample
   private static final float Margin = 36;
 
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. PDF file instantiation.
@@ -43,8 +43,6 @@ public class BarcodeSample
 
     // 3. Serialize the PDF file!
     serialize(file, "Barcode", "showing barcodes");
-
-    return true;
   }
   // </ISample>
   // </public>

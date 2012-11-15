@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -78,7 +78,8 @@ namespace org.pdfclown.documents.interaction.forms
     public bool ContainsKey(
       string key
       )
-    {throw new NotImplementedException();}
+    //TODO: avoid getter (use raw matching).
+    {return this[key] != null;}
 
     public ICollection<string> Keys
     {

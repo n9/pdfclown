@@ -729,6 +729,7 @@ public abstract class Font
     if(getBaseDataObject().containsKey(PdfName.ToUnicode)) // To-Unicode explicit mapping.
     {
       PdfStream toUnicodeStream = (PdfStream)getBaseDataObject().resolve(PdfName.ToUnicode);
+      @SuppressWarnings("resource")
       CMapParser parser = new CMapParser(toUnicodeStream.getBody());
       codes = new BiMap<ByteArray,Integer>(parser.parse());
       symbolic = false;

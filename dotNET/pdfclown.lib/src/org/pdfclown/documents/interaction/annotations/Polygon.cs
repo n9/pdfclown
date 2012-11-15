@@ -49,7 +49,7 @@ namespace org.pdfclown.documents.interaction.annotations
       ) : base(page, box, text, PdfName.Polygon)
     {}
 
-    public Polygon(
+    internal Polygon(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

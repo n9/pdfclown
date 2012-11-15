@@ -21,13 +21,13 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class TextFrameSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. Instantiate a new PDF file!
@@ -39,8 +39,6 @@ public class TextFrameSample
 
     // 3. Serialize the PDF file!
     serialize(file, "Text frame", "getting the actual bounding box of text shown");
-
-    return true;
   }
 
   /**
@@ -111,7 +109,7 @@ public class TextFrameSample
       composer.setFont(
         Font.get(
           document,
-          getInputPath() + java.io.File.separator + "fonts" + java.io.File.separator + "Ruritania-Outline.ttf"
+          getResourcePath("fonts" + java.io.File.separator + "Ruritania-Outline.ttf")
           ),
         102
         );

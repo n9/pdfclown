@@ -16,7 +16,7 @@ import org.pdfclown.files.File;
   This sample demonstrates the PDF Clown's <b>support to Unicode-compliant fonts</b>.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class UnicodeSample
   extends Sample
@@ -24,7 +24,7 @@ public class UnicodeSample
   private static final float Margin = 36;
 
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. Instantiate a new PDF file!
@@ -36,8 +36,6 @@ public class UnicodeSample
 
     // 3. Serialize the PDF file!
     serialize(file, "Unicode", "using Unicode fonts");
-
-    return true;
   }
 
   /**
@@ -61,7 +59,7 @@ public class UnicodeSample
     // Define the font to use!
     Font font = Font.get(
       document,
-      getInputPath() + java.io.File.separator + "fonts" + java.io.File.separator + "GenR102.TTF"
+      getResourcePath("fonts" + java.io.File.separator + "GenR102.TTF")
       );
     // Define the paragraph break size!
     Dimension breakSize = new Dimension(0,10);

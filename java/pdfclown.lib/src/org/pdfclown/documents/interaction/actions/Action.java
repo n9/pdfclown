@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,8 +32,7 @@ import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.objects.PdfNamedObjectWrapper;
-import org.pdfclown.objects.PdfString;
+import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -41,11 +40,11 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF11)
 public class Action
-  extends PdfNamedObjectWrapper<PdfDictionary>
+  extends PdfObjectWrapper<PdfDictionary>
 {
   // <class>
   // <static>
@@ -59,19 +58,6 @@ public class Action
   */
   public static final Action wrap(
     PdfDirectObject baseObject
-    )
-  {return wrap(baseObject, null);}
-
-  /**
-    Wraps an action base object into an action object.
-
-    @param baseObject Action base object.
-    @param name Action name.
-    @return Action object associated to the base object.
-  */
-  public static final Action wrap(
-    PdfDirectObject baseObject,
-    PdfString name
     )
   {
     if(baseObject == null)
@@ -123,17 +109,17 @@ public class Action
     else if(actionType.equals(PdfName.ImportData))
       return new ImportData(baseObject);
     else if(actionType.equals(PdfName.JavaScript))
-      return new JavaScript(baseObject,name);
+      return new JavaScript(baseObject);
     else if(actionType.equals(PdfName.SetOCGState))
       return new SetLayerState(baseObject);
     else if(actionType.equals(PdfName.Rendition))
-      return new Rendition(baseObject);
+      return new Render(baseObject);
     else if(actionType.equals(PdfName.Trans))
       return new DoTransition(baseObject);
     else if(actionType.equals(PdfName.GoTo3DView))
       return new GoTo3dView(baseObject);
     else // Custom action.
-      return new Action(baseObject, name);
+      return new Action(baseObject);
   }
   // </public>
   // </interface>
@@ -167,10 +153,9 @@ public class Action
   }
 
   protected Action(
-    PdfDirectObject baseObject,
-    PdfString name
+    PdfDirectObject baseObject
     )
-  {super(baseObject, name);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>

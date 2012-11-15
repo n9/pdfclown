@@ -37,7 +37,7 @@ namespace org.pdfclown.objects
   */
   [PDF(VersionEnum.PDF10)]
   public abstract class NumberTree<TValue>
-    : Tree<int, PdfInteger, int, TValue>
+    : Tree<PdfInteger, TValue>
     where TValue : PdfObjectWrapper
   {
     #region dynamic
@@ -60,11 +60,6 @@ namespace org.pdfclown.objects
       get
       {return PdfName.Nums;}
     }
-
-    protected override PdfInteger WrapKey(
-      int key
-      )
-    {return PdfInteger.Get(key);}
     #endregion
     #endregion
     #endregion

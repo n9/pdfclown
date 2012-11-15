@@ -15,7 +15,7 @@ namespace org.pdfclown.samples.cli
   public class PageFormatSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. PDF file instantiation.
@@ -27,8 +27,6 @@ namespace org.pdfclown.samples.cli
 
       // 3. Serialize the PDF file!
       Serialize(file, "Page Format", "page formats");
-
-      return true;
     }
 
     private void Populate(

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -52,8 +52,6 @@ namespace org.pdfclown.documents.interaction.forms
     #region dynamic
     #region fields
     private Field field;
-
-    private bool dual;
     #endregion
 
     #region constructors
@@ -61,11 +59,7 @@ namespace org.pdfclown.documents.interaction.forms
       PdfDirectObject baseObject,
       Field field
       ) : base(baseObject)
-    {
-      this.field = field;
-      dual = (field is CheckBox
-        || field is RadioButton);
-    }
+    {this.field = field;}
     #endregion
 
     #region interface
@@ -79,7 +73,10 @@ namespace org.pdfclown.documents.interaction.forms
       <summary>Gets the field associated to these widgets.</summary>
     */
     public Field Field
-    {get{return field;}}
+    {
+      get
+      {return field;}
+    }
 
     #region IList
     public int IndexOf(
@@ -174,7 +171,10 @@ namespace org.pdfclown.documents.interaction.forms
     }
 
     public bool IsReadOnly
-    {get{return false;}}
+    {
+      get
+      {return false;}
+    }
 
     public bool Remove(
       Widget value
@@ -274,11 +274,7 @@ namespace org.pdfclown.documents.interaction.forms
     private Widget NewWidget(
       PdfDirectObject baseObject
       )
-    {
-      return dual
-        ? new DualWidget(baseObject)
-        : new Widget(baseObject);
-    }
+    {return Widget.Wrap(baseObject, field);}
     #endregion
     #endregion
     #endregion

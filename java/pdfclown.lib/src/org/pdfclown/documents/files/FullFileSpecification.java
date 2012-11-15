@@ -54,7 +54,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF11)
 public final class FullFileSpecification
@@ -140,10 +140,9 @@ public final class FullFileSpecification
   }
 
   FullFileSpecification(
-    PdfDirectObject baseObject,
-    PdfString name
+    PdfDirectObject baseObject
     )
-  {super(baseObject, name);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>

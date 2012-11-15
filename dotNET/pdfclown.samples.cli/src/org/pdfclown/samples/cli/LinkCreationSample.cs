@@ -22,7 +22,7 @@ namespace org.pdfclown.samples.cli
   public class LinkCreationSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Creating the document...
@@ -34,8 +34,6 @@ namespace org.pdfclown.samples.cli
 
       // 3. Serialize the PDF file!
       Serialize(file, "Link annotations", "applying link annotations");
-
-      return true;
     }
 
     private void BuildLinks(

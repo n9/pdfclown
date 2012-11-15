@@ -25,7 +25,7 @@ namespace org.pdfclown.samples.cli
     private static readonly DeviceRGBColor SampleColor = DeviceRGBColor.Get(System.Drawing.Color.Red);
     private static readonly DeviceRGBColor BackColor = new DeviceRGBColor(210 / 255d, 232 / 255d, 245 / 255d);
 
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Instantiate a new PDF file!
@@ -43,8 +43,6 @@ namespace org.pdfclown.samples.cli
 
       // 3. Serialize the PDF file!
       Serialize(file, "Composition elements", "applying the composition elements");
-
-      return true;
     }
 
     private void BuildCurvesPage(
@@ -124,7 +122,7 @@ namespace org.pdfclown.samples.cli
             // Drawing the arc frame...
             composer.BeginLocalState();
             composer.SetLineWidth(0.25f);
-            composer.SetLineDash(3,5,5);
+            composer.SetLineDash(new LineDash(new double[]{5,5}, 3));
             composer.DrawRectangle(arcFrame);
             composer.Stroke();
             composer.End();
@@ -155,7 +153,7 @@ namespace org.pdfclown.samples.cli
         // Drawing the circle frame...
         composer.BeginLocalState();
         composer.SetLineWidth(0.25f);
-        composer.SetLineDash(3,5,5);
+        composer.SetLineDash(new LineDash(new double[]{5,5}, 3));
         composer.DrawRectangle(arcFrame);
         composer.Stroke();
         composer.End();
@@ -173,7 +171,7 @@ namespace org.pdfclown.samples.cli
         // Drawing the ellipse frame...
         composer.BeginLocalState();
         composer.SetLineWidth(0.25f);
-        composer.SetLineDash(3,5,5);
+        composer.SetLineDash(new LineDash(new double[]{5,5}, 3));
         composer.DrawRectangle(arcFrame);
         composer.Stroke();
         composer.End();
@@ -191,7 +189,7 @@ namespace org.pdfclown.samples.cli
         // Drawing the ellipse frame...
         composer.BeginLocalState();
         composer.SetLineWidth(0.25f);
-        composer.SetLineDash(3,5,5);
+        composer.SetLineDash(new LineDash(new double[]{5,5}, 3));
         composer.DrawRectangle(arcFrame);
         composer.Stroke();
         composer.End();
@@ -235,7 +233,7 @@ namespace org.pdfclown.samples.cli
             switch(rowIndex)
             {
               case 2:
-                composer.SetLineDash(0,10,5);
+                composer.SetLineDash(new LineDash(new double[]{10,5}));
                 composer.SetLineCap(LineCapEnum.Round);
                 break;
               default:
@@ -344,7 +342,7 @@ namespace org.pdfclown.samples.cli
       {
         if(x > 300)
         {
-          composer.SetLineDash(3,5,5);
+          composer.SetLineDash(new LineDash(new double[]{5,5}, 3));
         }
 
         composer.SetFillColor(new DeviceRGBColor(1, x / 500d, x / 500d));
@@ -462,7 +460,7 @@ namespace org.pdfclown.samples.cli
       composer.Clip();
       // Showing a clown image...
       // Instantiate a jpeg image object!
-      entities::Image image = entities::Image.Get(InputPath + System.IO.Path.DirectorySeparatorChar + "images" + System.IO.Path.DirectorySeparatorChar + "Clown.jpg"); // Abstract image (entity).
+      entities::Image image = entities::Image.Get(GetResourcePath("images" + System.IO.Path.DirectorySeparatorChar + "Clown.jpg")); // Abstract image (entity).
       xObjects::XObject imageXObject = image.ToXObject(document);
       // Show the image!
       composer.ShowXObject(
@@ -739,7 +737,7 @@ namespace org.pdfclown.samples.cli
 
             composer.BeginLocalState();
             composer.SetLineWidth(0.2f);
-            composer.SetLineDash(5,5,5);
+            composer.SetLineDash(new LineDash(new double[]{5,5}, 5));
             composer.DrawRectangle(frame);
             composer.Stroke();
             composer.End();
@@ -790,7 +788,7 @@ namespace org.pdfclown.samples.cli
       // Drawing the text block...
       {
         fonts::Font sampleFont = new fonts::StandardType1Font(document, fonts::StandardType1Font.FamilyEnum.Times, false, false);
-        entities::Image sampleImage = entities::Image.Get(InputPath + System.IO.Path.DirectorySeparatorChar + "images" + System.IO.Path.DirectorySeparatorChar + "gnu.jpg");
+        entities::Image sampleImage = entities::Image.Get(GetResourcePath("images" + System.IO.Path.DirectorySeparatorChar + "gnu.jpg"));
         xObjects::XObject sampleImageXObject = sampleImage.ToXObject(document);
 
         IList<LineAlignmentEnum> lineAlignments = new List<LineAlignmentEnum>((LineAlignmentEnum[])Enum.GetValues(typeof(LineAlignmentEnum)));
@@ -842,7 +840,7 @@ namespace org.pdfclown.samples.cli
               composer.BeginLocalState();
               {
                 composer.SetLineWidth(0.1f);
-                composer.SetLineDash(4,1,4);
+                composer.SetLineDash(new LineDash(new double[]{1,4}, 4));
                 composer.DrawRectangle(blockComposer.Frame);
                 composer.Stroke();
               }
@@ -851,7 +849,7 @@ namespace org.pdfclown.samples.cli
               composer.BeginLocalState();
               {
                 composer.SetLineWidth(0.1f);
-                composer.SetLineDash(1,1,1);
+                composer.SetLineDash(new LineDash(new double[]{1,1}, 1));
                 composer.DrawRectangle(blockComposer.BoundBox);
                 composer.Stroke();
               }
@@ -929,7 +927,7 @@ namespace org.pdfclown.samples.cli
         composer.BeginLocalState();
         {
           composer.SetLineWidth(0.2);
-          composer.SetLineDash(5,5,5);
+          composer.SetLineDash(new LineDash(new double[]{5,5}, 5));
           composer.DrawRectangle(frame);
           composer.Stroke();
         }
@@ -1000,7 +998,7 @@ namespace org.pdfclown.samples.cli
           composer.BeginLocalState();
           {
             composer.SetLineWidth(0.2);
-            composer.SetLineDash(5,5,5);
+            composer.SetLineDash(new LineDash(new double[]{5,5}, 5));
             composer.DrawRectangle(frame);
             composer.Stroke();
           }
@@ -1021,7 +1019,7 @@ namespace org.pdfclown.samples.cli
           composer.BeginLocalState();
           {
             composer.SetLineWidth(0.2);
-            composer.SetLineDash(5,5,5);
+            composer.SetLineDash(new LineDash(new double[]{5,5}, 5));
             composer.DrawRectangle(frame);
             composer.Stroke();
           }
@@ -1056,7 +1054,7 @@ namespace org.pdfclown.samples.cli
     {
       composer.BeginLocalState();
       composer.SetLineWidth(0.2f);
-      composer.SetLineDash(5,5,5);
+      composer.SetLineDash(new LineDash(new double[]{5,5}, 5));
       composer.DrawPolygon(frameVertices);
       composer.Stroke();
       composer.End();

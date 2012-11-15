@@ -1,6 +1,7 @@
 package org.pdfclown.samples.cli;
 
 import java.awt.print.PrinterException;
+import java.io.IOException;
 
 import org.pdfclown.files.File;
 import org.pdfclown.tools.Renderer;
@@ -12,38 +13,50 @@ import org.pdfclown.tools.Renderer;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 09/24/12
 */
 public class PrintingSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
-    // 1. Opening the PDF file...
-    File file;
-    {
-      String filePath = promptFileChoice("Please select a PDF file");
-      try
-      {file = new File(filePath);}
-      catch(Exception e)
-      {throw new RuntimeException(filePath + " file access error.",e);}
-    }
-
-    // 2. Print the document!
-    Renderer renderer = new Renderer();
-    boolean silent = false;
+    File file = null;
     try
     {
-      if(renderer.print(file.getDocument(), silent))
-      {System.out.println("Print fulfilled.");}
-      else
-      {System.out.println("Print discarded.");}
-    }
-    catch(PrinterException e)
-    {System.out.println("Print failed: " + e.getMessage());}
+      // 1. Opening the PDF file...
+      {
+        String filePath = promptFileChoice("Please select a PDF file");
+        try
+        {file = new File(filePath);}
+        catch(Exception e)
+        {throw new RuntimeException(filePath + " file access error.",e);}
+      }
 
-    return true;
+      // 2. Printing the document...
+      Renderer renderer = new Renderer();
+      boolean silent = false;
+      try
+      {
+        if(renderer.print(file.getDocument(), silent))
+        {System.out.println("Print fulfilled.");}
+        else
+        {System.out.println("Print discarded.");}
+      }
+      catch(PrinterException e)
+      {System.out.println("Print failed: " + e.getMessage());}
+    }
+    finally
+    {
+      // 3. Closing the PDF file...
+      if(file != null)
+      {
+        try
+        {file.close();}
+        catch(IOException e)
+        {/* NOOP */}
+      }
+    }
   }
 }

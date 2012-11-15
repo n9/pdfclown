@@ -2,6 +2,7 @@ package org.pdfclown.samples.cli;
 
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
@@ -21,37 +22,49 @@ import org.pdfclown.files.File;
   each single content object within a page.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 09/24/12
 */
 public class ContentScanningSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
-    // 1. Opening the PDF file...
-    File file;
+    File file = null;
+    try
     {
-      String filePath = promptFileChoice("Please select a PDF file");
-      try
-      {file = new File(filePath);}
-      catch(Exception e)
-      {throw new RuntimeException(filePath + " file access error.",e);}
-    }
-    Document document = file.getDocument();
+      // 1. Opening the PDF file...
+      {
+        String filePath = promptFileChoice("Please select a PDF file");
+        try
+        {file = new File(filePath);}
+        catch(Exception e)
+        {throw new RuntimeException(filePath + " file access error.",e);}
+      }
+      Document document = file.getDocument();
 
-    // 2. Parsing the document...
-    System.out.println("\nLooking for images...");
-    for(Page page : document.getPages())
+      // 2. Parsing the document...
+      System.out.println("\nLooking for images...");
+      for(Page page : document.getPages())
+      {
+        scan(
+          new ContentScanner(page), // Wraps the page contents into the scanner.
+          page
+          );
+      }
+    }
+    finally
     {
-      scan(
-        new ContentScanner(page), // Wraps the page contents into the scanner.
-        page
-        );
+      // 3. Closing the PDF file...
+      if(file != null)
+      {
+        try
+        {file.close();}
+        catch(IOException e)
+        {/* NOOP */}
+      }
     }
-
-    return true;
   }
 
   /**

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.1, 11/14/11
+  @version 0.1.2, 09/24/12
 */
 public final class IndirectObjects
   implements List<PdfIndirectObject>
@@ -142,19 +142,11 @@ public final class IndirectObjects
 
   // <interface>
   // <public>
-  public File getFile(
-    )
-  {return file;}
-
   /**
-    Register an <b>internal data object</b>.
-    <p>Alternatives:</p>
-    <ul>
-      <li>To register a modified internal indirect object, use
-      {@link #set(int,PdfIndirectObject) set(int,PdfIndirectObject)}.</li>
-      <li>To register an external indirect object, use
-      {@link #addExternal(PdfIndirectObject) addExternal(PdfIndirectObject)}.</li>
-    </ul>
+    Registers an <i>internal</i> data object.
+    <p>To register an external indirect object, use {@link #addExternal(PdfIndirectObject)}.</p>
+
+    @return Indirect object corresponding to the registered data object.
   */
   public PdfIndirectObject add(
     PdfDataObject object
@@ -173,16 +165,12 @@ public final class IndirectObjects
   }
 
   /**
-    Registers and gets an <b>external indirect object</b>.
-    <p>External indirect objects come from alien PDF files. <i>This is a powerful
-    way to import the content of one file into another</i>.</p>
-    <p>Alternatives:</p>
-    <ul>
-      <li>To register a modified internal indirect object, use
-      {@link #set(int,PdfIndirectObject) set(int,PdfIndirectObject)}.</li>
-      <li>To register an internal data object, use
-      {@link #add(PdfDataObject) add(PdfDataObject)}.</li>
-    </ul>
+    Registers an <i>external</i> indirect object.
+    <p>External indirect objects come from alien PDF files; therefore, this is a powerful way to
+    import contents from a file into another one.</p>
+    <p>To register an internal data object, use {@link #add(PdfDataObject)}.</p>
+
+    @return Indirect object imported from the external indirect object.
   */
   public PdfIndirectObject addExternal(
     PdfIndirectObject object
@@ -201,16 +189,31 @@ public final class IndirectObjects
     return indirectObject;
   }
 
-  public Collection<? extends PdfIndirectObject> addAllExternal(
+  /**
+    Registers a collection of <i>external</i> indirect objects.
+    <p>External indirect objects come from alien PDF files; therefore, this is a powerful way to
+    import contents from a file into another one.</p>
+    <p>To register a collection of internal data objects, use {@link 
+    #addAll(Collection<PdfDataObject>)}.</p>
+
+    @return Indirect objects imported from the external indirect objects.
+  */
+  public Collection<? extends PdfIndirectObject> addExternal(
     Collection<? extends PdfIndirectObject> objects
     )
   {
     ArrayList<PdfIndirectObject> addedObjects = new ArrayList<PdfIndirectObject>(objects.size());
     for(PdfIndirectObject object : objects)
     {addedObjects.add(addExternal(object));}
-
     return addedObjects;
   }
+
+  /**
+    Gets the file associated to this collection.
+  */
+  public File getFile(
+    )
+  {return file;}
 
   // <List>
   @Override
@@ -227,17 +230,14 @@ public final class IndirectObjects
     )
   {throw new UnsupportedOperationException();}
 
-  /**
-    Gets an indirect object with the specified object number.
-
-    @param index Object number of the indirect object to get.
-    @return Indirect object corresponding to the specified object number.
-  */
   @Override
   public PdfIndirectObject get(
     int index
     )
   {
+    if(index < 0 || index >= size())
+      throw new IndexOutOfBoundsException();
+
     PdfIndirectObject object = modifiedObjects.get(index);
     if(object == null)
     {
@@ -247,14 +247,12 @@ public final class IndirectObjects
         XRefEntry xrefEntry = xrefEntries.get(index);
         if(xrefEntry == null)
         {
-          if(index > lastObjectNumber)
-            return null;
-
           /*
-            NOTE: The cross-reference table (comprising the original cross-reference section and all update sections)
-            MUST contain one entry for each object number from 0 to the maximum object number used in the file, even
-            if one or more of the object numbers in this range do not actually occur in the file.
-            However, for resilience purposes missing entries are treated as free ones.
+            NOTE: The cross-reference table (comprising the original cross-reference section and all
+            update sections) MUST contain one entry for each object number from 0 to the maximum
+            object number used in the file, even if one or more of the object numbers in this range
+            do not actually occur in the file. However, for resilience purposes missing entries are
+            treated as free ones.
           */
           xrefEntries.put(
             index,
@@ -269,8 +267,8 @@ public final class IndirectObjects
 
         // Awake the object!
         /*
-          NOTE: This operation allows to keep a consistent state across the whole session,
-          avoiding multiple incoherent instantiations of the same original indirect object.
+          NOTE: This operation allows to keep a consistent state across the whole session, avoiding
+          multiple incoherent instantiations of the same original indirect object.
         */
         wokenObjects.put(index, object = new PdfIndirectObject(file, null, xrefEntry));
       }
@@ -296,8 +294,7 @@ public final class IndirectObjects
     )
   {
     /*
-      NOTE: By definition, there's a bijective relation between indirect objects
-      and their indices.
+      NOTE: By definition, there's a bijective relation between indirect objects and their numbers.
     */
     return indexOf(object);
   }
@@ -318,44 +315,31 @@ public final class IndirectObjects
     int index
     )
   {
-    /*
-      NOTE: Acrobat 6.0 and later (PDF 1.5+) DO NOT use the free list to recycle object numbers;
-      new objects are assigned new numbers [PDF:1.6:H.3:16].
-      According to such an implementation note, we simply mark the removed object as 'not-reusable'
-      newly-freed entry, neglecting both to add it to the linked list of free entries
-      and to increment by 1 its generation number.
-    */
-    return update(
-      new PdfIndirectObject(
-        file,
-        null,
-        new XRefEntry(
-          index,
-          XRefEntry.GenerationUnreusable,
-          0,
-          XRefEntry.UsageEnum.Free
+    PdfIndirectObject old = get(index);
+    if(old.isInUse())
+      /*
+        NOTE: Acrobat 6.0 and later (PDF 1.5+) DO NOT use the free list to recycle object numbers; new
+        objects are assigned new numbers [PDF:1.6:H.3:16].
+        According to such an implementation note, we simply mark the removed object as 'not-reusable'
+        newly-freed entry, neglecting both to add it to the linked list of free entries and to
+        increment by 1 its generation number.
+      */
+      return update(
+        new PdfIndirectObject(
+          file,
+          null,
+          new XRefEntry(
+            index,
+            XRefEntry.GenerationUnreusable,
+            0,
+            XRefEntry.UsageEnum.Free
+            )
           )
-        )
-      );
+        );
+    else
+      return old;
   }
 
-  /**
-    Sets an indirect object with the specified object number.
-    <p>This method is currently limited to <b>internal indirect
-    objects</b>: <i>use it to register modified internal indirect objects only</i>.
-    If you need to register alternative-type objects, consider the following
-    methods:</p>
-    <ul>
-      <li>to register an <b>external indirect object</b>, use
-      {@link #addExternal(PdfIndirectObject) addExternal(PdfIndirectObject)}.</li>
-      <li>to register an <b>internal data object</b>, use
-      {@link #add(PdfDataObject) add(PdfDataObject)}.</li>
-    </ul>
-
-    @param index Object number of the indirect object to set.
-    @param object Indirect object to set.
-    @return Replaced indirect object.
-  */
   @Override
   public PdfIndirectObject set(
     int index,
@@ -372,57 +356,65 @@ public final class IndirectObjects
 
   // <Collection>
   /**
-    Registers an <b>external indirect object</b>.
-    <p>External indirect objects come from alien PDF files. <i>This is a powerful
-    way to import the content of one file into another</i>.</p>
-    <p>Alternatives:</p>
-    <ul>
-      <li>To register and get an external indirect object, use
-      {@link #addExternal(PdfIndirectObject) addExternal(PdfIndirectObject)}.</li>
-    </ul>
+    Registers an <i>external</i> indirect object.
+    <p>External indirect objects come from alien PDF files; therefore, this is a powerful way to
+    import contents from a file into another one.</p>
+    <p>To register and get an external indirect object, use {@link #addExternal(PdfIndirectObject)}.
+    </p>
+
+    @return Whether the indirect object was successfully registered.
   */
   @Override
   public boolean add(
     PdfIndirectObject object
     )
-  {return (addExternal(object) != null);}
+  {return addExternal(object) != null;}
 
   /**
-    Registers <b>external indirect objects</b>.
-    <p>External indirect objects come from alien PDF files. <i>This is a powerful
-    way to import the content of one file into another</i>.</p>
-    <p>Alternatives:</p>
-    <ul>
-      <li>To register and get external indirect object, use {@link #addAllExternal(Collection)}.</li>
-    </ul>
+    Registers a collection of <i>external</i> indirect objects.
+    <p>External indirect objects come from alien PDF files; therefore, this is a powerful way to
+    import contents from a file into another one.</p>
+    <p>To register and get external indirect objects, use {@link #addExternal(Collection)}.</p>
+
+    @return Whether this collection changed as a result of the call.
   */
   @Override
   public boolean addAll(
     Collection<? extends PdfIndirectObject> objects
     )
-  {
-    boolean changed = false;
-    for(PdfIndirectObject object : objects)
-    {changed |= (addExternal(object) != null);}
-    return changed;
-  }
+  {return !addExternal(objects).isEmpty();}
 
   @Override
   public void clear(
     )
-  {throw new UnsupportedOperationException();}
+  {
+    for(int index = 0, length = size(); index < length; index++)
+    {remove(index);}
+  }
 
   @Override
   public boolean contains(
     Object object
     )
-  {throw new NotImplementedException();}
+  {
+    try
+    {return get(((PdfIndirectObject)object).getReference().getObjectNumber()) == object;}
+    catch (IndexOutOfBoundsException e)
+    {return false;}
+  }
 
   @Override
   public boolean containsAll(
     Collection<?> objects
     )
-  {throw new NotImplementedException();}
+  {
+    for(Object object : objects)
+    {
+      if(!contains(object))
+        return false;
+    }
+    return true;
+  }
 
   @Override
   public boolean equals(
@@ -440,8 +432,8 @@ public final class IndirectObjects
     )
   {
     /*
-      NOTE: Semantics of the indirect objects collection imply that the collection is considered
-      empty in any case no in-use object is available.
+      NOTE: Indirect objects' semantics imply that the collection is considered empty when no in-use
+      object is available.
     */
     for(PdfIndirectObject object : this)
     {
@@ -456,22 +448,37 @@ public final class IndirectObjects
     Object object
     )
   {
-    return (remove(
-      ((PdfIndirectObject)object).getReference().getObjectNumber()
-      ) != null);
+    if(!contains(object))
+      return false;
+
+    remove(((PdfIndirectObject)object).getReference().getObjectNumber());
+    return true;
   }
 
   @Override
   public boolean removeAll(
     Collection<?> objects
     )
-  {throw new NotImplementedException();}
+  {
+    boolean changed = false;
+    for(Object object : objects)
+    {changed |= remove(object);}
+    return changed;
+  }
 
   @Override
   public boolean retainAll(
     Collection<?> objects
     )
-  {throw new UnsupportedOperationException();}
+  {
+    boolean changed = false;
+    for(PdfIndirectObject object : this)
+    {
+      if(!objects.contains(object))
+      {changed |= remove(object);}
+    }
+    return changed;
+  }
 
   /**
     Gets the number of entries available (both in-use and free) in the
@@ -482,7 +489,7 @@ public final class IndirectObjects
   @Override
   public int size(
     )
-  {return (lastObjectNumber + 1);}
+  {return lastObjectNumber + 1;}
 
   @Override
   public PdfIndirectObject[] toArray(

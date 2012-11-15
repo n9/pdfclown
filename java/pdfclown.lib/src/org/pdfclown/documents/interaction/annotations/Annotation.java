@@ -56,7 +56,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF10)
 public class Annotation
@@ -198,12 +198,7 @@ public class Annotation
     if(baseObject == null)
       return null;
 
-    PdfDictionary dataObject = (PdfDictionary)File.resolve(baseObject);
-
-    /*
-      NOTE: Annotation's subtype MUST exist.
-    */
-    PdfName annotationType = (PdfName)dataObject.get(PdfName.Subtype);
+    PdfName annotationType = (PdfName)((PdfDictionary)File.resolve(baseObject)).get(PdfName.Subtype);
     if(annotationType.equals(PdfName.Text))
       return new Note(baseObject);
     else if(annotationType.equals(PdfName.Link))
@@ -241,8 +236,9 @@ public class Annotation
       return new Movie(baseObject);
     else if(annotationType.equals(PdfName.Widget))
       return new Widget(baseObject);
-//TODO
-//     else if(annotationType.equals(PdfName.Screen)) return new Screen(baseObject);
+     else if(annotationType.equals(PdfName.Screen))
+       return new Screen(baseObject);
+  //TODO
 //     else if(annotationType.equals(PdfName.PrinterMark)) return new PrinterMark(baseObject);
 //     else if(annotationType.equals(PdfName.TrapNet)) return new TrapNet(baseObject);
 //     else if(annotationType.equals(PdfName.Watermark)) return new Watermark(baseObject);
@@ -257,15 +253,14 @@ public class Annotation
   // <dynamic>
   // <constructors>
   protected Annotation(
-    Document context,
+    Page page,
     PdfName subtype,
     Rectangle2D box,
-    String text,
-    Page page
+    String text
     )
   {
     super(
-      context,
+      page.getDocument(),
       new PdfDictionary(
         new PdfName[]
         {

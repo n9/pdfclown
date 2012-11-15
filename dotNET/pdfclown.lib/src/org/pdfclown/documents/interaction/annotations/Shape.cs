@@ -47,7 +47,7 @@ namespace org.pdfclown.documents.interaction.annotations
       RectangleF box,
       string text,
       PdfName subtype
-      ) : base(page.Document, subtype, box, text, page)
+      ) : base(page, subtype, box, text)
     {}
 
     protected Shape(

@@ -77,7 +77,7 @@ namespace org.pdfclown.objects
 
     #region dynamic
     #region constructors
-    private PdfReal(
+    public PdfReal(
       double value
       )
     {RawValue = value;}
@@ -85,6 +85,12 @@ namespace org.pdfclown.objects
 
     #region interface
     #region public
+    public override bool Accept(
+      IVisitor visitor,
+      object data
+      )
+    {return visitor.Visit(this, data);}
+
     public override int CompareTo(
       PdfDirectObject obj
       )

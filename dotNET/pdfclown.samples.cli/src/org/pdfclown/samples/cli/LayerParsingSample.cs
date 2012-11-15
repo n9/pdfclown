@@ -12,27 +12,27 @@ namespace org.pdfclown.samples.cli
   public class LayerParsingSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      File file = new File(filePath);
-      Document document = file.Document;
-
-      // 2. Get the layer definition!
-      LayerDefinition layerDefinition = document.Layer;
-      if(layerDefinition == null)
-      {Console.WriteLine("\nNo layer definition available.");}
-      else
+      using(File file = new File(filePath))
       {
-        Console.WriteLine("\nIterating through the layers...\n");
-
-        // 3. Parse the layer hierarchy!
-        Parse(layerDefinition.Layers,0);
+        Document document = file.Document;
+  
+        // 2. Get the layer definition!
+        LayerDefinition layerDefinition = document.Layer;
+        if(layerDefinition == null)
+        {Console.WriteLine("\nNo layer definition available.");}
+        else
+        {
+          Console.WriteLine("\nIterating through the layers...\n");
+  
+          // 3. Parse the layer hierarchy!
+          Parse(layerDefinition.Layers,0);
+        }
       }
-
-      return true;
     }
 
     private void Parse(

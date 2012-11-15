@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -37,7 +37,7 @@ namespace org.pdfclown.documents.interaction.actions
   */
   [PDF(VersionEnum.PDF11)]
   public class Action
-    : PdfNamedObjectWrapper<PdfDictionary>
+    : PdfObjectWrapper<PdfDictionary>
   {
     #region static
     #region interface
@@ -49,18 +49,6 @@ namespace org.pdfclown.documents.interaction.actions
     */
     public static Action Wrap(
       PdfDirectObject baseObject
-      )
-    {return Wrap(baseObject, null);}
-
-    /**
-      <summary>Wraps an action base object into an action object.</summary>
-      <param name="baseObject">Action base object.</param>
-      <param name="name">Action name.</param>
-      <returns>Action object associated to the base object.</returns>
-    */
-    public static Action Wrap(
-      PdfDirectObject baseObject,
-      PdfString name
       )
     {
       if(baseObject == null)
@@ -112,17 +100,17 @@ namespace org.pdfclown.documents.interaction.actions
       else if(actionType.Equals(PdfName.ImportData))
         return new ImportData(baseObject);
       else if(actionType.Equals(PdfName.JavaScript))
-        return new JavaScript(baseObject,name);
+        return new JavaScript(baseObject);
       else if(actionType.Equals(PdfName.SetOCGState))
         return new SetLayerState(baseObject);
       else if(actionType.Equals(PdfName.Rendition))
-        return new Rendition(baseObject);
+        return new Render(baseObject);
       else if(actionType.Equals(PdfName.Trans))
         return new DoTransition(baseObject);
       else if(actionType.Equals(PdfName.GoTo3DView))
         return new GoTo3dView(baseObject);
       else // Custom action.
-        return new Action(baseObject,name);
+        return new Action(baseObject);
     }
     #endregion
     #endregion
@@ -154,9 +142,8 @@ namespace org.pdfclown.documents.interaction.actions
     {}
 
     protected Action(
-      PdfDirectObject baseObject,
-      PdfString name
-      ) : base(baseObject, name)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 

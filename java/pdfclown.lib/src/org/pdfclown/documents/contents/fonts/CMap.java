@@ -57,6 +57,7 @@ final class CMap
     IInputStream stream
     )
   {
+    @SuppressWarnings("resource")
     CMapParser parser = new CMapParser(stream);
     return parser.parse();
   }
@@ -100,7 +101,7 @@ final class CMap
   public static Map<ByteArray,Integer> get(
     PdfName name
     )
-  {return get((String)name.getValue());}
+  {return get(name.getValue());}
 
   /**
     Gets the character map corresponding to the given name.

@@ -31,6 +31,8 @@ using org.pdfclown.files;
 using org.pdfclown.objects;
 
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace org.pdfclown.documents.contents
 {
@@ -39,12 +41,9 @@ namespace org.pdfclown.documents.contents
   */
   [PDF(VersionEnum.PDF10)]
   public sealed class Resources
-    : PdfObjectWrapper<PdfDictionary>
+    : PdfObjectWrapper<PdfDictionary>,
+      ICompositeDictionary<PdfName>
   {
-/*
-  TODO:create a mechanism for parameterizing resource retrieval/assignment
-  based on the tuple <Class resourceClass, PdfName resourceName> -- see Names class!
-*/
     #region static
     #region interface
     public static Resources Wrap(
@@ -98,33 +97,6 @@ namespace org.pdfclown.documents.contents
       {BaseDataObject[PdfName.Font] = value.BaseObject;}
     }
 
-    public ResourceItems<T> Get<T>(
-      ) where T : PdfObjectWrapper
-    {
-      Type type = typeof(T);
-      if(typeof(ColorSpace).IsAssignableFrom(type))
-        return (ResourceItems<T>)(object)ColorSpaces;
-      else if(typeof(ExtGState).IsAssignableFrom(type))
-        return (ResourceItems<T>)(object)ExtGStates;
-      else if(typeof(Font).IsAssignableFrom(type))
-        return (ResourceItems<T>)(object)Fonts;
-      else if(typeof(Pattern).IsAssignableFrom(type))
-        return (ResourceItems<T>)(object)Patterns;
-      else if(typeof(PropertyList).IsAssignableFrom(type))
-        return (ResourceItems<T>)(object)PropertyLists;
-      else if(typeof(Shading).IsAssignableFrom(type))
-        return (ResourceItems<T>)(object)Shadings;
-      else if(typeof(XObject).IsAssignableFrom(type))
-        return (ResourceItems<T>)(object)XObjects;
-      else
-        throw new ArgumentException(type.Name + " does NOT represent a valid resource class.");
-    }
-
-    public T Get<T>(
-      PdfName name
-      ) where T : PdfObjectWrapper
-    {return Get<T>()[name];}
-
     public PatternResources Patterns
     {
       get
@@ -161,8 +133,38 @@ namespace org.pdfclown.documents.contents
       set
       {BaseDataObject[PdfName.XObject] = value.BaseObject;}
     }
+
+    #region ICompositeDictionary
+    public PdfObjectWrapper Get(
+      Type type
+      )
+    {
+      if(typeof(ColorSpace).IsAssignableFrom(type))
+        return ColorSpaces;
+      else if(typeof(ExtGState).IsAssignableFrom(type))
+        return ExtGStates;
+      else if(typeof(Font).IsAssignableFrom(type))
+        return Fonts;
+      else if(typeof(Pattern).IsAssignableFrom(type))
+        return Patterns;
+      else if(typeof(PropertyList).IsAssignableFrom(type))
+        return PropertyLists;
+      else if(typeof(Shading).IsAssignableFrom(type))
+        return Shadings;
+      else if(typeof(XObject).IsAssignableFrom(type))
+        return XObjects;
+      else
+        throw new ArgumentException(type.Name + " does NOT represent a valid resource class.");
+    }
+
+    public PdfObjectWrapper Get(
+      Type type,
+      PdfName key
+      )
+    {return (PdfObjectWrapper)type.GetMethod("get_Item", BindingFlags.Public | BindingFlags.Instance).Invoke(Get(type), new object[]{ key });}
+    #endregion
+    #endregion
+    #endregion
+    #endregion
   }
-  #endregion
-  #endregion
-  #endregion
 }

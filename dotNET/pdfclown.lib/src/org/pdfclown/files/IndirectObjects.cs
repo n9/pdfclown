@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -136,23 +136,11 @@ namespace org.pdfclown.files
 
     #region interface
     #region public
-    public File File
-    {
-      get
-      {return file;}
-    }
-
     /**
-      <summary>Register an <b>internal data object</b>.</summary>
-      <remarks>
-        Alternatives:
-        <list type="bullet">
-          <item>To register a <b>modified internal indirect object</b>, use
-          <see cref="this"> indexer</see>.</item>
-          <item>To register an <b>external indirect object</b>, use
-          <see cref="Add(PdfIndirectObject)"/>.</item>
-        </list>
-      </remarks>
+      <summary>Register an <i>internal</i> data object.</summary>
+      <remarks>To register an external indirect object, use <see
+      cref="AddExternal(PdfIndirectObject)"/>.</remarks>
+      <returns>Indirect object corresponding to the registered data object.</returns>
     */
     public PdfIndirectObject Add(
       PdfDataObject obj
@@ -169,20 +157,15 @@ namespace org.pdfclown.files
     }
 
     /**
-      <summary>Registers and gets an <b>external indirect object</b>.</summary>
+      <summary>Registers an <i>external</i> indirect object.</summary>
       <remarks>
-        <para>External indirect objects come from alien PDF files. <i>This
-        is a powerful way to import the content of one file into another</i>.</para>
-        <para>Alternatives:</para>
-        <list type="bullet">
-          <item>To register a <b>modified internal indirect object</b>, use
-          <see cref="this"> indexer</see>.</item>
-          <item>To register an <b>internal data object</b>, use
-          <see cref="Add(PdfDataObject)"/>.</item>
-        </list>
+        <para>External indirect objects come from alien PDF files; therefore, this is a powerful way
+        to import contents from a file into another one.</para>
+        <para>To register an internal data object, use <see cref="Add(PdfDataObject)"/>.</para>
       </remarks>
+      <returns>Indirect object imported from the external indirect object.</returns>
     */
-    public PdfIndirectObject Add(
+    public PdfIndirectObject AddExternal(
       PdfIndirectObject obj
       )
     {
@@ -196,15 +179,24 @@ namespace org.pdfclown.files
           indirectObject = Add((PdfDataObject)obj.DataObject.Clone(file)) // Registers the clone of the data object corresponding to the external indirect object.
           );
       }
-      return indirectObject;
+        return indirectObject;
+    }
+
+    /**
+      <summary>Gets the file associated to this collection.</summary>
+    */
+    public File File
+    {
+      get
+      {return file;}
     }
 
     public bool IsEmpty(
       )
     {
       /*
-        NOTE: Semantics of the indirect objects collection imply that the collection is considered
-        empty in any case no in-use object is available.
+        NOTE: Indirect objects' semantics imply that the collection is considered empty when no
+        in-use object is available.
       */
       foreach(PdfIndirectObject obj in this)
       {
@@ -236,47 +228,39 @@ namespace org.pdfclown.files
       int index
       )
     {
-      /*
-        NOTE: Acrobat 6.0 and later (PDF 1.5+) DO NOT use the free list to recycle object numbers;
-        new objects are assigned new numbers [PDF:1.6:H.3:16].
-        According to such an implementation note, we simply mark the removed object as 'not-reusable'
-        newly-freed entry, neglecting both to add it to the linked list of free entries
-        and to increment by 1 its generation number.
-      */
-      Update(
-        new PdfIndirectObject(
-          file,
-          null,
-          new XRefEntry(
-            index,
-            XRefEntry.GenerationUnreusable,
-            0,
-            XRefEntry.UsageEnum.Free
+      if(this[index].IsInUse())
+      {
+        /*
+          NOTE: Acrobat 6.0 and later (PDF 1.5+) DO NOT use the free list to recycle object numbers;
+          new objects are assigned new numbers [PDF:1.6:H.3:16].
+          According to such an implementation note, we simply mark the removed object as 'not-reusable'
+          newly-freed entry, neglecting both to add it to the linked list of free entries and to
+          increment by 1 its generation number.
+        */
+        Update(
+          new PdfIndirectObject(
+            file,
+            null,
+            new XRefEntry(
+              index,
+              XRefEntry.GenerationUnreusable,
+              0,
+              XRefEntry.UsageEnum.Free
+              )
             )
-          )
-        );
+          );
+      }
     }
 
-    /**
-      <summary>Gets/Sets an indirect object with the specified object number.</summary>
-      <remarks>
-        <para>This indexer's setter is currently limited to <b>internal indirect
-        objects</b>: <i>use it to register modified internal indirect objects only</i>.
-        If you need to register alternative-type objects, consider the following
-        methods:</para>
-        <list type="bullet">
-          <item>to register an <b>internal data object</b>, use <see cref="Add(PdfDataObject)"/>.</item>
-          <item>to register an <b>external indirect object</b>, use <see cref="Add(PdfIndirectObject)"/>.</item>
-        </list>
-      </remarks>
-      <returns>A <see cref="org.pdfclown.objects.PdfIndirectObject"/>.</returns>
-    */
     public PdfIndirectObject this[
       int index
       ]
     {
       get
       {
+        if(index < 0 || index >= Count)
+          throw new ArgumentOutOfRangeException();
+    
         PdfIndirectObject obj;
         if(!modifiedObjects.TryGetValue(index, out obj))
         {
@@ -285,14 +269,12 @@ namespace org.pdfclown.files
             XRefEntry xrefEntry;
             if(!xrefEntries.TryGetValue(index, out xrefEntry))
             {
-              if(index > lastObjectNumber)
-                return null;
-
               /*
-                NOTE: The cross-reference table (comprising the original cross-reference section and all update sections)
-                MUST contain one entry for each object number from 0 to the maximum object number used in the file, even
-                if one or more of the object numbers in this range do not actually occur in the file.
-                However, for resilience purposes missing entries are treated as free ones.
+                NOTE: The cross-reference table (comprising the original cross-reference section and
+                all update sections) MUST contain one entry for each object number from 0 to the
+                maximum object number used in the file, even if one or more of the object numbers in
+                this range do not actually occur in the file. However, for resilience purposes
+                missing entries are treated as free ones.
               */
               xrefEntries[index] = xrefEntry = new XRefEntry(
                 index,
@@ -318,31 +300,36 @@ namespace org.pdfclown.files
 
     #region ICollection
     /**
-      <summary>Registers an <b>external indirect object</b>.</summary>
+      <summary>Registers an <i>external</i> indirect object.</summary>
       <remarks>
-        <para>External indirect objects come from alien PDF files. <i>This is
-        a powerful way to import the content of one file into another</i>.</para>
-        <para>Alternatives:</para>
-        <list type="bullet">
-          <item>To register and get an <b>external indirect object</b>, use <see cref="Add(PdfIndirectObject)"/>.</item>
-          <item>To register a <b>modified internal indirect object</b>, use <see cref="this"> indexer</see>.</item>
-          <item>To register an <b>internal data object</b>, use <see cref="Add(PdfDataObject)"/>.</item>
-        </list>
+        <para>External indirect objects come from alien PDF files; therefore, this is a powerful way
+        to import contents from a file into another one.</para>
+        <para>To register and get an external indirect object, use <see
+        cref="AddExternal(PdfIndirectObject)"/></para>
       </remarks>
+      <returns>Whether the indirect object was successfully registered.</returns>
     */
-    void ICollection<PdfIndirectObject>.Add(
+    public void Add(
       PdfIndirectObject obj
       )
-    {Add(obj);}
+    {AddExternal(obj);}
 
     public void Clear(
       )
-    {throw new NotSupportedException();}
+    {
+      for(int index = 0, length = Count; index < length; index++)
+      {RemoveAt(index);}
+    }
 
     public bool Contains(
       PdfIndirectObject obj
       )
-    {throw new NotSupportedException();}
+    {
+      try
+      {return this[obj.Reference.ObjectNumber] == obj;}
+      catch (ArgumentOutOfRangeException)
+      {return false;}
+    }
 
     public void CopyTo(
       PdfIndirectObject[] objs,
@@ -358,7 +345,7 @@ namespace org.pdfclown.files
     public int Count
     {
       get
-      {return (lastObjectNumber + 1);}
+      {return lastObjectNumber + 1;}
     }
 
     public bool IsReadOnly
@@ -371,15 +358,11 @@ namespace org.pdfclown.files
       PdfIndirectObject obj
       )
     {
-      try
-      {
-        RemoveAt(
-          ((PdfIndirectObject)obj).Reference.ObjectNumber
-          );
-        return true;
-      }
-      catch
-      {return false;}
+      if(!Contains(obj))
+        return false;
+
+      RemoveAt(obj.Reference.ObjectNumber);
+      return true;
     }
 
     #region IEnumerable<ContentStream>

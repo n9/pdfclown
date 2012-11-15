@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF12)
 public final class Sound
@@ -120,11 +120,11 @@ public final class Sound
     org.pdfclown.documents.multimedia.Sound content
     )
   {
-    super(page.getDocument(), PdfName.Sound, box, text, page);
+    super(page, PdfName.Sound, box, text);
     setContent(content);
   }
 
-  public Sound(
+  Sound(
     PdfDirectObject baseObject
     )
   {super(baseObject);}

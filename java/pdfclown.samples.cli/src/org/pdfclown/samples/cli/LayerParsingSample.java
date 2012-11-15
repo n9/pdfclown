@@ -1,5 +1,7 @@
 package org.pdfclown.samples.cli;
 
+import java.io.IOException;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.layers.ILayerNode;
 import org.pdfclown.documents.contents.layers.LayerDefinition;
@@ -11,39 +13,51 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 09/24/12
 */
 public class LayerParsingSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
-    // 1. Opening the PDF file...
-    File file;
+    File file = null;
+    try
     {
-      String filePath = promptFileChoice("Please select a PDF file");
-      try
-      {file = new File(filePath);}
-      catch(Exception e)
-      {throw new RuntimeException(filePath + " file access error.",e);}
-    }
-    Document document = file.getDocument();
+      // 1. Opening the PDF file...
+      {
+        String filePath = promptFileChoice("Please select a PDF file");
+        try
+        {file = new File(filePath);}
+        catch(Exception e)
+        {throw new RuntimeException(filePath + " file access error.",e);}
+      }
+      Document document = file.getDocument();
 
-    // 2. Get the layer definition!
-    LayerDefinition layerDefinition = document.getLayer();
-    if(layerDefinition == null)
-    {System.out.println("\nNo layer definition available.");}
-    else
+      // 2. Get the layer definition!
+      LayerDefinition layerDefinition = document.getLayer();
+      if(layerDefinition == null)
+      {System.out.println("\nNo layer definition available.");}
+      else
+      {
+        System.out.println("\nIterating through the layers...\n");
+
+        // 3. Parse the layer hierarchy!
+        parse(layerDefinition.getLayers(),0);
+      }
+    }
+    finally
     {
-      System.out.println("\nIterating through the layers...\n");
-
-      // 3. Parse the layer hierarchy!
-      parse(layerDefinition.getLayers(),0);
+      // 4. Closing the PDF file...
+      if(file != null)
+      {
+        try
+        {file.close();}
+        catch(IOException e)
+        {/* NOOP */}
+      }
     }
-
-    return true;
   }
 
   private void parse(

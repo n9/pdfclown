@@ -17,26 +17,26 @@ namespace org.pdfclown.samples.cli
   public class RenderingSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      File file = new File(filePath);
-      Document document = file.Document;
-      Pages pages = document.Pages;
-
-      // 2. Page rasterization.
-      int pageIndex = PromptPageChoice("Select the page to render", pages.Count);
-      Page page = pages[pageIndex];
-      SizeF imageSize = page.Size;
-      Renderer renderer = new Renderer();
-      Image image = renderer.Render(page, imageSize);
-
-      // 3. Save the page image!
-      image.Save(OutputPath + System.IO.Path.DirectorySeparatorChar + "ContentRenderingSample.jpg", ImageFormat.Jpeg);
-
-      return true;
+      using(File file = new File(filePath))
+      {
+        Document document = file.Document;
+        Pages pages = document.Pages;
+  
+        // 2. Page rasterization.
+        int pageIndex = PromptPageChoice("Select the page to render", pages.Count);
+        Page page = pages[pageIndex];
+        SizeF imageSize = page.Size;
+        Renderer renderer = new Renderer();
+        Image image = renderer.Render(page, imageSize);
+  
+        // 3. Save the page image!
+        image.Save(GetOutputPath("ContentRenderingSample.jpg"), ImageFormat.Jpeg);
+      }
     }
   }
 }

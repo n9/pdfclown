@@ -69,7 +69,7 @@ namespace org.pdfclown.documents.multimedia
     public FileSpecification DataFile
     {
       get
-      {return FileSpecification.Wrap(BaseDataObject[PdfName.F], null);}
+      {return FileSpecification.Wrap(BaseDataObject[PdfName.F]);}
       set
       {BaseDataObject[PdfName.F] = value.BaseObject;}
     }

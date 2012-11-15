@@ -36,11 +36,10 @@ namespace org.pdfclown.objects
     <summary>Abstract tree [PDF:1.7:3.8.5].</summary>
   */
   [PDF(VersionEnum.PDF10)]
-  public abstract class Tree<TKey,TKeyObject,TKeyValue,TValue>
+  public abstract class Tree<TKey,TValue>
     : PdfObjectWrapper<PdfDictionary>,
       IDictionary<TKey,TValue>
-    where TKey : IComparable<TKey>
-    where TKeyObject : PdfSimpleObject<TKeyValue>
+    where TKey : PdfDirectObject, IPdfSimpleObject
     where TValue : PdfObjectWrapper
   {
     /*
@@ -165,11 +164,8 @@ namespace org.pdfclown.objects
       {return !(IsUndersized() || IsOversized());}
     }
 
-    private class Enumerator //<TKey,TKeyObject,TKeyValue,TValue>
+    private class Enumerator
       : IEnumerator<KeyValuePair<TKey,TValue>>
-//      where TKey : IComparable<TKey>
-//      where TKeyObject : PdfSimpleObject<TKeyValue>
-//      where TValue : PdfObjectWrapper
     {
       #region dynamic
       #region fields
@@ -203,12 +199,12 @@ namespace org.pdfclown.objects
       /**
         <summary>Name tree.</summary>
       */
-      private Tree<TKey,TKeyObject,TKeyValue,TValue> tree;
+      private Tree<TKey,TValue> tree;
       #endregion
 
       #region constructors
       internal Enumerator(
-        Tree<TKey,TKeyObject,TKeyValue,TValue> tree
+        Tree<TKey,TValue> tree
         )
       {
         this.tree = tree;
@@ -329,11 +325,11 @@ namespace org.pdfclown.objects
             else // Names incomplete.
             {
               // 2. Object found.
-              TKeyObject keyObject = (TKeyObject)names[levelIndex];
-              TValue value = tree.Wrap(names[levelIndex + 1], keyObject);
-              levelIndex+=2;
+              TKey key = (TKey)names[levelIndex];
+              TValue value = tree.WrapValue(names[levelIndex + 1]);
+              levelIndex += 2;
 
-              return new KeyValuePair<TKey,TValue>((TKey)keyObject.Value, value);
+              return new KeyValuePair<TKey,TValue>(key, value);
             }
           }
         }
@@ -365,11 +361,7 @@ namespace org.pdfclown.objects
         PdfArray names,
         int offset
         )
-      {
-        keys.Add(
-          (TKey)((IPdfSimpleObject)names[offset]).Value
-          );
-      }
+      {keys.Add((TKey)names[offset]);}
 
       public ICollection<TKey> Collection
       {
@@ -381,11 +373,11 @@ namespace org.pdfclown.objects
     private class ValuesFiller
       : IFiller<TValue>
     {
-      private Tree<TKey,TKeyObject,TKeyValue,TValue> tree;
+      private Tree<TKey,TValue> tree;
       private ICollection<TValue> values = new List<TValue>();
 
       internal ValuesFiller(
-        Tree<TKey,TKeyObject,TKeyValue,TValue> tree
+        Tree<TKey,TValue> tree
         )
       {this.tree = tree;}
 
@@ -393,14 +385,7 @@ namespace org.pdfclown.objects
         PdfArray names,
         int offset
         )
-      {
-        values.Add(
-          tree.Wrap(
-            names[offset + 1],
-            (TKeyObject)names[offset]
-            )
-          );
-      }
+      {values.Add(tree.WrapValue(names[offset + 1]));}
 
       public ICollection<TValue> Collection
       {
@@ -447,14 +432,34 @@ namespace org.pdfclown.objects
       )
     {throw new NotImplementedException();}
 
+    /**
+      Gets the key associated to the specified value.
+    */
+    public TKey GetKey(
+      TValue value
+      )
+    {
+      /*
+        NOTE: Current implementation doesn't support bidirectional maps, to say that the only
+        currently-available way to retrieve a key from a value is to iterate the whole map (really
+        poor performance!).
+      */
+      foreach(KeyValuePair<TKey,TValue> entry in this)
+      {
+        if(entry.Value.Equals(value))
+          return entry.Key;
+      }
+      return null;
+    }
+
     #region IDictionary
-    public void Add(
+    public virtual void Add(
       TKey key,
       TValue value
       )
-    {Add(WrapKey(key), value, false);}
+    {Add(key, value, false);}
 
-    public bool ContainsKey(
+    public virtual bool ContainsKey(
       TKey key
       )
     {
@@ -464,7 +469,7 @@ namespace org.pdfclown.objects
       return this[key] != null;
     }
 
-    public ICollection<TKey> Keys
+    public virtual ICollection<TKey> Keys
     {
       get
       {
@@ -475,11 +480,10 @@ namespace org.pdfclown.objects
       }
     }
 
-    public bool Remove(
+    public virtual bool Remove(
       TKey key
       )
     {
-      TKeyObject keyObject = WrapKey((TKey)key);
       PdfDictionary node = BaseDataObject;
       Stack<PdfReference> nodeReferenceStack = new Stack<PdfReference>();
       while(true)
@@ -494,7 +498,7 @@ namespace org.pdfclown.objects
               return false;
 
             int mid = (mid = ((low + high) / 2)) - (mid % 2);
-            int comparison = keyObject.CompareTo(nodeChildren.Items[mid]);
+            int comparison = key.CompareTo(nodeChildren.Items[mid]);
             if(comparison < 0) // Key before.
             {high = mid - 2;}
             else if(comparison > 0) // Key after.
@@ -502,8 +506,8 @@ namespace org.pdfclown.objects
             else // Key matched.
             {
               // We got it!
-              nodeChildren.Items.RemoveAt(mid + 1);
-              nodeChildren.Items.RemoveAt(mid);
+              nodeChildren.Items.RemoveAt(mid + 1); // Removes value.
+              nodeChildren.Items.RemoveAt(mid); // Removes key.
               if(mid == 0 || mid == nodeChildren.Items.Count) // Limits changed.
               {
                 // Update key limits!
@@ -541,9 +545,9 @@ namespace org.pdfclown.objects
             PdfReference kidReference = (PdfReference)nodeChildren.Items[mid];
             PdfDictionary kid = (PdfDictionary)kidReference.DataObject;
             PdfArray limits = (PdfArray)kid.Resolve(PdfName.Limits);
-            if(keyObject.CompareTo(limits[0]) < 0) // Before the lower limit.
+            if(key.CompareTo(limits[0]) < 0) // Before the lower limit.
             {high = mid - 1;}
-            else if(keyObject.CompareTo(limits[1]) > 0) // After the upper limit.
+            else if(key.CompareTo(limits[1]) > 0) // After the upper limit.
             {low = mid + 1;}
             else // Limit range matched.
             {
@@ -651,13 +655,12 @@ namespace org.pdfclown.objects
       }
     }
 
-    public TValue this[
+    public virtual TValue this[
       TKey key
       ]
     {
       get
       {
-        TKeyObject keyObject = WrapKey((TKey)key);
         PdfDictionary parent = BaseDataObject;
         while(true)
         {
@@ -671,7 +674,7 @@ namespace org.pdfclown.objects
                 return null;
 
               int mid = (mid = ((low + high) / 2)) - (mid % 2);
-              int comparison = keyObject.CompareTo(children.Items[mid]);
+              int comparison = key.CompareTo(children.Items[mid]);
               if(comparison < 0)
               {high = mid - 2;}
               else if(comparison > 0)
@@ -679,10 +682,7 @@ namespace org.pdfclown.objects
               else
               {
                 // We got it!
-                return Wrap(
-                  children.Items[mid + 1],
-                  (TKeyObject)children.Items[mid]
-                  );
+                return WrapValue(children.Items[mid + 1]);
               }
             }
           }
@@ -697,9 +697,9 @@ namespace org.pdfclown.objects
               int mid = (low + high) / 2;
               PdfDictionary kid = (PdfDictionary)children.Items.Resolve(mid);
               PdfArray limits = (PdfArray)kid.Resolve(PdfName.Limits);
-              if(keyObject.CompareTo(limits[0]) < 0)
+              if(key.CompareTo(limits[0]) < 0)
               {high = mid - 1;}
-              else if(keyObject.CompareTo(limits[1]) > 0)
+              else if(key.CompareTo(limits[1]) > 0)
               {low = mid + 1;}
               else
               {
@@ -712,10 +712,10 @@ namespace org.pdfclown.objects
         }
       }
       set
-      {Add(WrapKey(key), value, true);}
+      {Add(key, value, true);}
     }
 
-    public bool TryGetValue(
+    public virtual bool TryGetValue(
       TKey key,
       out TValue value
       )
@@ -724,7 +724,7 @@ namespace org.pdfclown.objects
       return value != null;
     }
 
-    public ICollection<TValue> Values
+    public virtual ICollection<TValue> Values
     {
       get
       {
@@ -740,7 +740,7 @@ namespace org.pdfclown.objects
       )
     {Add(keyValuePair.Key,keyValuePair.Value);}
 
-    public void Clear(
+    public virtual void Clear(
       )
     {Clear(BaseDataObject);}
 
@@ -749,31 +749,31 @@ namespace org.pdfclown.objects
       )
     {return keyValuePair.Value.Equals(this[keyValuePair.Key]);}
 
-    public void CopyTo(
+    public virtual void CopyTo(
       KeyValuePair<TKey,TValue>[] keyValuePairs,
       int index
       )
     {throw new NotImplementedException();}
 
-    public int Count
+    public virtual int Count
     {
       get
       {return GetCount(BaseDataObject);}
     }
 
-    public bool IsReadOnly
+    public virtual bool IsReadOnly
     {
       get
       {return false;}
     }
 
-    public bool Remove(
+    public virtual bool Remove(
       KeyValuePair<TKey,TValue> keyValuePair
       )
     {throw new NotSupportedException();}
 
     #region IEnumerable<KeyValuePair<TKey,TValue>>
-    public IEnumerator<KeyValuePair<TKey,TValue>> GetEnumerator(
+    public virtual IEnumerator<KeyValuePair<TKey,TValue>> GetEnumerator(
       )
     {return new Enumerator(this);}
 
@@ -799,16 +799,8 @@ namespace org.pdfclown.objects
     /**
       <summary>Wraps a base object within its corresponding high-level representation.</summary>
     */
-    protected abstract TValue Wrap(
-      PdfDirectObject baseObject,
-      TKeyObject keyObject
-      );
-
-    /**
-      <summary>Wraps a key value within a key object.</summary>
-    */
-    protected abstract TKeyObject WrapKey(
-      TKey key
+    protected abstract TValue WrapValue(
+      PdfDirectObject baseObject
       );
     #endregion
 
@@ -821,7 +813,7 @@ namespace org.pdfclown.objects
       key.</param>
     */
     private void Add(
-      TKeyObject key,
+      TKey key,
       TValue value,
       bool overwrite
       )
@@ -861,7 +853,7 @@ namespace org.pdfclown.objects
       <param name="nodeReference">Current node reference.</param>
     */
     private void Add(
-      TKeyObject key,
+      TKey key,
       TValue value,
       bool overwrite,
       PdfReference nodeReference

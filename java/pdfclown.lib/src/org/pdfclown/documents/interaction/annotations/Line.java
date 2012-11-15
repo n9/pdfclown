@@ -48,7 +48,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF13)
 public final class Line
@@ -168,7 +168,7 @@ public final class Line
     )
   {
     super(
-      page.getDocument(),
+      page,
       PdfName.Line,
       new Rectangle2D.Double(
         startPoint.getX(),
@@ -176,8 +176,7 @@ public final class Line
         endPoint.getX()-startPoint.getX(),
         endPoint.getY()-startPoint.getY()
         ),
-      text,
-      page
+      text
       );
     getBaseDataObject().put(
       PdfName.L,
@@ -187,7 +186,7 @@ public final class Line
     setEndPoint(endPoint);
   }
 
-  public Line(
+  Line(
     PdfDirectObject baseObject
     )
   {super(baseObject);}

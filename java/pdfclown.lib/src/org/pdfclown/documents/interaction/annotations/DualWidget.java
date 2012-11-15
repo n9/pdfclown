@@ -80,7 +80,7 @@ public final class DualWidget
       );
   }
 
-  public DualWidget(
+  DualWidget(
     PdfDirectObject baseObject
     )
   {super(baseObject);}

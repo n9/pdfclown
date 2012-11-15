@@ -12,13 +12,13 @@ import org.pdfclown.files.File;
   This sample is a <b>minimalist introduction to the use of PDF Clown</b>.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class HelloWorldSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. Instantiate a new PDF file!
@@ -34,8 +34,6 @@ public class HelloWorldSample
 
     // 4. Serialize the PDF file!
     serialize(file, "Hello world", "a simple 'hello world'");
-
-    return true;
   }
 
   /**

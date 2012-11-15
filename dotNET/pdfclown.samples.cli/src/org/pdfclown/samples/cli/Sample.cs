@@ -20,15 +20,24 @@ namespace org.pdfclown.samples.cli
     #region fields
     private string inputPath;
     private string outputPath;
+
+    private bool quit;
     #endregion
 
     #region interface
     #region public
     /**
+      <summary>Gets whether the sample was exited before its completion.</summary>
+    */
+    public bool IsQuit(
+      )
+    {return quit;}
+
+    /**
       <summary>Executes the sample.</summary>
       <returns>Whether the sample has been completed.</returns>
     */
-    public abstract bool Run(
+    public abstract void Run(
       );
     #endregion
 
@@ -38,16 +47,31 @@ namespace org.pdfclown.samples.cli
       )
     {return new String(' ',level);}
 
-    protected string InputPath
-    {
-      get
-      {return inputPath;}
-    }
+    /**
+      <summary>Gets the path used to serialize output files.</summary>
+      <param name="fileName">Relative output file path.</param>
+    */
+    protected string GetOutputPath(
+      string fileName
+      )
+    {return outputPath + (fileName != null ? Path.DirectorySeparatorChar + fileName : "");}
 
+    /**
+      <summary>Gets the path to a sample resource.</summary>
+      <param name="resourceName">Relative resource path.</param>
+    */
+    protected string GetResourcePath(
+      string resourceName
+      )
+    {return inputPath + Path.DirectorySeparatorChar + resourceName;}
+
+    /**
+      <summary>Gets the path used to serialize output files.</summary>
+    */
     protected string OutputPath
     {
       get
-      {return outputPath;}
+      {return GetOutputPath(null);}
     }
 
     /**
@@ -183,6 +207,13 @@ namespace org.pdfclown.samples.cli
 
       return pageIndex;
     }
+
+    /**
+      <summary>Indicates that the sample was exited before its completion.</summary>
+    */
+    protected void Quit(
+      )
+    {quit = true;}
 
     /**
       <summary>Serializes the given PDF Clown file object.</summary>
@@ -345,8 +376,11 @@ namespace org.pdfclown.samples.cli
       view.DisplayDocTitle = true;
 
       // Document metadata.
-      Information info = new Information(document);
-      document.Information = info;
+      Information info = document.Information;
+      if(info == null)
+      {document.Information = info = new Information(document);}
+      else
+      {info.Clear();}
       info.Author = "Stefano Chizzolini";
       info.CreationDate = DateTime.Now;
       info.Creator = GetType().FullName;

@@ -36,6 +36,7 @@ import org.pdfclown.documents.contents.ContentScanner;
 import org.pdfclown.documents.contents.ExtGState;
 import org.pdfclown.documents.contents.IContentContext;
 import org.pdfclown.documents.contents.LineCapEnum;
+import org.pdfclown.documents.contents.LineDash;
 import org.pdfclown.documents.contents.LineJoinEnum;
 import org.pdfclown.documents.contents.PropertyList;
 import org.pdfclown.documents.contents.ResourceItems;
@@ -99,7 +100,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 public final class PrimitiveComposer
 {
@@ -167,7 +168,7 @@ public final class PrimitiveComposer
 
   /**
     Applies the specified state parameters [PDF:1.6:4.3.4].
-  
+
     @param name Resource identifier of the state parameters object.
   */
   public void applyState(
@@ -186,7 +187,7 @@ public final class PrimitiveComposer
     <p>The <code>value</code> is checked for presence in the current resource
     dictionary: if it isn't available, it's automatically added. If you need to
     avoid such a behavior, use {@link #applyState(PdfName) #applyState(PdfName)}.</p>
-  
+
     @param state State parameters object.
   */
   public void applyState(
@@ -287,7 +288,7 @@ public final class PrimitiveComposer
     )
   {
     // Doesn't the property list exist in the context resources?
-    if(!scanner.getContentContext().getResources().getPropertyLists().containsKey(propertyListName))
+    if(propertyListName != null && !scanner.getContentContext().getResources().getPropertyLists().containsKey(propertyListName))
       throw new IllegalArgumentException("No property list resource associated to the given argument (name:'name'; value:'" + propertyListName + "';)");
 
     return beginMarkedContent_(tag, propertyListName);
@@ -802,29 +803,11 @@ public final class PrimitiveComposer
 
   /**
     Sets the line dash pattern [PDF:1.6:4.3.2].
-
-    @param phase Distance into the dash pattern at which to start the dash.
-    @param unitsOn Length of evenly alternating dashes and gaps.
   */
   public void setLineDash(
-    int phase,
-    int unitsOn
+    LineDash value
     )
-  {setLineDash(phase,unitsOn,unitsOn);}
-
-  /**
-    Sets the line dash pattern [PDF:1.6:4.3.2].
-
-    @param phase Distance into the dash pattern at which to start the dash.
-    @param unitsOn Length of dashes.
-    @param unitsOff Length of gaps.
-  */
-  public void setLineDash(
-    int phase,
-    int unitsOn,
-    int unitsOff
-    )
-  {add(new SetLineDash(phase,unitsOn,unitsOff));}
+  {add(new SetLineDash(value));}
 
   /**
     Sets the line join style [PDF:1.6:4.3.2].

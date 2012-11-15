@@ -30,10 +30,15 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.files.FileSpecification;
 import org.pdfclown.documents.interaction.actions.JavaScript;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
+import org.pdfclown.documents.multimedia.Rendition;
+import org.pdfclown.objects.ICompositeMap;
+import org.pdfclown.objects.NameTree;
+import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
+import org.pdfclown.objects.PdfString;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -41,11 +46,12 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF12)
 public final class Names
   extends PdfObjectWrapper<PdfDictionary>
+  implements ICompositeMap<PdfString>
 {
   // <class>
   // <dynamic>
@@ -75,6 +81,8 @@ public final class Names
   @PDF(VersionEnum.PDF12)
   public NamedDestinations getDestinations(
     )
+//TODO: virtual indirect reference to be managed!
+//  {return new NamedDestinations(getBaseDataObject().get(PdfName.Dests, PdfDictionary.class));}
   {
     PdfDirectObject destinationsObject = getBaseDataObject().get(PdfName.Dests);
     return destinationsObject != null ? new NamedDestinations(destinationsObject) : null;
@@ -86,6 +94,8 @@ public final class Names
   @PDF(VersionEnum.PDF14)
   public NamedEmbeddedFiles getEmbeddedFiles(
     )
+//TODO: virtual indirect reference to be managed!
+//  {return new NamedEmbeddedFiles(getBaseDataObject().get(PdfName.EmbeddedFiles, PdfDictionary.class));}
   {
     PdfDirectObject embeddedFilesObject = getBaseDataObject().get(PdfName.EmbeddedFiles);
     return embeddedFilesObject != null ? new NamedEmbeddedFiles(embeddedFilesObject) : null;
@@ -97,25 +107,24 @@ public final class Names
   @PDF(VersionEnum.PDF13)
   public NamedJavaScripts getJavaScripts(
     )
+//TODO: virtual indirect reference to be managed!
+//  {return new NamedJavaScripts(getBaseDataObject().get(PdfName.JavaScript, PdfDictionary.class));}
   {
     PdfDirectObject javaScriptsObject = getBaseDataObject().get(PdfName.JavaScript);
     return javaScriptsObject != null ? new NamedJavaScripts(javaScriptsObject) : null;
   }
 
-  @SuppressWarnings("unchecked")
-  public <T extends PdfObjectWrapper<?>> T resolve(
-    Class<T> type,
-    String name
+  /**
+    Gets the named renditions.
+  */
+  @PDF(VersionEnum.PDF15)
+  public NamedRenditions getRenditions(
     )
+//TODO: virtual indirect reference to be managed!
+//  {return new NamedRenditions(getBaseDataObject().get(PdfName.Renditions, PdfDictionary.class));}
   {
-    if(Destination.class.isAssignableFrom(type))
-      return (T)getDestinations().get(name);
-    else if(FileSpecification.class.isAssignableFrom(type))
-      return (T)getEmbeddedFiles().get(name);
-    else if(JavaScript.class.isAssignableFrom(type))
-      return (T)getJavaScripts().get(name);
-    else
-      throw new UnsupportedOperationException("Named type '" + type.getName() + "' is not supported.");
+    PdfDirectObject renditionsObject = getBaseDataObject().get(PdfName.Renditions);
+    return renditionsObject != null ? new NamedRenditions(renditionsObject) : null;
   }
 
   /**
@@ -124,7 +133,7 @@ public final class Names
   public void setDestinations(
     NamedDestinations value
     )
-  {getBaseDataObject().put(PdfName.Dests,value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.Dests, value.getBaseObject());}
 
   /**
     @see #getEmbeddedFiles()
@@ -132,7 +141,7 @@ public final class Names
   public void setEmbeddedFiles(
     NamedEmbeddedFiles value
     )
-  {getBaseDataObject().put(PdfName.EmbeddedFiles,value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.EmbeddedFiles, value.getBaseObject());}
 
   /**
     @see #getJavaScripts()
@@ -140,7 +149,42 @@ public final class Names
   public void setJavaScripts(
     NamedJavaScripts value
     )
-  {getBaseDataObject().put(PdfName.JavaScript,value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.JavaScript, value.getBaseObject());}
+
+  /**
+    @see #getRenditions()
+  */
+  public void setRenditions(
+    NamedRenditions value
+    )
+  {getBaseDataObject().put(PdfName.Renditions, value.getBaseObject());}
+
+  // <ICompositeMap>
+  @Override
+  @SuppressWarnings("unchecked")
+  public <T extends PdfObjectWrapper<? extends PdfDataObject>> NameTree<T> get(
+    Class<T> type
+    )
+  {
+    if(Destination.class.isAssignableFrom(type))
+      return (NameTree<T>)getDestinations();
+    else if(FileSpecification.class.isAssignableFrom(type))
+      return (NameTree<T>)getEmbeddedFiles();
+    else if(JavaScript.class.isAssignableFrom(type))
+      return (NameTree<T>)getJavaScripts();
+    else if(Rendition.class.isAssignableFrom(type))
+      return (NameTree<T>)getRenditions();
+    else
+      return null;
+  }
+
+  @Override
+  public <T extends PdfObjectWrapper<? extends PdfDataObject>> T get(
+    Class<T> type,
+    PdfString key
+    )
+  {return get(type).get(key);}
+  // </ICompositeMap>
   // </public>
   // </interface>
   // </dynamic>

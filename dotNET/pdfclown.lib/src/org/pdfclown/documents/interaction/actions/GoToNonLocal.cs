@@ -65,7 +65,7 @@ namespace org.pdfclown.documents.interaction.actions
     public virtual FileSpecification DestinationFile
     {
       get
-      {return FileSpecification.Wrap(BaseDataObject[PdfName.F], null);}
+      {return FileSpecification.Wrap(BaseDataObject[PdfName.F]);}
       set
       {BaseDataObject[PdfName.F] = (value != null ? value.BaseObject : null);}
     }

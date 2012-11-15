@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF13)
 public final class FileAttachment
@@ -131,11 +131,11 @@ public final class FileAttachment
     FileSpecification<?> dataFile
     )
   {
-    super(page.getDocument(), PdfName.FileAttachment, box, text, page);
+    super(page, PdfName.FileAttachment, box, text);
     setDataFile(dataFile);
   }
 
-  public FileAttachment(
+  FileAttachment(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -171,7 +171,7 @@ public final class FileAttachment
   @Override
   public FileSpecification<?> getDataFile(
     )
-  {return FileSpecification.wrap(getBaseDataObject().get(PdfName.FS), null);}
+  {return FileSpecification.wrap(getBaseDataObject().get(PdfName.FS));}
 
   @Override
   public void setDataFile(

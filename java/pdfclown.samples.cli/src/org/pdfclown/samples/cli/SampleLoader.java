@@ -15,7 +15,7 @@ import java.util.Scanner;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.1
-  @version 0.1.2, 11/28/11
+  @version 0.1.2, 09/24/12
 */
 public class SampleLoader
 {
@@ -137,7 +137,8 @@ public class SampleLoader
       // Run the sample!
       try
       {
-        if(sample.run())
+        sample.run();
+        if(!sample.isQuit())
         {Utils.prompt("Sample finished.");}
       }
       catch(Exception e)

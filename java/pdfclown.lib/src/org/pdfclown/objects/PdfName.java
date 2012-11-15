@@ -36,7 +36,7 @@ import org.pdfclown.tokens.Keyword;
   PDF name object [PDF:1.6:3.2.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 public final class PdfName
   extends PdfSimpleObject<String>
@@ -71,6 +71,7 @@ public final class PdfName
   public static final PdfName AllOff = new PdfName("AllOff");
   public static final PdfName AllOn = new PdfName("AllOn");
   public static final PdfName AllPages = new PdfName("AllPages");
+  public static final PdfName AN = new PdfName("AN");
   public static final PdfName Annot = new PdfName("Annot");
   public static final PdfName Annotation = new PdfName("Annotation");
   public static final PdfName Annots = new PdfName("Annots");
@@ -91,6 +92,7 @@ public final class PdfName
   public static final PdfName BaseState = new PdfName("BaseState");
   public static final PdfName BBox = new PdfName("BBox");
   public static final PdfName BC = new PdfName("BC");
+  public static final PdfName BE = new PdfName("BE");
   public static final PdfName BG = new PdfName("BG");
   public static final PdfName BitsPerComponent = new PdfName("BitsPerComponent");
   public static final PdfName BitsPerSample = new PdfName("BitsPerSample");
@@ -105,6 +107,7 @@ public final class PdfName
   public static final PdfName BPC = new PdfName("BPC");
   public static final PdfName BS = new PdfName("BS");
   public static final PdfName Btn = new PdfName("Btn");
+  public static final PdfName BU = new PdfName("BU");
   public static final PdfName Butt = new PdfName("Butt");
   public static final PdfName C = new PdfName("C");
   public static final PdfName C0 = new PdfName("C0");
@@ -148,6 +151,7 @@ public final class PdfName
   public static final PdfName CropBox = new PdfName("CropBox");
   public static final PdfName Crypt = new PdfName("Crypt");
   public static final PdfName CS = new PdfName("CS");
+  public static final PdfName CT = new PdfName("CT");
   public static final PdfName D = new PdfName("D");
   public static final PdfName DA = new PdfName("DA");
   public static final PdfName Darken = new PdfName("Darken");
@@ -240,6 +244,7 @@ public final class PdfName
   public static final PdfName FullScreen = new PdfName("FullScreen");
   public static final PdfName Functions = new PdfName("Functions");
   public static final PdfName FunctionType = new PdfName("FunctionType");
+  public static final PdfName FWParams = new PdfName("FWParams");
   public static final PdfName Gamma = new PdfName("Gamma");
   public static final PdfName Glitter = new PdfName("Glitter");
   public static final PdfName GoTo = new PdfName("GoTo");
@@ -252,6 +257,7 @@ public final class PdfName
   public static final PdfName HardLight = new PdfName("HardLight");
   public static final PdfName Height = new PdfName("Height");
   public static final PdfName Help = new PdfName("Help");
+  public static final PdfName HI = new PdfName("HI");
   public static final PdfName Hide = new PdfName("Hide");
   public static final PdfName HideMenubar = new PdfName("HideMenubar");
   public static final PdfName HideToolbar = new PdfName("HideToolbar");
@@ -297,6 +303,7 @@ public final class PdfName
   public static final PdfName LE = new PdfName("LE");
   public static final PdfName Leading = new PdfName("Leading");
   public static final PdfName Length = new PdfName("Length");
+  public static final PdfName LI = new PdfName("LI");
   public static final PdfName Lighten = new PdfName("Lighten");
   public static final PdfName Limits = new PdfName("Limits");
   public static final PdfName Line = new PdfName("Line");
@@ -316,8 +323,17 @@ public final class PdfName
   public static final PdfName Matrix = new PdfName("Matrix");
   public static final PdfName max = new PdfName("max");
   public static final PdfName MaxLen = new PdfName("MaxLen");
+  public static final PdfName MCD = new PdfName("MCD");
+  public static final PdfName MCS = new PdfName("MCS");
   public static final PdfName MediaBox = new PdfName("MediaBox");
+  public static final PdfName MediaClip = new PdfName("MediaClip");
+  public static final PdfName MediaDuration = new PdfName("MediaDuration");
+  public static final PdfName MediaOffset = new PdfName("MediaOffset");
+  public static final PdfName MediaPlayerInfo = new PdfName("MediaPlayerInfo");
+  public static final PdfName MediaPlayParams = new PdfName("MediaPlayParams");
+  public static final PdfName MediaScreenParams = new PdfName("MediaScreenParams");
   public static final PdfName Metadata = new PdfName("Metadata");
+  public static final PdfName MH = new PdfName("MH");
   public static final PdfName Mic = new PdfName("Mic");
   public static final PdfName min = new PdfName("min");
   public static final PdfName MissingWidth = new PdfName("MissingWidth");
@@ -326,6 +342,8 @@ public final class PdfName
   public static final PdfName MMType1 = new PdfName("MMType1");
   public static final PdfName ModDate = new PdfName("ModDate");
   public static final PdfName Movie = new PdfName("Movie");
+  public static final PdfName MR = new PdfName("MR");
+  public static final PdfName MU = new PdfName("MU");
   public static final PdfName Multiply = new PdfName("Multiply");
   public static final PdfName N = new PdfName("N");
   public static final PdfName Name = new PdfName("Name");
@@ -341,6 +359,7 @@ public final class PdfName
   public static final PdfName NotApproved = new PdfName("NotApproved");
   public static final PdfName Note = new PdfName("Note");
   public static final PdfName NotForPublicRelease = new PdfName("NotForPublicRelease");
+  public static final PdfName NU = new PdfName("NU");
   public static final PdfName Nums = new PdfName("Nums");
   public static final PdfName O = new PdfName("O");
   public static final PdfName ObjStm = new PdfName("ObjStm");
@@ -353,6 +372,7 @@ public final class PdfName
   public static final PdfName Off = new PdfName("Off");
   public static final PdfName ON = new PdfName("ON");
   public static final PdfName OneColumn = new PdfName("OneColumn");
+  public static final PdfName OP = new PdfName("OP");
   public static final PdfName Open = new PdfName("Open");
   public static final PdfName OpenAction = new PdfName("OpenAction");
   public static final PdfName OpenArrow = new PdfName("OpenArrow");
@@ -360,6 +380,7 @@ public final class PdfName
   public static final PdfName Opt = new PdfName("Opt");
   public static final PdfName Order = new PdfName("Order");
   public static final PdfName Ordering = new PdfName("Ordering");
+  public static final PdfName OS = new PdfName("OS");
   public static final PdfName Outlines = new PdfName("Outlines");
   public static final PdfName Overlay = new PdfName("Overlay");
   public static final PdfName P = new PdfName("P");
@@ -379,6 +400,8 @@ public final class PdfName
   public static final PdfName PC = new PdfName("PC");
   public static final PdfName PDFDocEncoding = new PdfName("PdfDocEncoding");
   public static final PdfName PI = new PdfName("PI");
+  public static final PdfName PID = new PdfName("PID");
+  public static final PdfName PL = new PdfName("PL");
   public static final PdfName PO = new PdfName("PO");
   public static final PdfName Polygon = new PdfName("Polygon");
   public static final PdfName PolyLine = new PdfName("PolyLine");
@@ -405,6 +428,7 @@ public final class PdfName
   public static final PdfName Rect = new PdfName("Rect");
   public static final PdfName Registry = new PdfName("Registry");
   public static final PdfName Rendition = new PdfName("Rendition");
+  public static final PdfName Renditions = new PdfName("Renditions");
   public static final PdfName ResetForm = new PdfName("ResetForm");
   public static final PdfName Resources = new PdfName("Resources");
   public static final PdfName RF = new PdfName("RF");
@@ -414,6 +438,7 @@ public final class PdfName
   public static final PdfName Root = new PdfName("Root");
   public static final PdfName ROpenArrow = new PdfName("ROpenArrow");
   public static final PdfName Rotate = new PdfName("Rotate");
+  public static final PdfName RT = new PdfName("RT");
   public static final PdfName RunLengthDecode = new PdfName("RunLengthDecode");
   public static final PdfName S = new PdfName("S");
   public static final PdfName Saturation = new PdfName("Saturation");
@@ -428,10 +453,12 @@ public final class PdfName
   public static final PdfName SoftLight = new PdfName("SoftLight");
   public static final PdfName Sold = new PdfName("Sold");
   public static final PdfName Sound = new PdfName("Sound");
+  public static final PdfName SP = new PdfName("SP");
   public static final PdfName Speaker = new PdfName("Speaker");
   public static final PdfName Split = new PdfName("Split");
   public static final PdfName Square = new PdfName("Square");
   public static final PdfName Squiggly = new PdfName("Squiggly");
+  public static final PdfName SR = new PdfName("SR");
   public static final PdfName SS = new PdfName("SS");
   public static final PdfName St = new PdfName("St");
   public static final PdfName Stamp = new PdfName("Stamp");
@@ -450,8 +477,10 @@ public final class PdfName
   public static final PdfName Tabs = new PdfName("Tabs");
   public static final PdfName Tag = new PdfName("Tag");
   public static final PdfName Text = new PdfName("Text");
+  public static final PdfName TF = new PdfName("TF");
   public static final PdfName Thread = new PdfName("Thread");
   public static final PdfName TilingType = new PdfName("TilingType");
+  public static final PdfName Timespan = new PdfName("Timespan");
   public static final PdfName Title = new PdfName("Title");
   public static final PdfName Toggle = new PdfName("Toggle");
   public static final PdfName TopSecret = new PdfName("TopSecret");
@@ -471,6 +500,7 @@ public final class PdfName
   public static final PdfName Type1C = new PdfName("Type1C");
   public static final PdfName Type3 = new PdfName("Type3");
   public static final PdfName U = new PdfName("U");
+  public static final PdfName UC = new PdfName("UC");
   public static final PdfName Unchanged = new PdfName("Unchanged");
   public static final PdfName Uncover = new PdfName("Uncover");
   public static final PdfName Underline = new PdfName("Underline");
@@ -508,6 +538,7 @@ public final class PdfName
   public static final PdfName XYZ = new PdfName("XYZ");
   public static final PdfName Yes = new PdfName("Yes");
   public static final PdfName YStep = new PdfName("YStep");
+  public static final PdfName Z = new PdfName("Z");
   public static final PdfName Zoom = new PdfName("Zoom");
 
   private static final byte[] NamePrefixChunk = org.pdfclown.tokens.Encoding.Pdf.encode(Keyword.NamePrefix);
@@ -555,6 +586,13 @@ public final class PdfName
 
   // <interface>
   // <public>
+  @Override
+  public boolean accept(
+    IVisitor visitor,
+    Object data
+    )
+  {return visitor.visit(this, data);}
+
   @Override
   public int compareTo(
     PdfDirectObject obj

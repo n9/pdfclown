@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,7 +31,6 @@ import org.pdfclown.documents.interaction.actions.Action;
 import org.pdfclown.documents.interaction.actions.JavaScript;
 import org.pdfclown.objects.NameTree;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfString;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -39,7 +38,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF13)
 public final class NamedJavaScripts
@@ -70,11 +69,10 @@ public final class NamedJavaScripts
 
   // <protected>
   @Override
-  protected JavaScript wrap(
-    PdfDirectObject baseObject,
-    PdfString name
+  protected JavaScript wrapValue(
+    PdfDirectObject baseObject
     )
-  {return (JavaScript)Action.wrap(baseObject, name);}
+  {return (JavaScript)Action.wrap(baseObject);}
   // </protected>
   // </interface>
   // </dynamic>

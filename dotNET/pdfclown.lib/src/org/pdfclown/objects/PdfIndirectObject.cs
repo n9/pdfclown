@@ -92,6 +92,12 @@ namespace org.pdfclown.objects
 
     #region interface
     #region public
+    public override bool Accept(
+      IVisitor visitor,
+      object data
+      )
+    {return visitor.Visit(this, data);}
+
     /**
       <summary>Adds the <see cref="DataObject">data object</see> to the specified object stream
       [PDF:1.6:3.4.6].</summary>
@@ -237,7 +243,7 @@ namespace org.pdfclown.objects
     public override object Clone(
       File context
       )
-    {return context.IndirectObjects.Add(this);}
+    {return context.IndirectObjects.AddExternal(this);}
 
     public PdfDataObject DataObject
     {

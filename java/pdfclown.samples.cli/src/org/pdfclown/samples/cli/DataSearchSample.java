@@ -1,6 +1,7 @@
 package org.pdfclown.samples.cli;
 
 import java.io.EOFException;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -29,46 +30,58 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 09/24/12
 */
 public class DataSearchSample
   extends Sample
 {
 
   @Override
-  public boolean run()
+  public void run()
   {
-    // 1. Opening the PDF file...
-    File file;
+    File file = null;
+    try
     {
-      String filePath = promptFileChoice("Please select a PDF file");
-      try
-      {file = new File(filePath);}
-      catch(Exception e)
-      {throw new RuntimeException(filePath + " file access error.",e);}
+      // 1. Opening the PDF file...
+      {
+        String filePath = promptFileChoice("Please select a PDF file");
+        try
+        {file = new File(filePath);}
+        catch(Exception e)
+        {throw new RuntimeException(filePath + " file access error.",e);}
+      }
+
+      // 2. Define the text pattern to look for!
+      String textRegEx = promptChoice("Please enter the pattern to look for: ");
+      Pattern pattern = Pattern.compile(textRegEx, Pattern.CASE_INSENSITIVE);
+
+      // 3. Search.
+      /*
+        NOTE: In order to navigate through the file data, we can either (a) descend from the document
+        root or (b) iterate through the indirect objects collection.
+      */
+      // 3.a. Searching from the document root object.
+      System.out.println("We can alternatively search starting from the document root object or iterating through the file's indirect objects collection.");
+      System.out.println("\nApproach 1: Search starting from the document root object...");
+      search(pattern, file.getDocument().getBaseObject(), "", new HashSet<PdfReference>());
+
+      // 3.b. Searching through the file's indirect objects.
+      System.out.println("\nApproach 2: Search iterating through the file's indirect objects collection...");
+      Set<PdfReference> visitedReferences = new HashSet<PdfReference>();
+      for(PdfIndirectObject object : file.getIndirectObjects())
+      {search(pattern, object.getReference(), "", visitedReferences);}
     }
-
-    // 2. Define the text pattern to look for!
-    String textRegEx = promptChoice("Please enter the pattern to look for: ");
-    Pattern pattern = Pattern.compile(textRegEx, Pattern.CASE_INSENSITIVE);
-
-    // 3. Search.
-    /*
-      NOTE: In order to navigate through the file data, we can either (a) descend from the document
-      root or (b) iterate through the indirect objects collection.
-    */
-    // 3.a. Searching from the document root object.
-    System.out.println("We can alternatively search starting from the document root object or iterating through the file's indirect objects collection.");
-    System.out.println("\nApproach 1: Search starting from the document root object...");
-    search(pattern, file.getDocument().getBaseObject(), "", new HashSet<PdfReference>());
-
-    // 3.b. Searching through the file's indirect objects.
-    System.out.println("\nApproach 2: Search iterating through the file's indirect objects collection...");
-    Set<PdfReference> visitedReferences = new HashSet<PdfReference>();
-    for(PdfIndirectObject object : file.getIndirectObjects())
-    {search(pattern, object.getReference(), "", visitedReferences);}
-
-    return true;
+    finally
+    {
+      // 4. Closing the PDF file...
+      if(file != null)
+      {
+        try
+        {file.close();}
+        catch(IOException e)
+        {/* NOOP */}
+      }
+    }
   }
 
   private void search(

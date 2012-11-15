@@ -14,7 +14,7 @@ namespace org.pdfclown.samples.cli
   public class TextFrameSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Instantiate a new PDF file!
@@ -26,8 +26,6 @@ namespace org.pdfclown.samples.cli
 
       // 3. Serialize the PDF file!
       Serialize(file, "Text frame", "getting the actual bounding box of text shown");
-
-      return true;
     }
 
     /**
@@ -86,7 +84,7 @@ namespace org.pdfclown.samples.cli
       composer.SetFont(
         fonts::Font.Get(
           document,
-          InputPath + System.IO.Path.DirectorySeparatorChar + "fonts" + System.IO.Path.DirectorySeparatorChar + "Ruritania-Outline.ttf"
+          GetResourcePath("fonts" + System.IO.Path.DirectorySeparatorChar + "Ruritania-Outline.ttf")
           ),
         102
         );

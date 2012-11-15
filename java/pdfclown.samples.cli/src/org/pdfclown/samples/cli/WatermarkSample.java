@@ -22,13 +22,13 @@ import org.pdfclown.tools.PageStamper;
   <p>The watermark is seamlessly inserted under each page content using the PageStamper class.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class WatermarkSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. Opening the PDF file...
@@ -50,8 +50,6 @@ public class WatermarkSample
 
     // 4. Serialize the PDF file!
     serialize(file, "Watermark", "how to place some content behind existing pages");
-
-    return true;
   }
 
   private void applyWatermark(

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,45 +33,28 @@ namespace org.pdfclown.util.math
   public sealed class Interval<T>
     where T : IComparable<T>
   {
-    /**
-      <summary>Containment mode.</summary>
-    */
-    public enum ContainModeEnum
-    {
-      Inclusive,
-      Exclusive
-    }
-
-    private ContainModeEnum containMode;
-    private T low = default(T);
     private T high = default(T);
+    private bool highInclusive;
+    private T low = default(T);
+    private bool lowInclusive;
 
     public Interval(
       T low,
       T high
-      ) : this(low, high, ContainModeEnum.Inclusive)
+      ) : this(low, high, true, true)
     {}
 
     public Interval(
       T low,
       T high,
-      ContainModeEnum containMode
+      bool lowInclusive,
+      bool highInclusive
       )
     {
       this.low = low;
       this.high = high;
-      this.containMode = containMode;
-    }
-
-    /**
-      <summary>Gets the way a value must be compared for containment against this interval's endpoints.</summary>
-    */
-    public ContainModeEnum ContainMode
-    {
-      get
-      {return containMode;}
-      set
-      {containMode = value;}
+      this.lowInclusive = lowInclusive;
+      this.highInclusive = highInclusive;
     }
 
     /**
@@ -82,16 +65,16 @@ namespace org.pdfclown.util.math
       T value
       )
     {
-      int lowCompare = low.CompareTo(value);
-      int highCompare = high.CompareTo(value);
+      int lowCompare = (low != null ? low.CompareTo(value) : -1);
+      int highCompare = (high != null ? high.CompareTo(value) : 1);
       return (lowCompare < 0
-          || (lowCompare == 0 && containMode == ContainModeEnum.Inclusive))
+          || (lowCompare == 0 && lowInclusive))
         && (highCompare > 0
-          || (highCompare == 0 && containMode == ContainModeEnum.Inclusive));
+          || (highCompare == 0 && highInclusive));
     }
 
     /**
-      <summary>Gets the higher interval endpoint.</summary>
+      <summary>Gets/Sets the higher interval endpoint.</summary>
     */
     public T High
     {
@@ -102,7 +85,18 @@ namespace org.pdfclown.util.math
     }
 
     /**
-      <summary>Gets the lower interval endpoint.</summary>
+      <summary>Gets/Sets whether the higher endpoint is inclusive.</summary>
+    */
+    public bool HighInclusive
+    {
+      get
+      {return highInclusive;}
+      set
+      {highInclusive = value;}
+    }
+
+    /**
+      <summary>Gets/Sets the lower interval endpoint.</summary>
     */
     public T Low
     {
@@ -110,6 +104,17 @@ namespace org.pdfclown.util.math
       {return low;}
       set
       {low = value;}
+    }
+
+    /**
+      <summary>Gets/Sets whether the lower endpoint is inclusive.</summary>
+    */
+    public bool LowInclusive
+    {
+      get
+      {return lowInclusive;}
+      set
+      {lowInclusive = value;}
     }
   }
 }

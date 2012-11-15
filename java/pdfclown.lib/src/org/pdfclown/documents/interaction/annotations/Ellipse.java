@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF13)
 public final class Ellipse
@@ -57,7 +57,7 @@ public final class Ellipse
     )
   {super(page, box, text, PdfName.Circle);}
 
-  public Ellipse(
+  Ellipse(
     PdfDirectObject baseObject
     )
   {super(baseObject);}

@@ -16,13 +16,13 @@ import org.pdfclown.objects.PdfName;
   by PDF Clown (you don't need to work at the low level shown here!).</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 public class PrimitiveObjectSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. Opening the PDF file...
@@ -64,7 +64,5 @@ public class PrimitiveObjectSample
 
     // 3. Serialize the PDF file!
     serialize(file, "Primitive objects", "manipulating a document at primitive object level");
-
-    return true;
   }
 }

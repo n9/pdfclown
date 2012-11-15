@@ -66,7 +66,7 @@ import org.pdfclown.util.parsers.ParseException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 01/26/12
+  @version 0.1.2, 09/24/12
 */
 public final class ContentParser
   extends BaseParser
@@ -184,6 +184,10 @@ public final class ContentParser
           (String)getToken(),
           PdfString.SerializationModeEnum.Hex
           );
+      default:
+      {
+        /* NOOP */
+      }
     }
     return (PdfDirectObject)super.parsePdfObject();
   }

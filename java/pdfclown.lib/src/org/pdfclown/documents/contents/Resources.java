@@ -33,6 +33,8 @@ import org.pdfclown.documents.contents.colorSpaces.Pattern;
 import org.pdfclown.documents.contents.colorSpaces.Shading;
 import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.documents.contents.xObjects.XObject;
+import org.pdfclown.objects.ICompositeMap;
+import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -42,16 +44,13 @@ import org.pdfclown.objects.PdfObjectWrapper;
   Resources collection [PDF:1.6:3.7.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Resources
   extends PdfObjectWrapper<PdfDictionary>
+  implements ICompositeMap<PdfName>
 {
-/*
- TODO:create a mechanism for parameterizing resource retrieval/assignment
- based on the tuple <Class resourceClass, PdfName resourceName> -- see Names class!
-*/
   // <class>
   // <static>
   // <interface>
@@ -82,35 +81,6 @@ public final class Resources
     Document context
     )
   {return new Resources((PdfDirectObject)getBaseObject().clone(context.getFile()));}
-
-  @SuppressWarnings("unchecked")
-  public <T extends PdfObjectWrapper<?>> ResourceItems<T> get(
-    Class<T> resourceClass
-    )
-  {
-    if(ColorSpace.class.isAssignableFrom(resourceClass))
-      return (ResourceItems<T>)getColorSpaces();
-    else if(ExtGState.class.isAssignableFrom(resourceClass))
-      return (ResourceItems<T>)getExtGStates();
-    else if(Font.class.isAssignableFrom(resourceClass))
-      return (ResourceItems<T>)getFonts();
-    else if(Pattern.class.isAssignableFrom(resourceClass))
-      return (ResourceItems<T>)getPatterns();
-    else if(PropertyList.class.isAssignableFrom(resourceClass))
-      return (ResourceItems<T>)getPropertyLists();
-    else if(Shading.class.isAssignableFrom(resourceClass))
-      return (ResourceItems<T>)getShadings();
-    else if(XObject.class.isAssignableFrom(resourceClass))
-      return (ResourceItems<T>)getXObjects();
-    else
-      throw new IllegalArgumentException("'resourceClass' parameter value does NOT represent a valid resource class.");
-  }
-
-  public <T extends PdfObjectWrapper<?>> T get(
-    PdfName name,
-    Class<T> resourceClass
-    )
-  {return get(resourceClass).get(name);}
 
   public ColorSpaceResources getColorSpaces(
     )
@@ -182,6 +152,39 @@ public final class Resources
     XObjectResources value
     )
   {getBaseDataObject().put(PdfName.XObject,value.getBaseObject());}
+
+  // <ICompositeMap>
+  @Override
+  @SuppressWarnings("unchecked")
+  public <T extends PdfObjectWrapper<? extends PdfDataObject>> ResourceItems<T> get(
+    Class<T> type
+    )
+  {
+    if(ColorSpace.class.isAssignableFrom(type))
+      return (ResourceItems<T>)getColorSpaces();
+    else if(ExtGState.class.isAssignableFrom(type))
+      return (ResourceItems<T>)getExtGStates();
+    else if(Font.class.isAssignableFrom(type))
+      return (ResourceItems<T>)getFonts();
+    else if(Pattern.class.isAssignableFrom(type))
+      return (ResourceItems<T>)getPatterns();
+    else if(PropertyList.class.isAssignableFrom(type))
+      return (ResourceItems<T>)getPropertyLists();
+    else if(Shading.class.isAssignableFrom(type))
+      return (ResourceItems<T>)getShadings();
+    else if(XObject.class.isAssignableFrom(type))
+      return (ResourceItems<T>)getXObjects();
+    else
+      return null;
+  }
+
+  @Override
+  public <T extends PdfObjectWrapper<? extends PdfDataObject>> T get(
+    Class<T> type,
+    PdfName key
+    )
+  {return get(type).get(key);}
+  // </ICompositeMap>
   // </public>
   // </interface>
   // </dynamic>

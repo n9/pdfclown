@@ -62,9 +62,16 @@ namespace org.pdfclown.objects
 
     #region constructors
     /**
-      <summary>Instantiates a wrapper in case of reference or mutable data object.</summary>
+      <summary>Instantiates an empty wrapper.</summary>
+    */
+    protected PdfObjectWrapper(
+      )
+    {}
+
+    /**
+      <summary>Instantiates a wrapper from the specified base object.</summary>
       <param name="baseObject">PDF object backing this wrapper. MUST be a <see cref="PdfReference"/>
-      everytime available.</param>
+      every time available.</param>
     */
     protected PdfObjectWrapper(
       PdfDirectObject baseObject
@@ -122,6 +129,15 @@ namespace org.pdfclown.objects
       }
     }
 
+    public override bool Equals(
+      object obj
+      )
+    {
+      return obj != null
+        && obj.GetType().Equals(GetType())
+        && ((PdfObjectWrapper)obj).baseObject.Equals(baseObject);
+    }
+
     /**
       <summary>Gets the file context.</summary>
     */
@@ -133,6 +149,10 @@ namespace org.pdfclown.objects
         return container != null ? container.File : null;
       }
     }
+
+    public override int GetHashCode(
+      )
+    {return baseObject.GetHashCode();}
 
     #region IPdfObjectWrapper
     public virtual PdfDirectObject BaseObject
@@ -239,6 +259,34 @@ namespace org.pdfclown.objects
           throw new NotImplementedException("Unhandled compatibility mode: " + compatibilityMode);
       }
     }
+
+    /**
+      <summary>Retrieves the name possibly associated to this object, walking through the document's
+      name dictionary.</summary>
+    */
+    protected virtual PdfString RetrieveName(
+      )
+    {
+      object names = Document.Names.Get(GetType());
+      if(names == null)
+        return null;
+
+      /*
+        NOTE: Due to variance issues, we have to go the reflection way (gosh!).
+      */
+      return (PdfString)names.GetType().GetMethod("GetKey").Invoke(names, new object[]{ this });
+    }
+
+    /**
+      <summary>Retrieves the object name, if available; otherwise, behaves like
+      <see cref="PdfObjectWrapper.BaseObject"/>.</summary>
+    */
+    protected PdfDirectObject RetrieveNamedBaseObject(
+      )
+    {
+      PdfString name = RetrieveName();
+      return name != null ? name : BaseObject;
+    }
     #endregion
     #endregion
     #endregion
@@ -254,7 +302,7 @@ namespace org.pdfclown.objects
         cref="org.pdfclown.objects.PdfArray">PdfArray</see> and so on) because there's no plain
         one-to-one mapping between primitive PDF types and specialized instances: the
         <code>Content</code> entry of <code>Page</code> dictionaries may be a simple reference to a
-        <code>PdfStream</code> or a <code>PdfArray</code> of references to <code>PdfStream</code>-s,
+        <code>PdfStream</code> or a <code>PdfArray</code> of references to <code>PdfStream</code>s,
         <code>Pages</code> collections may be spread across a B-tree instead of a flat
         <code>PdfArray</code> and so on.
       </para>
@@ -272,9 +320,29 @@ namespace org.pdfclown.objects
     #region dynamic
     #region constructors
     /**
-      <summary>Creates a new wrapper into the specified document context.</summary>
-      <param name="context">Document context into which the specified data object has to be registered.</param>
+      <summary>Instantiates an empty wrapper.</summary>
+    */
+    protected PdfObjectWrapper(
+      )
+    {}
+
+    /**
+      <summary>Instantiates a wrapper from the specified base object.</summary>
+      <param name="baseObject">PDF object backing this wrapper. MUST be a <see cref="PdfReference"/>
+      every time available.</param>
+    */
+    protected PdfObjectWrapper(
+      PdfDirectObject baseObject
+      ) : base(baseObject)
+    {}
+
+    /**
+      <summary>Instantiates a wrapper registering the specified base data object into the specified
+      document context.</summary>
+      <param name="context">Document context into which the specified data object has to be
+      registered.</param>
       <param name="baseDataObject">PDF data object backing this wrapper.</param>
+      <seealso cref="PdfObjectWrapper(File, PdfDataObject)"/>
     */
     protected PdfObjectWrapper(
       Document context,
@@ -283,24 +351,17 @@ namespace org.pdfclown.objects
     {}
 
     /**
-      <summary>Creates a new wrapper into the specified file context.</summary>
-      <param name="context">File context into which the specified data object has to be registered.</param>
+      <summary>Instantiates a wrapper registering the specified base data object into the specified
+      file context.</summary>
+      <param name="context">File context into which the specified data object has to be registered.
+      </param>
       <param name="baseDataObject">PDF data object backing this wrapper.</param>
+      <seealso cref="PdfObjectWrapper(Document, PdfDataObject)"/>
     */
     protected PdfObjectWrapper(
       File context,
       TDataObject baseDataObject
       ) : this(context.Register(baseDataObject))
-    {}
-
-    /**
-      <summary>Instantiates a wrapper in case of reference or mutable data object.</summary>
-      <param name="baseObject">PDF object backing this wrapper. MUST be a <see cref="PdfReference"/>
-      everytime available.</param>
-    */
-    protected PdfObjectWrapper(
-      PdfDirectObject baseObject
-      ) : base(baseObject)
     {}
     #endregion
 
@@ -326,7 +387,7 @@ namespace org.pdfclown.objects
         if(dictionary == null)
           return null;
 
-        PdfDirectObject metadataObject = Dictionary[PdfName.Metadata];
+        PdfDirectObject metadataObject = dictionary[PdfName.Metadata];
         return metadataObject != null ? new Metadata(metadataObject) : null;
       }
       set
@@ -345,10 +406,11 @@ namespace org.pdfclown.objects
     {
       get
       {
-        if(BaseDataObject is PdfDictionary)
-          return BaseDataObject as PdfDictionary;
-        else if(BaseDataObject is PdfStream)
-          return (BaseDataObject as PdfStream).Header;
+        TDataObject baseDataObject = BaseDataObject;
+        if(baseDataObject is PdfDictionary)
+          return baseDataObject as PdfDictionary;
+        else if(baseDataObject is PdfStream)
+          return (baseDataObject as PdfStream).Header;
         else
           return null;
       }

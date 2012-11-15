@@ -32,13 +32,13 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 public class LinkCreationSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. Creating the document...
@@ -50,8 +50,6 @@ public class LinkCreationSample
 
     // 3. Serialize the PDF file!
     serialize(file, "Link annotations", "applying link annotations");
-
-    return true;
   }
 
   private void buildLinks(

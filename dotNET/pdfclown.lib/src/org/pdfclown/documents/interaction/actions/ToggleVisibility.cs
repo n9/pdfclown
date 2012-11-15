@@ -59,7 +59,7 @@ namespace org.pdfclown.documents.interaction.actions
 
     internal ToggleVisibility(
       PdfDirectObject baseObject
-      ) : base(baseObject, null)
+      ) : base(baseObject)
     {}
     #endregion
 

@@ -58,7 +58,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF13)
 public final class TextMarkup
@@ -189,18 +189,17 @@ public final class TextMarkup
     )
   {
     super(
-      page.getDocument(),
+      page,
       markupType.getCode(),
       markupBoxes.get(0).getBounds2D(),
-      text,
-      page
+      text
       );
     setMarkupType(markupType);
     setMarkupBoxes(markupBoxes);
     setPrintable(true);
   }
 
-  public TextMarkup(
+  TextMarkup(
     PdfDirectObject baseObject
     )
   {super(baseObject);}

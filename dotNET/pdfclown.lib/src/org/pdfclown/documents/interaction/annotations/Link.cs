@@ -51,10 +51,10 @@ namespace org.pdfclown.documents.interaction.annotations
       RectangleF box,
       string text,
       PdfObjectWrapper target
-      ) : base(page.Document, PdfName.Link, box, text, page)
+      ) : base(page, PdfName.Link, box, text)
     {Target = target;}
 
-    public Link(
+    internal Link(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

@@ -46,18 +46,9 @@ namespace org.pdfclown.documents.contents.objects
     #region dynamic
     #region constructors
     public SetLineDash(
-      double phase,
-      double unitsOn,
-      double unitsOff
-      ) : base(
-        OperatorKeyword,
-        new PdfArray(
-          PdfReal.Get(unitsOn),
-          PdfReal.Get(unitsOff)
-          ),
-        PdfReal.Get(phase)
-        )
-    {}
+      LineDash lineDash
+      ) : base(OperatorKeyword, (PdfDirectObject)new PdfArray())
+    {Value = lineDash;}
 
     public SetLineDash(
       IList<PdfDirectObject> operands
@@ -93,19 +84,15 @@ namespace org.pdfclown.documents.contents.objects
       }
       set
       {
+        operands.Clear();
         // 1. Dash array.
         double[] dashArray = value.DashArray;
         PdfArray baseDashArray = new PdfArray(dashArray.Length);
-        for(
-          int index = 0,
-            length = dashArray.Length;
-          index < length;
-          index++
-          )
-        {baseDashArray[index] = PdfReal.Get(dashArray[index]);}
-        operands[0] = baseDashArray;
+        foreach(double dashItem in dashArray)
+        {baseDashArray.Add(PdfReal.Get(dashItem));}
+        operands.Add(baseDashArray);
         // 2. Dash phase.
-        operands[1] = PdfReal.Get(value.DashPhase);
+        operands.Add(PdfReal.Get(value.DashPhase));
       }
     }
     #endregion

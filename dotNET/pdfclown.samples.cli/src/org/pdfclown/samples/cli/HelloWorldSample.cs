@@ -13,7 +13,7 @@ namespace org.pdfclown.samples.cli
   public class HelloWorldSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Instantiate a new PDF file!
@@ -29,8 +29,6 @@ namespace org.pdfclown.samples.cli
 
       // 4. Serialize the PDF file!
       Serialize(file, "Hello world", "a simple 'hello world'");
-
-      return true;
     }
 
     /**

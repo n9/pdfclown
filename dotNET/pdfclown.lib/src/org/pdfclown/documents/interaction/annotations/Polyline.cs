@@ -49,7 +49,7 @@ namespace org.pdfclown.documents.interaction.annotations
       ) : base(page, box, text, PdfName.PolyLine)
     {}
 
-    public Polyline(
+    internal Polyline(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

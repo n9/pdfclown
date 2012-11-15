@@ -18,50 +18,52 @@ namespace org.pdfclown.samples.cli
   public class PageLabelSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       string outputFilePath;
       {
         // 1. Opening the PDF file...
         string filePath = PromptFileChoice("Please select a PDF file");
-        File file = new File(filePath);
-        Document document = file.Document;
-
-        int pageCount = document.Pages.Count;
-        PageLabels pageLabels = document.PageLabels;
-        if(pageLabels != null)
-        {pageLabels.Clear();}
-        else
-        {document.PageLabels = pageLabels = new PageLabels(document);}
-
-        /*
-          NOTE: This sample applies labels to arbitrary page ranges: no sensible connection with their
-          actual content has therefore to be expected.
-        */
-        pageLabels[0] = new PageLabel(document, "Introduction ", PageLabel.NumberStyleEnum.UCaseRomanNumber, 5);
-        if(pageCount > 3)
-        {pageLabels[3] = new PageLabel(document, PageLabel.NumberStyleEnum.UCaseLetter);}
-        if(pageCount > 6)
-        {pageLabels[6] = new PageLabel(document, "Contents ", PageLabel.NumberStyleEnum.ArabicNumber, 0);}
-
-        // 3. Serialize the PDF file!
-        outputFilePath = Serialize(file, "Page labelling", "labelling a document's pages");
-      }
-
-      {
-        File file = new File(outputFilePath);
-        foreach(KeyValuePair<int,PageLabel> entry in file.Document.PageLabels)
+        using(File file = new File(filePath))
         {
-          Console.WriteLine("Page label " + entry.Value.BaseObject);
-          Console.WriteLine("    Initial page: " + (entry.Key + 1));
-          Console.WriteLine("    Prefix: " + (entry.Value.Prefix));
-          Console.WriteLine("    Number style: " + (entry.Value.NumberStyle));
-          Console.WriteLine("    Number base: " + (entry.Value.NumberBase));
+          Document document = file.Document;
+
+          // 2. Defining the page labels...
+          PageLabels pageLabels = document.PageLabels;
+          if(pageLabels != null)
+          {pageLabels.Clear();}
+          else
+          {document.PageLabels = pageLabels = new PageLabels(document);}
+          /*
+            NOTE: This sample applies labels to arbitrary page ranges: no sensible connection with their
+            actual content has therefore to be expected.
+          */
+          int pageCount = document.Pages.Count;
+          pageLabels[new PdfInteger(0)] = new PageLabel(document, "Introduction ", PageLabel.NumberStyleEnum.UCaseRomanNumber, 5);
+          if(pageCount > 3)
+          {pageLabels[new PdfInteger(3)] = new PageLabel(document, PageLabel.NumberStyleEnum.UCaseLetter);}
+          if(pageCount > 6)
+          {pageLabels[new PdfInteger(6)] = new PageLabel(document, "Contents ", PageLabel.NumberStyleEnum.ArabicNumber, 0);}
+
+          // 3. Serialize the PDF file!
+          outputFilePath = Serialize(file, "Page labelling", "labelling a document's pages");
         }
       }
 
-      return true;
+      {
+        using(File file = new File(outputFilePath))
+        {
+          foreach(KeyValuePair<PdfInteger,PageLabel> entry in file.Document.PageLabels)
+          {
+            Console.WriteLine("Page label " + entry.Value.BaseObject);
+            Console.WriteLine("    Initial page: " + (entry.Key.IntValue + 1));
+            Console.WriteLine("    Prefix: " + (entry.Value.Prefix));
+            Console.WriteLine("    Number style: " + (entry.Value.NumberStyle));
+            Console.WriteLine("    Number base: " + (entry.Value.NumberBase));
+          }
+        }
+      }
     }
   }
 }

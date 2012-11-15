@@ -63,7 +63,7 @@ namespace org.pdfclown.documents.interaction.annotations
       normalAppearance[new PdfName(widgetName)] = new FormXObject(page.Document, box.Size);
     }
 
-    public DualWidget(
+    internal DualWidget(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

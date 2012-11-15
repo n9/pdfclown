@@ -154,7 +154,7 @@ namespace org.pdfclown.documents.interaction.annotations
       PointF endPoint,
       string text
       ) : base(
-        page.Document,
+        page,
         PdfName.Line,
         new RectangleF(
           startPoint.X,
@@ -162,8 +162,7 @@ namespace org.pdfclown.documents.interaction.annotations
           endPoint.X-startPoint.X,
           endPoint.Y-startPoint.Y
           ),
-        text,
-        page
+        text
         )
     {
       BaseDataObject[PdfName.L] = new PdfArray(new PdfDirectObject[]{PdfReal.Get(0),PdfReal.Get(0),PdfReal.Get(0),PdfReal.Get(0)});
@@ -171,7 +170,7 @@ namespace org.pdfclown.documents.interaction.annotations
       EndPoint = endPoint;
     }
 
-    public Line(
+    internal Line(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

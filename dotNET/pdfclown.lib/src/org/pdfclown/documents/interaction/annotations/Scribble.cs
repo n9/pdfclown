@@ -47,10 +47,10 @@ namespace org.pdfclown.documents.interaction.annotations
       RectangleF box,
       string text,
       IList<IList<PointF>> paths
-      ) : base(page.Document, PdfName.Ink, box, text, page)
+      ) : base(page, PdfName.Ink, box, text)
     {Paths = paths;}
 
-    public Scribble(
+    internal Scribble(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

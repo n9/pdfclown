@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -121,16 +121,19 @@ namespace org.pdfclown.documents.interaction.annotations
     #region dynamic
     #region constructors
     public Border(
-      Document context
-      ) : base(context, new PdfDictionary())
-    {}
-
-    public Border(
       Document context,
       double width,
       StyleEnum style,
       LineDash pattern
-      ) : this(context)
+      ) : base(
+        context,
+        new PdfDictionary(
+          new PdfName[]
+          {PdfName.Type},
+          new PdfDirectObject[]
+          {PdfName.Border}
+          )
+        )
     {
       Width = width;
       Style = style;

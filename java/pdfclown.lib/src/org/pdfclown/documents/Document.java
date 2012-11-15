@@ -61,7 +61,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF document [PDF:1.6:3.6.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Document
@@ -295,7 +295,7 @@ public final class Document
     )
   {
     if(Destination.class.isAssignableFrom(type))
-      return (T)Destination.wrap(baseObject, null);
+      return (T)Destination.wrap(baseObject);
     else
       throw new UnsupportedOperationException("Type '" + type.getName() + "' wrapping is not supported.");
   }
@@ -423,16 +423,15 @@ public final class Document
   @PDF(VersionEnum.PDF12)
   public Form getForm(
     )
-  {
-    PdfDirectObject formObject = getBaseDataObject().get(PdfName.AcroForm);
-    return formObject != null ? new Form(formObject) : null;
-  }
+  {return new Form(getBaseDataObject().get(PdfName.AcroForm, PdfDictionary.class));}
 
   /**
     Gets the document information dictionary [PDF:1.6:10.2.1].
   */
   public Information getInformation(
     )
+//TODO: support virtual indirect objects (otherwise info is inserted as direct into the trailer)!
+//  {return new Information(getFile().getTrailer().get(PdfName.Info, PdfDictionary.class));}
   {
     PdfDirectObject informationObject = getFile().getTrailer().get(PdfName.Info);
     return informationObject != null ? new Information(informationObject) : null;
@@ -444,10 +443,7 @@ public final class Document
   @PDF(VersionEnum.PDF12)
   public Names getNames(
     )
-  {
-    PdfDirectObject namesObject = getBaseDataObject().get(PdfName.Names);
-    return namesObject != null ? new Names(namesObject) : null;
-  }
+  {return new Names(getBaseDataObject().get(PdfName.Names, PdfDictionary.class));}
 
   /**
     Gets the optional content properties.
@@ -466,7 +462,12 @@ public final class Document
   @PDF(VersionEnum.PDF13)
   public PageLabels getPageLabels(
     )
-  {return PageLabels.wrap(getBaseDataObject().get(PdfName.PageLabels));}
+//TODO: support virtual indirect objects.
+//  {return new PageLabels(getBaseDataObject().get(PdfName.PageLabels, PdfDictionary.class));}
+  {
+    PdfDirectObject pageLabelsObject = getBaseDataObject().get(PdfName.PageLabels);
+    return pageLabelsObject != null ? new PageLabels(pageLabelsObject) : null;
+  }
 
   /**
     Gets the page layout to be used when the document is opened.
@@ -547,7 +548,7 @@ public final class Document
     if(versionObject == null)
       return fileVersion;
 
-    Version version = Version.get(versionObject.getRawValue());
+    Version version = Version.get(versionObject);
     if(getFile().getReader() == null)
       return version;
 
@@ -602,7 +603,7 @@ public final class Document
     )
   {
     if(namedBaseObject instanceof PdfString) // Named object.
-      return getNames().resolve(type, ((PdfString)namedBaseObject).getStringValue());
+      return getNames().get(type, (PdfString)namedBaseObject);
     else // Explicit object.
       return resolve(type, namedBaseObject);
   }
@@ -613,7 +614,7 @@ public final class Document
   public void setActions(
     DocumentActions value
     )
-  {getBaseDataObject().put(PdfName.AA, value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.AA, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     @see #getBookmarks()
@@ -621,7 +622,7 @@ public final class Document
   public void setBookmarks(
     Bookmarks value
     )
-  {getBaseDataObject().put(PdfName.Outlines,value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.Outlines, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     @see #getConfiguration()
@@ -639,7 +640,7 @@ public final class Document
   public void setForm(
     Form value
     )
-  {getBaseDataObject().put(PdfName.AcroForm,value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.AcroForm, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     @see #getInformation()
@@ -647,16 +648,7 @@ public final class Document
   public void setInformation(
     Information value
     )
-  {getFile().getTrailer().put(PdfName.Info,value.getBaseObject());}
-
-  /**
-    @see #getNames()
-    @since 0.0.4
-  */
-  public void setNames(
-    Names value
-    )
-  {getBaseDataObject().put(PdfName.Names,value.getBaseObject());}
+  {getFile().getTrailer().put(PdfName.Info, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     @see #getLayer()
@@ -666,8 +658,17 @@ public final class Document
     )
   {
     checkCompatibility("layer");
-    getBaseDataObject().put(PdfName.OCProperties, value.getBaseObject());
+    getBaseDataObject().put(PdfName.OCProperties, PdfObjectWrapper.getBaseObject(value));
   }
+
+  /**
+    @see #getNames()
+    @since 0.0.4
+  */
+  public void setNames(
+    Names value
+    )
+  {getBaseDataObject().put(PdfName.Names, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     @see #getPageLabels()
@@ -677,7 +678,7 @@ public final class Document
     )
   {
     checkCompatibility("pageLabels");
-    getBaseDataObject().put(PdfName.PageLabels, value.getBaseObject());
+    getBaseDataObject().put(PdfName.PageLabels, PdfObjectWrapper.getBaseObject(value));
   }
 
   /**
@@ -702,7 +703,7 @@ public final class Document
   public void setPages(
     Pages value
     )
-  {getBaseDataObject().put(PdfName.Pages,value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.Pages, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     @see #getPageSize()
@@ -729,7 +730,7 @@ public final class Document
   public void setResources(
     Resources value
     )
-  {((PdfDictionary)getBaseDataObject().resolve(PdfName.Pages)).put(PdfName.Resources, value.getBaseObject());}
+  {((PdfDictionary)getBaseDataObject().resolve(PdfName.Pages)).put(PdfName.Resources, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     @see #getVersion()
@@ -750,7 +751,7 @@ public final class Document
   public void setViewerPreferences(
     ViewerPreferences value
     )
-  {getBaseDataObject().put(PdfName.ViewerPreferences, value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.ViewerPreferences, PdfObjectWrapper.getBaseObject(value));}
 
   // <Pageable>
   @Override

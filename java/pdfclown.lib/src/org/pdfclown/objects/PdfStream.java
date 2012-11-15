@@ -45,7 +45,7 @@ import org.pdfclown.tokens.Symbol;
   PDF stream object [PDF:1.6:3.2.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 public class PdfStream
   extends PdfDataObject
@@ -127,6 +127,13 @@ public class PdfStream
 
   // <interface>
   // <public>
+  @Override
+  public boolean accept(
+    IVisitor visitor,
+    Object data
+    )
+  {return visitor.visit(this, data);}
+
   @Override
   public PdfStream clone(
     File context
@@ -251,21 +258,21 @@ public class PdfStream
   {return updated;}
 
   /**
-    @param overwrite Indicates whether the data from the old data source substitutes the new one.
+    @param preserve Indicates whether the data from the old data source substitutes the new one.
       This way data can be imported to/exported from local or preserved in case of external file
       location changed.
     @see #setDataFile(FileSpecification)
   */
   public void setDataFile(
     FileSpecification<?> value,
-    boolean overwrite
+    boolean preserve
     )
   {
     /*
-      NOTE: If overwrite argument is set to true, body's dirtiness MUST be forced in order to ensure
+      NOTE: If preserve argument is set to true, body's dirtiness MUST be forced in order to ensure
       data serialization to the new external location.
 
-      Old data source | New data source | overwrite | Action
+      Old data source | New data source | preserve | Action
       ----------------------------------------------------------------------------------------------
       local           | not null        | false     | A. Substitute local with new file.
       local           | not null        | true      | B. Export local to new file.
@@ -280,7 +287,7 @@ public class PdfStream
     PdfDirectObject dataFileObject = (value != null ? value.getBaseObject() : null);
     if(value != null)
     {
-      if(overwrite)
+      if(preserve)
       {
         if(oldDataFile != null) // Case D (copy old file data to new file).
         {
@@ -316,7 +323,7 @@ public class PdfStream
     {
       if(oldDataFile != null)
       {
-        if(overwrite) // Case G (import old file to local).
+        if(preserve) // Case G (import old file to local).
         {
           // Transfer old file data to local!
           getBody(false); // Ensures that external data is loaded as-is into the local buffer.
@@ -446,7 +453,7 @@ public class PdfStream
   @PDF(VersionEnum.PDF12)
   public FileSpecification<?> getDataFile(
     )
-  {return FileSpecification.wrap(header.get(PdfName.F), null);}
+  {return FileSpecification.wrap(header.get(PdfName.F));}
 
   @Override
   public void setDataFile(

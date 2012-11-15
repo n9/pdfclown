@@ -61,11 +61,10 @@ namespace org.pdfclown.documents
     #endregion
 
     #region protected
-    protected override FileSpecification Wrap(
-      PdfDirectObject baseObject,
-      PdfString name
+    protected override FileSpecification WrapValue(
+      PdfDirectObject baseObject
       )
-    {return FileSpecification.Wrap(baseObject, name);}
+    {return FileSpecification.Wrap(baseObject);}
     #endregion
     #endregion
     #endregion

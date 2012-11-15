@@ -88,9 +88,8 @@ namespace org.pdfclown.documents.files
     {FileSystem = StandardFileSystemEnum.URL;}
 
     internal FullFileSpecification(
-      PdfDirectObject baseObject,
-      PdfString name
-      ) : base(baseObject, name)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 

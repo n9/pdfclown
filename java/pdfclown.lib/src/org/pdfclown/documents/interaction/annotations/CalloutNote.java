@@ -50,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF13)
 public final class CalloutNote
@@ -169,9 +169,9 @@ public final class CalloutNote
     Rectangle2D box,
     String text
     )
-  {super(page.getDocument(), PdfName.FreeText, box, text, page);}
+  {super(page, PdfName.FreeText, box, text);}
 
-  public CalloutNote(
+  CalloutNote(
     PdfDirectObject baseObject
     )
   {super(baseObject);}

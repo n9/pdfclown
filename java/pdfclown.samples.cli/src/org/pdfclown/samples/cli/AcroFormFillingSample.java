@@ -16,13 +16,13 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class AcroFormFillingSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. Opening the PDF file...
@@ -89,7 +89,5 @@ public class AcroFormFillingSample
 
     // 4. Serialize the PDF file!
     serialize(file);
-
-    return true;
   }
 }

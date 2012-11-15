@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -10,7 +10,6 @@
     <RootNamespace>org.pdfclown.samples.cli</RootNamespace>
     <StartupObject>org.pdfclown.samples.cli.SampleLoader</StartupObject>
     <AssemblyName>PDFClownCLISamples</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -80,6 +79,7 @@
     <Compile Include="src\org\pdfclown\samples\cli\PageCombinationSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\StreamExternalizationSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\PageLabelSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\VideoEmbeddingSample.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PDFClownCLISamples.exe.config">

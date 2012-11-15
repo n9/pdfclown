@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -50,7 +50,7 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 09/24/12
 */
 public final class PageManager
 {
@@ -248,6 +248,7 @@ public final class PageManager
     int endIndex
     )
   {
+    @SuppressWarnings("resource")
     Document extractedDocument = new File().getDocument();
     {
       // Add the pages to the target file!
@@ -354,6 +355,7 @@ public final class PageManager
     List<Document> documents = new ArrayList<Document>();
     for(Page page : pages)
     {
+      @SuppressWarnings("resource")
       Document pageDocument = new File().getDocument();
       pageDocument.getPages().add(
         page.clone(pageDocument)

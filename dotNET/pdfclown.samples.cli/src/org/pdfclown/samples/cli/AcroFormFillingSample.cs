@@ -19,7 +19,7 @@ namespace org.pdfclown.samples.cli
   public class AcroFormFillingSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
@@ -80,8 +80,6 @@ namespace org.pdfclown.samples.cli
 
       // 4. Serialize the PDF file!
       Serialize(file);
-
-      return true;
     }
   }
 }

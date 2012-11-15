@@ -15,26 +15,26 @@ namespace org.pdfclown.samples.cli
   public class BookmarksParsingSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      File file = new File(filePath);
-      Document document = file.Document;
-
-      // 2. Get the bookmarks collection!
-      Bookmarks bookmarks = document.Bookmarks;
-      if(bookmarks == null)
-      {Console.WriteLine("\nNo bookmark available (Outline dictionary not found).");}
-      else
+      using(File file = new File(filePath))
       {
-        Console.WriteLine("\nIterating through the bookmarks collection (please wait)...\n");
-        // 3. Show the bookmarks!
-        PrintBookmarks(bookmarks);
+        Document document = file.Document;
+  
+        // 2. Get the bookmarks collection!
+        Bookmarks bookmarks = document.Bookmarks;
+        if(bookmarks == null)
+        {Console.WriteLine("\nNo bookmark available (Outline dictionary not found).");}
+        else
+        {
+          Console.WriteLine("\nIterating through the bookmarks collection (please wait)...\n");
+          // 3. Show the bookmarks!
+          PrintBookmarks(bookmarks);
+        }
       }
-
-      return true;
     }
 
     private void PrintBookmarks(

@@ -20,7 +20,7 @@ namespace org.pdfclown.samples.cli
   {
     private const float Margin = 36;
 
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. PDF file instantiation.
@@ -32,8 +32,6 @@ namespace org.pdfclown.samples.cli
 
       // 3. Serialize the PDF file!
       Serialize(file, "Barcode", "showing barcodes");
-
-      return true;
     }
 
     /**

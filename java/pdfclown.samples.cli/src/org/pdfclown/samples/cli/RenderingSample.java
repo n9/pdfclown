@@ -19,40 +19,52 @@ import org.pdfclown.tools.Renderer;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 09/24/12
 */
 public class RenderingSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
-    // 1. Opening the PDF file...
-    File file;
-    {
-      String filePath = promptFileChoice("Please select a PDF file");
-      try
-      {file = new File(filePath);}
-      catch(Exception e)
-      {throw new RuntimeException(filePath + " file access error.",e);}
-    }
-    Document document = file.getDocument();
-    Pages pages = document.getPages();
-
-    // 2. Page rasterization.
-    int pageIndex = promptPageChoice("Select the page to render", pages.size());
-    Page page = pages.get(pageIndex);
-    Dimension2D imageSize = page.getSize();
-    Renderer renderer = new Renderer();
-    BufferedImage image = renderer.render(page, imageSize);
-
-    // 3. Save the page image!
+    File file = null;
     try
-    {ImageIO.write(image,"jpg",new java.io.File(getOutputPath() + java.io.File.separator + "ContentRenderingSample.jpg"));}
-    catch(IOException e)
-    {e.printStackTrace();}
+    {
+      // 1. Opening the PDF file...
+      {
+        String filePath = promptFileChoice("Please select a PDF file");
+        try
+        {file = new File(filePath);}
+        catch(Exception e)
+        {throw new RuntimeException(filePath + " file access error.",e);}
+      }
+      Document document = file.getDocument();
+      Pages pages = document.getPages();
 
-    return true;
+      // 2. Page rasterization.
+      int pageIndex = promptPageChoice("Select the page to render", pages.size());
+      Page page = pages.get(pageIndex);
+      Dimension2D imageSize = page.getSize();
+      Renderer renderer = new Renderer();
+      BufferedImage image = renderer.render(page, imageSize);
+
+      // 3. Save the page image!
+      try
+      {ImageIO.write(image,"jpg",new java.io.File(getOutputPath("ContentRenderingSample.jpg")));}
+      catch(IOException e)
+      {e.printStackTrace();}
+    }
+    finally
+    {
+      // 4. Closing the PDF file...
+      if(file != null)
+      {
+        try
+        {file.close();}
+        catch(IOException e)
+        {/* NOOP */}
+      }
+    }
   }
 }

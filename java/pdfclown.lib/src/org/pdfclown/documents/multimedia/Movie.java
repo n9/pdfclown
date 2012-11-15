@@ -42,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF12)
 public final class Movie
@@ -82,7 +82,7 @@ public final class Movie
   @Override
   public FileSpecification<?> getDataFile(
     )
-  {return FileSpecification.wrap(getBaseDataObject().get(PdfName.F), null);}
+  {return FileSpecification.wrap(getBaseDataObject().get(PdfName.F));}
 
   @Override
   public void setDataFile(

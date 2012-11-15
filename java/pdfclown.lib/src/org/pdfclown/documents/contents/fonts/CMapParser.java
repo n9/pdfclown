@@ -173,6 +173,10 @@ final class CMapParser
             itemCount = (Integer)getToken();
             break;
           }
+          default:
+          {
+            /* NOOP */
+          }
         }
       }
     }

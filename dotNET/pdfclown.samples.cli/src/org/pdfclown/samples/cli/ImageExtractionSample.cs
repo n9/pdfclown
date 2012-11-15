@@ -18,53 +18,53 @@ namespace org.pdfclown.samples.cli
   public class ImageExtractionSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      files::File file = new files::File(filePath);
-
-      // 2. Iterating through the indirect object collection...
-      int index = 0;
-      foreach(PdfIndirectObject indirectObject in file.IndirectObjects)
+      using(files::File file = new files::File(filePath))
       {
-        // Get the data object associated to the indirect object!
-        PdfDataObject dataObject = indirectObject.DataObject;
-        // Is this data object a stream?
-        if(dataObject is PdfStream)
+        // 2. Iterating through the indirect object collection...
+        int index = 0;
+        foreach(PdfIndirectObject indirectObject in file.IndirectObjects)
         {
-          PdfDictionary header = ((PdfStream)dataObject).Header;
-          // Is this stream an image?
-          if(header.ContainsKey(PdfName.Type)
-            && header[PdfName.Type].Equals(PdfName.XObject)
-            && header[PdfName.Subtype].Equals(PdfName.Image))
+          // Get the data object associated to the indirect object!
+          PdfDataObject dataObject = indirectObject.DataObject;
+          // Is this data object a stream?
+          if(dataObject is PdfStream)
           {
-            // Which kind of image?
-            if(header[PdfName.Filter].Equals(PdfName.DCTDecode)) // JPEG image.
+            PdfDictionary header = ((PdfStream)dataObject).Header;
+            // Is this stream an image?
+            if(header.ContainsKey(PdfName.Type)
+              && header[PdfName.Type].Equals(PdfName.XObject)
+              && header[PdfName.Subtype].Equals(PdfName.Image))
             {
-              // Get the image data (keeping it encoded)!
-              IBuffer body = ((PdfStream)dataObject).GetBody(false);
-              // Export the image!
-              ExportImage(
-                body,
-                OutputPath + Path.DirectorySeparatorChar + "ImageExtractionSample_" + (index++) + ".jpg"
-                );
+              // Which kind of image?
+              if(header[PdfName.Filter].Equals(PdfName.DCTDecode)) // JPEG image.
+              {
+                // Get the image data (keeping it encoded)!
+                IBuffer body = ((PdfStream)dataObject).GetBody(false);
+                // Export the image!
+                ExportImage(
+                  body,
+                  "ImageExtractionSample_" + (index++) + ".jpg"
+                  );
+              }
+              else // Unsupported image.
+              {Console.WriteLine("Image XObject " + indirectObject.Reference + " couldn't be extracted (filter: " + header[PdfName.Filter] + ")");}
             }
-            else // Unsupported image.
-            {Console.WriteLine("Image XObject " + indirectObject.Reference + " couldn't be extracted (filter: " + header[PdfName.Filter] + ")");}
           }
         }
       }
-
-      return true;
     }
 
     private void ExportImage(
       IBuffer data,
-      string outputPath
+      string filename
       )
     {
+      string outputPath = GetOutputPath(filename);
       FileStream outputStream;
       try
       {outputStream = new FileStream(outputPath, FileMode.CreateNew);}

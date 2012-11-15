@@ -19,7 +19,7 @@ import org.pdfclown.files.File;
   from the beginning of "Alice in Wonderland", Chapter 1 ("Down the Rabbit-Hole").
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class TypesettingSample
   extends Sample
@@ -28,7 +28,7 @@ public class TypesettingSample
   private static final int Margin_Y = 50;
 
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. PDF file instantiation.
@@ -40,8 +40,6 @@ public class TypesettingSample
 
     // 3. Serialize the PDF file!
     serialize(file, "Typesetting", "demonstrating how to add style to contents");
-
-    return true;
   }
 
   private void build(
@@ -91,7 +89,7 @@ public class TypesettingSample
     blockComposer.begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
     Font decorativeFont = Font.get(
       document,
-      getInputPath() + java.io.File.separator + "fonts" + java.io.File.separator + "Ruritania-Outline.ttf"
+      getResourcePath("fonts" + java.io.File.separator + "Ruritania-Outline.ttf")
       );
     composer.setFont(decorativeFont,56);
     blockComposer.showText("Chapter 1");
@@ -112,7 +110,7 @@ public class TypesettingSample
     blockComposer.begin(frame,XAlignmentEnum.Justify,YAlignmentEnum.Bottom);
     Font bodyFont = Font.get(
       document,
-      getInputPath() + java.io.File.separator + "fonts" + java.io.File.separator + "TravelingTypewriter.otf"
+      getResourcePath("fonts" + java.io.File.separator + "TravelingTypewriter.otf")
       );
     composer.setFont(bodyFont,14);
     composer.beginLocalState();

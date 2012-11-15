@@ -18,13 +18,13 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class StreamExternalizationSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. Externalizing the streams...
@@ -103,7 +103,5 @@ public class StreamExternalizationSample
       String internalizedFilePath = externalizedFileName.substring(0, externalizedFileName.indexOf(".pdf")) + "-reimported.pdf";
       serialize(file, internalizedFilePath, SerializationModeEnum.Standard);
     }
-
-    return true;
   }
 }

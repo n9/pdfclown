@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 03/12/12
+  @version 0.1.2, 09/24/12
 */
 public final class PdfArray
   extends PdfDirectObject
@@ -104,6 +104,13 @@ public final class PdfArray
 
   // <interface>
   // <public>
+  @Override
+  public boolean accept(
+    IVisitor visitor,
+    Object data
+    )
+  {return visitor.visit(this, data);}
+
   @Override
   public PdfArray clone(
     File context

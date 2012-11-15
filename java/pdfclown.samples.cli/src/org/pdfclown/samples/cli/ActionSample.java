@@ -1,5 +1,6 @@
 package org.pdfclown.samples.cli;
 
+import java.io.IOException;
 import java.net.URI;
 
 import org.pdfclown.documents.Document;
@@ -18,68 +19,80 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class ActionSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
-    // 1. Opening the PDF file...
-    File file;
+    File file = null;
+    try
     {
-      String filePath = promptFileChoice("Please select a PDF file");
-      try
-      {file = new File(filePath);}
-      catch(Exception e)
-      {throw new RuntimeException(filePath + " file access error.",e);}
-    }
-    Document document = file.getDocument();
-
-    // 2. Applying actions...
-    // 2.1. Local go-to.
-    {
-      DocumentActions documentActions = document.getActions();
-      if(documentActions == null)
-      {document.setActions(documentActions = new DocumentActions(document));}
-      /*
-        NOTE: This statement instructs the PDF viewer to go to page 2 on document opening.
-      */
-      documentActions.setOnOpen(
-        new GoToLocal(
-          document,
-          new LocalDestination(document.getPages().get(1)) // Page 2 (zero-based index).
-          )
-        );
-    }
-
-    // 2.2. Remote go-to.
-    {
-      Page page = document.getPages().get(1); // Page 2 (zero-based index).
-      PageActions pageActions = page.getActions();
-      if(pageActions == null)
-      {page.setActions(pageActions = new PageActions(document));}
-      try
+      // 1. Opening the PDF file...
       {
+        String filePath = promptFileChoice("Please select a PDF file");
+        try
+        {file = new File(filePath);}
+        catch(Exception e)
+        {throw new RuntimeException(filePath + " file access error.",e);}
+      }
+      Document document = file.getDocument();
+
+      // 2. Applying actions...
+      // 2.1. Local go-to.
+      {
+        DocumentActions documentActions = document.getActions();
+        if(documentActions == null)
+        {document.setActions(documentActions = new DocumentActions(document));}
         /*
-          NOTE: This statement instructs the PDF viewer to navigate to the given URI on page 2 opening.
+          NOTE: This statement instructs the PDF viewer to go to page 2 on document opening.
         */
-        pageActions.setOnOpen(
-          new GoToURI(
+        documentActions.setOnOpen(
+          new GoToLocal(
             document,
-            new URI("http://www.sourceforge.net/projects/clown")
+            new LocalDestination(document.getPages().get(1)) // Page 2 (zero-based index).
             )
           );
       }
-      catch(Exception exception)
-      {throw new RuntimeException(exception);}
+
+      // 2.2. Remote go-to.
+      {
+        Page page = document.getPages().get(1); // Page 2 (zero-based index).
+        PageActions pageActions = page.getActions();
+        if(pageActions == null)
+        {page.setActions(pageActions = new PageActions(document));}
+        try
+        {
+          /*
+            NOTE: This statement instructs the PDF viewer to navigate to the given URI on page 2 opening.
+          */
+          pageActions.setOnOpen(
+            new GoToURI(
+              document,
+              new URI("http://www.sourceforge.net/projects/clown")
+              )
+            );
+        }
+        catch(Exception exception)
+        {throw new RuntimeException(exception);}
+      }
+
+      // 3. Serialize the PDF file!
+      serialize(file, "Actions", "applying actions");
     }
-
-    // 3. Serialize the PDF file!
-    serialize(file, "Actions", "applying actions");
-
-    return true;
+    finally
+    {
+      // 4. Closing the PDF file...
+      if(file != null)
+      {
+        try
+        {file.close();}
+        catch(IOException e)
+        {/* NOOP */}
+      }
+    }
   }
 }

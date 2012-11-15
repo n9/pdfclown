@@ -47,7 +47,7 @@ import org.pdfclown.util.math.geom.Dimension;
   content flow composition), to be made available in the next releases.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class ComplexTypesettingSample
   extends Sample
@@ -55,7 +55,7 @@ public class ComplexTypesettingSample
   private static final Color<?> TextColor_Highlight = new DeviceRGBColor(255 / 255d, 50 / 255d, 50 / 255d);
 
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. PDF file instantiation.
@@ -77,8 +77,6 @@ public class ComplexTypesettingSample
 
     // 3. Serialization.
     serialize(file, "Complex Typesetting", "complex typesetting");
-
-    return true;
   }
 
   private void buildBookmarks(
@@ -176,7 +174,7 @@ public class ComplexTypesettingSample
     // Add the font to the document!
     Font font = Font.get(
       document,
-      getInputPath() + java.io.File.separator + "fonts" + java.io.File.separator + "TravelingTypewriter.otf"
+      getResourcePath("fonts" + java.io.File.separator + "TravelingTypewriter.otf")
       );
 
     Rectangle2D frame = new Rectangle2D.Double(
@@ -188,7 +186,7 @@ public class ComplexTypesettingSample
 
     // Showing the 'GNU' image...
     // Instantiate a jpeg image object!
-    Image image = Image.get(getInputPath() + java.io.File.separator + "images" + java.io.File.separator + "gnu.jpg"); // Abstract image (entity).
+    Image image = Image.get(getResourcePath("images" + java.io.File.separator + "gnu.jpg")); // Abstract image (entity).
     // Show the image!
     composer.showXObject(
       image.toXObject(document),
@@ -375,7 +373,7 @@ public class ComplexTypesettingSample
     // Instantiate the page body's font!
     Font font = Font.get(
       document,
-      getInputPath() + java.io.File.separator + "fonts" + java.io.File.separator + "lazyDog.ttf"
+      getResourcePath("fonts" + java.io.File.separator + "lazyDog.ttf")
       );
 
     // Showing the page title...
@@ -399,7 +397,7 @@ public class ComplexTypesettingSample
 
     // Showing the clown photo...
     // Instantiate a jpeg image object!
-    Image image = Image.get(getInputPath() + java.io.File.separator + "images" + java.io.File.separator + "Clown.jpg"); // Abstract image (entity).
+    Image image = Image.get(getResourcePath("images" + java.io.File.separator + "Clown.jpg")); // Abstract image (entity).
     Point2D imageLocation = new Point2D.Double(
       blockComposer.getBoundBox().getX() + blockComposer.getBoundBox().getWidth() - image.getWidth(),
       blockComposer.getBoundBox().getY() + blockComposer.getBoundBox().getHeight() + 25
@@ -519,7 +517,7 @@ public class ComplexTypesettingSample
 
     // Showing the header image inside the common content stream...
     // Instantiate a jpeg image object!
-    Image image = Image.get(getInputPath() + java.io.File.separator + "images" + java.io.File.separator + "mountains.jpg"); // Abstract image (entity).
+    Image image = Image.get(getResourcePath("images" + java.io.File.separator + "mountains.jpg")); // Abstract image (entity).
     // Show the image inside the common content stream!
     composer.showXObject(
       image.toXObject(document),

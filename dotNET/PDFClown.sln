@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pdfclown.lib", "pdfclown.lib\pdfclown.lib.csproj", "{DBED0809-EE4C-45B0-92FA-E4789ECC2AEC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pdfclown.samples.cli", "pdfclown.samples.cli\pdfclown.samples.cli.csproj", "{BDBDC0A1-6937-4BB6-964D-DDC62CE2832F}"
@@ -59,7 +59,7 @@ Global
 		$3.FileWidth = 100
 		$3.TabWidth = 2
 		$3.RemoveTrailingWhitespace = True
-		$3.EolMarker = Unix
+		$3.EolMarker = Windows
 		$3.inheritsSet = VisualStudio
 		$3.inheritsScope = text/plain
 		$3.scope = text/plain
@@ -67,7 +67,7 @@ Global
 		$4.Text = 
 		$4.IncludeInNewFiles = True
 		$0.DotNetNamingPolicy = $5
-		$5.DirectoryNamespaceAssociation = PrefixedHierarchical
+		$5.DirectoryNamespaceAssociation = Hierarchical
 		$5.ResourceNamePolicy = FileFormatDefault
 		$0.TextStylePolicy = $6
 		$6.inheritsSet = null

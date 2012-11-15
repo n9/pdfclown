@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -39,7 +39,7 @@ import org.pdfclown.tokens.XRefEntry.UsageEnum;
   PDF indirect object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 09/24/12
 */
 public final class PdfIndirectObject
   extends PdfObject
@@ -99,6 +99,13 @@ public final class PdfIndirectObject
 
   // <interface>
   // <public>
+  @Override
+  public boolean accept(
+    IVisitor visitor,
+    Object data
+    )
+  {return visitor.visit(this, data);}
+
   /**
     Adds the {@link #getDataObject() data object} to the specified object stream [PDF:1.6:3.4.6].
 

@@ -213,7 +213,7 @@ namespace org.pdfclown.documents.interaction.actions
 
     internal Launch(
       PdfDirectObject baseObject
-      ) : base(baseObject, null)
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -259,7 +259,7 @@ namespace org.pdfclown.documents.interaction.actions
       {
         PdfDirectObject targetObject;
         if((targetObject = BaseDataObject[PdfName.F]) != null)
-          return FileSpecification.Wrap(targetObject, null);
+          return FileSpecification.Wrap(targetObject);
         else if((targetObject = BaseDataObject[PdfName.Win]) != null)
           return new WinTarget(targetObject);
         else

@@ -37,7 +37,8 @@ namespace org.pdfclown.documents.files
   */
   [PDF(VersionEnum.PDF11)]
   public abstract class FileSpecification
-    : PdfNamedObjectWrapper<PdfDirectObject>
+    : PdfObjectWrapper<PdfDirectObject>,
+      IPdfNamedObjectWrapper
   {
     #region static
     #region public
@@ -94,18 +95,16 @@ namespace org.pdfclown.documents.files
     /**
       <summary>Instantiates an existing file reference.</summary>
       <param name="baseObject">Base object.</param>
-      <param name="name">Reference name.</param>
     */
     public static FileSpecification Wrap(
-      PdfDirectObject baseObject,
-      PdfString name
+      PdfDirectObject baseObject
       )
     {
       PdfDataObject baseDataObject = File.Resolve(baseObject);
       if(baseDataObject is PdfString)
-        return new SimpleFileSpecification(baseObject, name);
+        return new SimpleFileSpecification(baseObject);
       else if(baseDataObject is PdfDictionary)
-        return new FullFileSpecification(baseObject, name);
+        return new FullFileSpecification(baseObject);
       else
         return null;
     }
@@ -121,9 +120,8 @@ namespace org.pdfclown.documents.files
     {}
 
     protected FileSpecification(
-      PdfDirectObject baseObject,
-      PdfString name
-      ) : base(baseObject, name)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -182,6 +180,20 @@ namespace org.pdfclown.documents.files
     {
       get;
     }
+
+    #region IPdfNamedObjectWrapper
+    public PdfString Name
+    {
+      get
+      {return RetrieveName();}
+    }
+
+    public PdfDirectObject NamedBaseObject
+    {
+      get
+      {return RetrieveNamedBaseObject();}
+    }
+    #endregion
     #endregion
     #endregion
     #endregion

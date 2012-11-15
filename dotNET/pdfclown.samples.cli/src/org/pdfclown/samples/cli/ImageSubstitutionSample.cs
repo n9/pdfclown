@@ -19,21 +19,21 @@ namespace org.pdfclown.samples.cli
   public class ImageSubstitutionSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      files::File file = new files::File(filePath);
-      Document document = file.Document;
-
-      // 2. Replace the images!
-      ReplaceImages(document);
-
-      // 3. Serialize the PDF file!
-      Serialize(file, "Image substitution", "substituting a document's images");
-
-      return true;
+      using(files::File file = new files::File(filePath))
+      {
+        Document document = file.Document;
+  
+        // 2. Replace the images!
+        ReplaceImages(document);
+  
+        // 3. Serialize the PDF file!
+        Serialize(file, "Image substitution", "substituting a document's images");
+      }
     }
 
     private void ReplaceImages(
@@ -41,7 +41,7 @@ namespace org.pdfclown.samples.cli
       )
     {
       // Get the image used to replace existing ones!
-      Image image = Image.Get(InputPath + Path.DirectorySeparatorChar + "images" + Path.DirectorySeparatorChar + "gnu.jpg"); // Image is an abstract entity, as it still has to be included into the pdf document.
+      Image image = Image.Get(GetResourcePath("images" + Path.DirectorySeparatorChar + "gnu.jpg")); // Image is an abstract entity, as it still has to be included into the pdf document.
       // Add the image to the document!
       XObject imageXObject = image.ToXObject(document); // XObject (i.e. external object) is, in PDF spec jargon, a reusable object.
       // Looking for images to replace...

@@ -40,7 +40,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF11)
 public final class GoToRemote
@@ -84,13 +84,6 @@ public final class GoToRemote
     super.setDestinationFile(value);
   }
   // </public>
-
-  // <protected>
-  @Override
-  protected Class<RemoteDestination> getDestinationClass(
-    )
-  {return RemoteDestination.class;}
-  // </protected>
   // </interface>
   // </dynamic>
   // </class>

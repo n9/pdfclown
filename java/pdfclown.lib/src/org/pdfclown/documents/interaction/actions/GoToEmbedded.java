@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF11)
 public final class GoToEmbedded
@@ -467,13 +467,6 @@ public final class GoToEmbedded
     {getBaseDataObject().put(PdfName.T, value.getBaseObject());}
   }
   // </public>
-
-  // <protected>
-  @Override
-  protected Class<Destination> getDestinationClass(
-    )
-  {return Destination.class;}
-  // </protected>
   // </interface>
   // </dynamic>
   // </class>

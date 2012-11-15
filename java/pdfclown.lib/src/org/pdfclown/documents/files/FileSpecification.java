@@ -36,10 +36,11 @@ import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.bytes.OutputStream;
 import org.pdfclown.documents.Document;
 import org.pdfclown.files.File;
+import org.pdfclown.objects.IPdfNamedObjectWrapper;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfNamedObjectWrapper;
+import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfString;
 
 /**
@@ -47,11 +48,12 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF11)
 public abstract class FileSpecification<TDataObject extends PdfDirectObject>
-  extends PdfNamedObjectWrapper<TDataObject>
+  extends PdfObjectWrapper<TDataObject>
+  implements IPdfNamedObjectWrapper
 {
   // <class>
   // <static>
@@ -114,18 +116,16 @@ public abstract class FileSpecification<TDataObject extends PdfDirectObject>
     Instantiates an existing file reference.
 
     @param baseObject Base object.
-    @param name Reference name.
   */
   public static FileSpecification<?> wrap(
-    PdfDirectObject baseObject,
-    PdfString name
+    PdfDirectObject baseObject
     )
   {
     PdfDataObject baseDataObject = File.resolve(baseObject);
     if(baseDataObject instanceof PdfString)
-      return new SimpleFileSpecification(baseObject, name);
+      return new SimpleFileSpecification(baseObject);
     else if(baseDataObject instanceof PdfDictionary)
-      return new FullFileSpecification(baseObject, name);
+      return new FullFileSpecification(baseObject);
     else
       return null;
   }
@@ -141,10 +141,9 @@ public abstract class FileSpecification<TDataObject extends PdfDirectObject>
   {super(context, baseDataObject);}
 
   protected FileSpecification(
-    PdfDirectObject baseObject,
-    PdfString name
+    PdfDirectObject baseObject
     )
-  {super(baseObject, name);}
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -210,6 +209,18 @@ public abstract class FileSpecification<TDataObject extends PdfDirectObject>
   */
   public abstract String getPath(
     );
+
+  // <IPdfNamedObjectWrapper>
+  @Override
+  public PdfString getName(
+    )
+  {return retrieveName();}
+
+  @Override
+  public PdfDirectObject getNamedBaseObject(
+    )
+  {return retrieveNamedBaseObject();}
+  // </IPdfNamedObjectWrapper>
   // </public>
   // </interface>
   // </dynamic>

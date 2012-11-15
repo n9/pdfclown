@@ -38,6 +38,7 @@ import org.pdfclown.bytes.IBuffer;
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.files.File;
 import org.pdfclown.files.IndirectObjects;
+import org.pdfclown.objects.IVisitor;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
@@ -55,7 +56,7 @@ import org.pdfclown.util.MapEntry;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 public final class ObjectStream
   extends PdfStream
@@ -122,6 +123,13 @@ public final class ObjectStream
 
   // <interface>
   // <public>
+  @Override
+  public boolean accept(
+    IVisitor visitor,
+    Object data
+    )
+  {return visitor.visit(this, data);}
+
   /**
     Gets the object stream extended by this one.
     <p>Both streams are considered part of a collection of object streams  whose links form a

@@ -28,88 +28,91 @@ namespace org.pdfclown.samples.cli
   public class LinkParsingSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      files::File file = new files::File(filePath);
-      Document document = file.Document;
-
-      // 2. Link extraction from the document pages.
-      TextExtractor extractor = new TextExtractor();
-      extractor.AreaTolerance = 2; // 2 pt tolerance on area boundary detection.
-      bool linkFound = false;
-      foreach(Page page in document.Pages)
+      using(files::File file = new files::File(filePath))
       {
-        if(!PromptNextPage(page, !linkFound))
-          return false;
-
-        IDictionary<RectangleF?,IList<ITextString>> textStrings = null;
-        linkFound = false;
-
-        // Get the page annotations!
-        PageAnnotations annotations = page.Annotations;
-        if(annotations == null)
+        Document document = file.Document;
+  
+        // 2. Link extraction from the document pages.
+        TextExtractor extractor = new TextExtractor();
+        extractor.AreaTolerance = 2; // 2 pt tolerance on area boundary detection.
+        bool linkFound = false;
+        foreach(Page page in document.Pages)
         {
-          Console.WriteLine("No annotations here.");
-          continue;
-        }
-
-        // Iterating through the page annotations looking for links...
-        foreach(Annotation annotation in annotations)
-        {
-          if(annotation is Link)
+          if(!PromptNextPage(page, !linkFound))
           {
-            linkFound = true;
+            Quit();
+            break;
+          }
 
-            if(textStrings == null)
-            {textStrings = extractor.Extract(page);}
-
-            Link link = (Link)annotation;
-            RectangleF linkBox = link.Box;
-
-            // Text.
-            /*
-              Extracting text superimposed by the link...
-              NOTE: As links have no strong relation to page text but a weak location correspondence,
-              we have to filter extracted text by link area.
-            */
-            StringBuilder linkTextBuilder = new StringBuilder();
-            foreach(ITextString linkTextString in extractor.Filter(textStrings,linkBox))
-            {linkTextBuilder.Append(linkTextString.Text);}
-            Console.WriteLine("Link '" + linkTextBuilder + "' ");
-
-            // Position.
-            Console.WriteLine(
-              "    Position: "
-                + "x:" + Math.Round(linkBox.X) + ","
-                + "y:" + Math.Round(linkBox.Y) + ","
-                + "w:" + Math.Round(linkBox.Width) + ","
-                + "h:" + Math.Round(linkBox.Height)
-                );
-
-            // Target.
-            Console.Write("    Target: ");
-            PdfObjectWrapper target = link.Target;
-            if(target is Destination)
-            {PrintDestination((Destination)target);}
-            else if(target is actions::Action)
-            {PrintAction((actions::Action)target);}
-            else if(target == null)
-            {Console.WriteLine("[not available]");}
-            else
-            {Console.WriteLine("[unknown type: " + target.GetType().Name + "]");}
+          IDictionary<RectangleF?,IList<ITextString>> textStrings = null;
+          linkFound = false;
+  
+          // Get the page annotations!
+          PageAnnotations annotations = page.Annotations;
+          if(annotations == null)
+          {
+            Console.WriteLine("No annotations here.");
+            continue;
+          }
+  
+          // Iterating through the page annotations looking for links...
+          foreach(Annotation annotation in annotations)
+          {
+            if(annotation is Link)
+            {
+              linkFound = true;
+  
+              if(textStrings == null)
+              {textStrings = extractor.Extract(page);}
+  
+              Link link = (Link)annotation;
+              RectangleF linkBox = link.Box;
+  
+              // Text.
+              /*
+                Extracting text superimposed by the link...
+                NOTE: As links have no strong relation to page text but a weak location correspondence,
+                we have to filter extracted text by link area.
+              */
+              StringBuilder linkTextBuilder = new StringBuilder();
+              foreach(ITextString linkTextString in extractor.Filter(textStrings,linkBox))
+              {linkTextBuilder.Append(linkTextString.Text);}
+              Console.WriteLine("Link '" + linkTextBuilder + "' ");
+  
+              // Position.
+              Console.WriteLine(
+                "    Position: "
+                  + "x:" + Math.Round(linkBox.X) + ","
+                  + "y:" + Math.Round(linkBox.Y) + ","
+                  + "w:" + Math.Round(linkBox.Width) + ","
+                  + "h:" + Math.Round(linkBox.Height)
+                  );
+  
+              // Target.
+              Console.Write("    Target: ");
+              PdfObjectWrapper target = link.Target;
+              if(target is Destination)
+              {PrintDestination((Destination)target);}
+              else if(target is actions::Action)
+              {PrintAction((actions::Action)target);}
+              else if(target == null)
+              {Console.WriteLine("[not available]");}
+              else
+              {Console.WriteLine("[unknown type: " + target.GetType().Name + "]");}
+            }
+          }
+          if(!linkFound)
+          {
+            Console.WriteLine("No links here.");
+            continue;
           }
         }
-        if(!linkFound)
-        {
-          Console.WriteLine("No links here.");
-          continue;
-        }
       }
-
-      return true;
     }
 
     private void PrintAction(

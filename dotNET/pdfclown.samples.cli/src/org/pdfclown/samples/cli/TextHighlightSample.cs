@@ -98,40 +98,39 @@ namespace org.pdfclown.samples.cli
       {throw new NotSupportedException();}
     }
 
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      File file = new File(filePath);
-
-      // Define the text pattern to look for!
-      string textRegEx = PromptChoice("Please enter the pattern to look for: ");
-      Regex pattern = new Regex(textRegEx, RegexOptions.IgnoreCase);
-
-      // 2. Iterating through the document pages...
-      TextExtractor textExtractor = new TextExtractor(true, true);
-      foreach(Page page in file.Document.Pages)
+      using(File file = new File(filePath))
       {
-        Console.WriteLine("\nScanning page " + (page.Index+1) + "...\n");
-
-        // 2.1. Extract the page text!
-        IDictionary<RectangleF?,IList<ITextString>> textStrings = textExtractor.Extract(page);
-
-        // 2.2. Find the text pattern matches!
-        MatchCollection matches = pattern.Matches(TextExtractor.ToString(textStrings));
-
-        // 2.3. Highlight the text pattern matches!
-        textExtractor.Filter(
-          textStrings,
-          new TextHighlighter(page, matches)
-          );
+        // Define the text pattern to look for!
+        string textRegEx = PromptChoice("Please enter the pattern to look for: ");
+        Regex pattern = new Regex(textRegEx, RegexOptions.IgnoreCase);
+  
+        // 2. Iterating through the document pages...
+        TextExtractor textExtractor = new TextExtractor(true, true);
+        foreach(Page page in file.Document.Pages)
+        {
+          Console.WriteLine("\nScanning page " + (page.Index+1) + "...\n");
+  
+          // 2.1. Extract the page text!
+          IDictionary<RectangleF?,IList<ITextString>> textStrings = textExtractor.Extract(page);
+  
+          // 2.2. Find the text pattern matches!
+          MatchCollection matches = pattern.Matches(TextExtractor.ToString(textStrings));
+  
+          // 2.3. Highlight the text pattern matches!
+          textExtractor.Filter(
+            textStrings,
+            new TextHighlighter(page, matches)
+            );
+        }
+  
+        // 3. Highlighted file serialization.
+        Serialize(file);
       }
-
-      // 3. Highlighted file serialization.
-      Serialize(file);
-
-      return true;
     }
   }
 }

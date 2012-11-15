@@ -1,5 +1,7 @@
 package org.pdfclown.samples.cli;
 
+import java.io.IOException;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.ContentScanner;
@@ -18,38 +20,53 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 09/24/12
 */
 public class BasicTextExtractionSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
-    // 1. Opening the PDF file...
-    File file;
+    File file = null;
+    try
     {
-      String filePath = promptFileChoice("Please select a PDF file");
-      try
-      {file = new File(filePath);}
-      catch(Exception e)
-      {throw new RuntimeException(filePath + " file access error.",e);}
-    }
-    Document document = file.getDocument();
+      // 1. Opening the PDF file...
+      {
+        String filePath = promptFileChoice("Please select a PDF file");
+        try
+        {file = new File(filePath);}
+        catch(Exception e)
+        {throw new RuntimeException(filePath + " file access error.",e);}
+      }
+      Document document = file.getDocument();
 
-    // 2. Text extraction from the document pages.
-    for(Page page : document.getPages())
+      // 2. Text extraction from the document pages.
+      for(Page page : document.getPages())
+      {
+        if(!promptNextPage(page, false))
+        {
+          quit();
+          break;
+        }
+
+        extract(
+          new ContentScanner(page) // Wraps the page contents into a scanner.
+          );
+      }
+    }
+    finally
     {
-      if(!promptNextPage(page, false))
-        return false;
-
-      extract(
-        new ContentScanner(page) // Wraps the page contents into a scanner.
-        );
+      // 3. Closing the PDF file...
+      if(file != null)
+      {
+        try
+        {file.close();}
+        catch(IOException e)
+        {/* NOOP */}
+      }
     }
-
-    return true;
   }
 
   /**

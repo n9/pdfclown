@@ -1,5 +1,7 @@
 package org.pdfclown.samples.cli;
 
+import java.io.IOException;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.files.FileSpecification;
@@ -19,38 +21,50 @@ import org.pdfclown.objects.PdfObjectWrapper;
   This sample demonstrates <b>how to inspect the bookmarks</b> of a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class BookmarksParsingSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
-    // 1. Opening the PDF file...
-    File file;
+    File file = null;
+    try
     {
-      String filePath = promptFileChoice("Please select a PDF file");
-      try
-      {file = new File(filePath);}
-      catch(Exception e)
-      {throw new RuntimeException(filePath + " file access error.",e);}
-    }
-    Document document = file.getDocument();
+      // 1. Opening the PDF file...
+      {
+        String filePath = promptFileChoice("Please select a PDF file");
+        try
+        {file = new File(filePath);}
+        catch(Exception e)
+        {throw new RuntimeException(filePath + " file access error.",e);}
+      }
+      Document document = file.getDocument();
 
-    // 2. Get the bookmarks collection!
-    Bookmarks bookmarks = document.getBookmarks();
-    if(bookmarks == null)
-    {System.out.println("\nNo bookmark available (Outline dictionary not found).");}
-    else
+      // 2. Get the bookmarks collection!
+      Bookmarks bookmarks = document.getBookmarks();
+      if(bookmarks == null)
+      {System.out.println("\nNo bookmark available (Outline dictionary not found).");}
+      else
+      {
+        System.out.println("\nIterating through the bookmarks collection (please wait)...\n");
+        // 3. Show the bookmarks!
+        printBookmarks(bookmarks);
+      }
+    }
+    finally
     {
-      System.out.println("\nIterating through the bookmarks collection (please wait)...\n");
-      // 3. Show the bookmarks!
-      printBookmarks(bookmarks);
+      // 4. Closing the PDF file...
+      if(file != null)
+      {
+        try
+        {file.close();}
+        catch(IOException e)
+        {/* NOOP */}
+      }
     }
-
-    return true;
   }
 
   private void printBookmarks(

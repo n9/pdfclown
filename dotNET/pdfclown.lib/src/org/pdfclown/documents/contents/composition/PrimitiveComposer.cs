@@ -229,7 +229,7 @@ namespace org.pdfclown.documents.contents.composition
       )
     {
       // Doesn't the property list exist in the context resources?
-      if(!scanner.ContentContext.Resources.PropertyLists.ContainsKey(propertyListName))
+      if(propertyListName != null && !scanner.ContentContext.Resources.PropertyLists.ContainsKey(propertyListName))
         throw new ArgumentException("No property list resource associated to the given argument.", "name");
 
       return BeginMarkedContent_(tag, propertyListName);
@@ -735,27 +735,11 @@ namespace org.pdfclown.documents.contents.composition
 
     /**
       <summary>Sets the line dash pattern [PDF:1.6:4.3.2].</summary>
-      <param name="phase">Distance into the dash pattern at which to start the dash.</param>
-      <param name="unitsOn">Length of evenly alternating dashes and gaps.</param>
     */
     public void SetLineDash(
-      int phase,
-      int unitsOn
+      LineDash value
       )
-    {SetLineDash(phase,unitsOn,unitsOn);}
-
-    /**
-      <summary>Sets the line dash pattern [PDF:1.6:4.3.2].</summary>
-      <param name="phase">Distance into the dash pattern at which to start the dash.</param>
-      <param name="unitsOn">Length of dashes.</param>
-      <param name="unitsOff">Length of gaps.</param>
-    */
-    public void SetLineDash(
-      int phase,
-      int unitsOn,
-      int unitsOff
-      )
-    {Add(new objects::SetLineDash(phase,unitsOn,unitsOff));}
+    {Add(new objects::SetLineDash(value));}
 
     /**
       <summary>Sets the line join style [PDF:1.6:4.3.2].</summary>
@@ -1522,18 +1506,18 @@ namespace org.pdfclown.documents.contents.composition
       else
       {
         // Ensuring that the resource exists within the context resources...
-        ResourceItems<T> resourceItems = (ResourceItems<T>)scanner.ContentContext.Resources.Get<T>();
+        PdfDictionary resourceItemsObject = ((PdfObjectWrapper<PdfDictionary>)scanner.ContentContext.Resources.Get(value.GetType())).BaseDataObject;
         // Get the key associated to the resource!
-        PdfName name = resourceItems.BaseDataObject.GetKey(value.BaseObject);
+        PdfName name = resourceItemsObject.GetKey(value.BaseObject);
         // No key found?
         if(name == null)
         {
           // Insert the resource within the collection!
-          int resourceIndex = resourceItems.Count;
+          int resourceIndex = resourceItemsObject.Count;
           do
           {name = new PdfName((++resourceIndex).ToString());}
-          while(resourceItems.ContainsKey(name));
-          resourceItems[name] = value;
+          while(resourceItemsObject.ContainsKey(name));
+          resourceItemsObject[name] = value.BaseObject;
         }
         return name;
       }

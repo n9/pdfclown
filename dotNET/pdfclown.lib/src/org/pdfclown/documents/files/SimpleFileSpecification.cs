@@ -46,9 +46,8 @@ namespace org.pdfclown.documents.files
     {}
 
     internal SimpleFileSpecification(
-      PdfDirectObject baseObject,
-      PdfString name
-      ) : base(baseObject, name)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 

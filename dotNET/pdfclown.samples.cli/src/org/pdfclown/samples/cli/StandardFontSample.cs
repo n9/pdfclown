@@ -20,7 +20,7 @@ namespace org.pdfclown.samples.cli
     private static readonly int FontBaseSize = 20;
     private static readonly int Margin = 50;
 
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. PDF file instantiation.
@@ -32,8 +32,6 @@ namespace org.pdfclown.samples.cli
 
       // 3. Serialize the PDF file!
       Serialize(file, "Standard Type 1 fonts", "applying standard Type 1 fonts");
-
-      return true;
     }
 
     private void Populate(

@@ -25,7 +25,7 @@ namespace org.pdfclown.samples.cli
   {
     private const float Margin = 36;
 
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. PDF file instantiation.
@@ -37,8 +37,6 @@ namespace org.pdfclown.samples.cli
 
       // 3. Serialize the PDF file!
       Serialize(file, "Inline image", "embedding an image within a content stream");
-
-      return true;
     }
 
     private void Populate(
@@ -78,7 +76,7 @@ namespace org.pdfclown.samples.cli
       // Showing the 'GNU' image...
       {
         // Instantiate a jpeg image object!
-        entities::Image image = entities::Image.Get(InputPath + Path.DirectorySeparatorChar + "images" + Path.DirectorySeparatorChar + "gnu.jpg"); // Abstract image (entity).
+        entities::Image image = entities::Image.Get(GetResourcePath("images" + Path.DirectorySeparatorChar + "gnu.jpg")); // Abstract image (entity).
         // Set the position of the image in the page!
         composer.ApplyMatrix(200,0,0,200,(pageSize.Width-200)/2,(pageSize.Height-200)/2);
         // Show the image!

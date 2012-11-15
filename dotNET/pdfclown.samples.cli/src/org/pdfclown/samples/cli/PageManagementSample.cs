@@ -31,210 +31,211 @@ namespace org.pdfclown.samples.cli
       DocumentSplitOnMaximumFileSize
     }
 
-    public override bool Run(
+    public override void Run(
       )
     {
       ActionEnum action = PromptAction();
 
       // Opening the PDF file...
       string mainFilePath = PromptFileChoice("Please select a PDF file");
-      File mainFile = new File(mainFilePath);
-      Document mainDocument = mainFile.Document;
-      Pages mainPages = mainDocument.Pages;
-      int mainPagesCount = mainPages.Count;
-
-      switch(action)
+      using(File mainFile = new File(mainFilePath))
       {
-        case ActionEnum.PageDataSizeCalculation:
+        Document mainDocument = mainFile.Document;
+        Pages mainPages = mainDocument.Pages;
+        int mainPagesCount = mainPages.Count;
+  
+        switch(action)
         {
-          Console.WriteLine("\nThis algorithm calculates the data size (expressed in bytes) of the selected document's pages.");
-          Console.WriteLine("Legend:");
-          Console.WriteLine(" * full: page data size encompassing all its dependencies (like shared resources) -- this is the size of the page when extracted as a single-page document;");
-          Console.WriteLine(" * differential: additional page data size -- this is the extra-content that's not shared with previous pages;");
-          Console.WriteLine(" * incremental: data size of the page sublist encompassing all the previous pages and the current one.\n");
-
-          // Calculating the page data sizes...
-          HashSet<PdfReference> visitedReferences = new HashSet<PdfReference>();
-          long incrementalDataSize = 0;
-          foreach(Page page in mainPages)
+          case ActionEnum.PageDataSizeCalculation:
           {
-            long pageFullDataSize = PageManager.GetSize(page);
-            long pageDifferentialDataSize = PageManager.GetSize(page, visitedReferences);
-            incrementalDataSize += pageDifferentialDataSize;
-
-            Console.WriteLine(
-              "Page " + (page.Index+1) + ": "
-                + pageFullDataSize + " (full); "
-                + pageDifferentialDataSize + " (differential); "
-                + incrementalDataSize + " (incremental)"
-              );
-          }
-        } break;
-        case ActionEnum.PageAddition:
-        {
-          // Source file.
-          string sourceFilePath = PromptFileChoice("Select the source PDF file");
-          File sourceFile = new File(sourceFilePath);
-          // Source page collection.
-          Pages sourcePages = sourceFile.Document.Pages;
-          // Source page count.
-          int sourcePagesCount = sourcePages.Count;
-
-          // First page to add.
-          int fromSourcePageIndex = PromptPageChoice("Select the start source page to add", sourcePagesCount);
-          // Last page to add.
-          int toSourcePageIndex = PromptPageChoice("Select the end source page to add", fromSourcePageIndex + 1, sourcePagesCount) + 1;
-          // Target position.
-          int targetPageIndex = PromptPageChoice("Select the position where to insert the source pages", mainPagesCount + 1);
-
-          // Add the chosen page range to the main document!
-          new PageManager(mainDocument).Add(
-            targetPageIndex,
-            sourcePages.GetSlice(
-              fromSourcePageIndex,
-              toSourcePageIndex
-              )
-            );
-
-          // Serialize the main file!
-          Serialize(mainFile, action);
-        } break;
-        case ActionEnum.PageMovement:
-        {
-          // First page to move.
-          int fromSourcePageIndex = PromptPageChoice("Select the start page to move", mainPagesCount);
-          // Last page to move.
-          int toSourcePageIndex = PromptPageChoice("Select the end page to move", fromSourcePageIndex + 1, mainPagesCount) + 1;
-          // Target position.
-          int targetPageIndex = PromptPageChoice("Select the position where to insert the pages", mainPagesCount + 1);
-
-          // Move the chosen page range!
-          new PageManager(mainDocument).Move(
-            fromSourcePageIndex,
-            toSourcePageIndex,
-            targetPageIndex
-            );
-
-          // Serialize the main file!
-          Serialize(mainFile, action);
-        } break;
-        case ActionEnum.PageRemoval:
-        {
-          // First page to remove.
-          int fromPageIndex = PromptPageChoice("Select the start page to remove", mainPagesCount);
-          // Last page to remove.
-          int toPageIndex = PromptPageChoice("Select the end page to remove", fromPageIndex + 1, mainPagesCount) + 1;
-
-          // Remove the chosen page range!
-          new PageManager(mainDocument).Remove(
-            fromPageIndex,
-            toPageIndex
-            );
-
-          // Serialize the main file!
-          Serialize(mainFile, action);
-        } break;
-        case ActionEnum.PageExtraction:
-        {
-          // First page to extract.
-          int fromPageIndex = PromptPageChoice("Select the start page", mainPagesCount);
-          // Last page to extract.
-          int toPageIndex = PromptPageChoice("Select the end page", fromPageIndex + 1, mainPagesCount) + 1;
-
-          // Extract the chosen page range!
-          Document targetDocument = new PageManager(mainDocument).Extract(
-            fromPageIndex,
-            toPageIndex
-            );
-
-          // Serialize the target file!
-          Serialize(targetDocument.File, action);
-        } break;
-        case ActionEnum.DocumentMerge:
-        {
-          // Source file.
-          string sourceFilePath = PromptFileChoice("Select the source PDF file");
-          File sourceFile = new File(sourceFilePath);
-
-          // Append the chosen source document to the main document!
-          new PageManager(mainDocument).Add(sourceFile.Document);
-
-          // Serialize the main file!
-          Serialize(mainFile, action);
-        } break;
-        case ActionEnum.DocumentBurst:
-        {
-          // Split the document into single-page documents!
-          IList<Document> splitDocuments = new PageManager(mainDocument).Split();
-
-          // Serialize the split files!
-          int index = 0;
-          foreach(Document splitDocument in splitDocuments)
-          {Serialize(splitDocument.File, action, ++index);}
-        } break;
-        case ActionEnum.DocumentSplitByPageIndex:
-        {
-          // Number of splits to apply to the source document.
-          int splitCount;
-          try
-          {splitCount = Int32.Parse(PromptChoice("Number of split positions: "));}
-          catch
-          {splitCount = 0;}
-
-          // Split positions within the source document.
-          int[] splitIndexes = new int[splitCount];
-          {
-            int prevSplitIndex = 0;
-            for(int index = 0; index < splitCount; index++)
+            Console.WriteLine("\nThis algorithm calculates the data size (expressed in bytes) of the selected document's pages.");
+            Console.WriteLine("Legend:");
+            Console.WriteLine(" * full: page data size encompassing all its dependencies (like shared resources) -- this is the size of the page when extracted as a single-page document;");
+            Console.WriteLine(" * differential: additional page data size -- this is the extra-content that's not shared with previous pages;");
+            Console.WriteLine(" * incremental: data size of the page sublist encompassing all the previous pages and the current one.\n");
+  
+            // Calculating the page data sizes...
+            HashSet<PdfReference> visitedReferences = new HashSet<PdfReference>();
+            long incrementalDataSize = 0;
+            foreach(Page page in mainPages)
             {
-              int splitIndex = PromptPageChoice("Position " + (index + 1) + " of " + splitCount, prevSplitIndex + 1, mainPagesCount);
-              splitIndexes[index] = splitIndex;
-              prevSplitIndex = splitIndex;
+              long pageFullDataSize = PageManager.GetSize(page);
+              long pageDifferentialDataSize = PageManager.GetSize(page, visitedReferences);
+              incrementalDataSize += pageDifferentialDataSize;
+  
+              Console.WriteLine(
+                "Page " + (page.Index+1) + ": "
+                  + pageFullDataSize + " (full); "
+                  + pageDifferentialDataSize + " (differential); "
+                  + incrementalDataSize + " (incremental)"
+                );
             }
-          }
-
-          // Split the document at the chosen positions!
-          IList<Document> splitDocuments = new PageManager(mainDocument).Split(splitIndexes);
-
-          // Serialize the split files!
+          } break;
+          case ActionEnum.PageAddition:
           {
-            int index = 0;
-            foreach(Document splitDocument in splitDocuments)
-            {Serialize(splitDocument.File, action, ++index);}
-          }
-        } break;
-        case ActionEnum.DocumentSplitOnMaximumFileSize:
-        {
-          // Maximum file size.
-          long maxDataSize;
-          {
-            long mainFileSize = new io::FileInfo(mainFilePath).Length;
-            int kbMaxDataSize;
-            do
+            // Opening the source file...
+            string sourceFilePath = PromptFileChoice("Select the source PDF file");
+            using(File sourceFile = new File(sourceFilePath))
             {
-              try
-              {kbMaxDataSize = Int32.Parse(PromptChoice("Max file size (KB): "));}
-              catch
-              {kbMaxDataSize = 0;}
-            } while(kbMaxDataSize == 0);
-            maxDataSize = kbMaxDataSize << 10;
-            if(maxDataSize > mainFileSize)
-            {maxDataSize = mainFileSize;}
-          }
-
-          // Split the document on maximum file size!
-          IList<Document> splitDocuments = new PageManager(mainDocument).Split(maxDataSize);
-
-          // Serialize the split files!
+              // Source page collection.
+              Pages sourcePages = sourceFile.Document.Pages;
+              // Source page count.
+              int sourcePagesCount = sourcePages.Count;
+  
+              // First page to add.
+              int fromSourcePageIndex = PromptPageChoice("Select the start source page to add", sourcePagesCount);
+              // Last page to add.
+              int toSourcePageIndex = PromptPageChoice("Select the end source page to add", fromSourcePageIndex + 1, sourcePagesCount) + 1;
+              // Target position.
+              int targetPageIndex = PromptPageChoice("Select the position where to insert the source pages", mainPagesCount + 1);
+  
+              // Add the chosen page range to the main document!
+              new PageManager(mainDocument).Add(
+                targetPageIndex,
+                sourcePages.GetSlice(
+                  fromSourcePageIndex,
+                  toSourcePageIndex
+                  )
+                );
+            }
+            // Serialize the main file!
+            Serialize(mainFile, action);
+          } break;
+          case ActionEnum.PageMovement:
           {
+            // First page to move.
+            int fromSourcePageIndex = PromptPageChoice("Select the start page to move", mainPagesCount);
+            // Last page to move.
+            int toSourcePageIndex = PromptPageChoice("Select the end page to move", fromSourcePageIndex, mainPagesCount) + 1;
+            // Target position.
+            int targetPageIndex = PromptPageChoice("Select the position where to insert the pages", mainPagesCount + 1);
+  
+            // Move the chosen page range!
+            new PageManager(mainDocument).Move(
+              fromSourcePageIndex,
+              toSourcePageIndex,
+              targetPageIndex
+              );
+  
+            // Serialize the main file!
+            Serialize(mainFile, action);
+          } break;
+          case ActionEnum.PageRemoval:
+          {
+            // First page to remove.
+            int fromPageIndex = PromptPageChoice("Select the start page to remove", mainPagesCount);
+            // Last page to remove.
+            int toPageIndex = PromptPageChoice("Select the end page to remove", fromPageIndex, mainPagesCount) + 1;
+  
+            // Remove the chosen page range!
+            new PageManager(mainDocument).Remove(
+              fromPageIndex,
+              toPageIndex
+              );
+  
+            // Serialize the main file!
+            Serialize(mainFile, action);
+          } break;
+          case ActionEnum.PageExtraction:
+          {
+            // First page to extract.
+            int fromPageIndex = PromptPageChoice("Select the start page", mainPagesCount);
+            // Last page to extract.
+            int toPageIndex = PromptPageChoice("Select the end page", fromPageIndex, mainPagesCount) + 1;
+  
+            // Extract the chosen page range!
+            Document targetDocument = new PageManager(mainDocument).Extract(
+              fromPageIndex,
+              toPageIndex
+              );
+  
+            // Serialize the target file!
+            Serialize(targetDocument.File, action);
+          } break;
+          case ActionEnum.DocumentMerge:
+          {
+            // Opening the source file...
+            string sourceFilePath = PromptFileChoice("Select the source PDF file");
+            using(File sourceFile = new File(sourceFilePath))
+            {
+              // Append the chosen source document to the main document!
+              new PageManager(mainDocument).Add(sourceFile.Document);
+            }
+            // Serialize the main file!
+            Serialize(mainFile, action);
+          } break;
+          case ActionEnum.DocumentBurst:
+          {
+            // Split the document into single-page documents!
+            IList<Document> splitDocuments = new PageManager(mainDocument).Split();
+  
+            // Serialize the split files!
             int index = 0;
             foreach(Document splitDocument in splitDocuments)
             {Serialize(splitDocument.File, action, ++index);}
-          }
-        } break;
+          } break;
+          case ActionEnum.DocumentSplitByPageIndex:
+          {
+            // Number of splits to apply to the source document.
+            int splitCount;
+            try
+            {splitCount = Int32.Parse(PromptChoice("Number of split positions: "));}
+            catch
+            {splitCount = 0;}
+  
+            // Split positions within the source document.
+            int[] splitIndexes = new int[splitCount];
+            {
+              int prevSplitIndex = 0;
+              for(int index = 0; index < splitCount; index++)
+              {
+                int splitIndex = PromptPageChoice("Position " + (index + 1) + " of " + splitCount, prevSplitIndex + 1, mainPagesCount);
+                splitIndexes[index] = splitIndex;
+                prevSplitIndex = splitIndex;
+              }
+            }
+  
+            // Split the document at the chosen positions!
+            IList<Document> splitDocuments = new PageManager(mainDocument).Split(splitIndexes);
+  
+            // Serialize the split files!
+            {
+              int index = 0;
+              foreach(Document splitDocument in splitDocuments)
+              {Serialize(splitDocument.File, action, ++index);}
+            }
+          } break;
+          case ActionEnum.DocumentSplitOnMaximumFileSize:
+          {
+            // Maximum file size.
+            long maxDataSize;
+            {
+              long mainFileSize = new io::FileInfo(mainFilePath).Length;
+              int kbMaxDataSize;
+              do
+              {
+                try
+                {kbMaxDataSize = Int32.Parse(PromptChoice("Max file size (KB): "));}
+                catch
+                {kbMaxDataSize = 0;}
+              } while(kbMaxDataSize == 0);
+              maxDataSize = kbMaxDataSize << 10;
+              if(maxDataSize > mainFileSize)
+              {maxDataSize = mainFileSize;}
+            }
+  
+            // Split the document on maximum file size!
+            IList<Document> splitDocuments = new PageManager(mainDocument).Split(maxDataSize);
+  
+            // Serialize the split files!
+            {
+              int index = 0;
+              foreach(Document splitDocument in splitDocuments)
+              {Serialize(splitDocument.File, action, ++index);}
+            }
+          } break;
+        }
       }
-
-      return true;
     }
 
     private ActionEnum PromptAction(

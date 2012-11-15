@@ -47,10 +47,10 @@ namespace org.pdfclown.documents.interaction.annotations
       RectangleF box,
       string text,
       multimedia::Movie content
-      ) : base(page.Document, PdfName.Movie, box, text, page)
+      ) : base(page, PdfName.Movie, box, text)
     {Content = content;}
 
-    public Movie(
+    internal Movie(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

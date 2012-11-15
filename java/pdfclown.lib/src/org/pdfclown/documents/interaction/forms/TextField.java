@@ -293,6 +293,7 @@ public final class TextField
       }
 
       // Retrieving the font to use...
+      @SuppressWarnings("resource")
       ContentParser parser = new ContentParser(defaultAppearanceState.toByteArray());
       for(ContentObject content : parser.parseContentObjects())
       {

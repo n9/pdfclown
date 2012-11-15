@@ -1,5 +1,7 @@
 package org.pdfclown.samples.cli;
 
+import java.io.IOException;
+
 import org.pdfclown.bytes.IBuffer;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDataObject;
@@ -15,66 +17,78 @@ import org.pdfclown.objects.PdfStream;
   <p>XObject images other than JPEG aren't currently supported for handling.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 09/24/12
 */
 public class ImageExtractionSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
-    // 1. Opening the PDF file...
-    File file;
+    File file = null;
+    try
     {
-      String filePath = promptFileChoice("Please select a PDF file");
-      try
-      {file = new File(filePath);}
-      catch(Exception e)
-      {throw new RuntimeException(filePath + " file access error.",e);}
-    }
-
-    // 2. Iterating through the indirect object collection...
-    int index = 0;
-    for(PdfIndirectObject indirectObject : file.getIndirectObjects())
-    {
-      // Get the data object associated to the indirect object!
-      PdfDataObject dataObject = indirectObject.getDataObject();
-      // Is this data object a stream?
-      if(dataObject instanceof PdfStream)
+      // 1. Opening the PDF file...
       {
-        PdfDictionary header = ((PdfStream)dataObject).getHeader();
-        // Is this stream an image?
-        if(header.containsKey(PdfName.Type)
-          && header.get(PdfName.Type).equals(PdfName.XObject)
-          && header.get(PdfName.Subtype).equals(PdfName.Image))
+        String filePath = promptFileChoice("Please select a PDF file");
+        try
+        {file = new File(filePath);}
+        catch(Exception e)
+        {throw new RuntimeException(filePath + " file access error.",e);}
+      }
+
+      // 2. Iterating through the indirect object collection...
+      int index = 0;
+      for(PdfIndirectObject indirectObject : file.getIndirectObjects())
+      {
+        // Get the data object associated to the indirect object!
+        PdfDataObject dataObject = indirectObject.getDataObject();
+        // Is this data object a stream?
+        if(dataObject instanceof PdfStream)
         {
-          // Which kind of image?
-          if(header.get(PdfName.Filter).equals(PdfName.DCTDecode)) // JPEG image.
+          PdfDictionary header = ((PdfStream)dataObject).getHeader();
+          // Is this stream an image?
+          if(header.containsKey(PdfName.Type)
+            && header.get(PdfName.Type).equals(PdfName.XObject)
+            && header.get(PdfName.Subtype).equals(PdfName.Image))
           {
-            // Get the image data (keeping it encoded)!
-            IBuffer body = ((PdfStream)dataObject).getBody(false);
-            // Export the image!
-            exportImage(
-              body,
-              getOutputPath() + java.io.File.separator + "ImageExtractionSample_" + (index++) + ".jpg"
-              );
+            // Which kind of image?
+            if(header.get(PdfName.Filter).equals(PdfName.DCTDecode)) // JPEG image.
+            {
+              // Get the image data (keeping it encoded)!
+              IBuffer body = ((PdfStream)dataObject).getBody(false);
+              // Export the image!
+              exportImage(
+                body,
+                "ImageExtractionSample_" + (index++) + ".jpg"
+                );
+            }
+            else // Unsupported image.
+            {System.out.println("Image XObject " + indirectObject.getReference() + " couldn't be extracted (filter: " + header.get(PdfName.Filter) + ")");}
           }
-          else // Unsupported image.
-          {System.out.println("Image XObject " + indirectObject.getReference() + " couldn't be extracted (filter: " + header.get(PdfName.Filter) + ")");}
         }
       }
     }
-
-    return true;
+    finally
+    {
+      // 3. Closing the PDF file...
+      if(file != null)
+      {
+        try
+        {file.close();}
+        catch(IOException e)
+        {/* NOOP */}
+      }
+    }
   }
 
   private void exportImage(
     IBuffer data,
-    String outputPath
+    String filename
     )
   {
-    java.io.File outputFile = new java.io.File(outputPath);
+    java.io.File outputFile = new java.io.File(getOutputPath(filename));
     java.io.BufferedOutputStream outputStream;
     try
     {

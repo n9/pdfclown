@@ -96,6 +96,12 @@ namespace org.pdfclown.objects
 
     #region interface
     #region public
+    public override bool Accept(
+      IVisitor visitor,
+      object data
+      )
+    {return visitor.Visit(this, data);}
+
     public override object Clone(
       File context
       )
@@ -156,7 +162,7 @@ namespace org.pdfclown.objects
     {return entries.GetHashCode();}
 
     /**
-      Gets the key associated to a given value.
+      Gets the key associated to the specified value.
     */
     public PdfName GetKey(
       PdfDirectObject value
@@ -166,18 +172,13 @@ namespace org.pdfclown.objects
         NOTE: Current PdfDictionary implementation doesn't support bidirectional maps, to say that
         the only currently-available way to retrieve a key from a value is to iterate the whole map
         (really poor performance!).
-        NOTE: Complex high-level matches are not verified (too expensive!), to say that if the
-        searched high-level object (font, xobject, colorspace etc.) has a PdfReference base object
-        while some high-level objects in the collection have other direct type (PdfName, for example)
-        base objects, they won't match in any case (even if they represent the SAME high-level object
-        -- but that should be a rare case...).
       */
       foreach(KeyValuePair<PdfName,PdfDirectObject> entry in entries)
       {
         if(entry.Value.Equals(value))
-          return entry.Key; // Found.
+          return entry.Key;
       }
-      return null; // Not found.
+      return null;
     }
 
     public override PdfObject Parent
@@ -360,7 +361,7 @@ namespace org.pdfclown.objects
     public void Clear(
       )
     {
-      foreach(PdfName key in entries.Keys)
+      foreach(PdfName key in new List<PdfDirectObject>(entries.Keys))
       {Remove(key);}
     }
 

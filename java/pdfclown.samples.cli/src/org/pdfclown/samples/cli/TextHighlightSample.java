@@ -23,13 +23,13 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 public class TextHighlightSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
     // 1. Opening the PDF file...
@@ -120,7 +120,5 @@ public class TextHighlightSample
 
     // 3. Highlighted file serialization.
     serialize(file);
-
-    return true;
   }
 }

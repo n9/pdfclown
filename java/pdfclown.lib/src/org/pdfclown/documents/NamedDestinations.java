@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -34,7 +34,6 @@ import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.objects.PdfString;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -42,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF12)
 public final class NamedDestinations
@@ -73,9 +72,8 @@ public final class NamedDestinations
 
   // <protected>
   @Override
-  protected Destination wrap(
-    PdfDirectObject baseObject,
-    PdfString name
+  protected Destination wrapValue(
+    PdfDirectObject baseObject
     )
   {
     /*
@@ -90,7 +88,7 @@ public final class NamedDestinations
       else
       {destinationObject = baseObject;}
     }
-    return Destination.wrap(destinationObject, name);
+    return Destination.wrap(destinationObject);
   }
   // </protected>
   // </interface>

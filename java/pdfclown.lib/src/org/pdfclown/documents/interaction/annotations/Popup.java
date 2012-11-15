@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF13)
 public final class Popup
@@ -53,14 +53,14 @@ public final class Popup
   // <class>
   // <dynamic>
   // <constructors>
-  protected Popup(
+  public Popup(
     Page page,
     Rectangle2D box,
     String text
     )
-  {super(page.getDocument(), PdfName.Popup, box, text, page);}
+  {super(page, PdfName.Popup, box, text);}
 
-  protected Popup(
+  Popup(
     PdfDirectObject baseObject
     )
   {super(baseObject);}

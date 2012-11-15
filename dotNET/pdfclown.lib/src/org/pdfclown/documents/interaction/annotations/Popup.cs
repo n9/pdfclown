@@ -48,10 +48,10 @@ namespace org.pdfclown.documents.interaction.annotations
       Page page,
       RectangleF box,
       string text
-      ) : base(page.Document, PdfName.Popup, box, text, page)
+      ) : base(page, PdfName.Popup, box, text)
     {}
 
-    public Popup(
+    internal Popup(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

@@ -42,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF13)
 public final class RubberStamp
@@ -169,11 +169,11 @@ public final class RubberStamp
     IconTypeEnum iconType
     )
   {
-    super(page.getDocument(), PdfName.Stamp, box, text, page);
+    super(page, PdfName.Stamp, box, text);
     setIconType(iconType);
   }
 
-  public RubberStamp(
+  RubberStamp(
     PdfDirectObject baseObject
     )
   {super(baseObject);}

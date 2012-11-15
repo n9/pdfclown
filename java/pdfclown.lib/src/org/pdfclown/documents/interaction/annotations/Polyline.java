@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 09/24/12
 */
 @PDF(VersionEnum.PDF15)
 public final class Polyline
@@ -57,7 +57,7 @@ public final class Polyline
     )
   {super(page, box, text, PdfName.PolyLine);}
 
-  public Polyline(
+  Polyline(
     PdfDirectObject baseObject
     )
   {super(baseObject);}

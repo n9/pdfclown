@@ -110,12 +110,7 @@ namespace org.pdfclown.documents.interaction.annotations
       if(baseObject == null)
         return null;
 
-      PdfDictionary dataObject = (PdfDictionary)File.Resolve(baseObject);
-
-      /*
-        NOTE: Annotation's subtype MUST exist.
-      */
-      PdfName annotationType = (PdfName)dataObject[PdfName.Subtype];
+      PdfName annotationType = (PdfName)((PdfDictionary)File.Resolve(baseObject))[PdfName.Subtype];
       if(annotationType.Equals(PdfName.Text))
         return new Note(baseObject);
       else if(annotationType.Equals(PdfName.Link))
@@ -153,8 +148,9 @@ namespace org.pdfclown.documents.interaction.annotations
         return new Movie(baseObject);
       else if(annotationType.Equals(PdfName.Widget))
         return new Widget(baseObject);
+      else if(annotationType.Equals(PdfName.Screen))
+        return new Screen(baseObject);
 //TODO
-//     else if(annotationType.Equals(PdfName.Screen)) return new Screen(baseObject);
 //     else if(annotationType.Equals(PdfName.PrinterMark)) return new PrinterMark(baseObject);
 //     else if(annotationType.Equals(PdfName.TrapNet)) return new TrapNet(baseObject);
 //     else if(annotationType.Equals(PdfName.Watermark)) return new Watermark(baseObject);
@@ -169,13 +165,12 @@ namespace org.pdfclown.documents.interaction.annotations
     #region dynamic
     #region constructors
     protected Annotation(
-      Document context,
+      Page page,
       PdfName subtype,
       RectangleF box,
-      string text,
-      Page page
+      string text
       ) : base(
-        context,
+        page.Document,
         new PdfDictionary(
           new PdfName[]
           {

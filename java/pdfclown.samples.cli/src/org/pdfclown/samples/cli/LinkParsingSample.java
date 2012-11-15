@@ -1,6 +1,7 @@
 package org.pdfclown.samples.cli;
 
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -33,100 +34,115 @@ import org.pdfclown.tools.TextExtractor;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 09/24/12
 */
 public class LinkParsingSample
   extends Sample
 {
   @Override
-  public boolean run(
+  public void run(
     )
   {
-    // 1. Opening the PDF file...
-    File file;
+    File file = null;
+    try
     {
-      String filePath = promptFileChoice("Please select a PDF file");
-      try
-      {file = new File(filePath);}
-      catch(Exception e)
-      {throw new RuntimeException(filePath + " file access error.",e);}
-    }
-    Document document = file.getDocument();
-
-    // 2. Link extraction from the document pages.
-    TextExtractor extractor = new TextExtractor();
-    extractor.setAreaTolerance(2); // 2 pt tolerance on area boundary detection.
-    boolean linkFound = false;
-    for(Page page : document.getPages())
-    {
-      if(!promptNextPage(page, !linkFound))
-        return false;
-
-      Map<Rectangle2D,List<ITextString>> textStrings = null;
-      linkFound = false;
-
-      // Get the page annotations!
-      PageAnnotations annotations = page.getAnnotations();
-      if(annotations == null)
+      // 1. Opening the PDF file...
       {
-        System.out.println("No annotations here.");
-        continue;
+        String filePath = promptFileChoice("Please select a PDF file");
+        try
+        {file = new File(filePath);}
+        catch(Exception e)
+        {throw new RuntimeException(filePath + " file access error.",e);}
       }
+      Document document = file.getDocument();
 
-      // Iterating through the page annotations looking for links...
-      for(Annotation annotation : annotations)
+      // 2. Link extraction from the document pages.
+      TextExtractor extractor = new TextExtractor();
+      extractor.setAreaTolerance(2); // 2 pt tolerance on area boundary detection.
+      boolean linkFound = false;
+      for(Page page : document.getPages())
       {
-        if(annotation instanceof Link)
+        if(!promptNextPage(page, !linkFound))
         {
-          linkFound = true;
+          quit();
+          break;
+        }
 
-          if(textStrings == null)
-          {textStrings = extractor.extract(page);}
+        Map<Rectangle2D,List<ITextString>> textStrings = null;
+        linkFound = false;
 
-          Link link = (Link)annotation;
-          Rectangle2D linkBox = link.getBox();
+        // Get the page annotations!
+        PageAnnotations annotations = page.getAnnotations();
+        if(annotations == null)
+        {
+          System.out.println("No annotations here.");
+          continue;
+        }
 
-          // Text.
-          /*
-            Extracting text superimposed by the link...
-            NOTE: As links have no strong relation to page text but a weak location correspondence,
-            we have to filter extracted text by link area.
-          */
-          StringBuilder linkTextBuilder = new StringBuilder();
-          for(ITextString linkTextString : extractor.filter(textStrings,linkBox))
-          {linkTextBuilder.append(linkTextString.getText());}
-          System.out.println("Link '" + linkTextBuilder + "' ");
+        // Iterating through the page annotations looking for links...
+        for(Annotation annotation : annotations)
+        {
+          if(annotation instanceof Link)
+          {
+            linkFound = true;
 
-          // Position.
-          System.out.println(
-            "    Position: "
-              + "x:" + Math.round(linkBox.getX()) + ","
-              + "y:" + Math.round(linkBox.getY()) + ","
-              + "w:" + Math.round(linkBox.getWidth()) + ","
-              + "h:" + Math.round(linkBox.getHeight())
-              );
+            if(textStrings == null)
+            {textStrings = extractor.extract(page);}
 
-          // Target.
-          System.out.print("    Target: ");
-          PdfObjectWrapper<?> target = link.getTarget();
-          if(target instanceof Destination)
-          {printDestination((Destination)target);}
-          else if(target instanceof Action)
-          {printAction((Action)target);}
-          else if(target == null)
-          {System.out.println("[not available]");}
-          else
-          {System.out.println("[unknown type: " + target.getClass().getSimpleName() + "]");}
+            Link link = (Link)annotation;
+            Rectangle2D linkBox = link.getBox();
+
+            // Text.
+            /*
+              Extracting text superimposed by the link...
+              NOTE: As links have no strong relation to page text but a weak location correspondence,
+              we have to filter extracted text by link area.
+            */
+            StringBuilder linkTextBuilder = new StringBuilder();
+            for(ITextString linkTextString : extractor.filter(textStrings,linkBox))
+            {linkTextBuilder.append(linkTextString.getText());}
+            System.out.println("Link '" + linkTextBuilder + "' ");
+
+            // Position.
+            System.out.println(
+              "    Position: "
+                + "x:" + Math.round(linkBox.getX()) + ","
+                + "y:" + Math.round(linkBox.getY()) + ","
+                + "w:" + Math.round(linkBox.getWidth()) + ","
+                + "h:" + Math.round(linkBox.getHeight())
+                );
+
+            // Target.
+            System.out.print("    Target: ");
+            PdfObjectWrapper<?> target = link.getTarget();
+            if(target instanceof Destination)
+            {printDestination((Destination)target);}
+            else if(target instanceof Action)
+            {printAction((Action)target);}
+            else if(target == null)
+            {System.out.println("[not available]");}
+            else
+            {System.out.println("[unknown type: " + target.getClass().getSimpleName() + "]");}
+          }
+        }
+        if(!linkFound)
+        {
+          System.out.println("No links here.");
+          continue;
         }
       }
-      if(!linkFound)
+    }
+    finally
+    {
+      // 3. Closing the PDF file...
+      if(file != null)
       {
-        System.out.println("No links here.");
-        continue;
+        try
+        {file.close();}
+        catch(IOException e)
+        {/* NOOP */}
       }
     }
-
-    return true;
   }
 
   private void printAction(

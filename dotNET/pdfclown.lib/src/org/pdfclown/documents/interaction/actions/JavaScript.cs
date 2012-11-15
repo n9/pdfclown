@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -39,6 +39,55 @@ namespace org.pdfclown.documents.interaction.actions
   public sealed class JavaScript
     : Action
   {
+    #region static
+    #region interface
+    #region internal
+    /**
+      <summary>Gets the Javascript script from the specified base data object.</summary>
+    */
+    internal static string GetScript(
+      PdfDictionary baseDataObject,
+      PdfName key
+      )
+    {
+      PdfDataObject scriptObject = baseDataObject.Resolve(key);
+      if(scriptObject == null)
+        return null;
+      else if(scriptObject is PdfTextString)
+        return ((PdfTextString)scriptObject).StringValue;
+      else
+      {
+        bytes::IBuffer scriptBuffer = ((PdfStream)scriptObject).Body;
+        return scriptBuffer.GetString(0,(int)scriptBuffer.Length);
+      }
+    }
+
+    /**
+      <summary>Sets the Javascript script into the specified base data object.</summary>
+    */
+    internal static void SetScript(
+      PdfDictionary baseDataObject,
+      PdfName key,
+      string value
+      )
+    {
+      PdfDataObject scriptObject = baseDataObject.Resolve(key);
+      if(!(scriptObject is PdfStream) && value.Length > 256)
+      {baseDataObject[key] = baseDataObject.File.Register(scriptObject = new PdfStream());}
+      // Insert the script!
+      if(scriptObject is PdfStream)
+      {
+        bytes::IBuffer scriptBuffer = ((PdfStream)scriptObject).Body;
+        scriptBuffer.SetLength(0);
+        scriptBuffer.Append(value);
+      }
+      else
+      {baseDataObject[key] = new PdfTextString(value);}
+    }
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region constructors
     /**
@@ -48,12 +97,11 @@ namespace org.pdfclown.documents.interaction.actions
       Document context,
       string script
       ) : base(context, PdfName.JavaScript)
-    {BaseDataObject[PdfName.JS] = new PdfTextString(script);}
+    {Script = script;}
 
     internal JavaScript(
-      PdfDirectObject baseObject,
-      PdfString name
-      ) : base(baseObject, name)
+      PdfDirectObject baseObject
+      ) : base(baseObject)
     {}
     #endregion
 
@@ -64,38 +112,30 @@ namespace org.pdfclown.documents.interaction.actions
       )
     {throw new NotImplementedException();}
 
+    /**
+      <summary>Gets/Sets the JavaScript script to be executed.</summary>
+    */
     public string Script
     {
       get
-      {
-        /*
-          NOTE: 'JS' entry MUST be defined.
-        */
-        PdfDataObject scriptObject = BaseDataObject[PdfName.JS];
-        if(scriptObject is PdfTextString)
-        {return (string)((PdfTextString)scriptObject).Value;}
-        else
-        {
-          bytes::IBuffer scriptBuffer = ((PdfStream)scriptObject).Body;
-          return scriptBuffer.GetString(0,(int)scriptBuffer.Length);
-        }
-      }
+      {return GetScript(BaseDataObject, PdfName.JS);}
       set
-      {
-        /*
-          NOTE: 'JS' entry MUST be defined.
-        */
-        PdfDataObject scriptObject = BaseDataObject[PdfName.JS];
-        if(scriptObject is PdfStream)
-        {
-          bytes::IBuffer scriptBuffer = ((PdfStream)scriptObject).Body;
-          scriptBuffer.SetLength(0);
-          scriptBuffer.Append(value);
-        }
-        else
-        {BaseDataObject[PdfName.JS] = new PdfTextString(value);}
-      }
+      {SetScript(BaseDataObject, PdfName.JS, value);}
     }
+
+    #region IPdfNamedObjectWrapper
+    public PdfString Name
+    {
+      get
+      {return RetrieveName();}
+    }
+
+    public PdfDirectObject NamedBaseObject
+    {
+      get
+      {return RetrieveNamedBaseObject();}
+    }
+    #endregion
     #endregion
     #endregion
     #endregion

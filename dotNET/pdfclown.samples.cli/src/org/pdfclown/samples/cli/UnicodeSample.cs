@@ -20,7 +20,7 @@ namespace org.pdfclown.samples.cli
   {
     private const float Margin = 36;
 
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Instantiate a new PDF file!
@@ -32,8 +32,6 @@ namespace org.pdfclown.samples.cli
 
       // 3. Serialize the PDF file!
       Serialize(file, "Unicode", "using Unicode fonts");
-
-      return true;
     }
 
     /**
@@ -57,7 +55,7 @@ namespace org.pdfclown.samples.cli
       // Define the font to use!
       fonts::Font font = fonts::Font.Get(
         document,
-        InputPath + Path.DirectorySeparatorChar + "fonts" + Path.DirectorySeparatorChar + "GenR102.TTF"
+        GetResourcePath("fonts" + Path.DirectorySeparatorChar + "GenR102.TTF")
         );
       // Define the paragraph break size!
       Size breakSize = new Size(0,10);

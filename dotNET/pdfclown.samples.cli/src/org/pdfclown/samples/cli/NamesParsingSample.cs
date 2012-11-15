@@ -14,53 +14,53 @@ namespace org.pdfclown.samples.cli
   public class NamesParsingSample
     : Sample
   {
-    public override bool Run(
+    public override void Run(
       )
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      File file = new File(filePath);
-      Document document = file.Document;
-
-      // 2. Named objects extraction.
-      Names names = document.Names;
-      if(names == null)
-      {Console.WriteLine("\nNo names dictionary.");}
-      else
+      using(File file = new File(filePath))
       {
-        Console.WriteLine("\nNames dictionary found (" + names.Container.Reference + ")");
-
-        NamedDestinations namedDestinations = names.Destinations;
-        if(namedDestinations == null)
-        {Console.WriteLine("\nNo named destinations.");}
+        Document document = file.Document;
+  
+        // 2. Named objects extraction.
+        Names names = document.Names;
+        if(names == null)
+        {Console.WriteLine("\nNo names dictionary.");}
         else
         {
-          Console.WriteLine("\nNamed destinations found (" + namedDestinations.Container.Reference + ")");
-
-          // Parsing the named destinations...
-          foreach(KeyValuePair<string,Destination> namedDestination in namedDestinations)
+          Console.WriteLine("\nNames dictionary found (" + names.Container.Reference + ")");
+  
+          NamedDestinations namedDestinations = names.Destinations;
+          if(namedDestinations == null)
+          {Console.WriteLine("\nNo named destinations.");}
+          else
           {
-            string key = namedDestination.Key;
-            Destination value = namedDestination.Value;
-
-            Console.WriteLine("  Destination '" + key + "' (" + value.Container.Reference + ")");
-
-            Console.Write("    Target Page: number = ");
-            object pageRef = value.Page;
-            if(pageRef is Int32) // NOTE: numeric page refs are typical of remote destinations.
-            {Console.WriteLine(((int)pageRef) + 1);}
-            else // NOTE: explicit page refs are typical of local destinations.
+            Console.WriteLine("\nNamed destinations found (" + namedDestinations.Container.Reference + ")");
+  
+            // Parsing the named destinations...
+            foreach(KeyValuePair<PdfString,Destination> namedDestination in namedDestinations)
             {
-              Page page = (Page)pageRef;
-              Console.WriteLine((page.Index + 1) + "; ID = " + ((PdfReference)page.BaseObject).Id);
+              PdfString key = namedDestination.Key;
+              Destination value = namedDestination.Value;
+  
+              Console.WriteLine("  Destination '" + key + "' (" + value.Container.Reference + ")");
+  
+              Console.Write("    Target Page: number = ");
+              object pageRef = value.Page;
+              if(pageRef is Int32) // NOTE: numeric page refs are typical of remote destinations.
+              {Console.WriteLine(((int)pageRef) + 1);}
+              else // NOTE: explicit page refs are typical of local destinations.
+              {
+                Page page = (Page)pageRef;
+                Console.WriteLine((page.Index + 1) + "; ID = " + ((PdfReference)page.BaseObject).Id);
+              }
             }
+  
+            Console.WriteLine("Named destinations count = " + namedDestinations.Count);
           }
-
-          Console.WriteLine("Named destinations count = " + namedDestinations.Count);
         }
       }
-
-      return true;
     }
   }
 }
