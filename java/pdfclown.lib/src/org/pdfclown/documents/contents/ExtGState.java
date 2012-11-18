@@ -26,6 +26,7 @@
 package org.pdfclown.documents.contents;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,7 +52,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 11/18/12
 */
 @PDF(VersionEnum.PDF12)
 public final class ExtGState
@@ -123,6 +124,9 @@ public final class ExtGState
     )
   {throw new NotImplementedException();}
 
+  /**
+    Gets the blend mode to be used in the transparent imaging model [PDF:1.7:7.2.4].
+  */
   @PDF(VersionEnum.PDF14)
   public List<BlendModeEnum> getBlendMode(
     )
@@ -141,6 +145,15 @@ public final class ExtGState
     }
     return blendMode;
   }
+
+  /**
+    Gets the nonstroking alpha constant, specifying the constant shape or constant opacity value to
+    be used for nonstroking operations in the transparent imaging model [PDF:1.7:7.2.6].
+  */
+  @PDF(VersionEnum.PDF14)
+  public Double getFillAlpha(
+    )
+  {return (Double)PdfSimpleObject.getValue(getBaseDataObject().get(PdfName.ca));}
 
   @PDF(VersionEnum.PDF13)
   public Font getFont(
@@ -215,19 +228,34 @@ public final class ExtGState
   }
 
   /**
+    Gets the stroking alpha constant, specifying the constant shape or constant opacity value to be
+    used for stroking operations in the transparent imaging model [PDF:1.7:7.2.6].
+  */
+  @PDF(VersionEnum.PDF14)
+  public Double getStrokeAlpha(
+    )
+  {return (Double)PdfSimpleObject.getValue(getBaseDataObject().get(PdfName.CA));}
+
+  /**
     Gets whether the current soft mask and alpha constant are to be interpreted as shape values
     instead of opacity values.
   */
   @PDF(VersionEnum.PDF14)
-  public Boolean isAlphaShape(
+  public boolean isAlphaShape(
     )
-  {return (Boolean)PdfSimpleObject.getValue(getBaseDataObject().get(PdfName.AIS));}
+  {return (Boolean)PdfSimpleObject.getValue(getBaseDataObject().get(PdfName.AIS), false);}
 
+  /**
+    @see #isAlphaShape()
+  */
   public void setAlphaShape(
-    Boolean value
+    boolean value
     )
   {getBaseDataObject().put(PdfName.AIS, PdfBoolean.get(value));}
 
+  /**
+    @see #getBlendMode()
+  */
   public void setBlendMode(
     List<BlendModeEnum> value
     )
@@ -247,6 +275,25 @@ public final class ExtGState
     getBaseDataObject().put(PdfName.BM, blendModeObject);
   }
 
+  /**
+    @see #getBlendMode()
+  */
+  public void setBlendMode(
+    BlendModeEnum... value
+    )
+  {setBlendMode(Arrays.asList(value));}
+
+  /**
+    @see #getFillAlpha()
+  */
+  public void setFillAlpha(
+    Double value
+    )
+  {getBaseDataObject().put(PdfName.ca, PdfReal.get(value));}
+
+  /**
+    @see #getFont()
+  */
   public void setFont(
     Font value
     )
@@ -259,6 +306,9 @@ public final class ExtGState
     getBaseDataObject().put(PdfName.Font, fontObject);
   }
 
+  /**
+    @see #getFontSize()
+  */
   public void setFontSize(
     Double value
     )
@@ -271,11 +321,17 @@ public final class ExtGState
     getBaseDataObject().put(PdfName.Font, fontObject);
   }
 
+  /**
+    @see #getLineCap()
+  */
   public void setLineCap(
     LineCapEnum value
     )
   {getBaseDataObject().put(PdfName.LC, value != null ? PdfInteger.get(value.getCode()) : null);}
 
+  /**
+    @see #getLineDash()
+  */
   public void setLineDash(
     LineDash value
     )
@@ -291,20 +347,37 @@ public final class ExtGState
     getBaseDataObject().put(PdfName.D, lineDashObject);
   }
 
+  /**
+    @see #getLineJoin()
+  */
   public void setLineJoin(
     LineJoinEnum value
     )
   {getBaseDataObject().put(PdfName.LJ, value != null ? PdfInteger.get(value.getCode()) : null);}
 
+  /**
+    @see #getLineWidth()
+  */
   public void setLineWidth(
     Double value
     )
   {getBaseDataObject().put(PdfName.LW, PdfReal.get(value));}
 
+  /**
+    @see #getMiterLimit()
+  */
   public void setMiterLimit(
     Double value
     )
   {getBaseDataObject().put(PdfName.ML, PdfReal.get(value));}
+
+  /**
+    @see #getStrokeAlpha()
+  */
+  public void setStrokeAlpha(
+    Double value
+    )
+  {getBaseDataObject().put(PdfName.CA, PdfReal.get(value));}
   // </public>
   // </interface>
   // </dynamic>

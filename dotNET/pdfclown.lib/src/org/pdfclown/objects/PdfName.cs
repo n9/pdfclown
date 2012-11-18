@@ -112,6 +112,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName C0 = new PdfName("C0");
     public static readonly PdfName C1 = new PdfName("C1");
     public static readonly PdfName CA = new PdfName("CA");
+    public static readonly PdfName ca = new PdfName("ca");
     public static readonly PdfName CalGray = new PdfName("CalGray");
     public static readonly PdfName CalRGB = new PdfName("CalRGB");
     public static readonly PdfName Cap = new PdfName("Cap");

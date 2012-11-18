@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
+import org.pdfclown.documents.contents.ExtGState;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.composition.XAlignmentEnum;
@@ -15,14 +16,15 @@ import org.pdfclown.files.File;
 import org.pdfclown.tools.PageStamper;
 
 /**
-  This sample demonstrates <b>how to insert watermark text</b> into an existing PDF document.
-  <p>This implementation uses a Form XObject [PDF:1.6:4.9] to conveniently achieve a consistent page
-  background. Form XObjects provide context independence encapsulating their contents (and resources)
-  in a single stream: such an approach allows content reuse.</p>
-  <p>The watermark is seamlessly inserted under each page content using the PageStamper class.</p>
+  This sample demonstrates <b>how to insert semi-transparent watermark text</b> into an existing PDF
+  document.
+  <p>The watermark is implemented as a Form XObject [PDF:1.6:4.9] to conveniently achieve a
+  consistent page look -- Form XObjects promote content reuse providing an independent context which
+  encapsulates contents (and resources) in a single stream.</p>
+  <p>The watermark is seamlessly inserted upon each page content using the PageStamper class.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/18/12
 */
 public class WatermarkSample
   extends Sample
@@ -66,11 +68,11 @@ public class WatermarkSample
       // 2.1. Associate the page to the stamper!
       stamper.setPage(page);
 
-      // 2.2. Stamping the watermark on the background...
-      // Get the background 'layer' of the page!
-      PrimitiveComposer background = stamper.getBackground();
-      // Show the watermark into the page background!
-      background.showXObject(watermark);
+      // 2.2. Stamping the watermark on the foreground...
+      // Get the content composer!
+      PrimitiveComposer composer = stamper.getForeground();
+      // Show the watermark into the page!
+      composer.showXObject(watermark);
 
       // 2.3. End the stamping!
       stamper.flush();
@@ -83,27 +85,23 @@ public class WatermarkSample
   {
     Dimension2D size = document.getSize();
 
-    // 1. Create a new external form object to represent the watermark!
+    // 1. Create an external form object to represent the watermark!
     FormXObject watermark = new FormXObject(document, size);
 
     // 2. Inserting the contents of the watermark...
-    // 2.1. Create a content composer for the watermark!
+    // 2.1. Create a content composer!
     PrimitiveComposer composer = new PrimitiveComposer(watermark);
     // 2.2. Inserting the contents...
     // Set the font to use!
-    composer.setFont(
-      new StandardType1Font(
-        document,
-        StandardType1Font.FamilyEnum.Times,
-        true,
-        false
-        ),
-      120
-      );
+    composer.setFont(new StandardType1Font(document, StandardType1Font.FamilyEnum.Times, true, false), 120);
     // Set the color to fill the text characters!
-    composer.setFillColor(
-      new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d)
-      );
+    composer.setFillColor(new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d));
+    // Apply transparency!
+    {
+      ExtGState state = new ExtGState(document);
+      state.setFillAlpha(.3);
+      composer.applyState(state);
+    }
     // Show the text!
     composer.showText(
       "PDFClown", // Text to show.

@@ -80,10 +80,10 @@ namespace org.pdfclown.documents.contents
       shape values instead of opacity values.</summary>
     */
     [PDF(VersionEnum.PDF14)]
-    public bool? AlphaShape
+    public bool AlphaShape
     {
       get
-      {return (bool?)PdfSimpleObject<object>.GetValue(BaseDataObject[PdfName.AIS]);}
+      {return (bool)PdfSimpleObject<object>.GetValue(BaseDataObject[PdfName.AIS], false);}
       set
       {BaseDataObject[PdfName.AIS] = PdfBoolean.Get(value);}
     }
@@ -115,6 +115,10 @@ namespace org.pdfclown.documents.contents
       }
     }
 
+    /**
+      <summary>Gets/Sets the blend mode to be used in the transparent imaging model [PDF:1.7:7.2.4].
+      </summary>
+    */
     [PDF(VersionEnum.PDF14)]
     public IList<BlendModeEnum> BlendMode
     {
@@ -156,6 +160,20 @@ namespace org.pdfclown.documents.contents
       Document context
       )
     {throw new NotImplementedException();}
+
+    /**
+      <summary>Gets/Sets the nonstroking alpha constant, specifying the constant shape or constant
+      opacity value to be used for nonstroking operations in the transparent imaging model
+      [PDF:1.7:7.2.6].</summary>
+    */
+    [PDF(VersionEnum.PDF14)]
+    public double? FillAlpha
+    {
+      get
+      {return (double?)PdfSimpleObject<PdfObject>.GetValue(BaseDataObject[PdfName.ca]);}
+      set
+      {BaseDataObject[PdfName.ca] = PdfReal.Get(value);}
+    }
 
     [PDF(VersionEnum.PDF13)]
     public Font Font
@@ -280,8 +298,22 @@ namespace org.pdfclown.documents.contents
       set
       {BaseDataObject[PdfName.ML] = PdfReal.Get(value);}
     }
+
+    /**
+      <summary>Gets/Sets the stroking alpha constant, specifying the constant shape or constant
+      opacity value to be used for stroking operations in the transparent imaging model
+      [PDF:1.7:7.2.6].</summary>
+    */
+    [PDF(VersionEnum.PDF14)]
+    public double? StrokeAlpha
+    {
+      get
+      {return (double?)PdfSimpleObject<PdfObject>.GetValue(BaseDataObject[PdfName.CA]);}
+      set
+      {BaseDataObject[PdfName.CA] = PdfReal.Get(value);}
+    }
+    #endregion
+    #endregion
+    #endregion
   }
-  #endregion
-  #endregion
-  #endregion
 }

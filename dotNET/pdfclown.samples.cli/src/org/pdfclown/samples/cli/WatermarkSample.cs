@@ -1,4 +1,5 @@
 using org.pdfclown.documents;
+using org.pdfclown.documents.contents;
 using org.pdfclown.documents.contents.colorSpaces;
 using org.pdfclown.documents.contents.composition;
 using fonts = org.pdfclown.documents.contents.fonts;
@@ -13,13 +14,14 @@ using System.IO;
 namespace org.pdfclown.samples.cli
 {
   /**
-    <summary>This sample demonstrates how to insert a watermark text on an existing PDF document.</summary>
+    <summary>This sample demonstrates how to insert semi-transparent watermark text into an
+    existing PDF document.</summary>
     <remarks>
-      <para>This implementation uses a Form XObject [PDF:1.6:4.9] to conveniently achieve a consistent
-      page background. Form XObjects provide context independence encapsulating their contents (and
-      resources) in a single stream: such an approach allows content reuse.</para>
-      <para>The watermark is seamlessly inserted under each page content using the PageStamper
-      class.</para>
+      <para> The watermark is implemented as a Form XObject [PDF:1.6:4.9] to conveniently achieve a
+      consistent page look -- Form XObjects promote content reuse providing an independent context
+      which encapsulates contents (and resources) in a single stream.</para>
+      <para>The watermark is seamlessly inserted upon each page content using the PageStamper class.
+      </para>
     </remarks>
   */
   public class WatermarkSample
@@ -59,11 +61,11 @@ namespace org.pdfclown.samples.cli
         // 2.1. Associate the page to the stamper!
         stamper.Page = page;
 
-        // 2.2. Stamping the watermark on the background...
-        // Get the background 'layer' of the page!
-        PrimitiveComposer background = stamper.Background;
+        // 2.2. Stamping the watermark on the foreground...
+        // Get the content composer!
+        PrimitiveComposer composer = stamper.Foreground;
         // Show the watermark into the page background!
-        background.ShowXObject(watermark);
+        composer.ShowXObject(watermark);
 
         // 2.3. End the stamping!
         stamper.Flush();
@@ -76,27 +78,23 @@ namespace org.pdfclown.samples.cli
     {
       SizeF size = document.GetSize();
 
-      // 1. Create a new external form object to represent the watermark!
+      // 1. Create an external form object to represent the watermark!
       FormXObject watermark = new FormXObject(document, size);
 
       // 2. Inserting the contents of the watermark...
-      // 2.1. Create a content composer for the watermark!
+      // 2.1. Create a content composer!
       PrimitiveComposer composer = new PrimitiveComposer(watermark);
       // 2.2. Inserting the contents...
       // Set the font to use!
-      composer.SetFont(
-        new fonts::StandardType1Font(
-          document,
-          fonts::StandardType1Font.FamilyEnum.Times,
-          true,
-          false
-          ),
-        120
-        );
+      composer.SetFont(new fonts::StandardType1Font(document, fonts::StandardType1Font.FamilyEnum.Times, true, false), 120);
       // Set the color to fill the text characters!
-      composer.SetFillColor(
-        new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d)
-        );
+      composer.SetFillColor(new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d));
+      // Apply transparency!
+      {
+        ExtGState state = new ExtGState(document);
+        state.FillAlpha = .3;
+        composer.ApplyState(state);
+      }
       // Show the text!
       composer.ShowText(
         "PDFClown", // Text to show.
