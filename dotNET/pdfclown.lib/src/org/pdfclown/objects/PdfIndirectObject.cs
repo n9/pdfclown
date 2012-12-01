@@ -35,7 +35,7 @@ namespace org.pdfclown.objects
   /**
     <summary>PDF indirect object [PDF:1.6:3.2.9].</summary>
   */
-  public sealed class PdfIndirectObject
+  public class PdfIndirectObject
     : PdfObject,
       IPdfIndirectObject
   {
@@ -56,6 +56,7 @@ namespace org.pdfclown.objects
 
     private bool updateable = true;
     private bool updated;
+    private bool virtual_;
     #endregion
 
     #region constructors
@@ -82,11 +83,7 @@ namespace org.pdfclown.objects
       this.xrefEntry = xrefEntry;
 
       this.original = (xrefEntry.Offset >= 0);
-      this.reference = new PdfReference(
-        this,
-        xrefEntry.Number,
-        xrefEntry.Generation
-        );
+      this.reference = new PdfReference(this);
     }
     #endregion
 
@@ -137,10 +134,10 @@ namespace org.pdfclown.objects
       )
     {
       /*
-        NOTE: Uniqueness should be achieved XORring the (local) reference hashcode
-        with the (global) file hashcode.
-        NOTE: Do NOT directly invoke reference.GetHashCode() method here as
-        it would trigger an infinite loop, as it conversely relies on this method.
+        NOTE: Uniqueness should be achieved XORring the (local) reference hashcode with the (global)
+        file hashcode.
+        NOTE: Do NOT directly invoke reference.GetHashCode() method here as, conversely relying on
+        this method, it would trigger an infinite loop.
       */
       return reference.Id.GetHashCode() ^ file.GetHashCode();
     }
@@ -173,6 +170,19 @@ namespace org.pdfclown.objects
       {return null;} // NOTE: As indirect objects are root objects, no parent can be associated.
       internal set
       {/* NOOP: As indirect objects are root objects, no parent can be associated. */}
+    }
+
+    public override PdfObject Swap(
+      PdfObject other
+      )
+    {
+      PdfIndirectObject otherObject = (PdfIndirectObject)other;
+      PdfDataObject otherDataObject = otherObject.dataObject;
+      // Update the other!
+      otherObject.DataObject = dataObject;
+      // Update this one!
+      this.DataObject = otherDataObject;
+      return this;
     }
 
     /**
@@ -335,9 +345,22 @@ namespace org.pdfclown.objects
     protected internal override bool Virtual
     {
       get
-      {return false;}
+      {return virtual_;}
       set
-      {/* NOOP */}
+      {
+        if(virtual_ && !value)
+        {
+          /*
+            NOTE: When a virtual indirect object becomes concrete it must be registered.
+          */
+          file.IndirectObjects.AddVirtual(this);
+          virtual_ = false;
+          Reference.Update();
+        }
+        else
+        {virtual_ = value;}
+        dataObject.Virtual = virtual_;
+      }
     }
     #endregion
 

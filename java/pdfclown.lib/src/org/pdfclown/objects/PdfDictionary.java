@@ -36,6 +36,7 @@ import org.pdfclown.files.File;
 import org.pdfclown.tokens.Chunk;
 import org.pdfclown.tokens.Encoding;
 import org.pdfclown.tokens.Keyword;
+import org.pdfclown.tokens.XRefEntry;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -43,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public final class PdfDictionary
   extends PdfDirectObject
@@ -142,8 +143,8 @@ public final class PdfDictionary
   {throw new NotImplementedException();}
 
   /**
-    Gets the value corresponding to the given key, forcing its instantiation in case of missing
-    entry.
+    Gets the value corresponding to the given key, forcing its instantiation as a direct object in
+    case of missing entry.
 
     @param key Key whose associated value is to be returned.
     @param valueClass Class to use for instantiating the value in case of missing entry.
@@ -152,6 +153,23 @@ public final class PdfDictionary
   public <T extends PdfDataObject> PdfDirectObject get(
     PdfName key,
     Class<T> valueClass
+    )
+  {return get(key, valueClass, true);}
+
+  /**
+    Gets the value corresponding to the given key, forcing its instantiation in case of missing
+    entry.
+
+    @param key Key whose associated value is to be returned.
+    @param valueClass Class to use for instantiating the value in case of missing entry.
+    @param direct Whether the item has to be instantiated directly within its container instead of
+    being referenced through an indirect object.
+    @since 0.1.2
+  */
+  public <T extends PdfDataObject> PdfDirectObject get(
+    PdfName key,
+    Class<T> valueClass,
+    boolean direct
     )
   {
     PdfDirectObject value = get(key);
@@ -164,7 +182,10 @@ public final class PdfDictionary
       */
       try
       {
-        entries.put(key, value = (PdfDirectObject)include(valueClass.newInstance()));
+        value = (PdfDirectObject)include(direct
+          ? valueClass.newInstance()
+          : new PdfIndirectObject(getFile(), valueClass.newInstance(), new XRefEntry(0, 0)).getReference());
+        entries.put(key, value);
         value.setVirtual(true);
       }
       catch(Exception e)
@@ -243,6 +264,22 @@ public final class PdfDictionary
     boolean value
     )
   {updateable = value;}
+
+  @Override
+  public PdfDictionary swap(
+    PdfObject other
+    )
+  {
+    PdfDictionary otherDictionary = (PdfDictionary)other;
+    Map<PdfName,PdfDirectObject> otherEntries = otherDictionary.entries;
+    // Update the other!
+    otherDictionary.entries = this.entries;
+    otherDictionary.update();
+    // Update this one!
+    this.entries = otherEntries;
+    this.update();
+    return this;
+  }
 
   @Override
   public String toString(

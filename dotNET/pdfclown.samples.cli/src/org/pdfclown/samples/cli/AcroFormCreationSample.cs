@@ -32,7 +32,7 @@ namespace org.pdfclown.samples.cli
       Populate(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, "AcroForm", "inserting AcroForm fields");
+      Serialize(file, "AcroForm", "inserting AcroForm fields", "Acroform, creation, annotations, actions, javascript, button, combo, textbox, radio button");
     }
 
     private void Populate(
@@ -51,8 +51,7 @@ namespace org.pdfclown.samples.cli
       */
 
       // 1. Define the form fields collection!
-      Form form = new Form(document);
-      document.Form = form;
+      Form form = document.Form;
       Fields fields = form.Fields;
 
       // 2. Define the page where to place the fields!

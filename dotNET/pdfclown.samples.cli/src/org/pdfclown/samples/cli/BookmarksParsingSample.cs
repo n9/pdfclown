@@ -26,7 +26,7 @@ namespace org.pdfclown.samples.cli
   
         // 2. Get the bookmarks collection!
         Bookmarks bookmarks = document.Bookmarks;
-        if(bookmarks == null)
+        if(!bookmarks.Exists())
         {Console.WriteLine("\nNo bookmark available (Outline dictionary not found).");}
         else
         {

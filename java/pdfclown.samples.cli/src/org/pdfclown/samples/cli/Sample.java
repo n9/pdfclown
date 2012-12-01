@@ -23,7 +23,7 @@ import org.pdfclown.files.SerializationModeEnum;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public abstract class Sample
 {
@@ -282,7 +282,7 @@ public abstract class Sample
     File file,
     SerializationModeEnum serializationMode
     )
-  {return serialize(file, null, null, serializationMode);}
+  {return serialize(file, serializationMode, null, null, null);}
 
   /**
     Serializes the given PDF Clown file object.
@@ -310,7 +310,7 @@ public abstract class Sample
     String fileName,
     SerializationModeEnum serializationMode
     )
-  {return serialize(file, fileName, null, null, serializationMode);}
+  {return serialize(file, fileName, serializationMode, null, null, null);}
 
   /**
     Serializes the given PDF Clown file object.
@@ -318,51 +318,57 @@ public abstract class Sample
     @param file PDF file to serialize.
     @param title Document title.
     @param subject Document subject.
-    @return Serialization path.
-  */
-  protected String serialize(
-    File file,
-    String title,
-    String subject
-    )
-  {return serialize(file, title, subject, null);}
-
-  /**
-    Serializes the given PDF Clown file object.
-
-    @param file PDF file to serialize.
-    @param title Document title.
-    @param subject Document subject.
-    @param serializationMode Serialization mode.
+    @param keywords Document keywords.
     @return Serialization path.
   */
   protected String serialize(
     File file,
     String title,
     String subject,
-    SerializationModeEnum serializationMode
+    String keywords
     )
-  {return serialize(file, getClass().getSimpleName(), title, subject, serializationMode);}
+  {return serialize(file, null, title, subject, keywords);}
+
+  /**
+    Serializes the given PDF Clown file object.
+
+    @param file PDF file to serialize.
+    @param serializationMode Serialization mode.
+    @param title Document title.
+    @param subject Document subject.
+    @param keywords Document keywords.
+    @return Serialization path.
+  */
+  protected String serialize(
+    File file,
+    SerializationModeEnum serializationMode,
+    String title,
+    String subject,
+    String keywords
+    )
+  {return serialize(file, getClass().getSimpleName(), serializationMode, title, subject, keywords);}
 
   /**
     Serializes the given PDF Clown file object.
 
     @param file PDF file to serialize.
     @param fileName Output file name.
+    @param serializationMode Serialization mode.
     @param title Document title.
     @param subject Document subject.
-    @param serializationMode Serialization mode.
+    @param keywords Document keywords.
     @return Serialization path.
   */
   protected String serialize(
     File file,
     String fileName,
+    SerializationModeEnum serializationMode,
     String title,
     String subject,
-    SerializationModeEnum serializationMode
+    String keywords
     )
   {
-    applyDocumentSettings(file.getDocument(), title, subject);
+    applyDocumentSettings(file.getDocument(), title, subject, keywords);
 
     System.out.println();
 
@@ -417,7 +423,8 @@ public abstract class Sample
   private void applyDocumentSettings(
     Document document,
     String title,
-    String subject
+    String subject,
+    String keywords
     )
   {
     if(title == null)
@@ -430,15 +437,13 @@ public abstract class Sample
 
     // Document metadata.
     Information info = document.getInformation();
-    if(info == null)
-    {document.setInformation(info = new Information(document));}
-    else
-    {info.clear();}
+    info.clear();
     info.setAuthor("Stefano Chizzolini");
     info.setCreationDate(new Date());
     info.setCreator(getClass().getName());
     info.setTitle("PDF Clown - " + title + " sample");
     info.setSubject("Sample about " + subject + " using PDF Clown");
+    info.setKeywords(keywords);
   }
   // </private>
   // </interface>

@@ -34,7 +34,7 @@ namespace org.pdfclown.samples.cli
         // 2.1.1. Basic metadata.
         Console.WriteLine("\nDocument information:");
         Information info = document.Information;
-        if(info != null)
+        if(info.Exists())
         {
           foreach(KeyValuePair<PdfName,object> infoEntry in info)
           {Console.WriteLine(infoEntry.Key + ": " + infoEntry.Value);}
@@ -45,7 +45,7 @@ namespace org.pdfclown.samples.cli
         // 2.1.2. Advanced metadata.
         Console.WriteLine("\nDocument metadata (XMP):");
         Metadata metadata = document.Metadata;
-        if(metadata != null)
+        if(metadata.Exists())
         {
           try
           {

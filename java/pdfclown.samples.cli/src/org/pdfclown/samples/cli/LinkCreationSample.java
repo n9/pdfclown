@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class LinkCreationSample
   extends Sample
@@ -49,7 +49,7 @@ public class LinkCreationSample
     buildLinks(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, "Link annotations", "applying link annotations");
+    serialize(file, "Link annotations", "applying link annotations", "Links, creation");
   }
 
   private void buildLinks(

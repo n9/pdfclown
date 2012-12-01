@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 03/12/12
+  @version 0.1.2, 11/30/12
 */
 @PDF(VersionEnum.PDF15)
 public class LayerDefinition
@@ -55,27 +55,17 @@ public class LayerDefinition
     Document context
     )
   {
-    super(
-      context,
-      new PdfDictionary(
-        new PdfName[]
-        {
-          PdfName.OCGs,
-          PdfName.D
-        },
-        new PdfDirectObject[]
-        {
-          new PdfArray(),
-          new LayerConfiguration(context).getBaseObject()
-        }
-      ));
-    getDefaultConfiguration().setLayers(new Layers(context));
+    super(context, new PdfDictionary());
+    initialize();
   }
 
   public LayerDefinition(
     PdfDirectObject baseObject
     )
-  {super(baseObject);}
+  {
+    super(baseObject);
+    initialize();
+  }
   // </constructors>
 
   // <interface>
@@ -193,7 +183,24 @@ public class LayerDefinition
   PdfArray getAllLayersObject(
     )
   {return (PdfArray)getBaseDataObject().resolve(PdfName.OCGs);}
-  // <internal>
+  // </internal>
+
+  // <private>
+  private void initialize(
+    )
+  {
+    PdfDictionary baseDataObject = getBaseDataObject();
+    if(baseDataObject.isEmpty())
+    {
+      baseDataObject.setUpdateable(false);
+      baseDataObject.put(PdfName.OCGs, new PdfArray());
+      baseDataObject.put(PdfName.D, new LayerConfiguration(getDocument()).getBaseObject());
+      //TODO: as this is optional, verify whether it can be lazily instantiated later.
+      getDefaultConfiguration().setLayers(new Layers(getDocument()));
+      baseDataObject.setUpdateable(true);
+    }
+  }
+  // </private>
   // </interface>
   // </dynamic>
   // </class>

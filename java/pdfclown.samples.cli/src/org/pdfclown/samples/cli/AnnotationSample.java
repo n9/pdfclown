@@ -30,7 +30,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class AnnotationSample
   extends Sample
@@ -47,7 +47,7 @@ public class AnnotationSample
     populate(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, "Annotations", "inserting annotations");
+    serialize(file, "Annotations", "inserting annotations", "annotations, creation, attachment, note, callout");
   }
 
   @SuppressWarnings("unchecked")

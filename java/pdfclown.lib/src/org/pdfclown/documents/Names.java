@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 @PDF(VersionEnum.PDF12)
 public final class Names
@@ -81,12 +81,7 @@ public final class Names
   @PDF(VersionEnum.PDF12)
   public NamedDestinations getDestinations(
     )
-//TODO: virtual indirect reference to be managed!
-//  {return new NamedDestinations(getBaseDataObject().get(PdfName.Dests, PdfDictionary.class));}
-  {
-    PdfDirectObject destinationsObject = getBaseDataObject().get(PdfName.Dests);
-    return destinationsObject != null ? new NamedDestinations(destinationsObject) : null;
-  }
+  {return new NamedDestinations(getBaseDataObject().get(PdfName.Dests, PdfDictionary.class, false));}
 
   /**
     Gets the named embedded files.
@@ -94,12 +89,7 @@ public final class Names
   @PDF(VersionEnum.PDF14)
   public NamedEmbeddedFiles getEmbeddedFiles(
     )
-//TODO: virtual indirect reference to be managed!
-//  {return new NamedEmbeddedFiles(getBaseDataObject().get(PdfName.EmbeddedFiles, PdfDictionary.class));}
-  {
-    PdfDirectObject embeddedFilesObject = getBaseDataObject().get(PdfName.EmbeddedFiles);
-    return embeddedFilesObject != null ? new NamedEmbeddedFiles(embeddedFilesObject) : null;
-  }
+  {return new NamedEmbeddedFiles(getBaseDataObject().get(PdfName.EmbeddedFiles, PdfDictionary.class, false));}
 
   /**
     Gets the named JavaScript actions.
@@ -107,12 +97,7 @@ public final class Names
   @PDF(VersionEnum.PDF13)
   public NamedJavaScripts getJavaScripts(
     )
-//TODO: virtual indirect reference to be managed!
-//  {return new NamedJavaScripts(getBaseDataObject().get(PdfName.JavaScript, PdfDictionary.class));}
-  {
-    PdfDirectObject javaScriptsObject = getBaseDataObject().get(PdfName.JavaScript);
-    return javaScriptsObject != null ? new NamedJavaScripts(javaScriptsObject) : null;
-  }
+  {return new NamedJavaScripts(getBaseDataObject().get(PdfName.JavaScript, PdfDictionary.class, false));}
 
   /**
     Gets the named renditions.
@@ -120,12 +105,7 @@ public final class Names
   @PDF(VersionEnum.PDF15)
   public NamedRenditions getRenditions(
     )
-//TODO: virtual indirect reference to be managed!
-//  {return new NamedRenditions(getBaseDataObject().get(PdfName.Renditions, PdfDictionary.class));}
-  {
-    PdfDirectObject renditionsObject = getBaseDataObject().get(PdfName.Renditions);
-    return renditionsObject != null ? new NamedRenditions(renditionsObject) : null;
-  }
+  {return new NamedRenditions(getBaseDataObject().get(PdfName.Renditions, PdfDictionary.class, false));}
 
   /**
     @see #getDestinations()

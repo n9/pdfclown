@@ -137,7 +137,7 @@ namespace org.pdfclown.files
     #region interface
     #region public
     /**
-      <summary>Register an <i>internal</i> data object.</summary>
+      <summary>Registers an <i>internal</i> data object.</summary>
       <remarks>To register an external indirect object, use <see
       cref="AddExternal(PdfIndirectObject)"/>.</remarks>
       <returns>Indirect object corresponding to the registered data object.</returns>
@@ -147,12 +147,12 @@ namespace org.pdfclown.files
       )
     {
       // Register a new indirect object wrapping the data object inside!
-      lastObjectNumber++;
-      PdfIndirectObject indirectObject = modifiedObjects[lastObjectNumber] = new PdfIndirectObject(
+      PdfIndirectObject indirectObject = new PdfIndirectObject(
         file,
         obj,
-        new XRefEntry(lastObjectNumber, 0)
+        new XRefEntry(++lastObjectNumber, 0)
         );
+      modifiedObjects[lastObjectNumber] = indirectObject;
       return indirectObject;
     }
 
@@ -384,6 +384,19 @@ namespace org.pdfclown.files
     #endregion
 
     #region internal
+    internal PdfIndirectObject AddVirtual(
+      PdfIndirectObject obj
+      )
+    {
+      // Update the reference of the object!
+      XRefEntry xref = obj.XrefEntry;
+      xref.Number = ++lastObjectNumber;
+      xref.Generation = 0;
+      // Register the object!
+      modifiedObjects[lastObjectNumber] = obj;
+      return obj;
+    }
+
     internal SortedDictionary<int,PdfIndirectObject> ModifiedObjects
     {
       get

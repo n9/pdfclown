@@ -39,9 +39,9 @@ import org.pdfclown.tokens.XRefEntry.UsageEnum;
   PDF indirect object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
-public final class PdfIndirectObject
+public class PdfIndirectObject
   extends PdfObject
   implements IPdfIndirectObject
 {
@@ -63,6 +63,7 @@ public final class PdfIndirectObject
 
   private boolean updated;
   private boolean updateable = true;
+  private boolean virtual;
   // </fields>
 
   // <constructors>
@@ -89,11 +90,7 @@ public final class PdfIndirectObject
     this.xrefEntry = xrefEntry;
 
     this.original = (xrefEntry.getOffset() >= 0);
-    this.reference = new PdfReference(
-      this,
-      xrefEntry.getNumber(),
-      xrefEntry.getGeneration()
-      );
+    this.reference = new PdfReference(this);
   }
   // </constructors>
 
@@ -153,10 +150,10 @@ public final class PdfIndirectObject
     )
   {
     /*
-      NOTE: Uniqueness should be achieved XORring the (local) reference hashcode
-      with the (global) file hashcode.
-      NOTE: Do NOT directly invoke reference.hashCode() method here as
-      it would trigger an infinite loop, as it conversely relies on this method.
+      NOTE: Uniqueness should be achieved XORring the (local) reference hashcode with the (global)
+      file hashcode.
+      NOTE: Do NOT directly invoke reference.hashCode() method here as, conversely relying on this
+      method, it would trigger an infinite loop.
     */
     return reference.getId().hashCode() ^ file.hashCode();
   }
@@ -205,6 +202,20 @@ public final class PdfIndirectObject
       buffer.append(getDataObject());
     }
     return buffer.toString();
+  }
+
+  @Override
+  public PdfIndirectObject swap(
+    PdfObject other
+    )
+  {
+    PdfIndirectObject otherObject = (PdfIndirectObject)other;
+    PdfDataObject otherDataObject = otherObject.dataObject;
+    // Update the other!
+    otherObject.setDataObject(dataObject);
+    // Update this one!
+    this.setDataObject(otherDataObject);
+    return this;
   }
 
   /**
@@ -328,7 +339,7 @@ public final class PdfIndirectObject
   @Override
   protected boolean isVirtual(
     )
-  {return false;}
+  {return virtual;}
 
   @Override
   protected void setUpdated(
@@ -351,7 +362,20 @@ public final class PdfIndirectObject
   protected void setVirtual(
     boolean value
     )
-  {/* NOOP */}
+  {
+    if(virtual && !value)
+    {
+      /*
+        NOTE: When a virtual indirect object becomes concrete it must be registered.
+      */
+      file.getIndirectObjects().addVirtual(this);
+      virtual = false;
+      getReference().update();
+    }
+    else
+    {virtual = value;}
+    dataObject.setVirtual(virtual);
+  }
   // </protected>
 
   // <internal>

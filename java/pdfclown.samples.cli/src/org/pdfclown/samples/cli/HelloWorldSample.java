@@ -12,7 +12,7 @@ import org.pdfclown.files.File;
   This sample is a <b>minimalist introduction to the use of PDF Clown</b>.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class HelloWorldSample
   extends Sample
@@ -33,7 +33,7 @@ public class HelloWorldSample
     populate(document);
 
     // 4. Serialize the PDF file!
-    serialize(file, "Hello world", "a simple 'hello world'");
+    serialize(file, "Hello world", "a simple 'hello world'", "Hello world");
   }
 
   /**
@@ -63,9 +63,8 @@ public class HelloWorldSample
       );
     // Show the text onto the page!
     /*
-      NOTE: PrimitiveComposer's showText() method is the most basic way
-      to add text to a page -- see BlockComposer for more advanced uses
-      (horizontal and vertical alignment, hyphenation, etc.).
+      NOTE: PrimitiveComposer's showText() method is the most basic way to add text to a page -- see
+      BlockComposer for more advanced uses (horizontal and vertical alignment, hyphenation, etc.).
     */
     composer.showText(
       "Hello World!",

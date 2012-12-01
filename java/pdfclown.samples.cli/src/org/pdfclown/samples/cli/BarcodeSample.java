@@ -23,7 +23,7 @@ import org.pdfclown.util.math.geom.GeomUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class BarcodeSample
   extends Sample
@@ -42,7 +42,7 @@ public class BarcodeSample
     populate(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, "Barcode", "showing barcodes");
+    serialize(file, "Barcode", "showing barcodes", "barcodes, creation, EAN13");
   }
   // </ISample>
   // </public>

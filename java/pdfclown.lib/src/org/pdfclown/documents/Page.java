@@ -68,7 +68,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 11/30/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Page
@@ -250,30 +250,28 @@ public final class Page
   @PDF(VersionEnum.PDF12)
   public PageActions getActions(
     )
-  {
-    PdfDirectObject actionsObject = getBaseDataObject().get(PdfName.AA);
-    return actionsObject != null ? new PageActions(actionsObject) : null;
-  }
+  {return new PageActions(getBaseDataObject().get(PdfName.AA, PdfDictionary.class));}
 
   /**
     Gets the annotations associated to the page.
   */
   public PageAnnotations getAnnotations(
     )
-  {
-    PdfDirectObject annotationsObject = getBaseDataObject().get(PdfName.Annots);
-    return annotationsObject != null ? new PageAnnotations(annotationsObject, this) : null;
-  }
+  {return new PageAnnotations(getBaseDataObject().get(PdfName.Annots, PdfDictionary.class), this);}
 
   /**
     Gets the extent of the page's meaningful content (including potential white space) as intended
     by the page's creator [PDF:1.7:10.10.1].
-    <p>The default value is the page's crop box.</p>
+
+    @see #getCropBox()
   */
   @PDF(VersionEnum.PDF13)
   public Rectangle2D getArtBox(
     )
   {
+    /*
+      NOTE: The default value is the page's crop box.
+    */
     PdfDirectObject artBoxObject = getInheritableAttribute(PdfName.ArtBox);
     return artBoxObject != null ? new Rectangle(artBoxObject).toRectangle2D() : getCropBox();
   }
@@ -284,12 +282,16 @@ public final class Page
     <p>This may include any extra bleed area needed to accommodate the physical limitations of
     cutting, folding, and trimming equipment. The actual printed page may include printing marks
     that fall outside the bleed box.</p>
-    <p>The default value is the page's crop box.</p>
+
+    @see #getCropBox()
   */
   @PDF(VersionEnum.PDF13)
   public Rectangle2D getBleedBox(
     )
   {
+    /*
+      NOTE: The default value is the page's crop box.
+    */
     PdfDirectObject bleedBoxObject = getInheritableAttribute(PdfName.BleedBox);
     return bleedBoxObject != null ? new Rectangle(bleedBoxObject).toRectangle2D() : getCropBox();
   }
@@ -301,11 +303,15 @@ public final class Page
     geometry or intended use; it merely imposes clipping on the page contents. However, in the
     absence of additional information, the crop box determines how the page's contents are to be
     positioned on the output medium.</p>
-    <p>The default value is the page's media box.</p>
+
+    @see #getBox()
   */
   public Rectangle2D getCropBox(
     )
   {
+    /*
+      NOTE: The default value is the page's media box.
+    */
     PdfDirectObject cropBoxObject = getInheritableAttribute(PdfName.CropBox);
     return cropBoxObject != null ? new Rectangle(cropBoxObject).toRectangle2D() : getBox();
   }
@@ -408,12 +414,16 @@ public final class Page
     Gets the intended dimensions of the finished page after trimming [PDF:1.7:10.10.1].
     <p>It may be smaller than the media box to allow for production-related content, such as
     printing instructions, cut marks, or color bars.</p>
-    <p>The default value is the page's crop box.</p>
+
+    @see #getCropBox()
   */
   @PDF(VersionEnum.PDF13)
   public Rectangle2D getTrimBox(
     )
   {
+    /*
+      NOTE: The default value is the page's crop box.
+    */
     PdfDirectObject trimBoxObject = getInheritableAttribute(PdfName.TrimBox);
     return trimBoxObject != null ? new Rectangle(trimBoxObject).toRectangle2D() : getCropBox();
   }
@@ -541,15 +551,15 @@ public final class Page
   @Override
   public Resources getResources(
     )
-  {return Resources.wrap(getInheritableAttribute(PdfName.Resources));}
+  {
+    Resources resources = Resources.wrap(getInheritableAttribute(PdfName.Resources));
+    return resources != null ? resources : Resources.wrap(getBaseDataObject().get(PdfName.Resources, PdfDictionary.class));
+  }
 
   @Override
   public RotationEnum getRotation(
     )
-  {
-    PdfInteger rotationObject = (PdfInteger)getInheritableAttribute(PdfName.Rotate);
-    return RotationEnum.valueOf(rotationObject);
-  }
+  {return RotationEnum.valueOf((PdfInteger)getInheritableAttribute(PdfName.Rotate));}
 
   @Override
   public void render(

@@ -30,7 +30,7 @@ namespace org.pdfclown.samples.cli
 
         // 2. Get the acroform!
         Form form = document.Form;
-        if(form == null)
+        if(!form.Exists())
         {Console.WriteLine("\nNo acroform available (AcroForm dictionary not found).");}
         else
         {

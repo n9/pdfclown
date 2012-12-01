@@ -99,6 +99,15 @@ namespace org.pdfclown.objects
     }
 
     /**
+      <summary>Gets the indirect object containing the base data object.</summary>
+    */
+    public PdfIndirectObject DataContainer
+    {
+      get
+      {return baseObject.DataContainer;}
+    }
+
+    /**
       <summary>Removes the object from its document context.</summary>
       <remarks>The object is no more usable after this method returns.</remarks>
       <returns>Whether the object was actually decontextualized (only indirect objects can be
@@ -144,10 +153,7 @@ namespace org.pdfclown.objects
     public File File
     {
       get
-      {
-        PdfIndirectObject container = Container;
-        return container != null ? container.File : null;
-      }
+      {return baseObject.File;}
     }
 
     public override int GetHashCode(
@@ -377,7 +383,18 @@ namespace org.pdfclown.objects
     }
 
     /**
+      <summary>Gets whether the underlying data object is concrete.</summary>
+    */
+    public bool Exists(
+      )
+    {return !BaseDataObject.Virtual;}
+
+    /**
       <summary>Gets/Sets the metadata associated to this object.</summary>
+      <returns><code>null</code>, if base data object's type isn't suitable (only
+      <see cref="PdfDictionary"/> and <see cref="PdfStream"/> objects are allowed).</returns>
+      <throws>NotSupportedException If base data object's type isn't suitable (only
+      <see cref="PdfDictionary"/> and <see cref="PdfStream"/> objects are allowed).</throws>
     */
     public Metadata Metadata
     {
@@ -387,8 +404,7 @@ namespace org.pdfclown.objects
         if(dictionary == null)
           return null;
 
-        PdfDirectObject metadataObject = dictionary[PdfName.Metadata];
-        return metadataObject != null ? new Metadata(metadataObject) : null;
+        return new Metadata(dictionary.Get<PdfStream>(PdfName.Metadata, false));
       }
       set
       {
@@ -396,7 +412,7 @@ namespace org.pdfclown.objects
         if(dictionary == null)
           throw new NotSupportedException("Metadata can be attached only to PdfDictionary/PdfStream base data objects.");
 
-        dictionary[PdfName.Metadata] = value.BaseObject;
+        dictionary[PdfName.Metadata] = PdfObjectWrapper.GetBaseObject(value);
       }
     }
     #endregion

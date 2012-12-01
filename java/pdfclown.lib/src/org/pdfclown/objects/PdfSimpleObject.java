@@ -34,7 +34,7 @@ import org.pdfclown.util.NotImplementedException;
   Abstract PDF simple object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 11/30/12
 */
 public abstract class PdfSimpleObject<TValue>
   extends PdfDirectObject
@@ -165,6 +165,12 @@ public abstract class PdfSimpleObject<TValue>
     boolean value
     )
   {/* NOOP: As simple objects are immutable, no update can be done. */}
+
+  @Override
+  public PdfSimpleObject<TValue> swap(
+    PdfObject other
+    )
+  {throw new UnsupportedOperationException("Immutable object");}
 
   @Override
   public String toString(

@@ -121,12 +121,25 @@ namespace org.pdfclown.objects
     {throw new NotImplementedException();}
 
     /**
-      <summary>Gets the value corresponding to the given key, forcing its instantiation in case of
-      missing entry.</summary>
+      <summary>Gets the value corresponding to the given key, forcing its instantiation as a direct
+      object in case of missing entry.</summary>
       <param name="key">Key whose associated value is to be returned.</param>
     */
     public PdfDirectObject Get<T>(
       PdfName key
+      ) where T : PdfDataObject, new()
+    {return Get<T>(key, true);}
+
+    /**
+      <summary>Gets the value corresponding to the given key, forcing its instantiation in case of
+      missing entry.</summary>
+      <param name="key">Key whose associated value is to be returned.</param>
+      <param name="direct">Whether the item has to be instantiated directly within its container
+      instead of being referenced through an indirect object.</param>
+    */
+    public PdfDirectObject Get<T>(
+      PdfName key,
+      bool direct
       ) where T : PdfDataObject, new()
     {
       PdfDirectObject value = this[key];
@@ -139,7 +152,10 @@ namespace org.pdfclown.objects
         */
         try
         {
-          entries[key] = value = (PdfDirectObject)Include(new T());
+          value = (PdfDirectObject)Include(direct
+            ? (PdfDataObject)new T()
+            : new PdfIndirectObject(File, new T(), new XRefEntry(0, 0)).Reference);
+          entries[key] = value;
           value.Virtual = true;
         }
         catch(Exception e)
@@ -213,6 +229,21 @@ namespace org.pdfclown.objects
       PdfName key
       ) where T : PdfDataObject, new()
     {return (T)File.Resolve(Get<T>(key));}
+
+    public override PdfObject Swap(
+      PdfObject other
+      )
+    {
+      PdfDictionary otherDictionary = (PdfDictionary)other;
+      IDictionary<PdfName,PdfDirectObject> otherEntries = otherDictionary.entries;
+      // Update the other!
+      otherDictionary.entries = this.entries;
+      otherDictionary.Update();
+      // Update this one!
+      this.entries = otherEntries;
+      this.Update();
+      return this;
+    }
 
     public override string ToString(
       )

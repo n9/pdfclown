@@ -42,24 +42,18 @@ namespace org.pdfclown.objects
     #region fields
     private PdfIndirectObject indirectObject;
 
-    private int generationNumber;
     private int objectNumber;
 
     private File file;
     private PdfObject parent;
+    private bool updated;
     #endregion
 
     #region constructors
     internal PdfReference(
-      PdfIndirectObject indirectObject,
-      int objectNumber,
-      int generationNumber
+      PdfIndirectObject indirectObject
       )
-    {
-      this.indirectObject = indirectObject;
-      this.objectNumber = objectNumber;
-      this.generationNumber = generationNumber;
-    }
+    {this.indirectObject = indirectObject;}
 
     /**
       <remarks>
@@ -73,7 +67,6 @@ namespace org.pdfclown.objects
       )
     {
       this.objectNumber = reference.ObjectNumber;
-      this.generationNumber = reference.GenerationNumber;
       this.file = file;
     }
     #endregion
@@ -91,12 +84,6 @@ namespace org.pdfclown.objects
       )
     {throw new NotImplementedException();}
 
-    public override PdfIndirectObject Container
-    {
-      get
-      {return IndirectObject;}
-    }
-
     public override bool Equals(
       object obj
       )
@@ -112,7 +99,7 @@ namespace org.pdfclown.objects
     public int GenerationNumber
     {
       get
-      {return generationNumber;}
+      {return IndirectObject.XrefEntry.Generation;}
     }
 
     public override int GetHashCode(
@@ -126,7 +113,7 @@ namespace org.pdfclown.objects
     public string Id
     {
       get
-      {return ("" + objectNumber + Symbol.Space + generationNumber);}
+      {return ("" + ObjectNumber + Symbol.Space + GenerationNumber);}
     }
 
     /**
@@ -145,7 +132,7 @@ namespace org.pdfclown.objects
     public int ObjectNumber
     {
       get
-      {return objectNumber;}
+      {return IndirectObject.XrefEntry.Number;}
     }
 
     public override PdfObject Parent
@@ -156,6 +143,11 @@ namespace org.pdfclown.objects
       {parent = value;}
     }
 
+    public override PdfObject Swap(
+      PdfObject other
+      )
+    {return IndirectObject.Swap(((PdfReference)other).IndirectObject).Reference;}
+
     public override string ToString(
       )
     {return IndirectReference;}
@@ -163,17 +155,17 @@ namespace org.pdfclown.objects
     public override bool Updateable
     {
       get
-      {return false;}
+      {return IndirectObject.Updateable;}
       set
-      {/* NOOP: As references are immutable, no update can be done. */}
+      {IndirectObject.Updateable = value;}
     }
 
     public override bool Updated
     {
       get
-      {return false;}
+      {return updated;}
       protected internal set
-      {/* NOOP: As references are immutable, no update can be done. */}
+      {updated = value;}
     }
 
     public override void WriteTo(
@@ -187,12 +179,8 @@ namespace org.pdfclown.objects
       File context
       )
     {
-      /*
-        NOTE: Local cloning keeps the same reference as it's immutable;
-        conversely, alien cloning generates a new reference in the new file context.
-      */
       return context == null || context == file
-        ? this // Local clone (immutable).
+        ? (PdfReference)base.Clone(context) // Local clone (immutable).
         : ((PdfIndirectObject)IndirectObject.Clone(context)).Reference; // Alien clone.
     }
 
@@ -231,9 +219,9 @@ namespace org.pdfclown.objects
     protected internal override bool Virtual
     {
       get
-      {return false;}
+      {return IndirectObject.Virtual;}
       set
-      {/* NOOP */}
+      {IndirectObject.Virtual = value;}
     }
     #endregion
     #endregion

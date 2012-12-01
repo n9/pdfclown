@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -57,7 +57,7 @@ import org.xml.sax.SAXException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 06/08/11
+  @version 0.1.1, 11/30/12
 */
 @PDF(VersionEnum.PDF14)
 public final class Metadata
@@ -118,22 +118,28 @@ public final class Metadata
       {throw new RuntimeException(e);}
 
       // 2. Get the document contents!
-      InputStream contentStream = new ByteArrayInputStream(getBaseDataObject().getBody().toByteArray());
-
-      // 3. Parse the document contents!
-      try
-      {content = contentDeserializer.parse(contentStream);}
-      catch(SAXException e)
-      {throw new RuntimeException("XML parsing failed.", e);}
-      catch(IOException e)
-      {throw new RuntimeException("XML reading failed.", e);}
-      finally
+      IBuffer contentBody = getBaseDataObject().getBody();
+      if(contentBody.getLength() > 0)
       {
+        InputStream contentStream = new ByteArrayInputStream(contentBody.toByteArray());
+
+        // 3. Parse the document contents!
         try
-        {contentStream.close();}
+        {content = contentDeserializer.parse(contentStream);}
+        catch(SAXException e)
+        {throw new RuntimeException("XML parsing failed.", e);}
         catch(IOException e)
-        {throw new RuntimeException(e);}
+        {throw new RuntimeException("XML reading failed.", e);}
+        finally
+        {
+          try
+          {contentStream.close();}
+          catch(IOException e)
+          {throw new RuntimeException(e);}
+        }
       }
+      else
+      {content = null;}
     }
     return content;
   }

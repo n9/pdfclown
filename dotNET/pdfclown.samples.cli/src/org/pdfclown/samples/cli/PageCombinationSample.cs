@@ -65,7 +65,7 @@ namespace org.pdfclown.samples.cli
         composer.Flush();
   
         // 4. Serialize the PDF file!
-        Serialize(file, "Page combination", "combining multiple pages into single bigger ones");
+        Serialize(file, "Page combination", "combining multiple pages into single bigger ones", "page combination");
       }
     }
   }

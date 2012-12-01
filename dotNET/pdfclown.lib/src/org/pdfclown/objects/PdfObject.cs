@@ -79,7 +79,9 @@ namespace org.pdfclown.objects
     }
 
     /**
-      <summary>Gets the indirect object containing the data associated to this object.</summary>
+      <summary>Gets the indirect object containing this object.</summary>
+      <seealso cref="DataContainer"/>
+      <seealso cref="IndirectObject"/>
     */
     public virtual PdfIndirectObject Container
     {
@@ -91,19 +93,35 @@ namespace org.pdfclown.objects
     }
 
     /**
+      <summary>Gets the indirect object containing the data associated to this object.</summary>
+      <seealso cref="Container"/>
+      <seealso cref="IndirectObject"/>
+    */
+    public PdfIndirectObject DataContainer
+    {
+      get
+      {
+        PdfIndirectObject indirectObject = IndirectObject;
+        return indirectObject != null ? indirectObject : Container;
+      }
+    }
+
+    /**
       <summary>Gets the file containing this object.</summary>
     */
     public virtual File File
     {
       get
       {
-        PdfIndirectObject container = Container;
-        return container != null ? container.File : null;
+        PdfIndirectObject dataContainer = DataContainer;
+        return dataContainer != null ? dataContainer.File : null;
       }
     }
 
     /**
       <summary>Gets the indirect object corresponding to this object.</summary>
+      <seealso cref="Container"/>
+      <seealso cref="DataContainer"/>
     */
     public virtual PdfIndirectObject IndirectObject
     {
@@ -113,6 +131,7 @@ namespace org.pdfclown.objects
 
     /**
       <summary>Gets/Sets the parent of this object.</summary>
+      <seealso cref="Container"/>
     */
     public abstract PdfObject Parent
     {
@@ -131,6 +150,15 @@ namespace org.pdfclown.objects
         return indirectObject != null ? indirectObject.Reference : null;
       }
     }
+
+    /**
+      <summary>Swaps contents between this object and the other one.</summary>
+      <param name="other">Object whose contents have to be swapped with this one's.</param>
+      <returns>This object.</returns>
+    */
+    public abstract PdfObject Swap(
+      PdfObject other
+      );
 
     /**
       <summary>Gets/Sets whether the detection of object state changes is enabled.</summary>
@@ -172,7 +200,7 @@ namespace org.pdfclown.objects
     /**
       <summary>Updates the state of this object.</summary>
     */
-    protected void Update(
+    protected internal void Update(
       )
     {
       if(!Updateable || Updated)

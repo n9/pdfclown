@@ -20,7 +20,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class StandardFontSample
   extends Sample
@@ -40,7 +40,7 @@ public class StandardFontSample
     populate(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, "Standard Type 1 fonts", "applying standard Type 1 fonts");
+    serialize(file, "Standard Type 1 fonts", "applying standard Type 1 fonts", "Standard Type1 fonts");
   }
 
   private void populate(

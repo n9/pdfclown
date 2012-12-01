@@ -57,6 +57,7 @@ namespace org.pdfclown.objects
     private PdfObject parent;
     private bool updateable = true;
     private bool updated;
+    private bool virtual_;
 
     /**
       <summary>Indicates whether {@link #body} has already been resolved and therefore contains the
@@ -349,6 +350,24 @@ namespace org.pdfclown.objects
       header[PdfName.F] = dataFileObject;
     }
 
+    public override PdfObject Swap(
+      PdfObject other
+      )
+    {
+      PdfStream otherStream = (PdfStream)other;
+      PdfDictionary otherHeader = otherStream.header;
+      IBuffer otherBody = otherStream.body;
+      // Update the other!
+      otherStream.header = this.header;
+      otherStream.body = this.body;
+      otherStream.Update();
+      // Update this one!
+      this.header = otherHeader;
+      this.body = otherBody;
+      this.Update();
+      return this;
+    }
+
     public override bool Updateable
     {
       get
@@ -474,9 +493,9 @@ namespace org.pdfclown.objects
     protected internal override bool Virtual
     {
       get
-      {return false;}
+      {return virtual_;}
       set
-      {/* NOOP */}
+      {virtual_ = value;}
     }
     #endregion
     #endregion

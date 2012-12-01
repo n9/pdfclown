@@ -65,7 +65,7 @@ public class ParsingSample
       // 2.1.1. Basic metadata.
       System.out.println("\nDocument information:");
       Information info = document.getInformation();
-      if(info != null)
+      if(info.exists())
       {
         for(Map.Entry<PdfName,Object> infoEntry : info.entrySet())
         {System.out.println(infoEntry.getKey() + ": " + infoEntry.getValue());}
@@ -76,7 +76,7 @@ public class ParsingSample
       // 2.1.2. Advanced metadata.
       System.out.println("\nDocument metadata (XMP):");
       Metadata metadata = document.getMetadata();
-      if(metadata != null)
+      if(metadata.exists())
       {
         try
         {

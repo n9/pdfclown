@@ -13,7 +13,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class PageTransitionSample
   extends Sample
@@ -51,6 +51,6 @@ public class PageTransitionSample
     }
 
     // 3. Serialize the PDF file!
-    serialize(file, "Transition", "applying visual transitions to pages");
+    serialize(file, "Transition", "applying visual transitions to pages", "page transition");
   }
 }

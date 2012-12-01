@@ -31,10 +31,7 @@ namespace org.pdfclown.samples.cli
 
           // 2. Defining the page labels...
           PageLabels pageLabels = document.PageLabels;
-          if(pageLabels != null)
-          {pageLabels.Clear();}
-          else
-          {document.PageLabels = pageLabels = new PageLabels(document);}
+          pageLabels.Clear();
           /*
             NOTE: This sample applies labels to arbitrary page ranges: no sensible connection with their
             actual content has therefore to be expected.
@@ -47,7 +44,7 @@ namespace org.pdfclown.samples.cli
           {pageLabels[new PdfInteger(6)] = new PageLabel(document, "Contents ", PageLabel.NumberStyleEnum.ArabicNumber, 0);}
 
           // 3. Serialize the PDF file!
-          outputFilePath = Serialize(file, "Page labelling", "labelling a document's pages");
+          outputFilePath = Serialize(file, "Page labelling", "labelling a document's pages", "page labels");
         }
       }
 

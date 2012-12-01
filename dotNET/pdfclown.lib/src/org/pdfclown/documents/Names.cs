@@ -70,12 +70,7 @@ namespace org.pdfclown.documents
     public NamedDestinations Destinations
     {
       get
-//TODO: virtual indirect reference to be managed!
-//      {return new NamedDestinations(BaseDataObject.Get<PdfDictionary>(PdfName.Dests));}
-      {
-        PdfDirectObject destinationsObject = BaseDataObject[PdfName.Dests];
-        return destinationsObject != null ? new NamedDestinations(destinationsObject) : null;
-      }
+      {return new NamedDestinations(BaseDataObject.Get<PdfDictionary>(PdfName.Dests, false));}
       set
       {BaseDataObject[PdfName.Dests] = value.BaseObject;}
     }
@@ -87,12 +82,7 @@ namespace org.pdfclown.documents
     public NamedEmbeddedFiles EmbeddedFiles
     {
       get
-//TODO: virtual indirect reference to be managed!
-//      {return new NamedEmbeddedFiles(BaseDataObject.Get<PdfDictionary>(PdfName.EmbeddedFiles));}
-      {
-        PdfDirectObject embeddedFilesObject = BaseDataObject[PdfName.EmbeddedFiles];
-        return embeddedFilesObject != null ? new NamedEmbeddedFiles(embeddedFilesObject) : null;
-      }
+      {return new NamedEmbeddedFiles(BaseDataObject.Get<PdfDictionary>(PdfName.EmbeddedFiles, false));}
       set
       {BaseDataObject[PdfName.EmbeddedFiles] = value.BaseObject;}
     }
@@ -104,12 +94,7 @@ namespace org.pdfclown.documents
     public NamedJavaScripts JavaScripts
     {
       get
-//TODO: virtual indirect reference to be managed!
-//      {return new NamedJavaScripts(BaseDataObject.Get<PdfDictionary>(PdfName.JavaScript));}
-      {
-        PdfDirectObject javaScriptsObject = BaseDataObject[PdfName.JavaScript];
-        return javaScriptsObject != null ? new NamedJavaScripts(javaScriptsObject) : null;
-      }
+      {return new NamedJavaScripts(BaseDataObject.Get<PdfDictionary>(PdfName.JavaScript, false));}
       set
       {BaseDataObject[PdfName.JavaScript] = value.BaseObject;}
     }
@@ -121,12 +106,7 @@ namespace org.pdfclown.documents
     public NamedRenditions Renditions
     {
       get
-//TODO: virtual indirect reference to be managed!
-//      {return new NamedRenditions(BaseDataObject.Get<PdfDictionary>(PdfName.Renditions));}
-      {
-        PdfDirectObject renditionsObject = BaseDataObject[PdfName.Renditions];
-        return renditionsObject != null ? new NamedRenditions(renditionsObject) : null;
-      }
+      {return new NamedRenditions(BaseDataObject.Get<PdfDictionary>(PdfName.Renditions, false));}
       set
       {BaseDataObject[PdfName.Renditions] = value.BaseObject;}
     }

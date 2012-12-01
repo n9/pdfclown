@@ -48,7 +48,7 @@ import org.pdfclown.util.NotImplementedException;
   Document information [PDF:1.6:10.2.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 11/30/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Information
@@ -61,19 +61,7 @@ public final class Information
   public Information(
     Document context
     )
-  {
-    super(context, new PdfDictionary());
-    try
-    {
-      Package package_ = getClass().getPackage();
-      setProducer(
-        package_.getSpecificationTitle() + " "
-          + package_.getSpecificationVersion()
-        );
-    }
-    catch(Exception e)
-    {/* NOOP */}
-  }
+  {super(context, new PdfDictionary());}
 
   /**
     <span style="color:red">For internal use only.</span>

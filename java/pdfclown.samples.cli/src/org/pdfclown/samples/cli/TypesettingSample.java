@@ -19,7 +19,7 @@ import org.pdfclown.files.File;
   from the beginning of "Alice in Wonderland", Chapter 1 ("Down the Rabbit-Hole").
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class TypesettingSample
   extends Sample
@@ -39,7 +39,7 @@ public class TypesettingSample
     build(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, "Typesetting", "demonstrating how to add style to contents");
+    serialize(file, "Typesetting", "demonstrating how to add style to contents", "typesetting");
   }
 
   private void build(

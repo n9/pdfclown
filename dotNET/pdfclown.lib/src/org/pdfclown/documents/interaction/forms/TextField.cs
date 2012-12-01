@@ -162,14 +162,13 @@ namespace org.pdfclown.documents.interaction.forms
       )
     {
       Widget widget = Widgets[0];
-      Appearance appearance = widget.Appearance;
-      if(appearance == null)
-      {widget.Appearance = appearance = new Appearance(Document);}
-
-      FormXObject normalAppearance = appearance.Normal[null];
-      if(normalAppearance == null)
-      {appearance.Normal[null] = normalAppearance = new FormXObject(Document, widget.Box.Size);}
-
+      FormXObject normalAppearance;
+      {
+        AppearanceStates normalAppearances = widget.Appearance.Normal;
+        normalAppearance = normalAppearances[null];
+        if(normalAppearance == null)
+        {normalAppearances[null] = normalAppearance = new FormXObject(Document, widget.Box.Size);}
+      }
       PdfName fontName = null;
       double fontSize = 0;
       {
@@ -180,15 +179,9 @@ namespace org.pdfclown.documents.interaction.forms
           fonts::Font defaultFont = null;
           PdfName defaultFontName = null;
           {
-            Resources normalAppearanceResources = normalAppearance.Resources;
-            if(normalAppearanceResources == null)
-            {Document.Form.Resources = normalAppearanceResources = new Resources(Document);}
-
-            FontResources normalAppearanceFontResources = normalAppearanceResources.Fonts;
-            if(normalAppearanceFontResources == null)
-            {normalAppearanceResources.Fonts = normalAppearanceFontResources = new FontResources(Document);}
-
-            foreach(KeyValuePair<PdfName,fonts::Font> entry in normalAppearanceFontResources)
+            // Field fonts.
+            FontResources normalAppearanceFonts = normalAppearance.Resources.Fonts;
+            foreach(KeyValuePair<PdfName,fonts::Font> entry in normalAppearanceFonts)
             {
               if(!entry.Value.Symbolic)
               {
@@ -199,15 +192,9 @@ namespace org.pdfclown.documents.interaction.forms
             }
             if(defaultFontName == null)
             {
-              Resources formResources = Document.Form.Resources;
-              if(formResources == null)
-              {Document.Form.Resources = formResources = new Resources(Document);}
-
-              FontResources formFontResources = formResources.Fonts;
-              if(formFontResources == null)
-              {formResources.Fonts = formFontResources = new FontResources(Document);}
-
-              foreach(KeyValuePair<PdfName,fonts::Font> entry in formFontResources)
+              // Common fonts.
+              FontResources formFonts = Document.Form.Resources.Fonts;
+              foreach(KeyValuePair<PdfName,fonts::Font> entry in formFonts)
               {
                 if(!entry.Value.Symbolic)
                 {
@@ -219,7 +206,7 @@ namespace org.pdfclown.documents.interaction.forms
               if(defaultFontName == null)
               {
                 //TODO:manage name collision!
-                formFontResources[
+                formFonts[
                   defaultFontName = new PdfName("default")
                   ] = defaultFont = new fonts::StandardType1Font(
                     Document,
@@ -228,7 +215,7 @@ namespace org.pdfclown.documents.interaction.forms
                     false
                     );
               }
-              normalAppearanceFontResources[defaultFontName] = defaultFont;
+              normalAppearanceFonts[defaultFontName] = defaultFont;
             }
           }
           bytes::Buffer buffer = new bytes::Buffer();
@@ -248,18 +235,7 @@ namespace org.pdfclown.documents.interaction.forms
             break;
           }
         }
-
-        {
-          Resources normalAppearanceResources = normalAppearance.Resources;
-          if(normalAppearanceResources == null)
-          {Document.Form.Resources = normalAppearanceResources = new Resources(Document);}
-
-          FontResources normalAppearanceFontResources = normalAppearanceResources.Fonts;
-          if(normalAppearanceFontResources == null)
-          {normalAppearanceResources.Fonts = normalAppearanceFontResources = new FontResources(Document);}
-
-          normalAppearanceFontResources[fontName] = Document.Form.Resources.Fonts[fontName];
-        }
+        normalAppearance.Resources.Fonts[fontName] = Document.Form.Resources.Fonts[fontName];
       }
 
       // Refreshing the field appearance...

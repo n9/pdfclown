@@ -178,10 +178,7 @@ namespace org.pdfclown.documents
     public PageActions Actions
     {
       get
-      {
-        PdfDirectObject actionsObject = BaseDataObject[PdfName.AA];
-        return actionsObject != null ? new PageActions(actionsObject) : null;
-      }
+      {return new PageActions(BaseDataObject.Get<PdfDictionary>(PdfName.AA));}
       set
       {BaseDataObject[PdfName.AA] = value.BaseObject;}
     }
@@ -192,10 +189,7 @@ namespace org.pdfclown.documents
     public PageAnnotations Annotations
     {
       get
-      {
-        PdfDirectObject annotationsObject = BaseDataObject[PdfName.Annots];
-        return annotationsObject != null ? new PageAnnotations(annotationsObject, this) : null;
-      }
+      {return new PageAnnotations(BaseDataObject.Get<PdfDictionary>(PdfName.Annots), this);}
       set
       {BaseDataObject[PdfName.Annots] = value.BaseObject;}
     }
@@ -203,13 +197,16 @@ namespace org.pdfclown.documents
     /**
       <summary>Gets/Sets the extent of the page's meaningful content (including potential white space)
       as intended by the page's creator [PDF:1.7:10.10.1].</summary>
-      <remarks>The default value is the page's crop box.</remarks>
+      <seealso cref="CropBox"/>
     */
     [PDF(VersionEnum.PDF13)]
     public drawing::RectangleF ArtBox
     {
       get
       {
+        /*
+          NOTE: The default value is the page's crop box.
+        */
         PdfDirectObject artBoxObject = GetInheritableAttribute(PdfName.ArtBox);
         return artBoxObject != null ? new Rectangle(artBoxObject).ToRectangleF() : CropBox;
       }
@@ -224,14 +221,17 @@ namespace org.pdfclown.documents
         <para>This may include any extra bleed area needed to accommodate the physical limitations of
         cutting, folding, and trimming equipment. The actual printed page may include printing marks
         that fall outside the bleed box.</para>
-        <para>The default value is the page's crop box.</para>
       </remarks>
+      <seealso cref="CropBox"/>
     */
     [PDF(VersionEnum.PDF13)]
     public drawing::RectangleF BleedBox
     {
       get
       {
+        /*
+          NOTE: The default value is the page's crop box.
+        */
         PdfDirectObject bleedBoxObject = GetInheritableAttribute(PdfName.BleedBox);
         return bleedBoxObject != null ? new Rectangle(bleedBoxObject).ToRectangleF() : CropBox;
       }
@@ -247,13 +247,16 @@ namespace org.pdfclown.documents
         geometry or intended use; it merely imposes clipping on the page contents. However, in the
         absence of additional information, the crop box determines how the page's contents are to be
         positioned on the output medium.</para>
-        <para>The default value is the page's media box.</para>
       </remarks>
+      <seealso cref="Box"/>
     */
     public drawing::RectangleF CropBox
     {
       get
       {
+        /*
+          NOTE: The default value is the page's media box.
+        */
         PdfDirectObject cropBoxObject = GetInheritableAttribute(PdfName.CropBox);
         return cropBoxObject != null ? new Rectangle(cropBoxObject).ToRectangleF() : Box;
       }
@@ -419,14 +422,17 @@ namespace org.pdfclown.documents
       <remarks>
         <para>It may be smaller than the media box to allow for production-related content, such as
         printing instructions, cut marks, or color bars.</para>
-        <para>The default value is the page's crop box.</para>
       </remarks>
+      <seealso cref="CropBox"/>
     */
     [PDF(VersionEnum.PDF13)]
     public drawing::RectangleF TrimBox
     {
       get
       {
+        /*
+          NOTE: The default value is the page's crop box.
+        */
         PdfDirectObject trimBoxObject = GetInheritableAttribute(PdfName.TrimBox);
         return trimBoxObject != null ? new Rectangle(trimBoxObject).ToRectangleF() : CropBox;
       }
@@ -466,16 +472,16 @@ namespace org.pdfclown.documents
     public Resources Resources
     {
       get
-      {return Resources.Wrap(GetInheritableAttribute(PdfName.Resources));}
+      {
+        Resources resources = Resources.Wrap(GetInheritableAttribute(PdfName.Resources));
+        return resources != null ? resources : Resources.Wrap(BaseDataObject.Get<PdfDictionary>(PdfName.Resources));
+      }
     }
 
     public RotationEnum Rotation
     {
       get
-      {
-        PdfInteger rotationObject = (PdfInteger)GetInheritableAttribute(PdfName.Rotate);
-        return RotationEnumExtension.Get(rotationObject);
-      }
+      {return RotationEnumExtension.Get((PdfInteger)GetInheritableAttribute(PdfName.Rotate));}
       set
       {BaseDataObject[PdfName.Rotate] = PdfInteger.Get((int)value);}
     }

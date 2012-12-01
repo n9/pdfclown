@@ -35,7 +35,6 @@ import org.pdfclown.bytes.Buffer;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.ContentScanner;
 import org.pdfclown.documents.contents.FontResources;
-import org.pdfclown.documents.contents.Resources;
 import org.pdfclown.documents.contents.composition.BlockComposer;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.composition.XAlignmentEnum;
@@ -49,7 +48,7 @@ import org.pdfclown.documents.contents.objects.Text;
 import org.pdfclown.documents.contents.tokens.ContentParser;
 import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.documents.interaction.JustificationEnum;
-import org.pdfclown.documents.interaction.annotations.Appearance;
+import org.pdfclown.documents.interaction.annotations.AppearanceStates;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDirectObject;
@@ -66,7 +65,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 11/30/12
 */
 @PDF(VersionEnum.PDF12)
 public final class TextField
@@ -209,22 +208,21 @@ public final class TextField
     )
   {
     Widget widget = getWidgets().get(0);
-    Appearance appearance = widget.getAppearance();
-    if(appearance == null)
-    {widget.setAppearance(appearance = new Appearance(getDocument()));}
-
-    FormXObject normalAppearance = appearance.getNormal().get(null);
-    if(normalAppearance == null)
+    FormXObject normalAppearance;
     {
-      appearance.getNormal().put(
-        null,
-        normalAppearance = new FormXObject(
-          getDocument(),
-          Dimension.get(widget.getBox())
-          )
-        );
+      AppearanceStates normalAppearances = widget.getAppearance().getNormal();
+      normalAppearance = normalAppearances.get(null);
+      if(normalAppearance == null)
+      {
+        normalAppearances.put(
+          null,
+          normalAppearance = new FormXObject(
+            getDocument(),
+            Dimension.get(widget.getBox())
+            )
+          );
+      }
     }
-
     PdfName fontName = null;
     double fontSize = 0;
     {
@@ -235,15 +233,9 @@ public final class TextField
         Font defaultFont = null;
         PdfName defaultFontName = null;
         {
-          Resources normalAppearanceResources = normalAppearance.getResources();
-          if(normalAppearanceResources == null)
-          {getDocument().getForm().setResources(normalAppearanceResources = new Resources(getDocument()));}
-
-          FontResources normalAppearanceFontResources = normalAppearanceResources.getFonts();
-          if(normalAppearanceFontResources == null)
-          {normalAppearanceResources.setFonts(normalAppearanceFontResources = new FontResources(getDocument()));}
-
-          for(Map.Entry<PdfName,Font> entry : normalAppearanceFontResources.entrySet())
+          // Field fonts.
+          FontResources normalAppearanceFonts = normalAppearance.getResources().getFonts();
+          for(Map.Entry<PdfName,Font> entry : normalAppearanceFonts.entrySet())
           {
             if(!entry.getValue().isSymbolic())
             {
@@ -254,15 +246,9 @@ public final class TextField
           }
           if(defaultFontName == null)
           {
-            Resources formResources = getDocument().getForm().getResources();
-            if(formResources == null)
-            {getDocument().getForm().setResources(formResources = new Resources(getDocument()));}
-
-            FontResources formFontResources = formResources.getFonts();
-            if(formFontResources == null)
-            {formResources.setFonts(formFontResources = new FontResources(getDocument()));}
-
-            for(Map.Entry<PdfName,Font> entry : formFontResources.entrySet())
+            // Common fonts.
+            FontResources formFonts = getDocument().getForm().getResources().getFonts();
+            for(Map.Entry<PdfName,Font> entry : formFonts.entrySet())
             {
               if(!entry.getValue().isSymbolic())
               {
@@ -274,7 +260,7 @@ public final class TextField
             if(defaultFontName == null)
             {
               //TODO:manage name collision!
-              formFontResources.put(
+              formFonts.put(
                 defaultFontName = new PdfName("default"),
                 defaultFont = new StandardType1Font(
                   getDocument(),
@@ -284,7 +270,7 @@ public final class TextField
                   )
                 );
             }
-            normalAppearanceFontResources.put(defaultFontName, defaultFont);
+            normalAppearanceFonts.put(defaultFontName, defaultFont);
           }
         }
         Buffer buffer = new Buffer();
@@ -305,16 +291,7 @@ public final class TextField
           break;
         }
       }
-
-      Resources normalAppearanceResources = normalAppearance.getResources();
-      if(normalAppearanceResources == null)
-      {getDocument().getForm().setResources(normalAppearanceResources = new Resources(getDocument()));}
-
-      FontResources normalAppearanceFontResources = normalAppearanceResources.getFonts();
-      if(normalAppearanceFontResources == null)
-      {normalAppearanceResources.setFonts(normalAppearanceFontResources = new FontResources(getDocument()));}
-
-      normalAppearanceFontResources.put(fontName, getDocument().getForm().getResources().getFonts().get(fontName));
+      normalAppearance.getResources().getFonts().put(fontName, getDocument().getForm().getResources().getFonts().get(fontName));
     }
 
     // Refreshing the field appearance...

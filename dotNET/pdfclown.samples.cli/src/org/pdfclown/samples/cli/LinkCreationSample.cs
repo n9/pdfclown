@@ -33,7 +33,7 @@ namespace org.pdfclown.samples.cli
       BuildLinks(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, "Link annotations", "applying link annotations");
+      Serialize(file, "Link annotations", "applying link annotations", "links, creation");
     }
 
     private void BuildLinks(

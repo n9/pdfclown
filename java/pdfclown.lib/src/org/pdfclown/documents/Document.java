@@ -61,7 +61,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF document [PDF:1.6:3.6.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Document
@@ -326,18 +326,14 @@ public final class Document
       new PdfDictionary(
         new PdfName[]{PdfName.Type},
         new PdfDirectObject[]{PdfName.Catalog}
-        ) // Document catalog [PDF:1.6:3.6.1].
+        )
       );
 
-    /*
-      NOTE: Here it is just a minimal initialization;
-      any further customization is upon client's responsibility.
-    */
-    // Link the document to the file!
-    context.getTrailer().put(PdfName.Root,getBaseObject()); // Attaches the catalog reference to the file trailer.
+    // Attach the document catalog to the file trailer!
+    context.getTrailer().put(PdfName.Root, getBaseObject());
 
-    // Initialize the pages collection (page-tree root node)!
-    setPages(new Pages(this)); // NOTE: The page-tree root node is required [PDF:1.6:3.6.1].
+    // Pages collection.
+    setPages(new Pages(this));
 
     // Default page size.
     setPageSize(PageFormat.getSize());
@@ -364,7 +360,7 @@ public final class Document
   {throw new NotImplementedException();}
 
   /**
-    Drops the object from this document context.
+    Deletes the object from this document context.
   */
   public void exclude(
     PdfObjectWrapper<?> object
@@ -377,7 +373,7 @@ public final class Document
   }
 
   /**
-    Drops the collection's objects from this document context.
+    Deletes the objects from this document context.
   */
   public void exclude(
     Collection<? extends PdfObjectWrapper<?>> objects
@@ -393,20 +389,14 @@ public final class Document
   @PDF(VersionEnum.PDF14)
   public DocumentActions getActions(
     )
-  {
-    PdfDirectObject actionsObject = getBaseDataObject().get(PdfName.AA);
-    return actionsObject != null ? new DocumentActions(actionsObject) : null;
-  }
+  {return new DocumentActions(getBaseDataObject().get(PdfName.AA, PdfDictionary.class));}
 
   /**
-    Gets the bookmark collection [PDF:1.6:8.2.2].
+    Gets the bookmark collection.
   */
   public Bookmarks getBookmarks(
     )
-  {
-    PdfDirectObject bookmarksObject = getBaseDataObject().get(PdfName.Outlines);
-    return bookmarksObject != null ? new Bookmarks(bookmarksObject) : null;
-  }
+  {return new Bookmarks(getBaseDataObject().get(PdfName.Outlines, PdfDictionary.class, false));}
 
   /**
     Gets the configuration of this document.
@@ -416,7 +406,7 @@ public final class Document
   {return configuration;}
 
   /**
-    Gets the interactive form (AcroForm) [PDF:1.6:8.6.1].
+    Gets the interactive form (AcroForm).
 
     @since 0.0.7
   */
@@ -426,24 +416,11 @@ public final class Document
   {return new Form(getBaseDataObject().get(PdfName.AcroForm, PdfDictionary.class));}
 
   /**
-    Gets the document information dictionary [PDF:1.6:10.2.1].
+    Gets the document information dictionary.
   */
   public Information getInformation(
     )
-//TODO: support virtual indirect objects (otherwise info is inserted as direct into the trailer)!
-//  {return new Information(getFile().getTrailer().get(PdfName.Info, PdfDictionary.class));}
-  {
-    PdfDirectObject informationObject = getFile().getTrailer().get(PdfName.Info);
-    return informationObject != null ? new Information(informationObject) : null;
-  }
-
-  /**
-    Gets the name dictionary [PDF:1.6:3.6.3].
-  */
-  @PDF(VersionEnum.PDF12)
-  public Names getNames(
-    )
-  {return new Names(getBaseDataObject().get(PdfName.Names, PdfDictionary.class));}
+  {return new Information(getFile().getTrailer().get(PdfName.Info, PdfDictionary.class, false));}
 
   /**
     Gets the optional content properties.
@@ -451,10 +428,15 @@ public final class Document
   @PDF(VersionEnum.PDF15)
   public LayerDefinition getLayer(
     )
-  {
-    PdfDirectObject ocPropertiesObject = getBaseDataObject().get(PdfName.OCProperties);
-    return ocPropertiesObject != null ? new LayerDefinition(ocPropertiesObject) : null;
-  }
+  {return new LayerDefinition(getBaseDataObject().get(PdfName.OCProperties, PdfDictionary.class));}
+
+  /**
+    Gets the name dictionary.
+  */
+  @PDF(VersionEnum.PDF12)
+  public Names getNames(
+    )
+  {return new Names(getBaseDataObject().get(PdfName.Names, PdfDictionary.class));}
 
   /**
     Gets the page label ranges.
@@ -462,12 +444,7 @@ public final class Document
   @PDF(VersionEnum.PDF13)
   public PageLabels getPageLabels(
     )
-//TODO: support virtual indirect objects.
-//  {return new PageLabels(getBaseDataObject().get(PdfName.PageLabels, PdfDictionary.class));}
-  {
-    PdfDirectObject pageLabelsObject = getBaseDataObject().get(PdfName.PageLabels);
-    return pageLabelsObject != null ? new PageLabels(pageLabelsObject) : null;
-  }
+  {return new PageLabels(getBaseDataObject().get(PdfName.PageLabels, PdfDictionary.class));}
 
   /**
     Gets the page layout to be used when the document is opened.
@@ -484,7 +461,7 @@ public final class Document
   {return PageModeEnum.valueOf((PdfName)getBaseDataObject().get(PdfName.PageMode));}
 
   /**
-    Gets the page collection [PDF:1.6:3.6.2].
+    Gets the page collection.
   */
   public Pages getPages(
     )
@@ -492,6 +469,8 @@ public final class Document
 
   /**
     Gets the default page size [PDF:1.6:3.6.2].
+
+    @see #getSize()
   */
   public Dimension2D getPageSize(
     )
@@ -507,16 +486,17 @@ public final class Document
 
   /**
     Gets the default resource collection [PDF:1.6:3.6.2].
-    <p>The default resource collection is used as last resort by every page
-    that doesn't reference one explicitly (and doesn't reference an intermediate one
-    implicitly).</p>
+    <p>The default resource collection is used as last resort by every page that doesn't reference
+    one explicitly (and doesn't reference an intermediate one implicitly).</p>
   */
   public Resources getResources(
     )
-  {return Resources.wrap(((PdfDictionary)getBaseDataObject().resolve(PdfName.Pages)).get(PdfName.Resources));}
+  {return Resources.wrap(((PdfDictionary)getBaseDataObject().resolve(PdfName.Pages)).get(PdfName.Resources, PdfDictionary.class));}
 
   /**
     Gets the document size, that is the maximum page dimensions across the whole document.
+
+    @see #getPageSize()
   */
   public Dimension2D getSize(
     )
@@ -532,15 +512,15 @@ public final class Document
   }
 
   /**
-    Gets the version of the PDF specification this document conforms to [PDF:1.6:3.6.1].
+    Gets the version of the PDF specification this document conforms to.
   */
   @PDF(VersionEnum.PDF14)
   public Version getVersion(
     )
   {
     /*
-      NOTE: If the header specifies a later version, or if this entry is absent,
-      the document conforms to the version specified in the header.
+      NOTE: If the header specifies a later version, or if this entry is absent, the document
+      conforms to the version specified in the header.
     */
     Version fileVersion = getFile().getVersion();
 
@@ -556,15 +536,12 @@ public final class Document
   }
 
   /**
-    Gets the way the document is to be presented [PDF:1.6:8.1].
+    Gets the way the document is to be presented.
   */
   @PDF(VersionEnum.PDF12)
   public ViewerPreferences getViewerPreferences(
     )
-  {
-    PdfDirectObject viewerPreferencesObject = getBaseDataObject().get(PdfName.ViewerPreferences);
-    return viewerPreferencesObject != null ? new ViewerPreferences(viewerPreferencesObject) : null;
-  }
+  {return new ViewerPreferences(getBaseDataObject().get(PdfName.ViewerPreferences, PdfDictionary.class));}
 
   /**
     Clones the specified object within this document context.
@@ -594,8 +571,7 @@ public final class Document
   }
 
   /**
-    Forces a named base object to be expressed as its corresponding
-    high-level representation.
+    Forces a named base object to be expressed as its corresponding high-level representation.
   */
   public <T extends PdfObjectWrapper<?>> T resolveName(
     Class<T> type,
@@ -738,12 +714,7 @@ public final class Document
   public void setVersion(
     Version value
     )
-  {
-    if(value == null)
-    {getBaseDataObject().remove(PdfName.Version);}
-    else
-    {getBaseDataObject().put(PdfName.Version, new PdfName(value.toString()));}
-  }
+  {getBaseDataObject().put(PdfName.Version, PdfName.get(value));}
 
   /**
     @see #getViewerPreferences()
@@ -793,8 +764,8 @@ public final class Document
     )
   {
     /*
-      NOTE: Document media box MUST be associated with the page-tree root node
-      in order to be inheritable by all the pages.
+      NOTE: Document media box MUST be associated with the page-tree root node in order to be
+      inheritable by all the pages.
     */
     return (PdfArray)((PdfDictionary)getBaseDataObject().resolve(PdfName.Pages)).resolve(PdfName.MediaBox);
   }

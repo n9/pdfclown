@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -81,14 +81,22 @@ namespace org.pdfclown.documents.interchange.metadata
     {
       get
       {
-        // 1. Get the document contents!
-        MemoryStream contentStream = new MemoryStream(BaseDataObject.Body.ToByteArray());
-        // 2. Parse the document contents!
-        XmlDocument content = new XmlDocument();
-        try
-        {content.Load(contentStream);}
-        finally
-        {contentStream.Close();}
+        XmlDocument content;
+        {
+          // 1. Get the document contents!
+          MemoryStream contentStream = new MemoryStream(BaseDataObject.Body.ToByteArray());
+          if(contentStream.Length > 0)
+          {
+            // 2. Parse the document contents!
+            content = new XmlDocument();
+            try
+            {content.Load(contentStream);}
+            finally
+            {contentStream.Close();}
+          }
+          else
+          {content = null;}
+        }
         return content;
       }
       set

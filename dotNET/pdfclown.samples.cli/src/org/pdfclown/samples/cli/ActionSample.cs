@@ -29,44 +29,35 @@ namespace org.pdfclown.samples.cli
       using(File file = new File(filePath))
       {
         Document document = file.Document;
-  
+        Page page = document.Pages[1]; // Page 2 (zero-based index).
+
         // 2. Applying actions...
         // 2.1. Local go-to.
+        /*
+          NOTE: This statement instructs the PDF viewer to go to page 2 on document opening.
+        */
+        document.Actions.OnOpen = new GoToLocal(
+          document,
+          new LocalDestination(page) // Page 2 (zero-based index).
+          );
+
+        // 2.2. Remote go-to.
+        try
         {
-          DocumentActions documentActions = document.Actions;
-          if(documentActions == null)
-          {document.Actions = documentActions = new DocumentActions(document);}
-  
           /*
-            NOTE: This statement instructs the PDF viewer to go to page 2 on document opening.
+            NOTE: This statement instructs the PDF viewer to navigate to the given URI on page 2
+            opening.
           */
-          documentActions.OnOpen = new GoToLocal(
+          page.Actions.OnOpen = new GoToURI(
             document,
-            new LocalDestination(document.Pages[1]) // Page 2 (zero-based index).
+            new Uri("http://www.sourceforge.net/projects/clown")
             );
         }
-        // 2.2. Remote go-to.
-        {
-          Page page = document.Pages[1]; // Page 2 (zero-based index).
-          PageActions pageActions = page.Actions;
-          if(pageActions == null)
-          {page.Actions = pageActions = new PageActions(document);}
-          try
-          {
-            /*
-              NOTE: This statement instructs the PDF viewer to navigate to the given URI on page 2 opening.
-            */
-            pageActions.OnOpen = new GoToURI(
-              document,
-              new Uri("http://www.sourceforge.net/projects/clown")
-              );
-          }
-          catch(Exception exception)
-          {throw new Exception("Remote goto failed.",exception);}
-        }
-  
+        catch(Exception exception)
+        {throw new Exception("Remote goto failed.",exception);}
+
         // 3. Serialize the PDF file!
-        Serialize(file, "Actions", "applying actions");
+        Serialize(file, "Actions", "applying actions", "actions, creation, local goto, remote goto");
       }
     }
   }

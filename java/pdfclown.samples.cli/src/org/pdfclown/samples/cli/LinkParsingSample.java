@@ -73,7 +73,7 @@ public class LinkParsingSample
 
         // Get the page annotations!
         PageAnnotations annotations = page.getAnnotations();
-        if(annotations == null)
+        if(!annotations.exists())
         {
           System.out.println("No annotations here.");
           continue;

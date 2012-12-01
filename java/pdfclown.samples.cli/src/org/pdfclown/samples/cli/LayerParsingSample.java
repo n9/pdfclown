@@ -37,7 +37,7 @@ public class LayerParsingSample
 
       // 2. Get the layer definition!
       LayerDefinition layerDefinition = document.getLayer();
-      if(layerDefinition == null)
+      if(!layerDefinition.exists())
       {System.out.println("\nNo layer definition available.");}
       else
       {

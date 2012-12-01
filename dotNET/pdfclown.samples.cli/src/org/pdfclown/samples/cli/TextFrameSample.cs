@@ -25,7 +25,7 @@ namespace org.pdfclown.samples.cli
       Populate(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, "Text frame", "getting the actual bounding box of text shown");
+      Serialize(file, "Text frame", "getting the actual bounding box of text shown", "text frames");
     }
 
     /**

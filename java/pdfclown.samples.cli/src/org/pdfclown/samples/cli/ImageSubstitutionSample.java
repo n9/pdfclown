@@ -1,5 +1,7 @@
 package org.pdfclown.samples.cli;
 
+import java.util.Map;
+
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.Resources;
@@ -15,7 +17,7 @@ import org.pdfclown.objects.PdfName;
   through their resource names.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class ImageSubstitutionSample
   extends Sample
@@ -39,7 +41,7 @@ public class ImageSubstitutionSample
     replaceImages(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, "Image substitution", "substituting a document's images");
+    serialize(file, "Image substitution", "substituting a document's images", "image replacement");
   }
 
   private void replaceImages(
@@ -69,14 +71,14 @@ public class ImageSubstitutionSample
         }
       }
 //TODO
-/*      for(Map.Entry<PdfName,XObject> xObjectEntry : xObjects.entrySet())
-      {
-        if(xObjectEntry.getValue() instanceof ImageXObject)
-        {
-          System.out.println("Substituting " + xObjectEntry.getKey() + " image xobject.");
-          xObjectEntry.setValue(imageXObject);
-        }
-      }*/
+//      for(Map.Entry<PdfName,XObject> xObjectEntry : xObjects.entrySet())
+//      {
+//        if(xObjectEntry.getValue() instanceof ImageXObject)
+//        {
+//          System.out.println("Substituting " + xObjectEntry.getKey() + " image xobject.");
+//          xObjectEntry.setValue(imageXObject);
+//        }
+//      }
     }
   }
 }

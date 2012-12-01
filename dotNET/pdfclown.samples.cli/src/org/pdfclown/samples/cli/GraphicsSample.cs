@@ -42,7 +42,7 @@ namespace org.pdfclown.samples.cli
       BuildTextBlockPage4(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, "Composition elements", "applying the composition elements");
+      Serialize(file, "Composition elements", "applying the composition elements", "graphics, line styles, text alignment, shapes, circles, ellipses, spirals, polygons, rounded rectangles, images, clipping");
     }
 
     private void BuildCurvesPage(

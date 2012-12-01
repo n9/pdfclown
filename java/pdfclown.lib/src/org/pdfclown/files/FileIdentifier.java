@@ -31,7 +31,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 import org.pdfclown.documents.Document;
-import org.pdfclown.documents.interchange.metadata.Information;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -47,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 11/30/12
 */
 public final class FileIdentifier
   extends PdfObjectWrapper<PdfArray>
@@ -141,8 +140,8 @@ public final class FileIdentifier
     )
   {
     /*
-      NOTE: [PDF:1.7:10.3] To help ensure the uniqueness of file identifiers, it is recommend that
-      they be computed by means of a message digest algorithm such as MD5.
+      NOTE: To help ensure the uniqueness of file identifiers, it is recommended that they are
+      computed by means of a message digest algorithm such as MD5 [PDF:1.7:10.3].
     */
     MessageDigest md5;
     try
@@ -157,29 +156,25 @@ public final class FileIdentifier
       // a) Current time.
       digest(md5, new Long(System.currentTimeMillis()));
 
-      // b) File's location.
+      // b) File location.
       if(file.getPath() != null)
       {digest(md5, file.getPath());}
 
-      // c) File's size.
+      // c) File size.
       digest(md5, new Long(writer.getStream().getLength()));
 
-      // d) Entries in the file's document information dictionary.
-      Information information = file.getDocument().getInformation();
-      if(information != null)
+      // d) Entries in the document information dictionary.
+      for(Map.Entry<PdfName,PdfDirectObject> informationObjectEntry : file.getDocument().getInformation().getBaseDataObject().entrySet())
       {
-        for(Map.Entry<PdfName,PdfDirectObject> informationObjectEntry : information.getBaseDataObject().entrySet())
-        {
-          digest(md5, informationObjectEntry.getKey());
-          digest(md5, informationObjectEntry.getValue());
-        }
+        digest(md5, informationObjectEntry.getKey());
+        digest(md5, informationObjectEntry.getValue());
       }
     }
     catch(UnsupportedEncodingException e)
     {throw new RuntimeException("File identifier digest failed.", e);}
 
     /*
-      NOTE: [PDF:1.7:10.3] File identifier is an array of two byte strings:
+      NOTE: File identifier is an array of two byte strings [PDF:1.7:10.3]:
        1) a permanent identifier based on the contents of the file at the time it was originally
          created. It does not change when the file is incrementally updated;
        2) a changing identifier based on the file's contents at the time it was last updated.

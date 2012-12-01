@@ -21,7 +21,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
   This sample demonstrates <b>how to inspect the bookmarks</b> of a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class BookmarksParsingSample
   extends Sample
@@ -45,7 +45,7 @@ public class BookmarksParsingSample
 
       // 2. Get the bookmarks collection!
       Bookmarks bookmarks = document.getBookmarks();
-      if(bookmarks == null)
+      if(!bookmarks.exists())
       {System.out.println("\nNo bookmark available (Outline dictionary not found).");}
       else
       {

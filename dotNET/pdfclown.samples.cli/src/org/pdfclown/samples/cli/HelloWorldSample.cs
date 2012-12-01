@@ -28,7 +28,7 @@ namespace org.pdfclown.samples.cli
       Populate(document);
 
       // 4. Serialize the PDF file!
-      Serialize(file, "Hello world", "a simple 'hello world'");
+      Serialize(file, "Hello world", "a simple 'hello world'", "Hello world");
     }
 
     /**
@@ -58,9 +58,9 @@ namespace org.pdfclown.samples.cli
         );
       // Show the text onto the page!
       /*
-        NOTE: PrimitiveComposer's ShowText() method is the most basic way
-        to add text to a page -- see BlockComposer for more advanced uses
-        (horizontal and vertical alignment, hyphenation, etc.).
+        NOTE: PrimitiveComposer's ShowText() method is the most basic way to add text to a page
+        -- see BlockComposer for more advanced uses (horizontal and vertical alignment, hyphenation,
+        etc.).
       */
       composer.ShowText(
         "Hello World!",

@@ -21,7 +21,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class TextFrameSample
   extends Sample
@@ -38,7 +38,7 @@ public class TextFrameSample
     populate(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, "Text frame", "getting the actual bounding box of text shown");
+    serialize(file, "Text frame", "getting the actual bounding box of text shown", "text frames");
   }
 
   /**

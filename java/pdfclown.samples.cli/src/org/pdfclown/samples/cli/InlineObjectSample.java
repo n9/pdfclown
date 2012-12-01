@@ -40,7 +40,7 @@ public class InlineObjectSample
     populate(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, "Inline image", "embedding an image within a content stream");
+    serialize(file, "Inline image", "embedding an image within a content stream", "inline image");
   }
 
   private void populate(

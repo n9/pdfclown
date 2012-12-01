@@ -130,8 +130,8 @@ namespace org.pdfclown.files
       )
     {
       /*
-        NOTE: [PDF:1.7:10.3] To help ensure the uniqueness of file identifiers, it is recommend that
-        they be computed by means of a message digest algorithm such as MD5.
+        NOTE: To help ensure the uniqueness of file identifiers, it is recommended that they are
+        computed by means of a message digest algorithm such as MD5 [PDF:1.7:10.3].
       */
       using (MD5 md5 = MD5.Create())
       {
@@ -144,36 +144,32 @@ namespace org.pdfclown.files
             // a) Current time.
             Digest(buffer, DateTime.Now.Ticks);
 
-            // b) File's location.
+            // b) File location.
             if(file.Path != null)
             {Digest(buffer, file.Path);}
 
-            // c) File's size.
+            // c) File size.
             Digest(buffer, writer.Stream.Length);
 
-            // d) Entries in the file's document information dictionary.
-            Information information = file.Document.Information;
-            if(information != null)
+            // d) Entries in the document information dictionary.
+            foreach(KeyValuePair<PdfName,PdfDirectObject> informationObjectEntry in file.Document.Information.BaseDataObject)
             {
-              foreach(KeyValuePair<PdfName,PdfDirectObject> informationObjectEntry in information.BaseDataObject)
-              {
-                Digest(buffer, informationObjectEntry.Key);
-                Digest(buffer, informationObjectEntry.Value);
-              }
+              Digest(buffer, informationObjectEntry.Key);
+              Digest(buffer, informationObjectEntry.Value);
             }
           }
           catch(Exception e)
           {throw new Exception("File identifier digest failed.", e);}
 
           /*
-            NOTE: [PDF:1.7:10.3] File identifier is an array of two byte strings:
-             1) a permanent identifier based on the contents of the file at the time it was originally
-               created. It does not change when the file is incrementally updated;
+            NOTE: File identifier is an array of two byte strings [PDF:1.7:10.3]:
+             1) a permanent identifier based on the contents of the file at the time it was
+                originally created. It does not change when the file is incrementally updated;
              2) a changing identifier based on the file's contents at the time it was last updated.
-            When a file is first written, both identifiers are set to the same value. If both identifiers
-            match when a file reference is resolved, it is very likely that the correct file has been
-            found. If only the first identifier matches, a different version of the correct file has been
-            found.
+            When a file is first written, both identifiers are set to the same value. If both
+            identifiers match when a file reference is resolved, it is very likely that the correct
+            file has been found. If only the first identifier matches, a different version of the
+            correct file has been found.
           */
           PdfString versionID = new PdfString(
             md5.ComputeHash(((MemoryStream)buffer.BaseStream).ToArray()),

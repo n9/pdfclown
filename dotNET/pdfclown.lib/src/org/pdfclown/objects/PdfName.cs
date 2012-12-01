@@ -550,6 +550,14 @@ namespace org.pdfclown.objects
     /**
       <summary>Gets the object equivalent to the given value.</summary>
     */
+    public static new PdfName Get(
+      object value
+      )
+    {return value == null ? null : Get(value.ToString());}
+
+    /**
+      <summary>Gets the object equivalent to the given value.</summary>
+    */
     public static PdfName Get(
       string value
       )

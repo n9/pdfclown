@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public final class IndirectObjects
   implements List<PdfIndirectObject>
@@ -153,11 +153,10 @@ public final class IndirectObjects
     )
   {
     // Wrap the data object inside a new indirect object!
-    lastObjectNumber++;
     PdfIndirectObject indirectObject = new PdfIndirectObject(
       file,
       object,
-      new XRefEntry(lastObjectNumber, 0)
+      new XRefEntry(++lastObjectNumber, 0)
       );
     // Register the object!
     modifiedObjects.put(lastObjectNumber,indirectObject);
@@ -193,7 +192,7 @@ public final class IndirectObjects
     Registers a collection of <i>external</i> indirect objects.
     <p>External indirect objects come from alien PDF files; therefore, this is a powerful way to
     import contents from a file into another one.</p>
-    <p>To register a collection of internal data objects, use {@link 
+    <p>To register a collection of internal data objects, use {@link
     #addAll(Collection<PdfDataObject>)}.</p>
 
     @return Indirect objects imported from the external indirect objects.
@@ -539,6 +538,22 @@ public final class IndirectObjects
   // </public>
 
   // <internal>
+  /**
+    <span style="color:red">For internal use only.</span>
+  */
+  public PdfIndirectObject addVirtual(
+    PdfIndirectObject object
+    )
+  {
+    // Update the reference of the object!
+    XRefEntry xref = object.getXrefEntry();
+    xref.setNumber(++lastObjectNumber);
+    xref.setGeneration(0);
+    // Register the object!
+    modifiedObjects.put(lastObjectNumber, object);
+    return object;
+  }
+
   /**
     <span style="color:red">For internal use only.</span>
   */

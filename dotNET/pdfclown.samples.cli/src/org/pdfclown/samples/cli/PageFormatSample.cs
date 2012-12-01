@@ -26,7 +26,7 @@ namespace org.pdfclown.samples.cli
       Populate(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, "Page Format", "page formats");
+      Serialize(file, "Page Format", "page formats", "page formats");
     }
 
     private void Populate(

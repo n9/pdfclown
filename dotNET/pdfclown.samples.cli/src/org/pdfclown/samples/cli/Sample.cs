@@ -235,7 +235,7 @@ namespace org.pdfclown.samples.cli
       files::File file,
       files::SerializationModeEnum? serializationMode
       )
-    {return Serialize(file, null, null, serializationMode);}
+    {return Serialize(file, serializationMode, null, null, null);}
 
     /**
       <summary>Serializes the given PDF Clown file object.</summary>
@@ -261,56 +261,62 @@ namespace org.pdfclown.samples.cli
       string fileName,
       files::SerializationModeEnum? serializationMode
       )
-    {return Serialize(file, fileName, null, null, serializationMode);}
+    {return Serialize(file, fileName, serializationMode, null, null, null);}
 
     /**
       <summary>Serializes the given PDF Clown file object.</summary>
       <param name="file">PDF file to serialize.</param>
       <param name="title">Document title.</param>
       <param name="subject">Document subject.</param>
-      <returns>Serialization path.</returns>
-    */
-    protected string Serialize(
-      files::File file,
-      string title,
-      string subject
-      )
-    {return Serialize(file, title, subject, null);}
-
-    /**
-      <summary>Serializes the given PDF Clown file object.</summary>
-      <param name="file">PDF file to serialize.</param>
-      <param name="title">Document title.</param>
-      <param name="subject">Document subject.</param>
-      <param name="serializationMode">Serialization mode.</param>
+      <param name="keywords">Document keywords.</param>
       <returns>Serialization path.</returns>
     */
     protected string Serialize(
       files::File file,
       string title,
       string subject,
-      files::SerializationModeEnum? serializationMode
+      string keywords
       )
-    {return Serialize(file, GetType().Name, title, subject, serializationMode);}
+    {return Serialize(file, null, title, subject, keywords);}
+
+    /**
+      <summary>Serializes the given PDF Clown file object.</summary>
+      <param name="file">PDF file to serialize.</param>
+      <param name="serializationMode">Serialization mode.</param>
+      <param name="title">Document title.</param>
+      <param name="subject">Document subject.</param>
+      <param name="keywords">Document keywords.</param>
+      <returns>Serialization path.</returns>
+    */
+    protected string Serialize(
+      files::File file,
+      files::SerializationModeEnum? serializationMode,
+      string title,
+      string subject,
+      string keywords
+      )
+    {return Serialize(file, GetType().Name, serializationMode, title, subject, keywords);}
 
     /**
       <summary>Serializes the given PDF Clown file object.</summary>
       <param name="file">PDF file to serialize.</param>
       <param name="fileName">Output file name.</param>
+      <param name="serializationMode">Serialization mode.</param>
       <param name="title">Document title.</param>
       <param name="subject">Document subject.</param>
-      <param name="serializationMode">Serialization mode.</param>
+      <param name="keywords">Document keywords.</param>
       <returns>Serialization path.</returns>
     */
     protected string Serialize(
       files::File file,
       string fileName,
+      files::SerializationModeEnum? serializationMode,
       string title,
       string subject,
-      files::SerializationModeEnum? serializationMode
+      string keywords
       )
     {
-      ApplyDocumentSettings(file.Document, title, subject);
+      ApplyDocumentSettings(file.Document, title, subject, keywords);
 
       Console.WriteLine();
 
@@ -364,7 +370,8 @@ namespace org.pdfclown.samples.cli
     private void ApplyDocumentSettings(
       Document document,
       string title,
-      string subject
+      string subject,
+      string keywords
       )
     {
       if(title == null)
@@ -377,15 +384,13 @@ namespace org.pdfclown.samples.cli
 
       // Document metadata.
       Information info = document.Information;
-      if(info == null)
-      {document.Information = info = new Information(document);}
-      else
-      {info.Clear();}
+      info.Clear();
       info.Author = "Stefano Chizzolini";
       info.CreationDate = DateTime.Now;
       info.Creator = GetType().FullName;
       info.Title = "PDF Clown - " + title + " sample";
       info.Subject = "Sample about " + subject + " using PDF Clown";
+      info.Keywords = keywords;
     }
     #endregion
     #endregion

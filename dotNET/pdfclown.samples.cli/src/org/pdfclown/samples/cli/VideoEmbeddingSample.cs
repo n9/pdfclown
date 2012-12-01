@@ -40,7 +40,7 @@ namespace org.pdfclown.samples.cli
         );
 
       // 4. Serialize the PDF file!
-      Serialize(file, "Video embedding", "inserting screen annotations to display media clips inside a PDF document");
+      Serialize(file, "Video embedding", "inserting screen annotations to display media clips inside a PDF document", "video embedding");
     }
   }
 }

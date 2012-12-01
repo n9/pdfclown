@@ -45,7 +45,7 @@ import org.pdfclown.tokens.Symbol;
   PDF stream object [PDF:1.6:3.2.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class PdfStream
   extends PdfDataObject
@@ -65,8 +65,9 @@ public class PdfStream
   private PdfDictionary header;
 
   private PdfObject parent;
-  private boolean updated;
   private boolean updateable = true;
+  private boolean updated;
+  private boolean virtual;
 
   /**
     Indicates whether {@link #body} has already been resolved and therefore contains the actual
@@ -355,6 +356,25 @@ public class PdfStream
   {updateable = value;}
 
   @Override
+  public PdfStream swap(
+    PdfObject other
+    )
+  {
+    PdfStream otherStream = (PdfStream)other;
+    PdfDictionary otherHeader = otherStream.header;
+    IBuffer otherBody = otherStream.body;
+    // Update the other!
+    otherStream.header = this.header;
+    otherStream.body = this.body;
+    otherStream.update();
+    // Update this one!
+    this.header = otherHeader;
+    this.body = otherBody;
+    this.update();
+    return this;
+  }
+
+  @Override
   public void writeTo(
     IOutputStream stream,
     File context
@@ -467,7 +487,7 @@ public class PdfStream
   @Override
   protected boolean isVirtual(
     )
-  {return false;}
+  {return virtual;}
 
   /**
     @see #getFilter()
@@ -509,7 +529,7 @@ public class PdfStream
   protected void setVirtual(
     boolean value
     )
-  {/* NOOP */}
+  {virtual = value;}
   // </protected>
 
   // <internal>

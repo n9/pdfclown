@@ -31,6 +31,7 @@ using org.pdfclown.tokens;
 
 using System;
 using System.Collections;
+using System.Reflection;
 using System.Text;
 using System.IO;
 
@@ -90,6 +91,16 @@ namespace org.pdfclown.files
         )
       {realFormat = "0." + new string('#', decimalPlacesCount);}
     }
+
+    private sealed class ImplicitContainer
+      : PdfIndirectObject
+    {
+      public ImplicitContainer(
+        File file,
+        PdfDataObject dataObject
+        ) : base(file, dataObject, new XRefEntry(int.MinValue, int.MinValue))
+      {}
+    }
     #endregion
 
     #region static
@@ -134,7 +145,7 @@ namespace org.pdfclown.files
       Initialize();
 
       version = VersionEnum.PDF14.GetVersion();
-      trailer = new PdfDictionary();
+      trailer = PrepareTrailer(new PdfDictionary());
       indirectObjects = new IndirectObjects(this, null);
       document = new Document(this);
     }
@@ -162,7 +173,7 @@ namespace org.pdfclown.files
 
       Reader.FileInfo info = reader.ReadInfo();
       version = info.Version;
-      trailer = info.Trailer;
+      trailer = PrepareTrailer(info.Trailer);
       if(trailer.ContainsKey(PdfName.Encrypt)) // Encrypted file.
         throw new NotImplementedException("Encrypted files are currently not supported.");
 
@@ -306,6 +317,18 @@ namespace org.pdfclown.files
       SerializationModeEnum mode
       )
     {
+      if(Reader == null)
+      {
+        try
+        {
+          string assemblyTitle = ((AssemblyTitleAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyTitleAttribute))).Title;
+          string assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+          Document.Information.Producer = assemblyTitle + " " + assemblyVersion;
+        }
+        catch
+        {/* NOOP */}
+      }
+  
       Writer writer = Writer.Get(this, stream);
       writer.Write(mode);
     }
@@ -367,6 +390,11 @@ namespace org.pdfclown.files
     private void Initialize(
       )
     {configuration = new ConfigurationImpl(this);}
+
+    private PdfDictionary PrepareTrailer(
+      PdfDictionary trailer
+      )
+    {return (PdfDictionary)new ImplicitContainer(this, trailer).DataObject;}
 
     private string TempPath
     {

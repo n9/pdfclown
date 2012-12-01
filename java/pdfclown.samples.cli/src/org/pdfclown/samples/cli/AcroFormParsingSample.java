@@ -17,7 +17,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class AcroFormParsingSample
   extends Sample
@@ -41,7 +41,7 @@ public class AcroFormParsingSample
 
       // 2. Get the acroform!
       Form form = document.getForm();
-      if(form == null)
+      if(!form.exists())
       {System.out.println("\nNo acroform available (AcroForm dictionary not found).");}
       else
       {

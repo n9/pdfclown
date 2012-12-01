@@ -47,7 +47,7 @@ namespace org.pdfclown.samples.cli
         }
   
         // 3. Serialize the PDF file!
-        Serialize(file, "Primitive objects", "manipulating a document at primitive object level");
+        Serialize(file, "Primitive objects", "manipulating a document at primitive object level", "primitive objects");
       }
     }
   }

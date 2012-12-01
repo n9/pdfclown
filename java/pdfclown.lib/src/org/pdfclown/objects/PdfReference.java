@@ -35,7 +35,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF indirect reference object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public final class PdfReference
   extends PdfDirectObject
@@ -46,24 +46,18 @@ public final class PdfReference
   // <fields>
   private PdfIndirectObject indirectObject;
 
-  private final int generationNumber;
-  private final int objectNumber;
+  private int objectNumber;
 
   private File file;
   private PdfObject parent;
+  private boolean updated;
   // </fields>
 
   // <constructors>
   PdfReference(
-    PdfIndirectObject indirectObject,
-    int objectNumber,
-    int generationNumber
+    PdfIndirectObject indirectObject
     )
-  {
-    this.indirectObject = indirectObject;
-    this.objectNumber = objectNumber;
-    this.generationNumber = generationNumber;
-  }
+  {this.indirectObject = indirectObject;}
 
   /**
     <span style="color:red">For internal use only.</span>
@@ -77,7 +71,6 @@ public final class PdfReference
     )
   {
     this.objectNumber = reference.getObjectNumber();
-    this.generationNumber = reference.getGenerationNumber();
     this.file = file;
   }
   // </constructors>
@@ -107,17 +100,12 @@ public final class PdfReference
       && ((PdfReference)object).getId().equals(getId());
   }
 
-  @Override
-  public PdfIndirectObject getContainer(
-    )
-  {return getIndirectObject();}
-
   /**
     Gets the generation number.
   */
   public int getGenerationNumber(
     )
-  {return generationNumber;}
+  {return getIndirectObject().getXrefEntry().getGeneration();}
 
   /**
     Gets the object identifier.
@@ -125,7 +113,7 @@ public final class PdfReference
   */
   public String getId(
     )
-  {return ("" + objectNumber + Symbol.Space + generationNumber);}
+  {return ("" + getObjectNumber() + Symbol.Space + getGenerationNumber());}
 
   /**
     Gets the object reference.
@@ -140,7 +128,7 @@ public final class PdfReference
   */
   public int getObjectNumber(
     )
-  {return objectNumber;}
+  {return getIndirectObject().getXrefEntry().getNumber();}
 
   @Override
   public PdfObject getParent(
@@ -155,18 +143,24 @@ public final class PdfReference
   @Override
   public boolean isUpdateable(
     )
-  {return false;}
+  {return getIndirectObject().isUpdateable();}
 
   @Override
   public boolean isUpdated(
     )
-  {return false;}
+  {return updated;}
 
   @Override
   public void setUpdateable(
     boolean value
     )
-  {/* NOOP: As references are immutable, no update can be done. */}
+  {getIndirectObject().setUpdateable(value);}
+
+  @Override
+  public PdfReference swap(
+    PdfObject other
+    )
+  {return getIndirectObject().swap(((PdfReference)other).getIndirectObject()).getReference();}
 
   @Override
   public String toString(
@@ -186,12 +180,8 @@ public final class PdfReference
     File context
     )
   {
-    /*
-      NOTE: Local cloning keeps the same reference as it's immutable;
-      conversely, alien cloning generates a new reference in the new file context.
-    */
     return context == null || context == file
-      ? this // Local clone (immutable).
+      ? (PdfReference)super.clone(context) // Local clone (immutable).
       : getIndirectObject().clone(context).getReference(); // Alien clone.
   }
 
@@ -232,19 +222,19 @@ public final class PdfReference
   @Override
   protected boolean isVirtual(
     )
-  {return false;}
+  {return getIndirectObject().isVirtual();}
 
   @Override
   protected void setUpdated(
     boolean value
     )
-  {/* NOOP: As references are immutable, no update can be done. */}
+  {updated = value;}
 
   @Override
   protected void setVirtual(
     boolean value
     )
-  {/* NOOP */}
+  {getIndirectObject().setVirtual(value);}
   // </protected>
 
   // <internal>

@@ -43,12 +43,14 @@ import org.pdfclown.documents.Document.Configuration.XRefModeEnum;
 import org.pdfclown.objects.IPdfIndirectObject;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
+import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.tokens.Reader;
 import org.pdfclown.tokens.Reader.FileInfo;
 import org.pdfclown.tokens.Writer;
+import org.pdfclown.tokens.XRefEntry;
 import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.StringUtils;
 
@@ -57,7 +59,7 @@ import org.pdfclown.util.StringUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 11/30/12
 */
 public final class File
   implements Closeable
@@ -84,7 +86,8 @@ public final class File
     /**
       Gets the file associated with this configuration.
     */
-    public File getFile()
+    public File getFile(
+      )
     {return file;}
 
     /**
@@ -118,6 +121,16 @@ public final class File
       symbols.setDecimalSeparator('.');
       setRealFormat(new DecimalFormat("0." + StringUtils.repeat("#", decimalPlacesCount), symbols));
     }
+  }
+
+  private static final class ImplicitContainer
+    extends PdfIndirectObject
+  {
+    public ImplicitContainer(
+      File file,
+      PdfDataObject dataObject
+      )
+    {super(file, dataObject, new XRefEntry(Integer.MIN_VALUE, Integer.MIN_VALUE));}
   }
   // </classes>
 
@@ -160,7 +173,7 @@ public final class File
     )
   {
     version = VersionEnum.PDF14.getVersion();
-    trailer = new PdfDictionary();
+    trailer = prepareTrailer(new PdfDictionary());
     indirectObjects = new IndirectObjects(this, null);
     document = new Document(this);
   }
@@ -185,7 +198,7 @@ public final class File
 
     FileInfo info = reader.readInfo();
     version = info.getVersion();
-    trailer = info.getTrailer();
+    trailer = prepareTrailer(info.getTrailer());
     if(trailer.containsKey(PdfName.Encrypt)) // Encrypted file.
       throw new NotImplementedException("Encrypted files are currently not supported.");
 
@@ -365,6 +378,17 @@ public final class File
     SerializationModeEnum mode
     )
   {
+    if(getReader() == null)
+    {
+      try
+      {
+        Package package_ = getClass().getPackage();
+        getDocument().getInformation().setProducer(package_.getSpecificationTitle() + " " + package_.getSpecificationVersion());
+      }
+      catch(Exception e)
+      {/* NOOP */}
+    }
+
     Writer writer = Writer.get(this, stream);
     writer.write(mode);
   }
@@ -428,6 +452,11 @@ public final class File
   private String getTempPath(
     )
   {return (path == null ? null : path + ".tmp");}
+
+  private PdfDictionary prepareTrailer(
+    PdfDictionary trailer
+    )
+  {return (PdfDictionary)new ImplicitContainer(this, trailer).getDataObject();}
   // </private>
   // </interface>
   // </dynamic>

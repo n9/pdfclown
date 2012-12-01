@@ -23,7 +23,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class PageCombinationSample
   extends Sample
@@ -85,7 +85,7 @@ public class PageCombinationSample
       composer.flush();
 
       // 4. Serialize the PDF file!
-      serialize(file, "Page combination", "combining multiple pages into single bigger ones");
+      serialize(file, "Page combination", "combining multiple pages into single bigger ones", "page combination");
     }
     finally
     {

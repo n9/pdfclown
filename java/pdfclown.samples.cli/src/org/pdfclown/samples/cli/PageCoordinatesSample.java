@@ -10,8 +10,6 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.PageFormat;
 import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
-import org.pdfclown.documents.contents.FontResources;
-import org.pdfclown.documents.contents.Resources;
 import org.pdfclown.documents.contents.colorSpaces.Color;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
 import org.pdfclown.documents.contents.composition.BlockComposer;
@@ -31,7 +29,7 @@ import org.pdfclown.objects.PdfName;
   onto the canvas.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class PageCoordinatesSample
   extends Sample
@@ -56,21 +54,31 @@ public class PageCoordinatesSample
     File file = new File();
     Document document = file.getDocument();
 
-    // 2. Set the document properties and resources!
-    initialize(document);
-
-    // 3. Insert the contents into the document!
+    // 2. Insert the contents into the document!
     buildContent(document);
 
-    // 4. Serialize the PDF file!
-    serialize(file, "Page coordinates", "manipulating the CTM");
+    // 3. Serialize the PDF file!
+    serialize(file, "Page coordinates", "manipulating the CTM", "page coordinates, ctm");
   }
 
   private void buildContent(
     Document document
     )
   {
-    // Add the page to the document!
+    // Set default page size (A4)!
+    document.setPageSize(PageFormat.getSize());
+    // Add a font to the fonts collection!
+    document.getResources().getFonts().put(
+      ResourceName_DefaultFont,
+      new StandardType1Font(
+        document,
+        StandardType1Font.FamilyEnum.Courier,
+        true,
+        false
+        )
+      );
+    
+    // Add a page to the document!
     Page page = new Page(document); // Instantiates the page inside the document context.
     document.getPages().add(page); // Puts the page in the pages collection.
 
@@ -316,31 +324,5 @@ public class PageCoordinatesSample
 
       steps[4] = getStepNote(composer,"after resetting CTM");
     }
-  }
-
-  private void initialize(
-    Document document
-    )
-  {
-    // 1. Set default page size (A4)!
-    document.setPageSize(PageFormat.getSize());
-
-    // 2. Setting the document resources...
-    // 2.1. Resources collection.
-    Resources resources = new Resources(document); // Instantiates the resources collection inside the document context.
-    document.setResources(resources); // Puts the resources collection in the common resources role.
-    // 2.2. Fonts collection.
-    FontResources fonts = new FontResources(document); // Instantiates the fonts collection inside the document context.
-    resources.setFonts(fonts); // Puts the fonts collection in the common resources role.
-    // Add a font to the fonts collection!
-    fonts.put(
-      ResourceName_DefaultFont,
-      new StandardType1Font(
-        document,
-        StandardType1Font.FamilyEnum.Courier,
-        true,
-        false
-        )
-      );
   }
 }

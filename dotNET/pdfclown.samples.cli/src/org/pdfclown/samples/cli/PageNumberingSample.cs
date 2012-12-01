@@ -33,7 +33,7 @@ namespace org.pdfclown.samples.cli
         Stamp(document);
   
         // 3. Serialize the PDF file!
-        Serialize(file, "Page numbering", "numbering a document's pages");
+        Serialize(file, "Page numbering", "numbering a document's pages", "page numbering");
       }
     }
 

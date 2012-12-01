@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,7 +29,7 @@ package org.pdfclown.tokens;
   Cross-reference table entry [PDF:1.6:3.4.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 11/30/12
 */
 public final class XRefEntry
   implements Cloneable
@@ -72,7 +72,7 @@ public final class XRefEntry
 
   // <dynamic>
   // <fields>
-  private int number; 
+  private int number;
   private int generation;
   private int offset;
   private int streamNumber;
@@ -180,6 +180,16 @@ public final class XRefEntry
     )
   {return usage;}
 
+  public void setGeneration(
+    int value
+    )
+  {generation = value;}
+
+  public void setNumber(
+    int value
+    )
+  {number = value;}
+
   public void setOffset(
     int value
     )
@@ -205,18 +215,6 @@ public final class XRefEntry
     ) throws CloneNotSupportedException
   {return (XRefEntry)super.clone();}
   // </protected>
-
-  // <internal>
-  void setGeneration(
-    int value
-    )
-  {generation = value;}
-
-  void setNumber(
-    int value
-    )
-  {number = value;}
-  // </internal>
   // </interface>
   // </dynamic>
   // </class>

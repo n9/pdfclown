@@ -47,11 +47,7 @@ namespace org.pdfclown.documents.interchange.metadata
     public Information(
       Document context
       ) : base(context, new PdfDictionary())
-    {
-      string assemblyTitle = ((AssemblyTitleAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyTitleAttribute))).Title;
-      string assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-      Producer = assemblyTitle + " " + assemblyVersion;
-    }
+    {}
 
     internal Information(
       PdfDirectObject baseObject

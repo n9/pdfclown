@@ -23,7 +23,7 @@ namespace org.pdfclown.samples.cli
   
         // 2. Get the layer definition!
         LayerDefinition layerDefinition = document.Layer;
-        if(layerDefinition == null)
+        if(!layerDefinition.Exists())
         {Console.WriteLine("\nNo layer definition available.");}
         else
         {

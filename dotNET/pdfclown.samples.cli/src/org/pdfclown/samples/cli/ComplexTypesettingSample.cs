@@ -57,7 +57,7 @@ namespace org.pdfclown.samples.cli
       BuildBookmarks(document);
 
       // 3. Serialization.
-      Serialize(file, "Complex Typesetting", "complex typesetting");
+      Serialize(file, "Complex Typesetting", "complex typesetting", "typesetting, bookmarks, hyphenation, block composer, primitive composer, text alignment, image insertion");
     }
 
     private void BuildBookmarks(
@@ -65,8 +65,7 @@ namespace org.pdfclown.samples.cli
       )
     {
       Pages pages = document.Pages;
-      Bookmarks bookmarks = new Bookmarks(document);
-      document.Bookmarks = bookmarks;
+      Bookmarks bookmarks = document.Bookmarks;
       document.PageMode = Document.PageModeEnum.Bookmarks;
       Page page = pages[0];
       Bookmark rootBookmark = new Bookmark(

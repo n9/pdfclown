@@ -237,20 +237,16 @@ namespace org.pdfclown.documents
         new PdfDictionary(
           new PdfName[1]{PdfName.Type},
           new PdfDirectObject[1]{PdfName.Catalog}
-          ) // Document catalog [PDF:1.6:3.6.1].
+          )
         )
     {
       configuration = new ConfigurationImpl(this);
 
-      /*
-        NOTE: Here it is just a minimal initialization;
-        any further customization is upon client's responsibility.
-      */
-      // Link the document to the file!
-      context.Trailer[PdfName.Root] = BaseObject; // Attaches the catalog reference to the file trailer.
+      // Attach the document catalog to the file trailer!
+      context.Trailer[PdfName.Root] = BaseObject;
 
-      // Initialize the pages collection (page-tree root node)!
-      this.Pages = new Pages(this); // NOTE: The page-tree root node is required [PDF:1.6:3.6.1].
+      // Pages collection.
+      this.Pages = new Pages(this);
 
       // Default page size.
       PageSize = PageFormat.GetSize();
@@ -274,24 +270,18 @@ namespace org.pdfclown.documents
     public DocumentActions Actions
     {
       get
-      {
-        PdfDirectObject actionsObject = BaseDataObject[PdfName.AA];
-        return actionsObject != null ? new DocumentActions(actionsObject) : null;
-      }
+      {return new DocumentActions(BaseDataObject.Get<PdfDictionary>(PdfName.AA));}
       set
       {BaseDataObject[PdfName.AA] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
-      <summary>Gets/Sets the bookmark collection [PDF:1.6:8.2.2].</summary>
+      <summary>Gets/Sets the bookmark collection.</summary>
     */
     public Bookmarks Bookmarks
     {
       get
-      {
-        PdfDirectObject bookmarksObject = BaseDataObject[PdfName.Outlines];
-        return bookmarksObject != null ? new Bookmarks(bookmarksObject) : null;
-      }
+      {return new Bookmarks(BaseDataObject.Get<PdfDictionary>(PdfName.Outlines, false));}
       set
       {BaseDataObject[PdfName.Outlines] = PdfObjectWrapper.GetBaseObject(value);}
     }
@@ -313,7 +303,7 @@ namespace org.pdfclown.documents
     }
 
     /**
-      <summary>Drops the object from this document context.</summary>
+      <summary>Deletes the object from this document context.</summary>
     */
     public void Exclude(
       PdfObjectWrapper obj
@@ -326,7 +316,7 @@ namespace org.pdfclown.documents
     }
 
     /**
-      <summary>Drops the collection's objects from this document context.</summary>
+      <summary>Deletes the objects from this document context.</summary>
     */
     public void Exclude<T>(
       ICollection<T> objs
@@ -337,7 +327,7 @@ namespace org.pdfclown.documents
     }
 
     /**
-      <summary>Gets/Sets the interactive form (AcroForm) [PDF:1.6:8.6.1].</summary>
+      <summary>Gets/Sets the interactive form (AcroForm).</summary>
     */
     [PDF(VersionEnum.PDF12)]
     public Form Form
@@ -349,8 +339,9 @@ namespace org.pdfclown.documents
     }
 
     /**
-      <summary>Gets the document size, that is the maximum page dimensions across
-      the whole document.</summary>
+      <summary>Gets the document size, that is the maximum page dimensions across the whole document.
+      </summary>
+      <seealso cref="PageSize"/>
     */
     public drawing::SizeF GetSize(
       )
@@ -393,15 +384,12 @@ namespace org.pdfclown.documents
     }
 
     /**
-      <summary>Gets/Sets the document information dictionary [PDF:1.6:10.2.1].</summary>
+      <summary>Gets/Sets the document information dictionary.</summary>
     */
     public Information Information
     {
       get
-      {
-        PdfDirectObject informationObject = File.Trailer[PdfName.Info];
-        return informationObject != null ? new Information(informationObject) : null;
-      }
+      {return new Information(File.Trailer.Get<PdfDictionary>(PdfName.Info, false));}
       set
       {File.Trailer[PdfName.Info] = PdfObjectWrapper.GetBaseObject(value);}
     }
@@ -413,10 +401,7 @@ namespace org.pdfclown.documents
     public LayerDefinition Layer
     {
       get
-      {
-        PdfDirectObject ocPropertiesObject = BaseDataObject[PdfName.OCProperties];
-        return ocPropertiesObject != null ? new LayerDefinition(ocPropertiesObject) : null;
-      }
+      {return new LayerDefinition(BaseDataObject.Get<PdfDictionary>(PdfName.OCProperties));}
       set
       {
         CheckCompatibility("Layer");
@@ -425,7 +410,7 @@ namespace org.pdfclown.documents
     }
 
     /**
-      <summary>Gets/Sets the name dictionary [PDF:1.6:3.6.3].</summary>
+      <summary>Gets/Sets the name dictionary.</summary>
     */
     [PDF(VersionEnum.PDF12)]
     public Names Names
@@ -443,12 +428,7 @@ namespace org.pdfclown.documents
     public PageLabels PageLabels
     {
       get
-//TODO: support virtual indirect objects.
-//      {return new PageLabels(BaseDataObject.Get<PdfDictionary>(PdfName.PageLabels));}
-      {
-        PdfDirectObject pageLabelsObject = BaseDataObject[PdfName.PageLabels];
-        return pageLabelsObject != null ? new PageLabels(pageLabelsObject) : null;
-      }
+      {return new PageLabels(BaseDataObject.Get<PdfDictionary>(PdfName.PageLabels));}
       set
       {
         CheckCompatibility("PageLabels");
@@ -479,7 +459,7 @@ namespace org.pdfclown.documents
     }
 
     /**
-      <summary>Gets/Sets the page collection [PDF:1.6:3.6.2].</summary>
+      <summary>Gets/Sets the page collection.</summary>
     */
     public Pages Pages
     {
@@ -520,8 +500,8 @@ namespace org.pdfclown.documents
     }
 
     /**
-      <summary>Forces a named base object to be expressed as its corresponding
-      high-level representation.</summary>
+      <summary>Forces a named base object to be expressed as its corresponding high-level
+      representation.</summary>
     */
     public T ResolveName<T>(
       PdfDirectObject namedBaseObject
@@ -535,20 +515,19 @@ namespace org.pdfclown.documents
 
     /**
       <summary>Gets/Sets the default resource collection [PDF:1.6:3.6.2].</summary>
-      <remarks>The default resource collection is used as last resort by every page
-      that doesn't reference one explicitly (and doesn't reference an intermediate one
-      implicitly).</remarks>
+      <remarks>The default resource collection is used as last resort by every page that doesn't
+      reference one explicitly (and doesn't reference an intermediate one implicitly).</remarks>
     */
     public Resources Resources
     {
       get
-      {return Resources.Wrap(((PdfDictionary)BaseDataObject.Resolve(PdfName.Pages))[PdfName.Resources]);}
+      {return Resources.Wrap(((PdfDictionary)BaseDataObject.Resolve(PdfName.Pages)).Get<PdfDictionary>(PdfName.Resources));}
       set
       {((PdfDictionary)BaseDataObject.Resolve(PdfName.Pages))[PdfName.Resources] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
-      <summary>Gets/Sets the version of the PDF specification this document conforms to [PDF:1.6:3.6.1].</summary>
+      <summary>Gets/Sets the version of the PDF specification this document conforms to.</summary>
     */
     [PDF(VersionEnum.PDF14)]
     public Version Version
@@ -556,8 +535,8 @@ namespace org.pdfclown.documents
       get
       {
         /*
-          NOTE: If the header specifies a later version, or if this entry is absent,
-          the document conforms to the version specified in the header.
+          NOTE: If the header specifies a later version, or if this entry is absent, the document
+          conforms to the version specified in the header.
         */
         Version fileVersion = File.Version;
 
@@ -572,19 +551,16 @@ namespace org.pdfclown.documents
         return (version.CompareTo(fileVersion) > 0 ? version : fileVersion);
       }
       set
-      {BaseDataObject[PdfName.Version] = new PdfName(value.ToString());}
+      {BaseDataObject[PdfName.Version] = PdfName.Get(value);}
     }
 
     /**
-      <summary>Gets the way the document is to be presented [PDF:1.6:8.1].</summary>
+      <summary>Gets the way the document is to be presented.</summary>
     */
     public ViewerPreferences ViewerPreferences
     {
       get
-      {
-        PdfDirectObject viewerPreferencesObject = BaseDataObject[PdfName.ViewerPreferences];
-        return viewerPreferencesObject != null ? new ViewerPreferences(viewerPreferencesObject) : null;
-      }
+      {return new ViewerPreferences(BaseDataObject.Get<PdfDictionary>(PdfName.ViewerPreferences));}
       set
       {BaseDataObject[PdfName.ViewerPreferences] = PdfObjectWrapper.GetBaseObject(value);}
     }
@@ -599,8 +575,8 @@ namespace org.pdfclown.documents
       get
       {
         /*
-          NOTE: Document media box MUST be associated with the page-tree root node
-          in order to be inheritable by all the pages.
+          NOTE: Document media box MUST be associated with the page-tree root node in order to be
+          inheritable by all the pages.
         */
         return (PdfArray)((PdfDictionary)BaseDataObject.Resolve(PdfName.Pages)).Resolve(PdfName.MediaBox);
       }

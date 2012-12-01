@@ -29,14 +29,7 @@ namespace org.pdfclown.samples.cli
         Pages pages = document.Pages;
   
         // 2. Inserting page destinations...
-        Names names = document.Names;
-        if(names == null)
-        {document.Names = names = new Names(document);}
-  
-        NamedDestinations destinations = names.Destinations;
-        if(destinations == null)
-        {names.Destinations = destinations = new NamedDestinations(document);}
-  
+        NamedDestinations destinations = document.Names.Destinations;
         destinations[new PdfString("d31e1142")] = new LocalDestination(pages[0]);
         if(pages.Count > 1)
         {
@@ -55,7 +48,7 @@ namespace org.pdfclown.samples.cli
         }
   
         // 3. Serialize the PDF file!
-        Serialize(file, "Named destinations", "manipulating named destinations");
+        Serialize(file, "Named destinations", "manipulating named destinations", "named destinations, creation");
       }
     }
   }

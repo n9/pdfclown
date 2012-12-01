@@ -16,7 +16,7 @@ import org.pdfclown.files.File;
   This sample demonstrates the PDF Clown's <b>support to Unicode-compliant fonts</b>.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class UnicodeSample
   extends Sample
@@ -35,7 +35,7 @@ public class UnicodeSample
     populate(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, "Unicode", "using Unicode fonts");
+    serialize(file, "Unicode", "using Unicode fonts", "Unicode");
   }
 
   /**

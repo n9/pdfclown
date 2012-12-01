@@ -41,26 +41,13 @@ namespace org.pdfclown.documents.contents.layers
     #region constructors
     public LayerDefinition(
       Document context
-      ) : base(
-        context,
-        new PdfDictionary(
-          new PdfName[]
-          {
-            PdfName.OCGs,
-            PdfName.D
-          },
-          new PdfDirectObject[]
-          {
-            new PdfArray(),
-            new LayerConfiguration(context).BaseObject
-          }
-        ))
-    {DefaultConfiguration.Layers = new Layers(context);}
+      ) : base(context, new PdfDictionary())
+    {Initialize();}
 
     public LayerDefinition(
       PdfDirectObject baseObject
       ) : base(baseObject)
-    {}
+    {Initialize();}
     #endregion
 
     #region interface
@@ -156,6 +143,23 @@ namespace org.pdfclown.documents.contents.layers
     {
       get
       {return (PdfArray)BaseDataObject.Resolve(PdfName.OCGs);}
+    }
+    #endregion
+
+    #region private
+    private void Initialize(
+      )
+    {
+      PdfDictionary baseDataObject = BaseDataObject;
+      if(baseDataObject.Count == 0)
+      {
+        baseDataObject.Updateable = false;
+        baseDataObject[PdfName.OCGs] = new PdfArray();
+        baseDataObject[PdfName.D] = new LayerConfiguration(Document).BaseObject;
+        //TODO: as this is optional, verify whether it can be lazily instantiated later.
+        DefaultConfiguration.Layers = new Layers(Document);
+        baseDataObject.Updateable = true;
+      }
     }
     #endregion
     #endregion

@@ -13,7 +13,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class VideoEmbeddingSample
   extends Sample
@@ -40,6 +40,6 @@ public class VideoEmbeddingSample
       );
 
     // 4. Serialize the PDF file!
-    serialize(file, "Video embedding", "inserting screen annotations to display media clips inside a PDF document");
+    serialize(file, "Video embedding", "inserting screen annotations to display media clips inside a PDF document", "video embedding");
   }
 }

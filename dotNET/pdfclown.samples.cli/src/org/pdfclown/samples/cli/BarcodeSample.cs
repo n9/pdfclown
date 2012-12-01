@@ -31,7 +31,7 @@ namespace org.pdfclown.samples.cli
       Populate(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, "Barcode", "showing barcodes");
+      Serialize(file, "Barcode", "showing barcodes", "barcodes, creation, EAN13");
     }
 
     /**

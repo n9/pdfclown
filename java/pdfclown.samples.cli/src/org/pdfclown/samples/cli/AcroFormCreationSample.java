@@ -33,7 +33,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class AcroFormCreationSample
   extends Sample
@@ -50,7 +50,7 @@ public class AcroFormCreationSample
     populate(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, "AcroForm", "inserting AcroForm fields");
+    serialize(file, "AcroForm", "inserting AcroForm fields", "Acroform, creation, annotations, actions, javascript, button, combo, textbox, radio button");
   }
 
   private void populate(
@@ -69,8 +69,7 @@ public class AcroFormCreationSample
     */
 
     // 1. Define the form fields collection!
-    Form form = new Form(document);
-    document.setForm(form);
+    Form form = document.getForm();
     Fields fields = form.getFields();
 
     // 2. Define the page where to place the fields!

@@ -85,7 +85,7 @@ namespace org.pdfclown.documents.interaction.forms
     public Resources Resources
     {
       get
-      {return Resources.Wrap(BaseDataObject[PdfName.DR]);}
+      {return Resources.Wrap(BaseDataObject.Get<PdfDictionary>(PdfName.DR));}
       set
       {BaseDataObject[PdfName.DR] = value.BaseObject;}
     }

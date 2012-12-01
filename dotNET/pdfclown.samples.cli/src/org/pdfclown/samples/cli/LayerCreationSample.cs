@@ -26,7 +26,7 @@ namespace org.pdfclown.samples.cli
       Populate(document);
 
       // 3. PDF file serialization.
-      Serialize(file, "Layer", "inserting layers");
+      Serialize(file, "Layer", "inserting layers", "layers, optional content");
     }
 
     /**
@@ -48,8 +48,7 @@ namespace org.pdfclown.samples.cli
       BlockComposer blockComposer = new BlockComposer(composer);
 
       // Initialize the document layer configuration!
-      LayerDefinition layerDefinition = new LayerDefinition(document); // Creates the document layer configuration.
-      document.Layer = layerDefinition; // Activates the document layer configuration.
+      LayerDefinition layerDefinition = document.Layer;
       document.PageMode = Document.PageModeEnum.Layers; // Shows the layers tab on document opening.
 
       // Get the root layers collection!

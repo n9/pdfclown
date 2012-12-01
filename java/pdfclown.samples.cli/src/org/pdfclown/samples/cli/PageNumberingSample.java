@@ -23,7 +23,7 @@ import org.pdfclown.tools.PageStamper;
   etc.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class PageNumberingSample
   extends Sample
@@ -47,7 +47,7 @@ public class PageNumberingSample
     stamp(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, "Page numbering", "numbering a document's pages");
+    serialize(file, "Page numbering", "numbering a document's pages", "page numbering");
   }
 
   private void stamp(

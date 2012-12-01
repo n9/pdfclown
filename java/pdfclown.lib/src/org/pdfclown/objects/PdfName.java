@@ -36,7 +36,7 @@ import org.pdfclown.tokens.Keyword;
   PDF name object [PDF:1.6:3.2.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 11/18/12
+  @version 0.1.2, 11/30/12
 */
 public final class PdfName
   extends PdfSimpleObject<String>
@@ -547,6 +547,14 @@ public final class PdfName
 
   // <interface>
   // <public>
+  /**
+    Gets the object equivalent to the given value.
+  */
+  public static PdfName get(
+    Object value
+    )
+  {return value == null ? null : get(value.toString());}
+
   /**
     Gets the object equivalent to the given value.
   */

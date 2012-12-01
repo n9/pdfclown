@@ -36,7 +36,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class GraphicsSample
   extends Sample
@@ -62,7 +62,7 @@ public class GraphicsSample
     buildTextBlockPage4(document);
 
     // 3. Serialize the PDF file!
-    serialize(file, "Composition elements", "applying the composition elements");
+    serialize(file, "Composition elements", "applying the composition elements", "graphics, line styles, text alignment, shapes, circles, ellipses, spirals, polygons, rounded rectangles, images, clipping");
   }
 
   private void buildCurvesPage(

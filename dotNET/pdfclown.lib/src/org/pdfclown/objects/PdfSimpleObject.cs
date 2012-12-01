@@ -148,6 +148,11 @@ namespace org.pdfclown.objects
       {this.value = value;}
     }
 
+    public override PdfObject Swap(
+      PdfObject other
+      )
+    {throw new NotSupportedException("Immutable object");}
+
     public override string ToString(
       )
     {return Value.ToString();}

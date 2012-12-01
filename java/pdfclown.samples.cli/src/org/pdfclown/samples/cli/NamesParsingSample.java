@@ -39,18 +39,18 @@ public class NamesParsingSample extends Sample
 
       // 2. Named objects extraction.
       Names names = document.getNames();
-      if(names == null)
+      if(!names.exists())
       {System.out.println("\nNo names dictionary.");}
       else
       {
-        System.out.println("\nNames dictionary found (" + names.getContainer().getReference() + ")");
+        System.out.println("\nNames dictionary found (" + names.getDataContainer().getReference() + ")");
 
         NamedDestinations namedDestinations = names.getDestinations();
-        if(namedDestinations == null)
+        if(!namedDestinations.exists())
         {System.out.println("\nNo named destinations.");}
         else
         {
-          System.out.println("\nNamed destinations found (" + namedDestinations.getContainer().getReference() + ")");
+          System.out.println("\nNamed destinations found (" + namedDestinations.getDataContainer().getReference() + ")");
 
           // Parsing the named destinations...
           for(Map.Entry<PdfString,Destination> namedDestination : namedDestinations.entrySet())
@@ -58,7 +58,7 @@ public class NamesParsingSample extends Sample
             PdfString key = namedDestination.getKey();
             Destination value = namedDestination.getValue();
 
-            System.out.println("  Destination '" + key + "' (" + value.getContainer().getReference() + ")");
+            System.out.println("  Destination '" + key + "' (" + value.getDataContainer().getReference() + ")");
 
             System.out.print("    Target Page: number = ");
             Object pageRef = value.getPage();

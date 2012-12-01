@@ -47,7 +47,7 @@ import org.pdfclown.util.math.geom.Dimension;
   content flow composition), to be made available in the next releases.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class ComplexTypesettingSample
   extends Sample
@@ -76,7 +76,7 @@ public class ComplexTypesettingSample
     buildBookmarks(document);
 
     // 3. Serialization.
-    serialize(file, "Complex Typesetting", "complex typesetting");
+    serialize(file, "Complex Typesetting", "complex typesetting", "typesetting, bookmarks, hyphenation, block composer, primitive composer, text alignment, image insertion");
   }
 
   private void buildBookmarks(
@@ -84,8 +84,7 @@ public class ComplexTypesettingSample
     )
   {
     Pages pages = document.getPages();
-    Bookmarks bookmarks = new Bookmarks(document);
-    document.setBookmarks(bookmarks);
+    Bookmarks bookmarks = document.getBookmarks();
     document.setPageMode(PageModeEnum.Bookmarks);
     Page page = pages.get(0);
     Bookmark rootBookmark = new Bookmark(

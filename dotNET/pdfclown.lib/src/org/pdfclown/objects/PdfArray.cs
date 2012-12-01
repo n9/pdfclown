@@ -116,13 +116,28 @@ namespace org.pdfclown.objects
       )
     {throw new NotImplementedException();}
 
+
+    /**
+      <summary>Gets the value corresponding to the given index, forcing its instantiation as a direct
+      object in case of missing entry.</summary>
+      <param name="index">Index of the item to return.</param>
+      <param name="itemClass">Class to use for instantiating the item in case of missing entry.</param>
+    */
+    public PdfDirectObject Get<T>(
+      int index
+      ) where T : PdfDataObject, new()
+    {return Get<T>(index, true);}
+
     /**
       <summary>Gets the value corresponding to the given index, forcing its instantiation in case
       of missing entry.</summary>
       <param name="index">Index of the item to return.</param>
+      <param name="direct">Whether the item has to be instantiated directly within its container
+      instead of being referenced through an indirect object.</param>
     */
     public PdfDirectObject Get<T>(
-      int index
+      int index,
+      bool direct
       ) where T : PdfDataObject, new()
     {
       PdfDirectObject item;
@@ -136,7 +151,9 @@ namespace org.pdfclown.objects
         */
         try
         {
-          item = (PdfDirectObject)Include(new T());
+          item = (PdfDirectObject)Include(direct
+            ? (PdfDataObject)new T()
+            : new PdfIndirectObject(File, new T(), new XRefEntry(0, 0)).Reference);
           if(index == Count)
           {items.Add(item);}
           else
@@ -192,6 +209,21 @@ namespace org.pdfclown.objects
       int index
       ) where T : PdfDataObject, new()
     {return (T)File.Resolve(Get<T>(index));}
+
+    public override PdfObject Swap(
+      PdfObject other
+      )
+    {
+      PdfArray otherArray = (PdfArray)other;
+      List<PdfDirectObject> otherItems = (List<PdfDirectObject>)otherArray.items;
+      // Update the other!
+      otherArray.items = this.items;
+      otherArray.Update();
+      // Update this one!
+      this.items = otherItems;
+      this.Update();
+      return this;
+    }
 
     public override string ToString(
       )

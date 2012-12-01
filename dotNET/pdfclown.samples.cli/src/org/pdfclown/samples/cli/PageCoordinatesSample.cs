@@ -40,21 +40,28 @@ namespace org.pdfclown.samples.cli
       File file = new File();
       Document document = file.Document;
 
-      // 2. Set the document properties and resources!
-      Initialize(document);
-
-      // 3. Insert the contents into the document!
+      // 2. Insert the contents into the document!
       BuildContent(document);
 
-      // 4. Serialize the PDF file!
-      Serialize(file, "Page coordinates", "manipulating the CTM");
+      // 3. Serialize the PDF file!
+      Serialize(file, "Page coordinates", "manipulating the CTM", "page coordinates, ctm");
     }
 
     private void BuildContent(
       Document document
       )
     {
-      // Add the page to the document!
+      // Set default page size (A4)!
+      document.PageSize = PageFormat.GetSize();
+      // Add a font to the fonts collection!
+      document.Resources.Fonts[ResourceName_DefaultFont] = new StandardType1Font(
+        document,
+        StandardType1Font.FamilyEnum.Courier,
+        true,
+        false
+        );
+
+      // Add a page to the document!
       Page page = new Page(document); // Instantiates the page inside the document context.
       document.Pages.Add(page); // Puts the page in the pages collection.
 
@@ -300,29 +307,6 @@ namespace org.pdfclown.samples.cli
 
         steps[4] = GetStepNote(composer,"after resetting CTM");
       }
-    }
-
-    private void Initialize(
-      Document document
-      )
-    {
-      // 1. Set default page size (A4)!
-      document.PageSize = PageFormat.GetSize();
-
-      // 2. Setting the document resources...
-      // 2.1. Resources collection.
-      Resources resources = new Resources(document); // Instantiates the resources collection inside the document context.
-      document.Resources = resources; // Puts the resources collection in the common resources role.
-      // 2.2. Fonts collection.
-      FontResources fonts = new FontResources(document); // Instantiates the fonts collection inside the document context.
-      resources.Fonts = fonts; // Puts the fonts collection in the common resources role.
-      // Add a font to the fonts collection!
-      fonts[ResourceName_DefaultFont] = new StandardType1Font(
-        document,
-        StandardType1Font.FamilyEnum.Courier,
-        true,
-        false
-        );
     }
   }
 }

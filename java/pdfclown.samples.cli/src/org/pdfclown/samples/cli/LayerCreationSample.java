@@ -40,7 +40,7 @@ public class LayerCreationSample
     populate(document);
 
     // 3. PDF file serialization.
-    serialize(file, "Layer", "inserting layers");
+    serialize(file, "Layer", "inserting layers", "layers, optional content");
   }
 
   private void populate(
@@ -59,8 +59,7 @@ public class LayerCreationSample
     BlockComposer blockComposer = new BlockComposer(composer);
 
     // Initialize the document layer configuration!
-    LayerDefinition layerDefinition = new LayerDefinition(document); // Creates the document layer configuration.
-    document.setLayer(layerDefinition); // Activates the document layer configuration.
+    LayerDefinition layerDefinition = document.getLayer();
     document.setPageMode(PageModeEnum.Layers); // Shows the layers tab on document opening.
 
     // Get the root layers collection!

@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Tree<
@@ -215,7 +215,6 @@ public abstract class Tree<
   {
     super(context, new PdfDictionary());
     initialize();
-    getBaseDataObject().put(pairsKey, new PdfArray()); // NOTE: Initial root is by definition a leaf node.
   }
 
   protected Tree(
@@ -303,7 +302,7 @@ public abstract class Tree<
           )
         {return entrySet;}
       };
-    fill(filler, (PdfReference)getBaseObject());
+    fill(filler, getBaseDataObject());
 
     return filler.getCollection();
   }
@@ -409,7 +408,7 @@ public abstract class Tree<
           )
         {return keySet;}
       };
-    fill(filler, (PdfReference)getBaseObject());
+    fill(filler, getBaseDataObject());
 
     return filler.getCollection();
   }
@@ -421,21 +420,20 @@ public abstract class Tree<
     )
   {
     // Get the root node!
-    PdfReference rootReference = (PdfReference)getBaseObject(); // NOTE: Nodes MUST be indirect objects.
-    PdfDictionary root = (PdfDictionary)rootReference.getDataObject();
+    PdfDictionary root = getBaseDataObject();
 
     // Ensuring the root node isn't full...
     {
       Children rootChildren = Children.get(root, pairsKey);
       if(rootChildren.isFull())
       {
-        // Insert the old root under the new one!
-        PdfDataObject oldRootDataObject = rootReference.getDataObject();
-        rootReference.setDataObject(root = new PdfDictionary());
-        root.put(PdfName.Kids, new PdfArray(new PdfDirectObject[]{getFile().register(oldRootDataObject)}));
-        // Split the old root!
+        // Transfer the root contents into the new leaf!
+        PdfDictionary leaf = new PdfDictionary().swap(root);
+        PdfArray rootChildrenObject = new PdfArray(new PdfDirectObject[]{getFile().register(leaf)});
+        root.put(PdfName.Kids, rootChildrenObject);
+        // Split the leaf!
         splitFullNode(
-          (PdfArray)root.get(PdfName.Kids),
+          rootChildrenObject,
           0, // Old root's position within new root's kids.
           rootChildren.typeName
           );
@@ -443,7 +441,7 @@ public abstract class Tree<
     }
 
     // Set the entry under the root node!
-    return put(key, value, rootReference);
+    return put(key, value, root);
   }
 
   @Override
@@ -634,7 +632,7 @@ public abstract class Tree<
           )
         {return values;}
       };
-    fill(filler, (PdfReference)getBaseObject());
+    fill(filler, getBaseDataObject());
 
     return filler.getCollection();
   }
@@ -685,10 +683,9 @@ public abstract class Tree<
 
   private <TCollection extends Collection<?>> void fill(
     IFiller<TCollection> filler,
-    PdfReference nodeReference
+    PdfDictionary node
     )
   {
-    PdfDictionary node = (PdfDictionary)nodeReference.getDataObject();
     PdfArray kidsObject = (PdfArray)node.resolve(PdfName.Kids);
     if(kidsObject == null) // Leaf node.
     {
@@ -704,13 +701,23 @@ public abstract class Tree<
     else // Intermediate node.
     {
       for(PdfDirectObject kidObject : kidsObject)
-      {fill(filler, (PdfReference)kidObject);}
+      {fill(filler, (PdfDictionary)File.resolve(kidObject));}
     }
   }
 
   private void initialize(
     )
-  {pairsKey = getPairsKey();}
+  {
+    pairsKey = getPairsKey();
+
+    PdfDictionary baseDataObject = getBaseDataObject();
+    if(baseDataObject.isEmpty())
+    {
+      baseDataObject.setUpdateable(false);
+      baseDataObject.put(pairsKey, new PdfArray()); // NOTE: Initial root is by definition a leaf node.
+      baseDataObject.setUpdateable(true);
+    }
+  }
 
   /**
     Puts an entry under the given tree node.
@@ -722,10 +729,9 @@ public abstract class Tree<
   private TValue put(
     TKey key,
     TValue value,
-    PdfReference nodeReference
+    PdfDictionary node
     )
   {
-    PdfDictionary node = (PdfDictionary)nodeReference.getDataObject();
     TValue oldValue;
     Children children = Children.get(node, pairsKey);
     if(children.isLeaf()) // Leaf node.
@@ -808,7 +814,7 @@ public abstract class Tree<
             }
           }
 
-          oldValue = put(key, value, kidReference);
+          oldValue = put(key, value, kid);
           // Update the key limits!
           updateNodeLimits(children);
           break;

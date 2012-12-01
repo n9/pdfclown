@@ -43,7 +43,7 @@ namespace org.pdfclown.samples.cli
         ApplyWatermark(watermark);
   
         // 4. Serialize the PDF file!
-        Serialize(file, "Watermark", "how to place some content behind existing pages");
+        Serialize(file, "Watermark", "how to place some content behind existing pages", "watermark, transparent text, background, foreground, page, composition");
       }
     }
 

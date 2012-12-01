@@ -414,10 +414,7 @@ namespace org.pdfclown.objects
     protected Tree(
       Document context
       ) : base(context, new PdfDictionary())
-    {
-      Initialize();
-      BaseDataObject[pairsKey] = new PdfArray(); // NOTE: Initial root is by definition a leaf node.
-    }
+    {Initialize();}
 
     protected Tree(
       PdfDirectObject baseObject
@@ -474,7 +471,7 @@ namespace org.pdfclown.objects
       get
       {
         KeysFiller filler = new KeysFiller();
-        Fill(filler, (PdfReference)BaseObject);
+        Fill(filler, BaseDataObject);
 
         return filler.Collection;
       }
@@ -729,7 +726,7 @@ namespace org.pdfclown.objects
       get
       {
         ValuesFiller filler = new ValuesFiller(this);
-        Fill(filler, (PdfReference)BaseObject);
+        Fill(filler, BaseDataObject);
         return filler.Collection;
       }
     }
@@ -819,21 +816,20 @@ namespace org.pdfclown.objects
       )
     {
       // Get the root node!
-      PdfReference rootReference = (PdfReference)BaseObject; // NOTE: Nodes MUST be indirect objects.
-      PdfDictionary root = (PdfDictionary)rootReference.DataObject;
+      PdfDictionary root = BaseDataObject;
 
       // Ensuring the root node isn't full...
       {
         Children rootChildren = Children.Get(root, pairsKey);
         if(rootChildren.IsFull())
         {
-          // Insert the old root under the new one!
-          PdfDataObject oldRootDataObject = rootReference.DataObject;
-          rootReference.DataObject = root = new PdfDictionary();
-          root[PdfName.Kids] = new PdfArray(new PdfDirectObject[]{File.Register(oldRootDataObject)});
-          // Split the old root!
+          // Transfer the root contents into the new leaf!
+          PdfDictionary leaf = (PdfDictionary)new PdfDictionary().Swap(root);
+          PdfArray rootChildrenObject = new PdfArray(new PdfDirectObject[]{File.Register(leaf)});
+          root[PdfName.Kids] = rootChildrenObject;
+          // Split the leaf!
           SplitFullNode(
-            (PdfArray)root[PdfName.Kids],
+            rootChildrenObject,
             0, // Old root's position within new root's kids.
             rootChildren.TypeName
             );
@@ -841,7 +837,7 @@ namespace org.pdfclown.objects
       }
 
       // Set the entry under the root node!
-      Add(key, value, overwrite, rootReference);
+      Add(key, value, overwrite, root);
     }
 
     /**
@@ -856,10 +852,9 @@ namespace org.pdfclown.objects
       TKey key,
       TValue value,
       bool overwrite,
-      PdfReference nodeReference
+      PdfDictionary node
       )
     {
-      PdfDictionary node = (PdfDictionary)nodeReference.DataObject;
       Children children = Children.Get(node, pairsKey);
       if(children.IsLeaf()) // Leaf node.
       {
@@ -941,7 +936,7 @@ namespace org.pdfclown.objects
               }
             }
 
-            Add(key, value, overwrite, kidReference);
+            Add(key, value, overwrite, kid);
             // Update the key limits!
             UpdateNodeLimits(children);
             break;
@@ -981,10 +976,9 @@ namespace org.pdfclown.objects
 
     private void Fill<TObject>(
       IFiller<TObject> filler,
-      PdfReference nodeReference
+      PdfDictionary node
       )
     {
-      PdfDictionary node = (PdfDictionary)nodeReference.DataObject;
       PdfArray kidsObject = (PdfArray)node.Resolve(PdfName.Kids);
       if(kidsObject == null) // Leaf node.
       {
@@ -1000,7 +994,7 @@ namespace org.pdfclown.objects
       else // Intermediate node.
       {
         foreach(PdfDirectObject kidObject in kidsObject)
-        {Fill(filler,(PdfReference)kidObject);}
+        {Fill(filler, (PdfDictionary)File.Resolve(kidObject));}
       }
     }
 
@@ -1027,7 +1021,17 @@ namespace org.pdfclown.objects
 
     private void Initialize(
       )
-    {pairsKey = PairsKey;}
+    {
+      pairsKey = PairsKey;
+
+      PdfDictionary baseDataObject = BaseDataObject;
+      if(baseDataObject.Count == 0)
+      {
+        baseDataObject.Updateable = false;
+        baseDataObject[pairsKey] = new PdfArray(); // NOTE: Initial root is by definition a leaf node.
+        baseDataObject.Updateable = true;
+      }
+    }
 
     /**
       <summary>Splits a full node.</summary>

@@ -14,7 +14,7 @@ import org.pdfclown.objects.PdfInteger;
   This sample demonstrates <b>how to define, read and modify page labels</b>.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class PageLabelSample
   extends Sample
@@ -40,10 +40,7 @@ public class PageLabelSample
 
         // 2. Defining the page labels...
         PageLabels pageLabels = document.getPageLabels();
-        if(pageLabels != null)
-        {pageLabels.clear();}
-        else
-        {document.setPageLabels(pageLabels = new PageLabels(document));}
+        pageLabels.clear();
         /*
           NOTE: This sample applies labels to arbitrary page ranges: no sensible connection with their
           actual content has therefore to be expected.
@@ -56,7 +53,7 @@ public class PageLabelSample
         {pageLabels.put(new PdfInteger(6), new PageLabel(document, "Contents ", NumberStyleEnum.ArabicNumber, 0));}
 
         // 3. Serialize the PDF file!
-        outputFilePath = serialize(file, "Page labelling", "labelling a document's pages");
+        outputFilePath = serialize(file, "Page labelling", "labelling a document's pages", "page labels");
       }
       finally
       {

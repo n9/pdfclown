@@ -24,7 +24,7 @@ import org.pdfclown.tools.PageStamper;
   <p>The watermark is seamlessly inserted upon each page content using the PageStamper class.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 11/18/12
+  @version 0.1.2, 11/30/12
 */
 public class WatermarkSample
   extends Sample
@@ -51,7 +51,7 @@ public class WatermarkSample
     applyWatermark(watermark);
 
     // 4. Serialize the PDF file!
-    serialize(file, "Watermark", "how to place some content behind existing pages");
+    serialize(file, "Watermark", "how to place some content behind existing pages", "watermark, transparent text, background, foreground, page, composition");
   }
 
   private void applyWatermark(

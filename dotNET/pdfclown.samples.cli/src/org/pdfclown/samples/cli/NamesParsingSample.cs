@@ -25,18 +25,18 @@ namespace org.pdfclown.samples.cli
   
         // 2. Named objects extraction.
         Names names = document.Names;
-        if(names == null)
+        if(!names.Exists())
         {Console.WriteLine("\nNo names dictionary.");}
         else
         {
-          Console.WriteLine("\nNames dictionary found (" + names.Container.Reference + ")");
+          Console.WriteLine("\nNames dictionary found (" + names.DataContainer.Reference + ")");
   
           NamedDestinations namedDestinations = names.Destinations;
-          if(namedDestinations == null)
+          if(!namedDestinations.Exists())
           {Console.WriteLine("\nNo named destinations.");}
           else
           {
-            Console.WriteLine("\nNamed destinations found (" + namedDestinations.Container.Reference + ")");
+            Console.WriteLine("\nNamed destinations found (" + namedDestinations.DataContainer.Reference + ")");
   
             // Parsing the named destinations...
             foreach(KeyValuePair<PdfString,Destination> namedDestination in namedDestinations)
@@ -44,7 +44,7 @@ namespace org.pdfclown.samples.cli
               PdfString key = namedDestination.Key;
               Destination value = namedDestination.Value;
   
-              Console.WriteLine("  Destination '" + key + "' (" + value.Container.Reference + ")");
+              Console.WriteLine("  Destination '" + key + "' (" + value.DataContainer.Reference + ")");
   
               Console.Write("    Target Page: number = ");
               object pageRef = value.Page;

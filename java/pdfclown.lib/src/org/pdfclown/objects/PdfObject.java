@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
   Abstract PDF object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public abstract class PdfObject
   implements Cloneable,
@@ -79,7 +79,10 @@ public abstract class PdfObject
   }
 
   /**
-    Gets the indirect object containing the data associated to this object.
+    Gets the indirect object containing this object.
+
+    @see #getDataContainer()
+    @see #getIndirectObject()
   */
   public PdfIndirectObject getContainer(
     )
@@ -89,17 +92,33 @@ public abstract class PdfObject
   }
 
   /**
+    Gets the indirect object containing the data associated to this object.
+
+    @see #getContainer()
+    @see #getIndirectObject()
+  */
+  public PdfIndirectObject getDataContainer(
+    )
+  {
+    PdfIndirectObject indirectObject = getIndirectObject();
+    return indirectObject != null ? indirectObject : getContainer();
+  }
+
+  /**
     Gets the file containing this object.
   */
   public File getFile(
     )
   {
-    PdfIndirectObject container = getContainer();
-    return container != null ? container.getFile() : null;
+    PdfIndirectObject dataContainer = getDataContainer();
+    return dataContainer != null ? dataContainer.getFile() : null;
   }
 
   /**
     Gets the indirect object corresponding to this object.
+
+    @see #getContainer()
+    @see #getDataContainer()
   */
   public PdfIndirectObject getIndirectObject(
     )
@@ -110,6 +129,8 @@ public abstract class PdfObject
 
   /**
     Gets the parent of this object.
+
+    @see #getContainer()
   */
   public abstract PdfObject getParent(
     );
@@ -141,6 +162,16 @@ public abstract class PdfObject
   */
   public abstract void setUpdateable(
     boolean value
+    );
+
+  /**
+    Swaps contents between this object and the other one.
+
+    @param other Object whose contents have to be swapped with this one's.
+    @return This object.
+  */
+  public abstract PdfObject swap(
+    PdfObject other
     );
 
   /**

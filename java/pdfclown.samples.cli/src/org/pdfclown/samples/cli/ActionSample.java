@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.pdfclown.documents.Document;
-import org.pdfclown.documents.DocumentActions;
 import org.pdfclown.documents.Page;
-import org.pdfclown.documents.PageActions;
 import org.pdfclown.documents.interaction.actions.GoToLocal;
 import org.pdfclown.documents.interaction.actions.GoToURI;
 import org.pdfclown.documents.interaction.navigation.document.LocalDestination;
@@ -19,7 +17,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public class ActionSample
   extends Sample
@@ -40,48 +38,39 @@ public class ActionSample
         {throw new RuntimeException(filePath + " file access error.",e);}
       }
       Document document = file.getDocument();
+      Page page = document.getPages().get(1); // Page 2 (zero-based index).
 
       // 2. Applying actions...
       // 2.1. Local go-to.
+      /*
+        NOTE: This statement instructs the PDF viewer to go to page 2 on document opening.
+      */
+      document.getActions().setOnOpen(
+        new GoToLocal(
+          document,
+          new LocalDestination(page)
+          )
+        );
+
+      // 2.2. Remote go-to.
+      try
       {
-        DocumentActions documentActions = document.getActions();
-        if(documentActions == null)
-        {document.setActions(documentActions = new DocumentActions(document));}
         /*
-          NOTE: This statement instructs the PDF viewer to go to page 2 on document opening.
+          NOTE: This statement instructs the PDF viewer to navigate to the given URI on page 2
+          opening.
         */
-        documentActions.setOnOpen(
-          new GoToLocal(
+        page.getActions().setOnOpen(
+          new GoToURI(
             document,
-            new LocalDestination(document.getPages().get(1)) // Page 2 (zero-based index).
+            new URI("http://www.sourceforge.net/projects/clown")
             )
           );
       }
-
-      // 2.2. Remote go-to.
-      {
-        Page page = document.getPages().get(1); // Page 2 (zero-based index).
-        PageActions pageActions = page.getActions();
-        if(pageActions == null)
-        {page.setActions(pageActions = new PageActions(document));}
-        try
-        {
-          /*
-            NOTE: This statement instructs the PDF viewer to navigate to the given URI on page 2 opening.
-          */
-          pageActions.setOnOpen(
-            new GoToURI(
-              document,
-              new URI("http://www.sourceforge.net/projects/clown")
-              )
-            );
-        }
-        catch(Exception exception)
-        {throw new RuntimeException(exception);}
-      }
+      catch(Exception exception)
+      {throw new RuntimeException("Remote goto failed.",exception);}
 
       // 3. Serialize the PDF file!
-      serialize(file, "Actions", "applying actions");
+      serialize(file, "Actions", "applying actions", "actions, creation, local goto, remote goto");
     }
     finally
     {

@@ -33,7 +33,7 @@ namespace org.pdfclown.samples.cli
       Populate(document);
 
       // 3. Serialize the PDF file!
-      Serialize(file, "Annotations", "inserting annotations");
+      Serialize(file, "Annotations", "inserting annotations", "annotations, creation, attachment, note, callout");
     }
 
     private void Populate(

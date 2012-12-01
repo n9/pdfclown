@@ -36,6 +36,7 @@ import org.pdfclown.files.File;
 import org.pdfclown.tokens.Chunk;
 import org.pdfclown.tokens.Encoding;
 import org.pdfclown.tokens.Keyword;
+import org.pdfclown.tokens.XRefEntry;
 import org.pdfclown.util.NotImplementedException;
 
 /**
@@ -44,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public final class PdfArray
   extends PdfDirectObject
@@ -132,8 +133,8 @@ public final class PdfArray
   {throw new NotImplementedException();}
 
   /**
-    Gets the value corresponding to the given index, forcing its instantiation in case of missing
-    entry.
+    Gets the value corresponding to the given index, forcing its instantiation as a direct object in
+    case of missing entry.
 
     @param index Index of the item to return.
     @param itemClass Class to use for instantiating the item in case of missing entry.
@@ -142,6 +143,23 @@ public final class PdfArray
   public <T extends PdfDataObject> PdfDirectObject get(
     int index,
     Class<T> itemClass
+    )
+  {return get(index, itemClass, true);}
+
+  /**
+    Gets the value corresponding to the given index, forcing its instantiation in case of missing
+    entry.
+
+    @param index Index of the item to return.
+    @param itemClass Class to use for instantiating the item in case of missing entry.
+    @param direct Whether the item has to be instantiated directly within its container instead of
+    being referenced through an indirect object.
+    @since 0.1.2
+  */
+  public <T extends PdfDataObject> PdfDirectObject get(
+    int index,
+    Class<T> itemClass,
+    boolean direct
     )
   {
     PdfDirectObject item;
@@ -155,7 +173,9 @@ public final class PdfArray
       */
       try
       {
-        item = (PdfDirectObject)include(itemClass.newInstance());
+        item = (PdfDirectObject)include(direct
+          ? itemClass.newInstance()
+          : new PdfIndirectObject(getFile(), itemClass.newInstance(), new XRefEntry(0, 0)).getReference());
         if(index == size())
         {items.add(item);}
         else
@@ -216,6 +236,22 @@ public final class PdfArray
     boolean value
     )
   {updateable = value;}
+
+  @Override
+  public PdfArray swap(
+    PdfObject other
+    )
+  {
+    PdfArray otherArray = (PdfArray)other;
+    ArrayList<PdfDirectObject> otherItems = otherArray.items;
+    // Update the other!
+    otherArray.items = this.items;
+    otherArray.update();
+    // Update this one!
+    this.items = otherItems;
+    this.update();
+    return this;
+  }
 
   @Override
   public String toString(

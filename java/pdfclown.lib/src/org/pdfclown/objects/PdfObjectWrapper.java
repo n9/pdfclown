@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
   {@link #getBaseDataObject() baseDataObject} backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   implements IPdfObjectWrapper
@@ -175,6 +175,13 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   }
 
   /**
+    Gets whether the underlying data object is concrete.
+  */
+  public boolean exists(
+    )
+  {return !getBaseDataObject().isVirtual();}
+
+  /**
     Gets the underlying data object.
   */
   @SuppressWarnings("unchecked")
@@ -188,6 +195,13 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   public PdfIndirectObject getContainer(
     )
   {return baseObject.getContainer();}
+
+  /**
+    Gets the indirect object containing the base data object.
+  */
+  public PdfIndirectObject getDataContainer(
+    )
+  {return baseObject.getDataContainer();}
 
   /**
     Gets the document context.
@@ -204,13 +218,13 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   */
   public File getFile(
     )
-  {
-    PdfIndirectObject container = getContainer();
-    return container != null ? container.getFile() : null;
-  }
+  {return baseObject.getFile();}
 
   /**
     Gets the metadata associated to this object.
+
+    @return <code>null</code>, if base data object's type isn't suitable (only {@link PdfDictionary}
+    and {@link PdfStream} objects are allowed).
   */
   public Metadata getMetadata(
     )
@@ -219,12 +233,13 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
     if(dictionary == null)
       return null;
 
-    PdfDirectObject metadataObject = dictionary.get(PdfName.Metadata);
-    return metadataObject != null ? new Metadata(metadataObject) : null;
+    return new Metadata(dictionary.get(PdfName.Metadata, PdfStream.class, false));
   }
 
   /**
     @see #getMetadata()
+    @throws UnsupportedOperationException If base data object's type isn't suitable (only
+    {@link PdfDictionary} and {@link PdfStream} objects are allowed).
   */
   public void setMetadata(
     Metadata value
@@ -234,7 +249,7 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
     if(dictionary == null)
       throw new UnsupportedOperationException("Metadata can be attached only to PdfDictionary/PdfStream base data objects.");
 
-    dictionary.put(PdfName.Metadata, value.getBaseObject());
+    dictionary.put(PdfName.Metadata, PdfObjectWrapper.getBaseObject(value));
   }
 
   // <IPdfObjectWrapper>

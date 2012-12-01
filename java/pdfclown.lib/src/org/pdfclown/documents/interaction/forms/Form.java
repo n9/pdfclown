@@ -41,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 11/30/12
 */
 @PDF(VersionEnum.PDF12)
 public final class Form
@@ -91,7 +91,7 @@ public final class Form
   */
   public Resources getResources(
     )
-  {return Resources.wrap(getBaseDataObject().get(PdfName.DR));}
+  {return Resources.wrap(getBaseDataObject().get(PdfName.DR, PdfDictionary.class));}
 
   /**
     @see #getFields()

@@ -54,7 +54,7 @@ namespace org.pdfclown.samples.cli
   
           // Get the page annotations!
           PageAnnotations annotations = page.Annotations;
-          if(annotations == null)
+          if(!annotations.Exists())
           {
             Console.WriteLine("No annotations here.");
             continue;
