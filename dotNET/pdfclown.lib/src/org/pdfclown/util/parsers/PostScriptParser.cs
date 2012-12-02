@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -283,7 +283,8 @@ namespace org.pdfclown.util.parsers
           buffer = new StringBuilder();
           while(c != Symbol.CloseAngleBracket) // NOT string end.
           {
-            buffer.Append((char)c);
+            if(!IsWhitespace(c))
+            {buffer.Append((char)c);}
 
             c = stream.ReadByte();
             if(c == -1)

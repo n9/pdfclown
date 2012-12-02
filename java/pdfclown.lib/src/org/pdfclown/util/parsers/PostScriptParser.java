@@ -39,7 +39,7 @@ import org.pdfclown.tokens.Symbol;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/02/12
 */
 public class PostScriptParser
   implements Closeable
@@ -320,7 +320,9 @@ public class PostScriptParser
         {
           while(c != Symbol.CloseAngleBracket) // NOT string end.
           {
-            buffer.append((char)c);
+            if(!isWhitespace(c))
+            {buffer.append((char)c);}
+
             c = stream.readUnsignedByte();
           }
         }
