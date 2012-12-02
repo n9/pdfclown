@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -105,15 +105,18 @@ namespace org.pdfclown.documents.contents.objects
         (float)state.LineWidth
         );
       {
-        LineDash lineDash = state.LineDash;
-        double[] dashArray = lineDash.DashArray;
-
         LineCap lineCap = state.LineCap.ToGdi();
         stroke.SetLineCap(lineCap, lineCap, lineCap.ToDashCap());
         stroke.LineJoin = state.LineJoin.ToGdi();
         stroke.MiterLimit = (float)state.MiterLimit;
-        stroke.DashPattern = (dashArray != null && dashArray.Length > 0 ? ConvertUtils.ToFloatArray(dashArray) : null);
-        stroke.DashOffset = (float)lineDash.DashPhase;
+
+        LineDash lineDash = state.LineDash;
+        double[] dashArray = lineDash.DashArray;
+        if(dashArray != null && dashArray.Length > 0)
+        {
+          stroke.DashPattern = ConvertUtils.ToFloatArray(dashArray);
+          stroke.DashOffset = (float)lineDash.DashPhase;
+        }
       }
       return stroke;
     }
