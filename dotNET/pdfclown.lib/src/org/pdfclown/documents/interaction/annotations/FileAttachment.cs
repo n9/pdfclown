@@ -131,11 +131,6 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the icon to be used in displaying the annotation.</summary>
     */

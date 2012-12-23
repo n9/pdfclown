@@ -31,7 +31,6 @@ import java.awt.geom.RectangularShape;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.files.File;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   PDF rectangle object [PDF:1.6:3.8.4].
@@ -43,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 12/21/12
 */
 public final class Rectangle
   extends PdfObjectWrapper<PdfArray>
@@ -51,6 +50,13 @@ public final class Rectangle
   // <class>
   // <static>
   // <interface>
+  // <public>
+  public static Rectangle wrap(
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new Rectangle(baseObject) : null;}
+  // </public>
+
   // <private>
   private static PdfArray normalize(
     PdfArray rectangle
@@ -120,8 +126,8 @@ public final class Rectangle
         )
       );
   }
-  //TODO:integrate with the container update infrastructure (see other PdfObjectWrapper subclass implementations)!!
-  public Rectangle(
+
+  private Rectangle(
     PdfDirectObject baseObject
     )
   {super(normalize((PdfArray)File.resolve(baseObject)));}
@@ -133,7 +139,7 @@ public final class Rectangle
   public Rectangle clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Rectangle)super.clone(context);}
 
   public double getBottom(
     )

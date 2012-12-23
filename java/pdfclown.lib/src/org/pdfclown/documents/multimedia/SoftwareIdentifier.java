@@ -41,7 +41,6 @@ import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfString;
-import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.Interval;
 import org.pdfclown.util.metadata.IVersion;
 import org.pdfclown.util.metadata.VersionUtils;
@@ -51,7 +50,7 @@ import org.pdfclown.util.metadata.VersionUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public final class SoftwareIdentifier
@@ -86,10 +85,10 @@ public final class SoftwareIdentifier
     {super(baseObject);}
 
     @Override
-    public Object clone(
+    public Version clone(
       Document context
       )
-    {throw new NotImplementedException();}
+    {return (Version)super.clone(context);}
 
     @Override
     public int compareTo(
@@ -141,10 +140,10 @@ public final class SoftwareIdentifier
   // <interface>
   // <public>
   @Override
-  public Object clone(
+  public SoftwareIdentifier clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (SoftwareIdentifier)super.clone(context);}
 
   /**
     Gets the operating system identifiers that indicate which operating systems this object applies

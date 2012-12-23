@@ -34,7 +34,6 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.util.NotImplementedException;
 
 //TODO: this is just a stub.
 /**
@@ -42,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class Movie
@@ -76,7 +75,7 @@ public final class Movie
   public Movie clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Movie)super.clone(context);}
 
   // <IFileResource>
   @Override

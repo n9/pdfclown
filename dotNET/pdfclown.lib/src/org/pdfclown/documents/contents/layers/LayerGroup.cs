@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,9 +33,20 @@ namespace org.pdfclown.documents.contents.layers
     <summary>A generic collection of layers.</summary>
   */
   [PDF(VersionEnum.PDF15)]
-  public class LayerGroup
+  public sealed class LayerGroup
     : Array<Layer>
   {
+    #region static
+    #region interface
+    #region public
+    public static LayerGroup Wrap(
+      PdfDirectObject baseObject
+      )
+    {return baseObject != null ? new LayerGroup(baseObject) : null;}
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region constructors
     public LayerGroup(
@@ -43,7 +54,7 @@ namespace org.pdfclown.documents.contents.layers
       ) : base(context)
     {}
 
-    public LayerGroup(
+    private LayerGroup(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

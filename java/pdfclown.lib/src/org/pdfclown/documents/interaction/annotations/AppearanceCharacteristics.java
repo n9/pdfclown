@@ -42,14 +42,13 @@ import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.PdfTextString;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Appearance characteristics [PDF:1.6:8.4.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class AppearanceCharacteristics
@@ -286,7 +285,7 @@ public final class AppearanceCharacteristics
       )
     {super(context, new PdfDictionary());}
 
-    public IconFitObject(
+    IconFitObject(
       PdfDirectObject baseObject
       )
     {super(baseObject);}
@@ -298,7 +297,7 @@ public final class AppearanceCharacteristics
     public IconFitObject clone(
       Document context
       )
-    {throw new NotImplementedException();}
+    {return (IconFitObject)super.clone(context);}
 
     /**
       Gets the circumstances under which the icon should be scaled inside the annotation box.
@@ -573,6 +572,17 @@ public final class AppearanceCharacteristics
   }
   // </classes>
 
+  // <static>
+  // <interface>
+  // <public>
+  public static AppearanceCharacteristics wrap(
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new AppearanceCharacteristics(baseObject) : null;}
+  // </public>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <constructors>
   public AppearanceCharacteristics(
@@ -580,7 +590,7 @@ public final class AppearanceCharacteristics
     )
   {super(context, new PdfDictionary());}
 
-  public AppearanceCharacteristics(
+  private AppearanceCharacteristics(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -592,7 +602,7 @@ public final class AppearanceCharacteristics
   public AppearanceCharacteristics clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (AppearanceCharacteristics)super.clone(context);}
 
   /**
     Gets the widget annotation's alternate (down) caption,
@@ -613,10 +623,7 @@ public final class AppearanceCharacteristics
   */
   public FormXObject getAlternateIcon(
     )
-  {
-    PdfDirectObject alternateIconObject = getBaseDataObject().get(PdfName.IX);
-    return alternateIconObject != null ? new FormXObject(alternateIconObject) : null;
-  }
+  {return FormXObject.wrap(getBaseDataObject().get(PdfName.IX));}
 
   /**
     Gets the widget annotation's background color.
@@ -674,10 +681,7 @@ public final class AppearanceCharacteristics
   */
   public FormXObject getNormalIcon(
     )
-  {
-    PdfDirectObject normalIconObject = getBaseDataObject().get(PdfName.I);
-    return normalIconObject != null ? new FormXObject(normalIconObject) : null;
-  }
+  {return FormXObject.wrap(getBaseDataObject().get(PdfName.I));}
 
   /**
     Gets the widget annotation's orientation.
@@ -710,10 +714,7 @@ public final class AppearanceCharacteristics
   */
   public FormXObject getRolloverIcon(
     )
-  {
-    PdfDirectObject rolloverIconObject = getBaseDataObject().get(PdfName.RI);
-    return rolloverIconObject != null ? new FormXObject(rolloverIconObject) : null;
-  }
+  {return FormXObject.wrap(getBaseDataObject().get(PdfName.RI));}
 
   /**
     Sets the widget annotation's alternate (down) caption.

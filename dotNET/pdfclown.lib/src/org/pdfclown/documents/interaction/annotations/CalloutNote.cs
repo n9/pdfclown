@@ -94,11 +94,6 @@ namespace org.pdfclown.documents.interaction.annotations
 
       #region interface
       #region public
-      public override object Clone(
-        Document context
-        )
-      {throw new NotImplementedException();}
-
       public PointF End
       {
         get
@@ -167,11 +162,6 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the justification to be used in displaying the annotation's text.</summary>
     */

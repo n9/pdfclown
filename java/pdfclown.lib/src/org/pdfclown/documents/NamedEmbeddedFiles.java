@@ -30,14 +30,13 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.files.FileSpecification;
 import org.pdfclown.objects.NameTree;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Named embedded files [PDF:1.6:3.6.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF14)
 public final class NamedEmbeddedFiles
@@ -63,7 +62,7 @@ public final class NamedEmbeddedFiles
   public NamedEmbeddedFiles clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (NamedEmbeddedFiles)super.clone(context);}
   // </public>
 
   // <protected>

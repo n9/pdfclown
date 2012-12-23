@@ -194,11 +194,6 @@ namespace org.pdfclown.documents.interaction.annotations
       {BaseDataObject[PdfName.Cap] = PdfBoolean.Get(value);}
     }
 
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the ending coordinates.</summary>
     */

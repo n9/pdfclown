@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,7 +38,6 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfStream;
-import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.Interval;
 
 /**
@@ -48,7 +47,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class Type0Function
@@ -114,10 +113,10 @@ public final class Type0Function
   }
 
   @Override
-  public Object clone(
+  public Type0Function clone(
     Document context
     )
-  {return new NotImplementedException();}
+  {return (Type0Function)super.clone(context);}
 
   /**
     Gets the linear mapping of input values into the domain of the function's sample table.

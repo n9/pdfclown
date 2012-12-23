@@ -53,13 +53,6 @@ namespace org.pdfclown.documents
     #endregion
 
     #region interface
-    #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-    #endregion
-
     #region protected
     protected override Destination WrapValue(
       PdfDirectObject baseObject

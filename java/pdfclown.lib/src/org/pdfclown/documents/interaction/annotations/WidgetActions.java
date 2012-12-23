@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,7 +38,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class WidgetActions
@@ -52,7 +52,7 @@ public final class WidgetActions
     )
   {super(parent);}
 
-  public WidgetActions(
+  WidgetActions(
     Annotation parent,
     PdfDirectObject baseObject
     )
@@ -65,7 +65,7 @@ public final class WidgetActions
   public WidgetActions clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {throw new NotImplementedException();} // TODO: verify parent reference.
 
   /**
     Gets the action to be performed when the annotation loses the input focus.

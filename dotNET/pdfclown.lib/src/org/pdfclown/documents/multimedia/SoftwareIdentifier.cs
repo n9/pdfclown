@@ -66,11 +66,6 @@ namespace org.pdfclown.documents.multimedia
         ) : base(baseObject)
       {}
 
-      public override object Clone(
-        Document context
-        )
-      {throw new NotImplementedException();}
-
       public int CompareTo(
         IVersion value
         )
@@ -119,11 +114,6 @@ namespace org.pdfclown.documents.multimedia
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets the operating system identifiers that indicate which operating systems this
       object applies to.</summary>

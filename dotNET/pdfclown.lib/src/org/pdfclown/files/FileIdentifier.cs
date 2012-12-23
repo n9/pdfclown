@@ -95,11 +95,6 @@ namespace org.pdfclown.files
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets the permanent identifier based on the contents of the file at the time it was
       originally created.</summary>

@@ -47,7 +47,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/29/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF13)
 public final class RelatedFiles
@@ -85,7 +85,7 @@ public final class RelatedFiles
   public RelatedFiles clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (RelatedFiles)super.clone(context);}
 
   // <Map>
   @Override

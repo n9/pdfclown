@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 public final class PdfDictionary
   extends PdfDirectObject
@@ -60,7 +60,7 @@ public final class PdfDictionary
 
   // <dynamic>
   // <fields>
-  private Map<PdfName,PdfDirectObject> entries;
+  Map<PdfName,PdfDirectObject> entries;
 
   private PdfObject parent;
   private boolean updated;
@@ -111,7 +111,7 @@ public final class PdfDictionary
   // <interface>
   // <public>
   @Override
-  public boolean accept(
+  public PdfObject accept(
     IVisitor visitor,
     Object data
     )
@@ -121,20 +121,7 @@ public final class PdfDictionary
   public PdfDictionary clone(
     File context
     )
-  {
-    PdfDictionary clone = (PdfDictionary)super.clone(context);
-    {
-      clone.entries = new HashMap<PdfName,PdfDirectObject>(entries.size());
-      for(Map.Entry<PdfName,PdfDirectObject> entry : entries.entrySet())
-      {
-        clone.put(
-          entry.getKey(),
-          (PdfDirectObject)PdfObject.clone(entry.getValue(), context)
-          );
-      }
-    }
-    return clone;
-  }
+  {return (PdfDictionary)super.clone(context);}
 
   @Override
   public int compareTo(

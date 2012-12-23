@@ -163,11 +163,6 @@ namespace org.pdfclown.documents.interaction.actions
       set
       {BaseDataObject[PdfName.Next] = value.BaseObject;}
     }
-
-    public override object Clone(
-      Document context
-      )
-    {throw new system::NotImplementedException();}
     #endregion
     #endregion
     #endregion

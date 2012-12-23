@@ -207,11 +207,6 @@ namespace org.pdfclown.documents
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     #region IExtList<Page>
     public IList<Page> GetRange(
       int index,

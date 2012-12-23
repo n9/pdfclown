@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class ChoiceItems
@@ -62,7 +62,7 @@ public final class ChoiceItems
     )
   {super(context, new PdfArray());}
 
-  public ChoiceItems(
+  ChoiceItems(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -95,7 +95,7 @@ public final class ChoiceItems
   public ChoiceItems clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (ChoiceItems)super.clone(context);}
 
   // <List>
   @Override

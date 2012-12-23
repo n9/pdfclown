@@ -42,14 +42,13 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.objects.PdfString;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Media clip data [PDF:1.7:9.1.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public final class MediaClipData
@@ -118,10 +117,10 @@ public final class MediaClipData
     {super(baseObject);}
 
     @Override
-    public Object clone(
+    public Viability clone(
       Document context
       )
-    {throw new NotImplementedException();}
+    {return (Viability)super.clone(context);}
 
     /**
       Gets the absolute URL to be used as the base URL in resolving any relative URLs found within
@@ -166,6 +165,12 @@ public final class MediaClipData
   // <interface>
   // <public>
   @Override
+  public MediaClipData clone(
+    Document context
+    )
+  {return (MediaClipData)super.clone(context);}
+
+  @Override
   public PdfObjectWrapper<?> getData(
     )
   {
@@ -174,7 +179,7 @@ public final class MediaClipData
       return null;
 
     if(File.resolve(dataObject) instanceof PdfStream)
-      return new FormXObject(dataObject);
+      return FormXObject.wrap(dataObject);
     else
       return FileSpecification.wrap(dataObject);
   }

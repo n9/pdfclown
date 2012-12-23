@@ -33,14 +33,13 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Action to be performed by the viewer application [PDF:1.6:8.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF11)
 public class Action
@@ -164,7 +163,7 @@ public class Action
   public Action clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Action)super.clone(context);}
 
   /**
     Gets the actions to be performed after the current one.

@@ -42,7 +42,6 @@ import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfTextString;
-import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.Interval;
 
 /**
@@ -50,10 +49,10 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 03/12/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
-public class Layer
+public final class Layer
   extends LayerEntity
   implements ILayerNode
 {
@@ -160,9 +159,20 @@ public class Layer
   // </classes>
 
   // <static>
+  // <fields>
   public static final PdfName TypeName = PdfName.OCG;
 
   private static final PdfName MembershipName = new PdfName("D-OCMD");
+  // </fields>
+
+  // <interface>
+  // <public>
+  public static Layer wrap(
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new Layer(baseObject) : null;}
+  // </public>
+  // </interface>
   // </static>
 
   // <dynamic>
@@ -185,7 +195,7 @@ public class Layer
     definition.getAllLayersObject().add(getBaseObject());
   }
 
-  public Layer(
+  private Layer(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -197,7 +207,7 @@ public class Layer
   public Layer clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Layer)super.clone(context);}
 
   /**
     Gets the name of the type of content controlled by the group.
@@ -228,7 +238,7 @@ public class Layer
     )
   {
     LayersLocation location = findLayersLocation();
-    return new Layers(location.parentLayersObject.get(location.index, PdfArray.class));
+    return Layers.wrap(location.parentLayersObject.get(location.index, PdfArray.class));
   }
 
   @Override
@@ -244,7 +254,7 @@ public class Layer
       getBaseDataObject().put(MembershipName, membershipObject = membership.getBaseObject());
     }
     else
-    {membership = new LayerMembership(membershipObject);}
+    {membership = LayerMembership.wrap(membershipObject);}
     if(membership.getVisibilityLayers().isEmpty())
     {
       membership.getVisibilityLayers().add(this);

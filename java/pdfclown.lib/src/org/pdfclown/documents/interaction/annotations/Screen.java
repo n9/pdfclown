@@ -31,6 +31,7 @@ import java.io.File;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
+import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.files.EmbeddedFile;
 import org.pdfclown.documents.files.FileSpecification;
@@ -53,7 +54,7 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public final class Screen
@@ -161,6 +162,16 @@ public final class Screen
     )
   {super(baseObject);}
   // </constructors>
+
+  // <interface>
+  // <public>
+  @Override
+  public Screen clone(
+    Document context
+    )
+  {return (Screen)super.clone(context);}
+  // </public>
+  // </interface>
   // </dynamic>
   // </class>
 }

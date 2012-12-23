@@ -92,11 +92,6 @@ namespace org.pdfclown.documents.interchange.access
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets the identifier components:
         <list type="number">

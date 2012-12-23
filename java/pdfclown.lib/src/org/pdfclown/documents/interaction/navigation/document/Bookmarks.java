@@ -47,7 +47,7 @@ import org.pdfclown.util.NotImplementedException;
   Collection of bookmarks [PDF:1.6:8.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Bookmarks
@@ -55,6 +55,17 @@ public final class Bookmarks
   implements List<Bookmark>
 {
   // <class>
+  // <static>
+  // <interface>
+  // <public>
+  public static Bookmarks wrap(
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new Bookmarks(baseObject) : null;}
+  // </public>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <constructors>
   public Bookmarks(
@@ -78,10 +89,7 @@ public final class Bookmarks
       );
   }
 
-  /**
-    <span style="color:red">For internal use only.</span>
-  */
-  public Bookmarks(
+  private Bookmarks(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -93,7 +101,7 @@ public final class Bookmarks
   public Bookmarks clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Bookmarks)super.clone(context);}
 
   // <List>
   @Override

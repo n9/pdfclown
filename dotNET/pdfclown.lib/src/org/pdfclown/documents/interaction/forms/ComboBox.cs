@@ -51,7 +51,7 @@ namespace org.pdfclown.documents.interaction.forms
       ) : base(name, widget)
     {Flags = EnumUtils.Mask(Flags, FlagsEnum.Combo, true);}
 
-    public ComboBox(
+    internal ComboBox(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -59,11 +59,6 @@ namespace org.pdfclown.documents.interaction.forms
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets whether the text is editable.</summary>
     */

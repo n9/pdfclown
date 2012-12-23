@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,7 +40,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 12/21/12
  */
 public class Array<TItem extends IPdfObjectWrapper>
   extends PdfObjectWrapper<PdfArray>
@@ -87,6 +87,36 @@ public class Array<TItem extends IPdfObjectWrapper>
     }
   }
   // </classes>
+
+  // <static>
+  // <interface>
+  // <public>
+  /**
+    Wraps an existing base array using the default wrapper for wrapping its items.
+
+    @param itemClass Item class.
+    @param baseObject Base array. MUST be a {@link PdfReference reference} every time available.
+  */
+  public static <TItem extends IPdfObjectWrapper> Array<TItem> wrap(
+    Class<TItem> itemClass,
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new Array<TItem>(itemClass, baseObject) : null;}
+
+  /**
+    Wraps an existing base array using the specified wrapper for wrapping its items.
+
+    @param itemWrapper Item wrapper.
+    @param baseObject Base array. MUST be a {@link PdfReference reference} every time available.
+  */
+  public static <TItem extends IPdfObjectWrapper> Array<TItem> wrap(
+    IWrapper<TItem> itemWrapper,
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new Array<TItem>(itemWrapper, baseObject) : null;}
+  // </public>
+  // </interface>
+  // </static>
 
   // <dynamic>
   // <fields>
@@ -171,9 +201,9 @@ public class Array<TItem extends IPdfObjectWrapper>
     Wraps an existing base array using the default wrapper for wrapping its items.
 
     @param itemClass Item class.
-    @param baseObject Base array.  MUST be a {@link PdfReference reference} everytime available.
+    @param baseObject Base array. MUST be a {@link PdfReference reference} every time available.
   */
-  public Array(
+  protected Array(
     Class<TItem> itemClass,
     PdfDirectObject baseObject
     )
@@ -188,9 +218,9 @@ public class Array<TItem extends IPdfObjectWrapper>
     Wraps an existing base array using the specified wrapper for wrapping its items.
 
     @param itemWrapper Item wrapper.
-    @param baseObject Base array. MUST be a {@link PdfReference reference} everytime available.
+    @param baseObject Base array. MUST be a {@link PdfReference reference} every time available.
   */
-  public Array(
+  protected Array(
     IWrapper<TItem> itemWrapper,
     PdfDirectObject baseObject
     )
@@ -202,11 +232,12 @@ public class Array<TItem extends IPdfObjectWrapper>
 
   // <interface>
   // <public>
+  @SuppressWarnings({"unchecked"})
   @Override
-  public Object clone(
+  public Array<TItem> clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Array<TItem>)super.clone(context);}
 
   // <List>
   @Override

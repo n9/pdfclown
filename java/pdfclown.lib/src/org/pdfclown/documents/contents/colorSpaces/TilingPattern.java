@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,7 +43,7 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 12/21/12
 */
 //TODO: define as IContentContext?
 @PDF(VersionEnum.PDF12)
@@ -210,7 +210,7 @@ public class TilingPattern
     /*
       NOTE: 'BBox' entry MUST be defined.
     */
-    org.pdfclown.objects.Rectangle box = new org.pdfclown.objects.Rectangle(getBaseDataObject().getHeader().get(PdfName.BBox));
+    org.pdfclown.objects.Rectangle box = org.pdfclown.objects.Rectangle.wrap(getBaseDataObject().getHeader().get(PdfName.BBox));
     return new Rectangle2D.Double(box.getX(), box.getY(), box.getWidth(), box.getHeight());
   }
 

@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public abstract class ResourceItems<TValue extends PdfObjectWrapper<?>>
@@ -69,12 +69,6 @@ public abstract class ResourceItems<TValue extends PdfObjectWrapper<?>>
 
   // <interface>
   // <public>
-  @Override
-  public ResourceItems<TValue> clone(
-    Document context
-    )
-  {throw new NotImplementedException();}
-
   /**
     Gets the key associated to a given value.
   */

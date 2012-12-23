@@ -37,7 +37,7 @@ namespace org.pdfclown.documents.contents.layers
     <summary>Optional content group [PDF:1.7:4.10.1].</summary>
   */
   [PDF(VersionEnum.PDF15)]
-  public class Layer
+  public sealed class Layer
     : LayerEntity,
       ILayerNode
   {
@@ -95,9 +95,20 @@ namespace org.pdfclown.documents.contents.layers
     #endregion
 
     #region static
+    #region fields
     public static readonly PdfName TypeName = PdfName.OCG;
 
     private static readonly PdfName MembershipName = new PdfName("D-OCMD");
+    #endregion
+
+    #region interface
+    #region public
+    public static new Layer Wrap(
+      PdfDirectObject baseObject
+      )
+    {return baseObject != null ? new Layer(baseObject) : null;}
+    #endregion
+    #endregion
     #endregion
 
     #region dynamic
@@ -119,7 +130,7 @@ namespace org.pdfclown.documents.contents.layers
       definition.AllLayersObject.Add(BaseObject);
     }
 
-    public Layer(
+    private Layer(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -127,11 +138,6 @@ namespace org.pdfclown.documents.contents.layers
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the name of the type of content controlled by the group.</summary>
     */
@@ -189,7 +195,7 @@ namespace org.pdfclown.documents.contents.layers
       get
       {
         LayersLocation location = FindLayersLocation();
-        return new Layers(location.ParentLayersObject.Get<PdfArray>(location.Index));
+        return Layers.Wrap(location.ParentLayersObject.Get<PdfArray>(location.Index));
       }
       set
       {
@@ -232,7 +238,7 @@ namespace org.pdfclown.documents.contents.layers
           BaseDataObject[MembershipName] = membershipObject = membership.BaseObject;
         }
         else
-        {membership = new LayerMembership(membershipObject);}
+        {membership = LayerMembership.Wrap(membershipObject);}
         if(membership.VisibilityLayers.Count == 0)
         {
           membership.VisibilityLayers.Add(this);

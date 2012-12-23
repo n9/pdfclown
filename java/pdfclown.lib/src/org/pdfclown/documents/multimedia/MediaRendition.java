@@ -27,6 +27,7 @@ package org.pdfclown.documents.multimedia;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
+import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -37,7 +38,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public final class MediaRendition
@@ -62,6 +63,12 @@ public final class MediaRendition
 
   // <interface>
   // <public>
+  @Override
+  public MediaRendition clone(
+    Document context
+    )
+  {return (MediaRendition)super.clone(context);}
+
   /**
     Gets the content to be played.
   */

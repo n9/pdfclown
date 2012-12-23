@@ -214,6 +214,13 @@ namespace org.pdfclown.documents.interaction.navigation.page
     #endregion
 
     #region interface
+    #region public
+    public static Transition Wrap(
+      PdfDirectObject baseObject
+      )
+    {return baseObject != null ? new Transition(baseObject) : null;}
+    #endregion
+
     #region private
     /**
       <summary>Gets the code corresponding to the given value.</summary>
@@ -373,7 +380,7 @@ namespace org.pdfclown.documents.interaction.navigation.page
       Scale = scale;
     }
 
-    public Transition(
+    private Transition(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -381,11 +388,6 @@ namespace org.pdfclown.documents.interaction.navigation.page
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the transition direction.</summary>
     */

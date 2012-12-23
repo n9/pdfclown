@@ -58,7 +58,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF13)
 public final class TextMarkup
@@ -211,7 +211,7 @@ public final class TextMarkup
   public TextMarkup clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (TextMarkup)super.clone(context);}
 
   /**
     Gets the quadrilaterals encompassing a word or group of contiguous words in the text underlying
@@ -340,7 +340,7 @@ public final class TextMarkup
     )
   {
     FormXObject normalAppearance;
-    Rectangle2D box = new org.pdfclown.objects.Rectangle(getBaseDataObject().get(PdfName.Rect)).toRectangle2D();
+    Rectangle2D box = org.pdfclown.objects.Rectangle.wrap(getBaseDataObject().get(PdfName.Rect)).toRectangle2D();
     {
       AppearanceStates normalAppearances = getAppearance().getNormal();
       normalAppearance = normalAppearances.get(null);

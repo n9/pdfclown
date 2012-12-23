@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,7 +38,6 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Exponential interpolation of one input value and <code>n</code> output values [PDF:1.6:3.9.2].
@@ -49,7 +48,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 11/09/11
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF13)
 public final class Type2Function
@@ -78,10 +77,10 @@ public final class Type2Function
   }
 
   @Override
-  public Object clone(
+  public Type2Function clone(
     Document context
     )
-  {return new NotImplementedException();}
+  {return (Type2Function)super.clone(context);}
 
   /**
     Gets the output value pairs <code>(C0,C1)</code> for lower (<code>0.0</code>)

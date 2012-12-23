@@ -89,7 +89,7 @@ namespace org.pdfclown.objects
 
     #region interface
     #region public
-    public override bool Accept(
+    public override PdfObject Accept(
       IVisitor visitor,
       object data
       )
@@ -250,11 +250,6 @@ namespace org.pdfclown.objects
     }
 
     #region IPdfIndirectObject
-    public override object Clone(
-      File context
-      )
-    {return context.IndirectObjects.AddExternal(this);}
-
     public PdfDataObject DataObject
     {
       get

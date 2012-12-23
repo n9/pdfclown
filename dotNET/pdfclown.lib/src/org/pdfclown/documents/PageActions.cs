@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -54,11 +54,6 @@ namespace org.pdfclown.documents
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new system::NotImplementedException();}
-
     /**
       <summary>Gets/Sets the action to be performed when the page is closed.</summary>
     */

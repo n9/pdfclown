@@ -34,17 +34,17 @@ import org.pdfclown.documents.Page;
 import org.pdfclown.documents.interaction.forms.CheckBox;
 import org.pdfclown.documents.interaction.forms.Field;
 import org.pdfclown.documents.interaction.forms.RadioButton;
+import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.EnumUtils;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Widget annotation [PDF:1.6:8.4.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public class Widget
@@ -166,7 +166,7 @@ public class Widget
   public Widget clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Widget)super.clone(context);}
 
   @Override
   public AnnotationActions getActions(
@@ -177,15 +177,12 @@ public class Widget
   }
 
   /**
-    Gets the annotation's appearance characteristics
-    to be used for its visual presentation on the page.
+    Gets the annotation's appearance characteristics to be used for its visual presentation on the
+    page.
   */
   public AppearanceCharacteristics getAppearanceCharacteristics(
     )
-  {
-    PdfDirectObject appearanceObject = getBaseDataObject().get(PdfName.MK);
-    return appearanceObject != null ? new AppearanceCharacteristics(appearanceObject) : null;
-  }
+  {return AppearanceCharacteristics.wrap(getBaseDataObject().get(PdfName.MK, PdfDictionary.class));}
 
   /**
     Gets the annotation's highlighting mode, the visual effect to be used

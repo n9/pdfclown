@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,14 +30,13 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   List box [PDF:1.6:8.6.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.0
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class ListBox
@@ -60,7 +59,7 @@ public final class ListBox
       );
   }
 
-  public ListBox(
+  ListBox(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -72,7 +71,7 @@ public final class ListBox
   public ListBox clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (ListBox)super.clone(context);}
   // </public>
   // </interface>
   // </dynamic>

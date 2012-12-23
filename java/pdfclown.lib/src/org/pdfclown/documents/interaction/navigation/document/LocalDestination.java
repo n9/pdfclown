@@ -30,14 +30,13 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Local interaction target [PDF:1.6:8.2.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class LocalDestination
@@ -74,7 +73,7 @@ public final class LocalDestination
       );
   }
 
-  public LocalDestination(
+  LocalDestination(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -86,7 +85,7 @@ public final class LocalDestination
   public LocalDestination clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (LocalDestination)super.clone(context);}
 
   /**
     Gets the target page.

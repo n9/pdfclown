@@ -111,7 +111,7 @@ namespace org.pdfclown.objects
 
     #region interface
     #region public
-    public override object Clone(
+    public override PdfObject Clone(
       File context
       )
     {return this;} // NOTE: Simple objects are immutable.

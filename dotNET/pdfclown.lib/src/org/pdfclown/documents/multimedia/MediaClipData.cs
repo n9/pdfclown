@@ -80,11 +80,6 @@ namespace org.pdfclown.documents.multimedia
         ) : base(baseObject)
       {}
 
-      public override object Clone(
-        Document context
-        )
-      {throw new NotImplementedException();}
-
       /**
         <summary>Gets the absolute URL to be used as the base URL in resolving any relative URLs
         found within the media data.</summary>
@@ -131,7 +126,7 @@ namespace org.pdfclown.documents.multimedia
           return null;
 
         if(File.Resolve(dataObject) is PdfStream)
-          return new FormXObject(dataObject);
+          return FormXObject.Wrap(dataObject);
         else
           return FileSpecification.Wrap(dataObject);
       }

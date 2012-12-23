@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,7 @@ import org.pdfclown.objects.PdfDirectObject;
   Font resources collection [PDF:1.6:3.7.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class FontResources
@@ -56,6 +56,14 @@ public final class FontResources
   // </constructors>
 
   // <interface>
+  // <public>
+  @Override
+  public FontResources clone(
+    Document context
+    )
+  {return (FontResources)super.clone(context);}
+  // </public>
+
   // <protected>
   @Override
   protected Font wrap(

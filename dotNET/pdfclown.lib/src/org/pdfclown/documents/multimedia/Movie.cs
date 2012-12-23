@@ -60,11 +60,6 @@ namespace org.pdfclown.documents.multimedia
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     #region IFileResource
     public FileSpecification DataFile
     {

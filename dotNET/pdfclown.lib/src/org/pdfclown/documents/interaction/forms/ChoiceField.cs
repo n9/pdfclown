@@ -62,11 +62,6 @@ namespace org.pdfclown.documents.interaction.forms
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     public ChoiceItems Items
     {
       get

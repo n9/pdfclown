@@ -31,16 +31,31 @@ namespace org.pdfclown.objects
 {
   /**
     <summary>Visitor interface.</summary>
+    <remarks>Implementations are expected to be functional (traversal results are propagated through
+    return values rather than side effects) and external (responsibility for traversing the
+    hierarchical structure is assigned to the 'visit' methods rather than the 'accept' counterparts).
+    </remarks>
   */
   public interface IVisitor
   {
     /**
+      <summary>Visits an object stream.</summary>
+      <param name="object">Visited object.</param>
+      <param name="data">Supplemental data.</param>
+      <returns>Result object.</returns>
+    */
+    PdfObject Visit(
+      ObjectStream obj,
+      object data
+      );
+
+    /**
       <summary>Visits an object array.</summary>
       <param name="object">Visited object.</param>
       <param name="data">Supplemental data.</param>
-      <returns>Whether visit can be continued.</returns>
+      <returns>Result object.</returns>
     */
-    bool Visit(
+    PdfObject Visit(
       PdfArray obj,
       object data
       );
@@ -49,10 +64,21 @@ namespace org.pdfclown.objects
       <summary>Visits a boolean object.</summary>
       <param name="object">Visited object.</param>
       <param name="data">Supplemental data.</param>
-      <returns>Whether visit can be continued.</returns>
+      <returns>Result object.</returns>
     */
-    bool Visit(
+    PdfObject Visit(
       PdfBoolean obj,
+      object data
+      );
+
+    /**
+      <summary>Visits a data object.</summary>
+      <param name="object">Visited object.</param>
+      <param name="data">Supplemental data.</param>
+      <returns>Result object.</returns>
+    */
+    PdfObject Visit(
+      PdfDataObject obj,
       object data
       );
 
@@ -60,9 +86,9 @@ namespace org.pdfclown.objects
       <summary>Visits a date object.</summary>
       <param name="object">Visited object.</param>
       <param name="data">Supplemental data.</param>
-      <returns>Whether visit can be continued.</returns>
+      <returns>Result object.</returns>
     */
-    bool Visit(
+    PdfObject Visit(
       PdfDate obj,
       object data
       );
@@ -71,9 +97,9 @@ namespace org.pdfclown.objects
       <summary>Visits an object dictionary.</summary>
       <param name="object">Visited object.</param>
       <param name="data">Supplemental data.</param>
-      <returns>Whether visit can be continued.</returns>
+      <returns>Result object.</returns>
     */
-    bool Visit(
+    PdfObject Visit(
       PdfDictionary obj,
       object data
       );
@@ -82,9 +108,9 @@ namespace org.pdfclown.objects
       <summary>Visits an indirect object.</summary>
       <param name="object">Visited object.</param>
       <param name="data">Supplemental data.</param>
-      <returns>Whether visit can be continued.</returns>
+      <returns>Result object.</returns>
     */
-    bool Visit(
+    PdfObject Visit(
       PdfIndirectObject obj,
       object data
       );
@@ -93,9 +119,9 @@ namespace org.pdfclown.objects
       <summary>Visits an integer-number object.</summary>
       <param name="object">Visited object.</param>
       <param name="data">Supplemental data.</param>
-      <returns>Whether visit can be continued.</returns>
+      <returns>Result object.</returns>
     */
-    bool Visit(
+    PdfObject Visit(
       PdfInteger obj,
       object data
       );
@@ -104,21 +130,10 @@ namespace org.pdfclown.objects
       <summary>Visits a name object.</summary>
       <param name="object">Visited object.</param>
       <param name="data">Supplemental data.</param>
-      <returns>Whether visit can be continued.</returns>
+      <returns>Result object.</returns>
     */
-    bool Visit(
+    PdfObject Visit(
       PdfName obj,
-      object data
-      );
-
-    /**
-      <summary>Visits an object stream.</summary>
-      <param name="object">Visited object.</param>
-      <param name="data">Supplemental data.</param>
-      <returns>Whether visit can be continued.</returns>
-    */
-    bool Visit(
-      ObjectStream obj,
       object data
       );
 
@@ -126,9 +141,9 @@ namespace org.pdfclown.objects
       <summary>Visits a real-number object.</summary>
       <param name="object">Visited object.</param>
       <param name="data">Supplemental data.</param>
-      <returns>Whether visit can be continued.</returns>
+      <returns>Result object.</returns>
     */
-    bool Visit(
+    PdfObject Visit(
       PdfReal obj,
       object data
       );
@@ -137,9 +152,9 @@ namespace org.pdfclown.objects
       <summary>Visits a reference object.</summary>
       <param name="object">Visited object.</param>
       <param name="data">Supplemental data.</param>
-      <returns>Whether visit can be continued.</returns>
+      <returns>Result object.</returns>
     */
-    bool Visit(
+    PdfObject Visit(
       PdfReference obj,
       object data
       );
@@ -148,9 +163,9 @@ namespace org.pdfclown.objects
       <summary>Visits a stream object.</summary>
       <param name="object">Visited object.</param>
       <param name="data">Supplemental data.</param>
-      <returns>Whether visit can be continued.</returns>
+      <returns>Result object.</returns>
     */
-    bool Visit(
+    PdfObject Visit(
       PdfStream obj,
       object data
       );
@@ -159,9 +174,9 @@ namespace org.pdfclown.objects
       <summary>Visits a string object.</summary>
       <param name="object">Visited object.</param>
       <param name="data">Supplemental data.</param>
-      <returns>Whether visit can be continued.</returns>
+      <returns>Result object.</returns>
     */
-    bool Visit(
+    PdfObject Visit(
       PdfString obj,
       object data
       );
@@ -170,9 +185,9 @@ namespace org.pdfclown.objects
       <summary>Visits a text string object.</summary>
       <param name="object">Visited object.</param>
       <param name="data">Supplemental data.</param>
-      <returns>Whether visit can be continued.</returns>
+      <returns>Result object.</returns>
     */
-    bool Visit(
+    PdfObject Visit(
       PdfTextString obj,
       object data
       );
@@ -181,9 +196,9 @@ namespace org.pdfclown.objects
       <summary>Visits a cross-reference stream object.</summary>
       <param name="object">Visited object.</param>
       <param name="data">Supplemental data.</param>
-      <returns>Whether visit can be continued.</returns>
+      <returns>Result object.</returns>
     */
-    bool Visit(
+    PdfObject Visit(
       XRefStream obj,
       object data
       );

@@ -39,14 +39,13 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   'Control the playing of multimedia content' action [PDF:1.6:8.5.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public final class Render
@@ -147,7 +146,7 @@ public final class Render
   public Render clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Render)super.clone(context);}
 
   /**
     Gets the operation to perform when the action is triggered.

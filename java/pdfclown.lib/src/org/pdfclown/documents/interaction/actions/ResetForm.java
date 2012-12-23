@@ -30,7 +30,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   'Reset selected interactive form fields to their default values' action
@@ -38,7 +37,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class ResetForm
@@ -67,7 +66,7 @@ public final class ResetForm
   public ResetForm clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (ResetForm)super.clone(context);}
   // </public>
   // </interface>
   // </dynamic>

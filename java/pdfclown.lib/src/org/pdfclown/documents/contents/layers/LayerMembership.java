@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,10 +47,10 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
-public class LayerMembership
+public final class LayerMembership
   extends LayerEntity
 {
   // <class>
@@ -79,10 +79,10 @@ public class LayerMembership
     // <interface>
     // <public>
     @Override
-    public Object clone(
+    public VisibilityLayers clone(
       Document context
       )
-    {throw new NotImplementedException();}
+    {return (VisibilityLayers)super.clone(context);}
 
     // <List>
     @Override
@@ -166,10 +166,10 @@ public class LayerMembership
         if(index != 0)
           throw new IndexOutOfBoundsException();
 
-        return new Layer(getBaseObject());
+        return Layer.wrap(getBaseObject());
       }
       else // Multiple layers.
-        return new Layer(((PdfArray)baseDataObject).get(index));
+        return Layer.wrap(((PdfArray)baseDataObject).get(index));
     }
 
     @Override
@@ -265,7 +265,7 @@ public class LayerMembership
     public Layer remove(
       int index
       )
-    {return new Layer(ensureArray().remove(index));}
+    {return Layer.wrap(ensureArray().remove(index));}
 
     @Override
     public boolean removeAll(
@@ -289,7 +289,7 @@ public class LayerMembership
       int index,
       Layer item
       )
-    {return new Layer(ensureArray().set(index, item.getBaseObject()));}
+    {return Layer.wrap(ensureArray().set(index, item.getBaseObject()));}
 
     @Override
     public int size(
@@ -345,7 +345,18 @@ public class LayerMembership
   // </classes>
 
   // <static>
+  // <fields>
   public static final PdfName TypeName = PdfName.OCMD;
+  // </fields>
+
+  // <interface>
+  // <public>
+  public static LayerMembership wrap(
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new LayerMembership(baseObject) : null;}
+  // </public>
+  // </interface>
   // </static>
 
   // <dynamic>
@@ -355,7 +366,7 @@ public class LayerMembership
     )
   {super(context, TypeName);}
 
-  public LayerMembership(
+  private LayerMembership(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -367,7 +378,7 @@ public class LayerMembership
   public LayerMembership clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (LayerMembership)super.clone(context);}
 
   @Override
   public LayerMembership getMembership(

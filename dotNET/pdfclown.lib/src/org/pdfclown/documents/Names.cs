@@ -58,11 +58,6 @@ namespace org.pdfclown.documents
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the named destinations.</summary>
     */

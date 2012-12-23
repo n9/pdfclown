@@ -43,7 +43,6 @@ import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfString;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Interaction target [PDF:1.6:8.2.1].
@@ -55,7 +54,7 @@ import org.pdfclown.util.NotImplementedException;
   </ul>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Destination
@@ -245,12 +244,6 @@ public abstract class Destination
 
   // <interface>
   // <public>
-  @Override
-  public Destination clone(
-    Document context
-    )
-  {throw new NotImplementedException();}
-
   /**
     Gets the page location.
   */

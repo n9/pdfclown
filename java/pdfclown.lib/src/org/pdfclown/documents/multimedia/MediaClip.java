@@ -35,14 +35,13 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Media clip object [PDF:1.7:9.1.3].
-  
+
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public abstract class MediaClip
@@ -106,12 +105,6 @@ public abstract class MediaClip
 
   // <interface>
   // <public>
-  @Override
-  public Object clone(
-    Document context
-    )
-  {throw new NotImplementedException();}
-
   /**
     Gets the actual media data.
 

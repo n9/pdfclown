@@ -44,7 +44,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
   Resources collection [PDF:1.6:3.7.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Resources
@@ -80,7 +80,7 @@ public final class Resources
   public Resources clone(
     Document context
     )
-  {return new Resources((PdfDirectObject)getBaseObject().clone(context.getFile()));}
+  {return (Resources)super.clone(context);}
 
   public ColorSpaceResources getColorSpaces(
     )

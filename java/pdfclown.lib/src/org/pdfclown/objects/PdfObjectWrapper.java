@@ -58,10 +58,11 @@ import org.pdfclown.util.NotImplementedException;
   {@link #getBaseDataObject() baseDataObject} backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
-  implements IPdfObjectWrapper
+  implements Cloneable,
+    IPdfObjectWrapper
 {
   // <class>
   // <static>
@@ -140,9 +141,19 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
 
     @param context Which document the clone has to be registered in.
   */
-  public abstract Object clone(
+  @SuppressWarnings({"unchecked"})
+  public Object clone(
     Document context
-    );
+    )
+  {
+    PdfObjectWrapper<TDataObject> clone;
+    try
+    {clone = (PdfObjectWrapper<TDataObject>)super.clone();}
+    catch(CloneNotSupportedException e)
+    {throw new RuntimeException(e);}
+    clone.setBaseObject((PdfDirectObject)getBaseObject().clone(context.getFile()));
+    return clone;
+  }
 
   /**
     Removes the object from its document context.

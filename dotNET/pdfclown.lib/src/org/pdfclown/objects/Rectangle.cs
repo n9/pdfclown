@@ -46,6 +46,13 @@ namespace org.pdfclown.objects
   {
     #region static
     #region interface
+    #region public
+    public static Rectangle Wrap(
+      PdfDirectObject baseObject
+      )
+    {return baseObject != null ? new Rectangle(baseObject) : null;}
+    #endregion
+
     #region private
     private static PdfArray Normalize(
       PdfArray rectangle
@@ -109,8 +116,8 @@ namespace org.pdfclown.objects
           )
         )
     {}
-    //TODO:integrate with the container update infrastructure (see other PdfObjectWrapper subclass implementations)!!
-    public Rectangle(
+
+    private Rectangle(
       PdfDirectObject baseObject
       ) : base(Normalize((PdfArray)File.Resolve(baseObject)))
     {}
@@ -125,11 +132,6 @@ namespace org.pdfclown.objects
       set
       {BaseDataObject[1] = PdfReal.Get(value);}
     }
-
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
 
     public double Height
     {

@@ -58,11 +58,6 @@ namespace org.pdfclown.documents.interaction.actions
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the uniform resource identifier to resolve [RFC 2396].</summary>
     */

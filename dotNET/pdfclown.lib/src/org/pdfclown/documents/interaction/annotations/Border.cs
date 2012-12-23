@@ -140,7 +140,7 @@ namespace org.pdfclown.documents.interaction.annotations
       Pattern = pattern;
     }
 
-    public Border(
+    internal Border(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -148,11 +148,6 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the dash pattern used in case of dashed border.</summary>
     */

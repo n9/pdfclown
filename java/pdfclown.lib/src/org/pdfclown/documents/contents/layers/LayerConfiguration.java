@@ -36,14 +36,13 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfTextString;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Optional content configuration [PDF:1.7:4.10.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 03/12/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public class LayerConfiguration
@@ -134,10 +133,10 @@ public class LayerConfiguration
   // <interface>
   // <public>
   @Override
-  public Object clone(
+  public LayerConfiguration clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (LayerConfiguration)super.clone(context);}
 
   // <ILayerConfiguration>
   @Override
@@ -148,7 +147,7 @@ public class LayerConfiguration
   @Override
   public Layers getLayers(
     )
-  {return new Layers(getBaseDataObject().get(PdfName.Order, PdfArray.class));}
+  {return Layers.wrap(getBaseDataObject().get(PdfName.Order, PdfArray.class));}
 
   @Override
   public ListModeEnum getListMode(
@@ -158,7 +157,7 @@ public class LayerConfiguration
   @Override
   public Array<LayerGroup> getOptionGroups(
     )
-  {return new Array<LayerGroup>(LayerGroup.class, getBaseDataObject().get(PdfName.RBGroups, PdfArray.class));}
+  {return Array.wrap(LayerGroup.class, getBaseDataObject().get(PdfName.RBGroups, PdfArray.class));}
 
   @Override
   public String getTitle(

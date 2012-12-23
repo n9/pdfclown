@@ -31,14 +31,13 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interaction.navigation.page.Transition;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   'Control drawing during a sequence of actions' action [PDF:1.6:8.5.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public final class DoTransition
@@ -71,14 +70,14 @@ public final class DoTransition
   public DoTransition clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (DoTransition)super.clone(context);}
 
   /**
     Gets the transition effect to be used for the update of the display.
   */
   public Transition getTransition(
     )
-  {return new Transition(getBaseDataObject().get(PdfName.Trans));}
+  {return Transition.wrap(getBaseDataObject().get(PdfName.Trans));}
 
   /**
     @see #getTransition()

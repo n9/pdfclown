@@ -59,11 +59,6 @@ namespace org.pdfclown.documents.multimedia
         ) : base(baseObject)
       {}
 
-      public override object Clone(
-        Document context
-        )
-      {throw new NotImplementedException();}
-
       /**
         <summary>Gets the minimum system's bandwidth (in bits per second).</summary>
         <remarks>Equivalent to SMIL's systemBitrate attribute.</remarks>
@@ -115,7 +110,7 @@ namespace org.pdfclown.documents.multimedia
       public Array<SoftwareIdentifier> Renderers
       {
         get
-        {return new Array<SoftwareIdentifier>(MediaCriteria.Get<PdfArray>(PdfName.V));}
+        {return Array<SoftwareIdentifier>.Wrap<SoftwareIdentifier>(MediaCriteria.Get<PdfArray>(PdfName.V));}
       }
 
       /**
@@ -261,11 +256,6 @@ namespace org.pdfclown.documents.multimedia
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the preferred options the renderer should attempt to honor without affecting
       its viability [PDF:1.7:9.1.1].</summary>

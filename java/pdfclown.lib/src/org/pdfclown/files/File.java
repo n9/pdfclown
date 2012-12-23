@@ -40,6 +40,7 @@ import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.bytes.OutputStream;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Document.Configuration.XRefModeEnum;
+import org.pdfclown.objects.Cloner;
 import org.pdfclown.objects.IPdfIndirectObject;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
@@ -59,7 +60,7 @@ import org.pdfclown.util.StringUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 public final class File
   implements Closeable
@@ -166,6 +167,8 @@ public final class File
   private Reader reader;
   private final PdfDictionary trailer;
   private final Version version;
+
+  private Cloner cloner;
   // </fields>
 
   // <constructors>
@@ -210,6 +213,18 @@ public final class File
 
   // <interface>
   // <public>
+  /**
+    Gets the default cloner.
+  */
+  public Cloner getCloner(
+    )
+  {
+    if(cloner == null)
+    {cloner = new Cloner(this);}
+
+    return cloner;
+  }
+
   /**
     Gets the file configuration.
   */
@@ -392,6 +407,14 @@ public final class File
     Writer writer = Writer.get(this, stream);
     writer.write(mode);
   }
+
+  /**
+    @see #getCloner()
+  */
+  public void setCloner(
+    Cloner value
+    )
+  {cloner = value;}
 
   /**
     @see #getPath()

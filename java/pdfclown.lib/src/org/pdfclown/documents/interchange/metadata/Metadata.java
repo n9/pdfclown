@@ -49,7 +49,6 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfStream;
-import org.pdfclown.util.NotImplementedException;
 import org.xml.sax.SAXException;
 
 /**
@@ -57,7 +56,7 @@ import org.xml.sax.SAXException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF14)
 public final class Metadata
@@ -97,10 +96,10 @@ public final class Metadata
   // <interface>
   // <public>
   @Override
-  public Object clone(
+  public Metadata clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Metadata)super.clone(context);}
 
   /**
     Gets the metadata contents.

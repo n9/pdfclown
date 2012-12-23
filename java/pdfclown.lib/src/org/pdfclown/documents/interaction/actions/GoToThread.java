@@ -30,14 +30,13 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   'Jump to a specified bead on an article thread' action [PDF:1.6:8.5.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF11)
 public final class GoToThread
@@ -67,7 +66,7 @@ public final class GoToThread
   public GoToThread clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (GoToThread)super.clone(context);}
   // </public>
   // </interface>
   // </dynamic>

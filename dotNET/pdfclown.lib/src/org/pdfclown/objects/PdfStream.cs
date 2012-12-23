@@ -51,8 +51,8 @@ namespace org.pdfclown.objects
 
     #region dynamic
     #region fields
-    private IBuffer body;
-    private PdfDictionary header;
+    internal IBuffer body;
+    internal PdfDictionary header;
 
     private PdfObject parent;
     private bool updateable = true;
@@ -109,7 +109,7 @@ namespace org.pdfclown.objects
 
     #region interface
     #region public
-    public override bool Accept(
+    public override PdfObject Accept(
       IVisitor visitor,
       object data
       )
@@ -129,18 +129,6 @@ namespace org.pdfclown.objects
         */
         return GetBody(true);
       }
-    }
-
-    public override object Clone(
-      File context
-      )
-    {
-      PdfStream clone = (PdfStream)base.Clone(context);
-      {
-        clone.header = (PdfDictionary)header.Clone(context);
-        clone.body = (IBuffer)body.Clone();
-      }
-      return clone;
     }
 
     public PdfDirectObject Filter

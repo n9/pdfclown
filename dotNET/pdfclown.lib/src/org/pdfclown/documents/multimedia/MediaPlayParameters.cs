@@ -69,11 +69,6 @@ namespace org.pdfclown.documents.multimedia
           ) : base(baseObject)
         {}
 
-        public override object Clone(
-          Document context
-          )
-        {throw new NotImplementedException();}
-
         /**
           <summary>Gets/Sets the temporal duration.</summary>
           <returns>
@@ -164,11 +159,6 @@ namespace org.pdfclown.documents.multimedia
         PdfDirectObject baseObject
         ) : base(baseObject)
       {}
-
-      public override Object Clone(
-        Document context
-        )
-      {throw new NotImplementedException();}
 
       /**
         <summary>Gets/Sets whether the media should automatically play when activated.</summary>
@@ -288,11 +278,6 @@ namespace org.pdfclown.documents.multimedia
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the player rules for playing this media.</summary>
     */

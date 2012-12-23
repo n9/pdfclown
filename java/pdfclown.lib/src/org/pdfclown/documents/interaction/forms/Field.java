@@ -30,7 +30,6 @@ import java.util.Stack;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
-import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interaction.actions.ResetForm;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.files.File;
@@ -44,14 +43,13 @@ import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.EnumUtils;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Interactive form field [PDF:1.6:8.6.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Field
@@ -296,12 +294,6 @@ public abstract class Field
 
   // <interface>
   // <public>
-  @Override
-  public Field clone(
-    Document context
-    )
-  {throw new NotImplementedException();}
-
   /**
     Gets the field's behavior in response to trigger events.
   */

@@ -234,7 +234,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public Appearance Appearance
     {
       get
-      {return new Appearance(BaseDataObject.Get<PdfDictionary>(PdfName.AP));}
+      {return Appearance.Wrap(BaseDataObject.Get<PdfDictionary>(PdfName.AP));}
       set
       {BaseDataObject[PdfName.AP] = PdfObjectWrapper.GetBaseObject(value);}
     }
@@ -263,7 +263,7 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        org.pdfclown.objects.Rectangle box = new org.pdfclown.objects.Rectangle(BaseDataObject[PdfName.Rect]);
+        org.pdfclown.objects.Rectangle box = org.pdfclown.objects.Rectangle.Wrap(BaseDataObject[PdfName.Rect]);
         return new RectangleF(
           (float)box.Left,
           (float)(GetPageHeight() - box.Top),
@@ -281,11 +281,6 @@ namespace org.pdfclown.documents.interaction.annotations
           ).BaseDataObject;
       }
     }
-
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
 
     /**
       <summary>Gets/Sets the annotation color.</summary>

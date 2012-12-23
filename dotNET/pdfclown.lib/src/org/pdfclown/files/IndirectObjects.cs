@@ -163,12 +163,33 @@ namespace org.pdfclown.files
         to import contents from a file into another one.</para>
         <para>To register an internal data object, use <see cref="Add(PdfDataObject)"/>.</para>
       </remarks>
+      <param nme="obj">External indirect object to import.</param>
       <returns>Indirect object imported from the external indirect object.</returns>
     */
     public PdfIndirectObject AddExternal(
       PdfIndirectObject obj
       )
+    {return AddExternal(obj, file.Cloner);}
+
+    /**
+      <summary>Registers an <i>external</i> indirect object.</summary>
+      <remarks>
+        <para>External indirect objects come from alien PDF files; therefore, this is a powerful way
+        to import contents from a file into another one.</para>
+        <para>To register an internal data object, use <see cref="Add(PdfDataObject)"/>.</para>
+      </remarks>
+      <param nme="obj">External indirect object to import.</param>
+      <param nme="cloner">Import rules.</param>
+      <returns>Indirect object imported from the external indirect object.</returns>
+    */
+    public PdfIndirectObject AddExternal(
+      PdfIndirectObject obj,
+      Cloner cloner
+      )
     {
+      if(cloner.Context != file)
+        throw new ArgumentException("cloner file context incompatible");
+
       PdfIndirectObject indirectObject;
       // Hasn't the external indirect object been imported yet?
       if(!importedObjects.TryGetValue(obj.GetHashCode(),out indirectObject))
@@ -176,10 +197,11 @@ namespace org.pdfclown.files
         // Keep track of the imported indirect object!
         importedObjects.Add(
           obj.GetHashCode(),
-          indirectObject = Add((PdfDataObject)obj.DataObject.Clone(file)) // Registers the clone of the data object corresponding to the external indirect object.
+          indirectObject = Add((PdfDataObject)null) // [DEV:AP] Circular reference issue solved.
           );
+        indirectObject.DataObject = (PdfDataObject)obj.DataObject.Accept(cloner, null);
       }
-        return indirectObject;
+      return indirectObject;
     }
 
     /**

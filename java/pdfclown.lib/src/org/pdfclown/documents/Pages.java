@@ -50,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
   Document pages collection [PDF:1.6:3.6.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Pages
@@ -100,7 +100,7 @@ public final class Pages
   public Pages clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Pages)super.clone(context);}
 
   // <List>
   @Override

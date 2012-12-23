@@ -60,9 +60,9 @@ namespace org.pdfclown.documents.contents.xObjects
 
       PdfName subtype = (PdfName)((PdfStream)File.Resolve(baseObject)).Header[PdfName.Subtype];
       if(subtype.Equals(PdfName.Form))
-        return new FormXObject(baseObject);
+        return FormXObject.Wrap(baseObject);
       else if(subtype.Equals(PdfName.Image))
-        return new ImageXObject(baseObject);
+        return ImageXObject.Wrap(baseObject);
       else
         return null;
     }

@@ -35,7 +35,6 @@ import org.pdfclown.documents.files.FileSpecification;
 import org.pdfclown.documents.files.IFileResource;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   File attachment annotation [PDF:1.6:8.4.5].
@@ -43,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF13)
 public final class FileAttachment
@@ -147,7 +146,7 @@ public final class FileAttachment
   public FileAttachment clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (FileAttachment)super.clone(context);}
 
   /**
     Gets the icon to be used in displaying the annotation.

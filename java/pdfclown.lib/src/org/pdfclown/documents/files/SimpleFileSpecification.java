@@ -30,14 +30,13 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfString;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Simple reference to the contents of another file [PDF:1.6:3.10.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF11)
 public final class SimpleFileSpecification
@@ -61,10 +60,10 @@ public final class SimpleFileSpecification
   // <interface>
   // <public>
   @Override
-  public Object clone(
+  public SimpleFileSpecification clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (SimpleFileSpecification)super.clone(context);}
 
   @Override
   public String getPath(

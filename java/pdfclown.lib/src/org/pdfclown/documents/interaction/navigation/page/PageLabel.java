@@ -35,7 +35,6 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfTextString;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Page label range [PDF:1.7:8.3.1].
@@ -44,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF13)
 public final class PageLabel
@@ -157,10 +156,10 @@ public final class PageLabel
 
   // <interface>
   @Override
-  public Object clone(
+  public PageLabel clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (PageLabel)super.clone(context);}
 
   /**
     Gets the value of the numeric suffix for the first page label in this range. Subsequent pages

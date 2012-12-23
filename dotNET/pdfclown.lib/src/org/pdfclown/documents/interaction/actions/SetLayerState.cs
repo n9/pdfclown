@@ -218,15 +218,10 @@ namespace org.pdfclown.documents.interaction.actions
         ) : base(new PdfArray())
       {}
 
-      public LayerStates(
+      internal LayerStates(
         PdfDirectObject baseObject
         ) : base(baseObject)
       {Initialize();}
-
-      public override object Clone(
-        Document context
-        )
-      {throw new NotImplementedException();}
 
       #region IList<LayerState>
       public int IndexOf(
@@ -474,7 +469,7 @@ namespace org.pdfclown.documents.interaction.actions
             layers = new LayerState.LayersImpl();
           }
           else
-          {layers.Add(new Layer(baseObject));}
+          {layers.Add(Layer.Wrap(baseObject));}
         }
         if(mode.HasValue)
         {items.Add(new LayerState(mode.Value, layers, this));}
@@ -500,11 +495,6 @@ namespace org.pdfclown.documents.interaction.actions
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     public LayerStates States
     {
       get

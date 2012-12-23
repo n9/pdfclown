@@ -46,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public final class SetLayerState
@@ -331,7 +331,7 @@ public final class SetLayerState
       )
     {super(new PdfArray());}
 
-    public LayerStates(
+    LayerStates(
       PdfDirectObject baseObject
       )
     {
@@ -341,10 +341,10 @@ public final class SetLayerState
     }
 
     @Override
-    public Object clone(
+    public LayerStates clone(
       Document context
       )
-    {throw new NotImplementedException();}
+    {return (LayerStates)super.clone(context);}
 
     // <List>
     @Override
@@ -669,7 +669,7 @@ public final class SetLayerState
           layers = new LayerState.Layers();
         }
         else
-        {layers.add(new Layer(baseObject));}
+        {layers.add(Layer.wrap(baseObject));}
       }
       if(mode != null)
       {items.add(new LayerState(mode, layers, this));}
@@ -702,7 +702,7 @@ public final class SetLayerState
   public SetLayerState clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (SetLayerState)super.clone(context);}
 
   public LayerStates getStates(
     )

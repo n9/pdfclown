@@ -37,14 +37,13 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   'Cause a script to be compiled and executed by the JavaScript interpreter' action [PDF:1.6:8.6.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF13)
 public final class JavaScript
@@ -127,7 +126,7 @@ public final class JavaScript
   public JavaScript clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (JavaScript)super.clone(context);}
 
   /**
     Gets the JavaScript script to be executed.

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -71,6 +71,13 @@ namespace org.pdfclown.documents.interaction.viewer
     #endregion
 
     #region interface
+    #region public
+    public static ViewerPreferences Wrap(
+      PdfDirectObject baseObject
+      )
+    {return baseObject != null ? new ViewerPreferences(baseObject) : null;}
+    #endregion
+
     #region private
     /**
       <summary>Gets the code corresponding to the given value.</summary>
@@ -105,7 +112,7 @@ namespace org.pdfclown.documents.interaction.viewer
       ) : base(context, new PdfDictionary())
     {}
 
-    internal ViewerPreferences(
+    private ViewerPreferences(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -120,11 +127,6 @@ namespace org.pdfclown.documents.interaction.viewer
       set
       {BaseDataObject[PdfName.CenterWindow] = PdfBoolean.Get(value);}
     }
-
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
 
     public DirectionEnum Direction
     {

@@ -30,14 +30,13 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   'Change the view to a specified 3D annotation' action [PDF:1.6:8.5.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF16)
 public final class GoTo3dView
@@ -67,7 +66,7 @@ public final class GoTo3dView
   public GoTo3dView clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (GoTo3dView)super.clone(context);}
   // </public>
   // </interface>
   // </dynamic>

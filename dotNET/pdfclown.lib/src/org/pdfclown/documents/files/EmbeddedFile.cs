@@ -112,11 +112,6 @@ namespace org.pdfclown.documents.files
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the creation date of this file.</summary>
     */

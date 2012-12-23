@@ -157,7 +157,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
         /*
           NOTE: 'BBox' entry MUST be defined.
         */
-        org.pdfclown.objects.Rectangle box = new org.pdfclown.objects.Rectangle(BaseHeader[PdfName.BBox]);
+        org.pdfclown.objects.Rectangle box = org.pdfclown.objects.Rectangle.Wrap(BaseHeader[PdfName.BBox]);
         return new RectangleF((float)box.X, (float)box.Y, (float)box.Width, (float)box.Height);
       }
     }

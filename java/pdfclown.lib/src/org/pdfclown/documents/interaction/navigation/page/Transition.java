@@ -36,14 +36,13 @@ import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.PdfSimpleObject;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Visual transition to use when moving to a page during a presentation [PDF:1.6:8.3.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF11)
 public final class Transition
@@ -358,6 +357,17 @@ public final class Transition
   }
   // </classes>
 
+  // <static>
+  // <interface>
+  // <public>
+  public static Transition wrap(
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new Transition(baseObject) : null;}
+  // </public>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <constructors>
   /**
@@ -408,7 +418,7 @@ public final class Transition
     setScale(scale);
   }
 
-  public Transition(
+  private Transition(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -420,7 +430,7 @@ public final class Transition
   public Transition clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Transition)super.clone(context);}
 
   /**
     Gets the transition direction.

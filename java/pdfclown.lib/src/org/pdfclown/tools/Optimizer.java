@@ -31,15 +31,16 @@ import java.util.Set;
 import org.pdfclown.files.File;
 import org.pdfclown.files.IndirectObjects;
 import org.pdfclown.objects.IVisitor;
+import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.Visitor;
 
 /**
   Tool to enhance PDF files.
-  
+
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 public final class Optimizer
 {
@@ -59,14 +60,14 @@ public final class Optimizer
       IVisitor visitor = new Visitor()
       {
         @Override
-        public boolean visit(
+        public PdfObject visit(
           PdfReference object,
           Object data
           )
         {
           Integer objectNumber = object.getReference().getObjectNumber();
           if(aliveObjectNumbers.contains(objectNumber))
-            return true;
+            return object;
 
           aliveObjectNumbers.add(objectNumber);
           return super.visit(object, data);

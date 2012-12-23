@@ -37,7 +37,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class RemoteDestination
@@ -77,7 +77,7 @@ public final class RemoteDestination
       );
   }
 
-  public RemoteDestination(
+  RemoteDestination(
     PdfDirectObject baseObject
     )
   {super(baseObject);}

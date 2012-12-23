@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,12 +38,12 @@ namespace org.pdfclown.documents.contents.fonts
   public sealed class Type3Font
     : SimpleFont
   {
-//TODO:IMPL
+    #region dynamic
     #region constructors
-//     internal Type3Font(
-//       Document context
-//       ) : base(context)
-//     {}
+     internal Type3Font(
+       Document context
+       ) : base(context)
+     {}
 
     internal Type3Font(
       PdfDirectObject baseObject
@@ -51,11 +51,8 @@ namespace org.pdfclown.documents.contents.fonts
     {}
     #endregion
 
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
+    #region interface
+    #region public
     public override double Ascent
     {
       get
@@ -67,14 +64,9 @@ namespace org.pdfclown.documents.contents.fonts
       get
       {return 0;}
     }
+    #endregion
 
-    private IDictionary<ByteArray,int> GetNativeEncoding(
-      )
-    {
-      //FIXME: consolidate with Type1Font and TrueTypeFont!
-      return Encoding.Get(PdfName.StandardEncoding).GetCodes();
-    }
-
+    #region protected
     protected override void LoadEncoding(
       )
     {
@@ -113,5 +105,17 @@ namespace org.pdfclown.documents.contents.fonts
         {glyphIndexes[codeEntry.Value] = ConvertUtils.ByteArrayToInt(codeEntry.Key.Data);}
       }
     }
+    #endregion
+
+    #region private
+    private IDictionary<ByteArray,int> GetNativeEncoding(
+      )
+    {
+      //FIXME: consolidate with Type1Font and TrueTypeFont!
+      return Encoding.Get(PdfName.StandardEncoding).GetCodes();
+    }
+    #endregion
+    #endregion
+    #endregion
   }
 }

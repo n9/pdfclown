@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class AppearanceStates
@@ -83,7 +83,7 @@ public final class AppearanceStates
   public AppearanceStates clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {throw new NotImplementedException();} // TODO: verify appearance reference.
 
   /**
     Gets the appearance associated to these states.
@@ -154,7 +154,7 @@ public final class AppearanceStates
         entrySet.add(
           new MapEntry<PdfName,FormXObject>(
             null,
-            new FormXObject(getBaseObject())
+            FormXObject.wrap(getBaseObject())
             )
           );
       }
@@ -165,7 +165,7 @@ public final class AppearanceStates
           entrySet.add(
             new MapEntry<PdfName,FormXObject>(
               entry.getKey(),
-              new FormXObject(entry.getValue())
+              FormXObject.wrap(entry.getValue())
               )
             );
         }
@@ -191,12 +191,12 @@ public final class AppearanceStates
     else if(key == null)
     {
       if(baseDataObject instanceof PdfStream) // Single state.
-        return new FormXObject(getBaseObject());
+        return FormXObject.wrap(getBaseObject());
       else // Multiple state, but invalid key.
         return null;
     }
     else // Multiple state.
-      return new FormXObject(((PdfDictionary)baseDataObject).get(key));
+      return FormXObject.wrap(((PdfDictionary)baseDataObject).get(key));
   }
 
   @Override
@@ -238,7 +238,7 @@ public final class AppearanceStates
     {previousValue = ensureDictionary().put(key,value.getBaseObject());}
 
     if(File.resolve(previousValue) instanceof PdfStream)
-      return new FormXObject(previousValue);
+      return FormXObject.wrap(previousValue);
     else
       return null;
   }
@@ -274,7 +274,7 @@ public final class AppearanceStates
       {previousValue = ((PdfDictionary)baseDataObject).remove(key);}
 
       if(File.resolve(previousValue) instanceof PdfStream)
-        return new FormXObject(previousValue);
+        return FormXObject.wrap(previousValue);
       else
         return null;
     }

@@ -31,14 +31,13 @@ import org.pdfclown.documents.interaction.actions.Action;
 import org.pdfclown.documents.interaction.actions.JavaScript;
 import org.pdfclown.objects.NameTree;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Named JavaScript actions [PDF:1.6:3.6.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF13)
 public final class NamedJavaScripts
@@ -64,7 +63,7 @@ public final class NamedJavaScripts
   public NamedJavaScripts clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (NamedJavaScripts)super.clone(context);}
   // </public>
 
   // <protected>

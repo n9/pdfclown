@@ -31,14 +31,13 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.util.EnumUtils;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Combo box [PDF:1.6:8.6.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class ComboBox
@@ -59,7 +58,7 @@ public final class ComboBox
     setFlags(EnumUtils.mask(getFlags(), FlagsEnum.Combo, true));
   }
 
-  public ComboBox(
+  ComboBox(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -71,7 +70,7 @@ public final class ComboBox
   public ComboBox clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (ComboBox)super.clone(context);}
 
   /**
     Gets whether the text is editable.

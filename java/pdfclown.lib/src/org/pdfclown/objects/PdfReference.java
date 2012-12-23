@@ -35,7 +35,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF indirect reference object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 public final class PdfReference
   extends PdfDirectObject
@@ -78,7 +78,7 @@ public final class PdfReference
   // <interface>
   // <public>
   @Override
-  public boolean accept(
+  public PdfObject accept(
     IVisitor visitor,
     Object data
     )
@@ -179,11 +179,7 @@ public final class PdfReference
   public PdfReference clone(
     File context
     )
-  {
-    return context == null || context == file
-      ? (PdfReference)super.clone(context) // Local clone (immutable).
-      : getIndirectObject().clone(context).getReference(); // Alien clone.
-  }
+  {return (PdfReference)super.clone(context);}
 
   @Override
   public void delete(

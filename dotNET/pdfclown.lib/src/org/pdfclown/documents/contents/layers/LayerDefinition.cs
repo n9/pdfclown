@@ -37,6 +37,17 @@ namespace org.pdfclown.documents.contents.layers
     : PdfObjectWrapper<PdfDictionary>,
       ILayerConfiguration
   {
+    #region static
+    #region interface
+    #region public
+    public static LayerDefinition Wrap(
+      PdfDirectObject baseObject
+      )
+    {return baseObject != null ? new LayerDefinition(baseObject) : null;}
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region constructors
     public LayerDefinition(
@@ -44,7 +55,7 @@ namespace org.pdfclown.documents.contents.layers
       ) : base(context, new PdfDictionary())
     {Initialize();}
 
-    public LayerDefinition(
+    private LayerDefinition(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {Initialize();}
@@ -58,15 +69,10 @@ namespace org.pdfclown.documents.contents.layers
     public Array<LayerConfiguration> AlternateConfigurations
     {
       get
-      {return new Array<LayerConfiguration>(BaseDataObject.Get<PdfArray>(PdfName.Configs));}
+      {return Array<LayerConfiguration>.Wrap<LayerConfiguration>(BaseDataObject.Get<PdfArray>(PdfName.Configs));}
       set
       {BaseDataObject[PdfName.Configs] = value.BaseObject;}
     }
-
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
 
     /**
       <summary>Gets the default layer configuration, that is the initial state of the optional

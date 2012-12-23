@@ -50,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class Fields
@@ -82,7 +82,7 @@ public final class Fields
   public Fields clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Fields)super.clone(context);}
 
   // <Map>
   @Override

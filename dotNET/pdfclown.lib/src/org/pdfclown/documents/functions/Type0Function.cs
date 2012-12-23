@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -74,11 +74,6 @@ namespace org.pdfclown.documents.functions
       // FIXME: Auto-generated method stub
       return null;
     }
-
-    public override object Clone(
-      Document context
-      )
-    {return new NotImplementedException();}
 
     /**
       <summary>Gets the linear mapping of input values into the domain of the function's sample table.</summary>

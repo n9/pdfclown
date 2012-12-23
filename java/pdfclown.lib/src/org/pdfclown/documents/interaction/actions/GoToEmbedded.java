@@ -38,7 +38,6 @@ import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   'Change the view to a specified destination in a PDF file embedded in another PDF file' action
@@ -46,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF11)
 public final class GoToEmbedded
@@ -218,7 +217,7 @@ public final class GoToEmbedded
     public PathElement clone(
       Document context
       )
-    {throw new NotImplementedException();}
+    {return (PathElement)super.clone(context);}
 
     /**
       Gets the page reference to the file attachment annotation.
@@ -442,7 +441,7 @@ public final class GoToEmbedded
   public GoToEmbedded clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (GoToEmbedded)super.clone(context);}
 
   /**
     Gets the path information to the target document.

@@ -32,14 +32,13 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Media player info [PDF:1.7:9.1.6].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public final class MediaPlayer
@@ -72,10 +71,10 @@ public final class MediaPlayer
   // <interface>
   // <public>
   @Override
-  public Object clone(
+  public MediaPlayer clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (MediaPlayer)super.clone(context);}
 
   /**
     Gets the player identifier.

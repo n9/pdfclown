@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Tree<
@@ -228,12 +228,6 @@ public abstract class Tree<
 
   // <interface>
   // <public>
-  @Override
-  public Tree<TKey,TValue> clone(
-    Document context
-    )
-  {throw new NotImplementedException();}
-
   /**
     Gets the key associated to the specified value.
   */

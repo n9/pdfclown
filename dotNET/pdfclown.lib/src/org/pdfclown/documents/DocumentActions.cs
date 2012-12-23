@@ -55,11 +55,6 @@ namespace org.pdfclown.documents
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new system::NotImplementedException();}
-
     /**
       <summary>Gets/Sets the action to be performed after printing the document.</summary>
     */

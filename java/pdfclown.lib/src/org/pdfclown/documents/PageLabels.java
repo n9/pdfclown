@@ -30,14 +30,13 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.interaction.navigation.page.PageLabel;
 import org.pdfclown.objects.NumberTree;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Page label ranges [PDF:1.6:3.6.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF13)
 public final class PageLabels
@@ -63,7 +62,7 @@ public final class PageLabels
   public PageLabels clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (PageLabels)super.clone(context);}
   // </public>
 
   // <protected>

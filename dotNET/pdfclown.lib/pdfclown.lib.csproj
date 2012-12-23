@@ -451,6 +451,7 @@
     <Compile Include="src\org\pdfclown\documents\interchange\access\LanguageIdentifier.cs" />
     <Compile Include="src\org\pdfclown\util\metadata\IVersion.cs" />
     <Compile Include="src\org\pdfclown\util\metadata\VersionUtils.cs" />
+    <Compile Include="src\org\pdfclown\objects\Cloner.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />

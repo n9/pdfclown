@@ -45,14 +45,13 @@ import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.PdfSimpleObject;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Graphics state parameters [PDF:1.6:4.3.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 11/18/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class ExtGState
@@ -122,7 +121,7 @@ public final class ExtGState
   public ExtGState clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (ExtGState)super.clone(context);}
 
   /**
     Gets the blend mode to be used in the transparent imaging model [PDF:1.7:7.2.4].

@@ -34,14 +34,13 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Media player rules [PDF:1.7:9.1.6].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public final class MediaPlayers
@@ -75,10 +74,10 @@ public final class MediaPlayers
   // <interface>
   // <public>
   @Override
-  public Object clone(
+  public MediaPlayers clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (MediaPlayers)super.clone(context);}
 
   /**
     Gets a set of players, any of which may be used in playing the associated media object. This
@@ -86,7 +85,7 @@ public final class MediaPlayers
   */
   public Array<MediaPlayer> getAllowedPlayers(
     )
-  {return new Array<MediaPlayer>(MediaPlayer.class, getBaseDataObject().get(PdfName.A, PdfArray.class));}
+  {return Array.wrap(MediaPlayer.class, getBaseDataObject().get(PdfName.A, PdfArray.class));}
 
   /**
     Gets a set of players that must NOT be used in playing the associated media object. This
@@ -94,14 +93,14 @@ public final class MediaPlayers
   */
   public Array<MediaPlayer> getForbiddenPlayers(
     )
-  {return new Array<MediaPlayer>(MediaPlayer.class, getBaseDataObject().get(PdfName.NU, PdfArray.class));}
+  {return Array.wrap(MediaPlayer.class, getBaseDataObject().get(PdfName.NU, PdfArray.class));}
 
   /**
     Gets a set of players, one of which must be used in playing the associated media object.
   */
   public Array<MediaPlayer> getRequiredPlayers(
     )
-  {return new Array<MediaPlayer>(MediaPlayer.class, getBaseDataObject().get(PdfName.MU, PdfArray.class));}
+  {return Array.wrap(MediaPlayer.class, getBaseDataObject().get(PdfName.MU, PdfArray.class));}
 
   /**
     @see #getAllowedPlayers()

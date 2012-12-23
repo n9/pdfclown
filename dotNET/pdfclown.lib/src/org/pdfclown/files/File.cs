@@ -136,6 +136,8 @@ namespace org.pdfclown.files
     private Reader reader;
     private readonly PdfDictionary trailer;
     private readonly Version version;
+
+    private Cloner cloner;
     #endregion
 
     #region constructors
@@ -187,6 +189,22 @@ namespace org.pdfclown.files
 
     #region interface
     #region public
+    /**
+      <summary>Gets/Sets the default cloner.</summary>
+    */
+    public Cloner Cloner
+    {
+      get
+      {
+        if(cloner == null)
+        {cloner = new Cloner(this);}
+
+        return cloner;
+      }
+      set
+      {cloner = value;}
+    }
+
     /**
       <summary>Gets the file configuration.</summary>
     */

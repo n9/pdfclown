@@ -53,11 +53,6 @@ namespace org.pdfclown.documents.files
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     public override string Path
     {
       get

@@ -35,7 +35,6 @@ import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.geom.Dimension;
 
 /**
@@ -44,7 +43,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 01/02/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class DualWidget
@@ -92,7 +91,7 @@ public final class DualWidget
   public DualWidget clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (DualWidget)super.clone(context);}
 
   public String getWidgetName(
     )

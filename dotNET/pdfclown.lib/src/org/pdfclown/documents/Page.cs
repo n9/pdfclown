@@ -48,7 +48,7 @@ namespace org.pdfclown.documents
   {
     /*
       NOTE: Inheritable attributes are NOT early-collected, as they are NOT part
-      of the explicit representation of a page. They are retrieved everytime
+      of the explicit representation of a page. They are retrieved every time
       clients call.
     */
     #region types
@@ -208,7 +208,7 @@ namespace org.pdfclown.documents
           NOTE: The default value is the page's crop box.
         */
         PdfDirectObject artBoxObject = GetInheritableAttribute(PdfName.ArtBox);
-        return artBoxObject != null ? new Rectangle(artBoxObject).ToRectangleF() : CropBox;
+        return artBoxObject != null ? Rectangle.Wrap(artBoxObject).ToRectangleF() : CropBox;
       }
       set
       {BaseDataObject[PdfName.ArtBox] = new Rectangle(value).BaseDataObject;}
@@ -233,7 +233,7 @@ namespace org.pdfclown.documents
           NOTE: The default value is the page's crop box.
         */
         PdfDirectObject bleedBoxObject = GetInheritableAttribute(PdfName.BleedBox);
-        return bleedBoxObject != null ? new Rectangle(bleedBoxObject).ToRectangleF() : CropBox;
+        return bleedBoxObject != null ? Rectangle.Wrap(bleedBoxObject).ToRectangleF() : CropBox;
       }
       set
       {BaseDataObject[PdfName.BleedBox] = new Rectangle(value).BaseDataObject;}
@@ -258,39 +258,10 @@ namespace org.pdfclown.documents
           NOTE: The default value is the page's media box.
         */
         PdfDirectObject cropBoxObject = GetInheritableAttribute(PdfName.CropBox);
-        return cropBoxObject != null ? new Rectangle(cropBoxObject).ToRectangleF() : Box;
+        return cropBoxObject != null ? Rectangle.Wrap(cropBoxObject).ToRectangleF() : Box;
       }
       set
       {BaseDataObject[PdfName.CropBox] = new Rectangle(value).BaseDataObject;}
-    }
-
-    public override object Clone(
-      Document context
-      )
-    {
-      /*
-        NOTE: We cannot just delegate the cloning to the base object, as it would
-        involve some unwanted objects like those in 'Parent' and 'Annots' entries that may
-        cause infinite loops (due to circular references) and may include exceeding contents
-        (due to copy propagations to the whole page-tree which this page belongs to).
-        TODO: 'Annots' entry must be finely treated to include any non-circular reference.
-      */
-      // TODO:IMPL deal with inheritable attributes!!!
-
-      File contextFile = context.File;
-      PdfDictionary clone = new PdfDictionary(BaseDataObject.Count);
-      foreach(KeyValuePair<PdfName,PdfDirectObject> entry in BaseDataObject)
-      {
-        PdfName key = entry.Key;
-        // Is the entry unwanted?
-        if(key.Equals(PdfName.Parent)
-          || key.Equals(PdfName.Annots))
-          continue;
-
-        // Insert the clone of the entry into the clone of the page dictionary!
-        clone[key] = (PdfDirectObject)entry.Value.Clone(contextFile);
-      }
-      return new Page(contextFile.IndirectObjects.Add(clone).Reference);
     }
 
     /**
@@ -408,10 +379,7 @@ namespace org.pdfclown.documents
     public Transition Transition
     {
       get
-      {
-        PdfDirectObject transitionObject = BaseDataObject[PdfName.Trans];
-        return transitionObject != null ? new Transition(transitionObject) : null;
-      }
+      {return Transition.Wrap(BaseDataObject[PdfName.Trans]);}
       set
       {BaseDataObject[PdfName.Trans] = value.BaseObject;}
     }
@@ -434,7 +402,7 @@ namespace org.pdfclown.documents
           NOTE: The default value is the page's crop box.
         */
         PdfDirectObject trimBoxObject = GetInheritableAttribute(PdfName.TrimBox);
-        return trimBoxObject != null ? new Rectangle(trimBoxObject).ToRectangleF() : CropBox;
+        return trimBoxObject != null ? Rectangle.Wrap(trimBoxObject).ToRectangleF() : CropBox;
       }
       set
       {BaseDataObject[PdfName.TrimBox] = new Rectangle(value).BaseDataObject;}
@@ -444,7 +412,7 @@ namespace org.pdfclown.documents
     public drawing::RectangleF Box
     {
       get
-      {return new Rectangle(GetInheritableAttribute(PdfName.MediaBox)).ToRectangleF();}
+      {return Rectangle.Wrap(GetInheritableAttribute(PdfName.MediaBox)).ToRectangleF();}
       set
       {BaseDataObject[PdfName.MediaBox] = new Rectangle(value).BaseDataObject;}
     }
@@ -456,7 +424,7 @@ namespace org.pdfclown.documents
         PdfDirectObject contentsObject = BaseDataObject[PdfName.Contents];
         if(contentsObject == null)
         {BaseDataObject[PdfName.Contents] = (contentsObject = File.Register(new PdfStream()));}
-        return new Contents(contentsObject, this);
+        return Contents.Wrap(contentsObject, this);
       }
     }
 

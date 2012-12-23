@@ -42,6 +42,17 @@ namespace org.pdfclown.documents.interaction.navigation.document
     : PdfObjectWrapper<PdfDictionary>,
       IList<Bookmark>
   {
+    #region static
+    #region interface
+    #region public
+    public static Bookmarks Wrap(
+      PdfDirectObject baseObject
+      )
+    {return baseObject != null ? new Bookmarks(baseObject) : null;}
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region constructors
     public Bookmarks(
@@ -63,7 +74,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
         )
     {}
 
-    internal Bookmarks(
+    private Bookmarks(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -71,11 +82,6 @@ namespace org.pdfclown.documents.interaction.navigation.document
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     #region IList
     public int IndexOf(
       Bookmark bookmark

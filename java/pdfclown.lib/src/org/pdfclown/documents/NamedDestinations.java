@@ -34,14 +34,13 @@ import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Named destinations [PDF:1.6:3.6.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class NamedDestinations
@@ -67,7 +66,7 @@ public final class NamedDestinations
   public NamedDestinations clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (NamedDestinations)super.clone(context);}
   // </public>
 
   // <protected>

@@ -63,11 +63,6 @@ namespace org.pdfclown.documents.interaction.forms
       )
     {BaseDataObject.Add(value.BaseObject);}
 
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     #region IDictionary
     public void Add(
       string key,

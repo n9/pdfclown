@@ -34,9 +34,9 @@ namespace org.pdfclown.objects
       <summary>Accepts a visit.</summary>
       <param name="visitor">Visiting object.</param>
       <param name="data">Supplemental data.</param>
-      <returns>Whether visit can be continued.</returns>
+      <returns>Result object.</returns>
     */
-    bool Accept(
+    PdfObject Accept(
       IVisitor visitor,
       object data
       );

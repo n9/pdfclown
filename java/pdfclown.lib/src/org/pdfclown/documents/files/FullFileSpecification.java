@@ -47,14 +47,13 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Extended reference to the contents of another file [PDF:1.6:3.10.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF11)
 public final class FullFileSpecification
@@ -151,7 +150,7 @@ public final class FullFileSpecification
   public FullFileSpecification clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (FullFileSpecification)super.clone(context);}
 
   /**
     Gets the related files.

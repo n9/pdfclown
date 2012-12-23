@@ -43,14 +43,13 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfTextString;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   'Toggle the visibility of one or more annotations on the screen' action [PDF:1.6:8.5.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class ToggleVisibility
@@ -85,7 +84,7 @@ public final class ToggleVisibility
   public ToggleVisibility clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (ToggleVisibility)super.clone(context);}
 
   /**
     Gets the annotations (or associated form fields) to be affected.

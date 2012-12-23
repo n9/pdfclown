@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,13 +36,24 @@ import org.pdfclown.objects.PdfDirectObject;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
-public class LayerGroup
+public final class LayerGroup
   extends Array<Layer>
 {
   // <class>
+  // <static>
+  // <interface>
+  // <public>
+  public static LayerGroup wrap(
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new LayerGroup(baseObject) : null;}
+  // </public>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <constructors>
   public LayerGroup(
@@ -50,11 +61,17 @@ public class LayerGroup
     )
   {super(context, Layer.class);}
 
-  public LayerGroup(
+  private LayerGroup(
     PdfDirectObject baseObject
     )
   {super(Layer.class, baseObject);}
   // </constructors>
+
+  @Override
+  public LayerGroup clone(
+    Document context
+    )
+  {return (LayerGroup)super.clone(context);}
   // </dynamic>
   // </class>
 }

@@ -27,20 +27,18 @@ package org.pdfclown.documents.interaction.forms;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
-import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.EnumUtils;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Choice field [PDF:1.6:8.6.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public abstract class ChoiceField
@@ -66,12 +64,6 @@ public abstract class ChoiceField
 
   // <interface>
   // <public>
-  @Override
-  public ChoiceField clone(
-    Document context
-    )
-  {throw new NotImplementedException();}
-
   public ChoiceItems getItems(
     )
   {return new ChoiceItems(getBaseDataObject().get(PdfName.Opt, PdfArray.class));}

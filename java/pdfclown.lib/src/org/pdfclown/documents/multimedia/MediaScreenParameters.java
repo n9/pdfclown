@@ -42,14 +42,13 @@ import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReal;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Media screen parameters [PDF:1.7:9.1.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public class MediaScreenParameters
@@ -275,10 +274,10 @@ public class MediaScreenParameters
       {super(baseObject);}
 
       @Override
-      public Object clone(
+      public FloatingWindowParameters clone(
         Document context
         )
-      {throw new NotImplementedException();}
+      {return (FloatingWindowParameters)super.clone(context);}
 
       /**
         Gets the location where the floating window should be positioned relative to the related
@@ -447,10 +446,10 @@ public class MediaScreenParameters
     {super(baseObject);}
 
     @Override
-    public Object clone(
+    public Viability clone(
       Document context
       )
-    {throw new NotImplementedException();}
+    {return (Viability)super.clone(context);}
 
     /**
       Gets the background color for the rectangle in which the media is being played. This color is
@@ -565,10 +564,10 @@ public class MediaScreenParameters
   // <interface>
   // <public>
   @Override
-  public Object clone(
+  public MediaScreenParameters clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (MediaScreenParameters)super.clone(context);}
 
   /**
     Gets the preferred options the renderer should attempt to honor without affecting its viability.

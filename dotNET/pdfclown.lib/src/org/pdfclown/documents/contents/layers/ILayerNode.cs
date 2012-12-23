@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -62,9 +62,9 @@ namespace org.pdfclown.documents.contents.layers
     {
       PdfDataObject baseDataObject = File.Resolve(baseObject);
       if(baseDataObject is PdfDictionary)
-        return new Layer(baseObject);
+        return Layer.Wrap(baseObject);
       else if(baseDataObject is PdfArray)
-        return new Layers(baseObject);
+        return Layers.Wrap(baseObject);
       else if(baseDataObject == null)
         return null;
       else

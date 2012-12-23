@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,6 +38,17 @@ namespace org.pdfclown.documents.interaction.annotations
   public sealed class Appearance
     : PdfObjectWrapper<PdfDictionary>
   {
+    #region static
+    #region interface
+    #region public
+    public static Appearance Wrap(
+      PdfDirectObject baseObject
+      )
+    {return baseObject != null ? new Appearance(baseObject) : null;}
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region constructors
     public Appearance(
@@ -45,7 +56,7 @@ namespace org.pdfclown.documents.interaction.annotations
       ) : base(context, new PdfDictionary())
     {}
 
-    public Appearance(
+    private Appearance(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -53,11 +64,6 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets the annotation's down appearance.</summary>
     */

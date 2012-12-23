@@ -39,14 +39,13 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfString;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Name dictionary [PDF:1.6:3.6.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class Names
@@ -73,7 +72,7 @@ public final class Names
   public Names clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Names)super.clone(context);}
 
   /**
     Gets the named destinations.

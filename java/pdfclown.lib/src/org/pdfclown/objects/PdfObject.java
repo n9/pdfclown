@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
   Abstract PDF object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 public abstract class PdfObject
   implements Cloneable,
@@ -46,7 +46,7 @@ public abstract class PdfObject
     @param object Object to clone into the specified file context.
     @param context File context of the cloning.
   */
-  public static final Object clone(
+  public static final PdfObject clone(
     PdfObject object,
     File context
     )
@@ -68,15 +68,7 @@ public abstract class PdfObject
   public PdfObject clone(
     File context
     )
-  {
-    PdfObject clone;
-    try
-    {clone = (PdfObject)super.clone();}
-    catch(CloneNotSupportedException e)
-    {throw new RuntimeException(e);}
-    clone.setParent(null);
-    return clone;
-  }
+  {return accept(context.getCloner(), null);}
 
   /**
     Gets the indirect object containing this object.
@@ -188,12 +180,20 @@ public abstract class PdfObject
 
   // <protected>
   /**
-    Creates a deep copy of this object within the same file context.
+    Creates a shallow copy of this object.
   */
   @Override
   protected final Object clone(
     )
-  {return clone(null);}
+  {
+    PdfObject clone;
+    try
+    {clone = (PdfObject)super.clone();}
+    catch(CloneNotSupportedException e)
+    {throw new RuntimeException(e);}
+    clone.setParent(null);
+    return clone;
+  }
 
   /**
     Gets whether this object acts like a null-object placeholder.

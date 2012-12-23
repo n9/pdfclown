@@ -43,7 +43,7 @@ namespace org.pdfclown.objects
       <param name="object">Object to clone into the specified file context.</param>
       <param name="context">File context of the cloning.</param>
     */
-    public static object Clone(
+    public static PdfObject Clone(
       PdfObject obj,
       File context
       )
@@ -60,23 +60,23 @@ namespace org.pdfclown.objects
     #region interface
     #region public
     /**
-      <summary>Creates a deep copy of this object within the same file context.</summary>
+      <summary>Creates a shallow copy of this object.</summary>
     */
     public object Clone(
-      )
-    {return Clone(null);}
-
-    /**
-      <summary>Creates a deep copy of this object within the specified file context.</summary>
-    */
-    public virtual object Clone(
-      File context
       )
     {
       PdfObject clone = (PdfObject)MemberwiseClone();
       clone.Parent = null;
       return clone;
     }
+
+    /**
+      <summary>Creates a deep copy of this object within the specified file context.</summary>
+    */
+    public virtual PdfObject Clone(
+      File context
+      )
+    {return Accept(context.Cloner, null);}
 
     /**
       <summary>Gets the indirect object containing this object.</summary>
@@ -189,7 +189,7 @@ namespace org.pdfclown.objects
       );
 
     #region IVisitable
-    public abstract bool Accept(
+    public abstract PdfObject Accept(
       IVisitor visitor,
       object data
       );

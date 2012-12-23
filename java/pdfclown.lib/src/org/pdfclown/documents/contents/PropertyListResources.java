@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,7 @@ import org.pdfclown.objects.PdfDirectObject;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class PropertyListResources
@@ -56,6 +56,14 @@ public final class PropertyListResources
   // </constructors>
 
   // <interface>
+  // <public>
+  @Override
+  public PropertyListResources clone(
+    Document context
+    )
+  {return (PropertyListResources)super.clone(context);}
+  // </public>
+
   // <protected>
   @Override
   protected PropertyList wrap(

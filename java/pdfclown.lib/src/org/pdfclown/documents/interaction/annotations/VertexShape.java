@@ -32,21 +32,19 @@ import java.util.List;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
-import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfReal;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Abstract vertexed shape annotation.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public abstract class VertexShape
@@ -71,12 +69,6 @@ public abstract class VertexShape
 
   // <interface>
   // <public>
-  @Override
-  public VertexShape clone(
-    Document context
-    )
-  {throw new NotImplementedException();}
-
   /**
     Gets the coordinates of each vertex.
   */

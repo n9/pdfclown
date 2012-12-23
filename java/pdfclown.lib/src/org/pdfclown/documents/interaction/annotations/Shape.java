@@ -29,21 +29,19 @@ import java.awt.geom.Rectangle2D;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
-import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Abstract shape annotation.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF13)
 public abstract class Shape
@@ -68,12 +66,6 @@ public abstract class Shape
 
   // <interface>
   // <public>
-  @Override
-  public Shape clone(
-    Document context
-    )
-  {throw new NotImplementedException();}
-
   /**
     Gets the color with which to fill the interior of the annotation's shape.
   */

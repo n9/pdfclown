@@ -20,7 +20,7 @@ import org.pdfclown.tools.PageManager;
   splits of groups of pages.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 public class PageManagementSample
   extends Sample
@@ -70,7 +70,7 @@ public class PageManagementSample
       final Document mainDocument = mainFile.getDocument();
       final Pages mainPages = mainDocument.getPages();
       final int mainPagesCount = mainPages.size();
-  
+
       switch(action)
       {
         case PageDataSizeCalculation:
@@ -80,7 +80,7 @@ public class PageManagementSample
           System.out.println(" * full: page data size encompassing all its dependencies (like shared resources) -- this is the size of the page when extracted as a single-page document;");
           System.out.println(" * differential: additional page data size -- this is the extra-content that's not shared with previous pages;");
           System.out.println(" * incremental: data size of the page sublist encompassing all the previous pages and the current one.\n");
-  
+
           // Calculating the page data sizes...
           Set<PdfReference> visitedReferences = new HashSet<PdfReference>();
           long incrementalDataSize = 0;
@@ -89,7 +89,7 @@ public class PageManagementSample
             long pageFullDataSize = PageManager.getSize(page);
             long pageDifferentialDataSize = PageManager.getSize(page, visitedReferences);
             incrementalDataSize += pageDifferentialDataSize;
-  
+
             System.out.println(
               "Page " + (page.getIndex()+1) + ": "
                 + pageFullDataSize + " (full); "
@@ -115,14 +115,14 @@ public class PageManagementSample
             Pages sourcePages = sourceFile.getDocument().getPages();
             // Source page count.
             int sourcePagesCount = sourcePages.size();
-  
+
             // First page to add.
             int fromSourcePageIndex = promptPageChoice("Select the start source page to add", sourcePagesCount);
             // Last page to add.
-            int toSourcePageIndex = promptPageChoice("Select the end source page to add", fromSourcePageIndex + 1, sourcePagesCount) + 1;
+            int toSourcePageIndex = promptPageChoice("Select the end source page to add", fromSourcePageIndex, sourcePagesCount) + 1;
             // Target position.
             int targetPageIndex = promptPageChoice("Select the position where to insert the source pages", mainPagesCount + 1);
-  
+
             // Add the chosen page range to the main document!
             new PageManager(mainDocument).add(
               targetPageIndex,
@@ -131,7 +131,7 @@ public class PageManagementSample
                 toSourcePageIndex
                 )
               );
-  
+
             // Serialize the main file!
             serialize(mainFile, action);
           }
@@ -155,14 +155,14 @@ public class PageManagementSample
           int toSourcePageIndex = promptPageChoice("Select the end page to move", fromSourcePageIndex, mainPagesCount) + 1;
           // Target position.
           int targetPageIndex = promptPageChoice("Select the position where to insert the pages", mainPagesCount + 1);
-  
+
           // Move the chosen page range!
           new PageManager(mainDocument).move(
             fromSourcePageIndex,
             toSourcePageIndex,
             targetPageIndex
             );
-  
+
           // Serialize the main file!
           serialize(mainFile, action);
         } break;
@@ -172,13 +172,13 @@ public class PageManagementSample
           int fromPageIndex = promptPageChoice("Select the start page to remove", mainPagesCount);
           // Last page to remove.
           int toPageIndex = promptPageChoice("Select the end page to remove", fromPageIndex, mainPagesCount) + 1;
-  
+
           // Remove the chosen page range!
           new PageManager(mainDocument).remove(
             fromPageIndex,
             toPageIndex
             );
-  
+
           // Serialize the main file!
           serialize(mainFile, action);
         } break;
@@ -188,13 +188,13 @@ public class PageManagementSample
           int fromPageIndex = promptPageChoice("Select the start page", mainPagesCount);
           // Last page to extract.
           int toPageIndex = promptPageChoice("Select the end page", fromPageIndex, mainPagesCount) + 1;
-  
+
           // Extract the chosen page range!
           Document targetDocument = new PageManager(mainDocument).extract(
             fromPageIndex,
             toPageIndex
             );
-  
+
           // Serialize the target file!
           serialize(targetDocument.getFile(), action);
         } break;
@@ -211,10 +211,10 @@ public class PageManagementSample
               catch(Exception e)
               {throw new RuntimeException(sourceFilePath + " file access error.",e);}
             }
-  
+
             // Append the chosen source document to the main document!
             new PageManager(mainDocument).add(sourceFile.getDocument());
-  
+
             // Serialize the main file!
             serialize(mainFile, action);
           }
@@ -234,7 +234,7 @@ public class PageManagementSample
         {
           // Split the document into single-page documents!
           List<Document> splitDocuments = new PageManager(mainDocument).split();
-  
+
           // Serialize the split files!
           int index = 0;
           for(Document splitDocument : splitDocuments)
@@ -248,7 +248,7 @@ public class PageManagementSample
           {splitCount = Integer.parseInt(promptChoice("Number of split positions: "));}
           catch(Exception e)
           {splitCount = 0;}
-  
+
           // Split positions within the source document.
           int[] splitIndexes = new int[splitCount];
           {
@@ -260,10 +260,10 @@ public class PageManagementSample
               prevSplitIndex = splitIndex;
             }
           }
-  
+
           // Split the document at the chosen positions!
           List<Document> splitDocuments = new PageManager(mainDocument).split(splitIndexes);
-  
+
           // Serialize the split files!
           int index = 0;
           for(Document splitDocument : splitDocuments)
@@ -287,10 +287,10 @@ public class PageManagementSample
             if(maxDataSize > mainFileSize)
             {maxDataSize = mainFileSize;}
           }
-  
+
           // Split the document on maximum file size!
           List<Document> splitDocuments = new PageManager(mainDocument).split(maxDataSize);
-  
+
           // Serialize the split files!
           int index = 0;
           for(Document splitDocument : splitDocuments)
@@ -353,7 +353,10 @@ public class PageManagementSample
     serialize(
       file,
       getClass().getSimpleName() + "_" + action.name() + (index != null ? "." + index : ""),
-      null, null
+      null,
+      action.name(),
+      "managing document pages",
+      action.name()
       );
   }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,11 @@
 
 package org.pdfclown.documents.contents.fonts;
 
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -37,18 +42,12 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.BiMap;
 import org.pdfclown.util.ByteArray;
-import org.pdfclown.util.NotImplementedException;
-
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
 
 /**
   TrueType font [PDF:1.6:5;OFF:2009].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class TrueTypeFont
@@ -75,7 +74,7 @@ public final class TrueTypeFont
   public TrueTypeFont clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (TrueTypeFont)super.clone(context);}
   // </public>
 
   // <protected>

@@ -30,7 +30,7 @@ package org.pdfclown.objects;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 public interface IVisitable
 {
@@ -39,9 +39,9 @@ public interface IVisitable
 
     @param visitor Visiting object.
     @param data Supplemental data.
-    @return Whether visit can be continued.
+    @return Result object.
   */
-  boolean accept(
+  PdfObject accept(
     IVisitor visitor,
     Object data
     );

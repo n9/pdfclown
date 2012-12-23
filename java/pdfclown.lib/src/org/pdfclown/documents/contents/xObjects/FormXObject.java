@@ -55,7 +55,7 @@ import org.pdfclown.util.math.geom.Dimension;
   Form external object [PDF:1.6:4.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class FormXObject
@@ -63,6 +63,17 @@ public final class FormXObject
   implements IContentContext
 {
   // <class>
+  // <static>
+  // <interface>
+  // <public>
+  public static FormXObject wrap(
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new FormXObject(baseObject) : null;}
+  // </public>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <constructors>
   /**
@@ -94,10 +105,7 @@ public final class FormXObject
     setBox(box);
   }
 
-  /**
-    <span style="color:red">For internal use only.</span>
-  */
-  public FormXObject(
+  private FormXObject(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -109,7 +117,7 @@ public final class FormXObject
   public FormXObject clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (FormXObject)super.clone(context);}
 
   @Override
   public AffineTransform getMatrix(
@@ -155,6 +163,7 @@ public final class FormXObject
     )
   {getBaseDataObject().getHeader().put(PdfName.BBox, new Rectangle(value).getBaseDataObject());}
 
+  @Override
   public void setMatrix(
     AffineTransform value
     )
@@ -199,12 +208,12 @@ public final class FormXObject
   @Override
   public Rectangle2D getBox(
     )
-  {return new Rectangle(getBaseDataObject().getHeader().get(PdfName.BBox)).toRectangle2D();}
+  {return Rectangle.wrap(getBaseDataObject().getHeader().get(PdfName.BBox)).toRectangle2D();}
 
   @Override
   public Contents getContents(
     )
-  {return new Contents(getBaseObject(), this);}
+  {return Contents.wrap(getBaseObject(), this);}
 
   @Override
   public Resources getResources(

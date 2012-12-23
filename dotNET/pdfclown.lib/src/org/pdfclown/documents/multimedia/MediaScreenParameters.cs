@@ -162,11 +162,6 @@ namespace org.pdfclown.documents.multimedia
           ) : base(baseObject)
         {}
 
-        public override object Clone(
-          Document context
-          )
-        {throw new NotImplementedException();}
-
         /**
           <summary>Gets/Sets the location where the floating window should be positioned relative to
           the related window.</summary>
@@ -283,11 +278,6 @@ namespace org.pdfclown.documents.multimedia
         ) : base(baseObject)
       {}
 
-      public override object Clone(
-        Document context
-        )
-      {throw new NotImplementedException();}
-
       /**
         <summary>Gets/Sets the background color for the rectangle in which the media is being played.
         </summary>
@@ -380,11 +370,6 @@ namespace org.pdfclown.documents.multimedia
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the preferred options the renderer should attempt to honor without affecting
       its viability.</summary>

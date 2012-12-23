@@ -86,7 +86,7 @@ public final class ChainedActions
   public ChainedActions clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {throw new NotImplementedException();} // TODO:verify
 
   /**
     Gets the parent action.

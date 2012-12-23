@@ -65,11 +65,6 @@ namespace org.pdfclown.documents.interaction.actions
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the annotations (or associated form fields) to be affected.</summary>
     */

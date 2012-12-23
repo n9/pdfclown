@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,7 @@ namespace org.pdfclown.documents.contents.layers
     <summary>Layer entity.</summary>
   */
   [PDF(VersionEnum.PDF15)]
-  public class LayerEntity
+  public abstract class LayerEntity
     : PropertyList
   {
     #region types
@@ -65,7 +65,7 @@ namespace org.pdfclown.documents.contents.layers
 
     #region dynamic
     #region constructors
-    internal LayerEntity(
+    protected LayerEntity(
       Document context,
       PdfName typeName
       ) : base(
@@ -78,7 +78,7 @@ namespace org.pdfclown.documents.contents.layers
         ))
     {}
 
-    internal LayerEntity(
+    protected LayerEntity(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}

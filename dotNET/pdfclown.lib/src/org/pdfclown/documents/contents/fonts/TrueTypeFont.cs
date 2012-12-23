@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -51,13 +51,6 @@ namespace org.pdfclown.documents.contents.fonts
     #endregion
 
     #region interface
-    #region public
-    public override Object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-    #endregion
-
     #region protected
     protected override void LoadEncoding(
       )

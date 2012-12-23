@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,7 +42,7 @@ import org.pdfclown.objects.PdfStream;
   Tool for content insertion into existing pages.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 12/21/12
 */
 public final class PageStamper
 {
@@ -158,7 +158,7 @@ public final class PageStamper
   {
     return new PrimitiveComposer(
       new ContentScanner(
-        new Contents(
+        Contents.wrap(
           page.getFile().register(new PdfStream()),
           page
           )

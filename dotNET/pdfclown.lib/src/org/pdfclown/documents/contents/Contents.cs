@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -292,6 +292,18 @@ namespace org.pdfclown.documents.contents
     }
     #endregion
 
+    #region static
+    #region interface
+    #region public
+    public static Contents Wrap(
+      PdfDirectObject baseObject,
+      IContentContext contentContext
+      )
+    {return baseObject != null ? new Contents(baseObject, contentContext) : null;}
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region fields
     private IList<ContentObject> items;
@@ -300,7 +312,7 @@ namespace org.pdfclown.documents.contents
     #endregion
 
     #region constructors
-    internal Contents(
+    private Contents(
       PdfDirectObject baseObject,
       IContentContext contentContext
       ) : base(baseObject)
@@ -315,7 +327,7 @@ namespace org.pdfclown.documents.contents
     public override object Clone(
       Document context
       )
-    {throw new NotImplementedException();}
+    {throw new NotSupportedException();}
 
     /**
       <summary>Serializes the contents into the content stream.</summary>

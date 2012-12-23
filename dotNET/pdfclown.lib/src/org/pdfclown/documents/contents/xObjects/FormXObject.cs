@@ -44,6 +44,17 @@ namespace org.pdfclown.documents.contents.xObjects
     : XObject,
       IContentContext
   {
+    #region static
+    #region interface
+    #region public
+    public static new FormXObject Wrap(
+      PdfDirectObject baseObject
+      )
+    {return baseObject != null ? new FormXObject(baseObject) : null;}
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region constructors
     /**
@@ -71,7 +82,7 @@ namespace org.pdfclown.documents.contents.xObjects
       Box = box;
     }
 
-    internal FormXObject(
+    private FormXObject(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -79,11 +90,6 @@ namespace org.pdfclown.documents.contents.xObjects
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     public override Matrix Matrix
     {
       get
@@ -144,7 +150,7 @@ namespace org.pdfclown.documents.contents.xObjects
     public drawing::RectangleF Box
     {
       get
-      {return new Rectangle(BaseDataObject.Header[PdfName.BBox]).ToRectangleF();}
+      {return Rectangle.Wrap(BaseDataObject.Header[PdfName.BBox]).ToRectangleF();}
       set
       {BaseDataObject.Header[PdfName.BBox] = new Rectangle(value).BaseDataObject;}
     }
@@ -152,7 +158,7 @@ namespace org.pdfclown.documents.contents.xObjects
     public Contents Contents
     {
       get
-      {return new Contents(BaseObject, this);}
+      {return Contents.Wrap(BaseObject, this);}
     }
 
     public void Render(

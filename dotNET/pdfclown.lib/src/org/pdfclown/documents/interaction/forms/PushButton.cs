@@ -55,19 +55,13 @@ namespace org.pdfclown.documents.interaction.forms
       Value = caption;
     }
 
-    public PushButton(
+    internal PushButton(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
     #endregion
 
     #region interface
-    #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-    #endregion
     #endregion
     #endregion
   }

@@ -35,14 +35,13 @@ import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfTextString;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Media offset [PDF:1.7:9.1.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public abstract class MediaOffset<T>
@@ -73,6 +72,12 @@ public abstract class MediaOffset<T>
       PdfDirectObject baseObject
       )
     {super(baseObject);}
+
+    @Override
+    public Frame clone(
+      Document context
+      )
+    {return (Frame)super.clone(context);}
 
     /**
       Gets the (zero-based) frame within a media object.
@@ -118,6 +123,12 @@ public abstract class MediaOffset<T>
       )
     {super(baseObject);}
 
+    @Override
+    public Marker clone(
+      Document context
+      )
+    {return (Marker)super.clone(context);}
+
     /**
       Gets a named offset within a media object.
     */
@@ -156,6 +167,12 @@ public abstract class MediaOffset<T>
       PdfDirectObject baseObject
       )
     {super(baseObject);}
+
+    @Override
+    public Time clone(
+      Document context
+      )
+    {return (Time)super.clone(context);}
 
     /**
       Gets the temporal offset (in seconds).
@@ -239,12 +256,6 @@ public abstract class MediaOffset<T>
 
   // <interface>
   // <public>
-  @Override
-  public Object clone(
-    Document context
-    )
-  {throw new NotImplementedException();}
-
   /**
     Gets the offset value.
   */

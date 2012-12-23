@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,10 +44,10 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
-public class Layers
+public final class Layers
   extends Array<ILayerNode>
   implements ILayerNode
 {
@@ -72,6 +72,17 @@ public class Layers
   }
   // </classes>
 
+  // <static>
+  // <interface>
+  // <public>
+  public static Layers wrap(
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new Layers(baseObject) : null;}
+  // </public>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <constructors>
   public Layers(
@@ -88,7 +99,7 @@ public class Layers
     setTitle(title);
   }
 
-  public Layers(
+  private Layers(
     PdfDirectObject baseObject
     )
   {super(new ItemWrapper(), baseObject);}
@@ -97,10 +108,10 @@ public class Layers
   // <interface>
   // <public>
   @Override
-  public Object clone(
+  public Layers clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Layers)super.clone(context);}
 
   @Override
   public void add(

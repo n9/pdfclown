@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,7 @@ import org.pdfclown.objects.PdfDirectObject;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/10/11
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class ExtGStateResources
@@ -56,6 +56,14 @@ public final class ExtGStateResources
   // </constructors>
 
   // <interface>
+  // <public>
+  @Override
+  public ExtGStateResources clone(
+    Document context
+    )
+  {return (ExtGStateResources)super.clone(context);}
+  // </public>
+
   // <protected>
   @Override
   protected ExtGState wrap(

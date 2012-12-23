@@ -58,18 +58,13 @@ namespace org.pdfclown.documents.interaction.actions
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the transition effect to be used for the update of the display.</summary>
     */
     public Transition Transition
     {
       get
-      {return new Transition(BaseDataObject[PdfName.Trans]);}
+      {return Transition.Wrap(BaseDataObject[PdfName.Trans]);}
       set
       {BaseDataObject[PdfName.Trans] = value.BaseObject;}
     }

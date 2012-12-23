@@ -40,6 +40,17 @@ namespace org.pdfclown.documents.interaction.forms
   public sealed class Form
     : PdfObjectWrapper<PdfDictionary>
   {
+    #region static
+    #region interface
+    #region public
+    public static Form Wrap(
+      PdfDirectObject baseObject
+      )
+    {return baseObject != null ? new Form(baseObject) : null;}
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region constructors
     public Form(
@@ -55,7 +66,7 @@ namespace org.pdfclown.documents.interaction.forms
         )
     {}
 
-    public Form(
+    private Form(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -63,11 +74,6 @@ namespace org.pdfclown.documents.interaction.forms
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the fields collection.</summary>
     */

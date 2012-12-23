@@ -34,14 +34,13 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Document actions [PDF:1.6:8.5.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF14)
 public final class DocumentActions
@@ -55,7 +54,7 @@ public final class DocumentActions
     )
   {super(context, new PdfDictionary());}
 
-  public DocumentActions(
+  DocumentActions(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -67,7 +66,7 @@ public final class DocumentActions
   public DocumentActions clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (DocumentActions)super.clone(context);}
 
   /**
     Gets the action to be performed after printing the document.

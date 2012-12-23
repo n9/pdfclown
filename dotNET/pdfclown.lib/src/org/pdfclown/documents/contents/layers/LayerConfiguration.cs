@@ -74,11 +74,6 @@ namespace org.pdfclown.documents.contents.layers
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     #region ILayerConfiguration
     public string Creator
     {
@@ -91,7 +86,7 @@ namespace org.pdfclown.documents.contents.layers
     public Layers Layers
     {
       get
-      {return new Layers(BaseDataObject.Get<PdfArray>(PdfName.Order));}
+      {return Layers.Wrap(BaseDataObject.Get<PdfArray>(PdfName.Order));}
       set
       {BaseDataObject[PdfName.Order] = value.BaseObject;}
     }
@@ -107,7 +102,7 @@ namespace org.pdfclown.documents.contents.layers
     public Array<LayerGroup> OptionGroups
     {
       get
-      {return new Array<LayerGroup>(BaseDataObject.Get<PdfArray>(PdfName.RBGroups));}
+      {return Array<LayerGroup>.Wrap<LayerGroup>(BaseDataObject.Get<PdfArray>(PdfName.RBGroups));}
     }
 
     public string Title

@@ -35,7 +35,6 @@ import org.pdfclown.documents.Page;
 import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Text annotation [PDF:1.6:8.4.5].
@@ -43,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Note
@@ -161,7 +160,7 @@ public final class Note
   public Note clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Note)super.clone(context);}
 
   /**
     Gets the icon to be used in displaying the annotation.

@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -151,7 +151,7 @@ namespace org.pdfclown.tools
     {
       return new PrimitiveComposer(
         new ContentScanner(
-          new Contents(
+          Contents.Wrap(
             page.File.Register(new PdfStream()),
             page
             )

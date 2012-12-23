@@ -30,7 +30,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   'Import FDF (Forms Data Format) data into the document's interactive form
@@ -38,7 +37,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class ImportData
@@ -67,7 +66,7 @@ public final class ImportData
   public ImportData clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (ImportData)super.clone(context);}
   // </public>
   // </interface>
   // </dynamic>

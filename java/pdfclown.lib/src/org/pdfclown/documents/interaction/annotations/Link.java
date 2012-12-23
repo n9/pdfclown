@@ -37,7 +37,6 @@ import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Link annotation [PDF:1.6:8.4.5].
@@ -46,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Link
@@ -79,7 +78,7 @@ public final class Link
   public Link clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Link)super.clone(context);}
 
   @Override
   public void setAction(

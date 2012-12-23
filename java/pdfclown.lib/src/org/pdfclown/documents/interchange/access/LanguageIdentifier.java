@@ -35,7 +35,6 @@ import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfTextString;
-import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.StringUtils;
 
 /**
@@ -49,7 +48,7 @@ import org.pdfclown.util.StringUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF14)
 public final class LanguageIdentifier
@@ -99,10 +98,10 @@ public final class LanguageIdentifier
   // <interface>
   // <public>
   @Override
-  public Object clone(
+  public LanguageIdentifier clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (LanguageIdentifier)super.clone(context);}
 
   /**
     Gets the identifier components:

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,6 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Private information meaningful to the program (application or plugin extension)
@@ -43,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public class PropertyList
@@ -68,9 +67,9 @@ public class PropertyList
 
     PdfName type = (PdfName)((PdfDictionary)File.resolve(baseObject)).get(PdfName.Type);
     if(Layer.TypeName.equals(type))
-      return new Layer(baseObject);
+      return Layer.wrap(baseObject);
     else if(LayerMembership.TypeName.equals(type))
-      return new LayerMembership(baseObject);
+      return LayerMembership.wrap(baseObject);
     else
       return new PropertyList(baseObject);
   }
@@ -86,7 +85,7 @@ public class PropertyList
     )
   {super(context, baseDataObject);}
 
-  public PropertyList(
+  protected PropertyList(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -98,7 +97,7 @@ public class PropertyList
   public PropertyList clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (PropertyList)super.clone(context);}
   // </public>
   // </interface>
   // </dynamic>

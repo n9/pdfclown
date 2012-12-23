@@ -56,12 +56,6 @@ namespace org.pdfclown.documents.interaction.annotations
     #endregion
 
     #region interface
-    #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-    #endregion
     #endregion
     #endregion
   }

@@ -64,7 +64,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public override object Clone(
       Document context
       )
-    {throw new system::NotImplementedException();}
+    {throw new system::NotImplementedException();} // TODO: verify parent reference.
 
     /**
       <summary>Gets/Sets the action to be performed when the annotation is activated.</summary>

@@ -114,7 +114,7 @@ namespace org.pdfclown.tokens
 
     #region interface
     #region public
-    public override bool Accept(
+    public override PdfObject Accept(
       IVisitor visitor,
       object data
       )

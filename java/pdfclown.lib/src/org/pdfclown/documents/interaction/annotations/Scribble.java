@@ -39,14 +39,13 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfReal;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Freehand "scribble" composed of one or more disjoint paths [PDF:1.6:8.4.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF13)
 public final class Scribble
@@ -78,7 +77,7 @@ public final class Scribble
   public Scribble clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Scribble)super.clone(context);}
 
   /**
     Gets the coordinates of each path.

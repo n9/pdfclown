@@ -64,7 +64,7 @@ namespace org.pdfclown.documents.interaction.forms
       Value = value;
     }
 
-    public RadioButton(
+    internal RadioButton(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -72,11 +72,6 @@ namespace org.pdfclown.documents.interaction.forms
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets whether all the field buttons can be deselected at the same time.</summary>
     */

@@ -32,7 +32,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.util.Map;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
@@ -68,7 +67,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Page
@@ -78,7 +77,7 @@ public final class Page
 {
   /*
     NOTE: Inheritable attributes are NOT early-collected, as they are NOT part
-    of the explicit representation of a page. They are retrieved everytime
+    of the explicit representation of a page. They are retrieved every time
     clients call.
   */
   // <class>
@@ -215,34 +214,7 @@ public final class Page
   public Page clone(
     Document context
     )
-  {
-    /*
-      NOTE: We cannot just delegate the cloning to the base object, as it would
-      involve some unwanted objects like those in 'Parent' and 'Annots' entries that may
-      cause infinite loops (due to circular references) and may include exceeding contents
-      (due to copy propagations to the whole page-tree which this page belongs to).
-      TODO: 'Annots' entry must be finely treated to include any non-circular reference.
-    */
-    // TODO:IMPL deal with inheritable attributes!!!
-
-    File contextFile = context.getFile();
-    PdfDictionary clone = new PdfDictionary(getBaseDataObject().size());
-    for(Map.Entry<PdfName,PdfDirectObject> entry : getBaseDataObject().entrySet())
-    {
-      PdfName key = entry.getKey();
-      // Is the entry unwanted?
-      if(key.equals(PdfName.Parent)
-        || key.equals(PdfName.Annots))
-        continue;
-
-      // Insert the clone of the entry into the clone of the page dictionary!
-      clone.put(
-        key,
-        (PdfDirectObject)entry.getValue().clone(contextFile)
-        );
-    }
-    return new Page(contextFile.getIndirectObjects().add(clone).getReference());
-  }
+  {return (Page)super.clone(context);}
 
   /**
     Gets the page's behavior in response to trigger events.
@@ -273,7 +245,7 @@ public final class Page
       NOTE: The default value is the page's crop box.
     */
     PdfDirectObject artBoxObject = getInheritableAttribute(PdfName.ArtBox);
-    return artBoxObject != null ? new Rectangle(artBoxObject).toRectangle2D() : getCropBox();
+    return artBoxObject != null ? Rectangle.wrap(artBoxObject).toRectangle2D() : getCropBox();
   }
 
   /**
@@ -293,7 +265,7 @@ public final class Page
       NOTE: The default value is the page's crop box.
     */
     PdfDirectObject bleedBoxObject = getInheritableAttribute(PdfName.BleedBox);
-    return bleedBoxObject != null ? new Rectangle(bleedBoxObject).toRectangle2D() : getCropBox();
+    return bleedBoxObject != null ? Rectangle.wrap(bleedBoxObject).toRectangle2D() : getCropBox();
   }
 
   /**
@@ -313,7 +285,7 @@ public final class Page
       NOTE: The default value is the page's media box.
     */
     PdfDirectObject cropBoxObject = getInheritableAttribute(PdfName.CropBox);
-    return cropBoxObject != null ? new Rectangle(cropBoxObject).toRectangle2D() : getBox();
+    return cropBoxObject != null ? Rectangle.wrap(cropBoxObject).toRectangle2D() : getBox();
   }
 
   /**
@@ -405,10 +377,7 @@ public final class Page
   @PDF(VersionEnum.PDF11)
   public Transition getTransition(
     )
-  {
-    PdfDirectObject transitionObject = getBaseDataObject().get(PdfName.Trans);
-    return transitionObject != null ? new Transition(transitionObject) : null;
-  }
+  {return Transition.wrap(getBaseDataObject().get(PdfName.Trans));}
 
   /**
     Gets the intended dimensions of the finished page after trimming [PDF:1.7:10.10.1].
@@ -425,7 +394,7 @@ public final class Page
       NOTE: The default value is the page's crop box.
     */
     PdfDirectObject trimBoxObject = getInheritableAttribute(PdfName.TrimBox);
-    return trimBoxObject != null ? new Rectangle(trimBoxObject).toRectangle2D() : getCropBox();
+    return trimBoxObject != null ? Rectangle.wrap(trimBoxObject).toRectangle2D() : getCropBox();
   }
 
   /**
@@ -536,7 +505,7 @@ public final class Page
   @Override
   public Rectangle2D getBox(
     )
-  {return new Rectangle(getInheritableAttribute(PdfName.MediaBox)).toRectangle2D();}
+  {return Rectangle.wrap(getInheritableAttribute(PdfName.MediaBox)).toRectangle2D();}
 
   @Override
   public Contents getContents(
@@ -545,7 +514,7 @@ public final class Page
     PdfDirectObject contentsObject = getBaseDataObject().get(PdfName.Contents);
     if(contentsObject == null)
     {getBaseDataObject().put(PdfName.Contents, contentsObject = getFile().register(new PdfStream()));}
-    return new Contents(contentsObject, this);
+    return Contents.wrap(contentsObject, this);
   }
 
   @Override

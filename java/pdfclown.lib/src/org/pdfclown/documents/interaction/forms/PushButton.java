@@ -31,14 +31,13 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.util.EnumUtils;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Pushbutton field [PDF:1.6:8.6.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class PushButton
@@ -61,7 +60,7 @@ public final class PushButton
     setValue(caption);
   }
 
-  public PushButton(
+  PushButton(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -73,7 +72,7 @@ public final class PushButton
   public PushButton clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (PushButton)super.clone(context);}
   // </public>
   // </interface>
   // </dynamic>

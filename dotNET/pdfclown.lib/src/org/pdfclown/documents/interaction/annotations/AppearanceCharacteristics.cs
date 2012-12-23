@@ -205,7 +205,7 @@ namespace org.pdfclown.documents.interaction.annotations
         ) : base(context, new PdfDictionary())
       {}
 
-      public IconFitObject(
+      internal IconFitObject(
         PdfDirectObject baseObject
         ) : base(baseObject)
       {}
@@ -228,11 +228,6 @@ namespace org.pdfclown.documents.interaction.annotations
         set
         {BaseDataObject[PdfName.FB] = PdfBoolean.Get(value);}
       }
-
-      public override object Clone(
-        Document context
-        )
-      {throw new NotImplementedException();}
 
       /**
         <summary>Gets/Sets the circumstances under which the icon should be scaled inside the annotation box.</summary>
@@ -384,6 +379,17 @@ namespace org.pdfclown.documents.interaction.annotations
     };
     #endregion
 
+    #region static
+    #region interface
+    #region public
+    public static AppearanceCharacteristics Wrap(
+      PdfDirectObject baseObject
+      )
+    {return baseObject != null ? new AppearanceCharacteristics(baseObject) : null;}
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region constructors
     public AppearanceCharacteristics(
@@ -391,7 +397,7 @@ namespace org.pdfclown.documents.interaction.annotations
       ) : base(context, new PdfDictionary())
     {}
 
-    public AppearanceCharacteristics(
+    private AppearanceCharacteristics(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -399,11 +405,6 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the widget annotation's alternate (down) caption,
       displayed when the mouse button is pressed within its active area
@@ -428,10 +429,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public FormXObject AlternateIcon
     {
       get
-      {
-        PdfReference alternateIconObject = (PdfReference)BaseDataObject[PdfName.IX];
-        return alternateIconObject != null ? new FormXObject(alternateIconObject) : null;
-      }
+      {return FormXObject.Wrap(BaseDataObject[PdfName.IX]);}
       set
       {BaseDataObject[PdfName.IX] = value.BaseObject;}
     }
@@ -511,10 +509,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public FormXObject NormalIcon
     {
       get
-      {
-        PdfReference normalIconObject = (PdfReference)BaseDataObject[PdfName.I];
-        return normalIconObject != null ? new FormXObject(normalIconObject) : null;
-      }
+      {return FormXObject.Wrap(BaseDataObject[PdfName.I]);}
       set
       {BaseDataObject[PdfName.I] = PdfObjectWrapper.GetBaseObject(value);}
     }
@@ -557,10 +552,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public FormXObject RolloverIcon
     {
       get
-      {
-        PdfReference rolloverIconObject = (PdfReference)BaseDataObject[PdfName.RI];
-        return rolloverIconObject != null ? new FormXObject(rolloverIconObject) : null;
-      }
+      {return FormXObject.Wrap(BaseDataObject[PdfName.RI]);}
       set
       {BaseDataObject[PdfName.RI] = PdfObjectWrapper.GetBaseObject(value);}
     }

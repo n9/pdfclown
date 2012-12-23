@@ -41,13 +41,12 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfTextString;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Outline item [PDF:1.6:8.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Bookmark
@@ -180,14 +179,14 @@ public final class Bookmark
   public Bookmark clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Bookmark)super.clone(context);}
 
   /**
     Gets the child bookmarks.
   */
   public Bookmarks getBookmarks(
     )
-  {return new Bookmarks(getBaseObject());}
+  {return Bookmarks.wrap(getBaseObject());}
 
   /**
     Gets the bookmark text color.

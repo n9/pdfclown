@@ -39,7 +39,6 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfReal;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Line annotation [PDF:1.6:8.4.5].
@@ -48,7 +47,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF13)
 public final class Line
@@ -198,7 +197,7 @@ public final class Line
   public Line clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Line)super.clone(context);}
 
   /**
     Gets the ending coordinates.

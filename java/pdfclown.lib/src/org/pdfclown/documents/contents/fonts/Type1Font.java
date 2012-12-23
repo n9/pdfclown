@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
   Type 1 font [PDF:1.6:5.5.1;AFM:4.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 12/21/12
 */
 /*
   NOTE: Type 1 fonts encompass several formats:
@@ -81,7 +81,7 @@ public class Type1Font
   public Type1Font clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Type1Font)super.clone(context);}
   // </public>
 
   // <protected>

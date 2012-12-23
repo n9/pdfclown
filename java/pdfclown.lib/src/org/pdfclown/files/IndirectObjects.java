@@ -35,6 +35,7 @@ import java.util.NoSuchElementException;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.pdfclown.objects.Cloner;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.tokens.XRefEntry;
@@ -58,7 +59,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 public final class IndirectObjects
   implements List<PdfIndirectObject>
@@ -169,12 +170,32 @@ public final class IndirectObjects
     import contents from a file into another one.</p>
     <p>To register an internal data object, use {@link #add(PdfDataObject)}.</p>
 
+    @param object External indirect object to import.
     @return Indirect object imported from the external indirect object.
   */
   public PdfIndirectObject addExternal(
     PdfIndirectObject object
     )
+  {return addExternal(object, file.getCloner());}
+
+  /**
+    Registers an <i>external</i> indirect object.
+    <p>External indirect objects come from alien PDF files; therefore, this is a powerful way to
+    import contents from a file into another one.</p>
+    <p>To register an internal data object, use {@link #add(PdfDataObject)}.</p>
+
+    @param object External indirect object to import.
+    @param cloner Import rules.
+    @return Indirect object imported from the external indirect object.
+  */
+  public PdfIndirectObject addExternal(
+    PdfIndirectObject object,
+    Cloner cloner
+    )
   {
+    if(cloner.getContext() != file)
+      throw new IllegalArgumentException("cloner file context incompatible");
+
     PdfIndirectObject indirectObject = importedObjects.get(object.hashCode());
     // Hasn't the external indirect object been imported yet?
     if(indirectObject == null)
@@ -182,8 +203,9 @@ public final class IndirectObjects
       // Keep track of the imported indirect object!
       importedObjects.put(
         object.hashCode(),
-        indirectObject = add((PdfDataObject)object.getDataObject().clone(file)) // Registers the clone of the data object corresponding to the external indirect object.
+        indirectObject = add((PdfDataObject)null) // [DEV:AP] Circular reference issue solved.
         );
+      indirectObject.setDataObject((PdfDataObject)object.getDataObject().accept(cloner, null));
     }
     return indirectObject;
   }

@@ -49,14 +49,13 @@ import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.EnumUtils;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Annotation [PDF:1.6:8.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public class Annotation
@@ -296,7 +295,7 @@ public class Annotation
   public Annotation clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Annotation)super.clone(context);}
 
   /**
     Gets the action to be performed when the annotation is activated.
@@ -320,7 +319,7 @@ public class Annotation
   @PDF(VersionEnum.PDF12)
   public Appearance getAppearance(
     )
-  {return new Appearance(getBaseDataObject().get(PdfName.AP, PdfDictionary.class));}
+  {return Appearance.wrap(getBaseDataObject().get(PdfName.AP, PdfDictionary.class));}
 
   /**
     Gets the border style.
@@ -336,7 +335,7 @@ public class Annotation
   public Rectangle2D getBox(
     )
   {
-    org.pdfclown.objects.Rectangle box = new org.pdfclown.objects.Rectangle(getBaseDataObject().get(PdfName.Rect));
+    org.pdfclown.objects.Rectangle box = org.pdfclown.objects.Rectangle.wrap(getBaseDataObject().get(PdfName.Rect));
     return new Rectangle2D.Double(
       box.getLeft(),
       getPageHeight() - box.getTop(),

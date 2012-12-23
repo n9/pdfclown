@@ -31,14 +31,13 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.documents.multimedia.Sound;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   'Play a sound' action [PDF:1.6:8.5.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class PlaySound
@@ -71,7 +70,7 @@ public final class PlaySound
   public PlaySound clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (PlaySound)super.clone(context);}
 
   /**
     Gets the sound to be played.

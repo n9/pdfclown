@@ -79,11 +79,6 @@ namespace org.pdfclown.documents.interaction.annotations
       }
     }
 
-    public override object Clone(
-      Document context
-      )
-    {throw new system::NotImplementedException();}
-
     #region ILink
     public PdfObjectWrapper Target
     {

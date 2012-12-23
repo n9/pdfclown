@@ -252,11 +252,6 @@ namespace org.pdfclown.documents.interaction.forms
       {BaseDataObject[PdfName.AA] = value.BaseObject;}
     }
 
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets the default value to which this field reverts when a <see cref="ResetForm">reset
       -form</see> action} is executed.</summary>

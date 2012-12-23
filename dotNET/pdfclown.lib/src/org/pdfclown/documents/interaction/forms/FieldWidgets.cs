@@ -67,7 +67,7 @@ namespace org.pdfclown.documents.interaction.forms
     public override object Clone(
       Document context
       )
-    {throw new NotImplementedException();}
+    {throw new NotImplementedException();} // TODO:verify field reference.
 
     /**
       <summary>Gets the field associated to these widgets.</summary>

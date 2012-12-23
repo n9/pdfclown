@@ -34,20 +34,30 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Interactive form (AcroForm) [PDF:1.6:8.6.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class Form
   extends PdfObjectWrapper<PdfDictionary>
 {
   // <class>
+  // <static>
+  // <interface>
+  // <public>
+  public static Form wrap(
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new Form(baseObject) : null;}
+  // </public>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <constructors>
   public Form(
@@ -65,7 +75,7 @@ public final class Form
       );
   }
 
-  public Form(
+  private Form(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -77,7 +87,7 @@ public final class Form
   public Form clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Form)super.clone(context);}
 
   /**
     Gets the fields collection.

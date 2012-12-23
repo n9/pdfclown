@@ -76,7 +76,7 @@ public final class PageAnnotations
   public PageAnnotations clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {throw new NotImplementedException();} //TODO: deal with page reference.
 
   /**
     Gets the page associated to these annotations.

@@ -47,14 +47,14 @@ namespace org.pdfclown.tools
         )
       {this.aliveObjectNumbers = aliveObjectNumbers;}
 
-      public override bool Visit(
+      public override PdfObject Visit(
         PdfReference obj,
         object data
         )
       {
         int objectNumber = obj.Reference.ObjectNumber;
         if(aliveObjectNumbers.Contains(objectNumber))
-          return true;
+          return obj;
 
         aliveObjectNumbers.Add(objectNumber);
         return base.Visit(obj, data);

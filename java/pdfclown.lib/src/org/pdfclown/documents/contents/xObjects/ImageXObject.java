@@ -37,19 +37,29 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfStream;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Image external object [PDF:1.6:4.8.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class ImageXObject
   extends XObject
 {
   // <class>
+  // <static>
+  // <interface>
+  // <public>
+  public static ImageXObject wrap(
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new ImageXObject(baseObject) : null;}
+  // </public>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <constructors>
   public ImageXObject(
@@ -72,10 +82,7 @@ public final class ImageXObject
     baseDataObject.getHeader().put(PdfName.Subtype,PdfName.Image);
   }
 
-  /**
-    <span style="color:red">For internal use only.</span>
-  */
-  public ImageXObject(
+  private ImageXObject(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -83,18 +90,18 @@ public final class ImageXObject
 
   // <interface>
   // <public>
+  @Override
+  public ImageXObject clone(
+    Document context
+    )
+  {return (ImageXObject)super.clone(context);}
+
   /**
     Gets the number of bits per color component.
   */
   public int getBitsPerComponent(
     )
   {return ((PdfInteger)getBaseDataObject().getHeader().get(PdfName.BitsPerComponent)).getRawValue();}
-
-  @Override
-  public ImageXObject clone(
-    Document context
-    )
-  {throw new NotImplementedException();}
 
   /**
     Gets the color space in which samples are specified.

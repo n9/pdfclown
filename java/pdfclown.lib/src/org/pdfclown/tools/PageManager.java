@@ -357,9 +357,7 @@ public final class PageManager
     {
       @SuppressWarnings("resource")
       Document pageDocument = new File().getDocument();
-      pageDocument.getPages().add(
-        page.clone(pageDocument)
-        );
+      pageDocument.getPages().add(page.clone(pageDocument));
       documents.add(pageDocument);
     }
     return documents;

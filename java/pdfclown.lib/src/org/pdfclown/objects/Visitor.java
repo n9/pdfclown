@@ -30,139 +30,142 @@ import org.pdfclown.tokens.XRefStream;
 
 /**
   Visitor object.
-  
+
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
-public class Visitor 
+public class Visitor
   implements IVisitor
 {
   @Override
-  public boolean visit(
+  public PdfObject visit(
     ObjectStream object,
     Object data
     )
   {
     for(PdfDataObject value : object.values())
-    {
-      if(!value.accept(this, data))
-        return false;
-    }
-    return true;
+    {value.accept(this, data);}
+    return object;
   }
 
   @Override
-  public boolean visit(
+  public PdfObject visit(
     PdfArray object,
     Object data
     )
   {
     for(PdfDirectObject item : object)
     {
-      if(item == null)
-        continue;
-
-      if(!item.accept(this, data))
-        return false;
+      if(item != null)
+      {item.accept(this, data);}
     }
-    return true;
+    return object;
   }
 
   @Override
-  public boolean visit(
+  public PdfObject visit(
     PdfBoolean object,
     Object data
     )
-  {return true;}
+  {return object;}
 
   @Override
-  public boolean visit(
+  public PdfObject visit(
+    PdfDataObject object,
+    Object data
+    )
+  {return object.accept(this, data);}
+
+  @Override
+  public PdfObject visit(
     PdfDate object,
     Object data
     )
-  {return true;}
+  {return object;}
 
   @Override
-  public boolean visit(
+  public PdfObject visit(
     PdfDictionary object,
     Object data
     )
   {
     for(PdfDirectObject value : object.values())
     {
-      if(value == null)
-        continue;
-
-      if(!value.accept(this, data))
-        return false;
+      if(value != null)
+      {value.accept(this, data);}
     }
-    return true;
+    return object;
   }
 
   @Override
-  public boolean visit(
+  public PdfObject visit(
     PdfIndirectObject object,
     Object data
     )
   {
     PdfDataObject dataObject = object.getDataObject();
-    return dataObject != null ? dataObject.accept(this, data) : true;
+    if(dataObject != null)
+    {dataObject.accept(this, data);}
+    return object;
   }
 
   @Override
-  public boolean visit(
+  public PdfObject visit(
     PdfInteger object,
     Object data
     )
-  {return true;}
+  {return object;}
 
   @Override
-  public boolean visit(
+  public PdfObject visit(
     PdfName object,
     Object data
     )
-  {return true;}
+  {return object;}
 
   @Override
-  public boolean visit(
+  public PdfObject visit(
     PdfReal object,
     Object data
     )
-  {return true;}
+  {return object;}
 
   @Override
-  public boolean visit(
+  public PdfObject visit(
     PdfReference object,
     Object data
     )
-  {return object.getIndirectObject().accept(this, data);}
+  {
+    object.getIndirectObject().accept(this, data);
+    return object;
+  }
 
   @Override
-  public boolean visit(
+  public PdfObject visit(
     PdfStream object,
     Object data
     )
-  {return true;}
+  {return object;}
 
   @Override
-  public boolean visit(
+  public PdfObject visit(
     PdfString object,
     Object data
     )
-  {return true;}
+  {return object;}
 
   @Override
-  public boolean visit(
+  public PdfObject visit(
     PdfTextString object,
     Object data
     )
-  {return true;}
+  {return object;}
 
   @Override
-  public boolean visit(
+  public PdfObject visit(
     XRefStream object,
     Object data
     )
-  {return true;}
+  {return object;}
 }

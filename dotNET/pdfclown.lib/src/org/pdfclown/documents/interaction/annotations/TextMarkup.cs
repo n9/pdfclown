@@ -186,11 +186,6 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the quadrilaterals encompassing a word or group of contiguous words in the
       text underlying the annotation.</summary>
@@ -311,7 +306,7 @@ namespace org.pdfclown.documents.interaction.annotations
       )
     {
       FormXObject normalAppearance;
-      RectangleF box = new org.pdfclown.objects.Rectangle(BaseDataObject[PdfName.Rect]).ToRectangleF();
+      RectangleF box = org.pdfclown.objects.Rectangle.Wrap(BaseDataObject[PdfName.Rect]).ToRectangleF();
       {
         AppearanceStates normalAppearances = Appearance.Normal;
         normalAppearance = normalAppearances[null];

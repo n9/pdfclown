@@ -74,11 +74,6 @@ namespace org.pdfclown.documents.interaction.navigation.document
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the index of the target page.</summary>
     */

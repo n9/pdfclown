@@ -45,7 +45,6 @@ import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfString;
-import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.Interval;
 
 /**
@@ -53,7 +52,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public abstract class Rendition
@@ -74,10 +73,10 @@ public abstract class Rendition
     {super(baseObject);}
 
     @Override
-    public Object clone(
+    public Viability clone(
       Document context
       )
-    {throw new NotImplementedException();}
+    {return (Viability)super.clone(context);}
 
     /**
       Gets the minimum system's bandwidth (in bits per second). Equivalent to SMIL's systemBitrate
@@ -122,7 +121,7 @@ public abstract class Rendition
     */
     public Array<SoftwareIdentifier> getRenderers(
       )
-    {return new Array<SoftwareIdentifier>(SoftwareIdentifier.class, getMediaCriteria().get(PdfName.V, PdfArray.class));}
+    {return Array.wrap(SoftwareIdentifier.class, getMediaCriteria().get(PdfName.V, PdfArray.class));}
 
     /**
       Gets the PDF version range supported by the viewer application.
@@ -253,12 +252,6 @@ public abstract class Rendition
 
   // <interface>
   // <public>
-  @Override
-  public Object clone(
-    Document context
-    )
-  {throw new NotImplementedException();}
-
   /**
     Gets the preferred options the renderer should attempt to honor without affecting its viability
     [PDF:1.7:9.1.1].

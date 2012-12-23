@@ -73,7 +73,7 @@ namespace org.pdfclown.objects
 
     #region interface
     #region public
-    public override bool Accept(
+    public override PdfObject Accept(
       IVisitor visitor,
       object data
       )
@@ -175,15 +175,6 @@ namespace org.pdfclown.objects
     {stream.Write(IndirectReference);}
 
     #region IPdfIndirectObject
-    public override object Clone(
-      File context
-      )
-    {
-      return context == null || context == file
-        ? (PdfReference)base.Clone(context) // Local clone (immutable).
-        : ((PdfIndirectObject)IndirectObject.Clone(context)).Reference; // Alien clone.
-    }
-
     public PdfDataObject DataObject
     {
       get

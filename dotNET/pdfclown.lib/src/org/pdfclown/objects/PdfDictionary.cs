@@ -50,7 +50,7 @@ namespace org.pdfclown.objects
 
     #region dynamic
     #region fields
-    private IDictionary<PdfName,PdfDirectObject> entries;
+    internal IDictionary<PdfName,PdfDirectObject> entries;
 
     private PdfObject parent;
     private bool updateable = true;
@@ -96,24 +96,11 @@ namespace org.pdfclown.objects
 
     #region interface
     #region public
-    public override bool Accept(
+    public override PdfObject Accept(
       IVisitor visitor,
       object data
       )
     {return visitor.Visit(this, data);}
-
-    public override object Clone(
-      File context
-      )
-    {
-      PdfDictionary clone = (PdfDictionary)base.Clone(context);
-      {
-        clone.entries = new Dictionary<PdfName,PdfDirectObject>(entries.Count);
-        foreach(KeyValuePair<PdfName,PdfDirectObject> entry in entries)
-        {clone[entry.Key] = (PdfDirectObject)PdfObject.Clone(entry.Value, context);}
-      }
-      return clone;
-    }
 
     public override int CompareTo(
       PdfDirectObject obj

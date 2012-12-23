@@ -57,7 +57,6 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.EnumUtils;
-import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.geom.Dimension;
 
 /**
@@ -65,7 +64,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class TextField
@@ -92,7 +91,7 @@ public final class TextField
     setValue(value);
   }
 
-  public TextField(
+  TextField(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -104,7 +103,7 @@ public final class TextField
   public TextField clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (TextField)super.clone(context);}
 
   /**
     Gets the justification to be used in displaying this field's text.

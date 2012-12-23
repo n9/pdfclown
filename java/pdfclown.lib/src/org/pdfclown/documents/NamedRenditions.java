@@ -32,14 +32,13 @@ import org.pdfclown.objects.NameTree;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfString;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Named renditions [PDF:1.6:3.6.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public final class NamedRenditions
@@ -65,7 +64,7 @@ public final class NamedRenditions
   public NamedRenditions clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (NamedRenditions)super.clone(context);}
 
   @Override
   public Rendition put(

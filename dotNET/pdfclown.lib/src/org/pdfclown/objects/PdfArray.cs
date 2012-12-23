@@ -53,7 +53,7 @@ namespace org.pdfclown.objects
 
     #region dynamic
     #region fields
-    private List<PdfDirectObject> items;
+    internal List<PdfDirectObject> items;
 
     private PdfObject parent;
     private bool updateable = true;
@@ -92,30 +92,16 @@ namespace org.pdfclown.objects
 
     #region interface
     #region public
-    public override bool Accept(
+    public override PdfObject Accept(
       IVisitor visitor,
       object data
       )
     {return visitor.Visit(this, data);}
-  
-    public override object Clone(
-      File context
-      )
-    {
-      PdfArray clone = (PdfArray)base.Clone(context);
-      {
-        clone.items = new List<PdfDirectObject>(items.Count);
-        foreach(PdfDirectObject item in items)
-        {clone.Add((PdfDirectObject)PdfObject.Clone(item, context));}
-      }
-      return clone;
-    }
 
     public override int CompareTo(
       PdfDirectObject obj
       )
     {throw new NotImplementedException();}
-
 
     /**
       <summary>Gets the value corresponding to the given index, forcing its instantiation as a direct

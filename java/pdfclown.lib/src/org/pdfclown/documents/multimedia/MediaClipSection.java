@@ -34,10 +34,10 @@ import org.pdfclown.objects.PdfObjectWrapper;
 
 /**
   Media clip section [PDF:1.7:9.1.3].
-  
+
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public final class MediaClipSection
@@ -59,6 +59,12 @@ public final class MediaClipSection
 
   // <interface>
   // <public>
+  @Override
+  public MediaClipSection clone(
+    Document context
+    )
+  {return (MediaClipSection)super.clone(context);}
+
   @Override
   public PdfObjectWrapper<?> getData(
     )

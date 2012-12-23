@@ -322,9 +322,7 @@ namespace org.pdfclown.tools
       foreach(Page page in pages)
       {
         Document pageDocument = new File().Document;
-        pageDocument.Pages.Add(
-          (Page)page.Clone(pageDocument)
-          );
+        pageDocument.Pages.Add((Page)page.Clone(pageDocument));
         documents.Add(pageDocument);
       }
       return documents;

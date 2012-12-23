@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,7 @@ namespace org.pdfclown.documents.contents.layers
     <summary>Optional content membership [PDF:1.7:4.10.1].</summary>
   */
   [PDF(VersionEnum.PDF15)]
-  public class LayerMembership
+  public sealed class LayerMembership
     : LayerEntity
   {
     #region types
@@ -59,11 +59,6 @@ namespace org.pdfclown.documents.contents.layers
 
       #region interface
       #region public
-      public override object Clone(
-        Document context
-        )
-      {throw new NotImplementedException();}
-
       #region IList<Layer>
       public int IndexOf(
         Layer item
@@ -103,10 +98,10 @@ namespace org.pdfclown.documents.contents.layers
             if(index != 0)
               throw new IndexOutOfRangeException();
 
-            return new Layer(BaseObject);
+            return Layer.Wrap(BaseObject);
           }
           else // Multiple layers.
-            return new Layer(((PdfArray)baseDataObject)[index]);
+            return Layer.Wrap(((PdfArray)baseDataObject)[index]);
         }
         set
         {EnsureArray()[index] = value.BaseObject;}
@@ -205,7 +200,18 @@ namespace org.pdfclown.documents.contents.layers
     #endregion
 
     #region static
+    #region fields
     public static PdfName TypeName = PdfName.OCMD;
+    #endregion
+
+    #region interface
+    #region public
+    public static new LayerMembership Wrap(
+      PdfDirectObject baseObject
+      )
+    {return baseObject != null ? new LayerMembership(baseObject) : null;}
+    #endregion
+    #endregion
     #endregion
 
     #region dynamic
@@ -215,7 +221,7 @@ namespace org.pdfclown.documents.contents.layers
       ) : base(context, TypeName)
     {}
 
-    public LayerMembership(
+    private LayerMembership(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -223,11 +229,6 @@ namespace org.pdfclown.documents.contents.layers
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     public override LayerMembership Membership
     {
       get

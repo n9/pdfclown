@@ -87,13 +87,6 @@ namespace org.pdfclown.documents.contents.fonts
     #endregion
 
     #region interface
-    #region public
-    public override Object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-    #endregion
-
     #region protected
     /**
       <summary>Gets the CIDFont dictionary that is the descendant of this composite font.</summary>

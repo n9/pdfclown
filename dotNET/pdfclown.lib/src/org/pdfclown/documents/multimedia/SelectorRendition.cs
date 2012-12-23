@@ -80,7 +80,7 @@ namespace org.pdfclown.documents.multimedia
     public Array<Rendition> Renditions
     {
       get
-      {return new Array<Rendition>(ArrayWrapper, BaseDataObject.Get<PdfArray>(PdfName.R));}
+      {return Array<Rendition>.Wrap<Rendition>(ArrayWrapper, BaseDataObject.Get<PdfArray>(PdfName.R));}
       set
       {BaseDataObject[PdfName.R] = value.BaseObject;}
     }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -58,9 +58,9 @@ namespace org.pdfclown.documents.contents
 
       PdfName type = (PdfName)((PdfDictionary)File.Resolve(baseObject))[PdfName.Type];
       if(Layer.TypeName.Equals(type))
-        return new Layer(baseObject);
+        return Layer.Wrap(baseObject);
       else if(LayerMembership.TypeName.Equals(type))
-        return new LayerMembership(baseObject);
+        return LayerMembership.Wrap(baseObject);
       else
         return new PropertyList(baseObject);
     }
@@ -76,19 +76,13 @@ namespace org.pdfclown.documents.contents
       ) : base(context, baseDataObject)
     {}
 
-    internal PropertyList(
+    protected PropertyList(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
     #endregion
 
     #region interface
-    #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-    #endregion
     #endregion
     #endregion
   }

@@ -95,12 +95,10 @@ namespace org.pdfclown.documents.interaction.navigation.document
       <summary>Gets the child bookmarks.</summary>
     */
     public Bookmarks Bookmarks
-    {get{return new Bookmarks(BaseObject);}}
-
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
+    {
+      get
+      {return Bookmarks.Wrap(BaseObject);}
+    }
 
     /**
       <summary>Gets/Sets the bookmark text color.</summary>

@@ -39,7 +39,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public final class PlayMovie
@@ -72,7 +72,7 @@ public final class PlayMovie
   public PlayMovie clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (PlayMovie)super.clone(context);}
 
   /**
     Gets the movie to be played.

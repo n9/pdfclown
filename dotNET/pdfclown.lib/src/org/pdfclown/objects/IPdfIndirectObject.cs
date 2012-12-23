@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,7 +32,7 @@ namespace org.pdfclown.objects
   */
   public interface IPdfIndirectObject
   {
-    object Clone(
+    PdfObject Clone(
       File context
       );
 

@@ -42,14 +42,13 @@ import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfStream;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Embedded file [PDF:1.6:3.10.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF13)
 public final class EmbeddedFile
@@ -151,7 +150,7 @@ public final class EmbeddedFile
   public EmbeddedFile clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (EmbeddedFile)super.clone(context);}
 
   /**
     Gets the creation date of this file.

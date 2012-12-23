@@ -281,7 +281,7 @@ namespace org.pdfclown.documents
     public Bookmarks Bookmarks
     {
       get
-      {return new Bookmarks(BaseDataObject.Get<PdfDictionary>(PdfName.Outlines, false));}
+      {return Bookmarks.Wrap(BaseDataObject.Get<PdfDictionary>(PdfName.Outlines, false));}
       set
       {BaseDataObject[PdfName.Outlines] = PdfObjectWrapper.GetBaseObject(value);}
     }
@@ -333,7 +333,7 @@ namespace org.pdfclown.documents
     public Form Form
     {
       get
-      {return new Form(BaseDataObject.Get<PdfDictionary>(PdfName.AcroForm));}
+      {return Form.Wrap(BaseDataObject.Get<PdfDictionary>(PdfName.AcroForm));}
       set
       {BaseDataObject[PdfName.AcroForm] = PdfObjectWrapper.GetBaseObject(value);}
     }
@@ -389,7 +389,7 @@ namespace org.pdfclown.documents
     public Information Information
     {
       get
-      {return new Information(File.Trailer.Get<PdfDictionary>(PdfName.Info, false));}
+      {return Information.Wrap(File.Trailer.Get<PdfDictionary>(PdfName.Info, false));}
       set
       {File.Trailer[PdfName.Info] = PdfObjectWrapper.GetBaseObject(value);}
     }
@@ -401,7 +401,7 @@ namespace org.pdfclown.documents
     public LayerDefinition Layer
     {
       get
-      {return new LayerDefinition(BaseDataObject.Get<PdfDictionary>(PdfName.OCProperties));}
+      {return LayerDefinition.Wrap(BaseDataObject.Get<PdfDictionary>(PdfName.OCProperties));}
       set
       {
         CheckCompatibility("Layer");
@@ -560,7 +560,7 @@ namespace org.pdfclown.documents
     public ViewerPreferences ViewerPreferences
     {
       get
-      {return new ViewerPreferences(BaseDataObject.Get<PdfDictionary>(PdfName.ViewerPreferences));}
+      {return ViewerPreferences.Wrap(BaseDataObject.Get<PdfDictionary>(PdfName.ViewerPreferences));}
       set
       {BaseDataObject[PdfName.ViewerPreferences] = PdfObjectWrapper.GetBaseObject(value);}
     }

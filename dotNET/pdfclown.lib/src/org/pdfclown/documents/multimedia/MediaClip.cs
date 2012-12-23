@@ -96,11 +96,6 @@ namespace org.pdfclown.documents.multimedia
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the actual media data.</summary>
       <returns>Either a <see cref="FullFileSpecification"/> or a <see cref="FormXObject"/>.</returns>

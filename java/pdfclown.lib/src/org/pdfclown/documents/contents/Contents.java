@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -57,7 +57,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Contents
@@ -335,6 +335,18 @@ public final class Contents
   }
   // </classes>
 
+  // <static>
+  // <interface>
+  // <public>
+  public static Contents wrap(
+    PdfDirectObject baseObject,
+    IContentContext contentContext
+    )
+  {return baseObject != null ? new Contents(baseObject, contentContext) : null;}
+  // </public>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <fields>
   private List<ContentObject> items;
@@ -343,10 +355,7 @@ public final class Contents
   // </fields>
 
   // <constructors>
-  /**
-    <span style="color:red">For internal use only.</span>
-  */
-  public Contents(
+  private Contents(
     PdfDirectObject baseObject,
     IContentContext contentContext
     )
@@ -364,7 +373,7 @@ public final class Contents
   public Contents clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {throw new UnsupportedOperationException();}
 
   /**
     Serializes the contents into the content stream.

@@ -156,11 +156,6 @@ namespace org.pdfclown.documents.contents
       }
     }
 
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the nonstroking alpha constant, specifying the constant shape or constant
       opacity value to be used for nonstroking operations in the transparent imaging model

@@ -45,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 public final class PdfArray
   extends PdfDirectObject
@@ -61,7 +61,7 @@ public final class PdfArray
 
   // <dynamic>
   // <fields>
-  private ArrayList<PdfDirectObject> items;
+  ArrayList<PdfDirectObject> items;
 
   private PdfObject parent;
   private boolean updated;
@@ -106,7 +106,7 @@ public final class PdfArray
   // <interface>
   // <public>
   @Override
-  public boolean accept(
+  public PdfObject accept(
     IVisitor visitor,
     Object data
     )
@@ -116,15 +116,7 @@ public final class PdfArray
   public PdfArray clone(
     File context
     )
-  {
-    PdfArray clone = (PdfArray)super.clone(context);
-    {
-      clone.items = new ArrayList<PdfDirectObject>(items.size());
-      for(PdfDirectObject item : items)
-      {clone.add((PdfDirectObject)PdfObject.clone(item, context));}
-    }
-    return clone;
-  }
+  {return (PdfArray)super.clone(context);}
 
   @Override
   public int compareTo(

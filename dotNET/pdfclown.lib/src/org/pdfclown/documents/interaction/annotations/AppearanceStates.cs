@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -72,7 +72,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public override object Clone(
       Document context
       )
-    {throw new NotImplementedException();}
+    {throw new NotImplementedException();} // TODO: verify appearance reference.
 
 //TODO
   /**
@@ -140,12 +140,12 @@ namespace org.pdfclown.documents.interaction.annotations
         else if(key == null)
         {
           if(baseDataObject is PdfStream) // Single state.
-            return new FormXObject(BaseObject);
+            return FormXObject.Wrap(BaseObject);
           else // Multiple state, but invalid key.
             return null;
         }
         else // Multiple state.
-          return new FormXObject(((PdfDictionary)baseDataObject)[key]);
+          return FormXObject.Wrap(((PdfDictionary)baseDataObject)[key]);
       }
       set
       {
@@ -233,7 +233,7 @@ namespace org.pdfclown.documents.interaction.annotations
       {
         yield return new KeyValuePair<PdfName,FormXObject>(
           null,
-          new FormXObject(BaseObject)
+          FormXObject.Wrap(BaseObject)
           );
       }
       else // Multiple state.
@@ -242,7 +242,7 @@ namespace org.pdfclown.documents.interaction.annotations
         {
           yield return new KeyValuePair<PdfName,FormXObject>(
             entry.Key,
-            new FormXObject(entry.Value)
+            FormXObject.Wrap(entry.Value)
             );
         }
       }

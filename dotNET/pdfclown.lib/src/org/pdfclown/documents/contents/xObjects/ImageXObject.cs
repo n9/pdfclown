@@ -40,6 +40,17 @@ namespace org.pdfclown.documents.contents.xObjects
   public sealed class ImageXObject
     : XObject
   {
+    #region static
+    #region interface
+    #region public
+    public static new ImageXObject Wrap(
+      PdfDirectObject baseObject
+      )
+    {return baseObject != null ? new ImageXObject(baseObject) : null;}
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region constructors
     public ImageXObject(
@@ -59,7 +70,7 @@ namespace org.pdfclown.documents.contents.xObjects
       baseDataObject.Header[PdfName.Subtype] = PdfName.Image;
     }
 
-    internal ImageXObject(
+    private ImageXObject(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -75,11 +86,6 @@ namespace org.pdfclown.documents.contents.xObjects
       get
       {return ((PdfInteger)BaseDataObject.Header[PdfName.BitsPerComponent]).RawValue;}
     }
-
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
 
     /**
       <summary>Gets the color space in which samples are specified.</summary>

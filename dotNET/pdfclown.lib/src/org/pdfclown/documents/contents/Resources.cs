@@ -68,11 +68,6 @@ namespace org.pdfclown.documents.contents
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {return new Resources((PdfDirectObject)BaseObject.Clone(context.File));}
-
     public ColorSpaceResources ColorSpaces
     {
       get

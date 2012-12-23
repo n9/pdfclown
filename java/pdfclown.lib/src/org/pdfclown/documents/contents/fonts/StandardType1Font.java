@@ -43,7 +43,7 @@ import org.pdfclown.util.ConvertUtils;
   Standard Type 1 font [PDF:1.6:5.5.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/20/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class StandardType1Font
@@ -120,10 +120,7 @@ public final class StandardType1Font
     create(fontName,encodingName);
   }
 
-  /**
-    <span style="color:red">For internal use only.</span>
-  */
-  public StandardType1Font(
+  StandardType1Font(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -131,6 +128,12 @@ public final class StandardType1Font
 
   // <interface>
   // <public>
+  @Override
+  public StandardType1Font clone(
+    Document context
+    )
+  {return (StandardType1Font)super.clone(context);}
+
   @Override
   public double getAscent(
     )

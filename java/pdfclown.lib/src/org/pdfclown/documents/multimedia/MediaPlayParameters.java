@@ -38,14 +38,13 @@ import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReal;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Media play parameters [PDF:1.7:9.1.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public final class MediaPlayParameters
@@ -83,10 +82,10 @@ public final class MediaPlayParameters
       {super(baseObject);}
 
       @Override
-      public Object clone(
+      public Duration clone(
         Document context
         )
-      {throw new NotImplementedException();}
+      {return (Duration)super.clone(context);}
 
       /**
         Gets the temporal duration.
@@ -204,10 +203,10 @@ public final class MediaPlayParameters
     {super(baseObject);}
 
     @Override
-    public Object clone(
+    public Viability clone(
       Document context
       )
-    {throw new NotImplementedException();}
+    {return (Viability)super.clone(context);}
 
     /**
       Gets the temporal duration, corresponding to the notion of simple duration in SMIL.
@@ -352,10 +351,10 @@ public final class MediaPlayParameters
   // <interface>
   // <public>
   @Override
-  public Object clone(
+  public MediaPlayParameters clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (MediaPlayParameters)super.clone(context);}
 
   /**
     Gets the player rules for playing this media.

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,7 +47,7 @@ namespace org.pdfclown.documents.interaction.forms
       ) : base(context, new PdfDictionary())
     {}
 
-    public FieldActions(
+    internal FieldActions(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -55,11 +55,6 @@ namespace org.pdfclown.documents.interaction.forms
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new system::NotImplementedException();}
-
     /**
       <summary>Gets/Sets a JavaScript action to be performed to recalculate the value
       of this field when that of another field changes.</summary>

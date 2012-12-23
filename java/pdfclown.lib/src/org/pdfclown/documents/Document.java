@@ -61,7 +61,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF document [PDF:1.6:3.6.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Document
@@ -396,7 +396,7 @@ public final class Document
   */
   public Bookmarks getBookmarks(
     )
-  {return new Bookmarks(getBaseDataObject().get(PdfName.Outlines, PdfDictionary.class, false));}
+  {return Bookmarks.wrap(getBaseDataObject().get(PdfName.Outlines, PdfDictionary.class, false));}
 
   /**
     Gets the configuration of this document.
@@ -413,14 +413,14 @@ public final class Document
   @PDF(VersionEnum.PDF12)
   public Form getForm(
     )
-  {return new Form(getBaseDataObject().get(PdfName.AcroForm, PdfDictionary.class));}
+  {return Form.wrap(getBaseDataObject().get(PdfName.AcroForm, PdfDictionary.class));}
 
   /**
     Gets the document information dictionary.
   */
   public Information getInformation(
     )
-  {return new Information(getFile().getTrailer().get(PdfName.Info, PdfDictionary.class, false));}
+  {return Information.wrap(getFile().getTrailer().get(PdfName.Info, PdfDictionary.class, false));}
 
   /**
     Gets the optional content properties.
@@ -428,7 +428,7 @@ public final class Document
   @PDF(VersionEnum.PDF15)
   public LayerDefinition getLayer(
     )
-  {return new LayerDefinition(getBaseDataObject().get(PdfName.OCProperties, PdfDictionary.class));}
+  {return LayerDefinition.wrap(getBaseDataObject().get(PdfName.OCProperties, PdfDictionary.class));}
 
   /**
     Gets the name dictionary.
@@ -541,7 +541,7 @@ public final class Document
   @PDF(VersionEnum.PDF12)
   public ViewerPreferences getViewerPreferences(
     )
-  {return new ViewerPreferences(getBaseDataObject().get(PdfName.ViewerPreferences, PdfDictionary.class));}
+  {return ViewerPreferences.wrap(getBaseDataObject().get(PdfName.ViewerPreferences, PdfDictionary.class));}
 
   /**
     Clones the specified object within this document context.

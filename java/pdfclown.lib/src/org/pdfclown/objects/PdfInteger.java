@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
   PDF integer number object [PDF:1.6:3.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 public final class PdfInteger
   extends PdfNumber<Integer>
@@ -67,7 +67,7 @@ public final class PdfInteger
   // <interface>
   // <public>
   @Override
-  public boolean accept(
+  public PdfObject accept(
     IVisitor visitor,
     Object data
     )

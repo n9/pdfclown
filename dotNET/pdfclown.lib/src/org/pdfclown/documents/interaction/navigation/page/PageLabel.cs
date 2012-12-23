@@ -122,11 +122,6 @@ namespace org.pdfclown.documents.interaction.navigation.page
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the value of the numeric suffix for the first page label in this range.
       Subsequent pages are numbered sequentially from this value.</summary>

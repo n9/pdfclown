@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -46,7 +46,7 @@ namespace org.pdfclown.documents.interaction.annotations
       ) : base(parent)
     {}
 
-    public WidgetActions(
+    internal WidgetActions(
       Annotation parent,
       PdfDirectObject baseObject
       ) : base(parent, baseObject)
@@ -58,7 +58,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public override object Clone(
       Document context
       )
-    {throw new system::NotImplementedException();}
+    {throw new system::NotImplementedException();} // TODO: verify parent reference.
 
     /**
       <summary>Gets/Sets the action to be performed when the annotation loses the input focus.</summary>

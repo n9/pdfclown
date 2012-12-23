@@ -85,7 +85,7 @@ namespace org.pdfclown.samples.cli
               // First page to add.
               int fromSourcePageIndex = PromptPageChoice("Select the start source page to add", sourcePagesCount);
               // Last page to add.
-              int toSourcePageIndex = PromptPageChoice("Select the end source page to add", fromSourcePageIndex + 1, sourcePagesCount) + 1;
+              int toSourcePageIndex = PromptPageChoice("Select the end source page to add", fromSourcePageIndex, sourcePagesCount) + 1;
               // Target position.
               int targetPageIndex = PromptPageChoice("Select the position where to insert the source pages", mainPagesCount + 1);
   
@@ -283,7 +283,10 @@ namespace org.pdfclown.samples.cli
       Serialize(
         file,
         GetType().Name + "_" + action.ToString() + (index.HasValue ? "." + index.Value : ""),
-        null, null
+        null,
+        action.ToString(),
+        "managing document pages",
+        action.ToString()
         );
     }
   }

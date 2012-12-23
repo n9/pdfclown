@@ -45,7 +45,7 @@ import org.pdfclown.tokens.Symbol;
   PDF stream object [PDF:1.6:3.2.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 public class PdfStream
   extends PdfDataObject
@@ -61,8 +61,8 @@ public class PdfStream
 
   // <dynamic>
   // <fields>
-  private IBuffer body;
-  private PdfDictionary header;
+  IBuffer body;
+  PdfDictionary header;
 
   private PdfObject parent;
   private boolean updateable = true;
@@ -129,7 +129,7 @@ public class PdfStream
   // <interface>
   // <public>
   @Override
-  public boolean accept(
+  public PdfObject accept(
     IVisitor visitor,
     Object data
     )
@@ -139,14 +139,7 @@ public class PdfStream
   public PdfStream clone(
     File context
     )
-  {
-    PdfStream clone = (PdfStream)super.clone(context);
-    {
-      clone.header = header.clone(context);
-      clone.body = body.clone();
-    }
-    return clone;
-  }
+  {return (PdfStream)super.clone(context);}
 
   /**
     Gets the decoded stream body.

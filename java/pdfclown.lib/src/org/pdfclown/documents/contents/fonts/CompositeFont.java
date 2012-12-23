@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 08/23/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF12)
 public abstract class CompositeFont
@@ -125,11 +125,6 @@ public abstract class CompositeFont
 
   // <interface>
   // <public>
-  @Override
-  public CompositeFont clone(
-    Document context
-    )
-  {throw new NotImplementedException();}
   // </public>
 
   // <protected>

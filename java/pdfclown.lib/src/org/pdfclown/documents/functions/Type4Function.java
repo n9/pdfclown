@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,7 +30,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfStream;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   PostScript calculator function represented as a stream containing code written in a small subset
@@ -38,7 +37,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.1, 11/01/11
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF13)
 public final class Type4Function
@@ -67,10 +66,10 @@ public final class Type4Function
   }
 
   @Override
-  public Object clone(
+  public Type4Function clone(
     Document context
     )
-  {return new NotImplementedException();}
+  {return (Type4Function)super.clone(context);}
   // </public>
   // </interface>
   // </dynamic>

@@ -39,7 +39,7 @@ import org.pdfclown.tokens.XRefEntry.UsageEnum;
   PDF indirect object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 public class PdfIndirectObject
   extends PdfObject
@@ -97,7 +97,7 @@ public class PdfIndirectObject
   // <interface>
   // <public>
   @Override
-  public boolean accept(
+  public PdfObject accept(
     IVisitor visitor,
     Object data
     )
@@ -255,7 +255,7 @@ public class PdfIndirectObject
   public PdfIndirectObject clone(
     File context
     )
-  {return context.getIndirectObjects().addExternal(this);}
+  {return (PdfIndirectObject)super.clone(context);}
 
   @Override
   public void delete(

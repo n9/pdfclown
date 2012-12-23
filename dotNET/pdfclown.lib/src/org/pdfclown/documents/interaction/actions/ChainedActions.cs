@@ -68,7 +68,7 @@ namespace org.pdfclown.documents.interaction.actions
     public override object Clone(
       Document context
       )
-    {throw new NotImplementedException();}
+    {throw new NotImplementedException();} // TODO:verify
 
     /**
       <summary>Gets the parent action.</summary>

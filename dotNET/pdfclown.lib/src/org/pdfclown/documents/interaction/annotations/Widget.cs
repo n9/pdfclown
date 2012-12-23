@@ -145,11 +145,6 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     public override AnnotationActions Actions
     {
       get
@@ -162,16 +157,13 @@ namespace org.pdfclown.documents.interaction.annotations
     }
 
     /**
-      <summary>Gets/Sets the annotation's appearance characteristics
-      to be used for its visual presentation on the page.</summary>
+      <summary>Gets/Sets the annotation's appearance characteristics to be used for its visual
+      presentation on the page.</summary>
     */
     public AppearanceCharacteristics AppearanceCharacteristics
     {
       get
-      {
-        PdfDirectObject appearanceObject = BaseDataObject[PdfName.MK];
-        return appearanceObject != null ? new AppearanceCharacteristics(appearanceObject) : null;
-      }
+      {return AppearanceCharacteristics.Wrap(BaseDataObject.Get<PdfDictionary>(PdfName.MK));}
       set
       {BaseDataObject[PdfName.MK] = value.BaseObject;}
     }

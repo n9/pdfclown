@@ -39,14 +39,13 @@ import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfString.SerializationModeEnum;
 import org.pdfclown.tokens.CharsetName;
 import org.pdfclown.tokens.Writer;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   File identifier [PDF:1.7:10.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 public final class FileIdentifier
   extends PdfObjectWrapper<PdfArray>
@@ -109,10 +108,10 @@ public final class FileIdentifier
   // <interface>
   // <public>
   @Override
-  public Object clone(
+  public FileIdentifier clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (FileIdentifier)super.clone(context);}
 
   /**
     Gets the permanent identifier based on the contents of the file at the time it was originally

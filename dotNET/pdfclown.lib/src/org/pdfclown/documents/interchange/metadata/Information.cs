@@ -42,6 +42,17 @@ namespace org.pdfclown.documents.interchange.metadata
     : PdfObjectWrapper<PdfDictionary>,
       IDictionary<PdfName,object>
   {
+    #region static
+    #region interface
+    #region public
+    public static Information Wrap(
+      PdfDirectObject baseObject
+      )
+    {return baseObject != null ? new Information(baseObject) : null;}
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region constructors
     public Information(
@@ -49,7 +60,7 @@ namespace org.pdfclown.documents.interchange.metadata
       ) : base(context, new PdfDictionary())
     {}
 
-    internal Information(
+    private Information(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -64,11 +75,6 @@ namespace org.pdfclown.documents.interchange.metadata
       set
       {this[PdfName.Author] = value;}
     }
-
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
 
     public DateTime? CreationDate
     {

@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -69,6 +69,37 @@ namespace org.pdfclown.objects
     }
     #endregion
 
+    #region static
+    #region interface
+    #region public
+    /**
+      <summary>Wraps an existing base array using the default wrapper for wrapping its items.
+      </summary>
+      <param name="itemClass">Item class.</param>
+      <param name="baseObject">Base array. MUST be a {@link PdfReference reference} every time
+      available.</param>
+    */
+    public static Array<T> Wrap<T>(
+      PdfDirectObject baseObject
+      ) where T : TItem
+    {return baseObject != null ? new Array<T>(baseObject) : null;}
+  
+    /**
+      <summary>Wraps an existing base array using the specified wrapper for wrapping its items.
+      </summary>
+      <param name="itemWrapper">Item wrapper.</param>
+      <param name="baseObject">Base array. MUST be a {@link PdfReference reference} every time
+      available.</param>
+    */
+    public static Array<T> Wrap<T>(
+      IWrapper<T> itemWrapper,
+      PdfDirectObject baseObject
+      ) where T : TItem
+    {return baseObject != null ? new Array<T>(itemWrapper, baseObject) : null;}
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region fields
     private IWrapper<TItem> itemWrapper;
@@ -135,7 +166,7 @@ namespace org.pdfclown.objects
       <param name="baseObject">Base array. MUST be a <see cref="PdfReference">reference</see>
       everytime available.</param>
     */
-    public Array(
+    protected Array(
       PdfDirectObject baseObject
       ) : this(
         new DefaultWrapper<TItem>(),
@@ -149,7 +180,7 @@ namespace org.pdfclown.objects
       <param name="baseObject">Base array. MUST be a <see cref="PdfReference">reference</see>
       everytime available.</param>
     */
-    public Array(
+    protected Array(
       IWrapper<TItem> itemWrapper,
       PdfDirectObject baseObject
       ) : base(baseObject)
@@ -158,11 +189,6 @@ namespace org.pdfclown.objects
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     #region IList<TItem>
     public virtual int IndexOf(
       TItem item

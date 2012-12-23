@@ -394,11 +394,6 @@ namespace org.pdfclown.documents.interaction.actions
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the path information to the target document.</summary>
     */

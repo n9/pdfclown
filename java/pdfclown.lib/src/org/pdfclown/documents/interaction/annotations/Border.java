@@ -36,14 +36,13 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReal;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Border characteristics [PDF:1.6:8.4.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF11)
 public final class Border
@@ -158,7 +157,7 @@ public final class Border
     setPattern(pattern);
   }
 
-  public Border(
+  Border(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -170,7 +169,7 @@ public final class Border
   public Border clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Border)super.clone(context);}
 
   /**
     Gets the dash pattern used in case of dashed border.

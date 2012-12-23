@@ -34,14 +34,13 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Optional content properties [PDF:1.7:4.10.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public class LayerDefinition
@@ -49,6 +48,17 @@ public class LayerDefinition
   implements ILayerConfiguration
 {
   // <class>
+  // <static>
+  // <interface>
+  // <public>
+  public static LayerDefinition wrap(
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new LayerDefinition(baseObject) : null;}
+  // </public>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <constructors>
   public LayerDefinition(
@@ -59,7 +69,7 @@ public class LayerDefinition
     initialize();
   }
 
-  public LayerDefinition(
+  private LayerDefinition(
     PdfDirectObject baseObject
     )
   {
@@ -71,17 +81,17 @@ public class LayerDefinition
   // <interface>
   // <public>
   @Override
-  public Object clone(
+  public LayerDefinition clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (LayerDefinition)super.clone(context);}
 
   /**
     Gets the layer configurations used under particular circumstances.
   */
   public Array<LayerConfiguration> getAlternateConfigurations(
     )
-  {return new Array<LayerConfiguration>(LayerConfiguration.class, getBaseDataObject().get(PdfName.Configs, PdfArray.class));}
+  {return Array.wrap(LayerConfiguration.class, getBaseDataObject().get(PdfName.Configs, PdfArray.class));}
 
   /**
     Gets the default layer configuration, that is the initial state of the optional content groups

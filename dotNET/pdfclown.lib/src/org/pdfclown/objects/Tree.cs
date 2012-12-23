@@ -424,11 +424,6 @@ namespace org.pdfclown.objects
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       Gets the key associated to the specified value.
     */

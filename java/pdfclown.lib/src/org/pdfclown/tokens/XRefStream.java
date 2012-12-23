@@ -44,6 +44,7 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.ConvertUtils;
 import org.pdfclown.util.parsers.ParseException;
@@ -53,7 +54,7 @@ import org.pdfclown.util.parsers.ParseException;
   <p>It is alternative to the classic cross-reference table.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 public final class XRefStream
   extends PdfStream
@@ -139,7 +140,7 @@ public final class XRefStream
   // <interface>
   // <public>
   @Override
-  public boolean accept(
+  public PdfObject accept(
     IVisitor visitor,
     Object data
     )

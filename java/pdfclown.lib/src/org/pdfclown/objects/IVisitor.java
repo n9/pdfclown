@@ -30,177 +30,192 @@ import org.pdfclown.tokens.XRefStream;
 
 /**
   Visitor interface.
-  
+  Implementations are expected to be functional (traversal results are propagated through return
+  values rather than side effects) and external (responsibility for traversing the hierarchical
+  structure is assigned to the 'visit' methods rather than the 'accept' counterparts).
+
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 public interface IVisitor
 {
   /**
-    Visits an object array.
+    Visits an object stream.
   
     @param object Visited object.
     @param data Supplemental data.
-    @return Whether visit can be continued.
+    @return Result object.
   */
-  boolean visit(
+  PdfObject visit(
+    ObjectStream object,
+    Object data
+    );
+  
+  /**
+    Visits an object array.
+
+    @param object Visited object.
+    @param data Supplemental data.
+    @return Result object.
+  */
+  PdfObject visit(
     PdfArray object,
     Object data
     );
 
   /**
     Visits a boolean object.
-  
+
     @param object Visited object.
     @param data Supplemental data.
-    @return Whether visit can be continued.
+    @return Result object.
   */
-  boolean visit(
+  PdfObject visit(
     PdfBoolean object,
     Object data
     );
 
   /**
-    Visits a date object.
-  
+    Visits a data object.
+
     @param object Visited object.
     @param data Supplemental data.
-    @return Whether visit can be continued.
+    @return Result object.
   */
-  boolean visit(
+  PdfObject visit(
+    PdfDataObject object,
+    Object data
+    );
+
+  /**
+    Visits a date object.
+
+    @param object Visited object.
+    @param data Supplemental data.
+    @return Result object.
+  */
+  PdfObject visit(
     PdfDate object,
     Object data
     );
-  
+
   /**
     Visits an object dictionary.
-  
+
     @param object Visited object.
     @param data Supplemental data.
-    @return Whether visit can be continued.
+    @return Result object.
   */
-  boolean visit(
+  PdfObject visit(
     PdfDictionary object,
     Object data
     );
-  
+
   /**
     Visits an indirect object.
-  
+
     @param object Visited object.
     @param data Supplemental data.
-    @return Whether visit can be continued.
+    @return Result object.
   */
-  boolean visit(
+  PdfObject visit(
     PdfIndirectObject object,
     Object data
     );
-  
+
   /**
     Visits an integer-number object.
-  
+
     @param object Visited object.
     @param data Supplemental data.
-    @return Whether visit can be continued.
+    @return Result object.
   */
-  boolean visit(
+  PdfObject visit(
     PdfInteger object,
     Object data
     );
-  
+
   /**
     Visits a name object.
-  
+
     @param object Visited object.
     @param data Supplemental data.
-    @return Whether visit can be continued.
+    @return Result object.
   */
-  boolean visit(
+  PdfObject visit(
     PdfName object,
     Object data
     );
-  
-  /**
-    Visits an object stream.
-  
-    @param object Visited object.
-    @param data Supplemental data.
-    @return Whether visit can be continued.
-  */
-  boolean visit(
-    ObjectStream object,
-    Object data
-    );
-  
+
   /**
     Visits a real-number object.
-  
+
     @param object Visited object.
     @param data Supplemental data.
-    @return Whether visit can be continued.
+    @return Result object.
   */
-  boolean visit(
+  PdfObject visit(
     PdfReal object,
     Object data
     );
-  
+
   /**
     Visits a reference object.
-  
+
     @param object Visited object.
     @param data Supplemental data.
-    @return Whether visit can be continued.
+    @return Result object.
   */
-  boolean visit(
+  PdfObject visit(
     PdfReference object,
     Object data
     );
-  
+
   /**
     Visits a stream object.
-  
+
     @param object Visited object.
     @param data Supplemental data.
-    @return Whether visit can be continued.
+    @return Result object.
   */
-  boolean visit(
+  PdfObject visit(
     PdfStream object,
     Object data
     );
-  
+
   /**
     Visits a string object.
-  
+
     @param object Visited object.
     @param data Supplemental data.
-    @return Whether visit can be continued.
+    @return Result object.
   */
-  boolean visit(
+  PdfObject visit(
     PdfString object,
     Object data
     );
-  
+
   /**
     Visits a text string object.
-  
+
     @param object Visited object.
     @param data Supplemental data.
-    @return Whether visit can be continued.
+    @return Result object.
   */
-  boolean visit(
+  PdfObject visit(
     PdfTextString object,
     Object data
     );
-  
+
   /**
     Visits a cross-reference stream object.
-  
+
     @param object Visited object.
     @param data Supplemental data.
-    @return Whether visit can be continued.
+    @return Result object.
   */
-  boolean visit(
+  PdfObject visit(
     XRefStream object,
     Object data
     );

@@ -38,7 +38,7 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF15)
 public final class SelectorRendition
@@ -73,13 +73,19 @@ public final class SelectorRendition
 
   // <interface>
   // <public>
+  @Override
+  public SelectorRendition clone(
+    Document context
+    )
+  {return (SelectorRendition)super.clone(context);}
+
   /**
     Gets an ordered collection of renditions. The first viable media rendition found in the array,
     or nested within a selector rendition in the array, should be used.
   */
   public Array<Rendition> getRenditions(
     )
-  {return new Array<Rendition>(ArrayWrapper, getBaseDataObject().get(PdfName.R, PdfArray.class));}
+  {return Array.wrap(ArrayWrapper, getBaseDataObject().get(PdfName.R, PdfArray.class));}
 
   /**
     @see #getRenditions()

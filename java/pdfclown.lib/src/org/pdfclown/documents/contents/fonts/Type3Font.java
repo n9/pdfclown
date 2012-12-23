@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,20 +38,21 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.BiMap;
 import org.pdfclown.util.ByteArray;
 import org.pdfclown.util.ConvertUtils;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Type 3 font [PDF:1.6:5.5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/14/11
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Type3Font
   extends SimpleFont
 {
-//TODO:IMPL
+  // <class>
+  // <dynamic>
+  // <constructors>
   Type3Font(
     Document context
     )
@@ -61,12 +62,15 @@ public final class Type3Font
     PdfDirectObject baseObject
     )
   {super(baseObject);}
+  // </constructors>
 
+  // <interface>
+  // <public>
   @Override
   public Type3Font clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Type3Font)super.clone(context);}
 
   @Override
   public double getAscent(
@@ -77,14 +81,9 @@ public final class Type3Font
   public double getDescent(
     )
   {return 0;}
+  // </public>
 
-  protected Map<ByteArray,Integer> getNativeEncoding(
-    )
-  {
-    //FIXME: consolidate with Type1Font and TrueTypeFont!
-    return Encoding.get(PdfName.StandardEncoding).getCodes();
-  }
-
+  // <protected>
   @Override
   protected void loadEncoding(
     )
@@ -124,4 +123,17 @@ public final class Type3Font
       {glyphIndexes.put(codeEntry.getValue(),ConvertUtils.byteArrayToInt(codeEntry.getKey().data));}
     }
   }
+  // </protected>
+
+  // <private>
+  private Map<ByteArray,Integer> getNativeEncoding(
+    )
+  {
+    //FIXME: consolidate with Type1Font and TrueTypeFont!
+    return Encoding.get(PdfName.StandardEncoding).getCodes();
+  }
+  // </private>
+  // </interface>
+  // </dynamic>
+  // </class>
 }

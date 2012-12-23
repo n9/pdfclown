@@ -69,11 +69,6 @@ namespace org.pdfclown.documents.interchange.metadata
 
     #region interface
     #region public
-    public override object Clone(
-      Document context
-      )
-    {throw new NotImplementedException();}
-
     /**
       <summary>Gets/Sets the metadata contents.</summary>
     */

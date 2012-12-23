@@ -1,7 +1,5 @@
 package org.pdfclown.samples.cli;
 
-import java.util.Map;
-
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.Resources;

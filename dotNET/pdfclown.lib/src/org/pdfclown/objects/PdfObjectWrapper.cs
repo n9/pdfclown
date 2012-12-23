@@ -85,9 +85,14 @@ namespace org.pdfclown.objects
       <summary>Gets a clone of the object, registered inside the given document context.</summary>
       <param name="context">Which document the clone has to be registered in.</param>
     */
-    public abstract object Clone(
+    public virtual object Clone(
       Document context
-      );
+      )
+    {
+      PdfObjectWrapper clone = (PdfObjectWrapper)base.MemberwiseClone();
+      clone.BaseObject = (PdfDirectObject)BaseObject.Clone(context.File);
+      return clone;
+    }
 
     /**
       <summary>Gets the indirect object containing the base object.</summary>

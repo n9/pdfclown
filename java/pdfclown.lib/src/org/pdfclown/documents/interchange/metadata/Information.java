@@ -42,13 +42,12 @@ import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.util.MapEntry;
-import org.pdfclown.util.NotImplementedException;
 
 /**
   Document information [PDF:1.6:10.2.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/21/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Information
@@ -56,6 +55,17 @@ public final class Information
   implements Map<PdfName,Object>
 {
   // <class>
+  // <static>
+  // <interface>
+  // <public>
+  public static Information wrap(
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new Information(baseObject) : null;}
+  // </public>
+  // </interface>
+  // </static>
+
   // <dynamic>
   // <constructors>
   public Information(
@@ -63,10 +73,7 @@ public final class Information
     )
   {super(context, new PdfDictionary());}
 
-  /**
-    <span style="color:red">For internal use only.</span>
-  */
-  public Information(
+  private Information(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -78,7 +85,7 @@ public final class Information
   public Information clone(
     Document context
     )
-  {throw new NotImplementedException();}
+  {return (Information)super.clone(context);}
 
   public String getAuthor(
   )
