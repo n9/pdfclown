@@ -103,6 +103,16 @@ namespace org.pdfclown.objects
       )
     {throw new NotImplementedException();}
 
+    public override bool Equals(
+      object @object
+      )
+    {
+      return base.Equals(@object)
+        || (@object != null
+          && @object.GetType().Equals(GetType())
+          && ((PdfArray)@object).items.Equals(items));
+    }
+
     /**
       <summary>Gets the value corresponding to the given index, forcing its instantiation as a direct
       object in case of missing entry.</summary>
@@ -152,15 +162,6 @@ namespace org.pdfclown.objects
       return item;
     }
 
-    public override bool Equals(
-      object obj
-      )
-    {
-      return obj != null
-        && obj.GetType().Equals(GetType())
-        && ((PdfArray)obj).items.Equals(items);
-    }
-
     public override int GetHashCode(
       )
     {return items.GetHashCode();}
@@ -182,7 +183,7 @@ namespace org.pdfclown.objects
     public PdfDataObject Resolve(
       int index
       )
-    {return File.Resolve(this[index]);}
+    {return Resolve(this[index]);}
 
     /**
       <summary>Gets the dereferenced value corresponding to the given index, forcing its
@@ -194,7 +195,7 @@ namespace org.pdfclown.objects
     public T Resolve<T>(
       int index
       ) where T : PdfDataObject, new()
-    {return (T)File.Resolve(Get<T>(index));}
+    {return (T)Resolve(Get<T>(index));}
 
     public override PdfObject Swap(
       PdfObject other

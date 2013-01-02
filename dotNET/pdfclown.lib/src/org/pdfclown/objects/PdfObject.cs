@@ -38,16 +38,40 @@ namespace org.pdfclown.objects
     : IVisitable
   {
     #region static
+    #region interface
+    #region public
     /**
       <summary>Gets the clone of the specified object, registered inside the specified file context.</summary>
       <param name="object">Object to clone into the specified file context.</param>
       <param name="context">File context of the cloning.</param>
     */
     public static PdfObject Clone(
-      PdfObject obj,
+      PdfObject @object,
       File context
       )
-    {return obj == null ? null : obj.Clone(context);}
+    {return @object == null ? null : @object.Clone(context);}
+
+    /**
+      <summary>Ensures an indirect reference to be resolved into its corresponding data object.</summary>
+      <param name="object">Object to resolve.</param>
+    */
+    public static PdfDataObject Resolve(
+      PdfObject @object
+      )
+    {return @object == null ? null : @object.Resolve();}
+
+    /**
+      <summary>Ensures a data object to be unresolved into its corresponding indirect reference, if
+      available.</summary>
+      <param name="object">Object to unresolve.</param>
+      <returns><see cref="PdfReference"/>, if available; <code>object</code>, otherwise.</returns>
+    */
+    public static PdfDirectObject Unresolve(
+      PdfDataObject @object
+      )
+    {return @object == null ? null : @object.Unresolve();}
+    #endregion
+    #endregion
     #endregion
 
     #region dynamic
@@ -152,6 +176,14 @@ namespace org.pdfclown.objects
     }
 
     /**
+      <summary>Ensures this object to be resolved into its corresponding data object.</summary>
+      <seealso cref="Unresolve()"/>
+    */
+    public PdfDataObject Resolve(
+      )
+    {return this is IPdfIndirectObject ? ((IPdfIndirectObject)this).DataObject : (PdfDataObject)this;}
+
+    /**
       <summary>Swaps contents between this object and the other one.</summary>
       <param name="other">Object whose contents have to be swapped with this one's.</param>
       <returns>This object.</returns>
@@ -160,6 +192,19 @@ namespace org.pdfclown.objects
       PdfObject other
       );
 
+    /**
+      <summary>Ensures this object to be unresolved into its corresponding indirect reference, if
+      available.</summary>
+      <returns><see cref="PdfReference"/>, if available; <code>this</code>, otherwise.</returns>
+      <seealso cref="Resolve()"/>
+    */
+    public PdfDirectObject Unresolve(
+      )
+    {
+      PdfReference reference = Reference;
+      return reference != null ? reference : (PdfDirectObject)this;
+    }
+  
     /**
       <summary>Gets/Sets whether the detection of object state changes is enabled.</summary>
     */

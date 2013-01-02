@@ -70,7 +70,7 @@ namespace org.pdfclown.documents.functions
       if(baseObject == null)
         return null;
 
-      PdfDataObject dataObject = File.Resolve(baseObject);
+      PdfDataObject dataObject = baseObject.Resolve();
       PdfDictionary dictionary = GetDictionary(dataObject);
       int functionType = ((PdfInteger)dictionary[PdfName.FunctionType]).RawValue;
       switch(functionType)

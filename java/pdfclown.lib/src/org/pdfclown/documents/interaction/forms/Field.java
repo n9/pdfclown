@@ -32,11 +32,11 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.interaction.actions.ResetForm;
 import org.pdfclown.documents.interaction.annotations.Widget;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfSimpleObject;
@@ -49,7 +49,7 @@ import org.pdfclown.util.EnumUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Field
@@ -311,7 +311,7 @@ public abstract class Field
   public Object getDefaultValue(
     )
   {
-    PdfSimpleObject<?> defaultValueObject = (PdfSimpleObject<?>)File.resolve(getInheritableAttribute(PdfName.DV));
+    PdfSimpleObject<?> defaultValueObject = (PdfSimpleObject<?>)PdfObject.resolve(getInheritableAttribute(PdfName.DV));
     return defaultValueObject != null ? defaultValueObject.getValue() : null;
   }
 
@@ -321,7 +321,7 @@ public abstract class Field
   public EnumSet<FlagsEnum> getFlags(
     )
   {
-    PdfInteger flagsObject = (PdfInteger)File.resolve(getInheritableAttribute(PdfName.Ff));
+    PdfInteger flagsObject = (PdfInteger)PdfObject.resolve(getInheritableAttribute(PdfName.Ff));
     return flagsObject != null ? FlagsEnum.toEnumSet(flagsObject.getRawValue()) : EnumSet.noneOf(FlagsEnum.class);
   }
 
@@ -366,7 +366,7 @@ public abstract class Field
   public Object getValue(
     )
   {
-    PdfSimpleObject<?> valueObject = (PdfSimpleObject<?>)File.resolve(getInheritableAttribute(PdfName.V));
+    PdfSimpleObject<?> valueObject = (PdfSimpleObject<?>)PdfObject.resolve(getInheritableAttribute(PdfName.V));
     return valueObject != null ? valueObject.getValue() : null;
   }
 

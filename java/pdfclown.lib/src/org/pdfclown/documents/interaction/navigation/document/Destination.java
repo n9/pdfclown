@@ -32,7 +32,6 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.IPdfNamedObjectWrapper;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
@@ -54,7 +53,7 @@ import org.pdfclown.objects.PdfString;
   </ul>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Destination
@@ -197,7 +196,7 @@ public abstract class Destination
     if(baseObject == null)
       return null;
 
-    PdfArray dataObject = (PdfArray)File.resolve(baseObject);
+    PdfArray dataObject = (PdfArray)baseObject.resolve();
     PdfDirectObject pageObject = dataObject.get(0);
     if(pageObject instanceof PdfReference)
       return new LocalDestination(baseObject);

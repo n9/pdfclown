@@ -41,12 +41,10 @@ import org.pdfclown.bytes.OutputStream;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Document.Configuration.XRefModeEnum;
 import org.pdfclown.objects.Cloner;
-import org.pdfclown.objects.IPdfIndirectObject;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.tokens.Reader;
 import org.pdfclown.tokens.Reader.FileInfo;
@@ -60,7 +58,7 @@ import org.pdfclown.util.StringUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 public final class File
   implements Closeable
@@ -139,22 +137,6 @@ public final class File
   // <fields>
   private static Random hashCodeGenerator = new Random();
   // </fields>
-
-  // <interface>
-  // <public>
-  /**
-    Ensures an indirect reference to be resolved into its corresponding data object.
-  */
-  public static PdfDataObject resolve(
-    PdfObject object
-    )
-  {
-    return object instanceof IPdfIndirectObject
-      ? ((IPdfIndirectObject)object).getDataObject()
-      : (PdfDataObject)object;
-  }
-  // </public>
-  // </interface>
   // </static>
 
   // <dynamic>

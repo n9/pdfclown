@@ -45,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 public final class PdfArray
   extends PdfDirectObject
@@ -205,7 +205,7 @@ public final class PdfArray
   public PdfDataObject resolve(
     int index
     )
-  {return File.resolve(get(index));}
+  {return resolve(get(index));}
 
   /**
     Gets the dereferenced value corresponding to the given index, forcing its instantiation in case
@@ -221,7 +221,7 @@ public final class PdfArray
     int index,
     Class<T> itemClass
     )
-  {return (T)File.resolve(get(index, itemClass));}
+  {return (T)resolve(get(index, itemClass));}
 
   @Override
   public void setUpdateable(
@@ -409,9 +409,10 @@ public final class PdfArray
     Object object
     )
   {
-    return object != null
-      && object.getClass().equals(getClass())
-      && ((PdfArray)object).items.equals(items);
+    return super.equals(object)
+      || (object != null
+        && object.getClass().equals(getClass())
+        && ((PdfArray)object).items.equals(items));
   }
 
   @Override

@@ -34,7 +34,6 @@ import java.util.NoSuchElementException;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
@@ -47,7 +46,7 @@ import org.pdfclown.util.NotImplementedException;
   Collection of bookmarks [PDF:1.6:8.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Bookmarks
@@ -305,22 +304,9 @@ public final class Bookmarks
   {
     return new Iterator<Bookmark>()
     {
-      // <class>
-      // <dynamic>
-      // <fields>
-      /**
-        Current bookmark.
-      */
       private PdfDirectObject currentBookmarkObject = null;
-      /**
-        Next bookmark.
-      */
       private PdfDirectObject nextBookmarkObject = getBaseDataObject().get(PdfName.First);
-      // </fields>
 
-      // <interface>
-      // <public>
-      // <Iterator>
       @Override
       public boolean hasNext(
         )
@@ -334,7 +320,7 @@ public final class Bookmarks
           throw new NoSuchElementException();
 
         currentBookmarkObject = nextBookmarkObject;
-        nextBookmarkObject = ((PdfDictionary)File.resolve(currentBookmarkObject)).get(PdfName.Next);
+        nextBookmarkObject = ((PdfDictionary)currentBookmarkObject.resolve()).get(PdfName.Next);
 
         return new Bookmark(currentBookmarkObject);
       }
@@ -343,11 +329,6 @@ public final class Bookmarks
       public void remove(
         )
       {throw new UnsupportedOperationException();}
-      // </Iterator>
-      // </public>
-      // </interface>
-      // </dynamic>
-      // </class>
     };
   }
   // </Iterable>

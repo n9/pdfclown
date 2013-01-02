@@ -56,7 +56,7 @@ namespace org.pdfclown.documents.contents
       if(baseObject == null)
         return null;
 
-      PdfName type = (PdfName)((PdfDictionary)File.Resolve(baseObject))[PdfName.Type];
+      PdfName type = (PdfName)((PdfDictionary)baseObject.Resolve())[PdfName.Type];
       if(Layer.TypeName.Equals(type))
         return Layer.Wrap(baseObject);
       else if(LayerMembership.TypeName.Equals(type))

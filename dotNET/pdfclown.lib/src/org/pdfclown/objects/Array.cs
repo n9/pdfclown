@@ -224,7 +224,11 @@ namespace org.pdfclown.objects
 
     public virtual void Clear(
       )
-    {BaseDataObject.Clear();}
+    {
+      int index = Count;
+      while(index-- > 0)
+      {RemoveAt(index);}
+    }
 
     public virtual bool Contains(
       TItem item

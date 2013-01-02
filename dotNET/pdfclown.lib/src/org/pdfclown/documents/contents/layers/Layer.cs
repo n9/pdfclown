@@ -428,7 +428,7 @@ namespace org.pdfclown.documents.contents.layers
         else
         {
           PdfDirectObject nodeObject = levelIterator.Current;
-          PdfDataObject nodeDataObject = File.Resolve(nodeObject);
+          PdfDataObject nodeDataObject = PdfObject.Resolve(nodeObject);
           if(nodeDataObject is PdfDictionary)
           {
             if(nodeObject.Equals(thisObject))

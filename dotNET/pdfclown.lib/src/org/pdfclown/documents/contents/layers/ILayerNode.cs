@@ -60,13 +60,14 @@ namespace org.pdfclown.documents.contents.layers
       PdfDirectObject baseObject
       )
     {
-      PdfDataObject baseDataObject = File.Resolve(baseObject);
+      if(baseObject == null)
+        return null;
+
+      PdfDataObject baseDataObject = baseObject.Resolve();
       if(baseDataObject is PdfDictionary)
         return Layer.Wrap(baseObject);
       else if(baseDataObject is PdfArray)
         return Layers.Wrap(baseObject);
-      else if(baseDataObject == null)
-        return null;
       else
         throw new ArgumentException(baseDataObject.GetType().Name + " is NOT a valid layer node.");
     }

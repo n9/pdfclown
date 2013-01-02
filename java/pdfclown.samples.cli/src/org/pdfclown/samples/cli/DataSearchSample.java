@@ -30,7 +30,7 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/28/12
 */
 public class DataSearchSample
   extends Sample
@@ -98,7 +98,7 @@ public class DataSearchSample
 
       path += "[" + ((PdfReference)object).getIndirectReference() + "]";
       visitedReferences.add((PdfReference)object);
-      object = File.resolve(object);
+      object = object.resolve();
     }
 
     Matcher matcher = null;

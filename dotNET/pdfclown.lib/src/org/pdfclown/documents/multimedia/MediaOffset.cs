@@ -152,7 +152,7 @@ namespace org.pdfclown.documents.multimedia
       if(baseObject == null)
         return null;
 
-      PdfDictionary dataObject = (PdfDictionary)File.Resolve(baseObject);
+      PdfDictionary dataObject = (PdfDictionary)baseObject.Resolve();
       PdfName offsetType = (PdfName)dataObject[PdfName.S];
       if(offsetType == null
         || (dataObject.ContainsKey(PdfName.Type)

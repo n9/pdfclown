@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 public final class PdfDictionary
   extends PdfDirectObject
@@ -227,7 +227,7 @@ public final class PdfDictionary
   public PdfDataObject resolve(
     PdfName key
     )
-  {return File.resolve(get(key));}
+  {return resolve(get(key));}
 
   /**
     Gets the dereferenced value corresponding to the given key, forcing its instantiation in case of
@@ -244,7 +244,7 @@ public final class PdfDictionary
     PdfName key,
     Class<T> valueClass
     )
-  {return (T)File.resolve(get(key,valueClass));}
+  {return (T)resolve(get(key,valueClass));}
 
   @Override
   public void setUpdateable(
@@ -347,9 +347,10 @@ public final class PdfDictionary
     Object object
     )
   {
-    return object != null
-      && object.getClass().equals(getClass())
-      && ((PdfDictionary)object).entries.equals(entries);
+    return super.equals(object)
+      || (object != null
+        && object.getClass().equals(getClass())
+        && ((PdfDictionary)object).entries.equals(entries));
   }
 
   @Override

@@ -66,7 +66,7 @@ namespace org.pdfclown.samples.cli
 
         path += "[" + ((PdfReference)obj).IndirectReference + "]";
         visitedReferences.Add((PdfReference)obj);
-        obj = File.Resolve(obj);
+        obj = obj.Resolve();
       }
 
       Match match = null;

@@ -50,10 +50,10 @@ import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.documents.interaction.JustificationEnum;
 import org.pdfclown.documents.interaction.annotations.AppearanceStates;
 import org.pdfclown.documents.interaction.annotations.Widget;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.EnumUtils;
@@ -64,7 +64,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF12)
 public final class TextField
@@ -119,7 +119,7 @@ public final class TextField
   public int getMaxLength(
     )
   {
-    PdfInteger maxLengthObject = (PdfInteger)File.resolve(getInheritableAttribute(PdfName.MaxLen));
+    PdfInteger maxLengthObject = (PdfInteger)PdfObject.resolve(getInheritableAttribute(PdfName.MaxLen));
     return maxLengthObject != null ? maxLengthObject.getValue() : Integer.MAX_VALUE;
   }
 

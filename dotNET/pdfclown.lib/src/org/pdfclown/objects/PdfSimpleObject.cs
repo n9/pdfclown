@@ -85,7 +85,7 @@ namespace org.pdfclown.objects
       )
     {
       object value = null;
-      obj = File.Resolve(obj);
+      obj = Resolve(obj);
       if(obj != null)
       {
         PropertyInfo valueProperty = obj.GetType().GetProperty("Value");
@@ -117,12 +117,13 @@ namespace org.pdfclown.objects
     {return this;} // NOTE: Simple objects are immutable.
 
     public override bool Equals(
-      object obj
+      object @object
       )
     {
-      return obj != null
-        && obj.GetType().Equals(GetType())
-        && ((PdfSimpleObject<TValue>)obj).RawValue.Equals(RawValue);
+      return base.Equals(@object)
+        || (@object != null
+          && @object.GetType().Equals(GetType())
+          && ((PdfSimpleObject<TValue>)@object).RawValue.Equals(RawValue));
     }
 
     public override int GetHashCode(

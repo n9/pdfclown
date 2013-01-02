@@ -70,7 +70,7 @@ namespace org.pdfclown.tools
       PdfArray streams;
       {
         PdfDirectObject contentsObject = page.BaseDataObject[PdfName.Contents];
-        PdfDataObject contentsDataObject = File.Resolve(contentsObject);
+        PdfDataObject contentsDataObject = PdfObject.Resolve(contentsObject);
         // Single data stream?
         if(contentsDataObject is PdfStream)
         {

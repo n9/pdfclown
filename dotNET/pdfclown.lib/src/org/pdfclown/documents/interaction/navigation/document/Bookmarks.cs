@@ -105,18 +105,18 @@ namespace org.pdfclown.documents.interaction.navigation.document
     {
       get
       {
-        PdfReference item = (PdfReference)BaseDataObject[PdfName.First];
+        PdfReference bookmarkObject = (PdfReference)BaseDataObject[PdfName.First];
         while(index > 0)
         {
-          item = (PdfReference)((PdfDictionary)File.Resolve(item))[PdfName.Next];
+          bookmarkObject = (PdfReference)((PdfDictionary)bookmarkObject.DataObject)[PdfName.Next];
           // Did we go past the collection range?
-          if(item == null)
+          if(bookmarkObject == null)
             throw new ArgumentOutOfRangeException();
 
           index--;
         }
 
-        return new Bookmark(item);
+        return new Bookmark(bookmarkObject);
       }
       set
       {
@@ -202,16 +202,16 @@ namespace org.pdfclown.documents.interaction.navigation.document
     IEnumerator<Bookmark> IEnumerable<Bookmark>.GetEnumerator(
       )
     {
-      PdfDirectObject item = BaseDataObject[PdfName.First];
-      if(item == null)
+      PdfDirectObject bookmarkObject = BaseDataObject[PdfName.First];
+      if(bookmarkObject == null)
         yield break;
 
       do
       {
-        yield return new Bookmark(item);
+        yield return new Bookmark(bookmarkObject);
 
-        item = ((PdfDictionary)File.Resolve(item))[PdfName.Next];
-      }while(item != null);
+        bookmarkObject = ((PdfDictionary)bookmarkObject.Resolve())[PdfName.Next];
+      }while(bookmarkObject != null);
     }
 
     #region IEnumerable

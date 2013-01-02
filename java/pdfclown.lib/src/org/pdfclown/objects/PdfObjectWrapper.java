@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
   {@link #getBaseDataObject() baseDataObject} backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   implements Cloneable,
@@ -198,7 +198,7 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   @SuppressWarnings("unchecked")
   public TDataObject getBaseDataObject(
     )
-  {return (TDataObject)File.resolve(baseObject);}
+  {return (TDataObject)PdfObject.resolve(baseObject);}
 
   /**
     Gets the indirect object containing the base object.

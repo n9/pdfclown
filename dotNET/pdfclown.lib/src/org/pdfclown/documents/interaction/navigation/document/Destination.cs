@@ -161,7 +161,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
       if(baseObject == null)
         return null;
 
-      PdfArray dataObject = (PdfArray)File.Resolve(baseObject);
+      PdfArray dataObject = (PdfArray)baseObject.Resolve();
       PdfDirectObject pageObject = dataObject[0];
       if(pageObject is PdfReference)
         return new LocalDestination(baseObject);

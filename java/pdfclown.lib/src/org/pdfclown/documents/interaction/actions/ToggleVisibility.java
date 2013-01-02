@@ -33,13 +33,13 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interaction.annotations.Annotation;
 import org.pdfclown.documents.interaction.forms.Field;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfTextString;
@@ -49,7 +49,7 @@ import org.pdfclown.objects.PdfTextString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF12)
 public final class ToggleVisibility
@@ -154,7 +154,7 @@ public final class ToggleVisibility
     Collection<PdfObjectWrapper<?>> objects
     )
   {
-    PdfDataObject objectDataObject = File.resolve(objectObject);
+    PdfDataObject objectDataObject = PdfObject.resolve(objectObject);
     if(objectDataObject instanceof PdfArray) // Multiple objects.
     {
       for(PdfDirectObject itemObject : (PdfArray)objectDataObject)

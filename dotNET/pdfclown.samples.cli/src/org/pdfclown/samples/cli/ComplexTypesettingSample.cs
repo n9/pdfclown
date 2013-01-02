@@ -9,6 +9,8 @@ using org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.documents.interaction;
 using actions = org.pdfclown.documents.interaction.actions;
 using org.pdfclown.documents.interaction.navigation.document;
+using org.pdfclown.documents.interaction.navigation.page;
+using org.pdfclown.documents.interchange.metadata;
 using files = org.pdfclown.files;
 
 using System;
@@ -57,7 +59,7 @@ namespace org.pdfclown.samples.cli
       BuildBookmarks(document);
 
       // 3. Serialization.
-      Serialize(file, "Complex Typesetting", "complex typesetting", "typesetting, bookmarks, hyphenation, block composer, primitive composer, text alignment, image insertion");
+      Serialize(file, "Complex Typesetting", "complex typesetting", "typesetting, bookmarks, hyphenation, block composer, primitive composer, text alignment, image insertion, article threads");
     }
 
     private void BuildBookmarks(
@@ -133,6 +135,18 @@ namespace org.pdfclown.samples.cli
       document.Pages.Add(page);
       SizeF pageSize = page.Size;
 
+      string title = "The Free Software Definition";
+
+      // Create the article thread!
+      Article article = new Article(document);
+      {
+        Information articleInfo = article.Information;
+        articleInfo.Title = title;
+        articleInfo.Author = "Free Software Foundation, Inc.";
+      }
+      // Get the article beads collection to populate!
+      ArticleElements articleElements = article.Elements;
+
       PrimitiveComposer composer = new PrimitiveComposer(page);
       // Add the background template!
       composer.ShowXObject(template);
@@ -147,10 +161,7 @@ namespace org.pdfclown.samples.cli
 
       SizeF breakSize = new SizeF(0,10);
       // Add the font to the document!
-      fonts::Font font = fonts::Font.Get(
-        document,
-        GetResourcePath("fonts" + Path.DirectorySeparatorChar + "TravelingTypewriter.otf")
-        );
+      fonts::Font font = fonts::Font.Get(document, GetResourcePath("fonts" + Path.DirectorySeparatorChar + "TravelingTypewriter.otf"));
 
       RectangleF frame = new RectangleF(
         20,
@@ -173,7 +184,7 @@ namespace org.pdfclown.samples.cli
       // Showing the title...
       blockComposer.Begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
       composer.SetFont(font,24);
-      blockComposer.ShowText("The Free Software Definition");
+      blockComposer.ShowText(title);
       blockComposer.End();
 
       // Showing the copyright note...
@@ -280,6 +291,9 @@ namespace org.pdfclown.samples.cli
           {
             blockComposer.End();
 
+            // Add the bead to the article thread!
+            articleElements.Add(new ArticleElement(page, blockComposer.BoundBox));
+
             // New page?
             if(frameIndex == 3)
             {
@@ -287,8 +301,7 @@ namespace org.pdfclown.samples.cli
               composer.Flush();
 
               // Create a new page!
-              page = new Page(document);
-              document.Pages.Add(page);
+              document.Pages.Add(page = new Page(document));
               composer = new PrimitiveComposer(page);
               // Add the background template!
               composer.ShowXObject(template);
@@ -313,6 +326,9 @@ namespace org.pdfclown.samples.cli
         }
       }
       blockComposer.End();
+
+      // Add the bead to the article thread!
+      articleElements.Add(new ArticleElement(page, blockComposer.BoundBox));
 
       blockComposer.Begin(frames[frames.Length-1],XAlignmentEnum.Justify,YAlignmentEnum.Bottom);
       composer.SetFont(font,6);

@@ -30,6 +30,10 @@ import org.pdfclown.documents.interaction.navigation.document.Bookmark.FlagsEnum
 import org.pdfclown.documents.interaction.navigation.document.Bookmarks;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.documents.interaction.navigation.document.LocalDestination;
+import org.pdfclown.documents.interaction.navigation.page.Article;
+import org.pdfclown.documents.interaction.navigation.page.ArticleElement;
+import org.pdfclown.documents.interaction.navigation.page.ArticleElements;
+import org.pdfclown.documents.interchange.metadata.Information;
 import org.pdfclown.files.File;
 import org.pdfclown.util.math.geom.Dimension;
 
@@ -47,7 +51,7 @@ import org.pdfclown.util.math.geom.Dimension;
   content flow composition), to be made available in the next releases.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/28/12
 */
 public class ComplexTypesettingSample
   extends Sample
@@ -76,7 +80,7 @@ public class ComplexTypesettingSample
     buildBookmarks(document);
 
     // 3. Serialization.
-    serialize(file, "Complex Typesetting", "complex typesetting", "typesetting, bookmarks, hyphenation, block composer, primitive composer, text alignment, image insertion");
+    serialize(file, "Complex Typesetting", "complex typesetting", "typesetting, bookmarks, hyphenation, block composer, primitive composer, text alignment, image insertion, article threads");
   }
 
   private void buildBookmarks(
@@ -157,6 +161,18 @@ public class ComplexTypesettingSample
     document.getPages().add(page);
     Dimension2D pageSize = page.getSize();
 
+    String title = "The Free Software Definition";
+
+    // Create the article thread!
+    Article article = new Article(document);
+    {
+      Information articleInfo = article.getInformation();
+      articleInfo.setTitle(title);
+      articleInfo.setAuthor("Free Software Foundation, Inc.");
+    }
+    // Get the article beads collection to populate!
+    ArticleElements articleElements = article.getElements();
+
     PrimitiveComposer composer = new PrimitiveComposer(page);
     // Add the background template!
     composer.showXObject(template);
@@ -171,10 +187,7 @@ public class ComplexTypesettingSample
 
     Dimension breakSize = new Dimension(0,10);
     // Add the font to the document!
-    Font font = Font.get(
-      document,
-      getResourcePath("fonts" + java.io.File.separator + "TravelingTypewriter.otf")
-      );
+    Font font = Font.get(document, getResourcePath("fonts" + java.io.File.separator + "TravelingTypewriter.otf"));
 
     Rectangle2D frame = new Rectangle2D.Double(
       20,
@@ -198,7 +211,7 @@ public class ComplexTypesettingSample
     // Showing the title...
     blockComposer.begin(frame,XAlignmentEnum.Left,YAlignmentEnum.Top);
     composer.setFont(font,24);
-    blockComposer.showText("The Free Software Definition");
+    blockComposer.showText(title);
     blockComposer.end();
 
     // Showing the copyright note...
@@ -305,6 +318,9 @@ public class ComplexTypesettingSample
         {
           blockComposer.end();
 
+          // Add the bead to the article thread!
+          articleElements.add(new ArticleElement(page, blockComposer.getBoundBox()));
+
           // New page?
           if(frameIndex == 3)
           {
@@ -312,8 +328,7 @@ public class ComplexTypesettingSample
             composer.flush();
 
             // Create a new page!
-            page = new Page(document);
-            document.getPages().add(page);
+            document.getPages().add(page = new Page(document));
             composer = new PrimitiveComposer(page);
             // Add the background template!
             composer.showXObject(template);
@@ -338,6 +353,9 @@ public class ComplexTypesettingSample
       }
     }
     blockComposer.end();
+
+    // Add the last bead to the article thread!
+    articleElements.add(new ArticleElement(page, blockComposer.getBoundBox()));
 
     blockComposer.begin(frames[frames.length-1],XAlignmentEnum.Justify,YAlignmentEnum.Bottom);
     composer.setFont(font,6);

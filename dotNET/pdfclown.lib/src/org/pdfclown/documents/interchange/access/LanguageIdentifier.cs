@@ -63,7 +63,7 @@ namespace org.pdfclown.documents.interchange.access
       if(baseObject == null)
         return null;
 
-      if(File.Resolve(baseObject) is PdfTextString)
+      if(baseObject.Resolve() is PdfTextString)
         return new LanguageIdentifier(baseObject);
       else
         throw new ArgumentException("It doesn't represent a valid language identifier object.", "baseObject");

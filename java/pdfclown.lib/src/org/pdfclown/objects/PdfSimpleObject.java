@@ -34,7 +34,7 @@ import org.pdfclown.util.NotImplementedException;
   Abstract PDF simple object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 11/30/12
+  @version 0.1.2, 12/28/12
 */
 public abstract class PdfSimpleObject<TValue>
   extends PdfDirectObject
@@ -88,9 +88,7 @@ public abstract class PdfSimpleObject<TValue>
     Object defaultValue
     )
   {
-    Object value = ((object = File.resolve(object)) instanceof PdfSimpleObject<?>
-      ? ((PdfSimpleObject<?>)object).getValue()
-      : null);
+    Object value = ((object = resolve(object)) instanceof PdfSimpleObject<?> ? ((PdfSimpleObject<?>)object).getValue() : null);
     return (value != null ? value : defaultValue);
   }
   // </public>
@@ -121,9 +119,10 @@ public abstract class PdfSimpleObject<TValue>
     Object object
     )
   {
-    return object != null
-      && object.getClass().equals(getClass())
-      && ((PdfSimpleObject<?>)object).getRawValue().equals(getRawValue());
+    return super.equals(object)
+      || (object != null
+        && object.getClass().equals(getClass())
+        && ((PdfSimpleObject<?>)object).getRawValue().equals(getRawValue()));
   }
 
   @Override

@@ -38,7 +38,6 @@ import org.pdfclown.documents.contents.colorSpaces.DeviceColor;
 import org.pdfclown.documents.contents.layers.ILayerable;
 import org.pdfclown.documents.contents.layers.LayerEntity;
 import org.pdfclown.documents.interaction.actions.Action;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDate;
 import org.pdfclown.objects.PdfDictionary;
@@ -55,7 +54,7 @@ import org.pdfclown.util.EnumUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF10)
 public class Annotation
@@ -197,7 +196,7 @@ public class Annotation
     if(baseObject == null)
       return null;
 
-    PdfName annotationType = (PdfName)((PdfDictionary)File.resolve(baseObject)).get(PdfName.Subtype);
+    PdfName annotationType = (PdfName)((PdfDictionary)baseObject.resolve()).get(PdfName.Subtype);
     if(annotationType.equals(PdfName.Text))
       return new Note(baseObject);
     else if(annotationType.equals(PdfName.Link))
@@ -265,22 +264,19 @@ public class Annotation
         {
           PdfName.Type,
           PdfName.Subtype,
-          PdfName.P,
           PdfName.Border
         },
         new PdfDirectObject[]
         {
           PdfName.Annot,
           subtype,
-          page.getBaseObject(),
           new PdfArray(new PdfDirectObject[]{PdfInteger.Default,PdfInteger.Default,PdfInteger.Default}) // NOTE: Hide border by default.
         }
         )
       );
+    page.getAnnotations().add(this);
     setBox(box);
     setText(text);
-    // Insert this annotation into the page!
-    page.getBaseDataObject().resolve(PdfName.Annots, PdfArray.class).add(getBaseObject());
   }
 
   protected Annotation(
@@ -296,6 +292,21 @@ public class Annotation
     Document context
     )
   {return (Annotation)super.clone(context);}
+
+  /**
+    Deletes this annotation removing also its reference on the page.
+  */
+  @Override
+  public boolean delete(
+    )
+  {
+    // Shallow removal (references):
+    // * reference on page
+    getPage().getAnnotations().remove(this);
+
+    // Deep removal (indirect object).
+    return super.delete();
+  }
 
   /**
     Gets the action to be performed when the annotation is activated.
@@ -508,14 +519,6 @@ public class Annotation
     String value
     )
   {getBaseDataObject().put(PdfName.NM, PdfTextString.get(value));}
-
-  /**
-    @see #getPage()
-  */
-  public void setPage(
-    Page value
-    )
-  {getBaseDataObject().put(PdfName.P, value.getBaseObject());}
 
   /**
     @see #isPrintable()

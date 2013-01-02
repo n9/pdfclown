@@ -25,7 +25,6 @@
 
 package org.pdfclown.documents.contents.layers;
 
-import org.pdfclown.files.File;
 import org.pdfclown.objects.IPdfObjectWrapper;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
@@ -37,7 +36,7 @@ import org.pdfclown.objects.PdfDirectObject;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 public interface ILayerNode
   extends IPdfObjectWrapper
@@ -68,13 +67,14 @@ final class LayerNode
     PdfDirectObject baseObject
     )
   {
-    PdfDataObject baseDataObject = File.resolve(baseObject);
+    if(baseObject == null)
+      return null;
+
+    PdfDataObject baseDataObject = baseObject.resolve();
     if(baseDataObject instanceof PdfDictionary)
       return Layer.wrap(baseObject);
     else if(baseDataObject instanceof PdfArray)
       return Layers.wrap(baseObject);
-    else if(baseDataObject == null)
-      return null;
     else
       throw new IllegalArgumentException(baseDataObject.getClass().getSimpleName() + " is NOT a valid layer node.");
   }

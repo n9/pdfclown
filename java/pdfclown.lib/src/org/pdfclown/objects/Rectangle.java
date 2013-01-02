@@ -30,7 +30,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.RectangularShape;
 
 import org.pdfclown.documents.Document;
-import org.pdfclown.files.File;
 
 /**
   PDF rectangle object [PDF:1.6:3.8.4].
@@ -42,7 +41,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 public final class Rectangle
   extends PdfObjectWrapper<PdfArray>
@@ -130,7 +129,7 @@ public final class Rectangle
   private Rectangle(
     PdfDirectObject baseObject
     )
-  {super(normalize((PdfArray)File.resolve(baseObject)));}
+  {super(normalize((PdfArray)baseObject.resolve()));}
   // </constructors>
 
   // <interface>

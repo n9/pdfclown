@@ -58,7 +58,7 @@ namespace org.pdfclown.documents.contents.xObjects
       if(baseObject == null)
         return null;
 
-      PdfName subtype = (PdfName)((PdfStream)File.Resolve(baseObject)).Header[PdfName.Subtype];
+      PdfName subtype = (PdfName)((PdfStream)baseObject.Resolve()).Header[PdfName.Subtype];
       if(subtype.Equals(PdfName.Form))
         return FormXObject.Wrap(baseObject);
       else if(subtype.Equals(PdfName.Image))

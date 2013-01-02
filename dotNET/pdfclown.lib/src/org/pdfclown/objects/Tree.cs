@@ -217,13 +217,13 @@ namespace org.pdfclown.objects
           PdfDirectObject namesObject = rootNode[PdfName.Names];
           if(namesObject is PdfReference)
           {container = ((PdfReference)namesObject).IndirectObject;}
-          names = (PdfArray)File.Resolve(namesObject);
+          names = (PdfArray)namesObject.Resolve();
         }
         else // Intermediate node.
         {
           if(kidsObject is PdfReference)
           {container = ((PdfReference)kidsObject).IndirectObject;}
-          kids = (PdfArray)File.Resolve(kidsObject);
+          kids = (PdfArray)kidsObject.Resolve();
         }
       }
       #endregion
@@ -306,14 +306,14 @@ namespace org.pdfclown.objects
                 PdfDirectObject namesObject = kid[PdfName.Names];
                 if(namesObject is PdfReference)
                 {container = ((PdfReference)namesObject).IndirectObject;}
-                names = (PdfArray)File.Resolve(namesObject);
+                names = (PdfArray)namesObject.Resolve();
                 kids = null;
               }
               else // Intermediate node.
               {
                 if(kidsObject is PdfReference)
                 {container = ((PdfReference)kidsObject).IndirectObject;}
-                kids = (PdfArray)File.Resolve(kidsObject);
+                kids = (PdfArray)kidsObject.Resolve();
               }
               levelIndex = 0; // First node (new level).
             }
@@ -959,7 +959,7 @@ namespace org.pdfclown.objects
       {
         foreach(PdfDirectObject child in children.Items)
         {
-          Clear((PdfDictionary)File.Resolve(child));
+          Clear((PdfDictionary)child.Resolve());
           File.Unregister((PdfReference)child);
         }
         node[pairsKey] = node[children.TypeName];
@@ -989,7 +989,7 @@ namespace org.pdfclown.objects
       else // Intermediate node.
       {
         foreach(PdfDirectObject kidObject in kidsObject)
-        {Fill(filler, (PdfDictionary)File.Resolve(kidObject));}
+        {Fill(filler, (PdfDictionary)kidObject.Resolve());}
       }
     }
 
@@ -1009,7 +1009,7 @@ namespace org.pdfclown.objects
         children = (PdfArray)node.Resolve(PdfName.Kids);
         int count = 0;
         foreach(PdfDirectObject child in children)
-        {count += GetCount((PdfDictionary)File.Resolve(child));}
+        {count += GetCount((PdfDictionary)child.Resolve());}
         return count;
       }
     }

@@ -36,12 +36,12 @@ import java.util.Stack;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.util.NotImplementedException;
@@ -50,7 +50,7 @@ import org.pdfclown.util.NotImplementedException;
   Document pages collection [PDF:1.6:3.6.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Pages
@@ -297,10 +297,10 @@ public final class Pages
     PdfDictionary pageData = pageObj.getBaseDataObject();
     // Get the parent tree node!
     PdfDirectObject parent = pageData.get(PdfName.Parent);
-    PdfDictionary parentData = (PdfDictionary)File.resolve(parent);
+    PdfDictionary parentData = (PdfDictionary)parent.resolve();
     // Get the parent's page collection!
     PdfDirectObject kids = parentData.get(PdfName.Kids);
-    PdfArray kidsData = (PdfArray)File.resolve(kids);
+    PdfArray kidsData = (PdfArray)kids.resolve();
     // Remove the page!
     kidsData.remove(pageObj.getBaseObject());
 
@@ -317,7 +317,7 @@ public final class Pages
 
       // Iterate upward!
       parent = parentData.get(PdfName.Parent);
-      parentData = (PdfDictionary)File.resolve(parent);
+      parentData = (PdfDictionary)PdfObject.resolve(parent);
     } while(parent != null);
 
     return true;
@@ -497,7 +497,7 @@ public final class Pages
       parentData = getBaseDataObject();
       // Get the parent's page collection!
       kids = parentData.get(PdfName.Kids);
-      kidsData = (PdfArray)File.resolve(kids);
+      kidsData = (PdfArray)PdfObject.resolve(kids);
       offset = 0; // Not used.
     }
     else // Insert operation.
@@ -506,10 +506,10 @@ public final class Pages
       Page pivotPage = get(index);
       // Get the parent tree node!
       parent = pivotPage.getBaseDataObject().get(PdfName.Parent);
-      parentData = (PdfDictionary)File.resolve(parent);
+      parentData = (PdfDictionary)parent.resolve();
       // Get the parent's page collection!
       kids = parentData.get(PdfName.Kids);
-      kidsData = (PdfArray)File.resolve(kids);
+      kidsData = (PdfArray)kids.resolve();
       // Get the insertion's relative position within the parent's page collection!
       offset = kidsData.indexOf(pivotPage.getBaseObject());
     }
@@ -545,7 +545,7 @@ public final class Pages
 
       // Iterate upward!
       parent = parentData.get(PdfName.Parent);
-      parentData = (PdfDictionary)File.resolve(parent);
+      parentData = (PdfDictionary)PdfObject.resolve(parent);
     } while(parent != null);
 
     return true;

@@ -31,7 +31,6 @@ import java.util.List;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfTextString;
@@ -48,7 +47,7 @@ import org.pdfclown.util.StringUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF14)
 public final class LanguageIdentifier
@@ -68,7 +67,7 @@ public final class LanguageIdentifier
     if(baseObject == null)
       return null;
 
-    if(File.resolve(baseObject) instanceof PdfTextString)
+    if(baseObject.resolve() instanceof PdfTextString)
       return new LanguageIdentifier(baseObject);
     else
       throw new IllegalArgumentException("'baseObject' parameter doesn't represent a valid language identifier object.");

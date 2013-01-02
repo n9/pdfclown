@@ -199,9 +199,9 @@ namespace org.pdfclown.objects
               else
               {
                 parametersIterator.MoveNext();
-                filterParameters = (PdfDictionary)files.File.Resolve(parametersIterator.Current);
+                filterParameters = (PdfDictionary)Resolve(parametersIterator.Current);
               }
-              body.Decode(bytes.filters.Filter.Get((PdfName)files.File.Resolve(filterIterator.Current)), filterParameters);
+              body.Decode(bytes.filters.Filter.Get((PdfName)Resolve(filterIterator.Current)), filterParameters);
             }
           }
           Filter = null; // The stream is free from encodings.

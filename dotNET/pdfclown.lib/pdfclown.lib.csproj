@@ -452,6 +452,13 @@
     <Compile Include="src\org\pdfclown\util\metadata\IVersion.cs" />
     <Compile Include="src\org\pdfclown\util\metadata\VersionUtils.cs" />
     <Compile Include="src\org\pdfclown\objects\Cloner.cs" />
+    <Compile Include="src\org\pdfclown\documents\PageElements.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\navigation\page\Article.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\navigation\page\ArticleElement.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\navigation\page\ArticleElements.cs" />
+    <Compile Include="src\org\pdfclown\documents\PageArticleElements.cs" />
+    <Compile Include="src\org\pdfclown\documents\Articles.cs" />
+    <Compile Include="src\org\pdfclown\util\IPredicate.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />

@@ -85,12 +85,13 @@ namespace org.pdfclown.objects
     {throw new NotImplementedException();}
 
     public override bool Equals(
-      object obj
+      object @object
       )
     {
-      return obj != null
-        && obj.GetType().Equals(GetType())
-        && ((PdfReference)obj).Id.Equals(Id);
+      return base.Equals(@object)
+        || (@object != null
+          && @object.GetType().Equals(GetType())
+          && ((PdfReference)@object).Id.Equals(Id));
     }
 
     /**

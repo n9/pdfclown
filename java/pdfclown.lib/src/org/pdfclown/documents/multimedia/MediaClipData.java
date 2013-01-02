@@ -35,7 +35,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.documents.files.FileSpecification;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -48,7 +47,7 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF15)
 public final class MediaClipData
@@ -178,7 +177,7 @@ public final class MediaClipData
     if(dataObject == null)
       return null;
 
-    if(File.resolve(dataObject) instanceof PdfStream)
+    if(dataObject.resolve() instanceof PdfStream)
       return FormXObject.wrap(dataObject);
     else
       return FileSpecification.wrap(dataObject);

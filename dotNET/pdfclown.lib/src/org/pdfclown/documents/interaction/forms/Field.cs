@@ -260,7 +260,7 @@ namespace org.pdfclown.documents.interaction.forms
     {
       get
       {
-        PdfDataObject defaultValueObject = File.Resolve(GetInheritableAttribute(PdfName.DV));
+        PdfDataObject defaultValueObject = PdfObject.Resolve(GetInheritableAttribute(PdfName.DV));
         return defaultValueObject != null
           ? defaultValueObject.GetType().InvokeMember(
             "Value",
@@ -291,7 +291,7 @@ namespace org.pdfclown.documents.interaction.forms
     {
       get
       {
-        PdfInteger flagsObject = (PdfInteger)File.Resolve(GetInheritableAttribute(PdfName.Ff));
+        PdfInteger flagsObject = (PdfInteger)PdfObject.Resolve(GetInheritableAttribute(PdfName.Ff));
         return (FlagsEnum)Enum.ToObject(
           typeof(FlagsEnum),
           (flagsObject == null ? 0 : flagsObject.RawValue)
@@ -372,7 +372,7 @@ namespace org.pdfclown.documents.interaction.forms
     {
       get
       {
-        PdfDataObject valueObject = File.Resolve(GetInheritableAttribute(PdfName.V));
+        PdfDataObject valueObject = PdfObject.Resolve(GetInheritableAttribute(PdfName.V));
         return valueObject != null
           ? valueObject.GetType().InvokeMember(
             "Value",

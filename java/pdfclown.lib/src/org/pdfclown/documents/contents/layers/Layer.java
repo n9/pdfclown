@@ -32,13 +32,13 @@ import java.util.Stack;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
+import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfTextString;
@@ -49,7 +49,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF15)
 public final class Layer
@@ -534,7 +534,7 @@ public final class Layer
       else
       {
         PdfDirectObject nodeObject = levelIterator.next();
-        PdfDataObject nodeDataObject = File.resolve(nodeObject);
+        PdfDataObject nodeDataObject = PdfObject.resolve(nodeObject);
         if(nodeDataObject instanceof PdfDictionary)
         {
           if(nodeObject.equals(thisObject))

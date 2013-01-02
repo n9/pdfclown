@@ -107,23 +107,6 @@ namespace org.pdfclown.files
     #region fields
     private static Random hashCodeGenerator = new Random();
     #endregion
-
-    #region interface
-    #region public
-    /**
-      <summary>Ensures an indirect reference to be resolved into its corresponding data object.
-      </summary>
-    */
-    public static PdfDataObject Resolve(
-      PdfObject obj
-      )
-    {
-      return obj is IPdfIndirectObject
-        ? ((IPdfIndirectObject)obj).DataObject
-        : (PdfDataObject)obj;
-    }
-    #endregion
-    #endregion
     #endregion
 
     #region dynamic

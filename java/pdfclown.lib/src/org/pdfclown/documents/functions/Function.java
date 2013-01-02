@@ -32,7 +32,6 @@ import java.util.List;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
@@ -50,7 +49,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.2, 02/04/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Function<TDataObject extends PdfDataObject>
@@ -88,7 +87,7 @@ public abstract class Function<TDataObject extends PdfDataObject>
     if(baseObject == null)
       return null;
 
-    PdfDataObject dataObject = File.resolve(baseObject);
+    PdfDataObject dataObject = baseObject.resolve();
     PdfDictionary dictionary = getDictionary(dataObject);
     int functionType = ((PdfInteger)dictionary.get(PdfName.FunctionType)).getRawValue();
     switch(functionType)

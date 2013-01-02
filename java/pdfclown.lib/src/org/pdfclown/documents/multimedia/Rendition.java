@@ -34,7 +34,6 @@ import org.pdfclown.Version;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interchange.access.LanguageIdentifier;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.Array;
 import org.pdfclown.objects.IPdfNamedObjectWrapper;
 import org.pdfclown.objects.PdfArray;
@@ -52,7 +51,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF15)
 public abstract class Rendition
@@ -208,7 +207,7 @@ public abstract class Rendition
     if(baseObject == null)
       return null;
 
-    PdfName subtype = (PdfName)((PdfDictionary)File.resolve(baseObject)).get(PdfName.S);
+    PdfName subtype = (PdfName)((PdfDictionary)baseObject.resolve()).get(PdfName.S);
     if(PdfName.MR.equals(subtype))
       return new MediaRendition(baseObject);
     else if(PdfName.SR.equals(subtype))

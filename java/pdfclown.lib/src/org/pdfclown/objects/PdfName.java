@@ -36,7 +36,7 @@ import org.pdfclown.tokens.Keyword;
   PDF name object [PDF:1.6:3.2.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 public final class PdfName
   extends PdfSimpleObject<String>
@@ -93,6 +93,7 @@ public final class PdfName
   public static final PdfName BBox = new PdfName("BBox");
   public static final PdfName BC = new PdfName("BC");
   public static final PdfName BE = new PdfName("BE");
+  public static final PdfName Bead = new PdfName("Bead");
   public static final PdfName BG = new PdfName("BG");
   public static final PdfName BitsPerComponent = new PdfName("BitsPerComponent");
   public static final PdfName BitsPerSample = new PdfName("BitsPerSample");
@@ -480,6 +481,7 @@ public final class PdfName
   public static final PdfName Text = new PdfName("Text");
   public static final PdfName TF = new PdfName("TF");
   public static final PdfName Thread = new PdfName("Thread");
+  public static final PdfName Threads = new PdfName("Threads");
   public static final PdfName TilingType = new PdfName("TilingType");
   public static final PdfName Timespan = new PdfName("Timespan");
   public static final PdfName Title = new PdfName("Title");

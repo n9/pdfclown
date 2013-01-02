@@ -32,6 +32,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
@@ -46,7 +48,6 @@ import org.pdfclown.documents.contents.objects.ContentObject;
 import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.documents.contents.xObjects.XObject;
 import org.pdfclown.documents.interaction.navigation.page.Transition;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
@@ -67,7 +68,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Page
@@ -150,8 +151,54 @@ public final class Page
   // </classes>
 
   // <static>
+  // <fields>
+  public static final Set<PdfName> InheritableAttributeKeys = new HashSet<PdfName>();
+  static
+  {
+    InheritableAttributeKeys.add(PdfName.Resources);
+    InheritableAttributeKeys.add(PdfName.MediaBox);
+    InheritableAttributeKeys.add(PdfName.CropBox);
+    InheritableAttributeKeys.add(PdfName.Rotate);
+  }
+  // </fields>
+
   // <interface>
   // <public>
+  /**
+    Gets the attribute value corresponding to the specified key, possibly recurring to its ancestor
+    nodes in the page tree.
+
+    @param pageObject Page object.
+    @param key Attribute key.
+  */
+  public static PdfDirectObject getInheritableAttribute(
+    PdfDictionary pageObject,
+    PdfName key
+    )
+  {
+    /*
+      NOTE: It moves upward until it finds the inherited attribute.
+    */
+    PdfDictionary dictionary = pageObject;
+    while(true)
+    {
+      PdfDirectObject entry = dictionary.get(key);
+      if(entry != null)
+        return entry;
+
+      dictionary = (PdfDictionary)dictionary.resolve(PdfName.Parent);
+      if(dictionary == null)
+      {
+        // Isn't the page attached to the page tree?
+        /* NOTE: This condition is illegal. */
+        if(pageObject.get(PdfName.Parent) == null)
+          throw new RuntimeException("Inheritable attributes unreachable: Page objects MUST be inserted into their document's Pages collection before being used.");
+
+        return null;
+      }
+    }
+  }
+
   public static Page wrap(
     PdfDirectObject baseObject
     )
@@ -229,7 +276,7 @@ public final class Page
   */
   public PageAnnotations getAnnotations(
     )
-  {return new PageAnnotations(getBaseDataObject().get(PdfName.Annots, PdfDictionary.class), this);}
+  {return new PageAnnotations(getBaseDataObject().get(PdfName.Annots, PdfArray.class), this);}
 
   /**
     Gets the extent of the page's meaningful content (including potential white space) as intended
@@ -247,6 +294,13 @@ public final class Page
     PdfDirectObject artBoxObject = getInheritableAttribute(PdfName.ArtBox);
     return artBoxObject != null ? Rectangle.wrap(artBoxObject).toRectangle2D() : getCropBox();
   }
+
+  /**
+    Gets the page article beads.
+  */
+  public PageArticleElements getArticleElements(
+    )
+  {return new PageArticleElements(getBaseDataObject().get(PdfName.B, PdfArray.class), this);}
 
   /**
     Gets the region to which the contents of the page should be clipped when output in a production
@@ -570,7 +624,7 @@ public final class Page
         else
         {
           for(PdfDirectObject contentStreamObject : (PdfArray)contentsDataObject)
-          {formBody.append(((PdfStream)File.resolve(contentStreamObject)).getBody());}
+          {formBody.append(((PdfStream)contentStreamObject.resolve()).getBody());}
         }
       }
     }
@@ -605,29 +659,7 @@ public final class Page
   private PdfDirectObject getInheritableAttribute(
     PdfName key
     )
-  {
-    /*
-      NOTE: It moves upward until it finds the inherited attribute.
-    */
-    PdfDictionary dictionary = getBaseDataObject();
-    while(true)
-    {
-      PdfDirectObject entry = dictionary.get(key);
-      if(entry != null)
-        return entry;
-
-      dictionary = (PdfDictionary)dictionary.resolve(PdfName.Parent);
-      if(dictionary == null)
-      {
-        // Isn't the page attached to the page tree?
-        /* NOTE: This condition is illegal. */
-        if(getBaseDataObject().get(PdfName.Parent) == null)
-          throw new RuntimeException("Inheritable attributes unreachable: Page objects MUST be inserted into their document's Pages collection before being used.");
-
-        return null;
-      }
-    }
-  }
+  {return getInheritableAttribute(getBaseDataObject(), key);}
   // </private>
   // </interface>
   // </dynamic>

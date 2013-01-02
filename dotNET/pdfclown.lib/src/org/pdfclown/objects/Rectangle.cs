@@ -119,7 +119,7 @@ namespace org.pdfclown.objects
 
     private Rectangle(
       PdfDirectObject baseObject
-      ) : base(Normalize((PdfArray)File.Resolve(baseObject)))
+      ) : base(Normalize((PdfArray)baseObject.Resolve()))
     {}
     #endregion
 

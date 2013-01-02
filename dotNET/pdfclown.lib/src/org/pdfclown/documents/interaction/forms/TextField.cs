@@ -114,7 +114,7 @@ namespace org.pdfclown.documents.interaction.forms
     {
       get
       {
-        PdfInteger maxLengthObject = (PdfInteger)File.Resolve(GetInheritableAttribute(PdfName.MaxLen));
+        PdfInteger maxLengthObject = (PdfInteger)PdfObject.Resolve(GetInheritableAttribute(PdfName.MaxLen));
         return maxLengthObject != null ? maxLengthObject.IntValue : Int32.MaxValue;
       }
       set

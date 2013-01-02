@@ -61,7 +61,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF document [PDF:1.6:3.6.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF10)
 public final class Document
@@ -392,6 +392,14 @@ public final class Document
   {return new DocumentActions(getBaseDataObject().get(PdfName.AA, PdfDictionary.class));}
 
   /**
+    Gets the article threads.
+  */
+  @PDF(VersionEnum.PDF11)
+  public Articles getArticles(
+    )
+  {return Articles.wrap(getBaseDataObject().get(PdfName.Threads, PdfArray.class, false));}
+
+  /**
     Gets the bookmark collection.
   */
   public Bookmarks getBookmarks(
@@ -416,7 +424,7 @@ public final class Document
   {return Form.wrap(getBaseDataObject().get(PdfName.AcroForm, PdfDictionary.class));}
 
   /**
-    Gets the document information dictionary.
+    Gets common document metadata.
   */
   public Information getInformation(
     )
@@ -591,6 +599,14 @@ public final class Document
     DocumentActions value
     )
   {getBaseDataObject().put(PdfName.AA, PdfObjectWrapper.getBaseObject(value));}
+
+  /**
+    @see #getArticles()
+  */
+  public void setArticles(
+    Articles value
+    )
+  {getBaseDataObject().put(PdfName.Threads, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     @see #getBookmarks()

@@ -28,7 +28,6 @@ package org.pdfclown.documents.interaction.actions;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -39,7 +38,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF11)
 public class Action
@@ -62,7 +61,7 @@ public class Action
     if(baseObject == null)
       return null;
 
-    PdfDictionary dataObject = (PdfDictionary)File.resolve(baseObject);
+    PdfDictionary dataObject = (PdfDictionary)baseObject.resolve();
     PdfName actionType = (PdfName)dataObject.get(PdfName.S);
     if(actionType == null
       || (dataObject.containsKey(PdfName.Type)

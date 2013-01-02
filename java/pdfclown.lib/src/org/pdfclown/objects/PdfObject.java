@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
   Abstract PDF object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 public abstract class PdfObject
   implements Cloneable,
@@ -40,6 +40,8 @@ public abstract class PdfObject
 {
   // <class>
   // <static>
+  // <interface>
+  // <public>
   /**
     Gets the clone of the specified object, registered inside the specified file context.
 
@@ -51,6 +53,29 @@ public abstract class PdfObject
     File context
     )
   {return object == null ? null : object.clone(context);}
+
+  /**
+    Ensures an indirect reference to be resolved into its corresponding data object.
+
+    @param object Object to resolve.
+  */
+  public static PdfDataObject resolve(
+    PdfObject object
+    )
+  {return object == null ? null : object.resolve();}
+
+  /**
+    Ensures a data object to be unresolved into its corresponding indirect reference, if available.
+
+    @param object Object to unresolve.
+    @return {@link PdfReference}, if available; <code>object</code>, otherwise.
+  */
+  public static PdfDirectObject unresolve(
+    PdfDataObject object
+    )
+  {return object == null ? null : object.unresolve();}
+  // </public>
+  // </interface>
   // </static>
 
   // <dynamic>
@@ -150,6 +175,15 @@ public abstract class PdfObject
     );
 
   /**
+    Ensures this object to be resolved into its corresponding data object.
+
+    @see #unresolve()
+  */
+  public PdfDataObject resolve(
+    )
+  {return this instanceof IPdfIndirectObject ? ((IPdfIndirectObject)this).getDataObject() : (PdfDataObject)this;}
+
+  /**
     @see #isUpdateable()
   */
   public abstract void setUpdateable(
@@ -165,6 +199,19 @@ public abstract class PdfObject
   public abstract PdfObject swap(
     PdfObject other
     );
+
+  /**
+    Ensures this object to be unresolved into its corresponding indirect reference, if available.
+
+    @return {@link PdfReference}, if available; <code>this</code>, otherwise.
+    @see #resolve()
+  */
+  public PdfDirectObject unresolve(
+    )
+  {
+    PdfReference reference = getReference();
+    return reference != null ? reference : (PdfDirectObject)this;
+  }
 
   /**
     Serializes this object to the specified stream.

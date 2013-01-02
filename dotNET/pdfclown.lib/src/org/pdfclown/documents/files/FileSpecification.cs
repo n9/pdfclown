@@ -100,7 +100,10 @@ namespace org.pdfclown.documents.files
       PdfDirectObject baseObject
       )
     {
-      PdfDataObject baseDataObject = File.Resolve(baseObject);
+      if(baseObject == null)
+        return null;
+
+      PdfDataObject baseDataObject = baseObject.Resolve();
       if(baseDataObject is PdfString)
         return new SimpleFileSpecification(baseObject);
       else if(baseDataObject is PdfDictionary)

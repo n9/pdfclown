@@ -110,7 +110,7 @@ namespace org.pdfclown.documents.interaction.annotations
       if(baseObject == null)
         return null;
 
-      PdfName annotationType = (PdfName)((PdfDictionary)File.Resolve(baseObject))[PdfName.Subtype];
+      PdfName annotationType = (PdfName)((PdfDictionary)baseObject.Resolve())[PdfName.Subtype];
       if(annotationType.Equals(PdfName.Text))
         return new Note(baseObject);
       else if(annotationType.Equals(PdfName.Link))
@@ -176,23 +176,20 @@ namespace org.pdfclown.documents.interaction.annotations
           {
             PdfName.Type,
             PdfName.Subtype,
-            PdfName.P,
             PdfName.Border
           },
           new PdfDirectObject[]
           {
             PdfName.Annot,
             subtype,
-            page.BaseObject,
             new PdfArray(new PdfDirectObject[]{PdfInteger.Default, PdfInteger.Default, PdfInteger.Default}) // NOTE: Hide border by default.
           }
           )
         )
     {
+      page.Annotations.Add(this);
       Box = box;
       Text = text;
-      // Insert this annotation into the page!
-      page.BaseDataObject.Resolve<PdfArray>(PdfName.Annots).Add(BaseObject);
     }
 
     protected Annotation(
@@ -295,6 +292,20 @@ namespace org.pdfclown.documents.interaction.annotations
     }
 
     /**
+      <summary>Deletes this annotation removing also its reference on the page.</summary>
+    */
+    public override bool Delete(
+      )
+    {
+      // Shallow removal (references):
+      // * reference on page
+      Page.Annotations.Remove(this);
+
+      // Deep removal (indirect object).
+      return base.Delete();
+    }
+
+    /**
       <summary>Gets/Sets the annotation flags.</summary>
     */
     [PDF(VersionEnum.PDF11)]
@@ -350,8 +361,6 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {return Page.Wrap(BaseDataObject[PdfName.P]);}
-      set
-      {BaseDataObject[PdfName.P] = value.BaseObject;}
     }
 
     /**

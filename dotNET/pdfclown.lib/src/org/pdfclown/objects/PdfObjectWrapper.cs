@@ -118,7 +118,7 @@ namespace org.pdfclown.objects
       <returns>Whether the object was actually decontextualized (only indirect objects can be
       decontextualize).</returns>
     */
-    public bool Delete(
+    public virtual bool Delete(
       )
     {
       // Is the object indirect?
@@ -384,7 +384,7 @@ namespace org.pdfclown.objects
     public TDataObject BaseDataObject
     {
       get
-      {return (TDataObject)File.Resolve(BaseObject);}
+      {return (TDataObject)PdfObject.Resolve(BaseObject);}
     }
 
     /**

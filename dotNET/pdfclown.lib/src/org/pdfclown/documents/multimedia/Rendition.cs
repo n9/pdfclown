@@ -214,7 +214,7 @@ namespace org.pdfclown.documents.multimedia
       if(baseObject == null)
         return null;
 
-      PdfName subtype = (PdfName)((PdfDictionary)File.Resolve(baseObject))[PdfName.S];
+      PdfName subtype = (PdfName)((PdfDictionary)baseObject.Resolve())[PdfName.S];
       if(PdfName.MR.Equals(subtype))
         return new MediaRendition(baseObject);
       else if(PdfName.SR.Equals(subtype))

@@ -45,7 +45,7 @@ import org.pdfclown.tokens.Symbol;
   PDF stream object [PDF:1.6:3.2.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 public class PdfStream
   extends PdfDataObject
@@ -201,8 +201,8 @@ public class PdfStream
           while(filterIterator.hasNext())
           {
             body.decode(
-              Filter.get((PdfName)File.resolve(filterIterator.next())),
-              (PdfDictionary)(parametersIterator != null ? File.resolve(parametersIterator.next()) : null)
+              Filter.get((PdfName)resolve(filterIterator.next())),
+              (PdfDictionary)(parametersIterator != null ? resolve(parametersIterator.next()) : null)
               );
           }
         }

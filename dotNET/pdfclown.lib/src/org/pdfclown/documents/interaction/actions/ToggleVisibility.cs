@@ -131,7 +131,7 @@ namespace org.pdfclown.documents.interaction.actions
       ICollection<PdfObjectWrapper> objects
       )
     {
-      PdfDataObject objectDataObject = File.Resolve(objectObject);
+      PdfDataObject objectDataObject = PdfObject.Resolve(objectObject);
       if(objectDataObject is PdfArray) // Multiple objects.
       {
         foreach(PdfDirectObject itemObject in (PdfArray)objectDataObject)

@@ -42,6 +42,7 @@ import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfStream;
 
@@ -50,7 +51,7 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/28/12
 */
 public final class PageManager
 {
@@ -110,7 +111,7 @@ public final class PageManager
   {
     long dataSize = 0;
     {
-      PdfDataObject dataObject = File.resolve(object);
+      PdfDataObject dataObject = PdfObject.resolve(object);
 
       // 1. Evaluating the current object...
       if(object instanceof PdfReference)

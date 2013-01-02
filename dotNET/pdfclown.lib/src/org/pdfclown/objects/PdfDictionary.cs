@@ -152,12 +152,13 @@ namespace org.pdfclown.objects
     }
 
     public override bool Equals(
-      object obj
+      object @object
       )
     {
-      return obj != null
-        && obj.GetType().Equals(GetType())
-        && ((PdfDictionary)obj).entries.Equals(entries);
+      return base.Equals(@object)
+        || (@object != null
+          && @object.GetType().Equals(GetType())
+          && ((PdfDictionary)@object).entries.Equals(entries));
     }
 
     public override int GetHashCode(
@@ -202,7 +203,7 @@ namespace org.pdfclown.objects
     public PdfDataObject Resolve(
       PdfName key
       )
-    {return File.Resolve(this[key]);}
+    {return Resolve(this[key]);}
 
     /**
       <summary>Gets the dereferenced value corresponding to the given key, forcing its instantiation
@@ -215,7 +216,7 @@ namespace org.pdfclown.objects
     public T Resolve<T>(
       PdfName key
       ) where T : PdfDataObject, new()
-    {return (T)File.Resolve(Get<T>(key));}
+    {return (T)Resolve(Get<T>(key));}
 
     public override PdfObject Swap(
       PdfObject other

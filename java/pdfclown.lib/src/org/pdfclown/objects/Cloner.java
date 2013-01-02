@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pdfclown.documents.Page;
 import org.pdfclown.documents.interaction.forms.Field;
 import org.pdfclown.files.File;
 import org.pdfclown.tokens.ObjectStream;
@@ -40,7 +41,7 @@ import org.pdfclown.tokens.XRefStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 public class Cloner
   extends Visitor
@@ -59,25 +60,27 @@ public class Cloner
     /**
       Notifies a complete clone operation on an object.
 
-      @param context Target file.
-      @param object Clone object.
+      @param cloner Object cloner.
+      @param clone Clone object.
+      @param source Source object.
     */
     public void afterClone(
-      File context,
-      PdfObject object
+      Cloner cloner,
+      PdfObject clone,
+      PdfObject source
       )
     {/* NOOP */}
 
     /**
       Notifies a complete clone operation on a dictionary entry.
 
-      @param context Target file.
+      @param cloner Object cloner.
       @param parent Parent clone object.
       @param key Entry key within the parent.
       @param value Clone value.
     */
     public void afterClone(
-      File context,
+      Cloner cloner,
       PdfDictionary parent,
       PdfName key,
       PdfDirectObject value
@@ -87,13 +90,13 @@ public class Cloner
     /**
       Notifies a complete clone operation on an array item.
 
-      @param context Target file.
+      @param cloner Object cloner.
       @param parent Parent clone object.
       @param index Item index within the parent.
       @param item Clone item.
     */
     public void afterClone(
-      File context,
+      Cloner cloner,
       PdfArray parent,
       int index,
       PdfDirectObject item
@@ -103,14 +106,14 @@ public class Cloner
     /**
       Notifies a starting clone operation on a dictionary entry.
 
-      @param context Target file.
+      @param cloner Object cloner.
       @param parent Parent clone object.
       @param key Entry key within the parent.
       @param value Source value.
       @return Whether the clone operation can be fulfilled.
     */
     public boolean beforeClone(
-      File context,
+      Cloner cloner,
       PdfDictionary parent,
       PdfName key,
       PdfDirectObject value
@@ -120,14 +123,14 @@ public class Cloner
     /**
       Notifies a starting clone operation on an array item.
 
-      @param context Target file.
+      @param cloner Object cloner.
       @param parent Parent clone object.
       @param index Item index within the parent.
       @param item Source item.
       @return Whether the clone operation can be fulfilled.
     */
     public boolean beforeClone(
-      File context,
+      Cloner cloner,
       PdfArray parent,
       int index,
       PdfDirectObject item
@@ -140,14 +143,13 @@ public class Cloner
 
     /**
       Gets whether this filter can deal with the given object.
-     
-      @param context Target file.
-      @param object Object to evaluate.
-      @return Whether this filter can deal with the given object.
+
+      @param cloner Object cloner.
+      @param source Source object.
     */
     public boolean matches(
-      File context,
-      PdfObject object
+      Cloner cloner,
+      PdfObject source
       )
     {return true;}
   }
@@ -168,23 +170,47 @@ public class Cloner
       new Filter("Page")
       {
         @Override
+        public void afterClone(
+          Cloner cloner,
+          PdfObject clone,
+          PdfObject source
+          )
+        {
+          /*
+            NOTE: Inheritable attributes have to be consolidated into the cloned page dictionary in
+            order to ensure its consistency.
+          */
+          PdfDictionary cloneDictionary = (PdfDictionary)clone;
+          PdfDictionary sourceDictionary = (PdfDictionary)source;
+          for(PdfName key : Page.InheritableAttributeKeys)
+          {
+            if(!sourceDictionary.containsKey(key))
+            {
+              PdfDirectObject sourceValue = Page.getInheritableAttribute(sourceDictionary, key);
+              if(sourceValue != null)
+              {cloneDictionary.put(key, (PdfDirectObject)sourceValue.accept(cloner, null));}
+            }
+          }
+        }
+
+        @Override
+        public boolean beforeClone(
+          Cloner cloner,
+          PdfDictionary parent,
+          PdfName key,
+          PdfDirectObject value
+          )
+        {return !PdfName.Parent.equals(key);}
+
+        @Override
         public boolean matches(
-          File context,
+          Cloner cloner,
           PdfObject object
           )
         {
           return object instanceof PdfDictionary
             && PdfName.Page.equals(((PdfDictionary)object).get(PdfName.Type));
         }
-
-        @Override
-        public boolean beforeClone(
-          File context,
-          PdfDictionary parent,
-          PdfName key,
-          PdfDirectObject value
-          )
-        {return !PdfName.Parent.equals(key);}
       }
       );
     // Annotations.
@@ -192,8 +218,21 @@ public class Cloner
       new Filter("Annots")
       {
         @Override
+        public void afterClone(
+          Cloner cloner,
+          PdfArray parent,
+          int index,
+          PdfDirectObject item
+          )
+        {
+          PdfDictionary annotation = (PdfDictionary)item.resolve();
+          if(annotation.containsKey(PdfName.FT))
+          {cloner.context.getDocument().getForm().getFields().add(Field.wrap(annotation.getReference()));}
+        }
+
+        @Override
         public boolean matches(
-          File context,
+          Cloner cloner,
           PdfObject object
           )
         {
@@ -212,19 +251,6 @@ public class Cloner
             }
           }
           return false;
-        }
-
-        @Override
-        public void afterClone(
-          File context,
-          PdfArray parent,
-          int index,
-          PdfDirectObject item
-          )
-        {
-          PdfDictionary annotation = (PdfDictionary)File.resolve(item);
-          if(annotation.containsKey(PdfName.FT))
-          {context.getDocument().getForm().getFields().add(Field.wrap(annotation.getReference()));}
         }
       }
       );
@@ -286,15 +312,15 @@ public class Cloner
       for(int index = 0, length = sourceItems.size(); index < length; index++)
       {
         PdfDirectObject sourceItem = sourceItems.get(index);
-        if(cloneFilter.beforeClone(context, clone, index, sourceItem))
+        if(cloneFilter.beforeClone(this, clone, index, sourceItem))
         {
           PdfDirectObject cloneItem;
           clone.add(cloneItem = (PdfDirectObject)(sourceItem != null ? sourceItem.accept(this, null) : null));
-          cloneFilter.afterClone(context, clone, index, cloneItem);
+          cloneFilter.afterClone(this, clone, index, cloneItem);
         }
       }
     }
-    cloneFilter.afterClone(context, clone);
+    cloneFilter.afterClone(this, clone, object);
     return clone;
   }
 
@@ -311,15 +337,15 @@ public class Cloner
       for(Map.Entry<PdfName,PdfDirectObject> entry : object.entries.entrySet())
       {
         PdfDirectObject sourceValue = entry.getValue();
-        if(cloneFilter.beforeClone(context, clone, entry.getKey(), sourceValue))
+        if(cloneFilter.beforeClone(this, clone, entry.getKey(), sourceValue))
         {
           PdfDirectObject cloneValue;
           clone.put(entry.getKey(), cloneValue = (PdfDirectObject)(sourceValue != null ? sourceValue.accept(this, null) : null));
-          cloneFilter.afterClone(context, clone, entry.getKey(), cloneValue);
+          cloneFilter.afterClone(this, clone, entry.getKey(), cloneValue);
         }
       }
     }
-    cloneFilter.afterClone(context, clone);
+    cloneFilter.afterClone(this, clone, object);
     return clone;
   }
 
@@ -371,7 +397,7 @@ public class Cloner
     Filter cloneFilter = NullFilter;
     for(Filter filter : filters)
     {
-      if(filter.matches(context, object))
+      if(filter.matches(this, object))
       {
         cloneFilter = filter;
         break;

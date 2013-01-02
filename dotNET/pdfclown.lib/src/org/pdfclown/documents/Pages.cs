@@ -394,10 +394,10 @@ namespace org.pdfclown.documents
       PdfDictionary pageData = page.BaseDataObject;
       // Get the parent tree node!
       PdfDirectObject parent = pageData[PdfName.Parent];
-      PdfDictionary parentData = (PdfDictionary)File.Resolve(parent);
+      PdfDictionary parentData = (PdfDictionary)parent.Resolve();
       // Get the parent's page collection!
       PdfDirectObject kids = parentData[PdfName.Kids];
-      PdfArray kidsData = (PdfArray)File.Resolve(kids);
+      PdfArray kidsData = (PdfArray)kids.Resolve();
       // Remove the page!
       kidsData.Remove(page.BaseObject);
 
@@ -414,7 +414,7 @@ namespace org.pdfclown.documents
 
         // Iterate upward!
         parent = parentData[PdfName.Parent];
-        parentData = (PdfDictionary)File.Resolve(parent);
+        parentData = (PdfDictionary)PdfObject.Resolve(parent);
       } while(parent != null);
 
       return true;
@@ -459,7 +459,7 @@ namespace org.pdfclown.documents
         parentData = BaseDataObject;
         // Get the parent's page collection!
         kids = parentData[PdfName.Kids];
-        kidsData = (PdfArray)File.Resolve(kids);
+        kidsData = (PdfArray)PdfObject.Resolve(kids);
         offset = 0; // Not used.
       }
       else // Insert operation.
@@ -468,10 +468,10 @@ namespace org.pdfclown.documents
         Page pivotPage = this[index];
         // Get the parent tree node!
         parent = pivotPage.BaseDataObject[PdfName.Parent];
-        parentData = (PdfDictionary)File.Resolve(parent);
+        parentData = (PdfDictionary)parent.Resolve();
         // Get the parent's page collection!
         kids = parentData[PdfName.Kids];
-        kidsData = (PdfArray)File.Resolve(kids);
+        kidsData = (PdfArray)kids.Resolve();
         // Get the insertion's relative position within the parent's page collection!
         offset = kidsData.IndexOf(pivotPage.BaseObject);
       }
@@ -507,7 +507,7 @@ namespace org.pdfclown.documents
 
         // Iterate upward!
         parent = parentData[PdfName.Parent];
-        parentData = (PdfDictionary)File.Resolve(parent);
+        parentData = (PdfDictionary)PdfObject.Resolve(parent);
       } while(parent != null);
     }
     #endregion

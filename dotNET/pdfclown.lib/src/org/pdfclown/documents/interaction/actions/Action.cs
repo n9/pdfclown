@@ -54,7 +54,7 @@ namespace org.pdfclown.documents.interaction.actions
       if(baseObject == null)
         return null;
 
-      PdfDictionary dataObject = (PdfDictionary)File.Resolve(baseObject);
+      PdfDictionary dataObject = (PdfDictionary)baseObject.Resolve();
       PdfName actionType = (PdfName)dataObject[PdfName.S];
       if(actionType == null
         || (dataObject.ContainsKey(PdfName.Type)

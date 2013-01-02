@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -55,7 +55,7 @@ namespace org.pdfclown.documents.contents.colorSpaces
         return null;
 
       // Get the data object corresponding to the color space!
-      PdfDataObject baseDataObject = File.Resolve(baseObject);
+      PdfDataObject baseDataObject = baseObject.Resolve();
       /*
         NOTE: A color space is defined by an array object whose first element
         is a name object identifying the color space family [PDF:1.6:4.5.2].

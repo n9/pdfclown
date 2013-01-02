@@ -35,7 +35,6 @@ import java.util.TreeSet;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.files.File;
 import org.pdfclown.util.MapEntry;
 import org.pdfclown.util.NotImplementedException;
 
@@ -44,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Tree<
@@ -666,7 +665,7 @@ public abstract class Tree<
     {
       for(PdfDirectObject child : children.items)
       {
-        clear((PdfDictionary)File.resolve(child));
+        clear((PdfDictionary)child.resolve());
         getFile().unregister((PdfReference)child);
       }
       node.put(pairsKey, node.remove(children.typeName)); // Recycles the array as the intermediate node transforms to leaf.
@@ -695,7 +694,7 @@ public abstract class Tree<
     else // Intermediate node.
     {
       for(PdfDirectObject kidObject : kidsObject)
-      {fill(filler, (PdfDictionary)File.resolve(kidObject));}
+      {fill(filler, (PdfDictionary)kidObject.resolve());}
     }
   }
 
@@ -835,7 +834,7 @@ public abstract class Tree<
       children = (PdfArray)node.resolve(PdfName.Kids);
       int size = 0;
       for(PdfDirectObject child : children)
-      {size += size((PdfDictionary)File.resolve(child));}
+      {size += size((PdfDictionary)child.resolve());}
       return size;
     }
   }

@@ -64,7 +64,7 @@ namespace org.pdfclown.documents
       */
       PdfDirectObject destinationObject;
       {
-        PdfDataObject baseDataObject = File.Resolve(baseObject);
+        PdfDataObject baseDataObject = PdfObject.Resolve(baseObject);
         if(baseDataObject is PdfDictionary)
         {destinationObject = ((PdfDictionary)baseDataObject)[PdfName.D];}
         else

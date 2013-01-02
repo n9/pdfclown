@@ -92,6 +92,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName BBox = new PdfName("BBox");
     public static readonly PdfName BC = new PdfName("BC");
     public static readonly PdfName BE = new PdfName("BE");
+    public static readonly PdfName Bead = new PdfName("Bead");
     public static readonly PdfName BG = new PdfName("BG");
     public static readonly PdfName BitsPerComponent = new PdfName("BitsPerComponent");
     public static readonly PdfName BitsPerSample = new PdfName("BitsPerSample");
@@ -479,6 +480,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName Text = new PdfName("Text");
     public static readonly PdfName TF = new PdfName("TF");
     public static readonly PdfName Thread = new PdfName("Thread");
+    public static readonly PdfName Threads = new PdfName("Threads");
     public static readonly PdfName TilingType = new PdfName("TilingType");
     public static readonly PdfName Timespan = new PdfName("Timespan");
     public static readonly PdfName Title = new PdfName("Title");

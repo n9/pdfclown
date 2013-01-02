@@ -28,7 +28,6 @@ package org.pdfclown.documents.multimedia;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
@@ -41,7 +40,7 @@ import org.pdfclown.objects.PdfTextString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF15)
 public abstract class MediaOffset<T>
@@ -204,7 +203,7 @@ public abstract class MediaOffset<T>
     if(baseObject == null)
       return null;
 
-    PdfDictionary dataObject = (PdfDictionary)File.resolve(baseObject);
+    PdfDictionary dataObject = (PdfDictionary)baseObject.resolve();
     PdfName offsetType = (PdfName)dataObject.get(PdfName.S);
     if(offsetType == null
       || (dataObject.containsKey(PdfName.Type)

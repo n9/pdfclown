@@ -125,7 +125,7 @@ namespace org.pdfclown.documents.multimedia
         if(dataObject == null)
           return null;
 
-        if(File.Resolve(dataObject) is PdfStream)
+        if(dataObject.Resolve() is PdfStream)
           return FormXObject.Wrap(dataObject);
         else
           return FileSpecification.Wrap(dataObject);

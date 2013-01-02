@@ -35,7 +35,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF indirect reference object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 public final class PdfReference
   extends PdfDirectObject
@@ -95,9 +95,10 @@ public final class PdfReference
     Object object
     )
   {
-    return object != null
-      && object.getClass().equals(getClass())
-      && ((PdfReference)object).getId().equals(getId());
+    return super.equals(object)
+      || (object != null
+        && object.getClass().equals(getClass())
+        && ((PdfReference)object).getId().equals(getId()));
   }
 
   /**

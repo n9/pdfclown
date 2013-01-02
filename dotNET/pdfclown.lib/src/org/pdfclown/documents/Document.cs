@@ -276,6 +276,18 @@ namespace org.pdfclown.documents
     }
 
     /**
+      <summary>Gets the article threads.</summary>
+    */
+    [PDF(VersionEnum.PDF11)]
+    public Articles Articles
+    {
+      get
+      {return Articles.Wrap(BaseDataObject.Get<PdfArray>(PdfName.Threads, false));}
+      set
+      {BaseDataObject[PdfName.Threads] = PdfObjectWrapper.GetBaseObject(value);}
+    }
+
+    /**
       <summary>Gets/Sets the bookmark collection.</summary>
     */
     public Bookmarks Bookmarks
@@ -384,7 +396,7 @@ namespace org.pdfclown.documents
     }
 
     /**
-      <summary>Gets/Sets the document information dictionary.</summary>
+      <summary>Gets/Sets common document metadata.</summary>
     */
     public Information Information
     {

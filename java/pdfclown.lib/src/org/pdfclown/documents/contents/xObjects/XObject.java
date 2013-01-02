@@ -34,7 +34,6 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.PropertyList;
 import org.pdfclown.documents.contents.layers.ILayerable;
 import org.pdfclown.documents.contents.layers.LayerEntity;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
@@ -45,7 +44,7 @@ import org.pdfclown.objects.PdfStream;
   from the content stream in which it is used [PDF:1.6:4.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF10)
 public abstract class XObject
@@ -68,7 +67,7 @@ public abstract class XObject
     if(baseObject == null)
       return null;
 
-    PdfName subtype = (PdfName)((PdfStream)File.resolve(baseObject)).getHeader().get(PdfName.Subtype);
+    PdfName subtype = (PdfName)((PdfStream)baseObject.resolve()).getHeader().get(PdfName.Subtype);
     if(subtype.equals(PdfName.Form))
       return FormXObject.wrap(baseObject);
     else if(subtype.equals(PdfName.Image))

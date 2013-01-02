@@ -30,7 +30,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.layers.Layer;
 import org.pdfclown.documents.contents.layers.LayerMembership;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -42,7 +41,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF12)
 public class PropertyList
@@ -65,7 +64,7 @@ public class PropertyList
     if(baseObject == null)
       return null;
 
-    PdfName type = (PdfName)((PdfDictionary)File.resolve(baseObject)).get(PdfName.Type);
+    PdfName type = (PdfName)((PdfDictionary)baseObject.resolve()).get(PdfName.Type);
     if(Layer.TypeName.equals(type))
       return Layer.wrap(baseObject);
     else if(LayerMembership.TypeName.equals(type))

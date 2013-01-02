@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,7 +30,6 @@ import java.util.List;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.IContentContext;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDirectObject;
@@ -41,7 +40,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
   Color space [PDF:1.6:4.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 06/08/11
+  @version 0.1.2, 12/28/12
 */
 public abstract class ColorSpace<TDataObject extends PdfDirectObject>
   extends PdfObjectWrapper<TDataObject>
@@ -64,7 +63,7 @@ public abstract class ColorSpace<TDataObject extends PdfDirectObject>
       return null;
 
     // Get the data object corresponding to the color space!
-    PdfDataObject baseDataObject = File.resolve(baseObject);
+    PdfDataObject baseDataObject = baseObject.resolve();
     /*
       NOTE: A color space is defined by an array object whose first element
       is a name object identifying the color space family [PDF:1.6:4.5.2].

@@ -30,7 +30,6 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.documents.files.FullFileSpecification;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -41,7 +40,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF15)
 public abstract class MediaClip
@@ -61,7 +60,7 @@ public abstract class MediaClip
     if(baseObject == null)
       return null;
 
-    PdfName subtype = (PdfName)((PdfDictionary)File.resolve(baseObject)).get(PdfName.S);
+    PdfName subtype = (PdfName)((PdfDictionary)baseObject.resolve()).get(PdfName.S);
     if(PdfName.MCD.equals(subtype))
       return new MediaClipData(baseObject);
     else if(PdfName.MCS.equals(subtype))

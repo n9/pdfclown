@@ -34,11 +34,11 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.xObjects.FormXObject;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.MapEntry;
@@ -49,7 +49,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF12)
 public final class AppearanceStates
@@ -237,7 +237,7 @@ public final class AppearanceStates
     else // Multiple state.
     {previousValue = ensureDictionary().put(key,value.getBaseObject());}
 
-    if(File.resolve(previousValue) instanceof PdfStream)
+    if(PdfObject.resolve(previousValue) instanceof PdfStream)
       return FormXObject.wrap(previousValue);
     else
       return null;
@@ -273,7 +273,7 @@ public final class AppearanceStates
       else // Multiple state.
       {previousValue = ((PdfDictionary)baseDataObject).remove(key);}
 
-      if(File.resolve(previousValue) instanceof PdfStream)
+      if(PdfObject.resolve(previousValue) instanceof PdfStream)
         return FormXObject.wrap(previousValue);
       else
         return null;

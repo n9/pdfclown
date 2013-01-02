@@ -75,12 +75,20 @@ namespace org.pdfclown.documents
 
     #region static
     #region fields
+    public static readonly ISet<PdfName> InheritableAttributeKeys;
+
     private static readonly Dictionary<TabOrderEnum,PdfName> TabOrderEnumCodes;
     #endregion
 
     #region constructors
     static Page()
     {
+      InheritableAttributeKeys = new HashSet<PdfName>();
+      InheritableAttributeKeys.Add(PdfName.Resources);
+      InheritableAttributeKeys.Add(PdfName.MediaBox);
+      InheritableAttributeKeys.Add(PdfName.CropBox);
+      InheritableAttributeKeys.Add(PdfName.Rotate);
+
       TabOrderEnumCodes = new Dictionary<TabOrderEnum,PdfName>();
       TabOrderEnumCodes[TabOrderEnum.Row] = PdfName.R;
       TabOrderEnumCodes[TabOrderEnum.Column] = PdfName.C;
@@ -90,6 +98,40 @@ namespace org.pdfclown.documents
 
     #region interface
     #region public
+    /**
+      <summary>Gets the attribute value corresponding to the specified key, possibly recurring to
+      its ancestor nodes in the page tree.</summary>
+      <param name="pageObject">Page object.</param>
+      <param name="key">Attribute key.</param>
+    */
+    public static PdfDirectObject GetInheritableAttribute(
+      PdfDictionary pageObject,
+      PdfName key
+      )
+    {
+      /*
+        NOTE: It moves upward until it finds the inherited attribute.
+      */
+      PdfDictionary dictionary = pageObject;
+      while(true)
+      {
+        PdfDirectObject entry = dictionary[key];
+        if(entry != null)
+          return entry;
+
+        dictionary = (PdfDictionary)dictionary.Resolve(PdfName.Parent);
+        if(dictionary == null)
+        {
+          // Isn't the page attached to the page tree?
+          /* NOTE: This condition is illegal. */
+          if(pageObject[PdfName.Parent] == null)
+            throw new Exception("Inheritable attributes unreachable: Page objects MUST be inserted into their document's Pages collection before being used.");
+
+          return null;
+        }
+      }
+    }
+
     public static Page Wrap(
       PdfDirectObject baseObject
       )
@@ -189,7 +231,7 @@ namespace org.pdfclown.documents
     public PageAnnotations Annotations
     {
       get
-      {return new PageAnnotations(BaseDataObject.Get<PdfDictionary>(PdfName.Annots), this);}
+      {return new PageAnnotations(BaseDataObject.Get<PdfArray>(PdfName.Annots), this);}
       set
       {BaseDataObject[PdfName.Annots] = value.BaseObject;}
     }
@@ -212,6 +254,15 @@ namespace org.pdfclown.documents
       }
       set
       {BaseDataObject[PdfName.ArtBox] = new Rectangle(value).BaseDataObject;}
+    }
+
+    /**
+      <summary>Gets the page article beads.</summary>
+    */
+    public PageArticleElements ArticleElements
+    {
+      get
+      {return new PageArticleElements(BaseDataObject.Get<PdfArray>(PdfName.B), this);}
     }
 
     /**
@@ -481,7 +532,7 @@ namespace org.pdfclown.documents
           else
           {
             foreach(PdfDirectObject contentStreamObject in (PdfArray)contentsDataObject)
-            {formBody.Append(((PdfStream)File.Resolve(contentStreamObject)).Body);}
+            {formBody.Append(((PdfStream)contentStreamObject.Resolve()).Body);}
           }
         }
       }
@@ -495,29 +546,7 @@ namespace org.pdfclown.documents
     private PdfDirectObject GetInheritableAttribute(
       PdfName key
       )
-    {
-      /*
-        NOTE: It moves upward until it finds the inherited attribute.
-      */
-      PdfDictionary dictionary = BaseDataObject;
-      while(true)
-      {
-        PdfDirectObject entry = dictionary[key];
-        if(entry != null)
-          return entry;
-
-        dictionary = (PdfDictionary)dictionary.Resolve(PdfName.Parent);
-        if(dictionary == null)
-        {
-          // Isn't the page attached to the page tree?
-          /* NOTE: This condition is illegal. */
-          if(BaseDataObject[PdfName.Parent] == null)
-            throw new Exception("Inheritable attributes unreachable: Page objects MUST be inserted into their document's Pages collection before being used.");
-
-          return null;
-        }
-      }
-    }
+    {return GetInheritableAttribute(BaseDataObject, key);}
     #endregion
     #endregion
     #endregion

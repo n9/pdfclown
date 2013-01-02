@@ -35,7 +35,6 @@ import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.bytes.OutputStream;
 import org.pdfclown.documents.Document;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.IPdfNamedObjectWrapper;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
@@ -48,7 +47,7 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 09/24/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF11)
 public abstract class FileSpecification<TDataObject extends PdfDirectObject>
@@ -121,7 +120,10 @@ public abstract class FileSpecification<TDataObject extends PdfDirectObject>
     PdfDirectObject baseObject
     )
   {
-    PdfDataObject baseDataObject = File.resolve(baseObject);
+    if(baseObject ==  null)
+      return null;
+
+    PdfDataObject baseDataObject = baseObject.resolve();
     if(baseDataObject instanceof PdfString)
       return new SimpleFileSpecification(baseObject);
     else if(baseDataObject instanceof PdfDictionary)

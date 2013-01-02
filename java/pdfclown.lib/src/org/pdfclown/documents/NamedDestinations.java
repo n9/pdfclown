@@ -28,19 +28,19 @@ package org.pdfclown.documents;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
-import org.pdfclown.files.File;
 import org.pdfclown.objects.NameTree;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfObject;
 
 /**
   Named destinations [PDF:1.6:3.6.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
 */
 @PDF(VersionEnum.PDF12)
 public final class NamedDestinations
@@ -81,7 +81,7 @@ public final class NamedDestinations
     */
     PdfDirectObject destinationObject;
     {
-      PdfDataObject baseDataObject = File.resolve(baseObject);
+      PdfDataObject baseDataObject = PdfObject.resolve(baseObject);
       if(baseDataObject instanceof PdfDictionary)
       {destinationObject = ((PdfDictionary)baseDataObject).get(PdfName.D);}
       else

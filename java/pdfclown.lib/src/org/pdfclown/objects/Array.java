@@ -26,6 +26,7 @@
 package org.pdfclown.objects;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -40,7 +41,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 12/28/12
  */
 public class Array<TItem extends IPdfObjectWrapper>
   extends PdfObjectWrapper<PdfArray>
@@ -277,7 +278,11 @@ public class Array<TItem extends IPdfObjectWrapper>
   @Override
   public void clear(
     )
-  {getBaseDataObject().clear();}
+  {
+    int index = size();
+    while(index-- > 0)
+    {remove(index);}
+  }
 
   @Override
   @SuppressWarnings("unchecked")
@@ -430,7 +435,12 @@ public class Array<TItem extends IPdfObjectWrapper>
   public <T> T[] toArray(
     T[] array
     )
-  {throw new NotImplementedException();}
+  {
+    List<TItem> items = new ArrayList<TItem>();
+    for(PdfDirectObject object : getBaseDataObject())
+    {items.add(itemWrapper.wrap(object));}
+    return items.toArray(array);
+  }
   // </List>
   // </public>
   // </interface>

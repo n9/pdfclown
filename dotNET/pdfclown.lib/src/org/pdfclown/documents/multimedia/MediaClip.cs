@@ -54,7 +54,7 @@ namespace org.pdfclown.documents.multimedia
       if(baseObject == null)
         return null;
 
-      PdfName subtype = (PdfName)((PdfDictionary)File.Resolve(baseObject))[PdfName.S];
+      PdfName subtype = (PdfName)((PdfDictionary)baseObject.Resolve())[PdfName.S];
       if(PdfName.MCD.Equals(subtype))
         return new MediaClipData(baseObject);
       else if(PdfName.MCS.Equals(subtype))
