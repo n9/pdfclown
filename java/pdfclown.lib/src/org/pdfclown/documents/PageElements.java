@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,7 +36,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 12/28/12
+  @version 0.1.2, 01/04/13
 */
 public abstract class PageElements<TItem extends PdfObjectWrapper<PdfDictionary>>
   extends Array<TItem>
@@ -49,12 +49,12 @@ public abstract class PageElements<TItem extends PdfObjectWrapper<PdfDictionary>
 
   // <constructors>
   PageElements(
-    IWrapper<TItem> wrapper,
+    Class<TItem> itemClass,
     PdfDirectObject baseObject,
     Page page
     )
   {
-    super(wrapper, baseObject);
+    super(itemClass, baseObject);
     this.page = page;
   }
   // </constructors>

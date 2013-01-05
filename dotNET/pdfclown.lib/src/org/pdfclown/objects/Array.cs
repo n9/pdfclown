@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -56,16 +56,16 @@ namespace org.pdfclown.objects
       : IWrapper<T>
       where T : TItem
     {
-      private ConstructorInfo itemConstructor;
+      private MethodInfo itemConstructor;
 
       internal DefaultWrapper(
         )
-      {itemConstructor = typeof(TItem).GetConstructor(new Type[]{typeof(PdfDirectObject)});}
+      {itemConstructor = typeof(TItem).GetMethod("Wrap", new Type[]{typeof(PdfDirectObject)});}
 
       public T Wrap(
         PdfDirectObject baseObject
         )
-      {return (T)itemConstructor.Invoke(new object[]{baseObject});}
+      {return (T)itemConstructor.Invoke(null, new object[]{baseObject});}
     }
     #endregion
 

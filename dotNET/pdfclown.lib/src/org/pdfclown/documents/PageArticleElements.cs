@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,29 +41,12 @@ namespace org.pdfclown.documents
   public sealed class PageArticleElements
     : PageElements<ArticleElement>
   {
-    #region types
-    private sealed class ItemWrapper
-      : org.pdfclown.objects.Array<ArticleElement>.IWrapper<ArticleElement>
-    {
-      public ArticleElement Wrap(
-        PdfDirectObject baseObject
-        )
-      {return ArticleElement.Wrap(baseObject);}
-    }
-    #endregion
-
-    #region static
-    #region fields
-    private static readonly ItemWrapper Wrapper = new ItemWrapper();
-    #endregion
-    #endregion
-
     #region dynamic
     #region constructors
     internal PageArticleElements(
       PdfDirectObject baseObject,
       Page page
-      ) : base(Wrapper, baseObject, page)
+      ) : base(baseObject, page)
     {}
     #endregion
     #endregion

@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -26,6 +26,7 @@
 package org.pdfclown.objects;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -41,7 +42,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 12/28/12
+  @version 0.1.2, 01/04/13
  */
 public class Array<TItem extends IPdfObjectWrapper>
   extends PdfObjectWrapper<PdfArray>
@@ -62,27 +63,28 @@ public class Array<TItem extends IPdfObjectWrapper>
   private static class DefaultWrapper<TItem>
     implements IWrapper<TItem>
   {
-    private Constructor<TItem> itemConstructor;
+    private Method itemConstructor;
 
     DefaultWrapper(
       Class<TItem> itemClass
       )
     {
       try
-      {itemConstructor = itemClass.getConstructor(PdfDirectObject.class);}
+      {itemConstructor = itemClass.getMethod("wrap", PdfDirectObject.class);}
       catch(SecurityException e)
       {throw e;}
       catch(NoSuchMethodException e)
       {throw new RuntimeException(e);}
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public TItem wrap(
       PdfDirectObject baseObject
       )
     {
       try
-      {return itemConstructor.newInstance(baseObject);}
+      {return (TItem)itemConstructor.invoke(null, baseObject);}
       catch(Exception e)
       {throw new RuntimeException(e);}
     }

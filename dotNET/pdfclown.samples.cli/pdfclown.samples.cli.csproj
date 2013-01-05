@@ -45,7 +45,6 @@
     <Compile Include="src\org\pdfclown\samples\cli\HelloWorldSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\ImageExtractionSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\ImageSubstitutionSample.cs" />
-    <Compile Include="src\org\pdfclown\samples\cli\IndirectObjectEditingSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\InlineObjectSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\LinkCreationSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\LinkParsingSample.cs" />

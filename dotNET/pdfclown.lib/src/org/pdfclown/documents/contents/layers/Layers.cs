@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -54,6 +54,10 @@ namespace org.pdfclown.documents.contents.layers
     #endregion
 
     #region static
+    #region fields
+    private static readonly ItemWrapper Wrapper = new ItemWrapper();
+    #endregion
+
     #region interface
     #region public
     public static Layers Wrap(
@@ -74,12 +78,12 @@ namespace org.pdfclown.documents.contents.layers
     public Layers(
       Document context,
       string title
-      ) : base(context, new ItemWrapper())
+      ) : base(context, Wrapper)
     {Title = title;}
 
     private Layers(
       PdfDirectObject baseObject
-      ) : base(new ItemWrapper(), baseObject)
+      ) : base(Wrapper, baseObject)
     {}
     #endregion
 

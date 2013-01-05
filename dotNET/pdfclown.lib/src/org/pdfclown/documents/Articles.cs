@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,22 +41,7 @@ namespace org.pdfclown.documents
   public sealed class Articles
     : Array<Article>
   {
-    #region types
-    private sealed class ItemWrapper
-      : org.pdfclown.objects.Array<Article>.IWrapper<Article>
-    {
-      public Article Wrap(
-        PdfDirectObject baseObject
-        )
-      {return Article.Wrap(baseObject);}
-    }
-    #endregion
-
     #region static
-    #region fields
-    private static readonly ItemWrapper Wrapper = new ItemWrapper();
-    #endregion
-
     #region interface
     #region public
     public static Articles Wrap(
@@ -71,7 +56,7 @@ namespace org.pdfclown.documents
     #region constructors
     internal Articles(
       PdfDirectObject baseObject
-      ) : base(Wrapper, baseObject)
+      ) : base(baseObject)
     {}
     #endregion
     #endregion

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,29 +41,12 @@ namespace org.pdfclown.documents
   public sealed class PageAnnotations
     : PageElements<Annotation>
   {
-    #region types
-    private sealed class ItemWrapper
-      : IWrapper<Annotation>
-    {
-      public Annotation Wrap(
-        PdfDirectObject baseObject
-        )
-      {return Annotation.Wrap(baseObject);}
-    }
-    #endregion
-
-    #region static
-    #region fields
-    private static readonly ItemWrapper Wrapper = new ItemWrapper();
-    #endregion
-    #endregion
-
     #region dynamic
     #region constructors
     internal PageAnnotations(
       PdfDirectObject baseObject,
       Page page
-      ) : base(Wrapper, baseObject, page)
+      ) : base(baseObject, page)
     {}
     #endregion
     #endregion

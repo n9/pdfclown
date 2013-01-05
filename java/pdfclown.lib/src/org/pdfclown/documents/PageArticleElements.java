@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,38 +36,20 @@ import org.pdfclown.objects.PdfDirectObject;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 12/28/12
+  @version 0.1.2, 01/04/13
 */
 @PDF(VersionEnum.PDF11)
 public final class PageArticleElements
   extends PageElements<ArticleElement>
 {
   // <class>
-  // <classes>
-  private static final class ItemWrapper
-    implements IWrapper<ArticleElement>
-  {
-    @Override
-    public ArticleElement wrap(
-      PdfDirectObject baseObject
-      )
-    {return ArticleElement.wrap(baseObject);}
-  }
-  // </classes>
-
-  // <static>
-  // <fields>
-  private static final ItemWrapper Wrapper = new ItemWrapper();
-  // </fields>
-  // </static>
-
   // <dynamic>
   // <constructors>
   PageArticleElements(
     PdfDirectObject baseObject,
     Page page
     )
-  {super(Wrapper, baseObject, page);}
+  {super(ArticleElement.class, baseObject, page);}
   // </constructors>
 
   // <interface>

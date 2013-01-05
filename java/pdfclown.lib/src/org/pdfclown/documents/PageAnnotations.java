@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,38 +35,20 @@ import org.pdfclown.objects.PdfDirectObject;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/28/12
+  @version 0.1.2, 01/04/13
 */
 @PDF(VersionEnum.PDF10)
 public final class PageAnnotations
   extends PageElements<Annotation>
 {
   // <class>
-  // <classes>
-  private static final class ItemWrapper
-    implements IWrapper<Annotation>
-  {
-    @Override
-    public Annotation wrap(
-      PdfDirectObject baseObject
-      )
-    {return Annotation.wrap(baseObject);}
-  }
-  // </classes>
-
-  // <static>
-  // <fields>
-  private static final ItemWrapper Wrapper = new ItemWrapper();
-  // </fields>
-  // </static>
-
   // <dynamic>
   // <constructors>
   PageAnnotations(
     PdfDirectObject baseObject,
     Page page
     )
-  {super(Wrapper, baseObject, page);}
+  {super(Annotation.class, baseObject, page);}
   // </constructors>
 
   // <interface>

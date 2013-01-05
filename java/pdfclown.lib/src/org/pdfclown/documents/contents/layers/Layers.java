@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 12/21/12
+  @version 0.1.2, 01/04/13
 */
 @PDF(VersionEnum.PDF15)
 public final class Layers
@@ -73,6 +73,10 @@ public final class Layers
   // </classes>
 
   // <static>
+  // <fields>
+  private static final ItemWrapper Wrapper = new ItemWrapper();
+  // </fields>
+
   // <interface>
   // <public>
   public static Layers wrap(
@@ -95,14 +99,14 @@ public final class Layers
     String title
     )
   {
-    super(context, new ItemWrapper());
+    super(context, Wrapper);
     setTitle(title);
   }
 
   private Layers(
     PdfDirectObject baseObject
     )
-  {super(new ItemWrapper(), baseObject);}
+  {super(Wrapper, baseObject);}
   // </constructors>
 
   // <interface>
