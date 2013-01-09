@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,7 +45,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 12/28/12
+  @version 0.1.2, 01/09/13
 */
 public final class PdfArray
   extends PdfDirectObject
@@ -156,7 +156,8 @@ public final class PdfArray
   {
     PdfDirectObject item;
     if(index == size()
-      || (item = get(index)) == null)
+      || (item = get(index)) == null
+      || !item.resolve().getClass().equals(itemClass))
     {
       /*
         NOTE: The null-object placeholder MUST NOT perturb the existing structure; therefore:
@@ -170,8 +171,10 @@ public final class PdfArray
           : new PdfIndirectObject(getFile(), itemClass.newInstance(), new XRefEntry(0, 0)).getReference());
         if(index == size())
         {items.add(item);}
-        else
+        else if(item == null)
         {items.set(index, item);}
+        else
+        {items.add(index, item);}
         item.setVirtual(true);
       }
       catch(Exception e)

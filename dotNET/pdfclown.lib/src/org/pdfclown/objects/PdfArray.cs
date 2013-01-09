@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -138,7 +138,8 @@ namespace org.pdfclown.objects
     {
       PdfDirectObject item;
       if(index == Count
-        || (item = this[index]) == null)
+        || (item = this[index]) == null
+        || !item.Resolve().GetType().Equals(typeof(T)))
       {
         /*
           NOTE: The null-object placeholder MUST NOT perturb the existing structure; therefore:
@@ -152,8 +153,10 @@ namespace org.pdfclown.objects
             : new PdfIndirectObject(File, new T(), new XRefEntry(0, 0)).Reference);
           if(index == Count)
           {items.Add(item);}
-          else
+          else if(item == null)
           {items[index] = item;}
+          else
+          {items.Insert(index, item);}
           item.Virtual = true;
         }
         catch(Exception e)
