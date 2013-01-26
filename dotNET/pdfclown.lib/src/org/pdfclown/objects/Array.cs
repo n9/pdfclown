@@ -92,7 +92,7 @@ namespace org.pdfclown.objects
       available.</param>
     */
     public static Array<T> Wrap<T>(
-      IWrapper<T> itemWrapper,
+      Array<T>.IWrapper<T> itemWrapper,
       PdfDirectObject baseObject
       ) where T : TItem
     {return baseObject != null ? new Array<T>(itemWrapper, baseObject) : null;}

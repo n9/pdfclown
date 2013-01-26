@@ -237,7 +237,7 @@ namespace org.pdfclown.documents.interaction.annotations
       {
         PdfArray quadPointsObject = new PdfArray();
         float pageHeight = Page.Box.Height;
-        RectangleF box;
+        RectangleF box = RectangleF.Empty;
         foreach(Quad markupBox in value)
         {
           /*
