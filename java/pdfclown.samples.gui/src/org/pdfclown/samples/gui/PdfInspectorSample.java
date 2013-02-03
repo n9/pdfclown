@@ -464,7 +464,7 @@ public class PdfInspectorSample
     int streamIndex = -1;
     for(PdfDataObject streamObject : streamObjects)
     {
-      PdfStream stream = (PdfStream)File.resolve(streamObject);
+      PdfStream stream = (PdfStream)streamObject.resolve();
       IBuffer streamBody = stream.getBody();
       model.addRow(
         new Object[]

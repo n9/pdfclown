@@ -8,6 +8,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -29,10 +34,11 @@ import org.pdfclown.files.SerializationModeEnum;
 import org.pdfclown.util.math.geom.Dimension;
 
 /**
- * Servlet implementation class HelloWorld
- */
+  Servlet implementation class HelloWorld
+*/
 public class HelloWorld extends HttpServlet {
   private static final long serialVersionUID = 1L;
+
   protected void doPost(
     HttpServletRequest request,
     HttpServletResponse response
@@ -106,6 +112,10 @@ public class HelloWorld extends HttpServlet {
       System.err.println("An exception happened while serializing the sample: " + e.getMessage());
       e.printStackTrace();
       return;
+    }
+    finally
+    {
+      file.close();
     }
   }
 

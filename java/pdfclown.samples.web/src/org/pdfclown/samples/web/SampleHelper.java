@@ -24,10 +24,9 @@ public class SampleHelper
     )
   {
     // Create a template (form)!
-    FormXObject template = new FormXObject(document);
+    FormXObject template = new FormXObject(document, document.getPageSize());
 
     // Size.
-    template.setSize(document.getPageSize());
     Dimension2D templateSize = template.getSize();
 
     PrimitiveComposer composer = new PrimitiveComposer(template);
