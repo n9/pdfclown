@@ -2,35 +2,32 @@ PDF Clown Project
 
 
 
-Project version: 0.1.1 - README revision: 0 (2011-11-14)
+Project version: 0.1.2 - README revision: 0 (2013-02-04)
 
 ---------------
 Introduction
 ---------------
-This is the source code distribution of PDF Clown, a general-purpose library for the manipulation of PDF files implemented in multiple platforms (Java [../java/README.html], .NET [../dotNET/README.html]).
+This is the source code distribution of  [http://www.pdfclown.org/], a general-purpose library for the manipulation of PDF files implemented in multiple platforms (Java [../java/README.html], .NET [../dotNET/README.html]).
 
 
 ---------------
 What's new?
 ---------------
-This release [http://pdfclown.wordpress.com/2011/04/12/waiting-for-pdf-clown-0-1-1-release/] adds support to optional/layered contents, text highlighting, metadata streams (XMP), Type1/CFF font files, along with primitive object model and AcroForm fields filling enhancements.
+This release [https://pdfclown.wordpress.com/2011/12/09/waiting-for-pdf-clown-0-1-2-release/] enhances several base structures, providing fully automated object change tracking and object cloning (allowing, for example, to copy page annotations and Acroform fields). It adds support to video embedding, article threads, page labels and several other functionalities.
 
-Lots of minor improvements have been applied too.
-
- * [add] Primitive object model: see objects namespace (PdfObject, PdfObjectWrapper, PdfSimpleObject, PdfReal).
- * [add] Optional/layered contents: see documents.contents.layers namespace
- * [add] Text highlighting: see tools.TextExtractor, annotations.TextMarkup
- * [add] AcroForm fields filling: see documents.interaction.forms namespace
- * [add] Metadata streams (XMP): see documents.interchange.metadata.Metadata, PdfObjectWrapper.get/setMetadata(Metadata)
- * [add] Type1/CFF font files support: see fonts.CffParser
- * [add] File configuration: real number formatting (see files.File.Configuration)
- * [add] Page boxes: see documents.Page (get/setArtBox(Rectangle2D), get/setBleedBox(Rectangle2D), get/setCropBox(Rectangle2D), get/setTrimBox(Rectangle2D))
- * [add] PostScript-based parsers: see util.parsers.PostScriptParser, tokens.BaseParser, tokens.FileParser, documents.contents.tokens.ContentParser
+ * [add] Primitive object model enhancements: see objects namespace.
+ * [add] Advanced object cloning and traversal: see objects namespace
+ * [add] Article threads: see documents.Articles, documents.interaction.navigation.page namespace
+ * [add] Page labels: see documents.interaction.navigation.page.PageLabel
+ * [add] Content transparency: see documents.contents.BlendModeEnum, documents.contents.ExtGState
+ * [add] Text line alignment and image inlining: see documents.contents.composition.BlockComposer
+ * [add] Multimedia: see documents.interaction.annotations.Screen, documents.interchange.multimedia namespace
+ * [add] File references: see files.FileIdentifier, documents.files namespace
 
 ---------------
 Copyright
 ---------------
-Copyright © 2006-2011 Stefano Chizzolini
+Copyright © 2006-2013 Stefano Chizzolini
 
 Contacts:
  * url: http://www.stefanochizzolini.it [http://www.stefanochizzolini.it]
@@ -70,11 +67,11 @@ The Community page [http://www.pdfclown.org/community.html] guides you through t
 ---------------
 Updates
 ---------------
-The  [http://sourceforge.net/projects/clown/] is hosted by SourceForge.net and referenced by the official PDF Clown's website [http://www.pdfclown.org/]: please AVOID downloading from any other repository if you want to be sure its updates can be trusted.
+The  [http://sourceforge.net/projects/clown/] is hosted by SourceForge.net and referenced by PDF Clown's official website [http://www.pdfclown.org/]: please AVOID downloading from any other repository if you want to be sure its updates can be trusted.
 
 This distribution represents the result of a release cycle which tipically spans over several months: instead of waiting for the final release, you can keep your copy of the PDF Clown's code base up-to-date synchronizing it with the  [http://sourceforge.net/scm/?type=svn&group_id=176158]. You have just to choose the branch more appropriate for your needs:
 
- * Fix branch <https://clown.svn.sourceforge.net/svnroot/clown/branches/0.1.1-Fix [https://clown.svn.sourceforge.net/svnroot/clown/branches/0.1.1-Fix]>: corrective branch (bug fixes for existing functionalities);
+ * Fix branch <https://clown.svn.sourceforge.net/svnroot/clown/branches/0.1.2-Fix [https://clown.svn.sourceforge.net/svnroot/clown/branches/0.1.1-Fix]>: corrective branch (bug fixes for existing functionalities);
  * Trunk <https://clown.svn.sourceforge.net/svnroot/clown/trunk [https://clown.svn.sourceforge.net/svnroot/clown/trunk]>: evolutionary branch (all the latest & greatest along with the same bug fixes of the above-mentioned Fix branch).
 
 ---------------
@@ -96,7 +93,6 @@ Resources
  *  [res/README.html]: Material supporting PDF Clown distribution
  *  [CREDITS.html]: Who's behind PDF Clown development
  *  [WHATSNEW.html]: New features of the PDF Clown Project
- *  [CHANGELOG.html]: Change chronology of the PDF Clown Project
  *  [ISSUES.html]: Known issues
  *  [TODO.html]: TODO list of the PDF Clown Project
  *  [INDEX.html]: Distribution map

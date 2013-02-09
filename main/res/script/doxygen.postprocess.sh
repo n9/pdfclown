@@ -11,9 +11,6 @@ ReplaceCmd="rpl -e -i -q"
 
 # Some post-process tweaking on the doc output...
 
-# Remove the doxygen logo!
-$ReplaceCmd '<img src=\042doxygen.png\042 alt=\042doxygen\042 align=\042middle\042 border=\0420\042>' 'Doxygen' $DocDir/*.html; rm -f $DocDir/doxygen.png
-
 # Suppress the clumsy namespace subsection menu!
 $ReplaceCmd '<div class=\042tabs\042>\012  <ul>\012    <li id=\042current\042><a href=\042namespaces.html\042><span>Packages</span></a></li>\012    <li><a href=\042namespacemembers.html\042><span>Package&nbsp;Functions</span></a></li>\012  </ul></div>' '' $DocDir/*.html; $ReplaceCmd '<div class=\042tabs\042>\012  <ul>\012    <li><a href=\042namespaces.html\042><span>Packages</span></a></li>\012    <li><a href=\042namespacemembers.html\042><span>Package&nbsp;Functions</span></a></li>\012  </ul></div>' '' $DocDir/*.html
 
@@ -34,4 +31,4 @@ $ReplaceCmd '</h1>\012<p>' '</h1><p><b>PDF Clown</b> is a C# library devoted to 
 $ReplaceCmd 'Documentation</h1>' 'API Reference</h1>' $DocDir/index.html
 
 # Edit footnote!
-$ReplaceCmd '<address' '<p>Copyright 2006-2011 Stefano Chizzolini. For more information, please visit <a href="http://www.pdfclown.org">PDF Clown home page</a>.</p><address' $DocDir/*.html
+$ReplaceCmd '<address' '<p>Copyright 2006-2013 Stefano Chizzolini. For more information, please visit <a href="http://www.pdfclown.org">PDF Clown home page</a>.</p><address' $DocDir/*.html

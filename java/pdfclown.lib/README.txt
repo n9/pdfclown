@@ -2,7 +2,7 @@ Library
 PDF Clown Project [../../main/README.html] > PDF Clown for Java [../README.html] > 
 
 
-Project version: 0.1.1 - README revision: 0 (2011-11-14)
+Project version: 0.1.2 - README revision: 0 (2013-02-04)
 
 ---------------
 Introduction

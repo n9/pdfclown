@@ -2,15 +2,30 @@ WHATSNEW
 PDF Clown Project [README.html] > 
 
 
-Project version: 0.1.1 - WHATSNEW revision: 0 (2011-11-14)
+Project version: 0.1.2 - WHATSNEW revision: 0 (2013-02-04)
 
 ---------------
 Introduction
 ---------------
-This is a list of highlights about major changes occurred to the PDF Clown Project from a functional point of view.
+This is a list of highlights about major changes occurred to the PDF Clown Project.
 
-For a more detailed list of changes, please see the CHANGELOG [CHANGELOG.html].
 
+---------------
+Version 0.1.2
+---------------
+Release date: 2013-02-04
+Backward compatibility: false
+
+This release [https://pdfclown.wordpress.com/2011/12/09/waiting-for-pdf-clown-0-1-2-release/] enhances several base structures, providing fully automated object change tracking and object cloning (allowing, for example, to copy page annotations and Acroform fields). It adds support to video embedding, article threads, page labels and several other functionalities.
+
+ * [add] Primitive object model enhancements: see objects namespace.
+ * [add] Advanced object cloning and traversal: see objects namespace
+ * [add] Article threads: see documents.Articles, documents.interaction.navigation.page namespace
+ * [add] Page labels: see documents.interaction.navigation.page.PageLabel
+ * [add] Content transparency: see documents.contents.BlendModeEnum, documents.contents.ExtGState
+ * [add] Text line alignment and image inlining: see documents.contents.composition.BlockComposer
+ * [add] Multimedia: see documents.interaction.annotations.Screen, documents.interchange.multimedia namespace
+ * [add] File references: see files.FileIdentifier, documents.files namespace
 
 ---------------
 Version 0.1.1
@@ -220,5 +235,5 @@ Resources
   * Current directory [.]: browse current section contents
   * Parent section [README.html]: move to parent section
   * Previous section [CREDITS.html]: move to previous section
-  * Next section [CHANGELOG.html]: move to next section
+  * Next section [ISSUES.html]: move to next section
   * INDEX [INDEX.html]: move to the distribution map

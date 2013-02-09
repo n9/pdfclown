@@ -7,39 +7,15 @@
   >
   <description>
     <db:para>This is a coarsely-grained record of major changes occurred specifically to the C# implementation of <db:emphasis role="strong">PDF Clown</db:emphasis>.</db:para>
-    <db:para>For common changes to the PDF Clown Project, please see the <db:link xl:href="../main/CHANGELOG.html">PDF Clown Project CHANGELOG</db:link>.</db:para>
+    <db:para>For common changes to the PDF Clown Project, please see <db:link xl:href="../main/WHATSNEW.html">WHATSNEW</db:link>.</db:para>
   </description>
   <tip>Change chronology of PDF Clown implementation for .NET</tip>
-  <features>
-    <feature id="it.stefanochizzolini.clown:ANY">
-      <title>General</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.util">
-      <title>Utility (it.stefanochizzolini.clown.util)</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.bytes">
-      <title>Byte Streaming (it.stefanochizzolini.clown.bytes)</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.tokens">
-      <title>Serialization (it.stefanochizzolini.clown.tokens)</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.files">
-      <title>File Structure (it.stefanochizzolini.clown.files)</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.documents">
-      <title>Document Structure (it.stefanochizzolini.clown.documents)</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.documents.interchange">
-      <title>Interchange (it.stefanochizzolini.clown.documents.interchange)</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.documents.interaction">
-      <title>Interaction (it.stefanochizzolini.clown.documents.interaction)</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.documents.contents">
-      <title>Content Streaming (it.stefanochizzolini.clown.documents.contents)</title>
-    </feature>
-  </features>
   <entries>
+    <release version="0.1.2" date="2013-02-04" compatible="false">
+      <description>
+        <db:para>Migrated to .NET 4.0.</db:para>
+      </description>
+    </release>
     <release version="0.1.1" date="2011-11-14" compatible="false">
       <description>
         <db:para>ICSharpCode.SharpZipLib.dll dependency removed.</db:para>
@@ -49,40 +25,6 @@
       <description>
         <db:para>Migrated to .NET 3.5.</db:para>
       </description>
-    </release>
-    <release version="0.0.3" date="2007-05-05" compatible="false">
-      <feature idref="it.stefanochizzolini.clown.util">
-        <entries>
-          <add>class io.BigEndianBinaryReader: big-endian parsing is necessary for TrueType fonts (standard binary reader supports little-endian order only).</add>
-        </entries>
-      </feature>
-      <feature idref="it.stefanochizzolini.clown.bytes">
-        <entries>
-          <change><text>class Buffer</text>
-            <entries>
-              <fix>[1668291] ReadByte(): IndexOutOfRangeException is properly managed. Symptom: IndexOutOfRangeException was thrown in case the end of the buffer was reached. Cause: IndexOutOfRangeException was not trapped.</fix>
-            </entries>
-          </change>
-        </entries>
-      </feature>
-      <feature idref="it.stefanochizzolini.clown.tokens">
-        <entries>
-          <change><text>class Parser</text>
-            <entries>
-              <fix>[1668410] MoveNext(): parsing of float numbers has been corrected. Symptom: parsing of float numbers was buggy. Cause: the default localized number format was inadvertently used instead of the canonical format (decimal separator was unpredictable).</fix>
-            </entries>
-          </change>
-        </entries>
-      </feature>
-      <feature idref="it.stefanochizzolini.clown.documents.contents">
-        <entries>
-          <change><text>class tokens.Parser</text>
-            <entries>
-              <fix>[1668410] MoveNext(): parsing of float numbers has been corrected. Symptom: parsing of float numbers was buggy. Cause: the default localized number format was inadvertently used instead of the canonical format (decimal separator was unpredictable).</fix>
-            </entries>
-          </change>
-        </entries>
-      </feature>
     </release>
   </entries>
 </changeLog>

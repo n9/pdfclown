@@ -12,8 +12,8 @@
   <entries>
     <todo>Documentation: improve and extend <db:link xl:href="doc/userGuide.pdf">PDF Clown Project User Guide</db:link> contents. Rationale: current documentation is barely uncomplete.</todo>
     <todo>Hyphenation (see documents.contents.composition.TextFitter): implement a decent algorithm. Rationale: current implementation is purely a stub.</todo>
-    <todo>Parsers (see tokens.Parser, documents.contents.tokens.Parser): refactor (derive from the same generalization). Rationale: current code duplication (to supersede) has been temporarely tolerated in order to focus on new functionalities.</todo>
+    <todo>Content rendering</todo>
     <todo>Exceptions (see tokens.FileFormatException, documents.contents.fonts.FontFileFormatException ...): refactor? Rationale: exceptions may need harmonization.</todo>
-    <todo>Type1/CFF parsing: delayed Unicode mapping</todo>
+    <todo>Font subsetting</todo>
   </entries>
 </todos>

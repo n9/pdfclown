@@ -2,18 +2,18 @@ PDF Clown for .NET
 PDF Clown Project [../main/README.html] > 
 
 
-Project version: 0.1.1 - README revision: 0 (2011-11-14)
+Project version: 0.1.2 - README revision: 0 (2013-02-04)
 
 ---------------
 Introduction
 ---------------
-This is the C#/.NET source code distribution of PDF Clown, a general-purpose library for the manipulation of PDF files.
+This is the C#/.NET source code distribution of  [http://www.pdfclown.org/], a general-purpose library for the manipulation of PDF files.
 
 
 ---------------
 Copyright
 ---------------
-Copyright © 2006-2011 Stefano Chizzolini
+Copyright © 2006-2013 Stefano Chizzolini
 
 Contacts:
  * url: http://www.stefanochizzolini.it [http://www.stefanochizzolini.it]
@@ -49,7 +49,7 @@ Dependencies
 ---------------
 PDF Clown for .NET currently depends on:
 
- * .NET framework 3.5
+ * .NET framework 4.0
 
 ---------------
 Resources

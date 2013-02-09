@@ -2,18 +2,18 @@ PDF Clown for Java
 PDF Clown Project [../main/README.html] > 
 
 
-Project version: 0.1.1 - README revision: 0 (2011-11-14)
+Project version: 0.1.2 - README revision: 0 (2013-02-04)
 
 ---------------
 Introduction
 ---------------
-This is the Java source code distribution of PDF Clown, a general-purpose library for the manipulation of PDF files.
+This is the Java source code distribution of  [http://www.pdfclown.org/], a general-purpose library for the manipulation of PDF files.
 
 
 ---------------
 Copyright
 ---------------
-Copyright © 2006-2011 Stefano Chizzolini
+Copyright © 2006-2013 Stefano Chizzolini
 
 Contacts:
  * url: http://www.stefanochizzolini.it [http://www.stefanochizzolini.it]
@@ -91,7 +91,7 @@ Resources
  *  [pdfclown.samples.web/README.html]: Functionality demonstrations based on servlets
  *  [../main/doc/README.html]: PDF Clown common guides
  *  [../main/res/README.html]: Material supporting PDF Clown distribution
- *  [CHANGELOG.html]: Change chronology of PDF Clown implementation for Java
+ *  [CHANGELOG.html]: Change chronology of PDF Clown for Java
  * PDF Clown home page [http://www.pdfclown.org]: Project home page
  * Navigation:
   * Current directory [.]: browse current section contents

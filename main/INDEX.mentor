@@ -179,7 +179,6 @@
     </resource>
     <resource href="CREDITS.mentor"/>
     <resource type="whatsnew" href="WHATSNEW.mentor"/>
-    <resource href="CHANGELOG.mentor"/>
     <resource href="ISSUES.mentor"/>
     <resource href="TODO.mentor"/>
     <resource type="index" href="INDEX.mentor"/>

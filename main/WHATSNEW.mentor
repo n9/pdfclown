@@ -6,11 +6,25 @@
   xmlns:xl="http://www.w3.org/1999/xlink"
   >
   <description>
-    <db:para>This is a list of highlights about major changes occurred to the <db:emphasis role="strong">PDF Clown Project</db:emphasis> from a functional point of view.</db:para>
-    <db:para>For a more detailed list of changes, please see the <db:link xl:href="CHANGELOG.html">CHANGELOG</db:link>.</db:para>
+    <db:para>This is a list of highlights about major changes occurred to the <db:emphasis role="strong">PDF Clown Project</db:emphasis>.</db:para>
   </description>
   <tip>New features of the PDF Clown Project</tip>
   <entries>
+    <release version="0.1.2" date="2013-02-04" compatible="false">
+      <description>
+        <db:para><db:link xl:href="https://pdfclown.wordpress.com/2011/12/09/waiting-for-pdf-clown-0-1-2-release/">This release</db:link> enhances several base structures, providing <db:emphasis role="strong">fully automated object change tracking and object cloning</db:emphasis> (allowing, for example, to copy page annotations and Acroform fields). It adds support to video embedding, article threads, page labels and several other functionalities.</db:para>
+      </description>
+      <entries>
+        <add>Primitive object model enhancements: see objects namespace.</add>
+        <add>Advanced object cloning and traversal: see objects namespace</add>
+        <add>Article threads: see documents.Articles, documents.interaction.navigation.page namespace</add>
+        <add>Page labels: see documents.interaction.navigation.page.PageLabel</add>
+        <add>Content transparency: see documents.contents.BlendModeEnum, documents.contents.ExtGState</add>
+        <add>Text line alignment and image inlining: see documents.contents.composition.BlockComposer</add>
+        <add>Multimedia: see documents.interaction.annotations.Screen, documents.interchange.multimedia namespace</add>
+        <add>File references: see files.FileIdentifier, documents.files namespace</add>
+      </entries>
+    </release>
     <release version="0.1.1" date="2011-11-14" compatible="false">
       <description>
         <db:para><db:link xl:href="http://pdfclown.wordpress.com/2011/04/12/waiting-for-pdf-clown-0-1-1-release/">This release</db:link> adds support to <db:emphasis role="strong">optional/layered contents</db:emphasis>, <db:emphasis role="strong">text highlighting</db:emphasis>, metadata streams (XMP), Type1/CFF font files, along with primitive object model and AcroForm fields filling enhancements.</db:para>

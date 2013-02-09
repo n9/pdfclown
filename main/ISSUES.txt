@@ -2,7 +2,7 @@ ISSUES
 PDF Clown Project [README.html] > 
 
 
-Project version: 0.1.1 - ISSUES revision: 0 (2011-11-14)
+Project version: 0.1.2 - ISSUES revision: 0 (2013-02-04)
 
 ---------------
 Introduction
@@ -24,6 +24,6 @@ Resources
  * Navigation:
   * Current directory [.]: browse current section contents
   * Parent section [README.html]: move to parent section
-  * Previous section [CHANGELOG.html]: move to previous section
+  * Previous section [WHATSNEW.html]: move to previous section
   * Next section [TODO.html]: move to next section
   * INDEX [INDEX.html]: move to the distribution map

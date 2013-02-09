@@ -2,14 +2,23 @@ CHANGELOG
 PDF Clown Project [../main/README.html] > PDF Clown for .NET [README.html] > 
 
 
-Project version: 0.1.1 - CHANGELOG revision: 0 (2011-11-14)
+Project version: 0.1.2 - CHANGELOG revision: 0 (2013-02-04)
 
 ---------------
 Introduction
 ---------------
 This is a coarsely-grained record of major changes occurred specifically to the C# implementation of PDF Clown.
 
-For common changes to the PDF Clown Project, please see the PDF Clown Project CHANGELOG [../main/CHANGELOG.html].
+For common changes to the PDF Clown Project, please see WHATSNEW [../main/WHATSNEW.html].
+
+
+---------------
+Version 0.1.2
+---------------
+Release date: 2013-02-04
+Backward compatibility: false
+
+Migrated to .NET 4.0.
 
 
 ---------------
@@ -29,24 +38,6 @@ Backward compatibility: false
 
 Migrated to .NET 3.5.
 
-
----------------
-Version 0.0.3
----------------
-Release date: 2007-05-05
-Backward compatibility: false
-
- * Utility (it.stefanochizzolini.clown.util)
-  * [add] class io.BigEndianBinaryReader: big-endian parsing is necessary for TrueType fonts (standard binary reader supports little-endian order only).
- * Byte Streaming (it.stefanochizzolini.clown.bytes)
-  * [change] class Buffer
-   * [fix] [1668291] ReadByte(): IndexOutOfRangeException is properly managed. Symptom: IndexOutOfRangeException was thrown in case the end of the buffer was reached. Cause: IndexOutOfRangeException was not trapped.
- * Serialization (it.stefanochizzolini.clown.tokens)
-  * [change] class Parser
-   * [fix] [1668410] MoveNext(): parsing of float numbers has been corrected. Symptom: parsing of float numbers was buggy. Cause: the default localized number format was inadvertently used instead of the canonical format (decimal separator was unpredictable).
- * Content Streaming (it.stefanochizzolini.clown.documents.contents)
-  * [change] class tokens.Parser
-   * [fix] [1668410] MoveNext(): parsing of float numbers has been corrected. Symptom: parsing of float numbers was buggy. Cause: the default localized number format was inadvertently used instead of the canonical format (decimal separator was unpredictable).
 
 ---------------
 Resources

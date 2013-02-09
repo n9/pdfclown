@@ -95,7 +95,7 @@
       windowtitle="${project.title} ${project.version} API Reference"
       >
       <header><![CDATA[<b>${project.title}</b><br><small>${project.version}</small>]]></header>
-      <bottom><![CDATA[<small><a href="http://www.pdfclown.org">Project home page</a><br><br>Copyright &#169; 2006-2011 <a href="http://www.stefanochizzolini.it/">${project.vendor}</a>. Some Rights Reserved.<br/>This documentation is available under the terms of the <a href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License</a>.</small>]]></bottom>
+      <bottom><![CDATA[<small><a href="http://www.pdfclown.org">Project home page</a><br><br>Copyright &#169; 2006-2013 <a href="http://www.stefanochizzolini.it/">${project.vendor}</a>. Some Rights Reserved.<br/>This documentation is available under the terms of the <a href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License</a>.</small>]]></bottom>
       <link href="http://docs.oracle.com/javase/6/docs/api/"/>
       <link href="../../../../pdfclown.lib/build/docs/api/"/>
     </javadoc>

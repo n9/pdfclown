@@ -7,54 +7,14 @@
   >
   <description>
     <db:para>This is a coarsely-grained record of major changes occurred specifically to the Java implementation of <db:emphasis role="strong">PDF Clown</db:emphasis>.</db:para>
-    <db:para>For common changes to the PDF Clown Project, please see the <db:link xl:href="../main/CHANGELOG.html">PDF Clown Project CHANGELOG</db:link>.</db:para>
+    <db:para>For common changes to the PDF Clown Project, please see <db:link xl:href="../main/WHATSNEW.html">WHATSNEW</db:link>.</db:para>
   </description>
-  <tip>Change chronology of PDF Clown implementation for Java</tip>
-  <features>
-    <feature id="it.stefanochizzolini.clown:ANY">
-      <title>General</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.bytes">
-      <title>Byte Streaming (it.stefanochizzolini.clown.bytes)</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.tokens">
-      <title>Serialization (it.stefanochizzolini.clown.tokens)</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.objects">
-      <title>PDF Objects (it.stefanochizzolini.clown.objects)</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.files">
-      <title>File Structure (it.stefanochizzolini.clown.files)</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.documents">
-      <title>Document Structure (it.stefanochizzolini.clown.documents)</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.documents.interchange">
-      <title>Interchange (it.stefanochizzolini.clown.documents.interchange)</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.documents.interaction">
-      <title>Interaction (it.stefanochizzolini.clown.documents.interaction)</title>
-    </feature>
-    <feature id="it.stefanochizzolini.clown.documents.contents">
-      <title>Content Streaming (it.stefanochizzolini.clown.documents.contents)</title>
-    </feature>
-  </features>
+  <tip>Change chronology of PDF Clown for Java</tip>
   <entries>
     <release version="0.0.8" date="2010-08-21" compatible="false">
       <description>
         <db:para>Migrated to <db:link xl:href="http://java.sun.com">Java 6 platform</db:link>.</db:para>
       </description>
-    </release>
-    <release version="0.0.3" date="2007-05-05" compatible="false">
-      <feature idref="it.stefanochizzolini.clown.documents.contents">
-        <entries>
-          <change><text>class composition.ContentBuilder</text>
-            <entries>
-              <fix>showXObject(PdfName,RectangularShape,double): context height is now referred to the context box. Symptom: wrong external graphics positioning on a template when no pages are present in the document yet. Cause: showXObject wrongly referred to the generic page height of the document, ignoring current stream context.</fix>
-            </entries>
-          </change>
-        </entries>
-      </feature>
     </release>
   </entries>
 </changeLog>
