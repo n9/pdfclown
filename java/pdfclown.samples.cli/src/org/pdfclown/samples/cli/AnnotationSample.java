@@ -30,7 +30,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 11/30/12
+  @version 0.1.3, 01/22/13
 */
 public class AnnotationSample
   extends Sample
@@ -166,6 +166,7 @@ public class AnnotationSample
       "Rectangle annotation"
       );
     rectangle.setFillColor(DeviceRGBColor.get(Color.RED));
+    rectangle.setAlpha(.25);
 
     // Ellipse.
     composer.showText("Ellipse annotation:", new Point(35,385));

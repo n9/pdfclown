@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -254,6 +254,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName GoToE = new PdfName("GoToE");
     public static readonly PdfName GoToR = new PdfName("GoToR");
     public static readonly PdfName Graph = new PdfName("Graph");
+    public static readonly PdfName Group = new PdfName("Group");
     public static readonly PdfName H = new PdfName("H");
     public static readonly PdfName HardLight = new PdfName("HardLight");
     public static readonly PdfName Height = new PdfName("Height");
@@ -281,6 +282,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName Ink = new PdfName("Ink");
     public static readonly PdfName InkList = new PdfName("InkList");
     public static readonly PdfName Insert = new PdfName("Insert");
+    public static readonly PdfName IRT = new PdfName("IRT");
     public static readonly PdfName ItalicAngle = new PdfName("ItalicAngle");
     public static readonly PdfName IX = new PdfName("IX");
     public static readonly PdfName JavaScript = new PdfName("JavaScript");
@@ -468,6 +470,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName StemV = new PdfName("StemV");
     public static readonly PdfName StrikeOut = new PdfName("StrikeOut");
     public static readonly PdfName StructParent = new PdfName("StructParent");
+    public static readonly PdfName Subj = new PdfName("Subj");
     public static readonly PdfName Subject = new PdfName("Subject");
     public static readonly PdfName SubmitForm = new PdfName("SubmitForm");
     public static readonly PdfName Subtype = new PdfName("Subtype");

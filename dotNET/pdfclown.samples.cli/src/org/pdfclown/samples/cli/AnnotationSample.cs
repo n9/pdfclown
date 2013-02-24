@@ -154,6 +154,7 @@ namespace org.pdfclown.samples.cli
         "Rectangle annotation"
         );
       rectangle.FillColor = new DeviceRGBColor(1,0,0);
+      rectangle.Alpha = .25;
 
       // Ellipse.
       composer.ShowText("Ellipse annotation:", new Point(35,385));

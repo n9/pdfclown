@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,7 +36,7 @@ import org.pdfclown.tokens.Keyword;
   PDF name object [PDF:1.6:3.2.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/28/12
+  @version 0.1.3, 01/22/13
 */
 public final class PdfName
   extends PdfSimpleObject<String>
@@ -255,6 +255,7 @@ public final class PdfName
   public static final PdfName GoToE = new PdfName("GoToE");
   public static final PdfName GoToR = new PdfName("GoToR");
   public static final PdfName Graph = new PdfName("Graph");
+  public static final PdfName Group = new PdfName("Group");
   public static final PdfName H = new PdfName("H");
   public static final PdfName HardLight = new PdfName("HardLight");
   public static final PdfName Height = new PdfName("Height");
@@ -282,6 +283,7 @@ public final class PdfName
   public static final PdfName Ink = new PdfName("Ink");
   public static final PdfName InkList = new PdfName("InkList");
   public static final PdfName Insert = new PdfName("Insert");
+  public static final PdfName IRT = new PdfName("IRT");
   public static final PdfName ItalicAngle = new PdfName("ItalicAngle");
   public static final PdfName IX = new PdfName("IX");
   public static final PdfName JavaScript = new PdfName("JavaScript");
@@ -469,6 +471,7 @@ public final class PdfName
   public static final PdfName StemV = new PdfName("StemV");
   public static final PdfName StrikeOut = new PdfName("StrikeOut");
   public static final PdfName StructParent = new PdfName("StructParent");
+  public static final PdfName Subj = new PdfName("Subj");
   public static final PdfName Subject = new PdfName("Subject");
   public static final PdfName SubmitForm = new PdfName("SubmitForm");
   public static final PdfName Subtype = new PdfName("Subtype");

@@ -459,6 +459,7 @@
     <Compile Include="src\org\pdfclown\documents\PageArticleElements.cs" />
     <Compile Include="src\org\pdfclown\documents\Articles.cs" />
     <Compile Include="src\org\pdfclown\util\IPredicate.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Markup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />
