@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -127,7 +127,10 @@ namespace org.pdfclown.documents
       Type type,
       PdfString key
       )
-    {return (PdfObjectWrapper)type.GetMethod("get_Item", BindingFlags.Public | BindingFlags.Instance).Invoke(Get(type), new object[]{ key });}
+    {
+      PdfObjectWrapper namedObjects = Get(type);
+      return (PdfObjectWrapper)namedObjects.GetType().GetMethod("get_Item", BindingFlags.Public | BindingFlags.Instance).Invoke(namedObjects, new object[]{ key });
+    }
     #endregion
     #endregion
     #endregion

@@ -2,6 +2,8 @@ using org.pdfclown.documents;
 using org.pdfclown.documents.contents;
 using org.pdfclown.documents.contents.composition;
 using org.pdfclown.documents.contents.objects;
+using org.pdfclown.documents.interaction.actions;
+using org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.documents.interaction.navigation.document;
 using org.pdfclown.files;
 using org.pdfclown.objects;
@@ -30,19 +32,37 @@ namespace org.pdfclown.samples.cli
   
         // 2. Inserting page destinations...
         NamedDestinations destinations = document.Names.Destinations;
+        /*
+          NOTE: Here we are registering page 1 multiple times to test tree node sorting.
+        */
         destinations[new PdfString("d31e1142")] = new LocalDestination(pages[0]);
+        destinations[new PdfString("d38e1142")] = new LocalDestination(pages[0]);
+        destinations[new PdfString("z38e1142")] = new LocalDestination(pages[0]);
+        destinations[new PdfString("d3A8e1142")] = new LocalDestination(pages[0]);
+        destinations[new PdfString("f38e1142")] = new LocalDestination(pages[0]);
+        destinations[new PdfString("B84afaba6")] = new LocalDestination(pages[0]);
+        destinations[new PdfString("Z38e1142")] = new LocalDestination(pages[0]);
         if(pages.Count > 1)
         {
-          destinations[new PdfString("N84afaba6")] = new LocalDestination(pages[1], Destination.ModeEnum.FitHorizontal, 0, null);
-          destinations[new PdfString("d38e1142")] = new LocalDestination(pages[1]);
-          destinations[new PdfString("M38e1142")] = new LocalDestination(pages[1]);
-          destinations[new PdfString("d3A8e1142")] = new LocalDestination(pages[1]);
-          destinations[new PdfString("z38e1142")] = new LocalDestination(pages[1]);
-          destinations[new PdfString("f38e1142")] = new LocalDestination(pages[1]);
-          destinations[new PdfString("e38e1142")] = new LocalDestination(pages[1]);
-          destinations[new PdfString("B84afaba6")] = new LocalDestination(pages[1]);
-          destinations[new PdfString("Z38e1142")] = new LocalDestination(pages[1]);
-  
+          LocalDestination secondPageDestination = new LocalDestination(pages[1], Destination.ModeEnum.FitHorizontal, 0, null);
+          destinations[new PdfString("N84afaba6")] = secondPageDestination;
+
+          // Let the viewer go to the second page on document opening!
+          /*
+            NOTE: Any time a named destination is applied, its name is retrieved and used as reference.
+          */
+          document.Actions.OnOpen = new GoToLocal(
+            document,
+            secondPageDestination // Its name ("N84afaba6") is retrieved behind the scenes.
+            );
+          // Define a link to the second page on the first one!
+          new Link(
+            pages[0],
+            new RectangleF(0,0,100,50),
+            "Link annotation",
+            secondPageDestination // Its name ("N84afaba6") is retrieved behind the scenes.
+            );
+
           if(pages.Count > 2)
           {destinations[new PdfString("1845505298")] = new LocalDestination(pages[2], Destination.ModeEnum.XYZ, new PointF(50, Single.NaN), null);}
         }

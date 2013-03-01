@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
   {@link #getBaseDataObject() baseDataObject} backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/28/12
+  @version 0.1.3, 02/28/13
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   implements Cloneable,
@@ -137,13 +137,20 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   // <interface>
   // <public>
   /**
-    Gets a clone of the object, registered inside the given document context.
+    Gets a clone of the object, registered inside the specified document context using the default 
+    object cloner.
+  */
+  public Object clone(
+    Document context
+    )
+  {return clone(context.getFile().getCloner());}
 
-    @param context Which document the clone has to be registered in.
+  /**
+    Gets a clone of the object, registered using the specified object cloner.
   */
   @SuppressWarnings({"unchecked"})
   public Object clone(
-    Document context
+    Cloner cloner
     )
   {
     PdfObjectWrapper<TDataObject> clone;
@@ -151,7 +158,7 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
     {clone = (PdfObjectWrapper<TDataObject>)super.clone();}
     catch(CloneNotSupportedException e)
     {throw new RuntimeException(e);}
-    clone.setBaseObject((PdfDirectObject)getBaseObject().clone(context.getFile()));
+    clone.setBaseObject((PdfDirectObject)getBaseObject().clone(cloner));
     return clone;
   }
 

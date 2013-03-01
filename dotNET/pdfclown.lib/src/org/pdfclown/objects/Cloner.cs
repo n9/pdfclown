@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -26,6 +26,7 @@
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
 using org.pdfclown.documents.interaction.forms;
+using org.pdfclown.documents.interaction.navigation.document;
 using org.pdfclown.files;
 using org.pdfclown.tokens;
 
@@ -53,26 +54,28 @@ namespace org.pdfclown.objects
       /**
         <summary>Notifies a complete clone operation on an object.</summary>
         <param name="cloner">Object cloner.</param>
-        <param name="clone">Clone object.</param>
         <param name="source">Source object.</param>
+        <param name="clone">Clone object.</param>
       */
       public virtual void AfterClone(
         Cloner cloner,
-        PdfObject clone,
-        PdfObject source
+        PdfObject source,
+        PdfObject clone
         )
       {/* NOOP */}
 
       /**
         <summary>Notifies a complete clone operation on a dictionary entry.</summary>
         <param name="cloner">Object cloner.</param>
-        <param name="parent">Parent clone object.</param>
+        <param name="source">Parent source object.</param>
+        <param name="clone">Parent clone object.</param>
         <param name="key">Entry key within the parent.</param>
         <param name="value">Clone value.</param>
       */
       public virtual void AfterClone(
         Cloner cloner,
-        PdfDictionary parent,
+        PdfDictionary source,
+        PdfDictionary clone,
         PdfName key,
         PdfDirectObject value
         )
@@ -81,13 +84,15 @@ namespace org.pdfclown.objects
       /**
         <summary>Notifies a complete clone operation on an array item.</summary>
         <param name="cloner">Object cloner.</param>
-        <param name="parent">Parent clone object.</param>
+        <param name="source">Parent source object.</param>
+        <param name="clone">Parent clone object.</param>
         <param name="index">Item index within the parent.</param>
         <param name="item">Clone item.</param>
       */
       public virtual void AfterClone(
         Cloner cloner,
-        PdfArray parent,
+        PdfArray source,
+        PdfArray clone,
         int index,
         PdfDirectObject item
         )
@@ -96,14 +101,16 @@ namespace org.pdfclown.objects
       /**
         <summary>Notifies a starting clone operation on a dictionary entry.</summary>
         <param name="cloner">Object cloner.</param>
-        <param name="parent">Parent clone object.</param>
+        <param name="source">Parent source object.</param>
+        <param name="clone">Parent clone object.</param>
         <param name="key">Entry key within the parent.</param>
         <param name="value">Source value.</param>
         <returns>Whether the clone operation can be fulfilled.</returns>
       */
       public virtual bool BeforeClone(
         Cloner cloner,
-        PdfDictionary parent,
+        PdfDictionary source,
+        PdfDictionary clone,
         PdfName key,
         PdfDirectObject value
         )
@@ -112,14 +119,16 @@ namespace org.pdfclown.objects
       /**
         <summary>Notifies a starting clone operation on an array item.</summary>
         <param name="cloner">Object cloner.</param>
-        <param name="parent">Parent clone object.</param>
+        <param name="source">Parent source object.</param>
+        <param name="clone">Parent clone object.</param>
         <param name="index">Item index within the parent.</param>
         <param name="item">Source item.</param>
         <returns>Whether the clone operation can be fulfilled.</returns>
       */
       public virtual bool BeforeClone(
         Cloner cloner,
-        PdfArray parent,
+        PdfArray source,
+        PdfArray clone,
         int index,
         PdfDirectObject item
         )
@@ -141,6 +150,58 @@ namespace org.pdfclown.objects
         get
         {return name;}
       }
+
+      protected void CloneNamedObject<T>(
+        Cloner cloner,
+        PdfDirectObject source,
+        PdfString name
+        ) where T : PdfObjectWrapper
+      {
+        // Resolve the named object source!
+        T namedObjectSource = source.File.Document.ResolveName<T>(name);
+        if(namedObjectSource == null)
+          throw new Exception(name + " named object unresolved.");
+        // Clone the named object source into the target document!
+        cloner.context.Document.Register(name, (T)namedObjectSource.Clone(cloner));
+      }
+    }
+
+    private class ActionFilter
+      : Filter
+    {
+      public ActionFilter(
+        ) : base("Action")
+      {}
+
+      public override void AfterClone(
+        Cloner cloner,
+        PdfDictionary source,
+        PdfDictionary clone,
+        PdfName key,
+        PdfDirectObject value
+        )
+      {
+        if(PdfName.D.Equals(key))
+        {
+          PdfDirectObject destObject = clone[PdfName.D];
+          if(destObject is PdfString) // Named destination.
+          {CloneNamedObject<Destination>(cloner, source, (PdfString)destObject);}
+        }
+      }
+
+      public override bool Matches(
+        Cloner cloner,
+        PdfObject source
+        )
+      {
+        if(source is PdfDictionary)
+        {
+          PdfDictionary dictionary = (PdfDictionary)source;
+          return dictionary.ContainsKey(PdfName.S)
+            && (!dictionary.ContainsKey(PdfName.Type) || PdfName.Action.Equals(dictionary[PdfName.Type]));
+        }
+        return false;
+      }
     }
 
     private class AnnotationsFilter
@@ -152,7 +213,8 @@ namespace org.pdfclown.objects
 
       public override void AfterClone(
         Cloner cloner,
-        PdfArray parent,
+        PdfArray source,
+        PdfArray clone,
         int index,
         PdfDirectObject item
         )
@@ -160,16 +222,22 @@ namespace org.pdfclown.objects
         PdfDictionary annotation = (PdfDictionary)item.Resolve();
         if(annotation.ContainsKey(PdfName.FT))
         {cloner.context.Document.Form.Fields.Add(Field.Wrap(annotation.Reference));}
+        else if(annotation.ContainsKey(PdfName.Dest))
+        {
+          PdfDirectObject destObject = annotation[PdfName.Dest];
+          if(destObject is PdfString) // Named destination.
+          {CloneNamedObject<Destination>(cloner, source, (PdfString)destObject);}
+        }
       }
 
       public override bool Matches(
         Cloner cloner,
-        PdfObject obj
+        PdfObject source
         )
       {
-        if(obj is PdfArray)
+        if(source is PdfArray)
         {
-          PdfArray array = (PdfArray)obj;
+          PdfArray array = (PdfArray)source;
           if(array.Count > 0)
           {
             PdfDataObject arrayItem = array.Resolve(0);
@@ -194,8 +262,8 @@ namespace org.pdfclown.objects
 
       public override void AfterClone(
         Cloner cloner,
-        PdfObject clone,
-        PdfObject source
+        PdfObject source,
+        PdfObject clone
         )
       {
         /*
@@ -217,7 +285,8 @@ namespace org.pdfclown.objects
 
       public override bool BeforeClone(
         Cloner cloner,
-        PdfDictionary parent,
+        PdfDictionary source,
+        PdfDictionary clone,
         PdfName key,
         PdfDirectObject value
         )
@@ -225,11 +294,11 @@ namespace org.pdfclown.objects
 
       public override bool Matches(
         Cloner cloner,
-        PdfObject obj
+        PdfObject source
         )
       {
-        return obj is PdfDictionary
-          && PdfName.Page.Equals(((PdfDictionary)obj)[PdfName.Type]);
+        return source is PdfDictionary
+          && PdfName.Page.Equals(((PdfDictionary)source)[PdfName.Type]);
       }
     }
     #endregion
@@ -305,15 +374,15 @@ namespace org.pdfclown.objects
         for(int index = 0, length = sourceItems.Count; index < length; index++)
         {
           PdfDirectObject sourceItem = sourceItems[index];
-          if(cloneFilter.BeforeClone(this, clone, index, sourceItem))
+          if(cloneFilter.BeforeClone(this, obj, clone, index, sourceItem))
           {
             PdfDirectObject cloneItem;
             clone.Add(cloneItem = (PdfDirectObject)(sourceItem != null ? sourceItem.Accept(this, null) : null));
-            cloneFilter.AfterClone(this, clone, index, cloneItem);
+            cloneFilter.AfterClone(this, obj, clone, index, cloneItem);
           }
         }
       }
-      cloneFilter.AfterClone(this, clone, obj);
+      cloneFilter.AfterClone(this, obj, clone);
       return clone;
     }
 
@@ -329,15 +398,15 @@ namespace org.pdfclown.objects
         foreach(KeyValuePair<PdfName,PdfDirectObject> entry in obj.entries)
         {
           PdfDirectObject sourceValue = entry.Value;
-          if(cloneFilter.BeforeClone(this, clone, entry.Key, sourceValue))
+          if(cloneFilter.BeforeClone(this, obj, clone, entry.Key, sourceValue))
           {
             PdfDirectObject cloneValue;
             clone[entry.Key] = cloneValue = (PdfDirectObject)(sourceValue != null ? sourceValue.Accept(this, null) : null);
-            cloneFilter.AfterClone(this, clone, entry.Key, cloneValue);
+            cloneFilter.AfterClone(this, obj, clone, entry.Key, cloneValue);
           }
         }
       }
-      cloneFilter.AfterClone(this, clone, obj);
+      cloneFilter.AfterClone(this, obj, clone);
       return clone;
     }
 

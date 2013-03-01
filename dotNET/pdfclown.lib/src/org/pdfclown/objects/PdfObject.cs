@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -95,12 +95,21 @@ namespace org.pdfclown.objects
     }
 
     /**
-      <summary>Creates a deep copy of this object within the specified file context.</summary>
+      <summary>Creates a deep copy of this object using the default cloner of the specified file
+      context.</summary>
     */
     public virtual PdfObject Clone(
       File context
       )
-    {return Accept(context.Cloner, null);}
+    {return Clone(context.Cloner);}
+
+    /**
+      <summary>Creates a deep copy of this object using the specified cloner.</summary>
+    */
+    public virtual PdfObject Clone(
+      Cloner cloner
+      )
+    {return Accept(cloner, null);}
 
     /**
       <summary>Gets the indirect object containing this object.</summary>

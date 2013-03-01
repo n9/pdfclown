@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
   Abstract PDF object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/28/12
+  @version 0.1.3, 02/28/13
 */
 public abstract class PdfObject
   implements Cloneable,
@@ -88,13 +88,21 @@ public abstract class PdfObject
   // <interface>
   // <public>
   /**
-    Creates a deep copy of this object within the specified file context.
+    Creates a deep copy of this object using the default cloner of the specified file context.
   */
   public PdfObject clone(
     File context
     )
-  {return accept(context.getCloner(), null);}
+  {return clone(context.getCloner());}
 
+  /**
+    Creates a deep copy of this object using the specified cloner.
+  */
+  public PdfObject clone(
+    Cloner cloner
+    )
+  {return accept(cloner, null);}
+  
   /**
     Gets the indirect object containing this object.
 

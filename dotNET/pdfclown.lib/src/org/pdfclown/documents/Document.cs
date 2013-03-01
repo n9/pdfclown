@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -39,6 +39,7 @@ using System;
 using System.Collections.Generic;
 using drawing = System.Drawing;
 using System.Drawing.Printing;
+using System.Reflection;
 
 namespace org.pdfclown.documents
 {
@@ -509,6 +510,22 @@ namespace org.pdfclown.documents
         mediaBox[2] = PdfReal.Get(value.Value.Width);
         mediaBox[3] = PdfReal.Get(value.Value.Height);
       }
+    }
+
+    /**
+      <summary>Registers a named object.</summary>
+      <param name="name">Object name.</param>
+      <param name="object">Named object.</param>
+      <returns>Registered named object.</returns>
+    */
+    public T Register<T>(
+      PdfString name,
+      T @object
+      ) where T : PdfObjectWrapper
+    {
+      PdfObjectWrapper namedObjects = Names.Get(@object.GetType());
+      namedObjects.GetType().GetMethod("set_Item", BindingFlags.Public | BindingFlags.Instance).Invoke(namedObjects, new object[]{ name, @object });
+      return @object;
     }
 
     /**

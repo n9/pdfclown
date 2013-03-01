@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.interaction.forms.Field;
+import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.files.File;
 import org.pdfclown.tokens.ObjectStream;
 import org.pdfclown.tokens.XRefStream;
@@ -41,7 +42,7 @@ import org.pdfclown.tokens.XRefStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 12/28/12
+  @version 0.1.3, 02/28/13
 */
 public class Cloner
   extends Visitor
@@ -61,13 +62,13 @@ public class Cloner
       Notifies a complete clone operation on an object.
 
       @param cloner Object cloner.
-      @param clone Clone object.
       @param source Source object.
+      @param clone Clone object.
     */
     public void afterClone(
       Cloner cloner,
-      PdfObject clone,
-      PdfObject source
+      PdfObject source,
+      PdfObject clone
       )
     {/* NOOP */}
 
@@ -75,13 +76,15 @@ public class Cloner
       Notifies a complete clone operation on a dictionary entry.
 
       @param cloner Object cloner.
-      @param parent Parent clone object.
+      @param source Parent source object.
+      @param clone Parent clone object.
       @param key Entry key within the parent.
       @param value Clone value.
     */
     public void afterClone(
       Cloner cloner,
-      PdfDictionary parent,
+      PdfDictionary source,
+      PdfDictionary clone,
       PdfName key,
       PdfDirectObject value
       )
@@ -91,13 +94,15 @@ public class Cloner
       Notifies a complete clone operation on an array item.
 
       @param cloner Object cloner.
-      @param parent Parent clone object.
+      @param source Parent source object.
+      @param clone Parent clone object.
       @param index Item index within the parent.
       @param item Clone item.
     */
     public void afterClone(
       Cloner cloner,
-      PdfArray parent,
+      PdfArray source,
+      PdfArray clone,
       int index,
       PdfDirectObject item
       )
@@ -107,14 +112,16 @@ public class Cloner
       Notifies a starting clone operation on a dictionary entry.
 
       @param cloner Object cloner.
-      @param parent Parent clone object.
+      @param source Parent source object.
+      @param clone Parent clone object.
       @param key Entry key within the parent.
       @param value Source value.
       @return Whether the clone operation can be fulfilled.
     */
     public boolean beforeClone(
       Cloner cloner,
-      PdfDictionary parent,
+      PdfDictionary source,
+      PdfDictionary clone,
       PdfName key,
       PdfDirectObject value
       )
@@ -124,14 +131,16 @@ public class Cloner
       Notifies a starting clone operation on an array item.
 
       @param cloner Object cloner.
-      @param parent Parent clone object.
+      @param source Parent source object.
+      @param clone Parent clone object.
       @param index Item index within the parent.
       @param item Source item.
       @return Whether the clone operation can be fulfilled.
     */
     public boolean beforeClone(
       Cloner cloner,
-      PdfArray parent,
+      PdfArray source,
+      PdfArray clone,
       int index,
       PdfDirectObject item
       )
@@ -152,6 +161,22 @@ public class Cloner
       PdfObject source
       )
     {return true;}
+    
+    @SuppressWarnings("unchecked")
+    protected <T extends PdfObjectWrapper<?>> void cloneNamedObject(
+      Cloner cloner,
+      PdfDirectObject source,
+      Class<T> type,
+      PdfString name
+      )
+    {
+      // Resolve the named object source!
+      T namedObjectSource = source.getFile().getDocument().resolveName(type, name);
+      if(namedObjectSource == null)
+        throw new RuntimeException(name + " named object unresolved.");
+      // Clone the named object source into the target document!
+      cloner.context.getDocument().register(name, (T)namedObjectSource.clone(cloner));
+    }
   }
   // </classes>
 
@@ -172,8 +197,8 @@ public class Cloner
         @Override
         public void afterClone(
           Cloner cloner,
-          PdfObject clone,
-          PdfObject source
+          PdfObject source,
+          PdfObject clone
           )
         {
           /*
@@ -196,7 +221,8 @@ public class Cloner
         @Override
         public boolean beforeClone(
           Cloner cloner,
-          PdfDictionary parent,
+          PdfDictionary source,
+          PdfDictionary clone,
           PdfName key,
           PdfDirectObject value
           )
@@ -205,11 +231,45 @@ public class Cloner
         @Override
         public boolean matches(
           Cloner cloner,
-          PdfObject object
+          PdfObject source
           )
         {
-          return object instanceof PdfDictionary
-            && PdfName.Page.equals(((PdfDictionary)object).get(PdfName.Type));
+          return source instanceof PdfDictionary
+            && PdfName.Page.equals(((PdfDictionary)source).get(PdfName.Type));
+        }
+      }
+      );
+    commonFilters.add(
+      new Filter("Action")
+      {
+        public void afterClone(
+          Cloner cloner, 
+          PdfDictionary source, 
+          PdfDictionary clone, 
+          PdfName key, 
+          PdfDirectObject value
+          )
+        {
+          if(PdfName.D.equals(key))
+          {
+            PdfDirectObject destObject = clone.get(PdfName.D);
+            if(destObject instanceof PdfString) // Named destination.
+            {cloneNamedObject(cloner, source, Destination.class, (PdfString)destObject);}
+          }
+        }
+        
+        public boolean matches(
+          Cloner cloner, 
+          PdfObject source
+          ) 
+        {
+          if(source instanceof PdfDictionary)
+          {
+            PdfDictionary dictionary = (PdfDictionary)source;
+            return dictionary.containsKey(PdfName.S) 
+              && (!dictionary.containsKey(PdfName.Type) || PdfName.Action.equals(dictionary.get(PdfName.Type)));
+          }
+          return false;
         }
       }
       );
@@ -220,7 +280,8 @@ public class Cloner
         @Override
         public void afterClone(
           Cloner cloner,
-          PdfArray parent,
+          PdfArray source,
+          PdfArray clone,
           int index,
           PdfDirectObject item
           )
@@ -228,17 +289,23 @@ public class Cloner
           PdfDictionary annotation = (PdfDictionary)item.resolve();
           if(annotation.containsKey(PdfName.FT))
           {cloner.context.getDocument().getForm().getFields().add(Field.wrap(annotation.getReference()));}
+          else if(annotation.containsKey(PdfName.Dest))
+          {
+            PdfDirectObject destObject = annotation.get(PdfName.Dest);
+            if(destObject instanceof PdfString) // Named destination.
+            {cloneNamedObject(cloner, source, Destination.class, (PdfString)destObject);}
+          }
         }
 
         @Override
         public boolean matches(
           Cloner cloner,
-          PdfObject object
+          PdfObject source
           )
         {
-          if(object instanceof PdfArray)
+          if(source instanceof PdfArray)
           {
-            PdfArray array = (PdfArray)object;
+            PdfArray array = (PdfArray)source;
             if(!array.isEmpty())
             {
               PdfDataObject arrayItem = array.resolve(0);
@@ -312,15 +379,15 @@ public class Cloner
       for(int index = 0, length = sourceItems.size(); index < length; index++)
       {
         PdfDirectObject sourceItem = sourceItems.get(index);
-        if(cloneFilter.beforeClone(this, clone, index, sourceItem))
+        if(cloneFilter.beforeClone(this, object, clone, index, sourceItem))
         {
           PdfDirectObject cloneItem;
           clone.add(cloneItem = (PdfDirectObject)(sourceItem != null ? sourceItem.accept(this, null) : null));
-          cloneFilter.afterClone(this, clone, index, cloneItem);
+          cloneFilter.afterClone(this, object, clone, index, cloneItem);
         }
       }
     }
-    cloneFilter.afterClone(this, clone, object);
+    cloneFilter.afterClone(this, object, clone);
     return clone;
   }
 
@@ -337,15 +404,15 @@ public class Cloner
       for(Map.Entry<PdfName,PdfDirectObject> entry : object.entries.entrySet())
       {
         PdfDirectObject sourceValue = entry.getValue();
-        if(cloneFilter.beforeClone(this, clone, entry.getKey(), sourceValue))
+        if(cloneFilter.beforeClone(this, object, clone, entry.getKey(), sourceValue))
         {
           PdfDirectObject cloneValue;
           clone.put(entry.getKey(), cloneValue = (PdfDirectObject)(sourceValue != null ? sourceValue.accept(this, null) : null));
-          cloneFilter.afterClone(this, clone, entry.getKey(), cloneValue);
+          cloneFilter.afterClone(this, object, clone, entry.getKey(), cloneValue);
         }
       }
     }
-    cloneFilter.afterClone(this, clone, object);
+    cloneFilter.afterClone(this, object, clone);
     return clone;
   }
 

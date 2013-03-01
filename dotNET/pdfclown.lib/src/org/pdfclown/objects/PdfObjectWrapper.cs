@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -82,15 +82,23 @@ namespace org.pdfclown.objects
     #region interface
     #region public
     /**
-      <summary>Gets a clone of the object, registered inside the given document context.</summary>
-      <param name="context">Which document the clone has to be registered in.</param>
+      <summary>Gets a clone of the object, registered inside the specified document context using
+      the default object cloner.</summary>
     */
     public virtual object Clone(
       Document context
       )
+    {return Clone(context.File.Cloner);}
+
+    /**
+      <summary>Gets a clone of the object, registered using the specified object cloner.</summary>
+    */
+    public virtual object Clone(
+      Cloner cloner
+      )
     {
       PdfObjectWrapper clone = (PdfObjectWrapper)base.MemberwiseClone();
-      clone.BaseObject = (PdfDirectObject)BaseObject.Clone(context.File);
+      clone.BaseObject = (PdfDirectObject)BaseObject.Clone(cloner);
       return clone;
     }
 

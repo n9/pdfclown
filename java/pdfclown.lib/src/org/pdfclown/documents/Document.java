@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,6 +45,7 @@ import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.documents.interaction.viewer.ViewerPreferences;
 import org.pdfclown.documents.interchange.metadata.Information;
 import org.pdfclown.files.File;
+import org.pdfclown.objects.NameTree;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
@@ -61,7 +62,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF document [PDF:1.6:3.6.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/28/12
+  @version 0.1.3, 02/28/13
 */
 @PDF(VersionEnum.PDF10)
 public final class Document
@@ -576,6 +577,25 @@ public final class Document
     {includedObjects.add(include(object));}
 
     return includedObjects;
+  }
+
+  /**
+    Registers a named object.
+
+    @param name Object name.
+    @param object Named object.
+    @return Registered named object.
+  */
+  @SuppressWarnings("unchecked")
+  public <T extends PdfObjectWrapper<?>> T register(
+    PdfString name,
+    T object
+    )
+  {
+    @SuppressWarnings("rawtypes")
+    NameTree namedObjects = getNames().get(object.getClass());
+    namedObjects.put(name, object);
+    return object;
   }
 
   /**
