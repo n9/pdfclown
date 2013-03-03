@@ -79,9 +79,10 @@ public final class PdfDocEncoding
         Character value
         )
       {
-        return isIdentity(value) 
-          ? (int)value 
-          : super.getKey(value);
+        if(isIdentity(value))
+          return (int)value;
+        else
+          return super.getKey(value);
       }
 
       @Override
