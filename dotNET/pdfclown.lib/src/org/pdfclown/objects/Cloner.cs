@@ -315,6 +315,8 @@ namespace org.pdfclown.objects
     {
       // Page object.
       commonFilters.Add(new PageFilter());
+      // Actions.
+      commonFilters.Add(new ActionFilter());
       // Annotations.
       commonFilters.Add(new AnnotationsFilter());
     }

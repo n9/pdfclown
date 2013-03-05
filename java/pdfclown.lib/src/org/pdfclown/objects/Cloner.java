@@ -239,6 +239,7 @@ public class Cloner
         }
       }
       );
+    // Actions.
     commonFilters.add(
       new Filter("Action")
       {
