@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -204,7 +204,9 @@ namespace org.pdfclown.objects
               body.Decode(bytes.filters.Filter.Get((PdfName)Resolve(filterIterator.Current)), filterParameters);
             }
           }
-          Filter = null; // The stream is free from encodings.
+          // The stream is free from encodings.
+          Filter = null;
+          Parameters = null;
           header.Updateable = true;
         }
       }
