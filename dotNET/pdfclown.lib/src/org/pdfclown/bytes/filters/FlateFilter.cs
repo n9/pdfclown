@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it):
@@ -186,7 +186,7 @@ namespace org.pdfclown.bytes.filters
               }
               output.WriteByte((byte)sampleByte);
 
-              leftBytePredictions[sampleByteIndex] = currentRowBytePredictions[rowSampleByteIndex] = sampleByte;
+              leftBytePredictions[sampleByteIndex] = currentRowBytePredictions[rowSampleByteIndex] = (byte)sampleByte;
             }
           }
           break;

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,7 +45,7 @@ import org.pdfclown.tokens.Symbol;
   PDF stream object [PDF:1.6:3.2.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 03/04/13
 */
 public class PdfStream
   extends PdfDataObject
@@ -206,7 +206,9 @@ public class PdfStream
               );
           }
         }
-        setFilter(null); // The stream is free from encodings.
+        // The stream is free from encodings.
+        setFilter(null);
+        setParameters(null);
         header.setUpdateable(true);
       }
     }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it):
@@ -50,7 +50,7 @@ import org.pdfclown.objects.PdfName;
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @author Joshua Tauberer (http://razor.occams.info)
   @since 0.0.2
-  @version 0.1.1, 04/25/11
+  @version 0.1.2.1, 03/04/13
 */
 @PDF(VersionEnum.PDF12)
 public final class FlateFilter
@@ -209,7 +209,7 @@ public final class FlateFilter
             }
             output.write(sampleByte);
 
-            leftBytePredictions[sampleByteIndex] = currentRowBytePredictions[rowSampleByteIndex] = sampleByte;
+            leftBytePredictions[sampleByteIndex] = currentRowBytePredictions[rowSampleByteIndex] = sampleByte & 0xFF;
           }
         }
         break;
