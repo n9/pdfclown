@@ -42,7 +42,7 @@ import org.pdfclown.tokens.XRefStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.3, 02/28/13
+  @version 0.1.3, 03/07/13
 */
 public class Cloner
   extends Visitor
@@ -173,7 +173,8 @@ public class Cloner
       // Resolve the named object source!
       T namedObjectSource = source.getFile().getDocument().resolveName(type, name);
       if(namedObjectSource == null)
-        throw new RuntimeException(name + " named object unresolved.");
+        return;
+
       // Clone the named object source into the target document!
       cloner.context.getDocument().register(name, (T)namedObjectSource.clone(cloner));
     }
@@ -243,6 +244,7 @@ public class Cloner
     commonFilters.add(
       new Filter("Action")
       {
+        @Override
         public void afterClone(
           Cloner cloner, 
           PdfDictionary source, 
@@ -259,6 +261,7 @@ public class Cloner
           }
         }
         
+        @Override
         public boolean matches(
           Cloner cloner, 
           PdfObject source

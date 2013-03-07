@@ -160,7 +160,8 @@ namespace org.pdfclown.objects
         // Resolve the named object source!
         T namedObjectSource = source.File.Document.ResolveName<T>(name);
         if(namedObjectSource == null)
-          throw new Exception(name + " named object unresolved.");
+          return;
+
         // Clone the named object source into the target document!
         cloner.context.Document.Register(name, (T)namedObjectSource.Clone(cloner));
       }

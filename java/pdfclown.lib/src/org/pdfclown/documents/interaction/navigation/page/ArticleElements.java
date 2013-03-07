@@ -410,6 +410,7 @@ public class ArticleElements
   {return toArray(new ArticleElement[0]);}
 
   @Override
+  @SuppressWarnings("unchecked")
   public <T> T[] toArray(
     T[] objects
     )

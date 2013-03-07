@@ -18,7 +18,7 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.3, 02/28/13
+  @version 0.1.3, 03/07/13
 */
 public class NamedDestinationSample
   extends Sample
@@ -42,19 +42,23 @@ public class NamedDestinationSample
     // 2. Inserting page destinations...
     NamedDestinations destinations = document.getNames().getDestinations();
     /*
-      NOTE: Here we are registering page 1 multiple times to test tree node sorting.
+      NOTE: Here we are registering page 1 multiple times to test tree structure sorting and splitting.
     */
-    destinations.put(new PdfString("d31e1142"), new LocalDestination(pages.get(0)));
-    destinations.put(new PdfString("d38e1142"), new LocalDestination(pages.get(0)));
-    destinations.put(new PdfString("z38e1142"), new LocalDestination(pages.get(0)));
-    destinations.put(new PdfString("d3A8e1142"), new LocalDestination(pages.get(0)));
-    destinations.put(new PdfString("f38e1142"), new LocalDestination(pages.get(0)));
-    destinations.put(new PdfString("B84afaba6"), new LocalDestination(pages.get(0)));
-    destinations.put(new PdfString("Z38e1142"), new LocalDestination(pages.get(0)));
+    Destination page1Destination = new LocalDestination(pages.get(0));
+    destinations.put(new PdfString("d31e1142"), page1Destination);
+    destinations.put(new PdfString("Z1"), page1Destination);
+    destinations.put(new PdfString("d38e1142"), page1Destination);
+    destinations.put(new PdfString("B84afaba8"), page1Destination);
+    destinations.put(new PdfString("z38e1142"), page1Destination);
+    destinations.put(new PdfString("d3A8e1142"), page1Destination);
+    destinations.put(new PdfString("f38e1142"), page1Destination);
+    destinations.put(new PdfString("B84afaba6"), page1Destination);
+    destinations.put(new PdfString("d3a8e1142"), page1Destination);
+    destinations.put(new PdfString("Z38e1142"), page1Destination);
     if(pages.size() > 1)
     {
-      LocalDestination secondPageDestination = new LocalDestination(pages.get(1), Destination.ModeEnum.FitHorizontal, 0, null);
-      destinations.put(new PdfString("N84afaba6"), secondPageDestination);
+      LocalDestination page2Destination = new LocalDestination(pages.get(1), Destination.ModeEnum.FitHorizontal, 0, null);
+      destinations.put(new PdfString("N84afaba6"), page2Destination);
 
       // Let the viewer go to the second page on document opening!
       /*
@@ -63,15 +67,15 @@ public class NamedDestinationSample
       document.getActions().setOnOpen(
         new GoToLocal(
           document,
-          secondPageDestination // Its name ("N84afaba6") is retrieved behind the scenes.
+          page2Destination // Its name ("N84afaba6") is retrieved behind the scenes.
           )
         );
       // Define a link to the second page on the first one!
-      Link link = new Link(
+      new Link(
         pages.get(0),
         new Rectangle(0,0,100,50),
         "Link annotation",
-        secondPageDestination // Its name ("N84afaba6") is retrieved behind the scenes.
+        page2Destination // Its name ("N84afaba6") is retrieved behind the scenes.
         );
       
       if(pages.size() > 2)

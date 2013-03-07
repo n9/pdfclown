@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2013 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 12/28/12
+  @version 0.1.3, 03/07/13
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Tree<
@@ -897,13 +897,13 @@ public abstract class Tree<
     PdfName childrenTypeName
     )
   {
+    // Root node?
+    if(node == getBaseDataObject())
+      return; // NOTE: Root nodes DO NOT specify limits.
+    
     PdfDirectObject lowLimit, highLimit;
     if(childrenTypeName.equals(PdfName.Kids))
     {
-      // Non-leaf root node?
-      if(node == getBaseDataObject())
-        return; // NOTE: Non-leaf root nodes DO NOT specify limits.
-
       lowLimit = ((PdfArray)((PdfDictionary)children.resolve(0)).resolve(PdfName.Limits)).get(0);
       highLimit = ((PdfArray)((PdfDictionary)children.resolve(children.size()-1)).resolve(PdfName.Limits)).get(1);
     }
