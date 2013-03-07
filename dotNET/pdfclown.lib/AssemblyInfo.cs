@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("development")]
 [assembly: AssemblyCompany("Stefano Chizzolini")]
 [assembly: AssemblyProduct("PDF Clown for .NET")]
-[assembly: AssemblyCopyright("Copyright 2006-2011 Stefano Chizzolini")]
+[assembly: AssemblyCopyright("Copyright 2006-2013 Stefano Chizzolini")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")] // Culture-neutral (main assembly, NOT satellite!).
 
@@ -17,7 +17,7 @@ using System.Runtime.CompilerServices;
   You can specify all values by your own or you can build default build and revision
   numbers with the '*' character (the default):
 */
-[assembly: AssemblyVersion("0.1.2")]
+[assembly: AssemblyVersion("0.1.2.1")]
 
 /*
   The following attributes specify the key for the sign of your assembly.
