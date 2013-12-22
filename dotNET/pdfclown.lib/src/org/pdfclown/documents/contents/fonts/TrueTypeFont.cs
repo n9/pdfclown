@@ -188,7 +188,7 @@ namespace org.pdfclown.documents.contents.fonts
               );
             foreach(PdfDirectObject glyphWidthObject in glyphWidthObjects)
             {
-              if(((PdfInteger)glyphWidthObject).RawValue > 0)
+              if(((IPdfNumber)glyphWidthObject).DoubleValue > 0)
               {
                 int code;
                 if(codes.TryGetValue(charCode,out code))
