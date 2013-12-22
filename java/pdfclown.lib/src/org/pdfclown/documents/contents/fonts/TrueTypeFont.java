@@ -39,6 +39,7 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.BiMap;
 import org.pdfclown.util.ByteArray;
@@ -215,7 +216,7 @@ public final class TrueTypeFont
             );
           for(PdfDirectObject glyphWidthObject : glyphWidthObjects)
           {
-            if(((PdfInteger)glyphWidthObject).getRawValue() > 0)
+            if(((PdfNumber<?>)glyphWidthObject).getDoubleValue() > 0)
             {
               Integer code = codes.get(charCode);
               if(code != null)
