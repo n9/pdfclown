@@ -59,7 +59,7 @@ namespace org.pdfclown.documents.contents.objects
       ContentScanner.GraphicsState state
       )
     {
-      state.Tlm.Translate(0, (float)state.Lead);
+      state.Tlm.Translate(0, -(float)state.Lead);
       state.Tm = state.Tlm.Clone();
     }
     #endregion
