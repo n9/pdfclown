@@ -50,13 +50,19 @@ namespace org.pdfclown.files
     public sealed class ConfigurationImpl
     {
       private string realFormat;
+      private bool streamFilterEnabled;
 
       private readonly File file;
 
       internal ConfigurationImpl(
         File file
         )
-      {this.file = file;}
+      {
+        this.file = file;
+
+        RealPrecision = 0;
+        StreamFilterEnabled = true;
+      }
 
       /**
         <summary>Gets the file associated with this configuration.</summary>
@@ -68,28 +74,32 @@ namespace org.pdfclown.files
       }
 
       /**
-        <summary>Gets/Sets the format applied to real number serialization.</summary>
+        <summary>Gets/Sets the number of decimal places applied to real numbers' serialization.</summary>
       */
-      public string RealFormat
+      public int RealPrecision
       {
         get
-        {
-          if(realFormat == null)
-          {SetRealFormat(5);}
-          return realFormat;
-        }
+        {return realFormat.Length - realFormat.IndexOf('.') - 1;}
         set
-        {realFormat = value;}
+        {realFormat = "0." + new string('#', value <= 0 ? 5 : value);}
       }
 
       /**
-        <param name="decimalPlacesCount">Number of digits in decimal places.</param>
-        <seealso cref="RealFormat"/>
+        <summary>Gets/Sets whether PDF stream objects have to be filtered for compression.</summary>
       */
-      public void SetRealFormat(
-        int decimalPlacesCount
-        )
-      {realFormat = "0." + new string('#', decimalPlacesCount);}
+      public bool StreamFilterEnabled
+      {
+        get
+        {return streamFilterEnabled;}
+        set
+        {streamFilterEnabled = value;}
+      }
+
+      internal string RealFormat
+      {
+        get
+        {return realFormat;}
+      }
     }
 
     private sealed class ImplicitContainer

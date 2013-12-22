@@ -397,7 +397,7 @@ namespace org.pdfclown.objects
           if(encodeBody)
           {
             PdfDirectObject filterObject = Filter;
-            if(filterObject == null) // Unencoded body.
+            if(filterObject == null && context.Configuration.StreamFilterEnabled) // Unencoded body.
             {
               /*
                 NOTE: Header entries related to stream body encoding are temporary, instrumental to

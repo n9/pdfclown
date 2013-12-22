@@ -74,13 +74,19 @@ public final class File
   public static final class Configuration
   {
     private DecimalFormat realFormat;
+    private boolean streamFilterEnabled;
 
     private final File file;
 
     Configuration(
       File file
       )
-    {this.file = file;}
+    {
+      this.file = file;
+      
+      setRealPrecision(0);
+      setStreamFilterEnabled(true);
+    }
 
     /**
       Gets the file associated with this configuration.
@@ -89,37 +95,43 @@ public final class File
       )
     {return file;}
 
-    /**
-      Gets the format applied to real number serialization.
-    */
     public DecimalFormat getRealFormat(
       )
-    {
-      if(realFormat == null)
-      {setRealFormat(5);}
-      return realFormat;
-    }
+    {return realFormat;}
 
     /**
-      @see #getRealFormat()
+      Gets the number of decimal places applied to real numbers' serialization.
     */
-    public void setRealFormat(
-      DecimalFormat value
+    public int getRealPrecision(
       )
-    {realFormat = value;}
+    {return realFormat.getMaximumFractionDigits();}
 
     /**
-      @see #getRealFormat()
-      @param decimalPlacesCount Number of digits in decimal places.
+      Gets whether PDF stream objects have to be filtered for compression.
     */
-    public void setRealFormat(
-      int decimalPlacesCount
+    public boolean isStreamFilterEnabled(
+      )
+    {return streamFilterEnabled;}
+    
+    /**
+      @see #getRealPrecision()
+    */
+    public void setRealPrecision(
+      int value
       )
     {
       DecimalFormatSymbols symbols = new DecimalFormatSymbols();
       symbols.setDecimalSeparator('.');
-      setRealFormat(new DecimalFormat("0." + StringUtils.repeat("#", decimalPlacesCount), symbols));
+      realFormat = new DecimalFormat("0." + StringUtils.repeat("#", value <= 0 ? 5 : value), symbols);
     }
+
+    /**
+      @see #isStreamFilterEnabled()
+    */
+    public void setStreamFilterEnabled(
+      boolean value
+      )
+    {streamFilterEnabled = value;}
   }
 
   private static final class ImplicitContainer

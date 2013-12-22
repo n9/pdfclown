@@ -393,7 +393,7 @@ public class PdfStream
         if(encodeBody)
         {
           PdfDirectObject filterObject = getFilter();
-          if(filterObject == null) // Unencoded body.
+          if(filterObject == null && context.getConfiguration().isStreamFilterEnabled()) // Unencoded body.
           {
             /*
               NOTE: Header entries related to stream body encoding are temporary, instrumental to
