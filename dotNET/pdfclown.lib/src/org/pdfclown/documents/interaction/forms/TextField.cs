@@ -39,6 +39,7 @@ using org.pdfclown.util;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using org.pdfclown.documents.contents.colorSpaces;
 
 namespace org.pdfclown.documents.interaction.forms
 {
@@ -272,6 +273,7 @@ namespace org.pdfclown.documents.interaction.forms
       if(!textShown)
       {
         baseComposer.BeginMarkedContent(PdfName.Tx);
+        baseComposer.SetFillColor(new DeviceGrayColor(0)); // workaround for problem when input box fill color remains set
         ShowText(composer, fontName, fontSize);
         baseComposer.End();
       }
