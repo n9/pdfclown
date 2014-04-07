@@ -561,7 +561,8 @@ namespace org.pdfclown.tools
                 || (areaMode == AreaModeEnum.Intersection && toleratedArea.IntersectsWith(textCharBox)))
               {filteredTextStringChars.Add(textChar);}
             }
-            filteredAreaTextStrings.Add(filteredTextString);
+            if(filteredTextStringChars.Count > 0)
+            {filteredAreaTextStrings.Add(filteredTextString);}
           }
         }
       }
