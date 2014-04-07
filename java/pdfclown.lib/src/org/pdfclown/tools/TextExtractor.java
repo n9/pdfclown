@@ -518,7 +518,8 @@ public final class TextExtractor
               || (areaMode == AreaModeEnum.Intersection && toleratedArea.intersects(textCharBox)))
             {filteredTextStringChars.add(textChar);}
           }
-          filteredAreaTextStrings.add(filteredTextString);
+          if(!filteredTextStringChars.isEmpty())
+          {filteredAreaTextStrings.add(filteredTextString);}
         }
       }
     }
