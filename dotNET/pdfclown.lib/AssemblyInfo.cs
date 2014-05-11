@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("development")]
 [assembly: AssemblyCompany("Stefano Chizzolini")]
 [assembly: AssemblyProduct("PDF Clown for .NET")]
-[assembly: AssemblyCopyright("Copyright 2006-2013 Stefano Chizzolini")]
+[assembly: AssemblyCopyright("Copyright 2006-2014 Stefano Chizzolini")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")] // Culture-neutral (main assembly, NOT satellite!).
 

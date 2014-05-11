@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2014 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -144,12 +144,12 @@ namespace org.pdfclown.objects
     }
 
     public override bool Equals(
-      object obj
+      object other
       )
     {
-      return obj != null
-        && obj.GetType().Equals(GetType())
-        && ((PdfObjectWrapper)obj).baseObject.Equals(baseObject);
+      return other != null
+        && other.GetType().Equals(GetType())
+        && ((PdfObjectWrapper)other).baseObject.Equals(baseObject);
     }
 
     /**

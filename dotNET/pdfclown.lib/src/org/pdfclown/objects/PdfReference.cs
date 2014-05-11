@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2014 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -85,13 +85,22 @@ namespace org.pdfclown.objects
     {throw new NotImplementedException();}
 
     public override bool Equals(
-      object @object
+      object other
       )
     {
-      return base.Equals(@object)
-        || (@object != null
-          && @object.GetType().Equals(GetType())
-          && ((PdfReference)@object).Id.Equals(Id));
+      /*
+       * NOTE: References are evaluated as "equal" if they are either the same instance or they sport
+       * the same identifier within the same file instance.
+       */
+      if(base.Equals(other))
+        return true;
+      else if(other == null
+          || !other.GetType().Equals(GetType()))
+        return false;
+
+      PdfReference otherReference = (PdfReference)other;
+      return otherReference.File == File
+          && otherReference.Id.Equals(Id);
     }
 
     /**

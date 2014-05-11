@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2014 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF indirect reference object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 05/10/14
 */
 public final class PdfReference
   extends PdfDirectObject
@@ -92,13 +92,22 @@ public final class PdfReference
 
   @Override
   public boolean equals(
-    Object object
+    Object other
     )
   {
-    return super.equals(object)
-      || (object != null
-        && object.getClass().equals(getClass())
-        && ((PdfReference)object).getId().equals(getId()));
+    /*
+     * NOTE: References are evaluated as "equal" if they are either the same instance or they sport 
+     * the same identifier within the same file instance.
+     */
+    if(super.equals(other))
+      return true;
+    else if(other == null
+        || !other.getClass().equals(getClass()))
+      return false;
+    
+    PdfReference otherReference = (PdfReference)other;
+    return otherReference.getFile() == getFile()
+        && otherReference.getId().equals(getId());
   }
 
   /**

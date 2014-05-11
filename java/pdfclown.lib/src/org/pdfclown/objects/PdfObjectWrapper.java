@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2014 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
   {@link #getBaseDataObject() baseDataObject} backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 05/10/14
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   implements Cloneable,
@@ -177,12 +177,12 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
 
   @Override
   public boolean equals(
-    Object obj
+    Object other
     )
   {
-    return obj != null
-      && obj.getClass().equals(getClass())
-      && ((PdfObjectWrapper<?>)obj).baseObject.equals(baseObject);
+    return other != null
+      && other.getClass().equals(getClass())
+      && ((PdfObjectWrapper<?>)other).baseObject.equals(baseObject);
   }
 
   /**
