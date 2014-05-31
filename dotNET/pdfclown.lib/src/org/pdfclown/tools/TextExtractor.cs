@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2014 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -209,17 +209,15 @@ namespace org.pdfclown.tools
         RectangleF box2 = textString2.Box.Value;
         if(IsOnTheSameLine(box1,box2))
         {
-          if(box1.X < box2.X)
-            return -1;
-          else if(box1.X > box2.X)
-            return 1;
-          else
-            return 0;
+          /*
+            [FIX:55:0.1.2.1] In order not to violate the transitive condition, equivalence on x-axis
+            MUST fall back on y-axis comparison.
+          */
+          int xCompare = box1.X.CompareTo(box2.X);
+          if(xCompare != 0)
+            return xCompare;
         }
-        else if(box1.Y < box2.Y)
-          return -1;
-        else
-          return 1;
+        return box1.Y.CompareTo(box2.Y);
       }
       #endregion
       #endregion

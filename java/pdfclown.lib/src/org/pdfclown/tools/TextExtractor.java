@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2014 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -51,7 +51,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.2.1, 05/31/14
 */
 public final class TextExtractor
 {
@@ -183,17 +183,15 @@ public final class TextExtractor
       Rectangle2D box2 = textString2.getBox();
       if(isOnTheSameLine(box1,box2))
       {
-        if(box1.getX() < box2.getX())
-          return -1;
-        else if(box1.getX() > box2.getX())
-          return 1;
-        else
-          return 0;
+        /*
+          [FIX:55:0.1.2.1] In order not to violate the transitive condition, equivalence on x-axis
+          MUST fall back on y-axis comparison.
+        */
+        int xCompare = Double.compare(box1.getX(), box2.getX());
+        if(xCompare != 0)
+          return xCompare;
       }
-      else if(box1.getY() < box2.getY())
-        return -1;
-      else
-        return 1;
+      return Double.compare(box1.getY(), box2.getY());
     }
     // </Comparator>
     // </dynamic>
