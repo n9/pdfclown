@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2013 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2014 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -214,7 +214,7 @@ namespace org.pdfclown.objects
         PdfDirectObject kidsObject =  rootNode[PdfName.Kids];
         if(kidsObject == null) // Leaf node.
         {
-          PdfDirectObject namesObject = rootNode[PdfName.Names];
+          PdfDirectObject namesObject = rootNode[tree.pairsKey];
           if(namesObject is PdfReference)
           {container = ((PdfReference)namesObject).IndirectObject;}
           names = (PdfArray)namesObject.Resolve();
@@ -303,7 +303,7 @@ namespace org.pdfclown.objects
               PdfDirectObject kidsObject = kid[PdfName.Kids];
               if(kidsObject == null) // Leaf node.
               {
-                PdfDirectObject namesObject = kid[PdfName.Names];
+                PdfDirectObject namesObject = kid[tree.pairsKey];
                 if(namesObject is PdfReference)
                 {container = ((PdfReference)namesObject).IndirectObject;}
                 names = (PdfArray)namesObject.Resolve();
@@ -977,7 +977,7 @@ namespace org.pdfclown.objects
       PdfArray kidsObject = (PdfArray)node.Resolve(PdfName.Kids);
       if(kidsObject == null) // Leaf node.
       {
-        PdfArray namesObject = (PdfArray)node.Resolve(PdfName.Names);
+        PdfArray namesObject = (PdfArray)node.Resolve(pairsKey);
         for(
           int index = 0,
             length = namesObject.Count;
@@ -1001,7 +1001,7 @@ namespace org.pdfclown.objects
       PdfDictionary node
       )
     {
-      PdfArray children = (PdfArray)node.Resolve(PdfName.Names);
+      PdfArray children = (PdfArray)node.Resolve(pairsKey);
       if(children != null) // Leaf node.
       {return (children.Count / 2);}
       else // Intermediate node.
