@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2014 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,7 +42,7 @@ import org.pdfclown.util.ConvertUtils;
   Byte buffer.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/29/12
+  @version 0.1.2.1, 09/28/14
 */
 public final class Buffer
   implements IBuffer
@@ -214,7 +214,7 @@ public final class Buffer
     )
   {
     Buffer clone = new Buffer(getCapacity());
-    clone.append(data);
+    clone.append(data, 0, this.length);
     return clone;
   }
 
