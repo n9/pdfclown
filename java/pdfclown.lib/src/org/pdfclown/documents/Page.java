@@ -359,7 +359,7 @@ public final class Page
   }
 
   /**
-    Gets the index of the page.
+    Gets the index of this page.
   */
   public int getIndex(
     )
@@ -409,6 +409,13 @@ public final class Page
       }
     }
   }
+  
+  /**
+    Gets the page number.
+  */
+  public int getNumber(
+    )
+  {return getIndex() + 1;}
 
   /**
     Gets the page size.

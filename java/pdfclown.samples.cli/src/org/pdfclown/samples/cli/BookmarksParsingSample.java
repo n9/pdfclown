@@ -130,7 +130,7 @@ public class BookmarksParsingSample
     if(pageRef instanceof Page)
     {
       Page page = (Page)pageRef;
-      System.out.println((page.getIndex()+1) + " [ID: " + page.getBaseObject() + "]");
+      System.out.println(page.getNumber() + " [ID: " + page.getBaseObject() + "]");
     }
     else
     {System.out.println(((Integer)pageRef+1));}

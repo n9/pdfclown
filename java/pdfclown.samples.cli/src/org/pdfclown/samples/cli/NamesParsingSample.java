@@ -67,7 +67,7 @@ public class NamesParsingSample extends Sample
             else // NOTE: explicit page refs are typical of local destinations.
             {
               Page page = (Page)pageRef;
-              System.out.println((page.getIndex() + 1) + "; ID = " + ((PdfReference)page.getBaseObject()).getId());
+              System.out.println(page.getNumber() + "; ID = " + ((PdfReference)page.getBaseObject()).getId());
             }
           }
 

@@ -80,7 +80,7 @@ public class PageNumberingSample
         foreground.setFillColor(redColor);
 
         Dimension2D pageSize = page.getSize();
-        int pageNumber = page.getIndex() + 1;
+        int pageNumber = page.getNumber();
         boolean pageIsEven = (pageNumber % 2 == 0);
         foreground.showText(
           Integer.toString(pageNumber),

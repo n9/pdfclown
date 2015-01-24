@@ -63,7 +63,7 @@ public class AcroFormParsingSample
           {
             System.out.println("    Widget " + (++widgetIndex) + ":");
             Page widgetPage = widget.getPage();
-            System.out.println("      Page: " + (widgetPage == null ? "undefined" : (widgetPage.getIndex() + 1) + " (" + widgetPage.getBaseObject() + ")"));
+            System.out.println("      Page: " + (widgetPage == null ? "undefined" : widgetPage.getNumber() + " (" + widgetPage.getBaseObject() + ")"));
 
             Rectangle2D widgetBox = widget.getBox();
             System.out.println("      Coordinates: {x:" + Math.round(widgetBox.getX()) + "; y:" + Math.round(widgetBox.getY()) + "; width:" + Math.round(widgetBox.getWidth()) + "; height:" + Math.round(widgetBox.getHeight()) + "}");

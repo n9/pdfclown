@@ -50,7 +50,7 @@ public class TextHighlightSample
     TextExtractor textExtractor = new TextExtractor(true, true);
     for(final Page page : file.getDocument().getPages())
     {
-      System.out.println("\nScanning page " + (page.getIndex()+1) + "...\n");
+      System.out.println("\nScanning page " + page.getNumber() + "...\n");
 
       // 2.1. Extract the page text!
       Map<Rectangle2D,List<ITextString>> textStrings = textExtractor.extract(page);

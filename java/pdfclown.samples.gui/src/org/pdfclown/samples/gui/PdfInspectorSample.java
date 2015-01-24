@@ -134,7 +134,7 @@ public class PdfInspectorSample
       Page page
       )
     {
-      super("Page " + (page.getIndex() + 1));
+      super("Page " + page.getNumber());
 
       this.page = page;
     }

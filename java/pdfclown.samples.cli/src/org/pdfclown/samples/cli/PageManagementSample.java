@@ -91,7 +91,7 @@ public class PageManagementSample
             incrementalDataSize += pageDifferentialDataSize;
 
             System.out.println(
-              "Page " + (page.getIndex()+1) + ": "
+              "Page " + page.getNumber() + ": "
                 + pageFullDataSize + " (full); "
                 + pageDifferentialDataSize + " (differential); "
                 + incrementalDataSize + " (incremental)"

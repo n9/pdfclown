@@ -128,7 +128,7 @@ public class ContentScanningSample
         {
           Rectangle2D box = objectWrapper.getBox(); // Image position (location and size) on the page.
           System.out.println(
-            " on page " + (page.getIndex() + 1) + " (" + page.getBaseObject() + ")" // Page index and indirect reference.
+            " on page " + page.getNumber() + " (" + page.getBaseObject() + ")" // Page index and indirect reference.
             );
           System.out.println("  Coordinates:");
           System.out.println("     x: " + Math.round(box.getX()));

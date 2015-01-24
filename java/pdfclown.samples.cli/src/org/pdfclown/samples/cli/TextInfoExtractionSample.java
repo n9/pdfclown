@@ -55,7 +55,7 @@ public class TextInfoExtractionSample
     // 2. Iterating through the document pages...
     for(Page page : document.getPages())
     {
-      System.out.println("\nScanning page " + (page.getIndex()+1) + "...\n");
+      System.out.println("\nScanning page " + page.getNumber() + "...\n");
 
       stamper.setPage(page);
 
