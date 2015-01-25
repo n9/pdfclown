@@ -20,7 +20,7 @@ import org.pdfclown.tools.PageManager;
   splits of groups of pages.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 1/24/15
 */
 public class PageManagementSample
   extends Sample

@@ -104,7 +104,7 @@ namespace org.pdfclown.samples.cli
       if(pageRef is Page)
       {
         Page page = (Page)pageRef;
-        Console.WriteLine((page.Index+1) + " [ID: " + page.BaseObject + "]");
+        Console.WriteLine(page.Number + " [ID: " + page.BaseObject + "]");
       }
       else
       {Console.WriteLine((int)pageRef+1);}

@@ -21,7 +21,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
   This sample demonstrates <b>how to inspect the bookmarks</b> of a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 11/30/12
+  @version 0.1.2.1, 1/24/15
 */
 public class BookmarksParsingSample
   extends Sample

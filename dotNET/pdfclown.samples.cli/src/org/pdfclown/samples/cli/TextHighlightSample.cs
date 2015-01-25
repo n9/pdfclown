@@ -113,7 +113,7 @@ namespace org.pdfclown.samples.cli
         TextExtractor textExtractor = new TextExtractor(true, true);
         foreach(Page page in file.Document.Pages)
         {
-          Console.WriteLine("\nScanning page " + (page.Index+1) + "...\n");
+          Console.WriteLine("\nScanning page " + page.Number + "...\n");
   
           // 2.1. Extract the page text!
           IDictionary<RectangleF?,IList<ITextString>> textStrings = textExtractor.Extract(page);

@@ -53,7 +53,7 @@ namespace org.pdfclown.samples.cli
               else // NOTE: explicit page refs are typical of local destinations.
               {
                 Page page = (Page)pageRef;
-                Console.WriteLine((page.Index + 1) + "; ID = " + ((PdfReference)page.BaseObject).Id);
+                Console.WriteLine(page.Number + "; ID = " + ((PdfReference)page.BaseObject).Id);
               }
             }
   

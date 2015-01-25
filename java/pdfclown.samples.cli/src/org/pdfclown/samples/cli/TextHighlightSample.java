@@ -23,7 +23,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 09/24/12
+  @version 0.1.2.1, 1/24/15
 */
 public class TextHighlightSample
   extends Sample

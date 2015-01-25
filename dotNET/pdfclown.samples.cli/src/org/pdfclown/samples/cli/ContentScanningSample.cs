@@ -103,7 +103,7 @@ namespace org.pdfclown.samples.cli
           {
             RectangleF box = objectWrapper.Box.Value; // Image position (location and size) on the page.
             Console.WriteLine(
-              " on page " + (page.Index + 1) + " (" + page.BaseObject + ")" // Page index and indirect reference.
+              " on page " + page.Number + " (" + page.BaseObject + ")" // Page index and indirect reference.
               );
             Console.WriteLine("  Coordinates:");
             Console.WriteLine("     x: " + Math.Round(box.X));

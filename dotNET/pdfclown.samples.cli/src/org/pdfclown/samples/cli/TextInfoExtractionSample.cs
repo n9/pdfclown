@@ -41,7 +41,7 @@ namespace org.pdfclown.samples.cli
         // 2. Iterating through the document pages...
         foreach(Page page in document.Pages)
         {
-          Console.WriteLine("\nScanning page " + (page.Index+1) + "...\n");
+          Console.WriteLine("\nScanning page " + page.Number + "...\n");
   
           stamper.Page = page;
   

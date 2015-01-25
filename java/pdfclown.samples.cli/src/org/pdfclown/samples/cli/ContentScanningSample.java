@@ -22,7 +22,7 @@ import org.pdfclown.files.File;
   each single content object within a page.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2.1, 1/24/15
 */
 public class ContentScanningSample
   extends Sample

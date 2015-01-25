@@ -64,7 +64,7 @@ namespace org.pdfclown.samples.cli
               incrementalDataSize += pageDifferentialDataSize;
   
               Console.WriteLine(
-                "Page " + (page.Index+1) + ": "
+                "Page " + page.Number + ": "
                   + pageFullDataSize + " (full); "
                   + pageDifferentialDataSize + " (differential); "
                   + incrementalDataSize + " (incremental)"

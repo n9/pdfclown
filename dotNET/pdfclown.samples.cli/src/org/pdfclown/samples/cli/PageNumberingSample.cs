@@ -67,7 +67,7 @@ namespace org.pdfclown.samples.cli
           foreground.SetFillColor(redColor);
 
           SizeF pageSize = page.Size;
-          int pageNumber = page.Index + 1;
+          int pageNumber = page.Number;
           bool pageIsEven = (pageNumber % 2 == 0);
           foreground.ShowText(
             pageNumber.ToString(),

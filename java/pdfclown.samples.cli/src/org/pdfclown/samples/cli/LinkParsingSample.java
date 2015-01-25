@@ -34,7 +34,7 @@ import org.pdfclown.tools.TextExtractor;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 09/24/12
+  @version 0.1.2.1, 1/24/15
 */
 public class LinkParsingSample
   extends Sample

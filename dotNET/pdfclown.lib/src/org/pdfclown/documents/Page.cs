@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -338,7 +338,7 @@ namespace org.pdfclown.documents
     }
 
     /**
-      <summary>Gets the index of the page.</summary>
+      <summary>Gets the index of this page.</summary>
     */
     public int Index
     {
@@ -389,6 +389,16 @@ namespace org.pdfclown.documents
           }
         }
       }
+    }
+
+
+    /**
+      <summary>Gets the page number.</summary>
+    */
+    public int Number
+    {
+      get
+      {return Index + 1;}
     }
 
     /**

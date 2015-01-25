@@ -23,7 +23,7 @@ import org.pdfclown.tools.PageStamper;
   etc.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 11/30/12
+  @version 0.1.2.1, 1/24/15
 */
 public class PageNumberingSample
   extends Sample
