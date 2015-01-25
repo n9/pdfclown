@@ -68,7 +68,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2.1, 1/24/15
+  @version 0.1.2.1, 1/25/15
 */
 @PDF(VersionEnum.PDF10)
 public final class Page
@@ -464,7 +464,7 @@ public final class Page
   public void setActions(
     PageActions value
     )
-  {getBaseDataObject().put(PdfName.AA, value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.AA, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     @see #getAnnotations()
@@ -472,7 +472,7 @@ public final class Page
   public void setAnnotations(
     PageAnnotations value
     )
-  {getBaseDataObject().put(PdfName.Annots, value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.Annots, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     @see #getArtBox()
@@ -480,7 +480,7 @@ public final class Page
   public void setArtBox(
     Rectangle2D value
     )
-  {getBaseDataObject().put(PdfName.ArtBox, new Rectangle(value).getBaseDataObject());}
+  {getBaseDataObject().put(PdfName.ArtBox, value != null ? new Rectangle(value).getBaseDataObject() : null);}
 
   /**
     @see #getBleedBox()
@@ -488,7 +488,7 @@ public final class Page
   public void setBleedBox(
     Rectangle2D value
     )
-  {getBaseDataObject().put(PdfName.BleedBox, new Rectangle(value).getBaseDataObject());}
+  {getBaseDataObject().put(PdfName.BleedBox, value != null ? new Rectangle(value).getBaseDataObject() : null);}
 
   /**
     @see #getBox()
@@ -496,7 +496,10 @@ public final class Page
   public void setBox(
     Rectangle2D value
     )
-  {getBaseDataObject().put(PdfName.MediaBox, new Rectangle(value).getBaseDataObject());}
+  {
+    /* NOTE: Mandatory. */
+    getBaseDataObject().put(PdfName.MediaBox, new Rectangle(value).getBaseDataObject());
+  }
 
   /**
     @see #getCropBox()
@@ -504,7 +507,7 @@ public final class Page
   public void setCropBox(
     Rectangle2D value
     )
-  {getBaseDataObject().put(PdfName.CropBox, new Rectangle(value).getBaseDataObject());}
+  {getBaseDataObject().put(PdfName.CropBox, value != null ? new Rectangle(value).getBaseDataObject() : null);}
 
   /**
     @see #getDuration()
@@ -512,7 +515,7 @@ public final class Page
   public void setDuration(
     double value
     )
-  {getBaseDataObject().put(PdfName.Dur, value == 0 ? null : PdfReal.get(value));}
+  {getBaseDataObject().put(PdfName.Dur, value > 0 ? PdfReal.get(value) : null);}
 
   /**
     @see #getRotation()
@@ -520,7 +523,7 @@ public final class Page
   public void setRotation(
     RotationEnum value
     )
-  {getBaseDataObject().put(PdfName.Rotate, value.getCode());}
+  {getBaseDataObject().put(PdfName.Rotate, value != null ? value.getCode() : null);}
 
   /**
     @see #getSize()
@@ -544,7 +547,7 @@ public final class Page
   public void setTabOrder(
     TabOrderEnum value
     )
-  {getBaseDataObject().put(PdfName.Tabs,value.getCode());}
+  {getBaseDataObject().put(PdfName.Tabs, value != null ? value.getCode() : null);}
 
   /**
     @see #getTransition()
@@ -552,7 +555,7 @@ public final class Page
   public void setTransition(
     Transition value
     )
-  {getBaseDataObject().put(PdfName.Trans, value.getBaseObject());}
+  {getBaseDataObject().put(PdfName.Trans, PdfObjectWrapper.getBaseObject(value));}
 
   /**
     @see #getTrimBox()
@@ -560,7 +563,7 @@ public final class Page
   public void setTrimBox(
     Rectangle2D value
     )
-  {getBaseDataObject().put(PdfName.TrimBox, new Rectangle(value).getBaseDataObject());}
+  {getBaseDataObject().put(PdfName.TrimBox, value != null ? new Rectangle(value).getBaseDataObject() : null);}
 
   // <IContentContext>
   @Override

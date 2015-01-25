@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -54,7 +54,7 @@ import org.pdfclown.util.EnumUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 1/25/15
 */
 @PDF(VersionEnum.PDF10)
 public class Annotation
@@ -64,7 +64,7 @@ public class Annotation
   // <class>
   // <classes>
   /**
-    Field flags [PDF:1.6:8.4.2].
+    Annotation flags [PDF:1.6:8.4.2].
   */
   public enum FlagsEnum
   {

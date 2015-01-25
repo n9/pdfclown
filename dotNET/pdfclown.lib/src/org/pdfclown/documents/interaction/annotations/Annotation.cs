@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -48,7 +48,7 @@ namespace org.pdfclown.documents.interaction.annotations
   {
     #region types
     /**
-      <summary>Field flags [PDF:1.6:8.4.2].</summary>
+      <summary>Annotation flags [PDF:1.6:8.4.2].</summary>
     */
     [Flags]
     public enum FlagsEnum

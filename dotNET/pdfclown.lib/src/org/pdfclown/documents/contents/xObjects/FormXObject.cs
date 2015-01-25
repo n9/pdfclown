@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -50,7 +50,24 @@ namespace org.pdfclown.documents.contents.xObjects
     public static new FormXObject Wrap(
       PdfDirectObject baseObject
       )
-    {return baseObject != null ? new FormXObject(baseObject) : null;}
+    {
+      if(baseObject == null)
+        return null;
+
+      PdfDictionary header = ((PdfStream)PdfObject.Resolve(baseObject)).Header;
+      PdfName subtype = (PdfName)header[PdfName.Subtype];
+      /*
+        NOTE: Sometimes the form stream's header misses the mandatory Subtype entry; therefore, here
+        we force integrity for convenience (otherwise, content resource allocation may fail, for
+        example in case of Acroform flattening).
+      */
+      if(subtype == null && header.ContainsKey(PdfName.BBox))
+      {header[PdfName.Subtype] = PdfName.Form;}
+      else if(!subtype.Equals(PdfName.Form))
+        return null;
+
+      return new FormXObject(baseObject);
+    }
     #endregion
     #endregion
     #endregion

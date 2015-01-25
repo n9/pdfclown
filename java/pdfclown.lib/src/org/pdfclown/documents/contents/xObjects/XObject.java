@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,7 +44,7 @@ import org.pdfclown.objects.PdfStream;
   from the content stream in which it is used [PDF:1.6:4.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 1/25/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class XObject
@@ -68,9 +68,9 @@ public abstract class XObject
       return null;
 
     PdfName subtype = (PdfName)((PdfStream)baseObject.resolve()).getHeader().get(PdfName.Subtype);
-    if(subtype.equals(PdfName.Form))
+    if(PdfName.Form.equals(subtype))
       return FormXObject.wrap(baseObject);
-    else if(subtype.equals(PdfName.Image))
+    else if(PdfName.Image.equals(subtype))
       return ImageXObject.wrap(baseObject);
     else
       return null;

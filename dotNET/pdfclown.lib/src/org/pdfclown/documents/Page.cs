@@ -222,7 +222,7 @@ namespace org.pdfclown.documents
       get
       {return new PageActions(BaseDataObject.Get<PdfDictionary>(PdfName.AA));}
       set
-      {BaseDataObject[PdfName.AA] = value.BaseObject;}
+      {BaseDataObject[PdfName.AA] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
@@ -233,7 +233,7 @@ namespace org.pdfclown.documents
       get
       {return new PageAnnotations(BaseDataObject.Get<PdfArray>(PdfName.Annots), this);}
       set
-      {BaseDataObject[PdfName.Annots] = value.BaseObject;}
+      {BaseDataObject[PdfName.Annots] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
@@ -242,7 +242,7 @@ namespace org.pdfclown.documents
       <seealso cref="CropBox"/>
     */
     [PDF(VersionEnum.PDF13)]
-    public drawing::RectangleF ArtBox
+    public drawing::RectangleF? ArtBox
     {
       get
       {
@@ -253,7 +253,7 @@ namespace org.pdfclown.documents
         return artBoxObject != null ? Rectangle.Wrap(artBoxObject).ToRectangleF() : CropBox;
       }
       set
-      {BaseDataObject[PdfName.ArtBox] = new Rectangle(value).BaseDataObject;}
+      {BaseDataObject[PdfName.ArtBox] = (value.HasValue ? new Rectangle(value.Value).BaseDataObject : null);}
     }
 
     /**
@@ -276,7 +276,7 @@ namespace org.pdfclown.documents
       <seealso cref="CropBox"/>
     */
     [PDF(VersionEnum.PDF13)]
-    public drawing::RectangleF BleedBox
+    public drawing::RectangleF? BleedBox
     {
       get
       {
@@ -287,7 +287,7 @@ namespace org.pdfclown.documents
         return bleedBoxObject != null ? Rectangle.Wrap(bleedBoxObject).ToRectangleF() : CropBox;
       }
       set
-      {BaseDataObject[PdfName.BleedBox] = new Rectangle(value).BaseDataObject;}
+      {BaseDataObject[PdfName.BleedBox] = (value.HasValue ? new Rectangle(value.Value).BaseDataObject : null);}
     }
 
     /**
@@ -301,7 +301,7 @@ namespace org.pdfclown.documents
       </remarks>
       <seealso cref="Box"/>
     */
-    public drawing::RectangleF CropBox
+    public drawing::RectangleF? CropBox
     {
       get
       {
@@ -312,7 +312,7 @@ namespace org.pdfclown.documents
         return cropBoxObject != null ? Rectangle.Wrap(cropBoxObject).ToRectangleF() : Box;
       }
       set
-      {BaseDataObject[PdfName.CropBox] = new Rectangle(value).BaseDataObject;}
+      {BaseDataObject[PdfName.CropBox] = (value.HasValue ? new Rectangle(value.Value).BaseDataObject : null);}
     }
 
     /**
@@ -334,7 +334,7 @@ namespace org.pdfclown.documents
         return durationObject == null ? 0 : durationObject.RawValue;
       }
       set
-      {BaseDataObject[PdfName.Dur] = (value == 0 ? null : PdfReal.Get(value));}
+      {BaseDataObject[PdfName.Dur] = (value > 0 ? PdfReal.Get(value) : null);}
     }
 
     /**
@@ -442,7 +442,7 @@ namespace org.pdfclown.documents
       get
       {return Transition.Wrap(BaseDataObject[PdfName.Trans]);}
       set
-      {BaseDataObject[PdfName.Trans] = value.BaseObject;}
+      {BaseDataObject[PdfName.Trans] = PdfObjectWrapper.GetBaseObject(value);}
     }
 
     /**
@@ -455,7 +455,7 @@ namespace org.pdfclown.documents
       <seealso cref="CropBox"/>
     */
     [PDF(VersionEnum.PDF13)]
-    public drawing::RectangleF TrimBox
+    public drawing::RectangleF? TrimBox
     {
       get
       {
@@ -466,7 +466,7 @@ namespace org.pdfclown.documents
         return trimBoxObject != null ? Rectangle.Wrap(trimBoxObject).ToRectangleF() : CropBox;
       }
       set
-      {BaseDataObject[PdfName.TrimBox] = new Rectangle(value).BaseDataObject;}
+      {BaseDataObject[PdfName.TrimBox] = (value.HasValue ? new Rectangle(value.Value).BaseDataObject : null);}
     }
 
     #region IContentContext
@@ -475,6 +475,7 @@ namespace org.pdfclown.documents
       get
       {return Rectangle.Wrap(GetInheritableAttribute(PdfName.MediaBox)).ToRectangleF();}
       set
+      /* NOTE: Mandatory. */
       {BaseDataObject[PdfName.MediaBox] = new Rectangle(value).BaseDataObject;}
     }
 

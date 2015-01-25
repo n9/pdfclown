@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -59,9 +59,9 @@ namespace org.pdfclown.documents.contents.xObjects
         return null;
 
       PdfName subtype = (PdfName)((PdfStream)baseObject.Resolve()).Header[PdfName.Subtype];
-      if(subtype.Equals(PdfName.Form))
+      if(PdfName.Form.Equals(subtype))
         return FormXObject.Wrap(baseObject);
-      else if(subtype.Equals(PdfName.Image))
+      else if(PdfName.Image.Equals(subtype))
         return ImageXObject.Wrap(baseObject);
       else
         return null;

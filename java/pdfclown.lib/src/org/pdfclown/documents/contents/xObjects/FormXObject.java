@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,8 +45,10 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
+import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReal;
+import org.pdfclown.objects.PdfStream;
 import org.pdfclown.objects.Rectangle;
 import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.geom.Dimension;
@@ -55,7 +57,7 @@ import org.pdfclown.util.math.geom.Dimension;
   Form external object [PDF:1.6:4.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 1/25/15
 */
 @PDF(VersionEnum.PDF10)
 public final class FormXObject
@@ -69,7 +71,24 @@ public final class FormXObject
   public static FormXObject wrap(
     PdfDirectObject baseObject
     )
-  {return baseObject != null ? new FormXObject(baseObject) : null;}
+  {
+    if(baseObject == null)
+      return null;
+    
+    PdfDictionary header = ((PdfStream)PdfObject.resolve(baseObject)).getHeader();
+    PdfName subtype = (PdfName)header.get(PdfName.Subtype);
+    /*
+      NOTE: Sometimes the form stream's header misses the mandatory Subtype entry; therefore, here
+      we force integrity for convenience (otherwise, content resource allocation may fail, for 
+      example in case of Acroform flattening).
+    */
+    if(subtype == null && header.containsKey(PdfName.BBox))
+    {header.put(PdfName.Subtype, PdfName.Form);}
+    else if(!subtype.equals(PdfName.Form))
+      return null;
+    
+    return new FormXObject(baseObject);
+  }
   // </public>
   // </interface>
   // </static>
