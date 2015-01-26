@@ -39,6 +39,9 @@ namespace org.pdfclown.tools
   */
   public sealed class FormFlattener
   {
+    private bool hiddenRendered;
+    private bool nonPrintedRendered;
+
     /**
       <summary>Replaces the Acroform fields with their corresponding graphics representation.</summary>
       <param name="document">Document to flatten.</param>
@@ -56,8 +59,9 @@ namespace org.pdfclown.tools
         {
           Page widgetPage = widget.Page;
           Annotation.FlagsEnum flags = widget.Flags;
-          // Is the widget visible?
-          if((flags & Annotation.FlagsEnum.Hidden) == 0 && (flags & Annotation.FlagsEnum.Print) > 0)
+          // Is the widget to be rendered?
+          if(((flags & Annotation.FlagsEnum.Hidden) == 0 || hiddenRendered)
+            && ((flags & Annotation.FlagsEnum.Print) > 0 || nonPrintedRendered))
           {
             // Stamping the current state appearance of the widget...
             PdfName widgetCurrentState = (PdfName)widget.BaseDataObject[PdfName.AS];
@@ -88,15 +92,15 @@ namespace org.pdfclown.tools
           {
             PdfDictionary parentFieldPartDictionary = (PdfDictionary)fieldPartDictionary.Resolve(PdfName.Parent);
 
-            PdfArray kidsDictionary;
+            PdfArray kidsArray;
             if(parentFieldPartDictionary != null)
-            {kidsDictionary = (PdfArray)parentFieldPartDictionary.Resolve(PdfName.Kids);}
+            {kidsArray = (PdfArray)parentFieldPartDictionary.Resolve(PdfName.Kids);}
             else
-            {kidsDictionary = formFields.BaseDataObject;}
+            {kidsArray = formFields.BaseDataObject;}
 
-            kidsDictionary.Remove(fieldPartDictionary.Reference);
+            kidsArray.Remove(fieldPartDictionary.Reference);
             fieldPartDictionary.Reference.Delete();
-            if(kidsDictionary.Count > 0)
+            if(kidsArray.Count > 0)
               break;
 
             fieldPartDictionary = parentFieldPartDictionary;
@@ -111,6 +115,28 @@ namespace org.pdfclown.tools
       }
       foreach(PageStamper pageStamper in pageStampers.Values)
       {pageStamper.Flush();}
+    }
+
+    /**
+      <summary>Gets/Sets whether hidden fields have to be rendered.</summary>
+    */
+    public bool HiddenRendered
+    {
+      get
+      {return hiddenRendered;}
+      set
+      {hiddenRendered = value;}
+    }
+
+    /**
+      <summary>Gets/Sets whether non-printed fields have to be rendered.</summary>
+    */
+    public bool NonPrintedRendered
+    {
+      get
+      {return nonPrintedRendered;}
+      set
+      {nonPrintedRendered = value;}
     }
   }
 }

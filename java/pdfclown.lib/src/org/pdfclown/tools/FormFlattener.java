@@ -50,10 +50,13 @@ import org.pdfclown.util.math.geom.Dimension;
   
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2.1
-  @version 0.1.2.1, 1/25/15
+  @version 0.1.2.1, 1/26/15
 */
 public class FormFlattener
 {
+  private boolean hiddenRendered;
+  private boolean nonPrintedRendered;
+  
   /**
     Replaces the Acroform fields with their corresponding graphics representation.
     
@@ -72,8 +75,9 @@ public class FormFlattener
       {
         Page widgetPage = widget.getPage();
         EnumSet<FlagsEnum> flags = widget.getFlags();
-        // Is the widget visible?
-        if(!flags.contains(FlagsEnum.Hidden) && flags.contains(FlagsEnum.Print))
+        // Is the widget to be rendered?
+        if((!flags.contains(FlagsEnum.Hidden) || hiddenRendered)
+          && (flags.contains(FlagsEnum.Print) || nonPrintedRendered))
         {
           // Stamping the current state appearance of the widget...
           PdfName widgetCurrentState = (PdfName)widget.getBaseDataObject().get(PdfName.AS);
@@ -104,15 +108,15 @@ public class FormFlattener
         {
           PdfDictionary parentFieldPartDictionary = (PdfDictionary)fieldPartDictionary.resolve(PdfName.Parent);
           
-          PdfArray kidsDictionary;
+          PdfArray kidsArray;
           if(parentFieldPartDictionary != null)
-          {kidsDictionary = (PdfArray)parentFieldPartDictionary.resolve(PdfName.Kids);}
+          {kidsArray = (PdfArray)parentFieldPartDictionary.resolve(PdfName.Kids);}
           else
-          {kidsDictionary = formFields.getBaseDataObject();}
+          {kidsArray = formFields.getBaseDataObject();}
           
-          kidsDictionary.remove(fieldPartDictionary.getReference());
+          kidsArray.remove(fieldPartDictionary.getReference());
           fieldPartDictionary.getReference().delete();
-          if(!kidsDictionary.isEmpty())
+          if(!kidsArray.isEmpty())
             break;
           
           fieldPartDictionary = parentFieldPartDictionary;
@@ -127,5 +131,41 @@ public class FormFlattener
     }
     for(PageStamper pageStamper : pageStampers.values())
     {pageStamper.flush();}
+  }
+  
+  /**
+    Gets whether hidden fields have to be rendered.
+  */
+  public boolean isHiddenRendered(
+    )
+  {return hiddenRendered;}
+  
+  /**
+    Gets whether non-printed fields have to be rendered.
+  */
+  public boolean isNonPrintedRendered(
+    )
+  {return nonPrintedRendered;}
+  
+  /**
+    @see #isHiddenRendered()
+  */
+  public FormFlattener setHiddenRendered(
+    boolean value
+    )
+  {
+    hiddenRendered = value;
+    return this;
+  }
+  
+  /**
+    @see #isNonPrintedRendered()
+  */
+  public FormFlattener setNonPrintedRendered(
+    boolean value
+    )
+  {
+    nonPrintedRendered = value;
+    return this;
   }
 }
