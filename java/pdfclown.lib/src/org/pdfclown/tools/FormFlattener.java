@@ -55,7 +55,7 @@ import org.pdfclown.util.math.geom.Dimension;
 public class FormFlattener
 {
   private boolean hiddenRendered;
-  private boolean nonPrintedRendered;
+  private boolean nonPrintableRendered;
   
   /**
     Replaces the Acroform fields with their corresponding graphics representation.
@@ -77,7 +77,7 @@ public class FormFlattener
         EnumSet<FlagsEnum> flags = widget.getFlags();
         // Is the widget to be rendered?
         if((!flags.contains(FlagsEnum.Hidden) || hiddenRendered)
-          && (flags.contains(FlagsEnum.Print) || nonPrintedRendered))
+          && (flags.contains(FlagsEnum.Print) || nonPrintableRendered))
         {
           // Stamping the current state appearance of the widget...
           PdfName widgetCurrentState = (PdfName)widget.getBaseDataObject().get(PdfName.AS);
@@ -141,11 +141,11 @@ public class FormFlattener
   {return hiddenRendered;}
   
   /**
-    Gets whether non-printed fields have to be rendered.
+    Gets whether non-printable fields have to be rendered.
   */
-  public boolean isNonPrintedRendered(
+  public boolean isNonPrintableRendered(
     )
-  {return nonPrintedRendered;}
+  {return nonPrintableRendered;}
   
   /**
     @see #isHiddenRendered()
@@ -159,13 +159,13 @@ public class FormFlattener
   }
   
   /**
-    @see #isNonPrintedRendered()
+    @see #isNonPrintableRendered()
   */
-  public FormFlattener setNonPrintedRendered(
+  public FormFlattener setNonPrintableRendered(
     boolean value
     )
   {
-    nonPrintedRendered = value;
+    nonPrintableRendered = value;
     return this;
   }
 }

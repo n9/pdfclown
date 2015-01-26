@@ -40,7 +40,7 @@ namespace org.pdfclown.tools
   public sealed class FormFlattener
   {
     private bool hiddenRendered;
-    private bool nonPrintedRendered;
+    private bool nonPrintableRendered;
 
     /**
       <summary>Replaces the Acroform fields with their corresponding graphics representation.</summary>
@@ -61,7 +61,7 @@ namespace org.pdfclown.tools
           Annotation.FlagsEnum flags = widget.Flags;
           // Is the widget to be rendered?
           if(((flags & Annotation.FlagsEnum.Hidden) == 0 || hiddenRendered)
-            && ((flags & Annotation.FlagsEnum.Print) > 0 || nonPrintedRendered))
+            && ((flags & Annotation.FlagsEnum.Print) > 0 || nonPrintableRendered))
           {
             // Stamping the current state appearance of the widget...
             PdfName widgetCurrentState = (PdfName)widget.BaseDataObject[PdfName.AS];
@@ -129,14 +129,14 @@ namespace org.pdfclown.tools
     }
 
     /**
-      <summary>Gets/Sets whether non-printed fields have to be rendered.</summary>
+      <summary>Gets/Sets whether non-printable fields have to be rendered.</summary>
     */
-    public bool NonPrintedRendered
+    public bool NonPrintableRendered
     {
       get
-      {return nonPrintedRendered;}
+      {return nonPrintableRendered;}
       set
-      {nonPrintedRendered = value;}
+      {nonPrintableRendered = value;}
     }
   }
 }
