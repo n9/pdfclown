@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -48,7 +48,7 @@ namespace org.pdfclown.objects
         <para>The object is no more usable after this method returns.</para>
       </remarks>
     */
-    void Delete(
+    bool Delete(
       );
 
     /**

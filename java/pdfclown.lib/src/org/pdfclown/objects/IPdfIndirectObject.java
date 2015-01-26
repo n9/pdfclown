@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,7 +31,7 @@ import org.pdfclown.files.File;
   PDF indirect object interface.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.2.1, 1/26/15
 */
 public interface IPdfIndirectObject
 {
@@ -42,10 +42,9 @@ public interface IPdfIndirectObject
 
   /**
     Removes the object from its file context.
-    <h3>Remarks</h3>
     <p>The object is no more usable after this method returns.</p>
   */
-  void delete(
+  boolean delete(
     );
 
   /**

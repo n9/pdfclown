@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2014 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -602,7 +602,7 @@ namespace org.pdfclown.objects
                       kidChildren.Items.Insert(0, item);
                     }
                     nodeChildren.Items.RemoveAt(mid - 1);
-                    leftSibling.Reference.Delete();
+                    leftSibling.Delete();
                   }
                   else if(rightSibling != null)
                   {
@@ -615,7 +615,7 @@ namespace org.pdfclown.objects
                       kidChildren.Items.Add(item);
                     }
                     nodeChildren.Items.RemoveAt(mid + 1);
-                    rightSibling.Reference.Delete();
+                    rightSibling.Delete();
                   }
                   if(nodeChildren.Items.Count == 1)
                   {
@@ -628,7 +628,7 @@ namespace org.pdfclown.objects
                       kidChildren.Items.RemoveAt(itemIndex);
                       nodeChildren.Items.Add(item);
                     }
-                    kid.Reference.Delete();
+                    kid.Delete();
                     kid = node;
                     kidReference = kid.Reference;
                     kidChildren = nodeChildren;

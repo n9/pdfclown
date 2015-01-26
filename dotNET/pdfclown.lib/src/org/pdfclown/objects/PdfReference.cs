@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2014 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -192,10 +192,6 @@ namespace org.pdfclown.objects
       set
       {IndirectObject.DataObject = value;}
     }
-
-    public void Delete(
-      )
-    {IndirectObject.Delete();}
 
     public override PdfIndirectObject IndirectObject
     {

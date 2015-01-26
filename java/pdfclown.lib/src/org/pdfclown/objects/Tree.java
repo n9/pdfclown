@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2013 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2.1, 03/07/13
+  @version 0.1.2.1, 1/26/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Tree<
@@ -565,7 +565,7 @@ public abstract class Tree<
                   for(int index = leftSiblingChildren.items.size(); index-- > 0;)
                   {kidChildren.items.add(0, leftSiblingChildren.items.remove(index));}
                   nodeChildren.items.remove(mid - 1);
-                  leftSibling.getReference().delete();
+                  leftSibling.delete();
                 }
                 else if(rightSibling != null)
                 {
@@ -573,7 +573,7 @@ public abstract class Tree<
                   for(int index = rightSiblingChildren.items.size(); index-- > 0;)
                   {kidChildren.items.add(rightSiblingChildren.items.remove(0));}
                   nodeChildren.items.remove(mid + 1);
-                  rightSibling.getReference().delete();
+                  rightSibling.delete();
                 }
                 if(nodeChildren.items.size() == 1)
                 {
@@ -581,7 +581,7 @@ public abstract class Tree<
                   nodeChildren.items.remove(0);
                   for(int index = kidChildren.items.size(); index-- > 0;)
                   {nodeChildren.items.add(kidChildren.items.remove(0));}
-                  kid.getReference().delete();
+                  kid.delete();
                   kid = node;
                   kidReference = kid.getReference();
                   kidChildren = nodeChildren;

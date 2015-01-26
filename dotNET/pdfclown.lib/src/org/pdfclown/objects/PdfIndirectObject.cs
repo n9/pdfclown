@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -295,18 +295,19 @@ namespace org.pdfclown.objects
       }
     }
 
-    public void Delete(
+    public override bool Delete(
       )
     {
-      if(file == null)
-        return;
-
-      /*
-        NOTE: It's expected that DropFile() is invoked by IndirectObjects.Remove() method;
-        such an action is delegated because clients may invoke directly Remove() method,
-        skipping this method.
-      */
-      file.IndirectObjects.RemoveAt(xrefEntry.Number);
+      if(file != null)
+      {
+        /*
+          NOTE: It's expected that DropFile() is invoked by IndirectObjects.Remove() method;
+          such an action is delegated because clients may invoke directly Remove() method,
+          skipping this method.
+        */
+        file.IndirectObjects.RemoveAt(xrefEntry.Number);
+      }
+      return true;
     }
 
     public override PdfIndirectObject IndirectObject

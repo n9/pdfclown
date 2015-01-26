@@ -115,7 +115,7 @@ public class FormFlattener
           {kidsArray = formFields.getBaseDataObject();}
           
           kidsArray.remove(fieldPartDictionary.getReference());
-          fieldPartDictionary.getReference().delete();
+          fieldPartDictionary.delete();
           if(!kidsArray.isEmpty())
             break;
           

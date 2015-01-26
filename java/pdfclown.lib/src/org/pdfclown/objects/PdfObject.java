@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
   Abstract PDF object.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 1/26/15
 */
 public abstract class PdfObject
   implements Cloneable,
@@ -95,6 +95,20 @@ public abstract class PdfObject
     )
   {return accept(context.getCloner(), null);}
 
+  /**
+    Removes the object from its file context.
+    <p>Only indirect objects can be removed through this method; direct objects have to be explicitly
+    removed from their parent object. The object is no more usable after this method returns.</p>
+    
+    @return Whether the object was removed from its file context.
+  */
+  public boolean delete(
+    )
+  {
+    PdfIndirectObject indirectObject = getIndirectObject();
+    return indirectObject != null ? indirectObject.delete() : false;
+  }
+  
   /**
     Gets the indirect object containing this object.
 

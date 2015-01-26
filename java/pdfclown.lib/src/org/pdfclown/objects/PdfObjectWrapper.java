@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
   {@link #getBaseDataObject() baseDataObject} backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 1/25/15
+  @version 0.1.2.1, 1/26/15
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   implements Cloneable,
@@ -157,23 +157,14 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
 
   /**
     Removes the object from its document context.
-    <p>The object is no more usable after this method returns.</p>
+    <p>Only indirect objects can be removed through this method; direct objects have to be explicitly
+    removed from their parent object. The object is no more usable after this method returns.</p>
 
-    @return Whether the object was actually decontextualized (only indirect objects can be
-    decontextualized).
+    @return Whether the object was removed from its document context.
   */
   public boolean delete(
     )
-  {
-    // Is the object indirect?
-    if(baseObject instanceof PdfReference) // Indirect object.
-    {
-      ((PdfReference)baseObject).delete();
-      return true;
-    }
-    else // Direct object.
-    {return false;}
-  }
+  {return baseObject.delete();}
 
   @Override
   public boolean equals(

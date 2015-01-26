@@ -99,7 +99,7 @@ namespace org.pdfclown.tools
             {kidsArray = formFields.BaseDataObject;}
 
             kidsArray.Remove(fieldPartDictionary.Reference);
-            fieldPartDictionary.Reference.Delete();
+            fieldPartDictionary.Delete();
             if(kidsArray.Count > 0)
               break;
 

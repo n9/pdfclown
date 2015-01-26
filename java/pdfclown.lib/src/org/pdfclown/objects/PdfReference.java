@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2014 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF indirect reference object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 05/10/14
+  @version 0.1.2.1, 1/26/15
 */
 public final class PdfReference
   extends PdfDirectObject
@@ -190,11 +190,6 @@ public final class PdfReference
     File context
     )
   {return (PdfReference)super.clone(context);}
-
-  @Override
-  public void delete(
-    )
-  {getIndirectObject().delete();}
 
   @Override
   public PdfDataObject getDataObject(

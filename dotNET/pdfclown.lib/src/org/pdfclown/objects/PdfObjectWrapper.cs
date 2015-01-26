@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2014 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -114,22 +114,14 @@ namespace org.pdfclown.objects
 
     /**
       <summary>Removes the object from its document context.</summary>
-      <remarks>The object is no more usable after this method returns.</remarks>
-      <returns>Whether the object was actually decontextualized (only indirect objects can be
-      decontextualize).</returns>
+      <remarks>Only indirect objects can be removed through this method; direct objects have to be
+      explicitly removed from their parent object. The object is no more usable after this method
+      returns.</remarks>
+      <returns>Whether the object was removed from its document context.</returns>
     */
     public virtual bool Delete(
       )
-    {
-      // Is the object indirect?
-      if(baseObject is PdfReference) // Indirect object.
-      {
-        ((PdfReference)baseObject).Delete();
-        return true;
-      }
-      else // Direct object.
-      {return false;}
-    }
+    {return baseObject.Delete();}
 
     /**
       <summary>Gets the document context.</summary>

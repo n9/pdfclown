@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -39,7 +39,7 @@ import org.pdfclown.tokens.XRefEntry.UsageEnum;
   PDF indirect object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 1/26/15
 */
 public class PdfIndirectObject
   extends PdfObject
@@ -258,18 +258,19 @@ public class PdfIndirectObject
   {return (PdfIndirectObject)super.clone(context);}
 
   @Override
-  public void delete(
+  public boolean delete(
     )
   {
-    if(file == null)
-      return;
-
-    /*
-      NOTE: It's expected that dropFile() is invoked by IndirectObjects.remove() method;
-      such an action is delegated because clients may invoke directly remove() method,
-      skipping this method.
-    */
-    file.getIndirectObjects().remove(xrefEntry.getNumber());
+    if(file != null)
+    {
+      /*
+        NOTE: It's expected that dropFile() is invoked by IndirectObjects.remove() method;
+        such an action is delegated because clients may invoke directly remove() method,
+        skipping this method.
+      */
+      file.getIndirectObjects().remove(xrefEntry.getNumber());
+    }
+    return true;
   }
 
   @Override

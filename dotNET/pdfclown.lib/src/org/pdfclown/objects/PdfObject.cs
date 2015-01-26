@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -128,6 +128,20 @@ namespace org.pdfclown.objects
         PdfIndirectObject indirectObject = IndirectObject;
         return indirectObject != null ? indirectObject : Container;
       }
+    }
+
+    /**
+      <summary>Removes the object from its file context.</summary>
+      <remarks>Only indirect objects can be removed through this method; direct objects have to be
+      explicitly removed from their parent object. The object is no more usable after this method
+      returns.</remarks>
+      <returns>Whether the object was removed from its file context.</returns>
+    */
+    public virtual bool Delete(
+      )
+    {
+      PdfIndirectObject indirectObject = IndirectObject;
+      return indirectObject != null ? indirectObject.Delete() : false;
     }
 
     /**
