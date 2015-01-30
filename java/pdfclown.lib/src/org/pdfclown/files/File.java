@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,12 +28,14 @@ package org.pdfclown.files;
 import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Random;
 
 import org.pdfclown.Version;
 import org.pdfclown.VersionEnum;
+import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.FileInputStream;
 import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.bytes.IOutputStream;
@@ -58,7 +60,7 @@ import org.pdfclown.util.StringUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 1/30/15
 */
 public final class File
   implements Closeable
@@ -175,6 +177,11 @@ public final class File
     this.path = path;
   }
 
+  public File(
+    InputStream stream
+    )
+  {this(new Buffer(stream));}
+  
   public File(
     IInputStream stream
     )
