@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2013 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,7 +45,7 @@ import org.pdfclown.tokens.Symbol;
   PDF stream object [PDF:1.6:3.2.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/04/13
+  @version 0.1.2.1, 02/19/15
 */
 public class PdfStream
   extends PdfDataObject
@@ -380,48 +380,34 @@ public class PdfStream
     */
     header.setUpdateable(false);
 
-    byte[] bodyData;
+    byte[] bodyData = null;
     {
-      boolean bodyUnencoded;
+      boolean filterApplied = false;
       {
-        FileSpecification<?> dataFile = getDataFile();
         /*
           NOTE: In case of external file, the body buffer has to be saved back only if the file was
           actually resolved (that is brought into the body buffer) and modified.
         */
-        boolean encodeBody = (dataFile == null || (bodyResolved && body.isDirty()));
-        if(encodeBody)
+        FileSpecification<?> dataFile = getDataFile();
+        if(dataFile == null || (bodyResolved && body.isDirty()))
         {
-          PdfDirectObject filterObject = getFilter();
-          if(filterObject == null) // Unencoded body.
+          /*
+            NOTE: In order to keep the contents of metadata streams visible as plain text to tools
+            that are not PDF-aware, no filter is applied to them [PDF:1.7:10.2.2].
+          */
+          if(getFilter() == null
+            && !PdfName.Metadata.equals(header.get(PdfName.Type))) // Filter needed.
           {
-            /*
-              NOTE: Header entries related to stream body encoding are temporary, instrumental to
-              the current serialization process only.
-            */
-            bodyUnencoded = true;
-
-            // Set the filter to apply!
-            filterObject = PdfName.FlateDecode; // zlib/deflate filter.
-            // Get encoded body data applying the filter to the stream!
-            bodyData = body.encode(Filter.get((PdfName)filterObject), null);
-            // Set 'Filter' entry!
-            setFilter(filterObject);
+            // Apply the filter to the stream!
+            setFilter(PdfName.FlateDecode);
+            bodyData = body.encode(Filter.get((PdfName)getFilter()), null);
+            filterApplied = true;
           }
-          else // Encoded body.
-          {
-            bodyUnencoded = false;
-
-            // Get encoded body data!
-            bodyData = body.toByteArray();
-          }
+          else // No filter needed.
+          {bodyData = body.toByteArray();}
 
           if(dataFile != null)
           {
-            /*
-              NOTE: In case of external file, body data has to be serialized there, leaving empty
-              its representation within this stream.
-            */
             try
             {
               IOutputStream dataFileOutputStream = dataFile.getOutputStream();
@@ -430,15 +416,10 @@ public class PdfStream
             }
             catch(IOException e)
             {throw new RuntimeException("Data writing into " + dataFile.getPath() + " failed.", e);}
-            // Local serialization is empty!
-            bodyData = new byte[]{};
           }
         }
-        else
-        {
-          bodyUnencoded = false;
-          bodyData = new byte[]{};
-        }
+        if(dataFile != null)
+        {bodyData = new byte[]{};}
       }
 
       // Set the encoded data length!
@@ -447,7 +428,7 @@ public class PdfStream
       // 1. Header.
       header.writeTo(stream, context);
 
-      if(bodyUnencoded)
+      if(filterApplied)
       {
         // Restore actual header entries!
         header.put(PdfName.Length, PdfInteger.get((int)body.getLength()));
