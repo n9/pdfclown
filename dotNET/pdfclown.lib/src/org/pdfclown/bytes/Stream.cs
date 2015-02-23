@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -52,6 +52,10 @@ namespace org.pdfclown.bytes
       System.IO.Stream stream
       )
     {this.stream = stream;}
+
+    ~Stream(
+      )
+    {Dispose(false);}
     #endregion
 
     #region interface
@@ -201,11 +205,7 @@ namespace org.pdfclown.bytes
     public void Dispose(
       )
     {
-      if(stream != null)
-      {
-        stream.Dispose();
-        stream = null;
-      }
+      Dispose(true);
       GC.SuppressFinalize(this);
     }
     #endregion
@@ -244,6 +244,22 @@ namespace org.pdfclown.bytes
       Write(baseData);
     }
     #endregion
+    #endregion
+
+    #region private
+    private void Dispose(
+      bool disposing
+      )
+    {
+      if(disposing)
+      {
+        if(stream != null)
+        {
+          stream.Dispose();
+          stream = null;
+        }
+      }
+    }
     #endregion
     #endregion
     #endregion

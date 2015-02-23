@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,6 +47,10 @@ namespace org.pdfclown.util.io
       Stream stream
       )
     {this.stream = stream;}
+
+    ~BigEndianBinaryReader(
+      )
+    {Dispose(false);}
     #endregion
 
     #region interface
@@ -100,13 +104,24 @@ namespace org.pdfclown.util.io
     public void Dispose(
       )
     {
-      if (disposed)
-        return;
-
-      disposed = true;
-      ((IDisposable)stream).Dispose();
+      Dispose(true);
+      GC.SuppressFinalize(this);
     }
     #endregion
+    #endregion
+
+    #region protected
+    protected virtual void Dispose(
+      bool disposing
+      )
+    {
+      if(disposed)
+        return;
+
+      if(disposing)
+      {stream.Dispose();}
+      disposed = true;
+    }
     #endregion
     #endregion
     #endregion

@@ -173,6 +173,10 @@ namespace org.pdfclown.files
         ? Document.ConfigurationImpl.XRefModeEnum.Compressed
         : Document.ConfigurationImpl.XRefModeEnum.Plain);
     }
+
+    ~File(
+      )
+    {Dispose(false);}
     #endregion
 
     #region interface
@@ -372,27 +376,36 @@ namespace org.pdfclown.files
     public void Dispose(
       )
     {
-      if(reader != null)
-      {
-        reader.Dispose();
-        reader = null;
-
-        /*
-          NOTE: If the temporary file exists (see Save() method), it must overwrite the document file.
-        */
-        if(System.IO.File.Exists(TempPath))
-        {
-          System.IO.File.Delete(path);
-          System.IO.File.Move(TempPath,path);
-        }
-      }
-
+      Dispose(true);
       GC.SuppressFinalize(this);
     }
     #endregion
     #endregion
 
     #region private
+    private void Dispose(
+      bool disposing
+      )
+    {
+      if(disposing)
+      {
+        if(reader != null)
+        {
+          reader.Dispose();
+          reader = null;
+
+          /*
+            NOTE: If the temporary file exists (see Save() method), it must overwrite the document file.
+          */
+          if(System.IO.File.Exists(TempPath))
+          {
+            System.IO.File.Delete(path);
+            System.IO.File.Move(TempPath,path);
+          }
+        }
+      }
+    }
+
     private void Initialize(
       )
     {configuration = new ConfigurationImpl(this);}

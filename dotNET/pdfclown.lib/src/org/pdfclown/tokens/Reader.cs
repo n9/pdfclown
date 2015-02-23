@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -92,6 +92,10 @@ namespace org.pdfclown.tokens
       files.File file
       )
     {this.parser = new FileParser(stream, file);}
+
+    ~Reader(
+      )
+    {Dispose(false);}
     #endregion
 
     #region interface
@@ -228,15 +232,26 @@ namespace org.pdfclown.tokens
     public void Dispose(
       )
     {
-      if(parser != null)
-      {
-        parser.Dispose();
-        parser = null;
-      }
-
+      Dispose(true);
       GC.SuppressFinalize(this);
     }
     #endregion
+    #endregion
+
+    #region private
+    private void Dispose(
+      bool disposing
+      )
+    {
+      if(disposing)
+      {
+        if(parser != null)
+        {
+          parser.Dispose();
+          parser = null;
+        }
+      }
+    }
     #endregion
     #endregion
     #endregion
