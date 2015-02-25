@@ -495,25 +495,32 @@ namespace org.pdfclown.util.parsers
     {stream.Skip(offset);}
 
     /**
-      <summary>Moves the pointer before the next non-EOL character after the current position.</summary>
+      <summary>Moves the pointer after the next end-of-line character sequence (that is just before
+      the non-EOL character following the EOL sequence).</summary>
       <returns>Whether the stream can be further read.</returns>
     */
     public bool SkipEOL(
       )
     {
       int c;
-      do
+      bool found = false;
+      while(true)
       {
         c = stream.ReadByte();
         if(c == -1)
           return false;
-      } while(IsEOL(c)); // Keeps going till there's an EOL character.
-      stream.Skip(-1); // Moves back to the first non-EOL character position.
+        else if(IsEOL(c))
+        {found = true;}
+        else if(found) // After EOL.
+          break;
+      }
+      stream.Skip(-1); // Moves back to the first non-EOL character position (ready to read the next token).
       return true;
     }
 
     /**
-      <summary>Moves the pointer before the next non-whitespace character after the current position.</summary>
+      <summary>Moves the pointer after the current whitespace sequence (that is just before the
+      non-whitespace character following the whitespace sequence).</summary>
       <returns>Whether the stream can be further read.</returns>
     */
     public bool SkipWhitespace(
@@ -526,7 +533,7 @@ namespace org.pdfclown.util.parsers
         if(c == -1)
           return false;
       } while(IsWhitespace(c)); // Keeps going till there's a whitespace character.
-      stream.Skip(-1); // Moves back to the first non-whitespace character position.
+      stream.Skip(-1); // Moves back to the first non-whitespace character position (ready to read the next token).
       return true;
     }
 

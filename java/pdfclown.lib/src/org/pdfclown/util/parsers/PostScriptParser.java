@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -39,7 +39,7 @@ import org.pdfclown.tokens.Symbol;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 12/02/12
+  @version 0.1.2.1, 02/25/15
 */
 public class PostScriptParser
   implements Closeable
@@ -524,9 +524,11 @@ public class PostScriptParser
   {stream.skip(offset);}
 
   /**
-    Moves the pointer before the next non-EOL character after the current position.
+    Moves the pointer after the next end-of-line character sequence (that is just before the non-EOL
+    character following the EOL sequence).
 
-    @return Whether the stream can be further read.
+    @return
+      Whether the stream can be further read.
   */
   public boolean skipEOL(
     )
@@ -534,19 +536,28 @@ public class PostScriptParser
     try
     {
       int c;
-      do
-      {c = stream.readUnsignedByte();} while(isEOL(c)); // Keeps going till there's an EOL character.
+      boolean found = false;
+      while(true)
+      {
+        c = stream.readUnsignedByte();
+        if(isEOL(c))
+        {found = true;}
+        else if(found) // After EOL.
+          break;
+      }
     }
     catch(EOFException e)
     {return false;}
-    stream.skip(-1); // Moves back to the first non-EOL character position.
+    stream.skip(-1); // Moves back to the first non-EOL character position (ready to read the next token).
     return true;
   }
 
   /**
-    Moves the pointer before the next non-whitespace character after the current position.
+    Moves the pointer after the current whitespace sequence (that is just before the non-whitespace
+    character following the whitespace sequence).
 
-    @return Whether the stream can be further read.
+    @return
+      Whether the stream can be further read.
   */
   public boolean skipWhitespace(
     )
@@ -559,7 +570,7 @@ public class PostScriptParser
     }
     catch(EOFException e)
     {return false;}
-    stream.skip(-1); // Moves back to the first non-whitespace character position.
+    stream.skip(-1); // Moves back to the first non-whitespace character position (ready to read the next token).
     return true;
   }
 
