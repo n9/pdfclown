@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,7 @@
 
 package org.pdfclown.tools;
 
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -36,6 +37,10 @@ import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.Pages;
+import org.pdfclown.documents.contents.ContentScanner;
+import org.pdfclown.documents.contents.ContentScanner.GraphicsObjectWrapper;
+import org.pdfclown.documents.contents.objects.ContainerObject;
+import org.pdfclown.documents.contents.objects.ContentObject;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
@@ -51,7 +56,7 @@ import org.pdfclown.objects.PdfStream;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.6
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 03/01/15
 */
 public final class PageManager
 {
@@ -71,7 +76,8 @@ public final class PageManager
   /**
     Gets the data size of the specified page expressed in bytes.
 
-    @param page Page whose data size has to be calculated.
+    @param page
+      Page whose data size has to be calculated.
   */
   public static long getSize(
     Page page
@@ -81,8 +87,10 @@ public final class PageManager
   /**
     Gets the data size of the specified page expressed in bytes.
 
-    @param page Page whose data size has to be calculated.
-    @param visitedReferences References to data objects excluded from calculation.
+    @param page
+      Page whose data size has to be calculated.
+    @param visitedReferences
+      References to data objects excluded from calculation.
       This set is useful, for example, to avoid recalculating the data size of shared resources.
       During the operation, this set is populated with references to visited data objects.
   */
@@ -91,6 +99,31 @@ public final class PageManager
     Set<PdfReference> visitedReferences
     )
   {return getSize(page.getBaseObject(), visitedReferences, true);}
+  
+  /**
+    Gets whether the specified page is blank.
+    
+    @param page
+      Page to evaluate.
+  */
+  public static boolean isBlank(
+    Page page
+    )
+  {return isBlank(page, page.getBox());}
+  
+  /**
+    Gets whether the specified page is blank.
+    
+    @param page
+      Page to evaluate.
+    @param contentBox
+      Area to evaluate within the page.
+  */
+  public static boolean isBlank(
+    Page page,
+    Rectangle2D contentBox
+    )
+  {return isBlank(new ContentScanner(page), contentBox);}
   // </public>
 
   // <private>
@@ -151,6 +184,44 @@ public final class PageManager
       }
     }
     return dataSize;
+  }
+  
+  /**
+    Gets whether the specified content stream part is blank.
+    
+    @param level
+      Content stream part to evaluate.
+    @param contentBox
+      Area to evaluate within the page.
+  */
+  private static boolean isBlank(
+    ContentScanner level,
+    Rectangle2D contentBox
+    )
+  {
+    if(level == null)
+      return true;
+
+    while(level.moveNext())
+    {
+      ContentObject content = level.getCurrent();
+      if(content instanceof ContainerObject)
+      {
+        // Scan the inner level!
+        if(!isBlank(level.getChildLevel(), contentBox))
+          return false;
+      }
+      else
+      {
+        GraphicsObjectWrapper<?> contentWrapper = level.getCurrentWrapper();
+        if(contentWrapper == null)
+          continue;
+        
+        if(contentWrapper.getBox().intersects(contentBox))
+          return false;
+      }
+    }
+    return true;
   }
   // </private>
   // </interface>

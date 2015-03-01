@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,6 +32,7 @@ using org.pdfclown.files;
 using org.pdfclown.objects;
 
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace org.pdfclown.tools
 {
@@ -73,6 +74,26 @@ namespace org.pdfclown.tools
       HashSet<PdfReference> visitedReferences
       )
     {return GetSize(page.BaseObject, visitedReferences, true);}
+
+    /**
+      <summary>Gets whether the specified page is blank.</summary>
+      <param name="page">Page to evaluate.</param>
+    */
+    public static bool IsBlank(
+      Page page
+      )
+    {return IsBlank(page, page.Box);}
+
+    /**
+      <summary>Gets whether the specified page is blank.</summary>
+      <param name="page">Page to evaluate.</param>
+      <param name="contentBox">Area to evaluate within the page.</param>
+    */
+    public static bool IsBlank(
+      Page page,
+      RectangleF contentBox
+      )
+    {return IsBlank(new ContentScanner(page), contentBox);}
     #endregion
 
     #region private
@@ -132,6 +153,41 @@ namespace org.pdfclown.tools
         }
       }
       return dataSize;
+    }
+
+    /**
+      <summary>Gets whether the specified content stream part is blank.</summary>
+      <param name="level">Content stream part to evaluate.</param>
+      <param name="contentBox">Area to evaluate within the page.</param>
+    */
+    private static bool IsBlank(
+      ContentScanner level,
+      RectangleF contentBox
+      )
+    {
+      if(level == null)
+        return true;
+
+      while(level.MoveNext())
+      {
+        ContentObject content = level.Current;
+        if(content is ContainerObject)
+        {
+          // Scan the inner level!
+          if(!IsBlank(level.ChildLevel, contentBox))
+            return false;
+        }
+        else
+        {
+          ContentScanner.GraphicsObjectWrapper contentWrapper = level.CurrentWrapper;
+          if(contentWrapper == null)
+            continue;
+  
+          if(contentWrapper.Box.Value.IntersectsWith(contentBox))
+            return false;
+        }
+      }
+      return true;
     }
     #endregion
     #endregion

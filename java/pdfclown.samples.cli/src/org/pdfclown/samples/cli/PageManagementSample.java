@@ -1,5 +1,7 @@
 package org.pdfclown.samples.cli;
 
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +15,7 @@ import org.pdfclown.documents.Pages;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.tools.PageManager;
+import org.pdfclown.util.math.geom.Dimension;
 
 /**
   This sample demonstrates <b>how to manipulate the pages collection</b> within a PDF document,
@@ -20,7 +23,7 @@ import org.pdfclown.tools.PageManager;
   splits of groups of pages.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 1/24/15
+  @version 0.1.2.1, 03/01/15
 */
 public class PageManagementSample
   extends Sample
@@ -28,6 +31,7 @@ public class PageManagementSample
   private enum ActionEnum
   {
     PageDataSizeCalculation,
+    BlankPageDetection,
     PageAddition,
     PageMovement,
     PageRemoval,
@@ -97,6 +101,31 @@ public class PageManagementSample
                 + incrementalDataSize + " (incremental)"
               );
           }
+        } break;
+        case BlankPageDetection:
+        {
+          System.out.println(
+            "\nThis algorithm makes a simple guess about whether a page should be considered empty:"
+            + "\nit evaluates the middle portion (70%) of a page assuming that possible contents"
+            + "\noutside this area would NOT qualify as actual (informative) content (such as"
+            + "\nredundant patterns like footers and headers). Obviously, this assumption may need"
+            + "\nsome fine-tuning as each document features its own layout ratios. Alternatively,"
+            + "\nan adaptive algorithm should automatically evaluate the content role based on its"
+            + "\ntypographic attributes in relation to the other contents existing in the same page"
+            + "\nor document.\n");
+          int blankPageCount = 0;
+          for(Page page : mainPages)
+          {
+            Rectangle2D pageBox = page.getBox();
+            Dimension margin = new Dimension(pageBox.getWidth() * .15, pageBox.getHeight() * .15);
+            Rectangle2D contentBox = new Rectangle2D.Double(margin.getWidth(), margin.getHeight(), pageBox.getWidth() - margin.getWidth() * 2, pageBox.getHeight() - margin.getHeight() * 2);
+            if(PageManager.isBlank(page, contentBox))
+            {
+              blankPageCount++;
+              System.out.println("Page " + page.getNumber() + " is blank");
+            }
+          }
+          System.out.println(blankPageCount > 0 ? "Blank pages detected: " + blankPageCount + " of " + mainPages.size() : "No blank pages detected.");
         } break;
         case PageAddition:
         {

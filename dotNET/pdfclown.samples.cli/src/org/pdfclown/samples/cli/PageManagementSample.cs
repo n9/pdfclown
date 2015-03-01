@@ -6,6 +6,7 @@ using org.pdfclown.tools;
 using System;
 using io = System.IO;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace org.pdfclown.samples.cli
@@ -21,6 +22,7 @@ namespace org.pdfclown.samples.cli
     internal enum ActionEnum
     {
       PageDataSizeCalculation,
+      BlankPageDetection,
       PageAddition,
       PageMovement,
       PageRemoval,
@@ -70,6 +72,31 @@ namespace org.pdfclown.samples.cli
                   + incrementalDataSize + " (incremental)"
                 );
             }
+          } break;
+          case ActionEnum.BlankPageDetection:
+          {
+            Console.WriteLine(
+              "\nThis algorithm makes a simple guess about whether a page should be considered empty:"
+              + "\nit evaluates the middle portion (70%) of a page assuming that possible contents"
+              + "\noutside this area would NOT qualify as actual (informative) content (such as"
+              + "\nredundant patterns like footers and headers). Obviously, this assumption may need"
+              + "\nsome fine-tuning as each document features its own layout ratios. Alternatively,"
+              + "\nan adaptive algorithm should automatically evaluate the content role based on its"
+              + "\ntypographic attributes in relation to the other contents existing in the same page"
+              + "\nor document.\n");
+            int blankPageCount = 0;
+            foreach(Page page in mainPages)
+            {
+              RectangleF pageBox = page.Box;
+              SizeF margin = new SizeF(pageBox.Width * .15f, pageBox.Height * .15f);
+              RectangleF contentBox = new RectangleF(margin.Width, margin.Height, pageBox.Width - margin.Width * 2, pageBox.Height - margin.Height * 2);
+              if(PageManager.IsBlank(page, contentBox))
+              {
+                blankPageCount++;
+                Console.WriteLine("Page " + page.Number + " is blank");
+              }
+            }
+            Console.WriteLine(blankPageCount > 0 ? "Blank pages detected: " + blankPageCount + " of " + mainPages.Count : "No blank pages detected.");
           } break;
           case ActionEnum.PageAddition:
           {
