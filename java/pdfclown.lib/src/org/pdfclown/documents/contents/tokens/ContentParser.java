@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -66,7 +66,7 @@ import org.pdfclown.util.parsers.ParseException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 09/24/12
+  @version 0.1.2.1, 03/04/15
 */
 public final class ContentParser
   extends BaseParser
@@ -210,10 +210,10 @@ public final class ContentParser
     InlineImageBody body;
     {
       IInputStream stream = getStream();
-      moveNext();
       Buffer data = new Buffer();
       try
       {
+        stream.readByte(); // Should be the whitespace following the 'ID' token.
         byte prevByte = 0;
         while(true)
         {

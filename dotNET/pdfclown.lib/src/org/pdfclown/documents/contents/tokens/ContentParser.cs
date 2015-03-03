@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -177,8 +177,8 @@ namespace org.pdfclown.documents.contents.tokens
       InlineImageBody body;
       {
         bytes::IInputStream stream = Stream;
-        MoveNext();
         bytes::Buffer data = new bytes::Buffer();
+        stream.ReadByte(); // Should be the whitespace following the 'ID' token.
         byte prevByte = 0;
         while(true)
         {
