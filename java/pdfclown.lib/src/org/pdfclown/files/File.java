@@ -60,7 +60,7 @@ import org.pdfclown.util.StringUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2.1, 1/30/15
+  @version 0.1.2.1, 03/04/15
 */
 public final class File
   implements Closeable
@@ -177,6 +177,11 @@ public final class File
     this.path = path;
   }
 
+  public File(
+    byte[] data
+    )
+  {this(new Buffer(data));}
+  
   public File(
     InputStream stream
     )

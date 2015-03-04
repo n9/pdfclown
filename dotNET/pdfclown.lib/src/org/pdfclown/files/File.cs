@@ -149,6 +149,11 @@ namespace org.pdfclown.files
     {this.path = path;}
 
     public File(
+      byte[] data
+      ) : this(new bytes.Buffer(data))
+    {}
+
+    public File(
       System.IO.Stream stream
       ) : this(new bytes.Stream(stream))
     {}
