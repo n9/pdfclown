@@ -3,6 +3,7 @@
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
+    * Andreas Pinter (bug reporter [FIX:53], https://sourceforge.net/u/drunal/)
 
   This file should be part of the source code distribution of "PDF Clown library"
   (the Program): see the accompanying README files for more info.
@@ -68,7 +69,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2.1, 1/25/15
+  @version 0.1.2.1, 03/09/15
 */
 @PDF(VersionEnum.PDF10)
 public final class Page
@@ -620,7 +621,7 @@ public final class Page
     {
       form = new FormXObject(context, getBox());
       form.setResources(
-        context.equals(getDocument())
+        context == getDocument() // [FIX:53] Ambiguous context identity.
           ? getResources() // Same document: reuses the existing resources.
           : getResources().clone(context) // Alien document: clones the resources.
         );

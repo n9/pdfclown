@@ -3,6 +3,7 @@
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
+    * Andreas Pinter (bug reporter [FIX:53], https://sourceforge.net/u/drunal/)
 
   This file should be part of the source code distribution of "PDF Clown library" (the
   Program): see the accompanying README files for more info.
@@ -529,9 +530,10 @@ namespace org.pdfclown.documents
       xObjects::FormXObject form;
       {
         form = new xObjects::FormXObject(context, Box);
-        form.Resources = (Resources)(context.Equals(Document)
-          ? Resources // Same document: reuses the existing resources.
-          : Resources.Clone(context) // Alien document: clones the resources.
+        form.Resources = (Resources)(
+          context == Document  // [FIX:53] Ambiguous context identity.
+            ? Resources // Same document: reuses the existing resources.
+            : Resources.Clone(context) // Alien document: clones the resources.
           );
 
         // Body (contents).
