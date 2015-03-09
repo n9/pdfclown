@@ -1,6 +1,5 @@
 package org.pdfclown.samples.cli;
 
-import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.util.HashMap;
