@@ -34,7 +34,7 @@ import org.pdfclown.tools.TextExtractor;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 1/24/15
+  @version 0.1.2.1, 03/09/15
 */
 public class LinkParsingSample
   extends Sample
@@ -185,5 +185,13 @@ public class LinkParsingSample
     }
     else
     {System.out.println(((Integer)pageRef+1));}
+
+    Object location = destination.getLocation();
+    if(location != null)
+    {System.out.println(String.format("    Location %s", location));}
+
+    Double zoom = destination.getZoom();
+    if(zoom != null)
+    {System.out.println(String.format("    Zoom %s", zoom));}
   }
 }

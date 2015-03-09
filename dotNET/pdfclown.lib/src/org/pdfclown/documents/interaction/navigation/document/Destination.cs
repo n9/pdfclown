@@ -1,8 +1,9 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
+    * Furkan Duman (bug reporter [FIX:66], https://sourceforge.net/u/fduman/)
 
   This file should be part of the source code distribution of "PDF Clown library" (the
   Program): see the accompanying README files for more info.
@@ -214,25 +215,26 @@ namespace org.pdfclown.documents.interaction.navigation.document
     {
       get
       {
+        // [FIX:66] Invalid cast exception on number unboxing.
         switch(Mode)
         {
           case ModeEnum.FitBoundingBoxHorizontal:
           case ModeEnum.FitBoundingBoxVertical:
           case ModeEnum.FitHorizontal:
           case ModeEnum.FitVertical:
-            return PdfSimpleObject<object>.GetValue(BaseDataObject[2], Double.NaN);
+            return Convert.ToSingle(PdfSimpleObject<object>.GetValue(BaseDataObject[2], Double.NaN));
           case ModeEnum.FitRectangle:
           {
-            float left = (float)PdfSimpleObject<object>.GetValue(BaseDataObject[2], Double.NaN);
-            float top = (float)PdfSimpleObject<object>.GetValue(BaseDataObject[5], Double.NaN);
-            float width = (float)PdfSimpleObject<object>.GetValue(BaseDataObject[4], Double.NaN) - left;
-            float height = (float)PdfSimpleObject<object>.GetValue(BaseDataObject[3], Double.NaN) - top;
+            float left = Convert.ToSingle(PdfSimpleObject<object>.GetValue(BaseDataObject[2], Double.NaN));
+            float top = Convert.ToSingle(PdfSimpleObject<object>.GetValue(BaseDataObject[5], Double.NaN));
+            float width = Convert.ToSingle(PdfSimpleObject<object>.GetValue(BaseDataObject[4], Double.NaN)) - left;
+            float height = Convert.ToSingle(PdfSimpleObject<object>.GetValue(BaseDataObject[3], Double.NaN)) - top;
             return new RectangleF(left, top, width, height);
           }
           case ModeEnum.XYZ:
             return new PointF(
-              (float)PdfSimpleObject<object>.GetValue(BaseDataObject[2], Double.NaN),
-              (float)PdfSimpleObject<object>.GetValue(BaseDataObject[3], Double.NaN)
+              Convert.ToSingle(PdfSimpleObject<object>.GetValue(BaseDataObject[2], Double.NaN)),
+              Convert.ToSingle(PdfSimpleObject<object>.GetValue(BaseDataObject[3], Double.NaN))
               );
           default:
             return null;
@@ -247,7 +249,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
           case ModeEnum.FitBoundingBoxVertical:
           case ModeEnum.FitHorizontal:
           case ModeEnum.FitVertical:
-            baseDataObject[2] = PdfReal.Get((double?)Convert.ToDouble(value));
+            baseDataObject[2] = PdfReal.Get(Convert.ToDouble(value));
             break;
           case ModeEnum.FitRectangle:
           {
@@ -334,7 +336,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
         switch(Mode)
         {
           case ModeEnum.XYZ:
-            return (double?)PdfSimpleObject<object>.GetValue(BaseDataObject[4]);
+            return Convert.ToDouble(PdfSimpleObject<object>.GetValue(BaseDataObject[4]));
           default:
             return null;
         }

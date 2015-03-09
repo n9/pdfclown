@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -53,7 +53,7 @@ import org.pdfclown.objects.PdfString;
   </ul>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 03/09/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Destination
@@ -249,25 +249,26 @@ public abstract class Destination
   public Object getLocation(
     )
   {
+    // [FIX:66] Invalid cast exception on number unboxing.
     switch(getMode())
     {
       case FitBoundingBoxHorizontal:
       case FitBoundingBoxVertical:
       case FitHorizontal:
       case FitVertical:
-        return PdfSimpleObject.getValue(getBaseDataObject().get(2), Double.NaN);
+        return ((Number)PdfSimpleObject.getValue(getBaseDataObject().get(2), Double.NaN)).doubleValue();
       case FitRectangle:
       {
-        Double left = (Double)PdfSimpleObject.getValue(getBaseDataObject().get(2), Double.NaN);
-        Double top = (Double)PdfSimpleObject.getValue(getBaseDataObject().get(5), Double.NaN);
-        Double width = (Double)PdfSimpleObject.getValue(getBaseDataObject().get(4), Double.NaN) - left;
-        Double height = (Double)PdfSimpleObject.getValue(getBaseDataObject().get(3), Double.NaN) - top;
+        double left = ((Number)PdfSimpleObject.getValue(getBaseDataObject().get(2), Double.NaN)).doubleValue();
+        double top = ((Number)PdfSimpleObject.getValue(getBaseDataObject().get(5), Double.NaN)).doubleValue();
+        double width = ((Number)PdfSimpleObject.getValue(getBaseDataObject().get(4), Double.NaN)).doubleValue() - left;
+        double height = ((Number)PdfSimpleObject.getValue(getBaseDataObject().get(3), Double.NaN)).doubleValue() - top;
         return new Rectangle2D.Double(left, top, width, height);
       }
       case XYZ:
         return new Point2D.Double(
-          (Double)PdfSimpleObject.getValue(getBaseDataObject().get(2), Double.NaN),
-          (Double)PdfSimpleObject.getValue(getBaseDataObject().get(3), Double.NaN)
+          ((Number)PdfSimpleObject.getValue(getBaseDataObject().get(2), Double.NaN)).doubleValue(),
+          ((Number)PdfSimpleObject.getValue(getBaseDataObject().get(3), Double.NaN)).doubleValue()
           );
       default:
         return null;
@@ -296,7 +297,7 @@ public abstract class Destination
     switch(getMode())
     {
       case XYZ:
-        return (Double)PdfSimpleObject.getValue(getBaseDataObject().get(4));
+        return ((Number)PdfSimpleObject.getValue(getBaseDataObject().get(4))).doubleValue();
       default:
         return null;
     }

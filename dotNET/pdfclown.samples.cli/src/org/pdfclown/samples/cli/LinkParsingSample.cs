@@ -159,6 +159,14 @@ namespace org.pdfclown.samples.cli
       }
       else
       {Console.WriteLine((int)pageRef+1);}
+
+      object location = destination.Location;
+      if(location != null)
+      {Console.WriteLine("    Location {0}", location);}
+
+      double? zoom = destination.Zoom;
+      if(zoom.HasValue)
+      {Console.WriteLine("    Zoom {0}", zoom.Value);}
     }
   }
 }
