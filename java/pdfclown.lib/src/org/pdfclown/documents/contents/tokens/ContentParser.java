@@ -3,6 +3,7 @@
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
+    * Stephen Cleary (bug reporter [FIX:51], https://sourceforge.net/u/stephencleary/)
 
   This file should be part of the source code distribution of "PDF Clown library"
   (the Program): see the accompanying README files for more info.
@@ -66,7 +67,7 @@ import org.pdfclown.util.parsers.ParseException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2.1, 03/04/15
+  @version 0.1.2.1, 03/09/15
 */
 public final class ContentParser
   extends BaseParser
@@ -209,19 +210,28 @@ public final class ContentParser
 
     InlineImageBody body;
     {
+      // [FIX:51] Wrong 'EI' token handling on inline image parsing.
       IInputStream stream = getStream();
       Buffer data = new Buffer();
       try
       {
         stream.readByte(); // Should be the whitespace following the 'ID' token.
         byte prevByte = 0;
+        boolean prevReady = false;
         while(true)
         {
           byte curByte = stream.readByte();
-          if(prevByte == 'E' && curByte == 'I')
-            break;
+          if(prevReady)
+          {
+            if(prevByte == 'E' && curByte == 'I')
+              break;
 
-          data.append(prevByte = curByte);
+            data.append(prevByte);
+          }
+          else
+          {prevReady = true;}
+
+          prevByte = curByte;
         }
       }
       catch(EOFException e)

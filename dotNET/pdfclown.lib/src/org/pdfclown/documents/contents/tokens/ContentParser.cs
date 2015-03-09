@@ -3,6 +3,7 @@
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
+    * Stephen Cleary (bug reporter [FIX:51], https://sourceforge.net/u/stephencleary/)
 
   This file should be part of the source code distribution of "PDF Clown library" (the
   Program): see the accompanying README files for more info.
@@ -27,6 +28,7 @@ using bytes = org.pdfclown.bytes;
 using org.pdfclown.documents.contents.objects;
 using org.pdfclown.objects;
 using org.pdfclown.tokens;
+using org.pdfclown.util.parsers;
 
 using System;
 using System.Collections.Generic;
@@ -176,17 +178,29 @@ namespace org.pdfclown.documents.contents.tokens
 
       InlineImageBody body;
       {
+        // [FIX:51] Wrong 'EI' token handling on inline image parsing.
         bytes::IInputStream stream = Stream;
         bytes::Buffer data = new bytes::Buffer();
         stream.ReadByte(); // Should be the whitespace following the 'ID' token.
         byte prevByte = 0;
+        bool prevReady = false;
         while(true)
         {
-          byte curByte = (byte)stream.ReadByte();
-          if(prevByte == 'E' && curByte == 'I')
-            break;
+          int curByte = stream.ReadByte();
+          if(curByte == -1)
+            throw new ParseException("Unexpected EOF (no 'EI' token found to close inline image data stream).");
 
-          data.Append(prevByte = curByte);
+          if(prevReady)
+          {
+            if(prevByte == 'E' && curByte == 'I')
+              break;
+
+            data.Append(prevByte);
+          }
+          else
+          {prevReady = true;}
+
+          prevByte = (byte)curByte;
         }
         body = new InlineImageBody(data);
       }
