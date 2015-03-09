@@ -3,6 +3,7 @@
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
+    * Kasper Fabaech Brandt (patch contributor [FIX:45], http://sourceforge.net/u/kasperfb/)
 
   This file should be part of the source code distribution of "PDF Clown library" (the
   Program): see the accompanying README files for more info.
@@ -165,18 +166,25 @@ namespace org.pdfclown.files
       Initialize();
 
       reader = new Reader(stream, this);
+      try // [FIX:45] File constructor didn't dispose reader on error.
+      {
+        Reader.FileInfo info = reader.ReadInfo();
+        version = info.Version;
+        trailer = PrepareTrailer(info.Trailer);
+        if(trailer.ContainsKey(PdfName.Encrypt)) // Encrypted file.
+          throw new NotImplementedException("Encrypted files are currently not supported.");
 
-      Reader.FileInfo info = reader.ReadInfo();
-      version = info.Version;
-      trailer = PrepareTrailer(info.Trailer);
-      if(trailer.ContainsKey(PdfName.Encrypt)) // Encrypted file.
-        throw new NotImplementedException("Encrypted files are currently not supported.");
-
-      indirectObjects = new IndirectObjects(this, info.XrefEntries);
-      document = new Document(trailer[PdfName.Root]);
-      document.Configuration.XrefMode = (PdfName.XRef.Equals(trailer[PdfName.Type])
-        ? Document.ConfigurationImpl.XRefModeEnum.Compressed
-        : Document.ConfigurationImpl.XRefModeEnum.Plain);
+        indirectObjects = new IndirectObjects(this, info.XrefEntries);
+        document = new Document(trailer[PdfName.Root]);
+        document.Configuration.XrefMode = (PdfName.XRef.Equals(trailer[PdfName.Type])
+          ? Document.ConfigurationImpl.XRefModeEnum.Compressed
+          : Document.ConfigurationImpl.XRefModeEnum.Plain);
+      }
+      catch(Exception)
+      {
+        reader.Dispose();
+        throw;
+      }
     }
 
     ~File(
