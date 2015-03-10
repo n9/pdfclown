@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,6 +32,7 @@ import java.util.Map;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.Buffer;
+import org.pdfclown.bytes.IBuffer;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.ContentScanner;
 import org.pdfclown.documents.contents.FontResources;
@@ -50,10 +51,12 @@ import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.documents.interaction.JustificationEnum;
 import org.pdfclown.documents.interaction.annotations.AppearanceStates;
 import org.pdfclown.documents.interaction.annotations.Widget;
+import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObject;
+import org.pdfclown.objects.PdfStream;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.EnumUtils;
@@ -64,7 +67,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 03/10/15
 */
 @PDF(VersionEnum.PDF12)
 public final class TextField
@@ -123,6 +126,23 @@ public final class TextField
     return maxLengthObject != null ? maxLengthObject.getValue() : Integer.MAX_VALUE;
   }
 
+  /**
+    @return
+      Either a string or an {@link IBuffer}.
+  */
+  @Override
+  public Object getValue(
+    )
+  {
+    PdfDataObject valueObject = PdfObject.resolve(getInheritableAttribute(PdfName.V));
+    if(valueObject instanceof PdfString)
+      return ((PdfString)valueObject).getValue();
+    else if(valueObject instanceof PdfStream)
+      return ((PdfStream)valueObject).getBody();
+    else
+      return null;
+  }
+  
   /**
     Gets whether the field can contain multiple lines of text.
   */
@@ -184,20 +204,46 @@ public final class TextField
     )
   {setFlags(EnumUtils.mask(getFlags(), FlagsEnum.DoNotSpellCheck, !value));}
 
+  /**
+    @see #getValue()
+  */
   @Override
   public void setValue(
     Object value
     )
   {
-    String stringValue = (String)value;
-    if(stringValue != null)
+    if(!(value == null
+        || value instanceof String
+        || value instanceof IBuffer))
+      throw new IllegalArgumentException("Value MUST be either a String or an IBuffer");
+    
+    if(value != null)
     {
-      int maxLength = getMaxLength();
-      if(stringValue.length() > maxLength)
-      {stringValue = stringValue.substring(0, maxLength);}
+      PdfDataObject oldValueObject = getBaseDataObject().resolve(PdfName.V);
+      IBuffer valueObjectBuffer = null;
+      if(oldValueObject instanceof PdfStream)
+      {
+        valueObjectBuffer = ((PdfStream)oldValueObject).getBody();
+        valueObjectBuffer.setLength(0);
+      }
+      if(value instanceof String)
+      {
+        if(valueObjectBuffer != null)
+        {valueObjectBuffer.append((String)value);}
+        else
+        {getBaseDataObject().put(PdfName.V, new PdfTextString((String)value));}
+      }
+      else // IBuffer.
+      {
+        if(valueObjectBuffer != null)
+        {valueObjectBuffer.append((IBuffer)value);}
+        else
+        {getBaseDataObject().put(PdfName.V, getFile().register(new PdfStream((IBuffer)value)));}
+      }
     }
-
-    getBaseDataObject().put(PdfName.V,new PdfTextString((String)value));
+    else
+    {getBaseDataObject().put(PdfName.V, null);}
+    
     refreshAppearance();
   }
   // </public>

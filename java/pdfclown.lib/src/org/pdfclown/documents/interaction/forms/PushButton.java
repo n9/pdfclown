@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -37,7 +37,7 @@ import org.pdfclown.util.EnumUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/10/15
 */
 @PDF(VersionEnum.PDF12)
 public final class PushButton
@@ -73,6 +73,12 @@ public final class PushButton
     Document context
     )
   {return (PushButton)super.clone(context);}
+  
+  @Override
+  public void setValue(
+    Object value
+    )
+  {/* NOOP: This type of button retains no permanent value. */}
   // </public>
   // </interface>
   // </dynamic>

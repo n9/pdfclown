@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -132,21 +132,55 @@ namespace org.pdfclown.documents.interaction.forms
       {Flags = EnumUtils.Mask(Flags, FlagsEnum.DoNotSpellCheck, !value);}
     }
 
+    /**
+      <returns>Either a string or an <see cref="IBuffer"/>.</returns>
+    */
     public override object Value
     {
       get
-      {return base.Value;}
+      {
+        PdfDataObject valueObject = PdfObject.Resolve(GetInheritableAttribute(PdfName.V));
+        if(valueObject is PdfString)
+          return ((PdfString)valueObject).Value;
+        else if(valueObject is PdfStream)
+          return ((PdfStream)valueObject).Body;
+        else
+          return null;
+      }
       set
       {
-        string stringValue = (string)value;
-        if(stringValue != null)
-        {
-          int maxLength = MaxLength;
-          if(stringValue.Length > maxLength)
-          {stringValue = stringValue.Remove(maxLength);}
-        }
+        if(!(value == null
+            || value is string
+            || value is bytes::IBuffer))
+          throw new ArgumentException("Value MUST be either a String or an IBuffer");
 
-        BaseDataObject[PdfName.V] = new PdfTextString(stringValue);
+        if(value != null)
+        {
+          PdfDataObject oldValueObject = BaseDataObject.Resolve(PdfName.V);
+          bytes::IBuffer valueObjectBuffer = null;
+          if(oldValueObject is PdfStream)
+          {
+            valueObjectBuffer = ((PdfStream)oldValueObject).Body;
+            valueObjectBuffer.SetLength(0);
+          }
+          if(value is string)
+          {
+            if(valueObjectBuffer != null)
+            {valueObjectBuffer.Append((string)value);}
+            else
+            {BaseDataObject[PdfName.V] = new PdfTextString((string)value);}
+          }
+          else // IBuffer.
+          {
+            if(valueObjectBuffer != null)
+            {valueObjectBuffer.Append((bytes::IBuffer)value);}
+            else
+            {BaseDataObject[PdfName.V] = File.Register(new PdfStream((bytes::IBuffer)value));}
+          }
+        }
+        else
+        {BaseDataObject[PdfName.V] = null;}
+
         RefreshAppearance();
       }
     }

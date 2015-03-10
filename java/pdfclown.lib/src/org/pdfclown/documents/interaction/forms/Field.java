@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -49,7 +49,7 @@ import org.pdfclown.util.EnumUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 03/10/15
 */
 @PDF(VersionEnum.PDF12)
 public abstract class Field
@@ -363,12 +363,8 @@ public abstract class Field
   /**
     Gets the field value.
   */
-  public Object getValue(
-    )
-  {
-    PdfSimpleObject<?> valueObject = (PdfSimpleObject<?>)PdfObject.resolve(getInheritableAttribute(PdfName.V));
-    return valueObject != null ? valueObject.getValue() : null;
-  }
+  public abstract Object getValue(
+    );
 
   /**
     Gets the widget annotations that are associated with this field.
@@ -463,10 +459,9 @@ public abstract class Field
   /**
     @see #getValue()
   */
-  public void setValue(
+  public abstract void setValue(
     Object value
-    )
-  {getBaseDataObject().put(PdfName.V, new PdfString((String)value));}
+    );
   // </public>
 
   // <protected>

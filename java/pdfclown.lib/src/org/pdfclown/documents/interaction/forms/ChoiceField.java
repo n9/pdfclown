@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,12 +25,19 @@
 
 package org.pdfclown.documents.interaction.forms;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.objects.PdfArray;
+import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfObject;
+import org.pdfclown.objects.PdfString;
+import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.EnumUtils;
 
 /**
@@ -38,7 +45,7 @@ import org.pdfclown.util.EnumUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/10/15
 */
 @PDF(VersionEnum.PDF12)
 public abstract class ChoiceField
@@ -68,6 +75,35 @@ public abstract class ChoiceField
     )
   {return new ChoiceItems(getBaseDataObject().get(PdfName.Opt, PdfArray.class));}
 
+  /**
+    @return
+      Either a string (single-selection) or a list of strings (multi-selection).
+    @see #isMultiSelect()
+  */
+  @Override
+  public Object getValue(
+    )
+  {
+    PdfDataObject valueObject = PdfObject.resolve(getInheritableAttribute(PdfName.V));
+    if(isMultiSelect())
+    {
+      List<String> values = new ArrayList<String>();
+      if(valueObject != null)
+      {
+        if(valueObject instanceof PdfArray)
+        {
+          for(PdfDirectObject valueItemObject : (PdfArray)valueObject)
+          {values.add(((PdfString)valueItemObject).getStringValue());}
+        }
+        else
+        {values.add(((PdfString)valueObject).getStringValue());}
+      }
+      return values;
+    }
+    else
+      return valueObject != null ? ((PdfString)valueObject).getValue() : null;
+  }
+  
   /**
     Gets whether more than one of the field's items may be selected simultaneously.
   */
@@ -106,6 +142,44 @@ public abstract class ChoiceField
     boolean value
     )
   {setFlags(EnumUtils.mask(getFlags(), FlagsEnum.CommitOnSelChange, value));}
+  
+  /**
+    @see #getValue()
+  */
+  @Override
+  @SuppressWarnings("unchecked")
+  public void setValue(
+    Object value
+    )
+  {
+    if(value instanceof String)
+    {getBaseDataObject().put(PdfName.V, new PdfTextString((String)value));}
+    else if(value instanceof List<?>)
+    {
+      if(!isMultiSelect())
+        throw new IllegalArgumentException("List<String> value is only allowed when MultiSelect flag is active.");
+      
+      PdfDataObject oldValueObject = getBaseDataObject().resolve(PdfName.V);
+      PdfArray valuesObject;
+      if(oldValueObject instanceof PdfArray)
+      {
+        valuesObject = (PdfArray)oldValueObject;
+        valuesObject.clear();
+      }
+      else
+      {valuesObject = new PdfArray();}
+      
+      for(String valueItem : (List<String>)value)
+      {valuesObject.add(new PdfTextString(valueItem));}
+      
+      if(valuesObject != oldValueObject)
+      {getBaseDataObject().put(PdfName.V, valuesObject);}
+    }
+    else if(value == null)
+    {getBaseDataObject().put(PdfName.V, null);}
+    else
+      throw new IllegalArgumentException("Value MUST be either a String or a List<String>");
+  }
   // </public>
   // </interface>
   // </dynamic>

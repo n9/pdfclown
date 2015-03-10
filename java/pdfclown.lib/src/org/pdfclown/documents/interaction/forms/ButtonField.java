@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -30,13 +30,14 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfSimpleObject;
 
 /**
   Button field [PDF:1.6:8.6.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/10/15
 */
 @PDF(VersionEnum.PDF12)
 public abstract class ButtonField
@@ -67,6 +68,10 @@ public abstract class ButtonField
 
   // <interface>
   // <public>
+  @Override
+  public String getValue(
+    )
+  {return (String)PdfSimpleObject.getValue(getInheritableAttribute(PdfName.V));}
   // </public>
   // </interface>
   // </dynamic>

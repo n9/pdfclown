@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -368,23 +368,10 @@ namespace org.pdfclown.documents.interaction.forms
     /**
       <summary>Gets/Sets the field value.</summary>
     */
-    public virtual object Value
+    public abstract object Value
     {
-      get
-      {
-        PdfDataObject valueObject = PdfObject.Resolve(GetInheritableAttribute(PdfName.V));
-        return valueObject != null
-          ? valueObject.GetType().InvokeMember(
-            "Value",
-            BindingFlags.GetProperty,
-            null,
-            valueObject,
-            null
-            )
-          : null;
-      }
-      set
-      {BaseDataObject[PdfName.V] = new PdfString((string)value);}
+      get;
+      set;
     }
 
     /**

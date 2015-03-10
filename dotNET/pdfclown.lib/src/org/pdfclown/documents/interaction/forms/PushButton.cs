@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,7 +23,6 @@
   this list of conditions.
 */
 
-using org.pdfclown.bytes;
 using org.pdfclown.documents;
 using org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.objects;
@@ -62,6 +61,13 @@ namespace org.pdfclown.documents.interaction.forms
     #endregion
 
     #region interface
+    #region public
+    public override object Value
+    {
+      set
+      {/* NOOP: This type of button retains no permanent value. */}
+    }
+    #endregion
     #endregion
     #endregion
   }
