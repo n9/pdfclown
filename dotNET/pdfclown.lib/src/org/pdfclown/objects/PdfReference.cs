@@ -38,11 +38,16 @@ namespace org.pdfclown.objects
     : PdfDirectObject,
       IPdfIndirectObject
   {
+    #region static
+    private const int DelegatedReferenceNumber = -1;
+    #endregion
+
     #region dynamic
     #region fields
-    private PdfIndirectObject indirectObject;
+    private readonly int generationNumber;
+    private readonly int objectNumber;
 
-    private int objectNumber;
+    private PdfIndirectObject indirectObject;
 
     private File file;
     private PdfObject parent;
@@ -53,20 +58,22 @@ namespace org.pdfclown.objects
     internal PdfReference(
       PdfIndirectObject indirectObject
       )
-    {this.indirectObject = indirectObject;}
+    {
+      this.objectNumber = DelegatedReferenceNumber;
+      this.generationNumber = DelegatedReferenceNumber;
 
-    /**
-      <remarks>
-        <para>This is a necessary hack because indirect objects are unreachable on parsing bootstrap
-        (see File(IInputStream) constructor).</para>
-      </remarks>
-    */
+      this.indirectObject = indirectObject;
+    }
+
     internal PdfReference(
-      FileParser.Reference reference,
+      int objectNumber,
+      int generationNumber,
       File file
       )
     {
-      this.objectNumber = reference.ObjectNumber;
+      this.objectNumber = objectNumber;
+      this.generationNumber = generationNumber;
+
       this.file = file;
     }
     #endregion
@@ -103,18 +110,30 @@ namespace org.pdfclown.objects
           && otherReference.Id.Equals(Id);
     }
 
+    public override File File
+    {
+      get
+      {return file != null ? file : base.File;}
+    }
+
     /**
       <summary>Gets the generation number.</summary>
     */
     public int GenerationNumber
     {
       get
-      {return IndirectObject.XrefEntry.Generation;}
+      {return generationNumber == DelegatedReferenceNumber ? IndirectObject.XrefEntry.Generation : generationNumber;}
     }
 
     public override int GetHashCode(
       )
-    {return IndirectObject.GetHashCode();}
+    {
+      /*
+        NOTE: Uniqueness should be achieved XORring the (local) reference hash-code with the (global)
+        file hash-code.
+      */
+      return Id.GetHashCode() ^ File.GetHashCode();
+    }
 
     /**
       <summary>Gets the object identifier.</summary>
@@ -142,7 +161,7 @@ namespace org.pdfclown.objects
     public int ObjectNumber
     {
       get
-      {return IndirectObject.XrefEntry.Number;}
+      {return objectNumber == DelegatedReferenceNumber ? IndirectObject.XrefEntry.Number : objectNumber;}
     }
 
     public override PdfObject Parent
@@ -156,7 +175,12 @@ namespace org.pdfclown.objects
     public override PdfObject Swap(
       PdfObject other
       )
-    {return IndirectObject.Swap(((PdfReference)other).IndirectObject).Reference;}
+    {
+      /*
+        NOTE: Fail fast if the referenced indirect object is undefined.
+      */
+      return IndirectObject.Swap(((PdfReference)other).IndirectObject).Reference;
+    }
 
     public override string ToString(
       )
@@ -165,9 +189,14 @@ namespace org.pdfclown.objects
     public override bool Updateable
     {
       get
-      {return IndirectObject.Updateable;}
+      {return IndirectObject != null ? indirectObject.Updateable : false;}
       set
-      {IndirectObject.Updateable = value;}
+      {
+        /*
+          NOTE: Fail fast if the referenced indirect object is undefined.
+        */
+        IndirectObject.Updateable = value;
+      }
     }
 
     public override bool Updated
@@ -188,11 +217,19 @@ namespace org.pdfclown.objects
     public PdfDataObject DataObject
     {
       get
-      {return IndirectObject.DataObject;}
+      {return IndirectObject != null ? indirectObject.DataObject : null;}
       set
-      {IndirectObject.DataObject = value;}
+      {
+        /*
+          NOTE: Fail fast if the referenced indirect object is undefined.
+        */
+        IndirectObject.DataObject = value;
+      }
     }
 
+    /**
+      <returns><code>null</code>, if the indirect object is undefined.</returns>
+    */
     public override PdfIndirectObject IndirectObject
     {
       get
@@ -216,9 +253,14 @@ namespace org.pdfclown.objects
     protected internal override bool Virtual
     {
       get
-      {return IndirectObject.Virtual;}
+      {return IndirectObject != null ? indirectObject.Virtual : false;}
       set
-      {IndirectObject.Virtual = value;}
+      {
+        /*
+          NOTE: Fail fast if the referenced indirect object is undefined.
+        */
+        IndirectObject.Virtual = value;
+      }
     }
     #endregion
     #endregion

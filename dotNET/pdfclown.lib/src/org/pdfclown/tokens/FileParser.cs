@@ -130,10 +130,10 @@ namespace org.pdfclown.tokens
       {
         case TokenTypeEnum.Keyword:
           if(Token is Reference)
-            return new PdfReference(
-              (Reference)Token,
-              file
-              );
+          {
+            Reference reference = (Reference)Token;
+            return new PdfReference(reference.ObjectNumber, reference.GenerationNumber, file);
+          }
           break;
       }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -281,8 +281,12 @@ namespace org.pdfclown.files
       get
       {
         if(index < 0 || index >= Count)
-          throw new ArgumentOutOfRangeException();
-    
+          /*
+            NOTE: An indirect reference to an undefined object is not an error; it is simply treated
+            as a reference to the null object [PDF:1.7:3.2.9] [FIX:59].
+          */
+          return null;
+
         PdfIndirectObject obj;
         if(!modifiedObjects.TryGetValue(index, out obj))
         {
@@ -346,12 +350,7 @@ namespace org.pdfclown.files
     public bool Contains(
       PdfIndirectObject obj
       )
-    {
-      try
-      {return this[obj.Reference.ObjectNumber] == obj;}
-      catch (ArgumentOutOfRangeException)
-      {return false;}
-    }
+    {return obj != null && this[obj.Reference.ObjectNumber] == obj;}
 
     public void CopyTo(
       PdfIndirectObject[] objs,

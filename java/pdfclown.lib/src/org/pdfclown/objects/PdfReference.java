@@ -27,7 +27,6 @@ package org.pdfclown.objects;
 
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.files.File;
-import org.pdfclown.tokens.FileParser;
 import org.pdfclown.tokens.Symbol;
 import org.pdfclown.util.NotImplementedException;
 
@@ -35,18 +34,23 @@ import org.pdfclown.util.NotImplementedException;
   PDF indirect reference object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 1/26/15
+  @version 0.1.2.1, 03/10/15
 */
 public final class PdfReference
   extends PdfDirectObject
   implements IPdfIndirectObject
 {
   // <class>
+  // <static>
+  private static final int DelegatedReferenceNumber = -1;
+  // </static>
+  
   // <dynamic>
   // <fields>
+  private final int generationNumber;
+  private final int objectNumber;
+  
   private PdfIndirectObject indirectObject;
-
-  private int objectNumber;
 
   private File file;
   private PdfObject parent;
@@ -57,20 +61,25 @@ public final class PdfReference
   PdfReference(
     PdfIndirectObject indirectObject
     )
-  {this.indirectObject = indirectObject;}
+  {
+    this.objectNumber = DelegatedReferenceNumber;
+    this.generationNumber = DelegatedReferenceNumber;
+    
+    this.indirectObject = indirectObject;
+  }
 
   /**
     <span style="color:red">For internal use only.</span>
-
-    <p>This is a necessary hack because indirect objects are unreachable on parsing bootstrap
-    (see File(IInputStream) constructor).</p>
   */
   public PdfReference(
-    FileParser.Reference reference,
+    int objectNumber,
+    int generationNumber,
     File file
     )
   {
-    this.objectNumber = reference.getObjectNumber();
+    this.objectNumber = objectNumber;
+    this.generationNumber = generationNumber;
+    
     this.file = file;
   }
   // </constructors>
@@ -110,12 +119,17 @@ public final class PdfReference
         && otherReference.getId().equals(getId());
   }
 
+  @Override
+  public File getFile(
+    )
+  {return file != null ? file : super.getFile();}
+  
   /**
     Gets the generation number.
   */
   public int getGenerationNumber(
     )
-  {return getIndirectObject().getXrefEntry().getGeneration();}
+  {return generationNumber == DelegatedReferenceNumber ? getIndirectObject().getXrefEntry().getGeneration() : generationNumber;}
 
   /**
     Gets the object identifier.
@@ -138,7 +152,7 @@ public final class PdfReference
   */
   public int getObjectNumber(
     )
-  {return getIndirectObject().getXrefEntry().getNumber();}
+  {return objectNumber == DelegatedReferenceNumber ? getIndirectObject().getXrefEntry().getNumber() : objectNumber;}
 
   @Override
   public PdfObject getParent(
@@ -148,12 +162,18 @@ public final class PdfReference
   @Override
   public int hashCode(
     )
-  {return getIndirectObject().hashCode();}
+  {
+    /*
+      NOTE: Uniqueness should be achieved XORring the (local) reference hash-code with the (global)
+      file hash-code.
+    */
+    return getId().hashCode() ^ getFile().hashCode();
+  }
 
   @Override
   public boolean isUpdateable(
     )
-  {return getIndirectObject().isUpdateable();}
+  {return getIndirectObject() != null ? indirectObject.isUpdateable() : false;}
 
   @Override
   public boolean isUpdated(
@@ -164,13 +184,23 @@ public final class PdfReference
   public void setUpdateable(
     boolean value
     )
-  {getIndirectObject().setUpdateable(value);}
+  {
+    /*
+      NOTE: Fail fast if the referenced indirect object is undefined.
+    */
+    getIndirectObject().setUpdateable(value);
+  }
 
   @Override
   public PdfReference swap(
     PdfObject other
     )
-  {return getIndirectObject().swap(((PdfReference)other).getIndirectObject()).getReference();}
+  {
+    /*
+      NOTE: Fail fast if the referenced indirect object is undefined.
+    */
+    return getIndirectObject().swap(((PdfReference)other).getIndirectObject()).getReference();
+  }
 
   @Override
   public String toString(
@@ -194,8 +224,12 @@ public final class PdfReference
   @Override
   public PdfDataObject getDataObject(
     )
-  {return getIndirectObject().getDataObject();}
+  {return getIndirectObject() != null ? indirectObject.getDataObject() : null;}
 
+  /**
+    @return
+      {@code null}, if the indirect object is undefined.
+  */
   @Override
   public PdfIndirectObject getIndirectObject(
     )
@@ -215,7 +249,12 @@ public final class PdfReference
   public void setDataObject(
     PdfDataObject value
     )
-  {getIndirectObject().setDataObject(value);}
+  {
+    /*
+      NOTE: Fail fast if the referenced indirect object is undefined.
+    */
+    getIndirectObject().setDataObject(value);
+  }
   // </IPdfIndirectObject>
   // </public>
 
@@ -223,7 +262,7 @@ public final class PdfReference
   @Override
   protected boolean isVirtual(
     )
-  {return getIndirectObject().isVirtual();}
+  {return getIndirectObject() != null ? indirectObject.isVirtual() : false;}
 
   @Override
   protected void setUpdated(
@@ -235,7 +274,12 @@ public final class PdfReference
   protected void setVirtual(
     boolean value
     )
-  {getIndirectObject().setVirtual(value);}
+  {
+    /*
+      NOTE: Fail fast if the referenced indirect object is undefined.
+    */
+    getIndirectObject().setVirtual(value);
+  }
   // </protected>
 
   // <internal>

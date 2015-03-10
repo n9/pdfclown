@@ -158,10 +158,10 @@ public final class FileParser
     {
       case Keyword:
         if(getToken() instanceof Reference)
-          return new PdfReference(
-            (Reference)getToken(),
-            file
-            );
+        {
+          Reference reference = (Reference)getToken();
+          return new PdfReference(reference.getObjectNumber(), reference.getGenerationNumber(), file);
+        }
         break;
       default:
       {

@@ -147,15 +147,7 @@ public class PdfIndirectObject
   @Override
   public int hashCode(
     )
-  {
-    /*
-      NOTE: Uniqueness should be achieved XORring the (local) reference hashcode with the (global)
-      file hashcode.
-      NOTE: Do NOT directly invoke reference.hashCode() method here as, conversely relying on this
-      method, it would trigger an infinite loop.
-    */
-    return reference.getId().hashCode() ^ file.hashCode();
-  }
+  {return reference.hashCode();}
 
   /**
     Gets whether this object is compressed within an object stream [PDF:1.6:3.4.6].

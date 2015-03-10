@@ -132,15 +132,7 @@ namespace org.pdfclown.objects
 
     public override int GetHashCode(
       )
-    {
-      /*
-        NOTE: Uniqueness should be achieved XORring the (local) reference hashcode with the (global)
-        file hashcode.
-        NOTE: Do NOT directly invoke reference.GetHashCode() method here as, conversely relying on
-        this method, it would trigger an infinite loop.
-      */
-      return reference.Id.GetHashCode() ^ file.GetHashCode();
-    }
+    {return reference.GetHashCode();}
 
     /**
       <summary>Gets whether this object is compressed within an object stream [PDF:1.6:3.4.6].
