@@ -273,7 +273,7 @@ namespace org.pdfclown.util.parsers
         {
           c = stream.ReadByte();
           if(c == -1)
-            throw new ParseException("Unexpected EOF (isolated opening angle-bracket character).");
+            throw new PostScriptParseException("Unexpected EOF (isolated opening angle-bracket character).");
           // Is it a dictionary (2nd angle bracket)?
           if(c == Symbol.OpenAngleBracket)
           {
@@ -292,14 +292,16 @@ namespace org.pdfclown.util.parsers
 
             c = stream.ReadByte();
             if(c == -1)
-              throw new ParseException("Unexpected EOF (malformed hex string).");
+              throw new PostScriptParseException("Unexpected EOF (malformed hex string).");
           }
         } break;
         case Symbol.CloseAngleBracket: // Dictionary (end).
         {
           c = stream.ReadByte();
-          if(c != Symbol.CloseAngleBracket)
-            throw new ParseException("Malformed dictionary.",stream.Position);
+          if(c == -1)
+            throw new PostScriptParseException("Unexpected EOF (malformed dictionary).");
+          else if(c != Symbol.CloseAngleBracket)
+            throw new PostScriptParseException("Malformed dictionary.", this);
 
           tokenType = TokenTypeEnum.DictionaryEnd;
         } break;
@@ -393,7 +395,7 @@ namespace org.pdfclown.util.parsers
             buffer.Append((char)c);
           }
           if(c == -1)
-            throw new ParseException("Malformed literal string.");
+            throw new PostScriptParseException("Unexpected EOF (malformed literal string).");
         } break;
         case Symbol.Percent: // Comment.
         {

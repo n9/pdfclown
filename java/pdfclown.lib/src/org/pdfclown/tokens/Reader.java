@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,14 +36,14 @@ import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
-import org.pdfclown.util.parsers.ParseException;
+import org.pdfclown.util.parsers.PostScriptParseException;
 import org.pdfclown.util.parsers.PostScriptParser.TokenTypeEnum;
 
 /**
   PDF file reader.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/01/11
+  @version 0.1.2.1, 03/10/15
 */
 public final class Reader
   implements Closeable
@@ -142,7 +142,7 @@ public final class Reader
                 && parser.getToken().equals(Keyword.Trailer)) // XRef-table section ended.
               break;
             else if(parser.getTokenType() != TokenTypeEnum.Integer)
-              throw new ParseException("Neither object number of the first object in this xref subsection nor end of xref section found.",parser.getPosition());
+              throw new PostScriptParseException("Neither object number of the first object in this xref subsection nor end of xref section found.", parser);
 
             // Get the object number of the first object in this xref-table subsection!
             int startObjectNumber = (Integer)parser.getToken();
@@ -150,7 +150,7 @@ public final class Reader
             // 2. Last object number.
             parser.moveNext();
             if(parser.getTokenType() != TokenTypeEnum.Integer)
-              throw new ParseException("Number of entries in this xref subsection not found.",parser.getPosition());
+              throw new PostScriptParseException("Number of entries in this xref subsection not found.", parser);
 
             // Get the object number of the last object in this xref-table subsection!
             int endObjectNumber = (Integer)parser.getToken() + startObjectNumber;
@@ -182,7 +182,7 @@ public final class Reader
                 else if(usageToken.equals(Keyword.FreeXrefEntry))
                   usage = XRefEntry.UsageEnum.Free;
                 else
-                  throw new ParseException("Invalid xref entry.", parser.getPosition());
+                  throw new PostScriptParseException("Invalid xref entry.", parser);
               }
 
               // Define entry!

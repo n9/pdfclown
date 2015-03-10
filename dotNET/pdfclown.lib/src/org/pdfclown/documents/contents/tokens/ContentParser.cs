@@ -188,7 +188,7 @@ namespace org.pdfclown.documents.contents.tokens
         {
           int curByte = stream.ReadByte();
           if(curByte == -1)
-            throw new ParseException("Unexpected EOF (no 'EI' token found to close inline image data stream).");
+            throw new PostScriptParseException("Unexpected EOF (no 'EI' token found to close inline image data stream).");
 
           if(prevReady)
           {

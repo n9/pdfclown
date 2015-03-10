@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,7 +35,7 @@ namespace org.pdfclown.util.parsers
   {
     #region dynamic
     #region fields
-    private long position;
+    private readonly long position;
     #endregion
 
     #region constructors
@@ -47,8 +47,8 @@ namespace org.pdfclown.util.parsers
     public ParseException(
       string message,
       long position
-      ) : base(message)
-    {this.position = position;}
+      ) : this(message, null, position)
+    {}
 
     public ParseException(
       Exception cause
@@ -72,7 +72,7 @@ namespace org.pdfclown.util.parsers
     #region interface
     #region public
     /**
-      <summary>Gets the offset where error happened.</summary>
+      <summary>Gets the offset where the exception happened.</summary>
     */
     public long Position
     {

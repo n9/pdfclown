@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,6 +40,7 @@ import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
 import org.pdfclown.util.parsers.ParseException;
+import org.pdfclown.util.parsers.PostScriptParseException;
 import org.pdfclown.util.parsers.PostScriptParser;
 
 /**
@@ -47,7 +48,7 @@ import org.pdfclown.util.parsers.PostScriptParser;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 08/23/12
+  @version 0.1.2.1, 03/10/15
 */
 public class BaseParser
   extends PostScriptParser
@@ -161,7 +162,7 @@ public class BaseParser
       case Null:
         return null;
       default:
-        throw new UnsupportedOperationException("Unknown type: " + getToken());
+        throw new PostScriptParseException(String.format("Unknown type beginning: '%s'", getToken()), this);
     }
   }
 

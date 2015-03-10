@@ -60,14 +60,14 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.tokens.BaseParser;
 import org.pdfclown.tokens.Encoding;
-import org.pdfclown.util.parsers.ParseException;
+import org.pdfclown.util.parsers.PostScriptParseException;
 
 /**
   Content stream parser [PDF:1.6:3.7.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2.1, 03/09/15
+  @version 0.1.2.1, 03/10/15
 */
 public final class ContentParser
   extends BaseParser
@@ -235,7 +235,7 @@ public final class ContentParser
         }
       }
       catch(EOFException e)
-      {throw new ParseException(e);}
+      {throw new PostScriptParseException("Unexpected EOF (no 'EI' token found to close inline image data stream).", e);}
       body = new InlineImageBody(data);
     }
 

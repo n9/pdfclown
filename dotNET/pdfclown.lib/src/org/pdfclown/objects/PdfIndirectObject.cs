@@ -264,11 +264,8 @@ namespace org.pdfclown.objects
             // In-use entry (late-bound data object).
             case XRefEntry.UsageEnum.InUse:
             {
-              FileParser parser = file.Reader.Parser;
-              // Retrieve the associated data object among the original objects!
-              parser.Seek(xrefEntry.Offset);
               // Get the indirect data object!
-              dataObject = Include(parser.ParsePdfObject(4)); // NOTE: Skips the indirect-object header.
+              dataObject = Include(file.Reader.Parser.ParsePdfObject(xrefEntry));
               break;
             }
             case XRefEntry.UsageEnum.InUseCompressed:

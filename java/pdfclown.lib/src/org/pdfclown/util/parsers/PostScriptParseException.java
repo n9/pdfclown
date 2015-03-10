@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -26,14 +26,14 @@
 package org.pdfclown.util.parsers;
 
 /**
-  Exception thrown in case of unexpected condition while parsing.
-
+  Exception thrown in case of unexpected condition while parsing PostScript-based data.
+  
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @since 0.1.1
+  @since 0.1.2.1
   @version 0.1.2.1, 03/10/15
 */
-public class ParseException
-  extends RuntimeException
+public class PostScriptParseException
+  extends ParseException
 {
   // <class>
   // <static>
@@ -44,52 +44,91 @@ public class ParseException
 
   // <dynamic>
   // <fields>
-  private final long position;
+  private final Object token;
+  private final PostScriptParser.TokenTypeEnum tokenType;
   // </fields>
 
   // <constructors>
-  public ParseException(
+  public PostScriptParseException(
     String message
     )
   {this(message, -1);}
 
-  public ParseException(
+  public PostScriptParseException(
+    String message,
+    PostScriptParser parser
+    )
+  {this(message, null, parser);}
+
+  public PostScriptParseException(
     String message,
     long position
     )
-  {this(message, null, position);}
-
-  public ParseException(
+  {this(message, position, null, null);}
+  
+  public PostScriptParseException(
+    String message,
+    long position,
+    Object token,
+    PostScriptParser.TokenTypeEnum tokenType
+    )
+  {this(message, null, position, token, tokenType);}
+  
+  public PostScriptParseException(
     Throwable cause
     )
   {this(null, cause);}
 
-  public ParseException(
+  public PostScriptParseException(
     String message,
     Throwable cause
     )
   {this(message, cause, -1);}
 
-  public ParseException(
+  public PostScriptParseException(
+    String message,
+    Throwable cause,
+    PostScriptParser parser
+    )
+  {this(message, cause, parser.getPosition(), parser.getToken(), parser.getTokenType());}
+
+  public PostScriptParseException(
     String message,
     Throwable cause,
     long position
     )
+  {this(message, cause, position, null, null);}
+  
+  public PostScriptParseException(
+    String message,
+    Throwable cause,
+    long position,
+    Object token,
+    PostScriptParser.TokenTypeEnum tokenType
+    )
   {
-    super(message, cause);
+    super(message, cause, position);
 
-    this.position = position;
+    this.token = token;
+    this.tokenType = tokenType;
   }
   // </constructors>
 
   // <interface>
   // <public>
   /**
-    Gets the offset where the exception happened.
+    Gets the token on which the exception happened.
   */
-  public long getPosition(
+  public Object getToken(
     )
-  {return position;}
+  {return token;}
+  
+  /**
+    Gets the type of the token on which the exception happened.
+  */
+  public PostScriptParser.TokenTypeEnum getTokenType(
+    )
+  {return tokenType;}
   // </public>
   // </interface>
   // </dynamic>

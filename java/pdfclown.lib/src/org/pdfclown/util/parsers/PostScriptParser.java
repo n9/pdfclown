@@ -39,7 +39,7 @@ import org.pdfclown.tokens.Symbol;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2.1, 02/25/15
+  @version 0.1.2.1, 03/10/15
 */
 public class PostScriptParser
   implements Closeable
@@ -304,7 +304,7 @@ public class PostScriptParser
         try
         {c = stream.readUnsignedByte();}
         catch(EOFException e)
-        {throw new ParseException("Unexpected EOF (isolated opening angle-bracket character).", e);}
+        {throw new PostScriptParseException("Unexpected EOF (isolated opening angle-bracket character).", e);}
         // Is it a dictionary (2nd angle bracket)?
         if(c == Symbol.OpenAngleBracket)
         {
@@ -327,16 +327,16 @@ public class PostScriptParser
           }
         }
         catch(EOFException e)
-        {throw new ParseException("Unexpected EOF (malformed hex string).", e);}
+        {throw new PostScriptParseException("Unexpected EOF (malformed hex string).", e);}
       } break;
       case Symbol.CloseAngleBracket: // Dictionary (end).
       {
         try
         {c = stream.readUnsignedByte();}
         catch(EOFException e)
-        {throw new ParseException("Unexpected EOF (malformed dictionary).", e);}
+        {throw new PostScriptParseException("Unexpected EOF (malformed dictionary).", e);}
         if(c != Symbol.CloseAngleBracket)
-          throw new ParseException("Malformed dictionary.", stream.getPosition());
+          throw new PostScriptParseException("Malformed dictionary.", this);
 
         tokenType = TokenTypeEnum.DictionaryEnd;
       } break;
@@ -427,7 +427,7 @@ public class PostScriptParser
           }
         }
         catch(EOFException e)
-        {throw new ParseException("Unexpected EOF (malformed literal string).", e);}
+        {throw new PostScriptParseException("Unexpected EOF (malformed literal string).", e);}
       } break;
       case Symbol.Percent: // Comment.
       {

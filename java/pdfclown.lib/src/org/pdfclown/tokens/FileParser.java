@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,15 +36,14 @@ import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfStream;
-import org.pdfclown.util.parsers.ParseException;
-
+import org.pdfclown.util.parsers.PostScriptParseException;
 
 /**
   PDF file parser [PDF:1.7:3.2,3.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 09/24/12
+  @version 0.1.2.1, 03/10/15
 */
 public final class FileParser
   extends BaseParser
@@ -198,7 +197,7 @@ public final class FileParser
         try
         {stream.read(data);}
         catch(EOFException e)
-        {throw new ParseException("Unexpected EOF (malformed stream object).",e,stream.getPosition());}
+        {throw new PostScriptParseException("Unexpected EOF (malformed stream object).", e);}
 
         moveNext(); // Postcondition (last token should be 'endstream' keyword).
 
@@ -226,6 +225,30 @@ public final class FileParser
   }
 
   /**
+    Parses the specified PDF indirect object [PDF:1.6:3.2.9].
+    
+    @param xrefEntry
+      Cross-reference entry of the indirect object to parse.
+  */
+  public PdfDataObject parsePdfObject(
+    XRefEntry xrefEntry
+    )
+  {
+    // Go to the beginning of the indirect object!
+    seek(xrefEntry.getOffset());
+    // Skip the indirect-object header!
+    moveNext(4);
+    
+    // Empty indirect object?
+    if(getTokenType() == TokenTypeEnum.Keyword
+        && Keyword.EndIndirectObject.equals(getToken()))
+      return null; 
+    
+    // Get the indirect data object!
+    return parsePdfObject();
+  }
+
+  /**
     Retrieves the PDF version of the file [PDF:1.6:3.4.1].
   */
   public String retrieveVersion(
@@ -237,9 +260,9 @@ public final class FileParser
     try
     {header = stream.readString(10);}
     catch(EOFException e)
-    {throw new ParseException(e);}
+    {throw new PostScriptParseException(e);}
     if(!header.startsWith(Keyword.BOF))
-      throw new ParseException("PDF header not found.",stream.getPosition());
+      throw new PostScriptParseException("PDF header not found.", this);
 
     return header.substring(Keyword.BOF.length(),Keyword.BOF.length() + 3);
   }
@@ -263,9 +286,9 @@ public final class FileParser
     try
     {index = stream.readString(chunkSize).lastIndexOf(Keyword.StartXRef);}
     catch(EOFException e)
-    {throw new ParseException(e);}
+    {throw new PostScriptParseException(e);}
     if(index < 0)
-      throw new ParseException("'" + Keyword.StartXRef + "' keyword not found.", stream.getPosition());
+      throw new PostScriptParseException("'" + Keyword.StartXRef + "' keyword not found.", this);
 
     // Go past the 'startxref' keyword!
     stream.seek(position + index); moveNext();
@@ -273,7 +296,7 @@ public final class FileParser
     // Get the xref offset!
     moveNext();
     if(getTokenType() != TokenTypeEnum.Integer)
-      throw new ParseException("'" + Keyword.StartXRef + "' value invalid.", stream.getPosition());
+      throw new PostScriptParseException("'" + Keyword.StartXRef + "' value invalid.", this);
 
     return (Integer)getToken();
   }

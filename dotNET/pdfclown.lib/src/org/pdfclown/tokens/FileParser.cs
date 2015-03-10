@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -190,6 +190,28 @@ namespace org.pdfclown.tokens
     }
 
     /**
+      <summary>Parses the specified PDF indirect object [PDF:1.6:3.2.9].</summary>
+      <param name="xrefEntry">Cross-reference entry of the indirect object to parse.</param>
+    */
+    public PdfDataObject ParsePdfObject(
+      XRefEntry xrefEntry
+      )
+    {
+      // Go to the beginning of the indirect object!
+      Seek(xrefEntry.Offset);
+      // Skip the indirect-object header!
+      MoveNext(4);
+
+      // Empty indirect object?
+      if(TokenType == TokenTypeEnum.Keyword
+          && Keyword.EndIndirectObject.Equals(Token))
+        return null;
+
+      // Get the indirect data object!
+      return ParsePdfObject();
+    }
+
+    /**
       <summary>Retrieves the PDF version of the file [PDF:1.6:3.4.1].</summary>
     */
     public string RetrieveVersion(
@@ -199,7 +221,7 @@ namespace org.pdfclown.tokens
       stream.Seek(0);
       string header = stream.ReadString(10);
       if(!header.StartsWith(Keyword.BOF))
-        throw new ParseException("PDF header not found.",stream.Position);
+        throw new PostScriptParseException("PDF header not found.", this);
 
       return header.Substring(Keyword.BOF.Length,3);
     }
@@ -221,7 +243,7 @@ namespace org.pdfclown.tokens
       // Get 'startxref' keyword position!
       int index = stream.ReadString(chunkSize).LastIndexOf(Keyword.StartXRef);
       if(index < 0)
-        throw new ParseException("'" + Keyword.StartXRef + "' keyword not found.", stream.Position);
+        throw new PostScriptParseException("'" + Keyword.StartXRef + "' keyword not found.", this);
 
       // Go past the startxref keyword!
       stream.Seek(position + index); MoveNext();
@@ -229,7 +251,7 @@ namespace org.pdfclown.tokens
       // Go to the xref offset!
       MoveNext();
       if(TokenType != TokenTypeEnum.Integer)
-        throw new ParseException("'" + Keyword.StartXRef + "' value invalid.", stream.Position);
+        throw new PostScriptParseException("'" + Keyword.StartXRef + "' value invalid.", this);
 
       return (int)Token;
     }

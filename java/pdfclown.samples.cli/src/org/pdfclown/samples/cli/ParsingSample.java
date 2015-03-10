@@ -2,9 +2,9 @@ package org.pdfclown.samples.cli;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -22,6 +22,7 @@ import org.pdfclown.documents.contents.objects.Operation;
 import org.pdfclown.documents.interchange.metadata.Information;
 import org.pdfclown.documents.interchange.metadata.Metadata;
 import org.pdfclown.files.File;
+import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
@@ -36,7 +37,7 @@ import org.pdfclown.util.parsers.ParseException;
   to exploit all the available access functionalities.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2.1, 03/10/15
 */
 public class ParsingSample
   extends Sample
@@ -92,13 +93,14 @@ public class ParsingSample
       System.out.println("\nIterating through the indirect-object collection (please wait)...");
 
       // 2.2. Counting the indirect objects, grouping them by type...
-      HashMap<String,Integer> objCounters = new HashMap<String,Integer>();
+      Map<String,Integer> objCounters = new TreeMap<String,Integer>();
       objCounters.put("xref free entry",0);
       for(PdfIndirectObject object : file.getIndirectObjects())
       {
         if(object.isInUse()) // In-use entry.
         {
-          String typeName = object.getDataObject().getClass().getSimpleName();
+          PdfDataObject dataObject = object.getDataObject();
+          String typeName = (dataObject != null ? dataObject.getClass().getSimpleName() : "empty entry");
           if(objCounters.containsKey(typeName))
           {objCounters.put(typeName, objCounters.get(typeName) + 1);}
           else

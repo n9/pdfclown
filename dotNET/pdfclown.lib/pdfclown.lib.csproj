@@ -460,6 +460,7 @@
     <Compile Include="src\org\pdfclown\documents\Articles.cs" />
     <Compile Include="src\org\pdfclown\util\IPredicate.cs" />
     <Compile Include="src\org\pdfclown\tools\FormFlattener.cs" />
+    <Compile Include="src\org\pdfclown\util\parsers\PostScriptParseException.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />

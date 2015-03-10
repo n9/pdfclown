@@ -61,13 +61,14 @@ namespace org.pdfclown.samples.cli
         Console.WriteLine("\nIterating through the indirect-object collection (please wait)...");
 
         // 2.2. Counting the indirect objects, grouping them by type...
-        Dictionary<string,int> objCounters = new Dictionary<string,int>();
+        var objCounters = new SortedDictionary<string,int>();
         objCounters["xref free entry"] = 0;
         foreach(PdfIndirectObject obj in file.IndirectObjects)
         {
           if(obj.IsInUse()) // In-use entry.
           {
-            string typeName = obj.DataObject.GetType().Name;
+            PdfDataObject dataObject = obj.DataObject;
+            string typeName = (dataObject != null ? dataObject.GetType().Name : "empty entry");
             if(objCounters.ContainsKey(typeName))
             {objCounters[typeName]++;}
             else

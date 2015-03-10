@@ -28,7 +28,6 @@ package org.pdfclown.objects;
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.files.File;
 import org.pdfclown.tokens.Encoding;
-import org.pdfclown.tokens.FileParser;
 import org.pdfclown.tokens.Keyword;
 import org.pdfclown.tokens.ObjectStream;
 import org.pdfclown.tokens.Symbol;
@@ -39,7 +38,7 @@ import org.pdfclown.tokens.XRefEntry.UsageEnum;
   PDF indirect object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 1/26/15
+  @version 0.1.2.1, 03/10/15
 */
 public class PdfIndirectObject
   extends PdfObject
@@ -285,11 +284,8 @@ public class PdfIndirectObject
           break;
         case InUse: // In-use entry (late-bound data object).
         {
-          FileParser parser = file.getReader().getParser();
-          // Retrieve the associated data object among the original objects!
-          parser.seek(xrefEntry.getOffset());
           // Get the indirect data object!
-          dataObject = include(parser.parsePdfObject(4)); // NOTE: Skips the indirect-object header.
+          dataObject = include(file.getReader().getParser().parsePdfObject(xrefEntry));
           break;
         }
         case InUseCompressed:

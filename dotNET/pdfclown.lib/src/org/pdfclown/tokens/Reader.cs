@@ -144,7 +144,7 @@ namespace org.pdfclown.tokens
                   && parser.Token.Equals(Keyword.Trailer)) // XRef-table section ended.
                 break;
               else if(parser.TokenType != PostScriptParser.TokenTypeEnum.Integer)
-                throw new ParseException("Neither object number of the first object in this xref subsection nor end of xref section found.",parser.Position);
+                throw new PostScriptParseException("Neither object number of the first object in this xref subsection nor end of xref section found.", parser);
 
               // Get the object number of the first object in this xref-table subsection!
               int startObjectNumber = (int)parser.Token;
@@ -152,7 +152,7 @@ namespace org.pdfclown.tokens
               // 2. Last object number.
               parser.MoveNext();
               if(parser.TokenType != PostScriptParser.TokenTypeEnum.Integer)
-                throw new ParseException("Number of entries in this xref subsection not found.", parser.Position);
+                throw new PostScriptParseException("Number of entries in this xref subsection not found.", parser);
 
               // Get the object number of the last object in this xref-table subsection!
               int endObjectNumber = (int)parser.Token + startObjectNumber;
@@ -184,7 +184,7 @@ namespace org.pdfclown.tokens
                   else if(usageToken.Equals(Keyword.FreeXrefEntry))
                     usage = XRefEntry.UsageEnum.Free;
                   else
-                    throw new ParseException("Invalid xref entry.", parser.Position);
+                    throw new PostScriptParseException("Invalid xref entry.", parser);
                 }
 
                 // Define entry!
