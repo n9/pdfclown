@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,6 +28,7 @@ using org.pdfclown.objects;
 
 using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 
 namespace org.pdfclown.documents.contents.objects
 {
@@ -111,7 +112,7 @@ namespace org.pdfclown.documents.contents.objects
       ContentScanner.GraphicsState state
       )
     {
-      state.Tlm.Translate((float)OffsetX, (float)OffsetY);
+      state.Tlm.Multiply(new Matrix(1, 0, 0, 1, (float)OffsetX, (float)OffsetY));
       state.Tm = state.Tlm.Clone();
       if(LeadSet)
       {state.Lead = OffsetY;}

@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -67,7 +67,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2, 08/23/12
+  @version 0.1.2.1, 03/11/15
 */
 public final class ContentScanner
 {
@@ -794,12 +794,26 @@ public final class ContentScanner
       return box;
     }
 
+    public String getText(
+      )
+    {
+      StringBuilder textBuilder = new StringBuilder();
+      for(TextStringWrapper textString : textStrings)
+      {textBuilder.append(textString.getText());}
+      return textBuilder.toString();
+    }
+
     /**
       Gets the text strings.
     */
     public List<TextStringWrapper> getTextStrings(
       )
     {return textStrings;}
+    
+    @Override
+    public String toString(
+      )
+    {return getText();}
 
     private void extract(
       ContentScanner level
@@ -909,6 +923,11 @@ public final class ContentScanner
     public List<TextChar> getTextChars(
       )
     {return textChars;}
+    
+    @Override
+    public String toString(
+      )
+    {return getText();}
   }
 
   /**

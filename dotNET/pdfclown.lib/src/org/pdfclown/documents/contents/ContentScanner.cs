@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -698,11 +698,26 @@ namespace org.pdfclown.documents.contents
         }
       }
 
+      public string Text
+      {
+        get
+        {
+          StringBuilder textBuilder = new StringBuilder();
+          foreach(TextStringWrapper textString in textStrings)
+          {textBuilder.Append(textString.Text);}
+          return textBuilder.ToString();
+        }
+      }
+
       /**
         <summary>Gets the text strings.</summary>
       */
       public List<TextStringWrapper> TextStrings
       {get{return textStrings;}}
+
+      public override string ToString(
+        )
+      {return Text;}
 
       private void Extract(
         ContentScanner level
@@ -818,6 +833,10 @@ namespace org.pdfclown.documents.contents
 
       public List<TextChar> TextChars
       {get{return textChars;}}
+
+      public override string ToString(
+        )
+      {return Text;}
     }
 
     /**
