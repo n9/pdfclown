@@ -36,7 +36,7 @@ import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2.1, 03/11/15
+  @version 0.1.2.1, 03/12/15
 */
 @PDF(VersionEnum.PDF10)
 public final class TranslateTextToNextLine
@@ -65,7 +65,7 @@ public final class TranslateTextToNextLine
     GraphicsState state
     )
   {
-    state.getTlm().concatenate(new AffineTransform(1, 0, 0, 1, 0, state.getLead()));
+    state.getTlm().concatenate(new AffineTransform(1, 0, 0, 1, 0, -state.getLead()));
     state.setTm((AffineTransform)state.getTlm().clone());
   }
   // </public>

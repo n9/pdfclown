@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -130,7 +130,7 @@ namespace org.pdfclown.documents.contents.objects
           charSpace = newCharSpace.Value * scale;
         }
         tm = state.Tlm.Clone();
-        tm.Translate(0, (float)state.Lead);
+        tm.Multiply(new Matrix(1, 0, 0, 1, 0, (float)-state.Lead));
       }
       else
       {tm = state.Tm.Clone();}

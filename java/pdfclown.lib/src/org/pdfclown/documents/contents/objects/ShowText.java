@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,7 +43,7 @@ import org.pdfclown.objects.PdfDirectObject;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.2.1, 03/12/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class ShowText
@@ -166,7 +166,7 @@ public abstract class ShowText
         charSpace = newCharSpace * scale;
       }
       tm = (AffineTransform)state.getTlm().clone();
-      tm.translate(0, state.getLead());
+      tm.concatenate(new AffineTransform(1, 0, 0, 1, 0, -state.getLead()));
     }
     else
     {tm = (AffineTransform)state.getTm().clone();}

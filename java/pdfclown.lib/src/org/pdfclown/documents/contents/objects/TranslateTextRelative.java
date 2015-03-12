@@ -41,7 +41,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2.1, 03/11/15
+  @version 0.1.2.1, 03/12/15
 */
 @PDF(VersionEnum.PDF10)
 public final class TranslateTextRelative
@@ -114,7 +114,7 @@ public final class TranslateTextRelative
     state.getTlm().concatenate(new AffineTransform(1, 0, 0, 1, getOffsetX(), getOffsetY()));
     state.setTm((AffineTransform)state.getTlm().clone());
     if(isLeadSet())
-    {state.setLead(getOffsetY());}
+    {state.setLead(-getOffsetY());}
   }
 
   /**

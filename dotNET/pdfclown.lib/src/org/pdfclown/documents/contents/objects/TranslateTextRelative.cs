@@ -115,7 +115,7 @@ namespace org.pdfclown.documents.contents.objects
       state.Tlm.Multiply(new Matrix(1, 0, 0, 1, (float)OffsetX, (float)OffsetY));
       state.Tm = state.Tlm.Clone();
       if(LeadSet)
-      {state.Lead = OffsetY;}
+      {state.Lead = -OffsetY;}
     }
     #endregion
     #endregion

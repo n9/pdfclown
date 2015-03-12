@@ -60,7 +60,7 @@ namespace org.pdfclown.documents.contents.objects
       ContentScanner.GraphicsState state
       )
     {
-      state.Tlm.Multiply(new Matrix(1, 0, 0, 1, 0, (float)state.Lead));
+      state.Tlm.Multiply(new Matrix(1, 0, 0, 1, 0, (float)-state.Lead));
       state.Tm = state.Tlm.Clone();
     }
     #endregion
