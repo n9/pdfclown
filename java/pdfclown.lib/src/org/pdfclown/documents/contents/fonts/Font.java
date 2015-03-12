@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -56,7 +56,7 @@ import org.pdfclown.util.NotImplementedException;
   Abstract font [PDF:1.6:5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/09/11
+  @version 0.1.2.1, 03/12/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Font
@@ -151,6 +151,10 @@ public abstract class Font
   // </classes>
 
   // <static>
+  // <fields>
+  private static final int UndefinedWidth = Integer.MIN_VALUE;
+  // </fields>
+
   // <interface>
   // <public>
   /**
@@ -290,10 +294,6 @@ public abstract class Font
   */
   protected BiMap<ByteArray,Integer> codes;
   /**
-    Default glyph width.
-  */
-  protected int defaultGlyphWidth;
-  /**
     Glyph indexes by unicode.
   */
   protected Map<Integer,Integer> glyphIndexes;
@@ -315,9 +315,17 @@ public abstract class Font
   protected Set<Integer> usedCodes;
 
   /**
+    Average glyph width.
+  */
+  private int averageWidth = UndefinedWidth;
+  /**
     Maximum character code byte size.
   */
   private int charCodeMaxLength = 0;
+  /**
+    Default glyph width.
+  */
+  private int defaultWidth = UndefinedWidth;
   // </fields>
 
   // <constructors>
@@ -655,10 +663,10 @@ public abstract class Font
   {
     Integer glyphIndex = glyphIndexes.get((int)textChar);
     if(glyphIndex == null)
-      return 0;
+      return textChar == ' ' ? getAverageWidth() : 0;
 
     Integer glyphWidth = glyphWidths.get(glyphIndex);
-    return glyphWidth != null ? glyphWidth : defaultGlyphWidth;
+    return glyphWidth != null ? glyphWidth : getDefaultWidth();
   }
 
   /**
@@ -715,6 +723,38 @@ public abstract class Font
 
   // <protected>
   /**
+    Gets the average glyph width.
+  */
+  protected int getAverageWidth(
+    )
+  {
+    if(averageWidth == UndefinedWidth)
+    {
+      averageWidth = 0;
+      if(glyphWidths.isEmpty())
+      {averageWidth = getDefaultWidth();}
+      else
+      {
+        for(Integer glyphWidth : glyphWidths.values())
+        {averageWidth += glyphWidth;}
+        averageWidth /= glyphWidths.size();
+      }
+    }
+    return averageWidth;
+  }
+  
+  /**
+    Gets the default glyph width.
+  */
+  protected int getDefaultWidth(
+    )
+  {
+    if(defaultWidth == UndefinedWidth)
+    {defaultWidth = getAverageWidth();}
+    return defaultWidth;
+  }
+  
+  /**
     Gets the font descriptor.
   */
   protected abstract PdfDictionary getDescriptor(
@@ -750,6 +790,22 @@ public abstract class Font
    */
   protected abstract void onLoad(
     );
+  
+  /**
+    @see #getAverageWidth()
+  */
+  protected void setAverageWidth(
+    int value
+    )
+  {averageWidth = value;}
+  
+  /**
+    @see #getDefaultWidth()
+  */
+  protected void setDefaultWidth(
+    int value
+    )
+  {defaultWidth = value;}
   // </protected>
 
   // <private>

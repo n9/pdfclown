@@ -106,10 +106,9 @@ namespace org.pdfclown.documents.contents.objects
       double contextHeight = context.Box.Height;
       Font font = state.Font;
       double fontSize = state.FontSize;
-      double scale = state.Scale / 100;
-      double scaledFactor = Font.GetScalingFactor(fontSize) * scale;
-      double wordSpace = state.WordSpace * scale;
-      double charSpace = state.CharSpace * scale;
+      double scaledFactor = Font.GetScalingFactor(fontSize) * state.Scale;
+      double wordSpace = state.WordSpace * state.Scale;
+      double charSpace = state.CharSpace * state.Scale;
       Matrix ctm = state.Ctm.Clone();
       Matrix tm = state.Tm;
       if(this is ShowTextToNextLine)
@@ -120,14 +119,14 @@ namespace org.pdfclown.documents.contents.objects
         {
           if(textScanner == null)
           {state.WordSpace = newWordSpace.Value;}
-          wordSpace = newWordSpace.Value * scale;
+          wordSpace = newWordSpace.Value * state.Scale;
         }
         double? newCharSpace = showTextToNextLine.CharSpace;
         if(newCharSpace != null)
         {
           if(textScanner == null)
           {state.CharSpace = newCharSpace.Value;}
-          charSpace = newCharSpace.Value * scale;
+          charSpace = newCharSpace.Value * state.Scale;
         }
         tm = state.Tlm.Clone();
         tm.Multiply(new Matrix(1, 0, 0, 1, 0, (float)-state.Lead));

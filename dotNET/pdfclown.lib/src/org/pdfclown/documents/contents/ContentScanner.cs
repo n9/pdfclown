@@ -395,7 +395,7 @@ namespace org.pdfclown.documents.contents
       }
 
       /**
-        <summary>Gets/Sets the current horizontal scaling [PDF:1.6:5.2.3].</summary>
+        <summary>Gets/Sets the current horizontal scaling [PDF:1.6:5.2.3], normalized to 1.</summary>
       */
       public double Scale
       {
@@ -548,7 +548,7 @@ namespace org.pdfclown.documents.contents
         miterLimit = 10;
         renderMode = TextRenderModeEnum.Fill;
         rise = 0;
-        scale = 100;
+        scale = 1;
         strokeColor = colors::DeviceGrayColor.Default;
         strokeColorSpace = colors::DeviceGrayColorSpace.Default;
         tlm = new Matrix();
@@ -787,7 +787,9 @@ namespace org.pdfclown.documents.contents
             state.StrokeColor,
             state.StrokeColorSpace,
             state.FillColor,
-            state.FillColorSpace
+            state.FillColorSpace,
+            state.Scale * state.Tm.Elements[0],
+            state.Tm.Elements[3]
             );
           BaseDataObject.Scan(
             state,

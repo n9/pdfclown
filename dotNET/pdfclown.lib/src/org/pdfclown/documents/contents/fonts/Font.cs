@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -90,6 +90,10 @@ namespace org.pdfclown.documents.contents.fonts
     #endregion
 
     #region static
+    #region fields
+    private const int UndefinedWidth = int.MinValue;
+    #endregion
+
     #region interface
     #region public
     /**
@@ -221,10 +225,6 @@ namespace org.pdfclown.documents.contents.fonts
     */
     protected BiDictionary<ByteArray,int> codes;
     /**
-      <summary>Default glyph width.</summary>
-    */
-    protected int defaultGlyphWidth;
-    /**
       <summary>Glyph indexes by unicode.</summary>
     */
     protected Dictionary<int,int> glyphIndexes;
@@ -246,9 +246,17 @@ namespace org.pdfclown.documents.contents.fonts
     protected HashSet<int> usedCodes;
 
     /**
+      <summary>Average glyph width.</summary>
+    */
+    private int averageWidth = UndefinedWidth;
+    /**
       <summary>Maximum character code byte size.</summary>
     */
     private int charCodeMaxLength = 0;
+    /**
+      <summary>Default glyph width.</summary>
+    */
+    private int defaultWidth = UndefinedWidth;
     #endregion
 
     #region constructors
@@ -554,10 +562,10 @@ namespace org.pdfclown.documents.contents.fonts
     {
       int glyphIndex;
       if(!glyphIndexes.TryGetValue((int)textChar, out glyphIndex))
-        return 0;
+        return textChar == ' ' ? AverageWidth : 0;
 
       int glyphWidth;
-      return glyphWidths.TryGetValue(glyphIndex, out glyphWidth) ? glyphWidth : defaultGlyphWidth;
+      return glyphWidths.TryGetValue(glyphIndex, out glyphWidth) ? glyphWidth : DefaultWidth;
     }
 
     /**
@@ -626,6 +634,46 @@ namespace org.pdfclown.documents.contents.fonts
     #endregion
 
     #region protected
+    /**
+      <summary>Gets/Sets the average glyph width.</summary>
+    */
+    protected int AverageWidth
+    {
+      get
+      {
+        if(averageWidth == UndefinedWidth)
+        {
+          averageWidth = 0;
+          if(glyphWidths.Count == 0)
+          {averageWidth = DefaultWidth;}
+          else
+          {
+            foreach(int glyphWidth in glyphWidths.Values)
+            {averageWidth += glyphWidth;}
+            averageWidth /= glyphWidths.Count;
+          }
+        }
+        return averageWidth;
+      }
+      set
+      {averageWidth = value;}
+    }
+
+    /**
+      <summary>Gets/Sets the default glyph width.</summary>
+    */
+    protected int DefaultWidth
+    {
+      get
+      {
+        if(defaultWidth == UndefinedWidth)
+        {defaultWidth = AverageWidth;}
+        return defaultWidth;
+      }
+      set
+      {defaultWidth = value;}
+    }
+
     /**
       <summary>Gets the font descriptor.</summary>
     */

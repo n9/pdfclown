@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2014 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -689,9 +689,7 @@ namespace org.pdfclown.tools
         {textStrings.Add(textString = new TextString());}
 
         textStyle = rawTextString.Style;
-        double spaceWidth = textStyle.Font.GetWidth(' ', textStyle.FontSize);
-        if(spaceWidth == 0)
-        {spaceWidth = textStyle.FontSize * .25f;} // NOTE: as a rule of thumb, space width is estimated according to the font size.
+        double spaceWidth = textStyle.Font.GetWidth(' ', textStyle.FontSize) * textStyle.ScaleX * .5;
         foreach(TextChar textChar in rawTextString.TextChars)
         {
           if(previousTextChar != null)
@@ -703,7 +701,7 @@ namespace org.pdfclown.tools
               and augmented ones.
             */
             float characterSpace = textChar.Box.X - previousTextChar.Box.Right;
-            if(characterSpace >= spaceWidth)
+            if(characterSpace > spaceWidth)
             {
               // Add synthesized space character!
               textString.TextChars.Add(

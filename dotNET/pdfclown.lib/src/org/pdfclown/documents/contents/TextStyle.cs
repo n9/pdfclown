@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,6 +41,8 @@ namespace org.pdfclown.documents.contents
     private readonly Font font;
     private readonly double fontSize;
     private readonly TextRenderModeEnum renderMode;
+    private readonly double scaleX;
+    private readonly double scaleY;
     private readonly Color strokeColor;
     private readonly ColorSpace strokeColorSpace;
     #endregion
@@ -53,7 +55,9 @@ namespace org.pdfclown.documents.contents
       Color strokeColor,
       ColorSpace strokeColorSpace,
       Color fillColor,
-      ColorSpace fillColorSpace
+      ColorSpace fillColorSpace,
+      double scaleX,
+      double scaleY
       )
     {
       this.font = font;
@@ -63,6 +67,8 @@ namespace org.pdfclown.documents.contents
       this.strokeColorSpace = strokeColorSpace;
       this.fillColor = fillColor;
       this.fillColorSpace = fillColorSpace;
+      this.scaleX = scaleX;
+      this.scaleY = scaleY;
     }
     #endregion
 
@@ -82,6 +88,12 @@ namespace org.pdfclown.documents.contents
 
     public TextRenderModeEnum RenderMode
     {get{return renderMode;}}
+
+    public double ScaleX
+    {get{return scaleX;}}
+
+    public double ScaleY
+    {get{return scaleY;}}
 
     public Color StrokeColor
     {get{return strokeColor;}}

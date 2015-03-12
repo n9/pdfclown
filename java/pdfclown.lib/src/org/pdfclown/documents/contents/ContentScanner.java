@@ -67,7 +67,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2.1, 03/11/15
+  @version 0.1.2.1, 03/12/15
 */
 public final class ContentScanner
 {
@@ -360,7 +360,7 @@ public final class ContentScanner
     {return rise;}
 
     /**
-      Gets the current horizontal scaling [PDF:1.6:5.2.3].
+      Gets the current horizontal scaling [PDF:1.6:5.2.3], normalized to 1.
     */
     public double getScale(
       )
@@ -652,7 +652,7 @@ public final class ContentScanner
       miterLimit = 10;
       renderMode = TextRenderModeEnum.Fill;
       rise = 0;
-      scale = 100;
+      scale = 1;
       strokeColor = DeviceGrayColor.Default;
       strokeColorSpace = DeviceGrayColorSpace.Default;
       tlm = new AffineTransform();
@@ -859,7 +859,9 @@ public final class ContentScanner
           state.getStrokeColor(),
           state.getStrokeColorSpace(),
           state.getFillColor(),
-          state.getFillColorSpace()
+          state.getFillColorSpace(),
+          state.getScale() * state.getTm().getScaleX(),
+          state.getTm().getScaleY()
           );
         getBaseDataObject().scan(
           state,

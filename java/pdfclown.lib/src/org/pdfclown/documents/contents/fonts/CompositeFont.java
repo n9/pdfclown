@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/12/15
 */
 @PDF(VersionEnum.PDF12)
 public abstract class CompositeFont
@@ -243,8 +243,9 @@ public abstract class CompositeFont
     }
     // Default glyph width.
     {
-      PdfInteger defaultGlyphWidthObject = (PdfInteger)getBaseDataObject().get(PdfName.W);
-      defaultGlyphWidth = (defaultGlyphWidthObject == null ? 0 : defaultGlyphWidthObject.getRawValue());
+      PdfInteger defaultWidthObject = (PdfInteger)getBaseDataObject().get(PdfName.DW);
+      if(defaultWidthObject != null)
+      {setDefaultWidth(defaultWidthObject.getIntValue());}
     }
   }
   // </protected>

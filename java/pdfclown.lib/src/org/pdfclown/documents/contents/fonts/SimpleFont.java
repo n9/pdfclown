@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,7 +44,7 @@ import org.pdfclown.util.ByteArray;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/14/11
+  @version 0.1.2.1, 03/12/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class SimpleFont
@@ -151,8 +151,12 @@ public abstract class SimpleFont
       PdfDictionary descriptor = getDescriptor();
       if(descriptor != null)
       {
-        PdfNumber<?> defaultGlyphWidthObject = (PdfNumber<?>)descriptor.get(PdfName.MissingWidth);
-        defaultGlyphWidth = (defaultGlyphWidthObject != null ? defaultGlyphWidthObject.getIntValue() : 0);
+        PdfNumber<?> widthObject = (PdfNumber<?>)descriptor.get(PdfName.AvgWidth);
+        if(widthObject != null)
+        {setAverageWidth(widthObject.getIntValue());}
+        widthObject = (PdfNumber<?>)descriptor.get(PdfName.MissingWidth);
+        if(widthObject != null)
+        {setDefaultWidth(widthObject.getIntValue());}
       }
     }
   }

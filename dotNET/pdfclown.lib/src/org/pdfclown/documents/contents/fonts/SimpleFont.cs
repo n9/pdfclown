@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -133,8 +133,12 @@ namespace org.pdfclown.documents.contents.fonts
         PdfDictionary descriptor = Descriptor;
         if(descriptor != null)
         {
-          IPdfNumber defaultGlyphWidthObject = (IPdfNumber)descriptor[PdfName.MissingWidth];
-          defaultGlyphWidth = (defaultGlyphWidthObject != null ? defaultGlyphWidthObject.IntValue : 0);
+          IPdfNumber widthObject = (IPdfNumber)descriptor[PdfName.AvgWidth];
+          if(widthObject != null)
+          {AverageWidth = widthObject.IntValue;}
+          widthObject = (IPdfNumber)descriptor[PdfName.MissingWidth];
+          if(widthObject != null)
+          {DefaultWidth = widthObject.IntValue;}
         }
       }
     }

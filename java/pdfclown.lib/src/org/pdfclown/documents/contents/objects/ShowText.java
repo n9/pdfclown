@@ -142,10 +142,9 @@ public abstract class ShowText
     double contextHeight = context.getBox().getHeight();
     Font font = state.getFont();
     double fontSize = state.getFontSize();
-    double scale = state.getScale() / 100;
-    double scaledFactor = Font.getScalingFactor(fontSize) * scale;
-    double wordSpace = state.getWordSpace() * scale;
-    double charSpace = state.getCharSpace() * scale;
+    double scaledFactor = Font.getScalingFactor(fontSize) * state.getScale();
+    double wordSpace = state.getWordSpace() * state.getScale();
+    double charSpace = state.getCharSpace() * state.getScale();
     AffineTransform ctm = (AffineTransform)state.getCtm().clone();
     AffineTransform tm;
     if(this instanceof ShowTextToNextLine)
@@ -156,14 +155,14 @@ public abstract class ShowText
       {
         if(textScanner == null)
         {state.setWordSpace(newWordSpace);}
-        wordSpace = newWordSpace * scale;
+        wordSpace = newWordSpace * state.getScale();
       }
       Double newCharSpace = showTextToNextLine.getCharSpace();
       if(newCharSpace != null)
       {
         if(textScanner == null)
         {state.setCharSpace(newCharSpace);}
-        charSpace = newCharSpace * scale;
+        charSpace = newCharSpace * state.getScale();
       }
       tm = (AffineTransform)state.getTlm().clone();
       tm.concatenate(new AffineTransform(1, 0, 0, 1, 0, -state.getLead()));

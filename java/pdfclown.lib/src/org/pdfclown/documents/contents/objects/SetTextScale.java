@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -39,7 +39,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2, 02/04/12
+  @version 0.1.2.1, 03/12/15
 */
 @PDF(VersionEnum.PDF10)
 public final class SetTextScale
@@ -68,7 +68,7 @@ public final class SetTextScale
   // <interface>
   // <public>
   /**
-    Gets the horizontal scale expressed as a percentage of the normal width (100).
+    Gets the horizontal scale expressed as a percentage of the normal width.
   */
   public double getValue(
     )
@@ -78,7 +78,7 @@ public final class SetTextScale
   public void scan(
     GraphicsState state
     )
-  {state.setScale(getValue());}
+  {state.setScale(getValue() / 100);}
 
   public void setValue(
     double value

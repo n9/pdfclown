@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -61,10 +61,10 @@ namespace org.pdfclown.documents.contents.objects
     public override void Scan(
       ContentScanner.GraphicsState state
       )
-    {state.Scale = Value;}
+    {state.Scale = Value / 100;}
 
     /**
-      <summary>Gets/Sets the horizontal scale expressed as a percentage of the normal width (100).
+      <summary>Gets/Sets the horizontal scale expressed as a percentage of the normal width.
       </summary>
     */
     public double Value

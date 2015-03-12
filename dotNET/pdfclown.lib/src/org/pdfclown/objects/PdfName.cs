@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -85,6 +85,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName ASCIIHexDecode = new PdfName("ASCIIHexDecode");
     public static readonly PdfName AsIs = new PdfName("AsIs");
     public static readonly PdfName Author = new PdfName("Author");
+    public static readonly PdfName AvgWidth = new PdfName("AvgWidth");
     public static readonly PdfName B = new PdfName("B");
     public static readonly PdfName BaseEncoding = new PdfName("BaseEncoding");
     public static readonly PdfName BaseFont = new PdfName("BaseFont");
@@ -187,6 +188,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName DS = new PdfName("DS");
     public static readonly PdfName Dur = new PdfName("Dur");
     public static readonly PdfName DV = new PdfName("DV");
+    public static readonly PdfName DW = new PdfName("DW");
     public static readonly PdfName E = new PdfName("E");
     public static readonly PdfName EF = new PdfName("EF");
     public static readonly PdfName EmbeddedFile = new PdfName("EmbeddedFile");

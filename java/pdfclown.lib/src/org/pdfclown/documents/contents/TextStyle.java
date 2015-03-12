@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -34,7 +34,7 @@ import org.pdfclown.documents.contents.fonts.Font;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.2.1, 03/12/15
 */
 public final class TextStyle
 {
@@ -46,6 +46,8 @@ public final class TextStyle
   private final Font font;
   private final double fontSize;
   private final TextRenderModeEnum renderMode;
+  private final double scaleX;
+  private final double scaleY;
   private final Color<?> strokeColor;
   private final ColorSpace<?> strokeColorSpace;
   // </fields>
@@ -58,7 +60,9 @@ public final class TextStyle
     Color<?> strokeColor,
     ColorSpace<?> strokeColorSpace,
     Color<?> fillColor,
-    ColorSpace<?> fillColorSpace
+    ColorSpace<?> fillColorSpace,
+    double scaleX,
+    double scaleY
     )
   {
     this.font = font;
@@ -68,6 +72,8 @@ public final class TextStyle
     this.strokeColorSpace = strokeColorSpace;
     this.fillColor = fillColor;
     this.fillColorSpace = fillColorSpace;
+    this.scaleX = scaleX;
+    this.scaleY = scaleY;
   }
   // </constructors>
 
@@ -93,6 +99,14 @@ public final class TextStyle
     )
   {return renderMode;}
 
+  public double getScaleX(
+    )
+  {return scaleX;}
+
+  public double getScaleY(
+    )
+  {return scaleY;}
+  
   public Color<?> getStrokeColor(
     )
   {return strokeColor;}
