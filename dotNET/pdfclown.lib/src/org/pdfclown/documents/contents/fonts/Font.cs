@@ -3,6 +3,7 @@
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
+    * Manuel Guilbault (code contributor [FIX:27], manuel.guilbault at gmail.com)
 
   This file should be part of the source code distribution of "PDF Clown library" (the
   Program): see the accompanying README files for more info.
@@ -354,7 +355,14 @@ namespace org.pdfclown.documents.contents.fonts
     public virtual double Descent
     {
       get
-      {return ((IPdfNumber)Descriptor[PdfName.Descent]).RawValue;}
+      {
+        /*
+          NOTE: Sometimes font descriptors specify positive descent, therefore normalization is
+          required [FIX:27].
+        */
+        double descent = ((IPdfNumber)Descriptor[PdfName.Descent]).DoubleValue;
+        return descent <= 0 ? descent : -descent;
+      }
     }
 
     /**

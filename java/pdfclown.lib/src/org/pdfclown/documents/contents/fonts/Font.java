@@ -3,6 +3,7 @@
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
+    * Manuel Guilbault (code contributor [FIX:27], manuel.guilbault at gmail.com)
 
   This file should be part of the source code distribution of "PDF Clown library"
   (the Program): see the accompanying README files for more info.
@@ -56,7 +57,7 @@ import org.pdfclown.util.NotImplementedException;
   Abstract font [PDF:1.6:5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/12/15
+  @version 0.1.2.1, 03/13/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Font
@@ -479,7 +480,14 @@ public abstract class Font
   */
   public double getDescent(
     )
-  {return ((PdfNumber<?>)getDescriptor().get(PdfName.Descent)).getDoubleValue();}
+  {
+    /*
+      NOTE: Sometimes font descriptors specify positive descent, therefore normalization is required
+      [FIX:27].
+    */
+    double descent = ((PdfNumber<?>)getDescriptor().get(PdfName.Descent)).getDoubleValue();
+    return descent <= 0 ? descent : -descent;
+  }
 
   /**
     Gets the vertical offset from the baseline to the descender line (descent), scaled to the given font size.

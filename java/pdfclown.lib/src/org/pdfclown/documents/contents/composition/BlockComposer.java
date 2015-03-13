@@ -4,7 +4,7 @@
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it):
       - porting and enhancement of [MG]'s line alignment .NET/C# implementation.
-    * Manuel Guilbault (code contributor, manuel.guilbault@gmail.com):
+    * Manuel Guilbault (code contributor, manuel.guilbault at gmail.com):
       - line alignment.
 
   This file should be part of the source code distribution of "PDF Clown library"
