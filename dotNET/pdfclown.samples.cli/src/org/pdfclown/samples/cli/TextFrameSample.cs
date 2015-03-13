@@ -1,4 +1,5 @@
 using org.pdfclown.documents;
+using org.pdfclown.documents.contents;
 using colors = org.pdfclown.documents.contents.colorSpaces;
 using org.pdfclown.documents.contents.composition;
 using fonts = org.pdfclown.documents.contents.fonts;
@@ -44,32 +45,18 @@ namespace org.pdfclown.samples.cli
 
       colors::Color textColor = new colors::DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d);
       composer.SetFillColor(textColor);
+      composer.SetLineDash(new LineDash(new double[]{10, 10}));
+      composer.SetLineWidth(.25);
 
       BlockComposer blockComposer = new BlockComposer(composer);
       blockComposer.Begin(new RectangleF(300, 400, 200, 100), XAlignmentEnum.Left, YAlignmentEnum.Middle);
-      composer.SetFont(
-        new fonts::StandardType1Font(
-          document,
-          fonts::StandardType1Font.FamilyEnum.Times,
-          false,
-          true
-          ),
-        12
-        );
+      composer.SetFont(new fonts::StandardType1Font(document, fonts::StandardType1Font.FamilyEnum.Times, false, true), 12);
       blockComposer.ShowText("PrimitiveComposer.ShowText(...) methods return the actual bounding box of the text shown, allowing to precisely determine its location on the page.");
       blockComposer.End();
 
       // 3. Inserting contents...
       // Set the font to use!
-      composer.SetFont(
-        new fonts::StandardType1Font(
-          document,
-          fonts::StandardType1Font.FamilyEnum.Courier,
-          true,
-          false
-          ),
-        72
-        );
+      composer.SetFont(new fonts::StandardType1Font(document, fonts::StandardType1Font.FamilyEnum.Courier, true, false), 72);
       composer.DrawPolygon(
         composer.ShowText(
           "Text frame",
@@ -81,17 +68,11 @@ namespace org.pdfclown.samples.cli
         );
       composer.Stroke();
 
-      composer.SetFont(
-        fonts::Font.Get(
-          document,
-          GetResourcePath("fonts" + System.IO.Path.DirectorySeparatorChar + "Ruritania-Outline.ttf")
-          ),
-        102
-        );
+      composer.SetFont(fonts::Font.Get(document, GetResourcePath("fonts" + System.IO.Path.DirectorySeparatorChar + "Ruritania-Outline.ttf")), 102);
       composer.DrawPolygon(
         composer.ShowText(
           "Text frame",
-          new PointF(300, 600),
+          new PointF(250, 600),
           XAlignmentEnum.Center,
           YAlignmentEnum.Middle,
           -25

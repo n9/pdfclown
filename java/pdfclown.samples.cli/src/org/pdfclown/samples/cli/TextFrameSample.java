@@ -5,6 +5,7 @@ import java.awt.geom.Rectangle2D;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
+import org.pdfclown.documents.contents.LineDash;
 import org.pdfclown.documents.contents.colorSpaces.Color;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
 import org.pdfclown.documents.contents.composition.BlockComposer;
@@ -21,7 +22,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 11/30/12
+  @version 0.1.2.1, 03/12/15
 */
 public class TextFrameSample
   extends Sample
@@ -57,46 +58,22 @@ public class TextFrameSample
 
     Color<?> textColor = new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d);
     composer.setFillColor(textColor);
+    composer.setLineDash(new LineDash(new double[]{10, 10}));
+    composer.setLineWidth(.25);
 
     BlockComposer blockComposer = new BlockComposer(composer);
-    blockComposer.begin(new Rectangle2D.Double(300,400,200,100),XAlignmentEnum.Left,YAlignmentEnum.Middle);
-    try
-    {
-      composer.setFont(
-        new StandardType1Font(
-          document,
-          StandardType1Font.FamilyEnum.Times,
-          false,
-          true
-          ),
-        12
-        );
-    }
-    catch(Exception e)
-    {}
+    blockComposer.begin(new Rectangle2D.Double(300, 400, 200, 100), XAlignmentEnum.Left, YAlignmentEnum.Middle);
+    composer.setFont(new StandardType1Font(document, StandardType1Font.FamilyEnum.Times, false, true), 12);
     blockComposer.showText("PrimitiveComposer.showText(...) methods return the actual bounding box of the text shown, allowing to precisely determine its location on the page.");
     blockComposer.end();
 
     // 3. Inserting contents...
     // Set the font to use!
-    try
-    {
-      composer.setFont(
-        new StandardType1Font(
-          document,
-          StandardType1Font.FamilyEnum.Courier,
-          true,
-          false
-          ),
-        72
-        );
-    }
-    catch(Exception e)
-    {}
+    composer.setFont(new StandardType1Font(document, StandardType1Font.FamilyEnum.Courier, true, false), 72);
     composer.drawPolygon(
       composer.showText(
         "Text frame",
-        new Point2D.Double(150,360),
+        new Point2D.Double(150, 360),
         XAlignmentEnum.Left,
         YAlignmentEnum.Middle,
         45
@@ -104,22 +81,11 @@ public class TextFrameSample
       );
     composer.stroke();
 
-    try
-    {
-      composer.setFont(
-        Font.get(
-          document,
-          getResourcePath("fonts" + java.io.File.separator + "Ruritania-Outline.ttf")
-          ),
-        102
-        );
-    }
-    catch(Exception e)
-    {}
+    composer.setFont(Font.get(document, getResourcePath("fonts" + java.io.File.separator + "Ruritania-Outline.ttf")), 102);
     composer.drawPolygon(
       composer.showText(
         "Text frame",
-        new Point2D.Double(300,600),
+        new Point2D.Double(250, 600),
         XAlignmentEnum.Center,
         YAlignmentEnum.Middle,
         -25

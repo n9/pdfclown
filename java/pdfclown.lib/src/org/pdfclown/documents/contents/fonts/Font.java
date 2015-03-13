@@ -428,6 +428,9 @@ public abstract class Font
       for(int index = 0, length = text.length(); index < length; index++)
       {
         int textCode = text.charAt(index);
+        if(textCode < 32) // NOTE: Control characters are ignored [FIX:7].
+          continue;
+        
         byte[] charCode = codes.getKey(textCode).data;
         encodedStream.write(charCode);
         usedCodes.add(textCode);

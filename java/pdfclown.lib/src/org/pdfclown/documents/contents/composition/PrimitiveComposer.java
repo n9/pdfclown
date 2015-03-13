@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -88,6 +88,7 @@ import org.pdfclown.documents.interaction.actions.Action;
 import org.pdfclown.documents.interaction.annotations.Link;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
+import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.geom.Quad;
 
 /**
@@ -100,7 +101,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2, 09/24/12
+  @version 0.1.2.1, 03/12/15
 */
 public final class PrimitiveComposer
 {
@@ -778,22 +779,6 @@ public final class PrimitiveComposer
   {setFont_(getResourceName(value),size);}
 
   /**
-    Sets the text horizontal scaling [PDF:1.6:5.2.3].
-  */
-  public void setTextScale(
-    double value
-    )
-  {add(new SetTextScale(value));}
-
-  /**
-    Sets the text leading [PDF:1.6:5.2.4].
-  */
-  public void setTextLead(
-    double value
-    )
-  {add(new SetTextLead(value));}
-
-  /**
     Sets the line cap style [PDF:1.6:4.3.2].
   */
   public void setLineCap(
@@ -887,6 +872,14 @@ public final class PrimitiveComposer
   }
 
   /**
+    Sets the text leading [PDF:1.6:5.2.4], relative to the current text line height.
+  */
+  public void setTextLead(
+    double value
+    )
+  {add(new SetTextLead(value * getState().getFont().getLineHeight(getState().getFontSize())));}
+
+  /**
     Sets the text rendering mode [PDF:1.6:5.2.5].
   */
   public void setTextRenderMode(
@@ -901,6 +894,14 @@ public final class PrimitiveComposer
     double value
     )
   {add(new SetTextRise(value));}
+
+  /**
+    Sets the text horizontal scaling [PDF:1.6:5.2.3], normalized to 1.
+  */
+  public void setTextScale(
+    double value
+    )
+  {add(new SetTextScale(value * 100));}
 
   /**
     Sets the word spacing [PDF:1.6:5.2.2].
@@ -1008,90 +1009,67 @@ public final class PrimitiveComposer
     double rotation
     )
   {
-    ContentScanner.GraphicsState state = scanner.getState();
-    Font font = state.getFont();
-    double fontSize = state.getFontSize();
-    double x = location.getX();
-    double y = location.getY();
-    double width = font.getKernedWidth(value,fontSize);
-    double height = font.getLineHeight(fontSize);
-    double descent = font.getDescent(fontSize);
     Quad frame;
-    if(xAlignment == XAlignmentEnum.Left
-      && yAlignment == YAlignmentEnum.Top)
+    
+    beginLocalState();
+    try
     {
+      // Anchor point positioning.
+      double rad = rotation * Math.PI / 180.0;
+      double cos = Math.cos(rad);
+      double sin = Math.sin(rad);
+      applyMatrix(
+        cos,
+        sin,
+        -sin,
+        cos,
+        location.getX(),
+        scanner.getContentContext().getBox().getHeight() - location.getY()
+        );
+
+      String[] textLines = value.split("\n");
+      
+      ContentScanner.GraphicsState state = getState();
+      Font font = state.getFont();
+      double fontSize = state.getFontSize();
+      double lineHeight = font.getLineHeight(fontSize);
+      double lineSpace = state.getLead() < lineHeight ? 0 : state.getLead() - lineHeight;
+      lineHeight += lineSpace;
+      double textHeight = lineHeight * textLines.length - lineSpace;
+      double ascent = font.getAscent(fontSize);
+      
+      // Vertical alignment.
+      double y;
+      switch(yAlignment)
+      {
+        case Top:
+          y = 0 - ascent;
+          break;
+        case Bottom:
+          y = textHeight - ascent;
+          break;
+        case Middle:
+          y = textHeight / 2 - ascent;
+          break;
+        default:
+          throw new NotImplementedException();
+      }
+
+      // Text placement.
+      double maxLineWidth = 0;
+      double minX = 0;
       beginText();
       try
       {
-        if(rotation == 0)
+        for(int index = 0, length = textLines.length; index < length; index++)
         {
-          translateText(
-            x,
-            scanner.getContentContext().getBox().getHeight() - y - font.getAscent(fontSize)
-            );
-        }
-        else
-        {
-          double rad = rotation * Math.PI / 180.0;
-          double cos = Math.cos(rad);
-          double sin = Math.sin(rad);
-
-          setTextMatrix(
-            cos,
-            sin,
-            -sin,
-            cos,
-            x,
-            scanner.getContentContext().getBox().getHeight() - y - font.getAscent(fontSize)
-            );
-        }
-
-        state = scanner.getState();
-        frame = new Quad(
-          state.textToDeviceSpace(new Point2D.Double(0, descent), true),
-          state.textToDeviceSpace(new Point2D.Double(width, descent), true),
-          state.textToDeviceSpace(new Point2D.Double(width, height + descent), true),
-          state.textToDeviceSpace(new Point2D.Double(0, height + descent), true)
-          );
-
-        // Add the text!
-        add(new ShowSimpleText(font.encode(value)));
-      }
-      finally
-      {end();} // Ends the text object.
-    }
-    else
-    {
-      beginLocalState();
-      try
-      {
-        // Coordinates transformation.
-        double cos, sin;
-        if(rotation == 0)
-        {
-          cos = 1;
-          sin = 0;
-        }
-        else
-        {
-          double rad = rotation * Math.PI / 180.0;
-          cos = Math.cos(rad);
-          sin = Math.sin(rad);
-        }
-        // Apply the transformation!
-        applyMatrix(
-          cos,
-          sin,
-          -sin,
-          cos,
-          x,
-          scanner.getContentContext().getBox().getHeight() - y
-          );
-
-        beginText();
-        try
-        {
-          // Text coordinates adjustment.
+          String textLine = textLines[index];
+          double width = font.getKernedWidth(textLine, fontSize);
+          if(width > maxLineWidth)
+          {maxLineWidth = width;}
+        
+          // Horizontal alignment.
+          double x;
           switch(xAlignment)
           {
             case Left:
@@ -1104,39 +1082,30 @@ public final class PrimitiveComposer
             case Justify:
               x = -width / 2;
               break;
+            default:
+              throw new NotImplementedException();
           }
-          switch(yAlignment)
-          {
-            case Top:
-              y = -font.getAscent(fontSize);
-              break;
-            case Bottom:
-              y = height - font.getAscent(fontSize);
-              break;
-            case Middle:
-              y = height / 2 - font.getAscent(fontSize);
-              break;
-          }
-          // Apply the text coordinates adjustment!
-          translateText(x,y);
-
-          state = scanner.getState();
-          frame = new Quad(
-            state.textToDeviceSpace(new Point2D.Double(0, descent), true),
-            state.textToDeviceSpace(new Point2D.Double(width, descent), true),
-            state.textToDeviceSpace(new Point2D.Double(width, height + descent), true),
-            state.textToDeviceSpace(new Point2D.Double(0, height + descent), true)
-            );
-
-          // Add the text!
-          add(new ShowSimpleText(font.encode(value)));
+          if(x < minX)
+          {minX = x;}
+          translateText(x, y - lineHeight * index);
+          
+          if(textLine.length() > 0)
+          {add(new ShowSimpleText(font.encode(textLine)));}
         }
-        finally
-        {end();} // Ends the text object.
       }
       finally
-      {end();} // Ends the local state.
+      {end();} // Ends the text object.
+      
+      frame = new Quad(
+        state.textToDeviceSpace(new Point2D.Double(minX, y + ascent), true),
+        state.textToDeviceSpace(new Point2D.Double(minX + maxLineWidth, y + ascent), true),
+        state.textToDeviceSpace(new Point2D.Double(minX + maxLineWidth, y + ascent - textHeight), true),
+        state.textToDeviceSpace(new Point2D.Double(minX, y + ascent - textHeight), true)
+        );
     }
+    finally
+    {end();} // Ends the local state.
+    
     return frame;
   }
 

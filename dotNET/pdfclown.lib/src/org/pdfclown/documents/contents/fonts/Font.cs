@@ -369,6 +369,9 @@ namespace org.pdfclown.documents.contents.fonts
       for(int index = 0, length = text.Length; index < length; index++)
       {
         int textCode = text[index];
+        if(textCode < 32) // NOTE: Control characters are ignored [FIX:7].
+          continue;
+
         byte[] charCode = codes.GetKey(textCode).Data;
         encodedStream.Write(charCode, 0, charCode.Length);
         usedCodes.Add(textCode);

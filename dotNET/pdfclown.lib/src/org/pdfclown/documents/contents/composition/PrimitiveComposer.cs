@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -710,22 +710,6 @@ namespace org.pdfclown.documents.contents.composition
     {SetFont_(GetResourceName(value),size);}
 
     /**
-      <summary>Sets the text horizontal scaling [PDF:1.6:5.2.3].</summary>
-    */
-    public void SetTextScale(
-      double value
-      )
-    {Add(new objects::SetTextScale(value));}
-
-    /**
-      <summary>Sets the text leading [PDF:1.6:5.2.4].</summary>
-    */
-    public void SetTextLead(
-      double value
-      )
-    {Add(new objects::SetTextLead(value));}
-
-    /**
       <summary>Sets the line cap style [PDF:1.6:4.3.2].</summary>
     */
     public void SetLineCap(
@@ -809,6 +793,15 @@ namespace org.pdfclown.documents.contents.composition
     }
 
     /**
+      <summary>Sets the text leading [PDF:1.6:5.2.4], relative to the current text line height.
+      </summary>
+    */
+    public void SetTextLead(
+      double value
+      )
+    {Add(new objects::SetTextLead(value * State.Font.GetLineHeight(State.FontSize)));}
+
+    /**
       <summary>Sets the text rendering mode [PDF:1.6:5.2.5].</summary>
     */
     public void SetTextRenderMode(
@@ -823,6 +816,14 @@ namespace org.pdfclown.documents.contents.composition
       double value
       )
     {Add(new objects::SetTextRise(value));}
+
+    /**
+      <summary>Sets the text horizontal scaling [PDF:1.6:5.2.3], normalized to 1.</summary>
+    */
+    public void SetTextScale(
+      double value
+      )
+    {Add(new objects::SetTextScale(value * 100));}
 
     /**
       <summary>Sets the word spacing [PDF:1.6:5.2.2].</summary>
@@ -929,91 +930,67 @@ namespace org.pdfclown.documents.contents.composition
       double rotation
       )
     {
-      ContentScanner.GraphicsState state = scanner.State;
-      fonts::Font font = state.Font;
-      double fontSize = state.FontSize;
-      double x = location.X;
-      double y = location.Y;
-      double width = font.GetKernedWidth(value,fontSize);
-      double height = font.GetLineHeight(fontSize);
-      double descent = font.GetDescent(fontSize);
       Quad frame;
-      if(xAlignment == XAlignmentEnum.Left
-        && yAlignment == YAlignmentEnum.Top)
+
+      BeginLocalState();
+      try
       {
+        // Anchor point positioning.
+        double rad = rotation * Math.PI / 180.0;
+        double cos = Math.Cos(rad);
+        double sin = Math.Sin(rad);
+        ApplyMatrix(
+          cos,
+          sin,
+          -sin,
+          cos,
+          location.X,
+          scanner.ContentContext.Box.Height - location.Y
+          );
+
+        string[] textLines = value.Split('\n');
+
+        ContentScanner.GraphicsState state = State;
+        fonts::Font font = state.Font;
+        double fontSize = state.FontSize;
+        double lineHeight = font.GetLineHeight(fontSize);
+        double lineSpace = state.Lead < lineHeight ? 0 : state.Lead - lineHeight;
+        lineHeight += lineSpace;
+        double textHeight = lineHeight * textLines.Length - lineSpace;
+        double ascent = font.GetAscent(fontSize);
+
+        // Vertical alignment.
+        double y;
+        switch(yAlignment)
+        {
+          case YAlignmentEnum.Top:
+            y = 0 - ascent;
+            break;
+          case YAlignmentEnum.Bottom:
+            y = textHeight - ascent;
+            break;
+          case YAlignmentEnum.Middle:
+            y = textHeight / 2 - ascent;
+            break;
+          default:
+            throw new NotImplementedException();
+        }
+
+        // Text placement.
+        double maxLineWidth = 0;
+        double minX = 0;
         BeginText();
         try
         {
-          if(rotation == 0)
+          for(int index = 0, length = textLines.Length; index < length; index++)
           {
-            TranslateText(
-              x,
-              scanner.ContentContext.Box.Height - y - font.GetAscent(fontSize)
-              );
-          }
-          else
-          {
-            double rad = rotation * Math.PI / 180.0;
-            double cos = Math.Cos(rad);
-            double sin = Math.Sin(rad);
+            string textLine = textLines[index];
+            double width = font.GetKernedWidth(textLine, fontSize);
+            if(width > maxLineWidth)
+            {maxLineWidth = width;}
 
-            SetTextMatrix(
-              cos,
-              sin,
-              -sin,
-              cos,
-              x,
-              scanner.ContentContext.Box.Height - y - font.GetAscent(fontSize)
-              );
-          }
-
-          state = scanner.State;
-          frame = new Quad(
-            state.TextToDeviceSpace(new PointF(0, (float)descent), true),
-            state.TextToDeviceSpace(new PointF((float)width, (float)descent), true),
-            state.TextToDeviceSpace(new PointF((float)width, (float)(height + descent)), true),
-            state.TextToDeviceSpace(new PointF(0, (float)(height + descent)), true)
-            );
-
-          // Add the text!
-          Add(new objects::ShowSimpleText(font.Encode(value)));
-        }
-        finally
-        {End();} // Ends the text object.
-      }
-      else
-      {
-        BeginLocalState();
-        try
-        {
-          // Coordinates transformation.
-          double cos, sin;
-          if(rotation == 0)
-          {
-            cos = 1;
-            sin = 0;
-          }
-          else
-          {
-            double rad = rotation * Math.PI / 180.0;
-            cos = Math.Cos(rad);
-            sin = Math.Sin(rad);
-          }
-          // Apply the transformation!
-          ApplyMatrix(
-            cos,
-            sin,
-            -sin,
-            cos,
-            x,
-            scanner.ContentContext.Box.Height - y
-            );
-
-          // Begin the text object!
-          BeginText();
-          try
-          {
-            // Text coordinates adjustment.
+            // Horizontal alignment.
+            double x;
             switch(xAlignment)
             {
               case XAlignmentEnum.Left:
@@ -1026,39 +1003,30 @@ namespace org.pdfclown.documents.contents.composition
               case XAlignmentEnum.Justify:
                 x = -width / 2;
                 break;
+              default:
+                throw new NotImplementedException();
             }
-            switch(yAlignment)
-            {
-              case YAlignmentEnum.Top:
-                y = -font.GetAscent(fontSize);
-                break;
-              case YAlignmentEnum.Bottom:
-                y = height - font.GetAscent(fontSize);
-                break;
-              case YAlignmentEnum.Middle:
-                y = height / 2 - font.GetAscent(fontSize);
-                break;
-            }
-            // Apply the text coordinates adjustment!
-            TranslateText(x,y);
+            if(x < minX)
+            {minX = x;}
+            TranslateText(x, y - lineHeight * index);
 
-            state = scanner.State;
-            frame = new Quad(
-              state.TextToDeviceSpace(new PointF(0, (float)descent), true),
-              state.TextToDeviceSpace(new PointF((float)width, (float)descent), true),
-              state.TextToDeviceSpace(new PointF((float)width, (float)(height + descent)), true),
-              state.TextToDeviceSpace(new PointF(0, (float)(height + descent)), true)
-              );
-
-            // Add the text!
-            Add(new objects::ShowSimpleText(font.Encode(value)));
+            if(textLine.Length > 0)
+            {Add(new objects::ShowSimpleText(font.Encode(textLine)));}
           }
-          finally
-          {End();} // Ends the text object.
         }
         finally
-        {End();} // Ends the local state.
+        {End();} // Ends the text object.
+
+        frame = new Quad(
+          state.TextToDeviceSpace(new PointF((float)minX, (float)(y + ascent)), true),
+          state.TextToDeviceSpace(new PointF((float)(minX + maxLineWidth), (float)(y + ascent)), true),
+          state.TextToDeviceSpace(new PointF((float)(minX + maxLineWidth), (float)(y + ascent - textHeight)), true),
+          state.TextToDeviceSpace(new PointF((float)minX, (float)(y + ascent - textHeight)), true)
+          );
       }
+      finally
+      {End();} // Ends the local state.
+
       return frame;
     }
 
