@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,17 +25,66 @@
 
 package org.pdfclown.util.math.geom;
 
+import java.awt.Point;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
   Geometric utilities.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 01/20/12
+  @version 0.1.2.1, 03/21/15
 */
 public class GeomUtils
 {
+  public static Rectangle2D align(
+    Rectangle2D rectangle,
+    Point2D anchor,
+    Point alignment
+    )
+  {
+    return new Rectangle2D.Double(
+      anchor.getX() - rectangle.getWidth() * (1 - Double.compare(alignment.getX(), 0)) / 2,
+      anchor.getY() - rectangle.getHeight() * (1 - Double.compare(alignment.getY(), 0)) / 2,
+      rectangle.getWidth(),
+      rectangle.getHeight()
+      );
+  }
+
+  public static Rectangle2D getBounds(
+    Rectangle2D rectangle,
+    double rotation
+    )
+  {
+    Area area = new Area(rectangle);
+    AffineTransform transform = new AffineTransform();
+    transform.rotate(Math.toRadians(rotation));
+    area.transform(transform);
+    return area.getBounds2D();
+  }
+
+  public static Point2D[] getPoints(
+    PathIterator pathIterator
+    )
+  {
+    List<Point2D> points = new ArrayList<Point2D>();
+    float[] coords = new float[6];
+    while(!pathIterator.isDone())
+    {
+      pathIterator.currentSegment(coords);
+      points.add(new Point2D.Double(coords[0], coords[1]));
+      pathIterator.next();
+    }
+    return points.toArray(new Point2D[0]);
+  }
+
   /**
     Gets the size scaled to the specified limit.
     In particular, the limit matches the largest dimension and proportionally scales the other one;

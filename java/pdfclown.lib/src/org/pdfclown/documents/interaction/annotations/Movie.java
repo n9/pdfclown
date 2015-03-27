@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -39,11 +39,11 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF12)
 public final class Movie
-  extends Annotation
+  extends Annotation<Movie>
 {
   // <class>
   // <dynamic>
@@ -91,6 +91,17 @@ public final class Movie
       throw new IllegalArgumentException("Content MUST be defined.");
 
     getBaseDataObject().put(PdfName.Movie,value.getBaseObject());
+  }
+
+  /**
+    @see #setContent(org.pdfclown.documents.multimedia.Movie)
+  */
+  public Movie withContent(
+    org.pdfclown.documents.multimedia.Movie value
+    )
+  {
+    setContent(value);
+    return self();
   }
   // </public>
   // </interface>

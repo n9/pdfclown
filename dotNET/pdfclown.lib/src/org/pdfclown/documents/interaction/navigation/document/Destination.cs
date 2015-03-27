@@ -336,7 +336,7 @@ namespace org.pdfclown.documents.interaction.navigation.document
         switch(Mode)
         {
           case ModeEnum.XYZ:
-            return Convert.ToDouble(PdfSimpleObject<object>.GetValue(BaseDataObject[4]));
+            return PdfSimpleObject<object>.GetDoubleValue(BaseDataObject[4]);
           default:
             return null;
         }

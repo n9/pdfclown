@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -26,6 +26,7 @@
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
 using org.pdfclown.objects;
+using org.pdfclown.util;
 
 using System;
 using System.Collections.Generic;
@@ -35,40 +36,36 @@ namespace org.pdfclown.documents.interaction.annotations
 {
   /**
     <summary>Free text annotation [PDF:1.6:8.4.5].</summary>
-    <remarks>It displays text directly on the page. Unlike an ordinary text annotation,
-    a free text annotation has no open or closed state;
-    instead of being displayed in a pop-up window, the text is always visible.</remarks>
+    <remarks>It displays text directly on the page. Unlike an ordinary text annotation, a free text
+    annotation has no open or closed state; instead of being displayed in a pop-up window, the text
+    is always visible.</remarks>
   */
   [PDF(VersionEnum.PDF13)]
-  public sealed class CalloutNote
-    : Annotation
+  public sealed class StaticNote
+    : Markup
   {
     #region types
     /**
       <summary>Callout line [PDF:1.6:8.4.5].</summary>
     */
-    public class LineObject
+    public class CalloutLine
       : PdfObjectWrapper<PdfArray>
     {
-      #region dynamic
-      #region fields
       private Page page;
-      #endregion
 
-      #region constructors
-      public LineObject(
+      public CalloutLine(
         Page page,
         PointF start,
         PointF end
         ) : this(page, start, null, end)
       {}
 
-      public LineObject(
+      public CalloutLine(
         Page page,
         PointF start,
         PointF? knee,
         PointF end
-        ) : base(page.Document, new PdfArray())
+        ) : base(new PdfArray())
       {
         this.page = page;
         PdfArray baseDataObject = BaseDataObject;
@@ -86,14 +83,11 @@ namespace org.pdfclown.documents.interaction.annotations
         }
       }
 
-      internal LineObject(
+      internal CalloutLine(
         PdfDirectObject baseObject
         ) : base(baseObject)
       {}
-      #endregion
 
-      #region interface
-      #region public
       public PointF End
       {
         get
@@ -139,22 +133,41 @@ namespace org.pdfclown.documents.interaction.annotations
             );
         }
       }
-      #endregion
-      #endregion
-      #endregion
     }
+
+    /**
+      <summary>Note type [PDF:1.6:8.4.5].</summary>
+    */
+    public enum TypeEnum
+    {
+      /**
+        Callout.
+      */
+      Callout,
+      /**
+        Typewriter.
+      */
+      TypeWriter
+    }
+    #endregion
+
+    #region static
+    #region fields
+    private static readonly JustificationEnum DefaultJustification = JustificationEnum.Left;
+    private static readonly LineEndStyleEnum DefaultLineEndStyle = LineEndStyleEnum.None;
+    #endregion
     #endregion
 
     #region dynamic
     #region constructors
-    public CalloutNote(
+    public StaticNote(
       Page page,
       RectangleF box,
       string text
       ) : base(page, PdfName.FreeText, box, text)
     {}
 
-    internal CalloutNote(
+    internal StaticNote(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -163,6 +176,18 @@ namespace org.pdfclown.documents.interaction.annotations
     #region interface
     #region public
     /**
+      <summary>Gets/Sets the border effect.</summary>
+    */
+    [PDF(VersionEnum.PDF16)]
+    public BorderEffect BorderEffect
+    {
+      get
+      {return new BorderEffect(BaseDataObject.Get<PdfDictionary>(PdfName.BE));}
+      set
+      {BaseDataObject[PdfName.BE] = PdfObjectWrapper.GetBaseObject(value);}
+    }
+
+    /**
       <summary>Gets/Sets the justification to be used in displaying the annotation's text.</summary>
     */
     public JustificationEnum Justification
@@ -170,24 +195,129 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {return JustificationEnumExtension.Get((PdfInteger)BaseDataObject[PdfName.Q]);}
       set
-      {BaseDataObject[PdfName.Q] = value.GetCode();}
+      {BaseDataObject[PdfName.Q] = value != DefaultJustification ? value.GetCode() : null;}
     }
 
     /**
       <summary>Gets/Sets the callout line attached to the free text annotation.</summary>
     */
-    public LineObject Line
+    public CalloutLine Line
     {
       get
       {
-        PdfArray calloutLineObject = (PdfArray)BaseDataObject[PdfName.CL];
-        return calloutLineObject != null ? new LineObject(calloutLineObject) : null;
+        PdfArray calloutCalloutLine = (PdfArray)BaseDataObject[PdfName.CL];
+        return calloutCalloutLine != null ? new CalloutLine(calloutCalloutLine) : null;
       }
       set
-      {BaseDataObject[PdfName.CL] = value.BaseObject;}
+      {
+        BaseDataObject[PdfName.CL] = PdfObjectWrapper.GetBaseObject(value);
+        if(value != null)
+        {
+          /*
+            NOTE: To ensure the callout would be properly rendered, we have to declare the
+            corresponding intent.
+          */
+          Type = TypeEnum.Callout;
+        }
+      }
+    }
+
+    /**
+      <summary>Gets/Sets the style of the ending line ending.</summary>
+    */
+    public LineEndStyleEnum LineEndStyle
+    {
+      get
+      {
+        PdfArray endstylesObject = (PdfArray)BaseDataObject[PdfName.LE];
+        return endstylesObject != null ? LineEndStyleEnumExtension.Get((PdfName)endstylesObject[1]) : DefaultLineEndStyle;
+      }
+      set
+      {EnsureLineEndStylesObject()[1] = value.GetName();}
+    }
+
+    /**
+      <summary>Gets/Sets the style of the starting line ending.</summary>
+    */
+    public LineEndStyleEnum LineStartStyle
+    {
+      get
+      {
+        PdfArray endstylesObject = (PdfArray)BaseDataObject[PdfName.LE];
+        return endstylesObject != null ? LineEndStyleEnumExtension.Get((PdfName)endstylesObject[0]) : DefaultLineEndStyle;
+      }
+      set
+      {EnsureLineEndStylesObject()[0] = value.GetName();}
+    }
+
+    /**
+      <summary>Popups not supported.</summary>
+    */
+    public override Popup Popup
+    {
+      set
+      {throw new NotSupportedException();}
+    }
+    #endregion
+
+    #region private
+    private PdfArray EnsureLineEndStylesObject(
+      )
+    {
+      PdfArray endStylesObject = (PdfArray)BaseDataObject[PdfName.LE];
+      if(endStylesObject == null)
+      {
+        BaseDataObject[PdfName.LE] = endStylesObject = new PdfArray(
+          new PdfDirectObject[]
+          {
+            DefaultLineEndStyle.GetName(),
+            DefaultLineEndStyle.GetName()
+          }
+          );
+      }
+      return endStylesObject;
+    }
+
+    private TypeEnum? Type
+    {
+      get
+      {return StaticNoteTypeEnumExtension.Get(TypeBase);}
+      set
+      {TypeBase = value.HasValue ? value.Value.GetName() : null;}
     }
     #endregion
     #endregion
     #endregion
+  }
+
+  internal static class StaticNoteTypeEnumExtension
+  {
+    private static readonly BiDictionary<StaticNote.TypeEnum,PdfName> codes;
+
+    static StaticNoteTypeEnumExtension()
+    {
+      codes = new BiDictionary<StaticNote.TypeEnum,PdfName>();
+      codes[StaticNote.TypeEnum.Callout] = PdfName.FreeTextCallout;
+      codes[StaticNote.TypeEnum.TypeWriter] = PdfName.FreeTextTypeWriter;
+    }
+
+    public static StaticNote.TypeEnum? Get(
+      PdfName name
+      )
+    {
+      if(name == null)
+        return null;
+
+      StaticNote.TypeEnum? type = codes.GetKey(name);
+      if(!type.HasValue)
+        throw new NotSupportedException("Type unknown: " + name);
+
+      return type.Value;
+    }
+
+    public static PdfName GetName(
+      this StaticNote.TypeEnum type
+      )
+    {return codes[type];}
   }
 }

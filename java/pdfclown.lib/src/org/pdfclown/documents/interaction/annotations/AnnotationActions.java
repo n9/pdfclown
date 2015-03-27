@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -46,22 +46,22 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF12)
-public class AnnotationActions
+public abstract class AnnotationActions<T extends AnnotationActions<T>>
   extends PdfObjectWrapper<PdfDictionary>
   implements Map<PdfName,Action>
 {
   // <class>
   // <dynamic>
   // <fields>
-  private final Annotation parent;
+  private final Annotation<?> parent;
   // </fields>
 
   // <constructors>
   public AnnotationActions(
-    Annotation parent
+    Annotation<?> parent
     )
   {
     super(parent.getDocument(), new PdfDictionary());
@@ -69,7 +69,7 @@ public class AnnotationActions
   }
 
   AnnotationActions(
-    Annotation parent,
+    Annotation<?> parent,
     PdfDirectObject baseObject
     )
   {
@@ -81,7 +81,7 @@ public class AnnotationActions
   // <interface>
   // <public>
   @Override
-  public AnnotationActions clone(
+  public T clone(
     Document context
     )
   {throw new NotImplementedException();} // TODO: verify parent reference.
@@ -225,6 +225,105 @@ public class AnnotationActions
     )
   {put(PdfName.PV, value);}
 
+  /**
+    @see #setOnActivate(Action)
+  */
+  public T withOnActivate(
+    Action value
+    )
+  {
+    setOnActivate(value);
+    return self();
+  }
+
+  /**
+    @see #setOnEnter(Action)
+  */
+  public T withOnEnter(
+    Action value
+    )
+  {
+    setOnEnter(value);
+    return self();
+  }
+
+  /**
+    @see #setOnExit(Action)
+  */
+  public T withOnExit(
+    Action value
+    )
+  {
+    setOnExit(value);
+    return self();
+  }
+
+  /**
+    @see #setOnMouseDown(Action)
+  */
+  public T withOnMouseDown(
+    Action value
+    )
+  {
+    setOnMouseDown(value);
+    return self();
+  }
+
+  /**
+    @see #setOnMouseUp(Action)
+  */
+  public T withOnMouseUp(
+    Action value
+    )
+  {
+    setOnMouseUp(value);
+    return self();
+  }
+
+  /**
+    @see #setOnPageClose(Action)
+  */
+  public T withOnPageClose(
+    Action value
+    )
+  {
+    setOnPageClose(value);
+    return self();
+  }
+
+  /**
+    @see #setOnPageInvisible(Action)
+  */
+  public T withOnPageInvisible(
+    Action value
+    )
+  {
+    setOnPageInvisible(value);
+    return self();
+  }
+
+  /**
+    @see #setOnPageOpen(Action)
+  */
+  public T withOnPageOpen(
+    Action value
+    )
+  {
+    setOnPageOpen(value);
+    return self();
+  }
+
+  /**
+    @see #setOnPageVisible(Action)
+  */
+  public T withOnPageVisible(
+    Action value
+    )
+  {
+    setOnPageVisible(value);
+    return self();
+  }
+
   // <Map>
   @Override
   public void clear(
@@ -335,6 +434,11 @@ public class AnnotationActions
   }
   // </Map>
   // </public>
+  
+  @SuppressWarnings("unchecked")
+  protected T self(
+    )
+  {return (T)this;}
   // </interface>
   // </dynamic>
   // </class>

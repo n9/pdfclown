@@ -22,7 +22,7 @@ import org.pdfclown.tools.PageStamper;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 1/24/15
+  @version 0.1.2.1, 03/21/15
 */
 public class TextInfoExtractionSample
   extends Sample
@@ -121,7 +121,7 @@ public class TextInfoExtractionSample
 
           // Drawing text string bounding box...
           composer.beginLocalState();
-          composer.setLineDash(new LineDash(new double[]{5,5}));
+          composer.setLineDash(new LineDash(new double[]{5}));
           composer.setStrokeColor(textStringBoxColor);
           composer.drawRectangle(textString.getBox());
           composer.stroke();

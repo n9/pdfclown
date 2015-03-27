@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -27,19 +27,47 @@ package org.pdfclown.documents.contents;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
-
+import org.pdfclown.objects.PdfArray;
+import org.pdfclown.objects.PdfNumber;
 
 /**
   Line Dash Pattern [PDF:1.6:4.3.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/01/11
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF10)
 public final class LineDash
 {
   // <class>
+  // <static>
+  // <interface>
+  // <public>
+  /**
+    Gets the pattern corresponding to the specified components.
+  */
+  public static LineDash get(
+    PdfArray dashArray,
+    PdfNumber<?> dashPhase
+    )
+  {
+    if(dashArray == null)
+      return null;
+
+    // Dash array.
+    double[] dashArrayValue = new double[dashArray.size()];
+    for(int index = 0, length = dashArrayValue.length; index < length; index++)
+    {dashArrayValue[index] = ((PdfNumber<?>)dashArray.get(index)).getDoubleValue();}
+    // Dash phase.
+    double dashPhaseValue = dashPhase != null ? ((PdfNumber<?>)dashPhase).getDoubleValue() : 0;
+
+    return new LineDash(dashArrayValue, dashPhaseValue);
+  }
+  // </public>
+  // </interface>
+  // </static>
+  
   // <dynamic>
   // <fields>
   private final double[] dashArray;
@@ -61,7 +89,7 @@ public final class LineDash
     double dashPhase
     )
   {
-    this.dashArray = dashArray;
+    this.dashArray = dashArray != null ? dashArray : new double[0]; // [FIX:9] NullPointerException if dashArray not initialized.
     this.dashPhase = dashPhase;
   }
   // </constructors>

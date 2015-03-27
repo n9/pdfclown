@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -93,6 +93,43 @@ namespace org.pdfclown.util.math.geom
     public GraphicsPathIterator GetPathIterator(
       )
     {return new GraphicsPathIterator(Path);}
+
+    /**
+      <summary>Expands the size of this quad stretching around its center.</summary>
+      <param name="value">Expansion extent.</param>
+      <returns>This quad.</returns>
+    */
+    public Quad Inflate(
+      float value
+      )
+    {return Inflate(value, value);}
+
+    /**
+      <summary>Expands the size of this quad stretching around its center.</summary>
+      <param name="valueX">Expansion's horizontal extent.</param>
+      <param name="valueY">Expansion's vertical extent.</param>
+      <returns>This quad.</returns>
+    */
+    public Quad Inflate(
+      float valueX,
+      float valueY
+      )
+    {
+      Matrix matrix = new Matrix();
+      RectangleF oldBounds = Path.GetBounds();
+      matrix.Translate(-oldBounds.X, -oldBounds.Y);
+      path.Transform(matrix);
+      matrix = new Matrix();
+      matrix.Scale(1 + valueX * 2 / oldBounds.Width, 1 + valueY * 2 / oldBounds.Height);
+      path.Transform(matrix);
+      RectangleF newBounds = path.GetBounds();
+      matrix = new Matrix();
+      matrix.Translate(oldBounds.X - (newBounds.Width - oldBounds.Width) / 2, oldBounds.Y - (newBounds.Height - oldBounds.Height) / 2);
+      path.Transform(matrix);
+
+      points = path.PathPoints;
+      return this;
+    }
 
     public PointF[] Points
     {

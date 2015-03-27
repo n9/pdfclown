@@ -22,7 +22,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2.1, 03/12/15
+  @version 0.1.2.1, 03/21/15
 */
 public class TextFrameSample
   extends Sample
@@ -58,7 +58,7 @@ public class TextFrameSample
 
     Color<?> textColor = new DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d);
     composer.setFillColor(textColor);
-    composer.setLineDash(new LineDash(new double[]{10, 10}));
+    composer.setLineDash(new LineDash(new double[]{10}));
     composer.setLineWidth(.25);
 
     BlockComposer blockComposer = new BlockComposer(composer);

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,9 +43,8 @@ namespace org.pdfclown.objects
     /**
       <summary>Gets the value associated to the specified key for the specified type.</summary>
     */
-    PdfObjectWrapper Get(
-      Type type,
+    T Get<T>(
       TKey key
-      );
+      ) where T : PdfObjectWrapper;
   }
 }

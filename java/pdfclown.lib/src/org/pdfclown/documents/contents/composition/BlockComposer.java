@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it):
@@ -56,7 +56,7 @@ import org.pdfclown.util.math.OperationUtils;
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @author Manuel Guilbault (manuel.guilbault@gmail.com)
   @since 0.0.3
-  @version 0.1.2, 01/20/12
+  @version 0.1.2.1, 03/21/15
 */
 /*
   TODO: Manage all the graphics parameters (especially
@@ -202,7 +202,7 @@ public final class BlockComposer
   private boolean hyphenation;
   private char hyphenationCharacter = '-';
   private LineAlignmentEnum lineAlignment = LineAlignmentEnum.BaseLine;
-  private Length lineSpace = new Length(0, UnitModeEnum.Relative);
+  private Length lineSpace = new Length(.2, UnitModeEnum.Relative);
   private XAlignmentEnum xAlignment;
   private YAlignmentEnum yAlignment;
 
@@ -717,7 +717,7 @@ trailParsing:
     if(rowY > 0)
     {
       ContentScanner.GraphicsState state = baseComposer.getState();
-      rowY += lineSpace.getValue(state.getFont().getLineHeight(state.getFontSize()));
+      rowY += lineSpace.getValue(state.getFont() != null ? state.getFont().getLineHeight(state.getFontSize()) : 0);
     }
     currentRow = new Row(
       (ContentPlaceholder)baseComposer.add(new ContentPlaceholder()),

@@ -149,15 +149,15 @@ namespace org.pdfclown.documents.contents.xObjects
       {
         PdfArray box = (PdfArray)BaseDataObject.Header.Resolve(PdfName.BBox);
         return new drawing::SizeF(
-          ((IPdfNumber)box[2]).FloatValue,
-          ((IPdfNumber)box[3]).FloatValue
+          ((IPdfNumber)box[2]).FloatValue - ((IPdfNumber)box[0]).FloatValue,
+          ((IPdfNumber)box[3]).FloatValue - ((IPdfNumber)box[1]).FloatValue
           );
       }
       set
       {
         PdfArray boxObject = (PdfArray)BaseDataObject.Header.Resolve(PdfName.BBox);
-        boxObject[2] = PdfReal.Get(value.Width);
-        boxObject[3] = PdfReal.Get(value.Height);
+        boxObject[2] = PdfReal.Get(value.Width + ((IPdfNumber)boxObject[0]).FloatValue);
+        boxObject[3] = PdfReal.Get(value.Height + ((IPdfNumber)boxObject[1]).FloatValue);
       }
     }
     #endregion

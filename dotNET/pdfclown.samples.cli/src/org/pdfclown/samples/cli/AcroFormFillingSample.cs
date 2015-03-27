@@ -53,7 +53,7 @@ namespace org.pdfclown.samples.cli
             {
               String value;
               if(field is RadioButton)
-              {value = ((DualWidget)field.Widgets[0]).WidgetName;} // Selects the first widget in the group.
+              {value = field.Widgets[0].Value;} // Selects the first widget in the group.
               else if(field is ChoiceField)
               {value = ((ChoiceField)field).Items[0].Value;} // Selects the first item in the list.
               else

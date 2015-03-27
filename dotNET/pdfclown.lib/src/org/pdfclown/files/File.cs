@@ -50,7 +50,25 @@ namespace org.pdfclown.files
     */
     public sealed class ConfigurationImpl
     {
+      /**
+        <summary>Cross-reference mode [PDF:1.6:3.4].</summary>
+      */
+      public enum XRefModeEnum
+      {
+        /**
+          <summary>Cross-reference table [PDF:1.6:3.4.3].</summary>
+        */
+        [PDF(VersionEnum.PDF10)]
+        Plain,
+        /**
+          <summary>Cross-reference stream [PDF:1.6:3.4.7].</summary>
+        */
+        [PDF(VersionEnum.PDF15)]
+        Compressed
+      }
+
       private string realFormat;
+      private XRefModeEnum xrefMode = XRefModeEnum.Plain;
 
       private readonly File file;
 
@@ -91,6 +109,17 @@ namespace org.pdfclown.files
         int decimalPlacesCount
         )
       {realFormat = "0." + new string('#', decimalPlacesCount);}
+
+      /**
+        <summary>Gets the document's cross-reference mode.</summary>
+      */
+      public XRefModeEnum XrefMode
+      {
+        get
+        {return xrefMode;}
+        set
+        {file.Document.CheckCompatibility(xrefMode = value);}
+      }
     }
 
     private sealed class ImplicitContainer
@@ -176,9 +205,9 @@ namespace org.pdfclown.files
 
         indirectObjects = new IndirectObjects(this, info.XrefEntries);
         document = new Document(trailer[PdfName.Root]);
-        document.Configuration.XrefMode = (PdfName.XRef.Equals(trailer[PdfName.Type])
-          ? Document.ConfigurationImpl.XRefModeEnum.Compressed
-          : Document.ConfigurationImpl.XRefModeEnum.Plain);
+        Configuration.XrefMode = (PdfName.XRef.Equals(trailer[PdfName.Type])
+          ? ConfigurationImpl.XRefModeEnum.Compressed
+          : ConfigurationImpl.XRefModeEnum.Plain);
       }
       catch(Exception)
       {
@@ -321,13 +350,22 @@ namespace org.pdfclown.files
         System.IO.FileMode.Create,
         System.IO.FileAccess.Write
         );
-      Save(
-        new bytes.Stream(outputStream),
-        mode
-        );
+      Save(new bytes.Stream(outputStream), mode);
       outputStream.Flush();
       outputStream.Close();
     }
+
+    /**
+      <summary>Serializes the file to the specified stream.</summary>
+      <remarks>It's caller responsibility to close the stream after this method ends.</remarks>
+      <param name="stream">Target stream.</param>
+      <param name="mode">Serialization mode.</param>
+    */
+    public void Save(
+      System.IO.Stream stream,
+      SerializationModeEnum mode
+      )
+    {Save(new bytes.Stream(stream), mode);}
 
     /**
       <summary>Serializes the file to the specified stream.</summary>
@@ -340,18 +378,22 @@ namespace org.pdfclown.files
       SerializationModeEnum mode
       )
     {
+      var information = Document.Information;
       if(Reader == null)
       {
+        information.CreationDate = DateTime.Now;
         try
         {
           string assemblyTitle = ((AssemblyTitleAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyTitleAttribute))).Title;
           string assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-          Document.Information.Producer = assemblyTitle + " " + assemblyVersion;
+          information.Producer = assemblyTitle + " " + assemblyVersion;
         }
         catch
         {/* NOOP */}
       }
-  
+      else
+      {information.ModificationDate = DateTime.Now;}
+
       Writer writer = Writer.Get(this, stream);
       writer.Write(mode);
     }

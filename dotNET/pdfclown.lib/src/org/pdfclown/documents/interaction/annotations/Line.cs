@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,108 +41,13 @@ namespace org.pdfclown.documents.interaction.annotations
   */
   [PDF(VersionEnum.PDF13)]
   public sealed class Line
-    : Annotation
+    : Markup
   {
-    #region types
-    /**
-      <summary>Line ending style [PDF:1.6:8.4.5].</summary>
-    */
-    public enum LineEndStyleEnum
-    {
-      /**
-        Square.
-      */
-      Square,
-      /**
-        Circle.
-      */
-      Circle,
-      /**
-        Diamond.
-      */
-      Diamond,
-      /**
-        Open arrow.
-      */
-      OpenArrow,
-      /**
-        Closed arrow.
-      */
-      ClosedArrow,
-      /**
-        None.
-      */
-      None,
-      /**
-        Butt.
-      */
-      Butt,
-      /**
-        Reverse open arrow.
-      */
-      ReverseOpenArrow,
-      /**
-        Reverse closed arrow.
-      */
-      ReverseClosedArrow,
-      /**
-        Slash.
-      */
-      Slash
-    };
-    #endregion
-
     #region static
     #region fields
     private static readonly double DefaultLeaderLineExtensionLength = 0;
     private static readonly double DefaultLeaderLineLength = 0;
     private static readonly LineEndStyleEnum DefaultLineEndStyle = LineEndStyleEnum.None;
-
-    private static readonly Dictionary<LineEndStyleEnum,PdfName> LineEndStyleEnumCodes;
-    #endregion
-
-    #region constructors
-    static Line()
-    {
-      LineEndStyleEnumCodes = new Dictionary<LineEndStyleEnum,PdfName>();
-      LineEndStyleEnumCodes[LineEndStyleEnum.Square] = PdfName.Square;
-      LineEndStyleEnumCodes[LineEndStyleEnum.Circle] = PdfName.Circle;
-      LineEndStyleEnumCodes[LineEndStyleEnum.Diamond] = PdfName.Diamond;
-      LineEndStyleEnumCodes[LineEndStyleEnum.OpenArrow] = PdfName.OpenArrow;
-      LineEndStyleEnumCodes[LineEndStyleEnum.ClosedArrow] = PdfName.ClosedArrow;
-      LineEndStyleEnumCodes[LineEndStyleEnum.None] = PdfName.None;
-      LineEndStyleEnumCodes[LineEndStyleEnum.Butt] = PdfName.Butt;
-      LineEndStyleEnumCodes[LineEndStyleEnum.ReverseOpenArrow] = PdfName.ROpenArrow;
-      LineEndStyleEnumCodes[LineEndStyleEnum.ReverseClosedArrow] = PdfName.RClosedArrow;
-      LineEndStyleEnumCodes[LineEndStyleEnum.Slash] = PdfName.Slash;
-    }
-    #endregion
-
-    #region interface
-    #region private
-    /**
-      <summary>Gets the code corresponding to the given value.</summary>
-    */
-    private static PdfName ToCode(
-      LineEndStyleEnum value
-      )
-    {return LineEndStyleEnumCodes[value];}
-
-    /**
-      <summary>Gets the line ending style corresponding to the given value.</summary>
-    */
-    private static LineEndStyleEnum ToLineEndStyleEnum(
-      PdfName value
-      )
-    {
-      foreach(KeyValuePair<LineEndStyleEnum,PdfName> style in LineEndStyleEnumCodes)
-      {
-        if(style.Value.Equals(value))
-          return style.Key;
-      }
-      return DefaultLineEndStyle;
-    }
-    #endregion
     #endregion
     #endregion
 
@@ -152,7 +57,8 @@ namespace org.pdfclown.documents.interaction.annotations
       Page page,
       PointF startPoint,
       PointF endPoint,
-      string text
+      string text,
+      DeviceRGBColor color
       ) : base(
         page,
         PdfName.Line,
@@ -168,6 +74,7 @@ namespace org.pdfclown.documents.interaction.annotations
       BaseDataObject[PdfName.L] = new PdfArray(new PdfDirectObject[]{PdfReal.Get(0),PdfReal.Get(0),PdfReal.Get(0),PdfReal.Get(0)});
       StartPoint = startPoint;
       EndPoint = endPoint;
+      Color = color;
     }
 
     internal Line(
@@ -224,11 +131,11 @@ namespace org.pdfclown.documents.interaction.annotations
       {
         PdfArray endstylesObject = (PdfArray)BaseDataObject[PdfName.LE];
         return endstylesObject != null
-          ? ToLineEndStyleEnum((PdfName)endstylesObject[1])
+          ? LineEndStyleEnumExtension.Get((PdfName)endstylesObject[1])
           : DefaultLineEndStyle;
       }
       set
-      {EnsureLineEndStylesObject()[1] = ToCode(value);}
+      {EnsureLineEndStylesObject()[1] = value.GetName();}
     }
 
     /**
@@ -326,11 +233,11 @@ namespace org.pdfclown.documents.interaction.annotations
       {
         PdfArray endstylesObject = (PdfArray)BaseDataObject[PdfName.LE];
         return endstylesObject != null
-          ? ToLineEndStyleEnum((PdfName)endstylesObject[0])
+          ? LineEndStyleEnumExtension.Get((PdfName)endstylesObject[0])
           : DefaultLineEndStyle;
       }
       set
-      {EnsureLineEndStylesObject()[0] = ToCode(value);}
+      {EnsureLineEndStylesObject()[0] = value.GetName();}
     }
     #endregion
 
@@ -344,8 +251,8 @@ namespace org.pdfclown.documents.interaction.annotations
         BaseDataObject[PdfName.LE] = endStylesObject = new PdfArray(
           new PdfDirectObject[]
           {
-            ToCode(DefaultLineEndStyle),
-            ToCode(DefaultLineEndStyle)
+            DefaultLineEndStyle.GetName(),
+            DefaultLineEndStyle.GetName()
           }
           );
       }

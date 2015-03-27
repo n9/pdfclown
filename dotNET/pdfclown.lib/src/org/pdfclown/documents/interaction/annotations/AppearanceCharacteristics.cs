@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -84,7 +84,6 @@ namespace org.pdfclown.documents.interaction.annotations
     public class IconFitObject
       : PdfObjectWrapper<PdfDictionary>
     {
-      #region types
       /**
         <summary>Scaling mode [PDF:1.6:8.6.6].</summary>
       */
@@ -124,15 +123,10 @@ namespace org.pdfclown.documents.interaction.annotations
         */
         Proportional
       };
-      #endregion
 
-      #region static
-      #region fields
       private static readonly Dictionary<ScaleModeEnum,PdfName> ScaleModeEnumCodes;
       private static readonly Dictionary<ScaleTypeEnum,PdfName> ScaleTypeEnumCodes;
-      #endregion
 
-      #region constructors
       static IconFitObject()
       {
         ScaleModeEnumCodes = new Dictionary<ScaleModeEnum,PdfName>();
@@ -145,10 +139,7 @@ namespace org.pdfclown.documents.interaction.annotations
         ScaleTypeEnumCodes[ScaleTypeEnum.Anamorphic] = PdfName.A;
         ScaleTypeEnumCodes[ScaleTypeEnum.Proportional] = PdfName.P;
       }
-      #endregion
 
-      #region interface
-      #region private
       /**
         <summary>Gets the code corresponding to the given value.</summary>
       */
@@ -194,12 +185,7 @@ namespace org.pdfclown.documents.interaction.annotations
         }
         return ScaleTypeEnum.Proportional;
       }
-      #endregion
-      #endregion
-      #endregion
 
-      #region dynamic
-      #region constructors
       public IconFitObject(
         Document context
         ) : base(context, new PdfDictionary())
@@ -209,10 +195,7 @@ namespace org.pdfclown.documents.interaction.annotations
         PdfDirectObject baseObject
         ) : base(baseObject)
       {}
-      #endregion
 
-      #region interface
-      #region public
       /**
         <summary>Gets/Sets whether not to take into consideration the line width of the border.</summary>
       */
@@ -258,9 +241,6 @@ namespace org.pdfclown.documents.interaction.annotations
       {
         get
         {
-          /*
-            NOTE: 'A' entry may be undefined.
-          */
           PdfArray alignmentObject = (PdfArray)BaseDataObject[PdfName.A];
           if(alignmentObject == null)
             return XAlignmentEnum.Center;
@@ -274,9 +254,6 @@ namespace org.pdfclown.documents.interaction.annotations
         }
         set
         {
-          /*
-            NOTE: 'A' entry may be undefined.
-          */
           PdfArray alignmentObject = (PdfArray)BaseDataObject[PdfName.A];
           if(alignmentObject == null)
           {
@@ -308,9 +285,6 @@ namespace org.pdfclown.documents.interaction.annotations
       {
         get
         {
-          /*
-            NOTE: 'A' entry may be undefined.
-          */
           PdfArray alignmentObject = (PdfArray)BaseDataObject[PdfName.A];
           if(alignmentObject == null)
             return YAlignmentEnum.Middle;
@@ -324,9 +298,6 @@ namespace org.pdfclown.documents.interaction.annotations
         }
         set
         {
-          /*
-            NOTE: 'A' entry may be undefined.
-          */
           PdfArray alignmentObject = (PdfArray)BaseDataObject[PdfName.A];
           if(alignmentObject == null)
           {
@@ -350,9 +321,6 @@ namespace org.pdfclown.documents.interaction.annotations
           alignmentObject[1] = PdfReal.Get(objectValue);
         }
       }
-      #endregion
-      #endregion
-      #endregion
     }
 
     /**

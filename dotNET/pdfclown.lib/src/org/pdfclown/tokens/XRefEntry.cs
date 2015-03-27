@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -65,6 +65,10 @@ namespace org.pdfclown.tokens
       <summary>Undefined offset.</summary>
     */
     public static readonly int UndefinedOffset = -1;
+    /**
+      <summary>Undefined object stream number.</summary>
+    */
+    public static readonly int UndefinedStreamNumber = -1;
     #endregion
     #endregion
 
@@ -86,7 +90,7 @@ namespace org.pdfclown.tokens
     public XRefEntry(
       int number,
       int generation
-      ) : this(number, generation, -1, UsageEnum.InUse)
+      ) : this(number, generation, UndefinedOffset, UsageEnum.InUse)
     {}
 
     /**
@@ -102,7 +106,7 @@ namespace org.pdfclown.tokens
       int generation,
       int offset,
       UsageEnum usage
-      ) : this(number, generation, offset, usage, -1)
+      ) : this(number, generation, offset, usage, UndefinedStreamNumber)
     {}
 
     /**
@@ -173,9 +177,11 @@ namespace org.pdfclown.tokens
     }
 
     /**
-      <summary>Gets the object number of the object stream in which this object is stored [PDF:1.6:3.4.7],
-      in case it is a <see cref="UsageEnum.InUseCompressed">compressed</see> one.</summary>
-      <returns>-1 in case this is <see cref="UsageEnum.InUse">not a compressed</see>-object entry.</returns>
+      <summary>Gets the object number of the object stream in which this object is stored
+      [PDF:1.6:3.4.7], in case it is a <see cref="UsageEnum.InUseCompressed">compressed</see> one.
+      </summary>
+      <returns><see cref="UndefinedStreamNumber"/> in case this is <see cref="UsageEnum.InUse">not a
+      compressed</see>-object entry.</returns>
     */
     public int StreamNumber
     {

@@ -53,7 +53,7 @@ import org.pdfclown.objects.PdfString;
   </ul>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/09/15
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Destination
@@ -297,7 +297,7 @@ public abstract class Destination
     switch(getMode())
     {
       case XYZ:
-        return ((Number)PdfSimpleObject.getValue(getBaseDataObject().get(4))).doubleValue();
+        return PdfSimpleObject.getDoubleValue(getBaseDataObject().get(4));
       default:
         return null;
     }

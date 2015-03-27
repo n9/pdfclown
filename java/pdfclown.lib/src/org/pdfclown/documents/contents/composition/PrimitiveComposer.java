@@ -101,7 +101,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2.1, 03/12/15
+  @version 0.1.2.1, 03/21/15
 */
 public final class PrimitiveComposer
 {
@@ -1064,7 +1064,7 @@ public final class PrimitiveComposer
         for(int index = 0, length = textLines.length; index < length; index++)
         {
           String textLine = textLines[index];
-          double width = font.getKernedWidth(textLine, fontSize);
+          double width = font.getKernedWidth(textLine, fontSize) * state.getScale();
           if(width > maxLineWidth)
           {maxLineWidth = width;}
         

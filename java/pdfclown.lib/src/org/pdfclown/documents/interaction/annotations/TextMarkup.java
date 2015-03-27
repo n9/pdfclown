@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,6 +40,7 @@ import org.pdfclown.documents.contents.ExtGState;
 import org.pdfclown.documents.contents.ExtGStateResources;
 import org.pdfclown.documents.contents.LineCapEnum;
 import org.pdfclown.documents.contents.LineJoinEnum;
+import org.pdfclown.documents.contents.colorSpaces.DeviceColor;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.xObjects.FormXObject;
@@ -58,11 +59,11 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF13)
 public final class TextMarkup
-  extends Annotation
+  extends Markup<TextMarkup>
 {
   // <class>
   // <classes>
@@ -71,9 +72,6 @@ public final class TextMarkup
   */
   public enum MarkupTypeEnum
   {
-    // <class>
-    // <static>
-    // <fields>
     /**
       Highlight.
     */
@@ -94,10 +92,7 @@ public final class TextMarkup
     */
     @PDF(VersionEnum.PDF13)
     Underline(PdfName.Underline);
-    // </fields>
 
-    // <interface>
-    // <public>
     /**
       Gets the markup type corresponding to the given value.
     */
@@ -112,31 +107,17 @@ public final class TextMarkup
       }
       return null;
     }
-    // </public>
-    // </interface>
-    // </static>
 
-    // <dynamic>
-    // <fields>
     private final PdfName code;
-    // </fields>
 
-    // <constructors>
     private MarkupTypeEnum(
       PdfName code
       )
     {this.code = code;}
-    // </constructors>
 
-    // <interface>
-    // <public>
     public PdfName getCode(
       )
     {return code;}
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
   }
   // </classes>
 
@@ -159,33 +140,33 @@ public final class TextMarkup
     Creates a new text markup on the specified page, making it printable by default.
 
     @param page Page to annotate.
-    @param text Annotation text.
-    @param markupType Markup type.
     @param markupBox Quadrilateral encompassing a word or group of contiguous words in the text
       underlying the annotation.
+    @param text Annotation text.
+    @param markupType Markup type.
   */
   public TextMarkup(
     Page page,
+    Quad markupBox,
     String text,
-    MarkupTypeEnum markupType,
-    Quad markupBox
+    MarkupTypeEnum markupType
     )
-  {this(page, text, markupType, Arrays.asList(markupBox));}
+  {this(page, Arrays.asList(markupBox), text, markupType);}
 
   /**
     Creates a new text markup on the specified page, making it printable by default.
 
     @param page Page to annotate.
-    @param text Annotation text.
-    @param markupType Markup type.
     @param markupBoxes Quadrilaterals encompassing a word or group of contiguous words in the text
       underlying the annotation.
+    @param text Annotation text.
+    @param markupType Markup type.
   */
   public TextMarkup(
     Page page,
+    List<Quad> markupBoxes,
     String text,
-    MarkupTypeEnum markupType,
-    List<Quad> markupBoxes
+    MarkupTypeEnum markupType
     )
   {
     super(
@@ -267,6 +248,16 @@ public final class TextMarkup
     )
   {return MarkupTypeEnum.get((PdfName)getBaseDataObject().get(PdfName.Subtype));}
 
+  @Override
+  public void setColor(
+    DeviceColor value
+    )
+  {
+    super.setColor(value);
+    if(getAppearance().getNormal().get(null) != null)
+    {refreshAppearance();}
+  }
+  
   /**
     @see #getMarkupBoxes()
   */
@@ -328,7 +319,28 @@ public final class TextMarkup
         setColor(new DeviceRGBColor(0, 0, 0));
         break;
     }
-    refreshAppearance();
+  }
+
+  /**
+    @see #setMarkupBoxes(List)
+  */
+  public TextMarkup withMarkupBoxes(
+    List<Quad> value
+    )
+  {
+    setMarkupBoxes(value);
+    return self();
+  }
+
+  /**
+    @see #setMarkupType(MarkupTypeEnum)
+  */
+  public TextMarkup withMarkupType(
+    MarkupTypeEnum value
+    )
+  {
+    setMarkupType(value);
+    return self();
   }
   // </public>
 
@@ -413,7 +425,7 @@ public final class TextMarkup
             {
               Point2D[] points = markupBox.getPoints();
               double markupBoxHeight = points[3].getY() - points[0].getY();
-              double lineWidth = markupBoxHeight * .02;
+              double lineWidth = markupBoxHeight * .05;
               double step = markupBoxHeight * .125;
               double boxXOffset = points[3].getX();
               double boxYOffset = points[3].getY() + yOffset - lineWidth;
@@ -442,10 +454,10 @@ public final class TextMarkup
             switch(markupType)
             {
               case StrikeOut:
-                lineYRatio = .575;
+                lineYRatio = .5;
                 break;
               case Underline:
-                lineYRatio = .85;
+                lineYRatio = .9;
                 break;
               default:
                 throw new NotImplementedException();

@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,6 +23,8 @@
   this list of conditions.
 */
 
+using org.pdfclown.objects;
+
 namespace org.pdfclown.documents.contents
 {
   /**
@@ -31,6 +33,33 @@ namespace org.pdfclown.documents.contents
   [PDF(VersionEnum.PDF10)]
   public sealed class LineDash
   {
+    #region static
+    #region interface
+    #region public
+    /**
+      <summary>Gets the pattern corresponding to the specified components.</summary>
+    */
+    public static LineDash Get(
+      PdfArray dashArray,
+      IPdfNumber dashPhase
+      )
+    {
+      if(dashArray == null)
+        return null;
+
+      // Dash array.
+      double[] dashArrayValue = new double[dashArray.Count];
+      for(int index = 0, length = dashArrayValue.Length; index < length; index++)
+      {dashArrayValue[index] = ((IPdfNumber)dashArray[index]).DoubleValue;}
+      // Dash phase.
+      double dashPhaseValue = dashPhase != null ? ((IPdfNumber)dashPhase).DoubleValue : 0;
+
+      return new LineDash(dashArrayValue, dashPhaseValue);
+    }
+    #endregion
+    #endregion
+    #endregion
+
     #region dynamic
     #region fields
     private readonly double[] dashArray;
@@ -52,7 +81,7 @@ namespace org.pdfclown.documents.contents
       double dashPhase
       )
     {
-      this.dashArray = dashArray;
+      this.dashArray = dashArray != null ? dashArray : new double[0]; // [FIX:9] NullPointerException if dashArray not initialized.
       this.dashPhase = dashPhase;
     }
     #endregion

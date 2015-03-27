@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -26,29 +26,30 @@
 package org.pdfclown.documents.interaction.annotations;
 
 import java.awt.geom.Rectangle2D;
+import java.util.Map;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
-import org.pdfclown.documents.interaction.forms.CheckBox;
-import org.pdfclown.documents.interaction.forms.Field;
+import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.documents.interaction.forms.RadioButton;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.EnumUtils;
+import org.pdfclown.util.math.geom.Dimension;
 
 /**
   Widget annotation [PDF:1.6:8.4.5].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF12)
-public class Widget
-  extends Annotation
+public final class Widget
+  extends Annotation<Widget>
 {
   // <class>
   // <classes>
@@ -57,9 +58,6 @@ public class Widget
   */
   public enum HighlightModeEnum
   {
-    // <class>
-    // <static>
-    // <fields>
     /**
       No highlighting.
     */
@@ -80,10 +78,7 @@ public class Widget
       Same as Push (which is preferred).
     */
     Toggle(PdfName.T);
-    // </fields>
 
-    // <interface>
-    // <public>
     /**
       Gets the highlighting mode corresponding to the given value.
     */
@@ -98,53 +93,25 @@ public class Widget
       }
       return null;
     }
-    // </public>
-    // </interface>
-    // </static>
 
-    // <dynamic>
-    // <fields>
     private final PdfName code;
-    // </fields>
 
-    // <constructors>
     private HighlightModeEnum(
       PdfName code
       )
     {this.code = code;}
-    // </constructors>
 
-    // <interface>
-    // <public>
     public PdfName getCode(
       )
     {return code;}
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
   }
   // </classes>
 
-  // <static>
-  // <interface>
-  // <public>
-  public static Widget wrap(
-    PdfDirectObject baseObject,
-    Field field
-    )
-  {
-    return field instanceof CheckBox
-        || field instanceof RadioButton
-      ? new DualWidget(baseObject)
-      : new Widget(baseObject);
-  }
-  // </public>
-  // </interface>
-  // </static>
-
   // <dynamic>
   // <constructors>
+  /**
+    Creates a new generic widget.
+  */
   public Widget(
     Page page,
     Rectangle2D box
@@ -154,6 +121,30 @@ public class Widget
     setFlags(EnumUtils.mask(getFlags(), FlagsEnum.Print, true));
   }
 
+  /**
+    Creates a new dual-state widget (required by {@link RadioButton} fields).
+  */
+  public Widget(
+    Page page,
+    Rectangle2D box,
+    String name
+    )
+  {
+    this(page, box);
+
+    // Initialize the on-state appearance!
+    /*
+      NOTE: This is necessary to keep the reference to the on-state name.
+    */
+    Appearance appearance = new Appearance(page.getDocument());
+    setAppearance(appearance);
+    AppearanceStates normalAppearance = appearance.getNormal();
+    normalAppearance.put(
+      new PdfName(name),
+      new FormXObject(page.getDocument(), Dimension.get(box))
+      );
+  }
+  
   protected Widget(
     PdfDirectObject baseObject
     )
@@ -169,12 +160,9 @@ public class Widget
   {return (Widget)super.clone(context);}
 
   @Override
-  public AnnotationActions getActions(
+  public WidgetActions getActions(
     )
-  {
-    PdfDirectObject actionsObject = getBaseDataObject().get(PdfName.AA);
-    return actionsObject != null ? new WidgetActions(this, actionsObject) : null;
-  }
+  {return new WidgetActions(this, getBaseDataObject().get(PdfName.AA, PdfDictionary.class));}
 
   /**
     Gets the annotation's appearance characteristics to be used for its visual presentation on the
@@ -185,8 +173,8 @@ public class Widget
   {return AppearanceCharacteristics.wrap(getBaseDataObject().get(PdfName.MK, PdfDictionary.class));}
 
   /**
-    Gets the annotation's highlighting mode, the visual effect to be used
-    when the mouse button is pressed or held down inside its active area.
+    Gets the annotation's highlighting mode, the visual effect to be used when the mouse button is 
+    pressed or held down inside its active area.
   */
   public HighlightModeEnum getHighlightMode(
     )
@@ -198,8 +186,22 @@ public class Widget
   }
 
   /**
-    Sets the annotation's appearance characteristics.
-
+    Gets the widget value (applicable to dual-state widgets only).
+    It corresponds to the on-state appearance of this widget.
+  */
+  public String getValue(
+    )
+  {
+    for(Map.Entry<PdfName,FormXObject> normalAppearanceEntry : getAppearance().getNormal().entrySet())
+    {
+      PdfName key = normalAppearanceEntry.getKey();
+      if(!key.equals(PdfName.Off)) // 'On' state.
+        return key.getValue();
+    }
+    return null; // NOTE: It MUST NOT happen (on-state should always be defined).
+  }
+  
+  /**
     @see #getAppearanceCharacteristics()
   */
   public void setAppearanceCharacteristics(
@@ -208,14 +210,34 @@ public class Widget
   {getBaseDataObject().put(PdfName.MK, value.getBaseObject());}
 
   /**
-    Sets the annotation's highlighting mode.
-
     @see #getHighlightMode()
   */
   public void setHighlightMode(
     HighlightModeEnum value
     )
   {getBaseDataObject().put(PdfName.H, value.getCode());}
+
+  /**
+    @see #setAppearanceCharacteristics(AppearanceCharacteristics)
+  */
+  public Widget withAppearanceCharacteristics(
+    AppearanceCharacteristics value
+    )
+  {
+    setAppearanceCharacteristics(value);
+    return self();
+  }
+
+  /**
+    @see #setHighlightMode(HighlightModeEnum)
+  */
+  public Widget withHighlightMode(
+    HighlightModeEnum value
+    )
+  {
+    setHighlightMode(value);
+    return self();
+  }
   // </public>
   // </interface>
   // </dynamic>

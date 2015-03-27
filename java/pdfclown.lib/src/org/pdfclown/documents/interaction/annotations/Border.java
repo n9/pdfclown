@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,7 +42,7 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF11)
 public final class Border
@@ -55,9 +55,6 @@ public final class Border
   */
   public enum StyleEnum
   {
-    // <class>
-    // <static>
-    // <fields>
     /**
       Solid.
     */
@@ -80,10 +77,7 @@ public final class Border
       Underline.
     */
     Underline(PdfName.U);
-    // </fields>
 
-    // <interface>
-    // <public>
     /**
       Gets the style corresponding to the given value.
     */
@@ -98,31 +92,17 @@ public final class Border
       }
       return null;
     }
-    // </public>
-    // </interface>
-    // </static>
 
-    // <dynamic>
-    // <fields>
     private final PdfName code;
-    // </fields>
 
-    // <constructors>
     private StyleEnum(
       PdfName code
       )
     {this.code = code;}
-    // </constructors>
 
-    // <interface>
-    // <public>
     public PdfName getCode(
       )
     {return code;}
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
   }
   // </classes>
 
@@ -136,7 +116,62 @@ public final class Border
 
   // <dynamic>
   // <constructors>
+  /**
+    Creates a non-reusable instance.
+  */
   public Border(
+    double width
+    )
+  {this(null, width);}
+  
+  /**
+    Creates a non-reusable instance.
+  */
+  public Border(
+    double width,
+    StyleEnum style
+    )
+  {this(null, width, style);}
+  
+  /**
+    Creates a non-reusable instance.
+  */
+  public Border(
+    double width,
+    LineDash pattern
+    )
+  {this(null, width, pattern);}
+  
+  /**
+    Creates a reusable instance.
+  */
+  public Border(
+    Document context,
+    double width
+    )
+  {this(context, width, null, null);}
+  
+  /**
+    Creates a reusable instance.
+  */
+  public Border(
+    Document context,
+    double width,
+    StyleEnum style
+    )
+  {this(context, width, style, null);}
+  
+  /**
+    Creates a reusable instance.
+  */
+  public Border(
+    Document context,
+    double width,
+    LineDash pattern
+    )
+  {this(context, width, StyleEnum.Dashed, pattern);}
+  
+  private Border(
     Document context,
     double width,
     StyleEnum style,
@@ -177,23 +212,8 @@ public final class Border
   public LineDash getPattern(
     )
   {
-    /*
-      NOTE: 'D' entry may be undefined.
-    */
     PdfArray dashObject = (PdfArray)getBaseDataObject().get(PdfName.D);
-    if(dashObject == null)
-      return DefaultLineDash;
-
-    double[] dashArray = new double[dashObject.size()];
-    for(
-      int dashIndex = 0,
-        dashLength = dashArray.length;
-      dashIndex < dashLength;
-      dashIndex++
-      )
-    {dashArray[dashIndex] = ((PdfNumber<?>)dashObject.get(dashIndex)).getDoubleValue();}
-
-    return new LineDash(dashArray);
+    return dashObject != null ? LineDash.get(dashObject, null) : DefaultLineDash;
   }
 
   /**
@@ -202,14 +222,8 @@ public final class Border
   public StyleEnum getStyle(
     )
   {
-    /*
-      NOTE: 'S' entry may be undefined.
-    */
     PdfName styleObject = (PdfName)getBaseDataObject().get(PdfName.S);
-    if(styleObject == null)
-      return DefaultStyle;
-
-    return StyleEnum.get(styleObject);
+    return styleObject != null ? StyleEnum.get(styleObject) : DefaultStyle;
   }
 
   /**
@@ -218,13 +232,8 @@ public final class Border
   public double getWidth(
     )
   {
-    /*
-      NOTE: 'W' entry may be undefined.
-    */
     PdfNumber<?> widthObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.W);
-    return widthObject == null
-      ? DefaultWidth
-      : widthObject.getDoubleValue();
+    return widthObject != null ? widthObject.getDoubleValue() : DefaultWidth;
   }
 
   /**
@@ -234,23 +243,14 @@ public final class Border
     LineDash value
     )
   {
-    if(value == null)
-    {getBaseDataObject().remove(PdfName.D);}
-    else
+    PdfArray dashObject = null;
+    if(value != null)
     {
-      PdfArray dashObject = new PdfArray();
-
-      double[] dashArray = value.getDashArray();
-      for(
-        int dashIndex = 0,
-          dashLength = dashArray.length;
-        dashIndex < dashLength;
-        dashIndex++
-        )
-      {dashObject.add(PdfReal.get(dashArray[dashIndex]));}
-
-      getBaseDataObject().put(PdfName.D, dashObject);
+      dashObject = new PdfArray();
+      for(double dashItem : value.getDashArray())
+      {dashObject.add(PdfReal.get(dashItem));}
     }
+    getBaseDataObject().put(PdfName.D, dashObject);
   }
 
   /**
@@ -259,13 +259,7 @@ public final class Border
   public void setStyle(
     StyleEnum value
     )
-  {
-    if(value == null
-      || value == DefaultStyle)
-    {getBaseDataObject().remove(PdfName.S);}
-    else
-    {getBaseDataObject().put(PdfName.S, value.getCode());}
-  }
+  {getBaseDataObject().put(PdfName.S, value != null && value != DefaultStyle ? value.getCode() : null);}
 
   /**
     @see #getWidth()

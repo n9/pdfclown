@@ -42,7 +42,7 @@ namespace org.pdfclown.documents.interaction.annotations
     <summary>Annotation [PDF:1.6:8.4].</summary>
   */
   [PDF(VersionEnum.PDF10)]
-  public class Annotation
+  public abstract class Annotation
     : PdfObjectWrapper<PdfDictionary>,
       ILayerable
   {
@@ -112,11 +112,11 @@ namespace org.pdfclown.documents.interaction.annotations
 
       PdfName annotationType = (PdfName)((PdfDictionary)baseObject.Resolve())[PdfName.Subtype];
       if(annotationType.Equals(PdfName.Text))
-        return new Note(baseObject);
+        return new StickyNote(baseObject);
       else if(annotationType.Equals(PdfName.Link))
         return new Link(baseObject);
       else if(annotationType.Equals(PdfName.FreeText))
-        return new CalloutNote(baseObject);
+        return new StaticNote(baseObject);
       else if(annotationType.Equals(PdfName.Line))
         return new Line(baseObject);
       else if(annotationType.Equals(PdfName.Square))
@@ -133,7 +133,7 @@ namespace org.pdfclown.documents.interaction.annotations
         || annotationType.Equals(PdfName.StrikeOut))
         return new TextMarkup(baseObject);
       else if(annotationType.Equals(PdfName.Stamp))
-        return new RubberStamp(baseObject);
+        return new Stamp(baseObject);
       else if(annotationType.Equals(PdfName.Caret))
         return new Caret(baseObject);
       else if(annotationType.Equals(PdfName.Ink))
@@ -156,7 +156,7 @@ namespace org.pdfclown.documents.interaction.annotations
 //     else if(annotationType.Equals(PdfName.Watermark)) return new Watermark(baseObject);
 //     else if(annotationType.Equals(PdfName.3DAnnotation)) return new 3DAnnotation(baseObject);
       else // Other annotation type.
-        return new Annotation(baseObject);
+        return new GenericAnnotation(baseObject);
     }
     #endregion
     #endregion
@@ -190,6 +190,7 @@ namespace org.pdfclown.documents.interaction.annotations
       page.Annotations.Add(this);
       Box = box;
       Text = text;
+      Printable = true;
     }
 
     protected Annotation(
@@ -219,7 +220,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public virtual AnnotationActions Actions
     {
       get
-      {return new AnnotationActions(this, BaseDataObject.Get<PdfDictionary>(PdfName.AA));}
+      {return new CommonAnnotationActions(this, BaseDataObject.Get<PdfDictionary>(PdfName.AA));}
       set
       {BaseDataObject[PdfName.AA] = PdfObjectWrapper.GetBaseObject(value);}
     }
@@ -228,7 +229,7 @@ namespace org.pdfclown.documents.interaction.annotations
       <summary>Gets/Sets the appearance specifying how the annotation is presented visually on the page.</summary>
     */
     [PDF(VersionEnum.PDF12)]
-    public Appearance Appearance
+    public virtual Appearance Appearance
     {
       get
       {return Appearance.Wrap(BaseDataObject.Get<PdfDictionary>(PdfName.AP));}
@@ -240,7 +241,7 @@ namespace org.pdfclown.documents.interaction.annotations
       <summary>Gets/Sets the border style.</summary>
     */
     [PDF(VersionEnum.PDF11)]
-    public Border Border
+    public virtual Border Border
     {
       get
       {return new Border(BaseDataObject.Get<PdfDictionary>(PdfName.BS));}
@@ -256,7 +257,7 @@ namespace org.pdfclown.documents.interaction.annotations
       <summary>Gets/Sets the location of the annotation on the page in default user space units.
       </summary>
     */
-    public RectangleF Box
+    public virtual RectangleF Box
     {
       get
       {
@@ -283,7 +284,7 @@ namespace org.pdfclown.documents.interaction.annotations
       <summary>Gets/Sets the annotation color.</summary>
     */
     [PDF(VersionEnum.PDF11)]
-    public DeviceColor Color
+    public virtual DeviceColor Color
     {
       get
       {return DeviceColor.Get((PdfArray)BaseDataObject[PdfName.C]);}
@@ -309,7 +310,7 @@ namespace org.pdfclown.documents.interaction.annotations
       <summary>Gets/Sets the annotation flags.</summary>
     */
     [PDF(VersionEnum.PDF11)]
-    public FlagsEnum Flags
+    public virtual FlagsEnum Flags
     {
       get
       {
@@ -326,7 +327,7 @@ namespace org.pdfclown.documents.interaction.annotations
       <summary>Gets/Sets the date and time when the annotation was most recently modified.</summary>
     */
     [PDF(VersionEnum.PDF11)]
-    public DateTime? ModificationDate
+    public virtual DateTime? ModificationDate
     {
       get
       {
@@ -345,7 +346,7 @@ namespace org.pdfclown.documents.interaction.annotations
       <remarks>The annotation name uniquely identifies the annotation among all the annotations on its page.</remarks>
     */
     [PDF(VersionEnum.PDF14)]
-    public string Name
+    public virtual string Name
     {
       get
       {return (string)PdfSimpleObject<Object>.GetValue(BaseDataObject[PdfName.NM]);}
@@ -357,7 +358,7 @@ namespace org.pdfclown.documents.interaction.annotations
       <summary>Gets/Sets the associated page.</summary>
     */
     [PDF(VersionEnum.PDF13)]
-    public Page Page
+    public virtual Page Page
     {
       get
       {return Page.Wrap(BaseDataObject[PdfName.P]);}
@@ -367,7 +368,7 @@ namespace org.pdfclown.documents.interaction.annotations
       <summary>Gets/Sets whether to print the annotation when the page is printed.</summary>
     */
     [PDF(VersionEnum.PDF11)]
-    public bool Printable
+    public virtual bool Printable
     {
       get
       {return (Flags & FlagsEnum.Print) == FlagsEnum.Print;}
@@ -380,16 +381,14 @@ namespace org.pdfclown.documents.interaction.annotations
       <remarks>Depending on the annotation type, the text may be either directly displayed
       or (in case of non-textual annotations) used as alternate description.</remarks>
     */
-    public string Text
+    public virtual string Text
     {
       get
       {return (string)PdfSimpleObject<Object>.GetValue(BaseDataObject[PdfName.Contents]);}
       set
       {
-        if(value == null)
-        {BaseDataObject.Remove(PdfName.Contents);}
-        else
-        {BaseDataObject[PdfName.Contents] = PdfTextString.Get(value);}
+        BaseDataObject[PdfName.Contents] = PdfTextString.Get(value);
+        ModificationDate = DateTime.Now;
       }
     }
 
@@ -397,7 +396,7 @@ namespace org.pdfclown.documents.interaction.annotations
       <summary>Gets/Sets whether the annotation is visible.</summary>
     */
     [PDF(VersionEnum.PDF11)]
-    public bool Visible
+    public virtual bool Visible
     {
       get
       {return (Flags & FlagsEnum.Hidden) != FlagsEnum.Hidden;}
@@ -407,7 +406,7 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region ILayerable
     [PDF(VersionEnum.PDF15)]
-    public LayerEntity Layer
+    public virtual LayerEntity Layer
     {
       get
       {return (LayerEntity)PropertyList.Wrap(BaseDataObject[PdfName.OC]);}

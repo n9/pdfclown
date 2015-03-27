@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,11 +42,11 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF13)
 public final class FileAttachment
-  extends Annotation
+  extends Markup<FileAttachment>
   implements IFileResource
 {
   // <class>
@@ -56,9 +56,6 @@ public final class FileAttachment
   */
   public enum IconTypeEnum
   {
-    // <class>
-    // <static>
-    // <fields>
     /**
       Graph.
     */
@@ -75,10 +72,7 @@ public final class FileAttachment
       Tag.
     */
     Tag(PdfName.Tag);
-    // </fields>
 
-    // <interface>
-    // <public>
     /**
       Gets the icon type corresponding to the given value.
     */
@@ -93,34 +87,26 @@ public final class FileAttachment
       }
       return null;
     }
-    // </public>
-    // </interface>
-    // </static>
 
-    // <dynamic>
-    // <fields>
     private final PdfName code;
-    // </fields>
 
-    // <constructors>
     private IconTypeEnum(
       PdfName code
       )
     {this.code = code;}
-    // </constructors>
 
-    // <interface>
-    // <public>
     public PdfName getCode(
       )
     {return code;}
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
   }
   // </classes>
 
+  // <static>
+  // <fields>
+  private static final IconTypeEnum DefaultIconType = IconTypeEnum.PushPin;
+  // </fields>
+  // </static>
+  
   // <dynamic>
   // <constructors>
   public FileAttachment(
@@ -155,7 +141,7 @@ public final class FileAttachment
     )
   {
     PdfName nameObject = (PdfName)getBaseDataObject().get(PdfName.Name);
-    return nameObject != null ? IconTypeEnum.get(nameObject) : IconTypeEnum.PushPin;
+    return nameObject != null ? IconTypeEnum.get(nameObject) : DefaultIconType;
   }
 
   /**
@@ -164,8 +150,30 @@ public final class FileAttachment
   public void setIconType(
     IconTypeEnum value
     )
-  {getBaseDataObject().put(PdfName.Name, value.getCode());}
+  {getBaseDataObject().put(PdfName.Name, value != null && value != DefaultIconType ? value.getCode() : null);}
 
+  /**
+    @see #setDataFile(FileSpecification)
+  */
+  public FileAttachment withDataFile(
+    FileSpecification<?> value
+    )
+  {
+    setDataFile(value);
+    return self();
+  }
+  
+  /**
+    @see #setIconType(IconTypeEnum)
+  */
+  public FileAttachment withIconType(
+    IconTypeEnum value
+    )
+  {
+    setIconType(value);
+    return self();
+  }
+  
   // <IFileResource>
   @Override
   public FileSpecification<?> getDataFile(

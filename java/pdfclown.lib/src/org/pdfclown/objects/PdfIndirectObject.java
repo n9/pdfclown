@@ -38,7 +38,7 @@ import org.pdfclown.tokens.XRefEntry.UsageEnum;
   PDF indirect object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/10/15
+  @version 0.1.2.1, 03/21/15
 */
 public class PdfIndirectObject
   extends PdfObject
@@ -114,7 +114,8 @@ public class PdfIndirectObject
     // Remove from previous object stream!
     uncompress();
 
-    if(objectStream != null)
+    if(objectStream != null
+      && isCompressible())
     {
       // Add to the object stream!
       objectStream.put(xrefEntry.getNumber(),getDataObject());
@@ -155,6 +156,18 @@ public class PdfIndirectObject
   public boolean isCompressed(
     )
   {return xrefEntry.getUsage() == UsageEnum.InUseCompressed;}
+  
+  /**
+    Gets whether this object can be compressed within an object stream [PDF:1.6:3.4.6].
+  */
+  public boolean isCompressible(
+    )
+  {
+    return !isCompressed()
+      && !(getDataObject() instanceof PdfStream
+        || dataObject instanceof PdfInteger)
+      && getReference().getGenerationNumber() == 0;
+  }
 
   /**
     Gets whether this object contains a data object.
@@ -223,7 +236,7 @@ public class PdfIndirectObject
     oldObjectStream.remove(xrefEntry.getNumber());
     // Update its xref entry!
     xrefEntry.setUsage(UsageEnum.InUse);
-    xrefEntry.setStreamNumber(-1); // No object stream.
+    xrefEntry.setStreamNumber(XRefEntry.UndefinedStreamNumber); // No object stream.
     xrefEntry.setOffset(XRefEntry.UndefinedOffset); // Offset unknown (to set on file serialization -- see CompressedWriter).
   }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -120,7 +120,62 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region dynamic
     #region constructors
+    /**
+      <summary>Creates a non-reusable instance.</summary>
+    */
     public Border(
+      double width
+      ) : this(null, width)
+    {}
+
+    /**
+      <summary>Creates a non-reusable instance.</summary>
+    */
+    public Border(
+      double width,
+      StyleEnum style
+      ) : this(null, width, style)
+    {}
+
+    /**
+      <summary>Creates a non-reusable instance.</summary>
+    */
+    public Border(
+      double width,
+      LineDash pattern
+      ) : this(null, width, pattern)
+    {}
+
+    /**
+      <summary>Creates a reusable instance.</summary>
+    */
+    public Border(
+      Document context,
+      double width
+      ) : this(context, width, DefaultStyle, null)
+    {}
+
+    /**
+      <summary>Creates a reusable instance.</summary>
+    */
+    public Border(
+      Document context,
+      double width,
+      StyleEnum style
+      ) : this(context, width, style, null)
+    {}
+
+    /**
+      <summary>Creates a reusable instance.</summary>
+    */
+    public Border(
+      Document context,
+      double width,
+      LineDash pattern
+      ) : this(context, width, StyleEnum.Dashed, pattern)
+    {}
+
+    private Border(
       Document context,
       double width,
       StyleEnum style,
@@ -155,43 +210,19 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'D' entry may be undefined.
-        */
         PdfArray dashObject = (PdfArray)BaseDataObject[PdfName.D];
-        if(dashObject == null)
-          return DefaultLineDash;
-
-        double[] dashArray = new double[dashObject.Count];
-        for(
-          int dashIndex = 0,
-            dashLength = dashArray.Length;
-          dashIndex < dashLength;
-          dashIndex++
-          )
-        {dashArray[dashIndex] = ((IPdfNumber)dashObject[dashIndex]).RawValue;}
-
-        return new LineDash(dashArray);
+        return dashObject != null ? LineDash.Get(dashObject, null) : DefaultLineDash;
       }
       set
       {
-        if(value == null)
-        {BaseDataObject.Remove(PdfName.D);}
-        else
+        PdfArray dashObject = null;
+        if(value != null)
         {
-          PdfArray dashObject = new PdfArray();
-          {
-            double[] dashArray = value.DashArray;
-            for(
-              int dashIndex = 0,
-                dashLength = dashArray.Length;
-              dashIndex < dashLength;
-              dashIndex++
-              )
-            {dashObject.Add(PdfReal.Get(dashArray[dashIndex]));}
-          }
-          BaseDataObject[PdfName.D] = dashObject;
+          dashObject = new PdfArray();
+          foreach(double dashItem in value.DashArray)
+          {dashObject.Add(PdfReal.Get(dashItem));}
         }
+        BaseDataObject[PdfName.D] = dashObject;
       }
     }
 
@@ -203,13 +234,7 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {return ToStyleEnum((PdfName)BaseDataObject[PdfName.S]);}
       set
-      {
-        if(value == 0
-          || value == DefaultStyle)
-        {BaseDataObject.Remove(PdfName.S);}
-        else
-        {BaseDataObject[PdfName.S] = ToCode(value);}
-      }
+      {BaseDataObject[PdfName.S] = value != DefaultStyle ? ToCode(value) : null;}
     }
 
     /**
@@ -219,13 +244,8 @@ namespace org.pdfclown.documents.interaction.annotations
     {
       get
       {
-        /*
-          NOTE: 'W' entry may be undefined.
-        */
         IPdfNumber widthObject = (IPdfNumber)BaseDataObject[PdfName.W];
-        return widthObject == null
-          ? DefaultWidth
-          : widthObject.RawValue;
+        return widthObject != null ? widthObject.RawValue : DefaultWidth;
       }
       set
       {BaseDataObject[PdfName.W] = PdfReal.Get(value);}

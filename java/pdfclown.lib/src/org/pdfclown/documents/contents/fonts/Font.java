@@ -57,7 +57,7 @@ import org.pdfclown.util.NotImplementedException;
   Abstract font [PDF:1.6:5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/13/15
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Font
@@ -513,21 +513,32 @@ public abstract class Font
     return FlagsEnum.toEnumSet(flagsObject.getRawValue());
   }
 
+  private double textHeight = -1; // TODO: temporary until glyph bounding boxes are implemented.
   /**
     Gets the unscaled height of the given character.
 
-    @param textChar Character whose height has to be calculated.
+    @param textChar
+      Character whose height has to be calculated.
   */
   public final double getHeight(
     char textChar
     )
-  {return getLineHeight();}
+  {
+    /*
+      TODO: Calculate actual text height through glyph bounding box.
+    */
+    if(textHeight == -1)
+    {textHeight = getAscent() - getDescent();}
+    return textHeight;
+  }
 
   /**
     Gets the height of the given character, scaled to the given font size.
 
-    @param textChar Character whose height has to be calculated.
-    @param size Font size.
+    @param textChar
+      Character whose height has to be calculated.
+    @param size
+      Font size.
   */
   public final double getHeight(
     char textChar,
@@ -538,12 +549,22 @@ public abstract class Font
   /**
     Gets the unscaled height of the given text.
 
-    @param text Text whose height has to be calculated.
+    @param text
+      Text whose height has to be calculated.
   */
   public final double getHeight(
     String text
     )
-  {return getLineHeight();}
+  {
+    double height = 0;
+    for(int index = 0, length = text.length(); index < length; index++)
+    {
+      double charHeight = getHeight(text.charAt(index));
+      if(charHeight > height)
+      {height = charHeight;}
+    }
+    return height;
+  }
 
   /**
     Gets the height of the given text, scaled to the given font size.
@@ -595,10 +616,7 @@ public abstract class Font
       textChar1Index << 16 // Left-hand glyph index.
         + textChar2Index // Right-hand glyph index.
       );
-    if(kerning == null)
-      return 0;
-
-    return kerning;
+    return kerning != null ? kerning : 0;
   }
 
   /**
@@ -611,17 +629,11 @@ public abstract class Font
     )
   {
     int kerning = 0;
-    char textChars[] = text.toCharArray();
-    for(
-      int index = 0,
-        length = text.length() - 1;
-      index < length;
-      index++
-      )
+    for(int index = 0, length = text.length() - 1; index < length; index++)
     {
       kerning += getKerning(
-        textChars[index],
-        textChars[index + 1]
+        text.charAt(index),
+        text.charAt(index + 1)
         );
     }
     return kerning;
@@ -702,8 +714,8 @@ public abstract class Font
     )
   {
     int width = 0;
-    for(char textChar : text.toCharArray())
-    {width += getWidth(textChar);}
+    for(int index = 0, length = text.length(); index < length; index++)
+    {width += getWidth(text.charAt(index));}
     return width;
   }
 

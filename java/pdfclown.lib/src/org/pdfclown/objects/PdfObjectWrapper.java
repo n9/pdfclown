@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
   {@link #getBaseDataObject() baseDataObject} backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 1/26/15
+  @version 0.1.2.1, 03/21/15
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   implements Cloneable,
@@ -97,8 +97,9 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   /**
     Instantiates a wrapper from the specified base object.
 
-    @param baseObject PDF object backing this wrapper. MUST be a {@link PdfReference reference}
-    every time available.
+    @param baseObject
+      PDF object backing this wrapper. It MUST be a {@link PdfReference reference} every time 
+      available.
   */
   protected PdfObjectWrapper(
     PdfDirectObject baseObject
@@ -109,29 +110,33 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
     Instantiates a wrapper registering the specified base data object into the specified document
     context.
 
-    @param context Document context into which the specified data object has to be registered.
-    @param baseDataObject PDF data object backing this wrapper.
+    @param context
+      Document context into which the specified data object has to be registered.
+    @param baseDataObject
+      PDF data object backing this wrapper.
     @see #PdfObjectWrapper(File, PdfDataObject)
   */
   protected PdfObjectWrapper(
     Document context,
     TDataObject baseDataObject
     )
-  {this(context.getFile(), baseDataObject);}
+  {this(context != null ? context.getFile() : null, baseDataObject);}
 
   /**
     Instantiates a wrapper registering the specified base data object into the specified file
     context.
 
-    @param context File context into which the specified data object has to be registered.
-    @param baseDataObject PDF data object backing this wrapper.
+    @param context
+      File context into which the specified data object has to be registered.
+    @param baseDataObject
+      PDF data object backing this wrapper.
     @see #PdfObjectWrapper(Document, PdfDataObject)
   */
   protected PdfObjectWrapper(
     File context,
     TDataObject baseDataObject
     )
-  {this(context.register(baseDataObject));}
+  {this(context != null ? context.register(baseDataObject) : (PdfDirectObject)baseDataObject);}
   // </constructors>
 
   // <interface>
@@ -258,6 +263,11 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
 
     dictionary.put(PdfName.Metadata, PdfObjectWrapper.getBaseObject(value));
   }
+  
+  @Override
+  public String toString(
+    )
+  {return String.format("%s {%s}", getClass().getSimpleName(), getBaseObject() instanceof PdfReference ? getBaseObject().getDataContainer() : getBaseObject());}
 
   // <IPdfObjectWrapper>
   @Override
@@ -270,6 +280,7 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   // <protected>
   /**
     Checks whether the specified feature is compatible with the {@link Document#getVersion() document's conformance version}.
+    <p><span style="color:red">For internal use only.</span></p>
 
     @param feature Entity whose compatibility has to be checked. Supported types:
       <ul>
@@ -280,7 +291,7 @@ public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
     @throws RuntimeException In case of version conflict (see {@link org.pdfclown.documents.Document.Configuration.CompatibilityModeEnum#Strict Strict compatibility mode}).
     @since 0.1.0
   */
-  protected void checkCompatibility(
+  public void checkCompatibility(
     Object feature
     )
   {

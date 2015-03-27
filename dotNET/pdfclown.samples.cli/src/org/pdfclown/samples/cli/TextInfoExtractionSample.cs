@@ -108,7 +108,7 @@ namespace org.pdfclown.samples.cli
 
             // Drawing text string bounding box...
             composer.BeginLocalState();
-            composer.SetLineDash(new LineDash(new double[]{5,5}));
+            composer.SetLineDash(new LineDash(new double[]{5}));
             composer.SetStrokeColor(textStringBoxColor);
             composer.DrawRectangle(textString.Box.Value);
             composer.Stroke();

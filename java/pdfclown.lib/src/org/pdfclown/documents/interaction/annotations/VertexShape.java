@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,11 +44,11 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF15)
-public abstract class VertexShape
-  extends Shape
+public abstract class VertexShape<T extends VertexShape<T>>
+  extends Shape<T>
 {
   // <class>
   // <dynamic>
@@ -110,8 +110,18 @@ public abstract class VertexShape
       verticesObject.add(PdfReal.get(vertex.getX())); // x.
       verticesObject.add(PdfReal.get(pageHeight-vertex.getY())); // y.
     }
-
     getBaseDataObject().put(PdfName.Vertices,verticesObject);
+  }
+
+  /**
+    @see #setVertices(List)
+  */
+  public T withVertices(
+    List<Point2D> value
+    )
+  {
+    setVertices(value);
+    return self();
   }
   // </public>
   // </interface>

@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,7 +38,7 @@ import java.awt.geom.Rectangle2D;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.1, 04/16/11
+  @version 0.1.2.1, 03/21/15
 */
 public class Quad
   implements Shape
@@ -139,6 +139,50 @@ public class Quad
   public Point2D[] getPoints(
     )
   {return points;}
+
+  /**
+    Expands the size of this quad stretching around its center.
+    
+    @param value
+      Expansion extent.
+    @return
+      This quad.
+  */
+  public Quad inflate(
+    double value
+    )
+  {return inflate(value, value);}
+  
+  /**
+    Expands the size of this quad stretching around its center.
+    
+    @param valueX
+      Expansion's horizontal extent.
+    @param valueY
+      Expansion's vertical extent.
+    @return
+      This quad.
+  */
+  public Quad inflate(
+    double valueX,
+    double valueY
+    )
+  {
+    AffineTransform matrix = new AffineTransform();
+    Rectangle2D oldBounds = getPath().getBounds2D();
+    matrix.translate(-oldBounds.getX(), -oldBounds.getY());
+    path.transform(matrix);
+    matrix = new AffineTransform();
+    matrix.scale(1 + valueX * 2 / oldBounds.getWidth(), 1 + valueY * 2 / oldBounds.getHeight());
+    path.transform(matrix);
+    Rectangle2D newBounds = path.getBounds2D();
+    matrix = new AffineTransform();
+    matrix.translate(oldBounds.getX() - (newBounds.getWidth() - oldBounds.getWidth()) / 2, oldBounds.getY() - (newBounds.getHeight() - oldBounds.getHeight()) / 2);
+    path.transform(matrix);
+    
+    points = GeomUtils.getPoints(path.getPathIterator(null));
+    return this;
+  }
 
   @Override
   public boolean intersects(

@@ -54,10 +54,10 @@ import org.pdfclown.util.EnumUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2.1, 1/25/15
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF10)
-public class Annotation
+public abstract class Annotation<T extends Annotation<T>>
   extends PdfObjectWrapper<PdfDictionary>
   implements ILayerable
 {
@@ -68,9 +68,6 @@ public class Annotation
   */
   public enum FlagsEnum
   {
-    // <class>
-    // <static>
-    // <fields>
     /**
       Hide the annotation, both on screen and on print,
       if it does not belong to one of the standard annotation types
@@ -110,10 +107,7 @@ public class Annotation
       Invert the interpretation of the NoView flag.
     */
     ToggleNoView(0x100);
-    // </fields>
 
-    // <interface>
-    // <public>
     /**
       Converts an enumeration set into its corresponding bit mask representation.
     */
@@ -144,36 +138,22 @@ public class Annotation
 
       return flags;
     }
-    // </public>
-    // </interface>
-    // </static>
 
-    // <dynamic>
-    // <fields>
     /**
       <h3>Remarks</h3>
       <p>Bitwise code MUST be explicitly distinct from the ordinal position of the enum constant
       as they don't coincide.</p>
     */
     private final int code;
-    // </fields>
 
-    // <constructors>
     private FlagsEnum(
       int code
       )
     {this.code = code;}
-    // </constructors>
 
-    // <interface>
-    // <public>
     public int getCode(
       )
     {return code;}
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
   }
   // </classes>
 
@@ -189,7 +169,7 @@ public class Annotation
     @param baseObject Annotation base object.
     @return Annotation object associated to the base object.
   */
-  public static final Annotation wrap(
+  public static Annotation<?> wrap(
     PdfDirectObject baseObject
     )
   {
@@ -198,11 +178,11 @@ public class Annotation
 
     PdfName annotationType = (PdfName)((PdfDictionary)baseObject.resolve()).get(PdfName.Subtype);
     if(annotationType.equals(PdfName.Text))
-      return new Note(baseObject);
+      return new StickyNote(baseObject);
     else if(annotationType.equals(PdfName.Link))
       return new Link(baseObject);
     else if(annotationType.equals(PdfName.FreeText))
-      return new CalloutNote(baseObject);
+      return new StaticNote(baseObject);
     else if(annotationType.equals(PdfName.Line))
       return new Line(baseObject);
     else if(annotationType.equals(PdfName.Square))
@@ -219,7 +199,7 @@ public class Annotation
       || annotationType.equals(PdfName.StrikeOut))
       return new TextMarkup(baseObject);
     else if(annotationType.equals(PdfName.Stamp))
-      return new RubberStamp(baseObject);
+      return new Stamp(baseObject);
     else if(annotationType.equals(PdfName.Caret))
       return new Caret(baseObject);
     else if(annotationType.equals(PdfName.Ink))
@@ -242,7 +222,7 @@ public class Annotation
 //     else if(annotationType.equals(PdfName.Watermark)) return new Watermark(baseObject);
 //     else if(annotationType.equals(PdfName.3DAnnotation)) return new 3DAnnotation(baseObject);
     else // Other annotation type.
-      return new Annotation(baseObject);
+      return new GenericAnnotation(baseObject);
   }
   // </public>
   // </interface>
@@ -277,6 +257,7 @@ public class Annotation
     page.getAnnotations().add(this);
     setBox(box);
     setText(text);
+    setPrintable(true);
   }
 
   protected Annotation(
@@ -288,10 +269,11 @@ public class Annotation
   // <interface>
   // <public>
   @Override
-  public Annotation clone(
+  @SuppressWarnings("unchecked")
+  public T clone(
     Document context
     )
-  {return (Annotation)super.clone(context);}
+  {return (T)super.clone(context);}
 
   /**
     Deletes this annotation removing also its reference on the page.
@@ -320,9 +302,9 @@ public class Annotation
     Gets the annotation's behavior in response to various trigger events.
   */
   @PDF(VersionEnum.PDF12)
-  public AnnotationActions getActions(
+  public AnnotationActions<?> getActions(
     )
-  {return new AnnotationActions(this, getBaseDataObject().get(PdfName.AA, PdfDictionary.class));}
+  {return new CommonAnnotationActions(this, getBaseDataObject().get(PdfName.AA, PdfDictionary.class));}
 
   /**
     Gets the appearance specifying how the annotation is presented visually on the page.
@@ -446,7 +428,7 @@ public class Annotation
     @see #getActions()
   */
   public void setActions(
-    AnnotationActions value
+    AnnotationActions<?> value
     )
   {getBaseDataObject().put(PdfName.AA, PdfObjectWrapper.getBaseObject(value));}
 
@@ -534,7 +516,10 @@ public class Annotation
   public void setText(
     String value
     )
-  {getBaseDataObject().put(PdfName.Contents, PdfTextString.get(value));}
+  {
+    getBaseDataObject().put(PdfName.Contents, PdfTextString.get(value));
+    setModificationDate(new Date());
+  }
 
   /**
     @see #isVisible()
@@ -544,6 +529,149 @@ public class Annotation
     )
   {setFlags(EnumUtils.mask(getFlags(), FlagsEnum.Hidden, !value));}
 
+  /**
+    @see #setAction(Action)
+  */
+  public T withAction(
+    Action value
+    )
+  {
+    setAction(value);
+    return self();
+  }
+
+  /**
+    @see #setActions(AnnotationActions)
+  */
+  public T withActions(
+    AnnotationActions<?> value
+    )
+  {
+    setActions(value);
+    return self();
+  }
+
+  /**
+    @see #setAppearance(Appearance)
+  */
+  public T withAppearance(
+    Appearance value
+    )
+  {
+    setAppearance(value);
+    return self();
+  }
+
+  /**
+    @see #setBorder(Border)
+  */
+  public T withBorder(
+    Border value
+    )
+  {
+    setBorder(value);
+    return self();
+  }
+
+  /**
+    @see #setBox(Rectangle2D)
+  */
+  public T withBox(
+    Rectangle2D value
+    )
+  {
+    setBox(value);
+    return self();
+  }
+
+  /**
+    @see #setColor(DeviceColor)
+  */
+  public T withColor(
+    DeviceColor value
+    )
+  {
+    setColor(value);
+    return self();
+  }
+
+  /**
+    @see #setFlags(EnumSet)
+  */
+  public T withFlags(
+    EnumSet<FlagsEnum> value
+    )
+  {
+    setFlags(value);
+    return self();
+  }
+
+  /**
+    @see #setLayer(LayerEntity)
+  */
+  public T withLayer(
+    LayerEntity value
+    )
+  {
+    setLayer(value);
+    return self();
+  }
+
+  /**
+    @see #setModificationDate(Date)
+  */
+  public T withModificationDate(
+    Date value
+    )
+  {
+    setModificationDate(value);
+    return self();
+  }
+
+  /**
+    @see #setName(String)
+  */
+  public T withName(
+    String value
+    )
+  {
+    setName(value);
+    return self();
+  }
+
+  /**
+    @see #setPrintable(boolean)
+  */
+  public T withPrintable(
+    boolean value
+    )
+  {
+    setPrintable(value);
+    return self();
+  }
+
+  /**
+    @see #setText(String)
+  */
+  public T withText(
+    String value
+    )
+  {
+    setText(value);
+    return self();
+  }
+
+  /**
+    @see #setVisible(boolean)
+  */
+  public T withVisible(
+    boolean value
+    )
+  {
+    setVisible(value);
+    return self();
+  }
+  
   // <ILayerable>
   @Override
   @PDF(VersionEnum.PDF15)
@@ -559,6 +687,13 @@ public class Annotation
   // </ILayerable>
   // </public>
 
+  // <protected>
+  @SuppressWarnings("unchecked")
+  protected T self(
+    )
+  {return (T)this;}
+  // </protected>
+  
   // <private>
   private double getPageHeight(
     )

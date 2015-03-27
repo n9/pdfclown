@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -152,11 +152,13 @@ namespace org.pdfclown.documents.contents
         throw new ArgumentException(type.Name + " does NOT represent a valid resource class.");
     }
 
-    public PdfObjectWrapper Get(
-      Type type,
+    public T Get<T>(
       PdfName key
-      )
-    {return (PdfObjectWrapper)type.GetMethod("get_Item", BindingFlags.Public | BindingFlags.Instance).Invoke(Get(type), new object[]{ key });}
+      ) where T : PdfObjectWrapper
+    {
+      PdfObjectWrapper resources = Get(typeof(T));
+      return (T)resources.GetType().GetProperty("Item", BindingFlags.Public | BindingFlags.Instance).GetValue(resources, new object[]{ key });
+    }
     #endregion
     #endregion
     #endregion

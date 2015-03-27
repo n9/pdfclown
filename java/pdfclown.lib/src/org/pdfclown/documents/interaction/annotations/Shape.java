@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,20 +32,22 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
 import org.pdfclown.objects.PdfArray;
+import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
+import org.pdfclown.objects.PdfObjectWrapper;
 
 /**
   Abstract shape annotation.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF13)
-public abstract class Shape
-  extends Annotation
+public abstract class Shape<T extends Shape<T>>
+  extends Markup<T>
 {
   // <class>
   // <dynamic>
@@ -67,6 +69,14 @@ public abstract class Shape
   // <interface>
   // <public>
   /**
+    Gets the border effect.
+  */
+  @PDF(VersionEnum.PDF15)
+  public BorderEffect getBorderEffect(
+    )
+  {return new BorderEffect(getBaseDataObject().get(PdfName.BE, PdfDictionary.class));}
+  
+  /**
     Gets the color with which to fill the interior of the annotation's shape.
   */
   public DeviceRGBColor getFillColor(
@@ -84,12 +94,42 @@ public abstract class Shape
   }
 
   /**
+    @see #getBorderEffect()
+  */
+  public void setBorderEffect(
+    BorderEffect value
+    )
+  {getBaseDataObject().put(PdfName.BE, PdfObjectWrapper.getBaseObject(value));}
+
+  /**
     @see #getFillColor()
   */
   public void setFillColor(
-     DeviceRGBColor value
+    DeviceRGBColor value
     )
-  {getBaseDataObject().put(PdfName.IC, value.getBaseDataObject());}
+  {getBaseDataObject().put(PdfName.IC, PdfObjectWrapper.getBaseObject(value));}
+
+  /**
+    @see #setBorderEffect(BorderEffect)
+  */
+  public T withBorderEffect(
+    BorderEffect value
+    )
+  {
+    setBorderEffect(value);
+    return self();
+  }
+
+  /**
+    @see #setFillColor(DeviceRGBColor)
+  */
+  public T withFillColor(
+    DeviceRGBColor value
+    )
+  {
+    setFillColor(value);
+    return self();
+  }
   // </public>
   // </interface>
   // </dynamic>

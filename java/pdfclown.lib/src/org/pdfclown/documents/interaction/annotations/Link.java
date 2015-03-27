@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,11 +45,11 @@ import org.pdfclown.objects.PdfObjectWrapper;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF10)
 public final class Link
-  extends Annotation
+  extends Annotation<Link>
   implements ILink
 {
   // <class>
@@ -91,10 +91,20 @@ public final class Link
     if(getBaseDataObject().containsKey(PdfName.Dest)
       && value != null)
     {getBaseDataObject().remove(PdfName.Dest);}
-
     super.setAction(value);
   }
 
+  /**
+    @see #setTarget(PdfObjectWrapper)
+  */
+  public Link withTarget(
+    PdfObjectWrapper<?> value
+    )
+  {
+    setTarget(value);
+    return self();
+  }
+  
   // <ILink>
   @Override
   public PdfObjectWrapper<?> getTarget(

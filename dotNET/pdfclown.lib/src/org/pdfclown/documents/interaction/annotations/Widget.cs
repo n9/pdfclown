@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
+using org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.documents.interaction.forms;
 using org.pdfclown.objects;
 using org.pdfclown.util;
@@ -39,7 +40,7 @@ namespace org.pdfclown.documents.interaction.annotations
     <summary>Widget annotation [PDF:1.6:8.4.5].</summary>
   */
   [PDF(VersionEnum.PDF12)]
-  public class Widget
+  public sealed class Widget
     : Annotation
   {
     #region types
@@ -89,19 +90,6 @@ namespace org.pdfclown.documents.interaction.annotations
     #endregion
 
     #region interface
-    #region public
-    public static Widget Wrap(
-      PdfDirectObject baseObject,
-      Field field
-      )
-    {
-      return field is CheckBox
-          || field is RadioButton
-        ? new DualWidget(baseObject)
-        : new Widget(baseObject);
-    }
-    #endregion
-
     #region private
     /**
       <summary>Gets the code corresponding to the given value.</summary>
@@ -131,13 +119,36 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region dynamic
     #region constructors
+    /**
+      <summary>Creates a new generic widget.</summary>
+    */
     public Widget(
       Page page,
       RectangleF box
       ) : base(page, PdfName.Widget, box, null)
     {Flags = EnumUtils.Mask(Flags, FlagsEnum.Print, true);}
 
-    internal protected Widget(
+    /**
+      <summary>Creates a new dual-state widget (required by <see
+      cref="org.pdfclown.documents.forms.RadioButton"/> fields).</summary>
+    */
+    public Widget(
+      Page page,
+      RectangleF box,
+      string name
+      ) : this(page, box)
+    {
+      // Initialize the on-state appearance!
+      /*
+        NOTE: This is necessary to keep the reference to the on-state name.
+      */
+      Appearance appearance = new Appearance(page.Document);
+      Appearance = appearance;
+      AppearanceStates normalAppearance = appearance.Normal;
+      normalAppearance[new PdfName(name)] = new FormXObject(page.Document, box.Size);
+    }
+
+    internal Widget(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -148,10 +159,7 @@ namespace org.pdfclown.documents.interaction.annotations
     public override AnnotationActions Actions
     {
       get
-      {
-        PdfDirectObject actionsObject = BaseDataObject[PdfName.AA];
-        return actionsObject != null ? new WidgetActions(this, actionsObject) : null;
-      }
+      {return new WidgetActions(this, BaseDataObject.Get<PdfDictionary>(PdfName.AA));}
       set
       {base.Actions = value;}
     }
@@ -169,8 +177,8 @@ namespace org.pdfclown.documents.interaction.annotations
     }
 
     /**
-      <summary>Gets/Sets the annotation's highlighting mode, the visual effect to be used
-      when the mouse button is pressed or held down inside its active area.</summary>
+      <summary>Gets/Sets the annotation's highlighting mode, the visual effect to be used when the
+      mouse button is pressed or held down inside its active area.</summary>
     */
     public HighlightModeEnum HighlightMode
     {
@@ -178,6 +186,24 @@ namespace org.pdfclown.documents.interaction.annotations
       {return ToHighlightModeEnum((PdfName)BaseDataObject[PdfName.H]);}
       set
       {BaseDataObject[PdfName.H] = ToCode(value);}
+    }
+
+    /**
+      <summary>Gets the widget value (applicable to dual-state widgets only). It corresponds to the
+      on-state appearance of this widget.</summary>
+    */
+    public string Value
+    {
+      get
+      {
+        foreach(KeyValuePair<PdfName,FormXObject> normalAppearanceEntry in Appearance.Normal)
+        {
+          PdfName key = normalAppearanceEntry.Key;
+          if(!key.Equals(PdfName.Off)) // 'On' state.
+            return (string)key.Value;
+        }
+        return null; // NOTE: It MUST NOT happen (on-state should always be defined).
+      }
     }
     #endregion
     #endregion

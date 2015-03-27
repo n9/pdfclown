@@ -21,7 +21,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
   This sample demonstrates <b>how to inspect the bookmarks</b> of a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/09/15
+  @version 0.1.2.1, 03/21/15
 */
 public class BookmarksParsingSample
   extends Sample
@@ -105,19 +105,19 @@ public class BookmarksParsingSample
       {
         FileSpecification<?> destinationFile = ((GoToNonLocal<?>)action).getDestinationFile();
         if(destinationFile != null)
-        {System.out.println("    Filename: " + destinationFile.getPath());}
+        {System.out.println("      Filename: " + destinationFile.getPath());}
 
         if(action instanceof GoToEmbedded)
         {
           PathElement target = ((GoToEmbedded)action).getDestinationPath();
-          System.out.println("    EmbeddedFilename: " + target.getEmbeddedFileName() + " Relation: " + target.getRelation());
+          System.out.println("      EmbeddedFilename: " + target.getEmbeddedFileName() + " Relation: " + target.getRelation());
         }
       }
-      System.out.print("    ");
+      System.out.print("      ");
       printDestination(((GoToDestination<?>)action).getDestination());
     }
     else if(action instanceof GoToURI)
-    {System.out.println("    URI: " + ((GoToURI)action).getURI());}
+    {System.out.println("      URI: " + ((GoToURI)action).getURI());}
   }
 
   private void printDestination(
@@ -125,7 +125,7 @@ public class BookmarksParsingSample
     )
   {
     System.out.println(destination.getClass().getSimpleName() + " " + destination.getBaseObject());
-    System.out.print("    Page ");
+    System.out.print("        Page ");
     Object pageRef = destination.getPage();
     if(pageRef instanceof Page)
     {
@@ -137,10 +137,10 @@ public class BookmarksParsingSample
 
     Object location = destination.getLocation();
     if(location != null)
-    {System.out.println(String.format("    Location %s", location));}
+    {System.out.println(String.format("        Location %s", location));}
 
     Double zoom = destination.getZoom();
     if(zoom != null)
-    {System.out.println(String.format("    Zoom %s", zoom));}
+    {System.out.println(String.format("        Zoom %s", zoom));}
   }
 }

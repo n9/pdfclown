@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -95,6 +95,18 @@ namespace org.pdfclown.documents
     }
 
     /**
+      <summary>Gets/Sets the named pages.</summary>
+    */
+    [PDF(VersionEnum.PDF13)]
+    public NamedPages Pages
+    {
+      get
+      {return new NamedPages(BaseDataObject.Get<PdfDictionary>(PdfName.Pages, false));}
+      set
+      {BaseDataObject[PdfName.Pages] = value.BaseObject;}
+    }
+
+    /**
       <summary>Gets/Sets the named renditions.</summary>
     */
     [PDF(VersionEnum.PDF15)]
@@ -117,17 +129,21 @@ namespace org.pdfclown.documents
         return EmbeddedFiles;
       else if(typeof(JavaScript).IsAssignableFrom(type))
         return JavaScripts;
+      else if(typeof(Page).IsAssignableFrom(type))
+        return Pages;
       else if(typeof(Rendition).IsAssignableFrom(type))
         return Renditions;
       else
         return null;
     }
 
-    public PdfObjectWrapper Get(
-      Type type,
+    public T Get<T>(
       PdfString key
-      )
-    {return (PdfObjectWrapper)type.GetMethod("get_Item", BindingFlags.Public | BindingFlags.Instance).Invoke(Get(type), new object[]{ key });}
+      ) where T : PdfObjectWrapper
+    {
+      PdfObjectWrapper names = Get(typeof(T));
+      return (T)names.GetType().GetProperty("Item", BindingFlags.Public | BindingFlags.Instance).GetValue(names, new object[]{ key });
+    }
     #endregion
     #endregion
     #endregion

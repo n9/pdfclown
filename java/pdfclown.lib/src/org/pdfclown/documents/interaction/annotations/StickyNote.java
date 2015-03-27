@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,27 +25,28 @@
 
 package org.pdfclown.documents.interaction.annotations;
 
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
+import org.pdfclown.objects.PdfBoolean;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 
 /**
-  Rubber stamp annotation [PDF:1.6:8.4.5].
-  <p>It displays text or graphics intended to look as if they were stamped
-  on the page with a rubber stamp.</p>
+  Text annotation [PDF:1.6:8.4.5].
+  <p>It represents a sticky note attached to a point in the PDF document.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
-@PDF(VersionEnum.PDF13)
-public final class RubberStamp
-  extends Annotation
+@PDF(VersionEnum.PDF10)
+public final class StickyNote
+  extends Markup<StickyNote>
 {
   // <class>
   // <classes>
@@ -54,71 +55,37 @@ public final class RubberStamp
   */
   public enum IconTypeEnum
   {
-    // <class>
-    // <static>
-    // <fields>
     /**
-      Approved.
+      Comment.
     */
-    Approved(PdfName.Approved),
+    Comment(PdfName.Comment),
     /**
-      As is.
+      Help.
     */
-    AsIs(PdfName.AsIs),
+    Help(PdfName.Help),
     /**
-      Confidential.
+      Insert.
     */
-    Confidential(PdfName.Confidential),
+    Insert(PdfName.Insert),
     /**
-      Departmental.
+      Key.
     */
-    Departmental(PdfName.Departmental),
+    Key(PdfName.Key),
     /**
-      Draft.
+      New paragraph.
     */
-    Draft(PdfName.Draft),
+    NewParagraph(PdfName.NewParagraph),
     /**
-      Experimental.
+      Note.
     */
-    Experimental(PdfName.Experimental),
+    Note(PdfName.Note),
     /**
-      Expired.
+      Paragraph.
     */
-    Expired(PdfName.Expired),
-    /**
-      Final.
-    */
-    Final(PdfName.Final),
-    /**
-      For comment.
-    */
-    ForComment(PdfName.ForComment),
-    /**
-      For public release.
-    */
-    ForPublicRelease(PdfName.ForPublicRelease),
-    /**
-      Not approved.
-    */
-    NotApproved(PdfName.NotApproved),
-    /**
-      Not for public release.
-    */
-    NotForPublicRelease(PdfName.NotForPublicRelease),
-    /**
-      Sold.
-    */
-    Sold(PdfName.Sold),
-    /**
-      Top secret.
-    */
-    TopSecret(PdfName.TopSecret);
-    // </fields>
+    Paragraph(PdfName.Paragraph);
 
-    // <interface>
-    // <public>
     /**
-      Gets the markup type corresponding to the given value.
+      Gets the highlighting mode corresponding to the given value.
     */
     public static IconTypeEnum get(
       PdfName value
@@ -131,48 +98,44 @@ public final class RubberStamp
       }
       return null;
     }
-    // </public>
-    // </interface>
-    // </static>
 
-    // <dynamic>
-    // <fields>
     private final PdfName code;
-    // </fields>
 
-    // <constructors>
     private IconTypeEnum(
       PdfName code
       )
     {this.code = code;}
-    // </constructors>
 
-    // <interface>
-    // <public>
     public PdfName getCode(
       )
     {return code;}
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
   }
   // </classes>
 
+  // <static>
+  // <fields>
+  private static final IconTypeEnum DefaultIconType = IconTypeEnum.Note;
+  private static final boolean DefaultOpen = false;
+  // </fields>
+  // </static>
+  
   // <dynamic>
   // <constructors>
-  public RubberStamp(
+  public StickyNote(
     Page page,
-    Rectangle2D box,
-    String text,
-    IconTypeEnum iconType
+    Point2D location,
+    String text
     )
   {
-    super(page, PdfName.Stamp, box, text);
-    setIconType(iconType);
+    super(
+      page,
+      PdfName.Text,
+      new Rectangle2D.Double(location.getX(), location.getY(), 0, 0),
+      text
+      );
   }
 
-  RubberStamp(
+  StickyNote(
     PdfDirectObject baseObject
     )
   {super(baseObject);}
@@ -181,10 +144,10 @@ public final class RubberStamp
   // <interface>
   // <public>
   @Override
-  public RubberStamp clone(
+  public StickyNote clone(
     Document context
     )
-  {return (RubberStamp)super.clone(context);}
+  {return (StickyNote)super.clone(context);}
 
   /**
     Gets the icon to be used in displaying the annotation.
@@ -193,8 +156,20 @@ public final class RubberStamp
     )
   {
     PdfName nameObject = (PdfName)getBaseDataObject().get(PdfName.Name);
-    return nameObject != null ? IconTypeEnum.get(nameObject) : IconTypeEnum.Draft;
+    return nameObject != null ? IconTypeEnum.get(nameObject) : DefaultIconType;
   }
+
+  /**
+    Gets whether the annotation should initially be displayed open.
+  */
+  public boolean isOpen(
+    )
+  {
+    PdfBoolean openObject = (PdfBoolean)getBaseDataObject().get(PdfName.Open);
+    return openObject != null ? openObject.getValue() : DefaultOpen;
+  }
+
+//TODO:State and StateModel!!!
 
   /**
     @see #getIconType()
@@ -202,7 +177,37 @@ public final class RubberStamp
   public void setIconType(
     IconTypeEnum value
     )
-  {getBaseDataObject().put(PdfName.Name, value.getCode());}
+  {getBaseDataObject().put(PdfName.Name, value != null && value != DefaultIconType ? value.getCode() : null);}
+
+  /**
+    @see #isOpen()
+  */
+  public void setOpen(
+    boolean value
+    )
+  {getBaseDataObject().put(PdfName.Open, value != DefaultOpen ? PdfBoolean.get(value) : null);}
+
+  /**
+    @see #setIconType(IconTypeEnum)
+  */
+  public StickyNote withIconType(
+    IconTypeEnum value
+    )
+  {
+    setIconType(value);
+    return self();
+  }
+
+  /**
+    @see #setOpen(boolean)
+  */
+  public StickyNote withOpen(
+    boolean value
+    )
+  {
+    setOpen(value);
+    return self();
+  }
   // </public>
   // </interface>
   // </dynamic>

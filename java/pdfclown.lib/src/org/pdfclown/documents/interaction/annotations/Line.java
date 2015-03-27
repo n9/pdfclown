@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,108 +47,13 @@ import org.pdfclown.objects.PdfReal;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF13)
 public final class Line
-  extends Annotation
+  extends Markup<Line>
 {
-  // <class>
-  // <classes>
-  /**
-    Line ending style [PDF:1.6:8.4.5].
-  */
-  public enum LineEndStyleEnum
-  {
-    // <class>
-    // <static>
-    // <fields>
-    /**
-      Square.
-    */
-    Square(PdfName.Square),
-    /**
-      Circle.
-    */
-    Circle(PdfName.Circle),
-    /**
-      Diamond.
-    */
-    Diamond(PdfName.Diamond),
-    /**
-      Open arrow.
-    */
-    OpenArrow(PdfName.OpenArrow),
-    /**
-      Closed arrow.
-    */
-    ClosedArrow(PdfName.ClosedArrow),
-    /**
-      None.
-    */
-    None(PdfName.None),
-    /**
-      Butt.
-    */
-    Butt(PdfName.Butt),
-    /**
-      Reverse open arrow.
-    */
-    ReverseOpenArrow(PdfName.ROpenArrow),
-    /**
-      Reverse closed arrow.
-    */
-    ReverseClosedArrow(PdfName.RClosedArrow),
-    /**
-      Slash.
-    */
-    Slash(PdfName.Slash);
-    // </fields>
-
-    // <interface>
-    // <public>
-    /**
-      Gets the line ending style corresponding to the given value.
-    */
-    public static LineEndStyleEnum get(
-      PdfName value
-      )
-    {
-      for(LineEndStyleEnum style : LineEndStyleEnum.values())
-      {
-        if(style.getCode().equals(value))
-          return style;
-      }
-      return null;
-    }
-    // </public>
-    // </interface>
-    // </static>
-
-    // <dynamic>
-    // <fields>
-    private final PdfName code;
-    // </fields>
-
-    // <constructors>
-    private LineEndStyleEnum(
-      PdfName code
-      )
-    {this.code = code;}
-    // </constructors>
-
-    // <interface>
-    // <public>
-    public PdfName getCode(
-      )
-    {return code;}
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
-  }
-  // </classes>
-
+  //<class>
   // <static>
   // <fields>
   private static final double DefaultLeaderLineExtensionLength = 0;
@@ -163,7 +68,8 @@ public final class Line
     Page page,
     Point2D startPoint,
     Point2D endPoint,
-    String text
+    String text,
+    DeviceRGBColor color
     )
   {
     super(
@@ -183,6 +89,7 @@ public final class Line
       );
     setStartPoint(startPoint);
     setEndPoint(endPoint);
+    setColor(color);
   }
 
   Line(
@@ -333,7 +240,7 @@ public final class Line
   public void setEndStyle(
     LineEndStyleEnum value
     )
-  {ensureLineEndStylesObject().set(1, value.getCode());}
+  {ensureLineEndStylesObject().set(1, (value != null ? value : DefaultLineEndStyle).getCode());}
 
   /**
     @see #getFillColor()
@@ -384,7 +291,95 @@ public final class Line
   public void setStartStyle(
     LineEndStyleEnum value
     )
-  {ensureLineEndStylesObject().set(0,value.getCode());}
+  {ensureLineEndStylesObject().set(0, (value != null ? value : DefaultLineEndStyle).getCode());}
+  
+  /**
+    @see #setCaptionVisible(boolean)
+  */
+  public Line withCaptionVisible(
+    boolean value
+    )
+  {
+    setCaptionVisible(value);
+    return self();
+  }
+
+  /**
+    @see #setEndPoint(Point2D)
+  */
+  public Line withEndPoint(
+    Point2D value
+    )
+  {
+    setEndPoint(value);
+    return self();
+  }
+
+  /**
+    @see #setEndStyle(LineEndStyleEnum)
+  */
+  public Line withEndStyle(
+    LineEndStyleEnum value
+    )
+  {
+    setEndStyle(value);
+    return self();
+  }
+
+  /**
+    @see #setFillColor(DeviceRGBColor)
+  */
+  public Line withFillColor(
+     DeviceRGBColor value
+    )
+  {
+    setFillColor(value);
+    return self();
+  }
+
+  /**
+    @see #setLeaderLineExtensionLength(double)
+  */
+  public Line withLeaderLineExtensionLength(
+    double value
+    )
+  {
+    setLeaderLineExtensionLength(value);
+    return self();
+  }
+
+  /**
+    @see #setLeaderLineLength(double)
+  */
+  public Line withLeaderLineLength(
+    double value
+    )
+  {
+    setLeaderLineLength(value);
+    return self();
+  }
+
+  /**
+    @see #setStartPoint(Point2D)
+  */
+  public Line withStartPoint(
+    Point2D value
+    )
+  {
+    setStartPoint(value);
+    return self();
+  }
+
+  /**
+    @see #setStartStyle(LineEndStyleEnum)
+  */
+  public Line withStartStyle(
+    LineEndStyleEnum value
+    )
+  {
+    setStartStyle(value);
+    return self();
+  }
   // </public>
 
   // <private>
@@ -405,7 +400,6 @@ public final class Line
           )
         );
     }
-
     return endStylesObject;
   }
   // </private>

@@ -12,9 +12,7 @@ import org.pdfclown.documents.contents.composition.XAlignmentEnum;
 import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.interaction.actions.JavaScript;
-import org.pdfclown.documents.interaction.annotations.DualWidget;
 import org.pdfclown.documents.interaction.annotations.Widget;
-import org.pdfclown.documents.interaction.annotations.WidgetActions;
 import org.pdfclown.documents.interaction.forms.CheckBox;
 import org.pdfclown.documents.interaction.forms.ChoiceItems;
 import org.pdfclown.documents.interaction.forms.ComboBox;
@@ -33,7 +31,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 11/30/12
+  @version 0.1.2.1, 03/21/15
 */
 public class AcroFormCreationSample
   extends Sample
@@ -107,9 +105,7 @@ public class AcroFormCreationSample
         page,
         new Rectangle(150, 50, 136, 36)
         );
-      WidgetActions fieldWidgetActions = new WidgetActions(fieldWidget);
-      fieldWidget.setActions(fieldWidgetActions);
-      fieldWidgetActions.setOnActivate(
+      fieldWidget.getActions().withOnActivate(
         new JavaScript(
           document,
           "app.alert(\"Radio button currently selected: '\" + this.getField(\"myRadio\").value + \"'.\",3,0,\"Activation event\");"
@@ -187,19 +183,19 @@ public class AcroFormCreationSample
         /*
           NOTE: A radio button field typically combines multiple alternative widgets.
         */
-        new DualWidget[]
+        new Widget[]
         {
-          new DualWidget(
+          new Widget(
             page,
             new Rectangle(150, 150, 36, 36),
             "first"
             ),
-          new DualWidget(
+          new Widget(
             page,
             new Rectangle(200, 150, 36, 36),
             "second"
             ),
-          new DualWidget(
+          new Widget(
             page,
             new Rectangle(250, 150, 36, 36),
             "third"

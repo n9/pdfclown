@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -51,7 +51,7 @@ import org.pdfclown.objects.PdfSimpleObject;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF12)
 public final class ExtGState
@@ -183,23 +183,7 @@ public final class ExtGState
     )
   {
     PdfArray lineDashObject = (PdfArray)getBaseDataObject().get(PdfName.D);
-    if(lineDashObject == null)
-      return null;
-
-    double[] dashArray;
-    {
-      PdfArray baseDashArray = (PdfArray)lineDashObject.get(0);
-      dashArray = new double[baseDashArray.size()];
-      for(
-        int index = 0,
-          length = dashArray.length;
-        index < length;
-        index++
-        )
-      {dashArray[index] = ((PdfNumber<?>)baseDashArray.get(index)).getDoubleValue();}
-    }
-    double dashPhase = ((PdfNumber<?>)lineDashObject.get(1)).getDoubleValue();
-    return new LineDash(dashArray, dashPhase);
+    return lineDashObject != null ? LineDash.get((PdfArray)lineDashObject.get(0), (PdfNumber<?>)lineDashObject.get(1)) : null;
   }
 
   @PDF(VersionEnum.PDF13)

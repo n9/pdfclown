@@ -436,6 +436,7 @@ namespace org.pdfclown.documents.contents.fonts
       )
     {return Name.GetHashCode();}
 
+    private double textHeight = -1; // TODO: temporary until glyph bounding boxes are implemented.
     /**
       <summary>Gets the unscaled height of the given character.</summary>
       <param name="textChar">Character whose height has to be calculated.</param>
@@ -443,7 +444,14 @@ namespace org.pdfclown.documents.contents.fonts
     public double GetHeight(
       char textChar
       )
-    {return LineHeight;}
+    {
+      /*
+        TODO: Calculate actual text height through glyph bounding box.
+      */
+      if(textHeight == -1)
+      {textHeight = Ascent - Descent;}
+      return textHeight;
+    }
 
     /**
       <summary>Gets the height of the given character, scaled to the given font size.</summary>
@@ -463,7 +471,16 @@ namespace org.pdfclown.documents.contents.fonts
     public double GetHeight(
       string text
       )
-    {return LineHeight;}
+    {
+      double height = 0;
+      for(int index = 0, length = text.Length; index < length; index++)
+      {
+        double charHeight = GetHeight(text[index]);
+        if(charHeight > height)
+        {height = charHeight;}
+      }
+      return height;
+    }
 
     /**
       <summary>Gets the height of the given text, scaled to the given font size.</summary>
@@ -509,13 +526,10 @@ namespace org.pdfclown.documents.contents.fonts
         return 0;
 
       int kerning;
-      if(!glyphKernings.TryGetValue(
+      return glyphKernings.TryGetValue(
         textChar1Index << 16 // Left-hand glyph index.
           + textChar2Index, // Right-hand glyph index.
-        out kerning))
-        return 0;
-
-      return kerning;
+        out kerning) ? kerning : 0;
     }
 
     /**
@@ -527,17 +541,11 @@ namespace org.pdfclown.documents.contents.fonts
       )
     {
       int kerning = 0;
-      char[] textChars = text.ToCharArray();
-      for(
-        int index = 0,
-          length = text.Length - 1;
-        index < length;
-        index++
-        )
+      for(int index = 0, length = text.Length - 1; index < length; index++)
       {
         kerning += GetKerning(
-          textChars[index],
-          textChars[index + 1]
+          text[index],
+          text[index + 1]
           );
       }
       return kerning;
@@ -599,8 +607,8 @@ namespace org.pdfclown.documents.contents.fonts
       )
     {
       int width = 0;
-      foreach(char textChar in text.ToCharArray())
-      {width += GetWidth(textChar);}
+      for(int index = 0, length = text.Length; index < length; index++)
+      {width += GetWidth(text[index]);}
       return width;
     }
 

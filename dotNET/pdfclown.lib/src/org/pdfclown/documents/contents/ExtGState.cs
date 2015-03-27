@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -226,23 +226,7 @@ namespace org.pdfclown.documents.contents
       get
       {
         PdfArray lineDashObject = (PdfArray)BaseDataObject[PdfName.D];
-        if(lineDashObject == null)
-          return null;
-
-        double[] dashArray;
-        {
-          PdfArray baseDashArray = (PdfArray)lineDashObject[0];
-          dashArray = new double[baseDashArray.Count];
-          for(
-            int index = 0,
-              length = dashArray.Length;
-            index < length;
-            index++
-            )
-          {dashArray[index] = ((IPdfNumber)baseDashArray[index]).RawValue;}
-        }
-        double dashPhase = ((IPdfNumber)lineDashObject[1]).RawValue;
-        return new LineDash(dashArray,dashPhase);
+        return lineDashObject != null ? LineDash.Get((PdfArray)lineDashObject[0], (IPdfNumber)lineDashObject[1]) : null;
       }
       set
       {

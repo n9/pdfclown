@@ -57,7 +57,7 @@ import org.pdfclown.util.math.geom.Dimension;
   Form external object [PDF:1.6:4.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 1/25/15
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF10)
 public final class FormXObject
@@ -169,8 +169,8 @@ public final class FormXObject
   {
     PdfArray box = (PdfArray)getBaseDataObject().getHeader().resolve(PdfName.BBox);
     return new Dimension(
-      ((PdfNumber<?>)box.get(2)).getDoubleValue(),
-      ((PdfNumber<?>)box.get(3)).getDoubleValue()
+      ((PdfNumber<?>)box.get(2)).getDoubleValue() - ((PdfNumber<?>)box.get(0)).getDoubleValue(),
+      ((PdfNumber<?>)box.get(3)).getDoubleValue() - ((PdfNumber<?>)box.get(1)).getDoubleValue()
       );
   }
 
@@ -219,8 +219,8 @@ public final class FormXObject
     )
   {
     PdfArray boxObject = (PdfArray)getBaseDataObject().getHeader().resolve(PdfName.BBox);
-    boxObject.set(2, PdfReal.get(value.getWidth()));
-    boxObject.set(3, PdfReal.get(value.getHeight()));
+    boxObject.set(2, PdfReal.get(value.getWidth() + ((PdfNumber<?>)boxObject.get(0)).getDoubleValue()));
+    boxObject.set(3, PdfReal.get(value.getHeight() + ((PdfNumber<?>)boxObject.get(1)).getDoubleValue()));
   }
 
   // <IContentContext>

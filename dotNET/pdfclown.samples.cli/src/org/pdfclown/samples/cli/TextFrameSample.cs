@@ -45,7 +45,7 @@ namespace org.pdfclown.samples.cli
 
       colors::Color textColor = new colors::DeviceRGBColor(115 / 255d, 164 / 255d, 232 / 255d);
       composer.SetFillColor(textColor);
-      composer.SetLineDash(new LineDash(new double[]{10, 10}));
+      composer.SetLineDash(new LineDash(new double[]{10}));
       composer.SetLineWidth(.25);
 
       BlockComposer blockComposer = new BlockComposer(composer);

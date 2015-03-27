@@ -36,7 +36,7 @@ import org.pdfclown.tokens.Keyword;
   PDF name object [PDF:1.6:3.2.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/12/15
+  @version 0.1.2.1, 03/21/15
 */
 public final class PdfName
   extends PdfSimpleObject<String>
@@ -243,6 +243,8 @@ public final class PdfName
   public static final PdfName Form = new PdfName("Form");
   public static final PdfName ForPublicRelease = new PdfName("ForPublicRelease");
   public static final PdfName FreeText = new PdfName("FreeText");
+  public static final PdfName FreeTextCallout = new PdfName("FreeTextCallout");
+  public static final PdfName FreeTextTypeWriter = new PdfName("FreeTextTypeWriter");
   public static final PdfName FS = new PdfName("FS");
   public static final PdfName FT = new PdfName("FT");
   public static final PdfName FullScreen = new PdfName("FullScreen");
@@ -284,6 +286,7 @@ public final class PdfName
   public static final PdfName Ink = new PdfName("Ink");
   public static final PdfName InkList = new PdfName("InkList");
   public static final PdfName Insert = new PdfName("Insert");
+  public static final PdfName IT = new PdfName("IT");
   public static final PdfName ItalicAngle = new PdfName("ItalicAngle");
   public static final PdfName IX = new PdfName("IX");
   public static final PdfName JavaScript = new PdfName("JavaScript");
@@ -446,10 +449,27 @@ public final class PdfName
   public static final PdfName RunLengthDecode = new PdfName("RunLengthDecode");
   public static final PdfName S = new PdfName("S");
   public static final PdfName Saturation = new PdfName("Saturation");
+  public static final PdfName SBApproved = new PdfName("SBApproved");
+  public static final PdfName SBCompleted = new PdfName("SBCompleted");
+  public static final PdfName SBConfidential = new PdfName("SBConfidential");
+  public static final PdfName SBDraft = new PdfName("SBDraft");
+  public static final PdfName SBFinal = new PdfName("SBFinal");
+  public static final PdfName SBForComment = new PdfName("SBForComment");
+  public static final PdfName SBForPublicRelease = new PdfName("SBForPublicRelease");
+  public static final PdfName SBInformationOnly = new PdfName("SBInformationOnly");
+  public static final PdfName SBNotApproved = new PdfName("SBNotApproved");
+  public static final PdfName SBNotForPublicRelease = new PdfName("SBNotForPublicRelease");
+  public static final PdfName SBPreliminaryResults = new PdfName("SBPreliminaryResults");
+  public static final PdfName SBRejected = new PdfName("SBRejected");
+  public static final PdfName SBVoid = new PdfName("SBVoid");
   public static final PdfName Screen = new PdfName("Screen");
   public static final PdfName Separation = new PdfName("Separation");
   public static final PdfName SetOCGState = new PdfName("SetOCGState");
+  public static final PdfName SHAccepted = new PdfName("SHAccepted");
   public static final PdfName Shading = new PdfName("Shading");
+  public static final PdfName SHInitialHere = new PdfName("SHInitialHere");
+  public static final PdfName SHSignHere = new PdfName("SHSignHere");
+  public static final PdfName SHWitness = new PdfName("SHWitness");
   public static final PdfName Sig = new PdfName("Sig");
   public static final PdfName SinglePage = new PdfName("SinglePage");
   public static final PdfName Size = new PdfName("Size");
@@ -471,6 +491,7 @@ public final class PdfName
   public static final PdfName StemV = new PdfName("StemV");
   public static final PdfName StrikeOut = new PdfName("StrikeOut");
   public static final PdfName StructParent = new PdfName("StructParent");
+  public static final PdfName Subj = new PdfName("Subj");
   public static final PdfName Subject = new PdfName("Subject");
   public static final PdfName SubmitForm = new PdfName("SubmitForm");
   public static final PdfName Subtype = new PdfName("Subtype");

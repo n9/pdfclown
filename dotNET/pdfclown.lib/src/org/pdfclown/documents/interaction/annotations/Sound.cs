@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,7 +40,7 @@ namespace org.pdfclown.documents.interaction.annotations
   */
   [PDF(VersionEnum.PDF12)]
   public sealed class Sound
-    : Annotation
+    : Markup
   {
     #region types
     /**
@@ -61,6 +61,8 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region static
     #region fields
+    private static readonly IconTypeEnum DefaultIconType = IconTypeEnum.Speaker;
+
     private static readonly Dictionary<IconTypeEnum,PdfName> IconTypeEnumCodes;
     #endregion
 
@@ -95,7 +97,7 @@ namespace org.pdfclown.documents.interaction.annotations
         if(iconType.Value.Equals(value))
           return iconType.Key;
       }
-      return IconTypeEnum.Speaker;
+      return DefaultIconType;
     }
     #endregion
     #endregion
@@ -120,17 +122,6 @@ namespace org.pdfclown.documents.interaction.annotations
     #region interface
     #region public
     /**
-      <summary>Gets/Sets the icon to be used in displaying the annotation.</summary>
-    */
-    public IconTypeEnum IconType
-    {
-      get
-      {return ToIconTypeEnum((PdfName)BaseDataObject[PdfName.Name]);}
-      set
-      {BaseDataObject[PdfName.Name] = ToCode(value);}
-    }
-
-    /**
       <summary>Gets/Sets the sound to be played.</summary>
     */
     public multimedia::Sound Content
@@ -148,6 +139,26 @@ namespace org.pdfclown.documents.interaction.annotations
 
         BaseDataObject[PdfName.Sound] = value.BaseObject;
       }
+    }
+
+    /**
+      <summary>Gets/Sets the icon to be used in displaying the annotation.</summary>
+    */
+    public IconTypeEnum IconType
+    {
+      get
+      {return ToIconTypeEnum((PdfName)BaseDataObject[PdfName.Name]);}
+      set
+      {BaseDataObject[PdfName.Name] = value != DefaultIconType ? ToCode(value) : null;}
+    }
+
+    /**
+      <summary>Popups not supported.</summary>
+    */
+    public override Popup Popup
+    {
+      set
+      {throw new NotSupportedException();}
     }
     #endregion
     #endregion

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -131,7 +131,10 @@ namespace org.pdfclown.objects
       PdfStream obj,
       object data
       )
-    {return obj;}
+    {
+      obj.header.Accept(this, data);
+      return obj;
+    }
 
     public virtual PdfObject Visit(
       PdfString obj,

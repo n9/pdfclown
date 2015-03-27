@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -109,12 +109,8 @@ namespace org.pdfclown.documents.interaction.forms.styles
         }
 
         Appearance appearance = widget.Appearance;
-        if(appearance == null)
-        {widget.Appearance = appearance = new Appearance(document);}
-
-        SizeF size = widget.Box.Size;
-
         AppearanceStates normalAppearance = appearance.Normal;
+        SizeF size = widget.Box.Size;
         FormXObject onState = new FormXObject(document, size);
         normalAppearance[PdfName.Yes] = onState;
 
@@ -219,11 +215,8 @@ namespace org.pdfclown.documents.interaction.forms.styles
         }
 
         Appearance appearance = widget.Appearance;
-        if(appearance == null)
-        {widget.Appearance = appearance = new Appearance(document);}
-
         AppearanceStates normalAppearance = appearance.Normal;
-        FormXObject onState = normalAppearance[new PdfName(((DualWidget)widget).WidgetName)];
+        FormXObject onState = normalAppearance[new PdfName(widget.Value)];
 
   //TODO:verify!!!
   //   appearance.getRollover().put(new PdfName(...),onState);
@@ -295,9 +288,6 @@ namespace org.pdfclown.documents.interaction.forms.styles
       Widget widget = field.Widgets[0];
 
       Appearance appearance = widget.Appearance;
-      if(appearance == null)
-      {widget.Appearance = appearance = new Appearance(document);}
-
       FormXObject normalAppearanceState;
       {
         SizeF size = widget.Box.Size;
@@ -349,9 +339,6 @@ namespace org.pdfclown.documents.interaction.forms.styles
       Widget widget = field.Widgets[0];
 
       Appearance appearance = widget.Appearance;
-      if(appearance == null)
-      {widget.Appearance = appearance = new Appearance(document);}
-
       widget.BaseDataObject[PdfName.DA] = new PdfString("/Helv " + FontSize + " Tf 0 0 0 rg");
 
       FormXObject normalAppearanceState;
@@ -405,9 +392,6 @@ namespace org.pdfclown.documents.interaction.forms.styles
       Widget widget = field.Widgets[0];
 
       Appearance appearance = widget.Appearance;
-      if(appearance == null)
-      {widget.Appearance = appearance = new Appearance(document);}
-
       widget.BaseDataObject[PdfName.DA] = new PdfString("/Helv " + FontSize + " Tf 0 0 0 rg");
 
       FormXObject normalAppearanceState;
@@ -461,9 +445,6 @@ namespace org.pdfclown.documents.interaction.forms.styles
       Widget widget = field.Widgets[0];
 
       Appearance appearance = widget.Appearance;
-      if(appearance == null)
-      {widget.Appearance = appearance = new Appearance(document);}
-
       {
         PdfDictionary widgetDataObject = widget.BaseDataObject;
         widgetDataObject[PdfName.DA] = new PdfString("/Helv " + FontSize + " Tf 0 0 0 rg");

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -39,7 +39,6 @@ import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.documents.interaction.annotations.Appearance;
 import org.pdfclown.documents.interaction.annotations.AppearanceStates;
-import org.pdfclown.documents.interaction.annotations.DualWidget;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.documents.interaction.forms.CheckBox;
 import org.pdfclown.documents.interaction.forms.ChoiceItem;
@@ -63,7 +62,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 08/23/12
+  @version 0.1.2.1, 03/21/15
 */
 public final class DefaultStyle
   extends FieldStyle
@@ -148,12 +147,8 @@ public final class DefaultStyle
       }
 
       Appearance appearance = widget.getAppearance();
-      if(appearance == null)
-      {widget.setAppearance(appearance = new Appearance(document));}
-
-      Dimension2D size = Dimension.get(widget.getBox());
-
       AppearanceStates normalAppearance = appearance.getNormal();
+      Dimension2D size = Dimension.get(widget.getBox());
       FormXObject onState = new FormXObject(document, size);
       normalAppearance.put(PdfName.Yes,onState);
 
@@ -270,11 +265,8 @@ public final class DefaultStyle
       }
 
       Appearance appearance = widget.getAppearance();
-      if(appearance == null)
-      {widget.setAppearance(appearance = new Appearance(document));}
-
       AppearanceStates normalAppearance = appearance.getNormal();
-      FormXObject onState = normalAppearance.get(new PdfName(((DualWidget)widget).getWidgetName()));
+      FormXObject onState = normalAppearance.get(new PdfName(widget.getValue()));
 
 //TODO:verify!!!
 //   appearance.getRollover().put(new PdfName(...),onState);
@@ -346,9 +338,6 @@ public final class DefaultStyle
     Widget widget = field.getWidgets().get(0);
 
     Appearance appearance = widget.getAppearance();
-    if(appearance == null)
-    {widget.setAppearance(appearance = new Appearance(document));}
-
     FormXObject normalAppearanceState;
     {
       Dimension2D size = Dimension.get(widget.getBox());
@@ -400,9 +389,6 @@ public final class DefaultStyle
     Widget widget = field.getWidgets().get(0);
 
     Appearance appearance = widget.getAppearance();
-    if(appearance == null)
-    {widget.setAppearance(appearance = new Appearance(document));}
-
     widget.getBaseDataObject().put(
       PdfName.DA,
       new PdfString("/Helv " + getFontSize() + " Tf 0 0 0 rg")
@@ -457,11 +443,7 @@ public final class DefaultStyle
   {
     Document document = field.getDocument();
     Widget widget = field.getWidgets().get(0);
-
     Appearance appearance = widget.getAppearance();
-    if(appearance == null)
-    {widget.setAppearance(appearance = new Appearance(document));}
-
     widget.getBaseDataObject().put(
       PdfName.DA,
       new PdfString("/Helv " + getFontSize() + " Tf 0 0 0 rg")
@@ -518,9 +500,6 @@ public final class DefaultStyle
     Widget widget = field.getWidgets().get(0);
 
     Appearance appearance = widget.getAppearance();
-    if(appearance == null)
-    {widget.setAppearance(appearance = new Appearance(document));}
-
     {
       PdfDictionary widgetDataObject = widget.getBaseDataObject();
       widgetDataObject.put(

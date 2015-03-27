@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,7 +45,7 @@ namespace org.pdfclown.documents.interaction.annotations
   */
   [PDF(VersionEnum.PDF13)]
   public sealed class TextMarkup
-    : Annotation
+    : Markup
   {
     #region types
     /**
@@ -139,33 +139,33 @@ namespace org.pdfclown.documents.interaction.annotations
       <summary>Creates a new text markup on the specified page, making it printable by default.
       </summary>
       <param name="page">Page to annotate.</param>
-      <param name="text">Annotation text.</param>
-      <param name="markupType">Markup type.</param>
       <param name="markupBox">Quadrilateral encompassing a word or group of contiguous words in the
       text underlying the annotation.</param>
+      <param name="text">Annotation text.</param>
+      <param name="markupType">Markup type.</param>
     */
     public TextMarkup(
       Page page,
+      Quad markupBox,
       string text,
-      MarkupTypeEnum markupType,
-      Quad markupBox
-      ) : this(page, text, markupType, new List<Quad>(){markupBox})
+      MarkupTypeEnum markupType
+      ) : this(page, new List<Quad>(){markupBox}, text, markupType)
     {}
 
     /**
       <summary>Creates a new text markup on the specified page, making it printable by default.
       </summary>
       <param name="page">Page to annotate.</param>
-      <param name="text">Annotation text.</param>
-      <param name="markupType">Markup type.</param>
       <param name="markupBoxes">Quadrilaterals encompassing a word or group of contiguous words in
       the text underlying the annotation.</param>
+      <param name="text">Annotation text.</param>
+      <param name="markupType">Markup type.</param>
     */
     public TextMarkup(
       Page page,
+      IList<Quad> markupBoxes,
       string text,
-      MarkupTypeEnum markupType,
-      IList<Quad> markupBoxes
+      MarkupTypeEnum markupType
       ) : base(
         page,
         ToCode(markupType),
@@ -186,6 +186,16 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region interface
     #region public
+    public override DeviceColor Color
+    {
+      set
+      {
+        base.Color = value;
+        if(Appearance.Normal[null] != null)
+        {RefreshAppearance();}
+      }
+    }
+
     /**
       <summary>Gets/Sets the quadrilaterals encompassing a word or group of contiguous words in the
       text underlying the annotation.</summary>
@@ -293,7 +303,6 @@ namespace org.pdfclown.documents.interaction.annotations
             Color = new DeviceRGBColor(0, 0, 0);
             break;
         }
-        RefreshAppearance();
       }
     }
     #endregion
@@ -379,7 +388,7 @@ namespace org.pdfclown.documents.interaction.annotations
               {
                 PointF[] points = markupBox.Points;
                 float markupBoxHeight = points[3].Y - points[0].Y;
-                float lineWidth = markupBoxHeight * .02f;
+                float lineWidth = markupBoxHeight * .05f;
                 float step = markupBoxHeight * .125f;
                 float boxXOffset = points[3].X;
                 float boxYOffset = points[3].Y + yOffset - lineWidth;
@@ -408,10 +417,10 @@ namespace org.pdfclown.documents.interaction.annotations
               switch(markupType)
               {
                 case MarkupTypeEnum.StrikeOut:
-                  lineYRatio = .575f;
+                  lineYRatio = .5f;
                   break;
                 case MarkupTypeEnum.Underline:
-                  lineYRatio = .85f;
+                  lineYRatio = .9f;
                   break;
                 default:
                   throw new NotImplementedException();

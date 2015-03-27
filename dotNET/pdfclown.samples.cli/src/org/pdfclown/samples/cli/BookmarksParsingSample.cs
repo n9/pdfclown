@@ -79,19 +79,19 @@ namespace org.pdfclown.samples.cli
         {
           FileSpecification destinationFile = (FileSpecification)action.Get("DestinationFile");
           if(destinationFile != null)
-          {Console.WriteLine("    Filename: " + destinationFile.Path);}
+          {Console.WriteLine("      Filename: " + destinationFile.Path);}
 
           if(action is actions::GoToEmbedded)
           {
             actions::GoToEmbedded.PathElement target = ((actions::GoToEmbedded)action).DestinationPath;
-            Console.WriteLine("    EmbeddedFilename: " + target.EmbeddedFileName + " Relation: " + target.Relation);
+            Console.WriteLine("      EmbeddedFilename: " + target.EmbeddedFileName + " Relation: " + target.Relation);
           }
         }
-        Console.Write("    ");
+        Console.Write("      ");
         PrintDestination((Destination)action.Get("Destination"));
       }
       else if(action is actions::GoToURI)
-      {Console.WriteLine("    URI: " + ((actions::GoToURI)action).URI);}
+      {Console.WriteLine("      URI: " + ((actions::GoToURI)action).URI);}
     }
 
     private void PrintDestination(
@@ -99,7 +99,7 @@ namespace org.pdfclown.samples.cli
       )
     {
       Console.WriteLine(destination.GetType().Name + " " + destination.BaseObject);
-      Console.Write("    Page ");
+      Console.Write("        Page ");
       object pageRef = destination.Page;
       if(pageRef is Page)
       {
@@ -111,11 +111,11 @@ namespace org.pdfclown.samples.cli
 
       object location = destination.Location;
       if(location != null)
-      {Console.WriteLine("    Location {0}", location);}
+      {Console.WriteLine("        Location {0}", location);}
 
       double? zoom = destination.Zoom;
       if(zoom.HasValue)
-      {Console.WriteLine("    Zoom {0}", zoom.Value);}
+      {Console.WriteLine("        Zoom {0}", zoom.Value);}
     }
   }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -39,7 +39,7 @@ namespace org.pdfclown.documents.interaction.annotations
   */
   [PDF(VersionEnum.PDF15)]
   public sealed class Caret
-    : Annotation
+    : Markup
   {
     #region types
     /**
@@ -48,18 +48,20 @@ namespace org.pdfclown.documents.interaction.annotations
     public enum SymbolTypeEnum
     {
       /**
-        <summary>New paragraph.</summary>
-      */
-      NewParagraph,
-      /**
         <summary>None.</summary>
       */
-      None
+      None,
+      /**
+        <summary>New paragraph.</summary>
+      */
+      NewParagraph
     };
     #endregion
 
     #region static
     #region fields
+    private static readonly SymbolTypeEnum DefaultSymbolType = SymbolTypeEnum.None;
+
     private static readonly Dictionary<SymbolTypeEnum,PdfName> SymbolTypeEnumCodes;
     #endregion
 
@@ -94,7 +96,7 @@ namespace org.pdfclown.documents.interaction.annotations
         if(symbolType.Value.Equals(value))
           return symbolType.Key;
       }
-      return SymbolTypeEnum.None;
+      return DefaultSymbolType;
     }
     #endregion
     #endregion
@@ -125,7 +127,7 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {return ToSymbolTypeEnum((PdfName)BaseDataObject[PdfName.Sy]);}
       set
-      {BaseDataObject[PdfName.Sy] = ToCode(value);}
+      {BaseDataObject[PdfName.Sy] = value != DefaultSymbolType ? ToCode(value) : null;}
     }
     #endregion
     #endregion

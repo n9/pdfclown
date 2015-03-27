@@ -985,7 +985,7 @@ namespace org.pdfclown.documents.contents.composition
           for(int index = 0, length = textLines.Length; index < length; index++)
           {
             string textLine = textLines[index];
-            double width = font.GetKernedWidth(textLine, fontSize);
+            double width = font.GetKernedWidth(textLine, fontSize) * state.Scale;
             if(width > maxLineWidth)
             {maxLineWidth = width;}
 

@@ -32,7 +32,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 11/30/12
+  @version 0.1.2.1, 03/21/15
 */
 public class LinkCreationSample
   extends Sample
@@ -60,25 +60,15 @@ public class LinkCreationSample
     Page page = new Page(document);
     pages.add(page);
 
-    StandardType1Font font = null;
-    try
-    {
-      font = new StandardType1Font(
-        document,
-        StandardType1Font.FamilyEnum.Courier,
-        true,
-        false
-        );
-    }
-    catch(Exception e)
-    {}
-
     PrimitiveComposer composer = new PrimitiveComposer(page);
     BlockComposer blockComposer = new BlockComposer(composer);
+
+    StandardType1Font font = new StandardType1Font(document, StandardType1Font.FamilyEnum.Courier, true, false);
 
     /*
       2.1. Goto-URI link.
     */
+    try
     {
       blockComposer.begin(new Rectangle2D.Double(30,100,200,50),XAlignmentEnum.Left,YAlignmentEnum.Middle);
       composer.setFont(font,12);
@@ -89,32 +79,21 @@ public class LinkCreationSample
       blockComposer.showText("\n\nClick on the box to go to the project's SourceForge.net repository.");
       blockComposer.end();
 
-      try
-      {
-        /*
-          NOTE: This statement instructs the PDF viewer to navigate to the given URI when the link is clicked.
-        */
-        Link link = new Link(
-          page,
-          new Rectangle(240,100,100,50),
-          "Link annotation",
-          new GoToURI(
-            document,
-            new URI("http://www.sourceforge.net/projects/clown")
-            )
-          );
-        link.setBorder(
-          new Border(
-            document,
-            3,
-            Border.StyleEnum.Beveled,
-            null
-            )
-          );
-      }
-      catch(Exception exception)
-      {throw new RuntimeException(exception);}
+      /*
+        NOTE: This statement instructs the PDF viewer to navigate to the given URI when the link is clicked.
+      */
+      new Link(
+        page,
+        new Rectangle(240,100,100,50),
+        "Link annotation",
+        new GoToURI(
+          document,
+          new URI("http://www.sourceforge.net/projects/clown")
+          )
+        ).withBorder(new Border(3, Border.StyleEnum.Beveled));
     }
+    catch(Exception exception)
+    {throw new RuntimeException(exception);}
 
     /*
       2.2. Embedded-goto link.
@@ -131,7 +110,7 @@ public class LinkCreationSample
       int fileAttachmentPageIndex = page.getIndex();
       String fileAttachmentName = "attachedSamplePDF";
       String fileName = new java.io.File(filePath).getName();
-      FileAttachment attachment = new FileAttachment(
+      new FileAttachment(
         page,
         new Rectangle(0, -20, 10, 10),
         "File attachment annotation",
@@ -142,9 +121,8 @@ public class LinkCreationSample
             ),
           fileName
           )
-        );
-      attachment.setName(fileAttachmentName);
-      attachment.setIconType(FileAttachment.IconTypeEnum.PaperClip);
+        ).withName(fileAttachmentName)
+         .withIconType(FileAttachment.IconTypeEnum.PaperClip);
 
       blockComposer.begin(new Rectangle2D.Double(30,170,200,50),XAlignmentEnum.Left,YAlignmentEnum.Middle);
       composer.setFont(font,12);
@@ -159,7 +137,7 @@ public class LinkCreationSample
         NOTE: This statement instructs the PDF viewer to navigate to the page 2 of a PDF file
         attached inside the current document as described by the FileAttachment annotation on page 1 of the current document.
       */
-      Link link = new Link(
+      new Link(
         page,
         new Rectangle(240,170,100,50),
         "Link annotation",
@@ -179,15 +157,7 @@ public class LinkCreationSample
             null
             ) // The destination must be within the target document.
           )
-        );
-      link.setBorder(
-        new Border(
-          document,
-          1,
-          Border.StyleEnum.Dashed,
-          new LineDash(new double[]{8,5,2,5})
-          )
-        );
+        ).withBorder(new Border(1, new LineDash(new double[]{8, 5, 2, 5})));
     }
 
     /*
@@ -232,8 +202,8 @@ public class LinkCreationSample
           );
         composer.end();
       }
-      catch(Exception e)
-      {}
+      catch(Exception exception)
+      {throw new RuntimeException(exception);}
     }
 
     composer.flush();

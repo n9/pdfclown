@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,7 +47,7 @@ import org.pdfclown.util.MapEntry;
   Document information [PDF:1.6:10.2.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF10)
 public final class Information
@@ -167,10 +167,7 @@ public final class Information
   @Override
   public void clear(
     )
-  {
-    getBaseDataObject().clear();
-    setModificationDate(new Date());
-  }
+  {getBaseDataObject().clear();}
 
   @Override
   public boolean containsKey(
@@ -222,10 +219,7 @@ public final class Information
     PdfName key,
     Object value
     )
-  {
-    onChange(key);
-    return PdfSimpleObject.getValue(getBaseDataObject().put(key, PdfSimpleObject.get(value)));
-  }
+  {return PdfSimpleObject.getValue(getBaseDataObject().put(key, PdfSimpleObject.get(value)));}
 
   @Override
   public void putAll(
@@ -240,10 +234,7 @@ public final class Information
   public Object remove(
     Object key
     )
-  {
-    onChange((PdfName)key);
-    return PdfSimpleObject.getValue(getBaseDataObject().remove(key));
-  }
+  {return PdfSimpleObject.getValue(getBaseDataObject().remove(key));}
 
   @Override
   public int size(
@@ -261,17 +252,6 @@ public final class Information
   }
   // </Map>
   // </public>
-
-  // <private>
-  //TODO: Listen to baseDataObject's onChange notification?
-  private void onChange(
-    PdfName key
-    )
-  {
-    if(!getBaseDataObject().isUpdated() && !PdfName.ModDate.equals(key))
-    {setModificationDate(new Date());}
-  }
-  // </private>
   // </interface>
   // </class>
 }

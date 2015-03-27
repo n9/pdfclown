@@ -34,6 +34,20 @@ namespace org.pdfclown.util.math.geom
   */
   public class GeomUtils
   {
+    public static RectangleF Align(
+      RectangleF rectangle,
+      PointF anchor,
+      Point alignment
+      )
+    {
+      return new RectangleF(
+        anchor.X - rectangle.Width * (1 - alignment.X.CompareTo(0)) / 2,
+        anchor.Y - rectangle.Height * (1 - alignment.Y.CompareTo(0)) / 2,
+        rectangle.Width,
+        rectangle.Height
+        );
+    }
+
     /**
       <summary>Gets the size scaled to the specified limit.</summary>
       <remarks>In particular, the limit matches the largest dimension and proportionally scales the

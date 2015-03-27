@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
+using org.pdfclown.documents.contents.colorSpaces;
 using org.pdfclown.objects;
 
 using System;
@@ -43,6 +44,10 @@ namespace org.pdfclown.documents.interaction.annotations
     : Annotation
   {
     #region dynamic
+    #region fields
+    private Markup markup;
+    #endregion
+
     #region constructors
     public Popup(
       Page page,
@@ -59,6 +64,19 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region interface
     #region public
+    public override DeviceColor Color
+    {
+      get
+      {return Markup != null ? markup.Color : base.Color;}
+      set
+      {
+        if(Markup != null)
+        {markup.Color = value;}
+        else
+        {base.Color = value;}
+      }
+    }
+
     /**
       <summary>Gets/Sets whether the annotation should initially be displayed open.</summary>
     */
@@ -76,14 +94,49 @@ namespace org.pdfclown.documents.interaction.annotations
     }
 
     /**
-      <summary>Gets/Sets the parent annotation.</summary>
+      <summary>Gets the markup associated with this annotation.</summary>
     */
-    public Annotation Parent
+    public Markup Markup
     {
       get
-      {return Annotation.Wrap(BaseDataObject[PdfName.Parent]);}
+      {return markup != null ? markup : (markup = (Markup)Annotation.Wrap(BaseDataObject[PdfName.Parent]));}
+      internal set
+      {
+        PdfDictionary baseDataObject = BaseDataObject;
+        baseDataObject[PdfName.Parent] = value.BaseObject;
+        /*
+          NOTE: The markup annotation's properties override those of this pop-up annotation.
+        */
+        baseDataObject.Remove(PdfName.Contents);
+        baseDataObject.Remove(PdfName.M);
+        baseDataObject.Remove(PdfName.C);
+      }
+    }
+
+    public override DateTime? ModificationDate
+    {
+      get
+      {return Markup != null ? markup.ModificationDate : base.ModificationDate;}
       set
-      {BaseDataObject[PdfName.Parent] = value.BaseObject;}
+      {
+        if(Markup != null)
+        {markup.ModificationDate = value;}
+        else
+        {base.ModificationDate = value;}
+      }
+    }
+
+    public override string Text
+    {
+      get
+      {return Markup != null ? markup.Text : base.Text;}
+      set
+      {
+        if(Markup != null)
+        {markup.Text = value;}
+        else
+        {base.Text = value;}
+      }
     }
     #endregion
     #endregion

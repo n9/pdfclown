@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -48,7 +48,7 @@ import org.pdfclown.objects.PdfTextString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF12)
 public final class AppearanceCharacteristics
@@ -61,9 +61,6 @@ public final class AppearanceCharacteristics
   */
   public enum CaptionPositionEnum
   {
-    // <class>
-    // <static>
-    // <fields>
     /**
       Caption only (no icon).
     */
@@ -92,10 +89,7 @@ public final class AppearanceCharacteristics
       Caption overlaid directly on the icon.
     */
     Overlaid(6);
-    // </fields>
 
-    // <interface>
-    // <public>
     /**
       Gets the caption position corresponding to the given value.
     */
@@ -110,31 +104,17 @@ public final class AppearanceCharacteristics
       }
       return null;
     }
-    // </public>
-    // </interface>
-    // </static>
 
-    // <dynamic>
-    // <fields>
     private final int code;
-    // </fields>
 
-    // <constructors>
     private CaptionPositionEnum(
       int code
       )
     {this.code = code;}
-    // </constructors>
 
-    // <interface>
-    // <public>
     public int getCode(
       )
     {return code;}
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
   }
 
   /**
@@ -143,16 +123,11 @@ public final class AppearanceCharacteristics
   public static class IconFitObject
     extends PdfObjectWrapper<PdfDictionary>
   {
-    // <class>
-    // <classes>
     /**
       Scaling mode [PDF:1.6:8.6.6].
     */
     public enum ScaleModeEnum
     {
-      // <class>
-      // <static>
-      // <fields>
       /**
         Always scale.
       */
@@ -169,10 +144,7 @@ public final class AppearanceCharacteristics
         Never scale.
       */
       Never(PdfName.N);
-      // </fields>
 
-      // <interface>
-      // <public>
       /**
         Gets the scaling mode corresponding to the given value.
       */
@@ -187,31 +159,17 @@ public final class AppearanceCharacteristics
         }
         return null;
       }
-      // </public>
-      // </interface>
-      // </static>
 
-      // <dynamic>
-      // <fields>
       private final PdfName code;
-      // </fields>
 
-      // <constructors>
       private ScaleModeEnum(
         PdfName code
         )
       {this.code = code;}
-      // </constructors>
 
-      // <interface>
-      // <public>
       public PdfName getCode(
         )
       {return code;}
-      // </public>
-      // </interface>
-      // </dynamic>
-      // </class>
     }
 
     /**
@@ -219,9 +177,6 @@ public final class AppearanceCharacteristics
     */
     public enum ScaleTypeEnum
     {
-      // <class>
-      // <static>
-      // <fields>
       /**
         Scale the icon to fill the annotation box exactly,
         without regard to its original aspect ratio.
@@ -232,10 +187,7 @@ public final class AppearanceCharacteristics
         while maintaining the icon's original aspect ratio.
       */
       Proportional(PdfName.P);
-      // </fields>
 
-      // <interface>
-      // <public>
       /**
         Gets the scaling type corresponding to the given value.
       */
@@ -250,36 +202,19 @@ public final class AppearanceCharacteristics
         }
         return null;
       }
-      // </public>
-      // </interface>
-      // </static>
 
-      // <dynamic>
-      // <fields>
       private final PdfName code;
-      // </fields>
 
-      // <constructors>
       private ScaleTypeEnum(
         PdfName code
         )
       {this.code = code;}
-      // </constructors>
 
-      // <interface>
-      // <public>
       public PdfName getCode(
         )
       {return code;}
-      // </public>
-      // </interface>
-      // </dynamic>
-      // </class>
     }
-    // </classes>
 
-    // <dynamic>
-    // <constructors>
     public IconFitObject(
       Document context
       )
@@ -289,10 +224,7 @@ public final class AppearanceCharacteristics
       PdfDirectObject baseObject
       )
     {super(baseObject);}
-    // </constructors>
 
-    // <interface>
-    // <public>
     @Override
     public IconFitObject clone(
       Document context
@@ -305,9 +237,6 @@ public final class AppearanceCharacteristics
     public ScaleModeEnum getScaleMode(
       )
     {
-      /*
-        NOTE: 'SW' entry may be undefined.
-      */
       PdfName scaleModeObject = (PdfName)getBaseDataObject().get(PdfName.SW);
       if(scaleModeObject == null)
         return ScaleModeEnum.Always;
@@ -321,9 +250,6 @@ public final class AppearanceCharacteristics
     public ScaleTypeEnum getScaleType(
       )
     {
-      /*
-        NOTE: 'S' entry may be undefined.
-      */
       PdfName scaleTypeObject = (PdfName)getBaseDataObject().get(PdfName.S);
       if(scaleTypeObject == null)
         return ScaleTypeEnum.Proportional;
@@ -337,9 +263,6 @@ public final class AppearanceCharacteristics
     public XAlignmentEnum getXAlignment(
       )
     {
-      /*
-        NOTE: 'A' entry may be undefined.
-      */
       PdfArray alignmentObject = (PdfArray)getBaseDataObject().get(PdfName.A);
       if(alignmentObject == null)
         return XAlignmentEnum.Center;
@@ -358,9 +281,6 @@ public final class AppearanceCharacteristics
     public YAlignmentEnum getYAlignment(
       )
     {
-      /*
-        NOTE: 'A' entry may be undefined.
-      */
       PdfArray alignmentObject = (PdfArray)getBaseDataObject().get(PdfName.A);
       if(alignmentObject == null)
         return YAlignmentEnum.Middle;
@@ -424,9 +344,6 @@ public final class AppearanceCharacteristics
       XAlignmentEnum value
       )
     {
-      /*
-        NOTE: 'A' entry may be undefined.
-      */
       PdfArray alignmentObject = (PdfArray)getBaseDataObject().get(PdfName.A);
       if(alignmentObject == null)
       {
@@ -465,9 +382,6 @@ public final class AppearanceCharacteristics
       YAlignmentEnum value
       )
     {
-      /*
-        NOTE: 'A' entry may be undefined.
-      */
       PdfArray alignmentObject = (PdfArray)getBaseDataObject().get(PdfName.A);
       if(alignmentObject == null)
       {
@@ -496,9 +410,6 @@ public final class AppearanceCharacteristics
       }
       alignmentObject.set(1, PdfReal.get(objectValue));
     }
-    // </public>
-    // </interface>
-    // </class>
   }
 
   /**
@@ -506,9 +417,6 @@ public final class AppearanceCharacteristics
   */
   public enum OrientationEnum
   {
-    // <class>
-    // <static>
-    // <fields>
     /**
       Upward.
     */
@@ -525,10 +433,7 @@ public final class AppearanceCharacteristics
       Rightward.
     */
     Right(270);
-    // </fields>
 
-    // <interface>
-    // <public>
     /**
       Gets the orientation corresponding to the given value.
     */
@@ -544,31 +449,17 @@ public final class AppearanceCharacteristics
       }
       return null;
     }
-    // </public>
-    // </interface>
-    // </static>
 
-    // <dynamic>
-    // <fields>
     private final int code;
-    // </fields>
 
-    // <constructors>
     private OrientationEnum(
       int code
       )
     {this.code = code;}
-    // </constructors>
 
-    // <interface>
-    // <public>
     public int getCode(
       )
     {return code;}
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
   }
   // </classes>
 

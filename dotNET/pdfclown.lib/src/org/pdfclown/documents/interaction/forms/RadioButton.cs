@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,10 +44,13 @@ namespace org.pdfclown.documents.interaction.forms
     #region constructors
     /**
       <summary>Creates a new radiobutton within the given document context.</summary>
+      <param name="name"></param>
+      <param name="widgets">Dual-state widgets representing the available options.</param>
+      <param name="value"></param>
     */
     public RadioButton(
       string name,
-      DualWidget[] widgets,
+      Widget[] widgets,
       string value
       ) : base(name, widgets[0])
     {
@@ -94,16 +97,16 @@ namespace org.pdfclown.documents.interaction.forms
           of whichever child field is currently in the on state; the default value for this entry is
           Off.
         */
-        PdfName selectedWidgetName = new PdfName((string)value);
+        PdfName selectedValue = new PdfName((string)value);
         bool selected = false;
         // Selecting the current appearance state for each widget...
         foreach(Widget widget in Widgets)
         {
           PdfName currentState;
-          if(((DualWidget)widget).WidgetName.Equals(value)) // Selected state.
+          if(widget.Value.Equals(value)) // Selected state.
           {
             selected = true;
-            currentState = selectedWidgetName;
+            currentState = selectedValue;
           }
           else // Unselected state.
           {currentState = PdfName.Off;}
@@ -111,7 +114,7 @@ namespace org.pdfclown.documents.interaction.forms
           widget.BaseDataObject[PdfName.AS] = currentState;
         }
         // Select the current widget!
-        BaseDataObject[PdfName.V] = (selected ? selectedWidgetName : null);
+        BaseDataObject[PdfName.V] = (selected ? selectedValue : null);
       }
     }
     #endregion

@@ -31,8 +31,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Date;
 import java.util.Random;
 
+import org.pdfclown.PDF;
 import org.pdfclown.Version;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.Buffer;
@@ -41,7 +43,8 @@ import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.bytes.OutputStream;
 import org.pdfclown.documents.Document;
-import org.pdfclown.documents.Document.Configuration.XRefModeEnum;
+import org.pdfclown.documents.interchange.metadata.Information;
+import org.pdfclown.files.File.Configuration.XRefModeEnum;
 import org.pdfclown.objects.Cloner;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
@@ -60,7 +63,7 @@ import org.pdfclown.util.StringUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2.1, 03/04/15
+  @version 0.1.2.1, 03/21/15
 */
 public final class File
   implements Closeable
@@ -75,7 +78,25 @@ public final class File
   */
   public static final class Configuration
   {
+    /**
+      Cross-reference mode [PDF:1.6:3.4].
+    */
+    public enum XRefModeEnum
+    {
+      /**
+        Cross-reference table [PDF:1.6:3.4.3].
+      */
+      @PDF(VersionEnum.PDF10)
+      Plain,
+      /**
+        Cross-reference stream [PDF:1.6:3.4.7].
+      */
+      @PDF(VersionEnum.PDF15)
+      Compressed
+    }
+
     private DecimalFormat realFormat;
+    private XRefModeEnum xrefMode = XRefModeEnum.Plain;
 
     private final File file;
 
@@ -101,6 +122,13 @@ public final class File
       {setRealFormat(5);}
       return realFormat;
     }
+    
+    /**
+      Gets the document's cross-reference mode.
+    */
+    public XRefModeEnum getXrefMode(
+      )
+    {return xrefMode;}
 
     /**
       @see #getRealFormat()
@@ -122,6 +150,14 @@ public final class File
       symbols.setDecimalSeparator('.');
       setRealFormat(new DecimalFormat("0." + StringUtils.repeat("#", decimalPlacesCount), symbols));
     }
+    
+    /**
+      @see #getXrefMode()
+    */
+    public void setXrefMode(
+      XRefModeEnum value
+      )
+    {file.getDocument().checkCompatibility(xrefMode = value);}
   }
 
   private static final class ImplicitContainer
@@ -178,6 +214,11 @@ public final class File
   }
 
   public File(
+    java.io.File file
+    ) throws java.io.FileNotFoundException
+  {this(file.getAbsolutePath());}
+  
+  public File(
     byte[] data
     )
   {this(new Buffer(data));}
@@ -201,7 +242,7 @@ public final class File
 
     indirectObjects = new IndirectObjects(this, info.getXrefEntries());
     document = new Document(trailer.get(PdfName.Root));
-    document.getConfiguration().setXrefMode(PdfName.XRef.equals(trailer.get(PdfName.Type)) ? XRefModeEnum.Compressed : XRefModeEnum.Plain);
+    getConfiguration().setXrefMode(PdfName.XRef.equals(trailer.get(PdfName.Type)) ? XRefModeEnum.Compressed : XRefModeEnum.Plain);
   }
   // </constructors>
 
@@ -305,7 +346,8 @@ public final class File
   /**
     Serializes the file to the current file-system path.
 
-    @param mode Serialization mode.
+    @param mode
+      Serialization mode.
   */
   public void save(
     SerializationModeEnum mode
@@ -325,25 +367,24 @@ public final class File
   /**
     Serializes the file to the specified file-system path.
 
-    @param path Target path.
-    @param mode Serialization mode.
+    @param path
+      Target path.
+    @param mode
+      Serialization mode.
   */
   public void save(
     String path,
     SerializationModeEnum mode
     ) throws IOException
-  {
-    save(
-      new java.io.File(path),
-      mode
-      );
-  }
+  {save(new java.io.File(path), mode);}
 
   /**
     Serializes the file to the specified file-system file.
 
-    @param file Target file.
-    @param mode Serialization mode.
+    @param file
+      Target file.
+    @param mode
+      Serialization mode.
   */
   public void save(
     java.io.File file,
@@ -351,52 +392,64 @@ public final class File
     ) throws IOException
   {
     OutputStream outputStream;
-    java.io.BufferedOutputStream baseOutputStream;
     try
     {
       file.createNewFile();
-      baseOutputStream = new java.io.BufferedOutputStream(
-        new java.io.FileOutputStream(file)
-        );
-      outputStream = new OutputStream(baseOutputStream);
+      outputStream = new OutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(file)));
     }
     catch(Exception e)
-    {throw new IOException(file.getPath() + " file couldn't be created.",e);}
+    {throw new IOException(file.getPath() + " file creation failed.", e);}
     try
-    {
-      save(
-        outputStream,
-        mode
-        );
-      baseOutputStream.flush();
-      baseOutputStream.close();
-    }
+    {save(outputStream, mode);}
     catch(Exception e)
-    {throw new IOException(file.getPath() + " file writing has failed.",e);}
+    {throw new IOException(file.getPath() + " file serialization failed.", e);}
+    finally
+    {try{outputStream.close();}catch(IOException e){/* NOOP */}}
   }
 
   /**
     Serializes the file to the specified stream.
     <p>It's caller responsibility to close the stream after this method ends.</p>
+  
+    @param stream
+      Target stream.
+    @param mode
+      Serialization mode.
+  */
+  public void save(
+    java.io.OutputStream stream,
+    SerializationModeEnum mode
+    )
+  {save(new OutputStream(stream), mode);}
 
-    @param stream Target stream.
-    @param mode Serialization mode.
+  /**
+    Serializes the file to the specified stream.
+    <p>It's caller responsibility to close the stream after this method ends.</p>
+
+    @param stream
+      Target stream.
+    @param mode
+      Serialization mode.
   */
   public void save(
     IOutputStream stream,
     SerializationModeEnum mode
     )
   {
+    Information information = getDocument().getInformation();
     if(getReader() == null)
     {
+      information.setCreationDate(new Date());
       try
       {
         Package package_ = getClass().getPackage();
-        getDocument().getInformation().setProducer(package_.getSpecificationTitle() + " " + package_.getSpecificationVersion());
+        information.setProducer(package_.getSpecificationTitle() + " " + package_.getSpecificationVersion());
       }
       catch(Exception e)
       {/* NOOP */}
     }
+    else
+    {information.setModificationDate(new Date());}
 
     Writer writer = Writer.get(this, stream);
     writer.write(mode);

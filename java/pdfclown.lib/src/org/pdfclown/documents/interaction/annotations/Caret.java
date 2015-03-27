@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,11 +40,11 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF15)
 public final class Caret
-  extends Annotation
+  extends Markup<Caret>
 {
   // <class>
   // <classes>
@@ -53,21 +53,15 @@ public final class Caret
   */
   public enum SymbolTypeEnum
   {
-    // <class>
-    // <static>
-    // <fields>
-    /**
-      New paragraph.
-    */
-    NewParagraph(PdfName.P),
     /**
       None.
     */
-    None(PdfName.None);
-    // </fields>
+    None(PdfName.None),
+    /**
+      New paragraph.
+    */
+    NewParagraph(PdfName.P);
 
-    // <interface>
-    // <public>
     /**
       Gets the symbol type corresponding to the given value.
     */
@@ -82,34 +76,26 @@ public final class Caret
       }
       return null;
     }
-    // </public>
-    // </interface>
-    // </static>
 
-    // <dynamic>
-    // <fields>
     private final PdfName code;
-    // </fields>
 
-    // <constructors>
     private SymbolTypeEnum(
       PdfName code
       )
     {this.code = code;}
-    // </constructors>
 
-    // <interface>
-    // <public>
     public PdfName getCode(
       )
     {return code;}
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
   }
   // </classes>
 
+  // <static>
+  // <fields>
+  private static final SymbolTypeEnum DefaultSymbolType = SymbolTypeEnum.None;
+  // </fields>
+  // </static>
+  
   // <dynamic>
   // <constructors>
   public Caret(
@@ -139,14 +125,8 @@ public final class Caret
   public SymbolTypeEnum getSymbolType(
     )
   {
-    /*
-      NOTE: 'Sy' entry may be undefined.
-    */
     PdfName symbolObject = (PdfName)getBaseDataObject().get(PdfName.Sy);
-    if(symbolObject == null)
-      return SymbolTypeEnum.None;
-
-    return SymbolTypeEnum.get(symbolObject);
+    return symbolObject != null ? SymbolTypeEnum.get(symbolObject) : DefaultSymbolType;
   }
 
   /**
@@ -155,7 +135,18 @@ public final class Caret
   public void setSymbolType(
     SymbolTypeEnum value
     )
-  {getBaseDataObject().put(PdfName.Sy, value.getCode());}
+  {getBaseDataObject().put(PdfName.Sy, value != null && value != DefaultSymbolType ? value.getCode() : null);}
+
+  /**
+    @see #setSymbolType(SymbolTypeEnum)
+  */
+  public Caret withSymbolType(
+    SymbolTypeEnum value
+    )
+  {
+    setSymbolType(value);
+    return self();
+  }
   // </public>
   // </interface>
   // </dynamic>

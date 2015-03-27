@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -26,6 +26,8 @@
 using org.pdfclown;
 using org.pdfclown.documents.contents;
 using org.pdfclown.documents.contents.layers;
+using org.pdfclown.documents.contents.xObjects;
+using org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.documents.interaction.forms;
 using org.pdfclown.documents.interaction.navigation.document;
 using org.pdfclown.documents.interchange.metadata;
@@ -34,11 +36,14 @@ using org.pdfclown.files;
 using org.pdfclown.objects;
 using org.pdfclown.tokens;
 using org.pdfclown.util;
+using org.pdfclown.util.io;
 
 using System;
 using System.Collections.Generic;
 using drawing = System.Drawing;
 using System.Drawing.Printing;
+using io = System.IO;
+using System.Text.RegularExpressions;
 
 namespace org.pdfclown.documents
 {
@@ -78,27 +83,12 @@ namespace org.pdfclown.documents
         Strict
       }
 
-      /**
-        <summary>Cross-reference mode [PDF:1.6:3.4].</summary>
-      */
-      public enum XRefModeEnum
-      {
-        /**
-          <summary>Cross-reference table [PDF:1.6:3.4.3].</summary>
-        */
-        [PDF(VersionEnum.PDF10)]
-        Plain,
-        /**
-          <summary>Cross-reference stream [PDF:1.6:3.4.7].</summary>
-        */
-        [PDF(VersionEnum.PDF15)]
-        Compressed
-      }
-
       private CompatibilityModeEnum compatibilityMode = CompatibilityModeEnum.Loose;
-      private XRefModeEnum xrefMode = XRefModeEnum.Plain;
+      private string stampPath;
 
       private Document document;
+
+      private IDictionary<Stamp.StandardTypeEnum,FormXObject> importedStamps;
 
       internal ConfigurationImpl(
         Document document
@@ -126,14 +116,113 @@ namespace org.pdfclown.documents
       }
 
       /**
-        <summary>Gets the document's cross-reference mode.</summary>
+        <summary>Gets the stamp appearance corresponding to the specified stamp type.</summary>
+        <remarks>The stamp appearance is retrieved from the <see cref="StampPath">standard stamps
+        path</see> and embedded in the document.</remarks>
+        <param name="type">Predefined stamp type whose appearance has to be retrieved.</param>
       */
-      public XRefModeEnum XrefMode
+      public FormXObject GetStamp(
+        Stamp.StandardTypeEnum? type
+        )
+      {
+        if(!type.HasValue
+          || stampPath == null)
+          return null;
+
+        FormXObject stamp = null;
+        if(importedStamps != null)
+        {importedStamps.TryGetValue(type.Value, out stamp);}
+        else
+        {importedStamps = new Dictionary<Stamp.StandardTypeEnum,FormXObject>();}
+        if(stamp == null)
+        {
+          if(io::File.GetAttributes(stampPath).HasFlag(io::FileAttributes.Directory)) // Acrobat standard stamps directory.
+          {
+            string stampFileName;
+            switch(type.Value)
+            {
+              case Stamp.StandardTypeEnum.Approved:
+              case Stamp.StandardTypeEnum.AsIs:
+              case Stamp.StandardTypeEnum.Confidential:
+              case Stamp.StandardTypeEnum.Departmental:
+              case Stamp.StandardTypeEnum.Draft:
+              case Stamp.StandardTypeEnum.Experimental:
+              case Stamp.StandardTypeEnum.Expired:
+              case Stamp.StandardTypeEnum.Final:
+              case Stamp.StandardTypeEnum.ForComment:
+              case Stamp.StandardTypeEnum.ForPublicRelease:
+              case Stamp.StandardTypeEnum.NotApproved:
+              case Stamp.StandardTypeEnum.NotForPublicRelease:
+              case Stamp.StandardTypeEnum.Sold:
+              case Stamp.StandardTypeEnum.TopSecret:
+                stampFileName = "Standard.pdf";
+                break;
+              case Stamp.StandardTypeEnum.BusinessApproved:
+              case Stamp.StandardTypeEnum.BusinessConfidential:
+              case Stamp.StandardTypeEnum.BusinessDraft:
+              case Stamp.StandardTypeEnum.BusinessFinal:
+              case Stamp.StandardTypeEnum.BusinessForComment:
+              case Stamp.StandardTypeEnum.BusinessForPublicRelease:
+              case Stamp.StandardTypeEnum.BusinessNotApproved:
+              case Stamp.StandardTypeEnum.BusinessNotForPublicRelease:
+              case Stamp.StandardTypeEnum.BusinessCompleted:
+              case Stamp.StandardTypeEnum.BusinessVoid:
+              case Stamp.StandardTypeEnum.BusinessPreliminaryResults:
+              case Stamp.StandardTypeEnum.BusinessInformationOnly:
+                stampFileName = "StandardBusiness.pdf";
+                break;
+              case Stamp.StandardTypeEnum.Rejected:
+              case Stamp.StandardTypeEnum.Accepted:
+              case Stamp.StandardTypeEnum.InitialHere:
+              case Stamp.StandardTypeEnum.SignHere:
+              case Stamp.StandardTypeEnum.Witness:
+                stampFileName = "SignHere.pdf";
+                break;
+              default:
+                throw new NotSupportedException("Unknown stamp type");
+            }
+            using(var stampFile = new File(io::Path.Combine(stampPath, stampFileName)))
+            {
+              PdfString stampPageKey = new PdfString(type.Value.GetName().StringValue + "=" + String.Join(" ", Regex.Split(type.Value.GetName().StringValue.Substring(2), "(?!^)(?=\\p{Lu})")));
+              Page stampPage = stampFile.Document.ResolveName<Page>(stampPageKey);
+              importedStamps[type.Value] = (stamp = (FormXObject)stampPage.ToXObject(Document));
+              stamp.Box = stampPage.ArtBox.Value;
+            }
+          }
+          else // Standard stamps template (std-stamps.pdf).
+          {
+            using(var stampFile = new File(stampPath))
+            {
+              FormXObject stampXObject = stampFile.Document.Pages[0].Resources.Get<FormXObject>(type.Value.GetName());
+              importedStamps[type.Value] = (stamp = (FormXObject)stampXObject.Clone(Document));
+            }
+          }
+        }
+        return stamp;
+      }
+
+      /**
+        <summary>Gets the path (either Acrobat's standard stamps installation directory or PDF
+        Clown's standard stamps collection (std-stamps.pdf)) where standard stamp templates are
+        located.</summary>
+        <remarks>In order to ensure consistent and predictable rendering across the systems, the
+        <see cref="Stamp.#ctor(Page, RectangleF, string,
+        org.pdfclown.documents.interaction.annotations.Stamp.StandardTypeEnum)">standard stamp annotations
+        </see> require their appearance to be embedded from the corresponding standard stamp files
+        (Standard.pdf, StandardBusiness.pdf, SignHere.pdf, ...) shipped with Acrobat: defining this
+        property activates the automatic embedding of such appearances.</remarks>
+      */
+      public string StampPath
       {
         get
-        {return xrefMode;}
+        {return stampPath;}
         set
-        {document.CheckCompatibility(xrefMode = value);}
+        {
+          if(!IOUtils.Exists(value))
+            throw new ArgumentException(null, new io::FileNotFoundException());
+
+          stampPath = value;
+        }
       }
     }
 
@@ -502,7 +591,7 @@ namespace org.pdfclown.documents
         if(mediaBox == null)
         {
           // Create default media box!
-          mediaBox = new Rectangle(0,0,0,0).BaseDataObject;
+          mediaBox = new org.pdfclown.objects.Rectangle(0,0,0,0).BaseDataObject;
           // Assign the media box to the document!
           ((PdfDictionary)BaseDataObject.Resolve(PdfName.Pages))[PdfName.MediaBox] = mediaBox;
         }
@@ -520,7 +609,7 @@ namespace org.pdfclown.documents
       ) where T : PdfObjectWrapper
     {
       if(namedBaseObject is PdfString) // Named object.
-        return (T)Names.Get(typeof(T), (PdfString)namedBaseObject);
+        return Names.Get<T>((PdfString)namedBaseObject);
       else // Explicit object.
         return Resolve<T>(namedBaseObject);
     }

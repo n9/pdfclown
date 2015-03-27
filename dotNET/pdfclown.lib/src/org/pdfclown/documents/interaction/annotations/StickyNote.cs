@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -34,13 +34,12 @@ using System.Drawing;
 namespace org.pdfclown.documents.interaction.annotations
 {
   /**
-    <summary>Rubber stamp annotation [PDF:1.6:8.4.5].</summary>
-    <remarks>It displays text or graphics intended to look as if they were stamped
-    on the page with a rubber stamp.</remarks>
+    <summary>Text annotation [PDF:1.6:8.4.5].</summary>
+    <remarks>It represents a sticky note attached to a point in the PDF document.</remarks>
   */
-  [PDF(VersionEnum.PDF13)]
-  public sealed class RubberStamp
-    : Annotation
+  [PDF(VersionEnum.PDF10)]
+  public sealed class StickyNote
+    : Markup
   {
     #region types
     /**
@@ -49,87 +48,55 @@ namespace org.pdfclown.documents.interaction.annotations
     public enum IconTypeEnum
     {
       /**
-        <summary>Approved.</summary>
+        <summary>Comment.</summary>
       */
-      Approved,
+      Comment,
       /**
-        <summary>As is.</summary>
+        <summary>Help.</summary>
       */
-      AsIs,
+      Help,
       /**
-        <summary>Confidential.</summary>
+        <summary>Insert.</summary>
       */
-      Confidential,
+      Insert,
       /**
-        <summary>Departmental.</summary>
+        <summary>Key.</summary>
       */
-      Departmental,
+      Key,
       /**
-        <summary>Draft.</summary>
+        <summary>New paragraph.</summary>
       */
-      Draft,
+      NewParagraph,
       /**
-        <summary>Experimental.</summary>
+        <summary>Note.</summary>
       */
-      Experimental,
+      Note,
       /**
-        <summary>Expired.</summary>
+        <summary>Paragraph.</summary>
       */
-      Expired,
-      /**
-        <summary>Final.</summary>
-      */
-      Final,
-      /**
-        <summary>For comment.</summary>
-      */
-      ForComment,
-      /**
-        <summary>For public release.</summary>
-      */
-      ForPublicRelease,
-      /**
-        <summary>Not approved.</summary>
-      */
-      NotApproved,
-      /**
-        <summary>Not for public release.</summary>
-      */
-      NotForPublicRelease,
-      /**
-        <summary>Sold.</summary>
-      */
-      Sold,
-      /**
-        <summary>Top secret.</summary>
-      */
-      TopSecret
+      Paragraph
     };
     #endregion
 
     #region static
     #region fields
+    private static readonly IconTypeEnum DefaultIconType = IconTypeEnum.Note;
+    private static readonly bool DefaultOpen = false;
+
     private static readonly Dictionary<IconTypeEnum,PdfName> IconTypeEnumCodes;
     #endregion
 
     #region constructors
-    static RubberStamp()
+    static StickyNote()
     {
       IconTypeEnumCodes = new Dictionary<IconTypeEnum,PdfName>();
-      IconTypeEnumCodes[IconTypeEnum.Approved] = PdfName.Approved;
-      IconTypeEnumCodes[IconTypeEnum.AsIs] = PdfName.AsIs;
-      IconTypeEnumCodes[IconTypeEnum.Confidential] = PdfName.Confidential;
-      IconTypeEnumCodes[IconTypeEnum.Departmental] = PdfName.Departmental;
-      IconTypeEnumCodes[IconTypeEnum.Draft] = PdfName.Draft;
-      IconTypeEnumCodes[IconTypeEnum.Experimental] = PdfName.Experimental;
-      IconTypeEnumCodes[IconTypeEnum.Expired] = PdfName.Expired;
-      IconTypeEnumCodes[IconTypeEnum.Final] = PdfName.Final;
-      IconTypeEnumCodes[IconTypeEnum.ForComment] = PdfName.ForComment;
-      IconTypeEnumCodes[IconTypeEnum.ForPublicRelease] = PdfName.ForPublicRelease;
-      IconTypeEnumCodes[IconTypeEnum.NotApproved] = PdfName.NotApproved;
-      IconTypeEnumCodes[IconTypeEnum.NotForPublicRelease] = PdfName.NotForPublicRelease;
-      IconTypeEnumCodes[IconTypeEnum.Sold] = PdfName.Sold;
-      IconTypeEnumCodes[IconTypeEnum.TopSecret] = PdfName.TopSecret;
+      IconTypeEnumCodes[IconTypeEnum.Comment] = PdfName.Comment;
+      IconTypeEnumCodes[IconTypeEnum.Help] = PdfName.Help;
+      IconTypeEnumCodes[IconTypeEnum.Insert] = PdfName.Insert;
+      IconTypeEnumCodes[IconTypeEnum.Key] = PdfName.Key;
+      IconTypeEnumCodes[IconTypeEnum.NewParagraph] = PdfName.NewParagraph;
+      IconTypeEnumCodes[IconTypeEnum.Note] = PdfName.Note;
+      IconTypeEnumCodes[IconTypeEnum.Paragraph] = PdfName.Paragraph;
     }
     #endregion
 
@@ -155,7 +122,7 @@ namespace org.pdfclown.documents.interaction.annotations
         if(iconType.Value.Equals(value))
           return iconType.Key;
       }
-      return IconTypeEnum.Draft;
+      return DefaultIconType;
     }
     #endregion
     #endregion
@@ -163,15 +130,19 @@ namespace org.pdfclown.documents.interaction.annotations
 
     #region dynamic
     #region constructors
-    public RubberStamp(
+    public StickyNote(
       Page page,
-      RectangleF box,
-      string text,
-      IconTypeEnum iconType
-      ) : base(page, PdfName.Stamp, box, text)
-    {IconType = iconType;}
+      PointF location,
+      string text
+      ) : base(
+        page,
+        PdfName.Text,
+        new RectangleF(location.X, location.Y, 0, 0),
+        text
+        )
+    {}
 
-    internal RubberStamp(
+    internal StickyNote(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
@@ -187,8 +158,24 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {return ToIconTypeEnum((PdfName)BaseDataObject[PdfName.Name]);}
       set
-      {BaseDataObject[PdfName.Name] = ToCode(value);}
+      {BaseDataObject[PdfName.Name] = (value != DefaultIconType ? ToCode(value) : null);}
     }
+
+    /**
+      <summary>Gets/Sets whether the annotation should initially be displayed open.</summary>
+    */
+    public bool IsOpen
+    {
+      get
+      {
+        PdfBoolean openObject = (PdfBoolean)BaseDataObject[PdfName.Open];
+        return openObject != null ? openObject.BooleanValue : DefaultOpen;
+      }
+      set
+      {BaseDataObject[PdfName.Open] = (value != DefaultOpen ? PdfBoolean.Get(value) : null);}
+    }
+
+  //TODO:State and StateModel!!!
     #endregion
     #endregion
     #endregion

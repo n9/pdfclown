@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -37,7 +37,7 @@ namespace org.pdfclown.documents.interaction.annotations
     <summary>Annotation actions [PDF:1.6:8.5.2].</summary>
   */
   [PDF(VersionEnum.PDF12)]
-  public class AnnotationActions
+  public abstract class AnnotationActions
     : PdfObjectWrapper<PdfDictionary>,
       IDictionary<PdfName,Action>
   {

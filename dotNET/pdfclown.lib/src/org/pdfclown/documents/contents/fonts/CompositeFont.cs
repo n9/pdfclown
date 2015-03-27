@@ -466,20 +466,17 @@ namespace org.pdfclown.documents.contents.fonts
 
         // Ascent.
         fontDescriptor[PdfName.Ascent] = PdfReal.Get(
-          metrics.Ascender == 0
-            ? metrics.STypoAscender * metrics.UnitNorm
-            : metrics.Ascender * metrics.UnitNorm
+          metrics.STypoAscender == 0
+            ? metrics.Ascender * metrics.UnitNorm
+            : (metrics.STypoLineGap == 0 ? metrics.SCapHeight : metrics.STypoAscender) * metrics.UnitNorm
           );
 
         // Descent.
         fontDescriptor[PdfName.Descent] = PdfReal.Get(
-          metrics.Descender == 0
-            ? metrics.STypoDescender * metrics.UnitNorm
-            : metrics.Descender * metrics.UnitNorm
+          metrics.STypoDescender == 0
+            ? metrics.Descender * metrics.UnitNorm
+            : metrics.STypoDescender * metrics.UnitNorm
           );
-
-        // Leading.
-        fontDescriptor[PdfName.Leading] = PdfReal.Get(metrics.STypoLineGap * metrics.UnitNorm);
 
         // CapHeight.
         fontDescriptor[PdfName.CapHeight] = PdfReal.Get(metrics.SCapHeight * metrics.UnitNorm);

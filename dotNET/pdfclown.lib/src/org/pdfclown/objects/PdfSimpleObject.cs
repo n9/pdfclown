@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -64,7 +64,18 @@ namespace org.pdfclown.objects
       else
         throw new NotImplementedException();
     }
-  
+
+    public static double? GetDoubleValue(
+      PdfObject obj
+      )
+    {
+      object value = GetValue(obj);
+      if(value == null || value is Double)
+        return (Double)value;
+      else
+        return Convert.ToDouble(value);
+    }
+
     /**
       <summary>Gets the value corresponding to the given object.</summary>
       <param name="obj">Object to extract the value from.</param>

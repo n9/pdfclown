@@ -34,7 +34,7 @@ import org.pdfclown.tools.TextExtractor;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 03/09/15
+  @version 0.1.2.1, 03/21/15
 */
 public class LinkParsingSample
   extends Sample
@@ -80,7 +80,7 @@ public class LinkParsingSample
         }
 
         // Iterating through the page annotations looking for links...
-        for(Annotation annotation : annotations)
+        for(Annotation<?> annotation : annotations)
         {
           if(annotation instanceof Link)
           {
@@ -156,19 +156,19 @@ public class LinkParsingSample
       {
         FileSpecification<?> destinationFile = ((GoToNonLocal<?>)action).getDestinationFile();
         if(destinationFile != null)
-        {System.out.println("    Filename: " + destinationFile.getPath());}
+        {System.out.println("      Filename: " + destinationFile.getPath());}
 
         if(action instanceof GoToEmbedded)
         {
           PathElement target = ((GoToEmbedded)action).getDestinationPath();
-          System.out.println("    EmbeddedFilename: " + target.getEmbeddedFileName() + " Relation: " + target.getRelation());
+          System.out.println("      EmbeddedFilename: " + target.getEmbeddedFileName() + " Relation: " + target.getRelation());
         }
       }
-      System.out.print("    ");
+      System.out.print("      ");
       printDestination(((GoToDestination<?>)action).getDestination());
     }
     else if(action instanceof GoToURI)
-    {System.out.println("    URI: " + ((GoToURI)action).getURI());}
+    {System.out.println("      URI: " + ((GoToURI)action).getURI());}
   }
 
   private void printDestination(
@@ -176,7 +176,7 @@ public class LinkParsingSample
     )
   {
     System.out.println(destination.getClass().getSimpleName() + " " + destination.getBaseObject());
-    System.out.print("    Page ");
+    System.out.print("        Page ");
     Object pageRef = destination.getPage();
     if(pageRef instanceof Page)
     {
@@ -188,10 +188,10 @@ public class LinkParsingSample
 
     Object location = destination.getLocation();
     if(location != null)
-    {System.out.println(String.format("    Location %s", location));}
+    {System.out.println(String.format("        Location %s", location));}
 
     Double zoom = destination.getZoom();
     if(zoom != null)
-    {System.out.println(String.format("    Zoom %s", zoom));}
+    {System.out.println(String.format("        Zoom %s", zoom));}
   }
 }

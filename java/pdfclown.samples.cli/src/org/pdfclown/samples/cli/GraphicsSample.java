@@ -36,7 +36,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 11/30/12
+  @version 0.1.2.1, 03/21/15
 */
 public class GraphicsSample
   extends Sample
@@ -147,7 +147,7 @@ public class GraphicsSample
           // Drawing the arc frame...
           composer.beginLocalState();
           composer.setLineWidth(.25f);
-          composer.setLineDash(new LineDash(new double[]{5,5}, 3));
+          composer.setLineDash(new LineDash(new double[]{5}, 3));
           composer.drawRectangle(arcFrame);
           composer.stroke();
           composer.end();
@@ -178,7 +178,7 @@ public class GraphicsSample
       // Drawing the circle frame...
       composer.beginLocalState();
       composer.setLineWidth(.25f);
-      composer.setLineDash(new LineDash(new double[]{5,5}, 3));
+      composer.setLineDash(new LineDash(new double[]{5}, 3));
       composer.drawRectangle(arcFrame);
       composer.stroke();
       composer.end();
@@ -196,7 +196,7 @@ public class GraphicsSample
       // Drawing the ellipse frame...
       composer.beginLocalState();
       composer.setLineWidth(.25f);
-      composer.setLineDash(new LineDash(new double[]{5,5}, 3));
+      composer.setLineDash(new LineDash(new double[]{5}, 3));
       composer.drawRectangle(arcFrame);
       composer.stroke();
       composer.end();
@@ -214,7 +214,7 @@ public class GraphicsSample
       // Drawing the ellipse frame...
       composer.beginLocalState();
       composer.setLineWidth(.25f);
-      composer.setLineDash(new LineDash(new double[]{5,5}, 3));
+      composer.setLineDash(new LineDash(new double[]{5}, 3));
       composer.drawRectangle(arcFrame);
       composer.stroke();
       composer.end();
@@ -372,7 +372,7 @@ public class GraphicsSample
     {
       if(x > 300)
       {
-        composer.setLineDash(new LineDash(new double[]{5,5}, 3));
+        composer.setLineDash(new LineDash(new double[]{5}, 3));
       }
 
       composer.setFillColor(new DeviceRGBColor(1, x / 500d, x / 500d));
@@ -769,7 +769,7 @@ public class GraphicsSample
 
           composer.beginLocalState();
           composer.setLineWidth(.2f);
-          composer.setLineDash(new LineDash(new double[]{5,5}, 5));
+          composer.setLineDash(new LineDash(new double[]{5}, 5));
           composer.drawRectangle(frame);
           composer.stroke();
           composer.end();
@@ -881,7 +881,7 @@ public class GraphicsSample
             composer.beginLocalState();
             {
               composer.setLineWidth(0.1);
-              composer.setLineDash(new LineDash(new double[]{1,1}, 1));
+              composer.setLineDash(new LineDash(new double[]{1}, 1));
               composer.drawRectangle(blockComposer.getBoundBox());
               composer.stroke();
             }
@@ -959,7 +959,7 @@ public class GraphicsSample
       composer.beginLocalState();
       {
         composer.setLineWidth(0.2);
-        composer.setLineDash(new LineDash(new double[]{5,5}, 5));
+        composer.setLineDash(new LineDash(new double[]{5}, 5));
         composer.drawRectangle(frame);
         composer.stroke();
       }
@@ -1030,7 +1030,7 @@ public class GraphicsSample
         composer.beginLocalState();
         {
           composer.setLineWidth(0.2);
-          composer.setLineDash(new LineDash(new double[]{5,5}, 5));
+          composer.setLineDash(new LineDash(new double[]{5}, 5));
           composer.drawRectangle(frame);
           composer.stroke();
         }
@@ -1051,7 +1051,7 @@ public class GraphicsSample
         composer.beginLocalState();
         {
           composer.setLineWidth(0.2);
-          composer.setLineDash(new LineDash(new double[]{5,5}, 5));
+          composer.setLineDash(new LineDash(new double[]{5}, 5));
           composer.drawRectangle(frame);
           composer.stroke();
         }
@@ -1086,7 +1086,7 @@ public class GraphicsSample
   {
     composer.beginLocalState();
     composer.setLineWidth(.2f);
-    composer.setLineDash(new LineDash(new double[]{5,5}, 5));
+    composer.setLineDash(new LineDash(new double[]{5}, 5));
     composer.drawPolygon(frameVertices);
     composer.stroke();
     composer.end();

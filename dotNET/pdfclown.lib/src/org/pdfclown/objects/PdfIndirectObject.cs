@@ -107,7 +107,8 @@ namespace org.pdfclown.objects
       // Remove from previous object stream!
       Uncompress();
 
-      if(objectStream != null)
+      if(objectStream != null
+         && IsCompressible())
       {
         // Add to the object stream!
         objectStream[xrefEntry.Number] = DataObject;
@@ -141,6 +142,19 @@ namespace org.pdfclown.objects
     public bool IsCompressed(
       )
     {return xrefEntry.Usage == XRefEntry.UsageEnum.InUseCompressed;}
+
+    /**
+      <summary>Gets whether this object can be compressed within an object stream [PDF:1.6:3.4.6].
+      </summary>
+    */
+    public bool IsCompressible(
+      )
+    {
+      return !IsCompressed()
+        && !(DataObject is PdfStream
+          || dataObject is PdfInteger)
+        && Reference.GenerationNumber == 0;
+    }
 
     /**
       <summary>Gets whether this object contains a data object.</summary>
@@ -191,7 +205,7 @@ namespace org.pdfclown.objects
       oldObjectStream.Remove(xrefEntry.Number);
       // Update its xref entry!
       xrefEntry.Usage = XRefEntry.UsageEnum.InUse;
-      xrefEntry.StreamNumber = -1; // No object stream.
+      xrefEntry.StreamNumber = XRefEntry.UndefinedStreamNumber; // No object stream.
       xrefEntry.Offset = XRefEntry.UndefinedOffset; // Offset unknown (to set on file serialization -- see CompressedWriter).
     }
 

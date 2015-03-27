@@ -6,7 +6,7 @@ using entities = org.pdfclown.documents.contents.entities;
 using org.pdfclown.documents.contents.fonts;
 using org.pdfclown.documents.files;
 using org.pdfclown.documents.interaction.actions;
-using annotations = org.pdfclown.documents.interaction.annotations;
+using org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.documents.interaction.navigation.document;
 using files = org.pdfclown.files;
 
@@ -44,15 +44,10 @@ namespace org.pdfclown.samples.cli
       Page page = new Page(document);
       pages.Add(page);
 
-      StandardType1Font font = new StandardType1Font(
-        document,
-        StandardType1Font.FamilyEnum.Courier,
-        true,
-        false
-        );
-
       PrimitiveComposer composer = new PrimitiveComposer(page);
       BlockComposer blockComposer = new BlockComposer(composer);
+
+      StandardType1Font font = new StandardType1Font(document, StandardType1Font.FamilyEnum.Courier, true, false);
 
       /*
         2.1. Goto-URI link.
@@ -67,29 +62,19 @@ namespace org.pdfclown.samples.cli
         blockComposer.ShowText("\n\nClick on the box to go to the project's SourceForge.net repository.");
         blockComposer.End();
 
-        try
-        {
-          /*
-            NOTE: This statement instructs the PDF viewer to navigate to the given URI when the link is clicked.
-          */
-          annotations::Link link = new annotations::Link(
-            page,
-            new Rectangle(240,100,100,50),
-            "Link annotation",
-            new GoToURI(
-              document,
-              new Uri("http://www.sourceforge.net/projects/clown")
-              )
-            );
-          link.Border = new annotations::Border(
+        /*
+          NOTE: This statement instructs the PDF viewer to navigate to the given URI when the link is clicked.
+        */
+        new Link(
+          page,
+          new RectangleF(240,100,100,50),
+          "Link annotation",
+          new GoToURI(
             document,
-            3,
-            annotations::Border.StyleEnum.Beveled,
-            null
-            );
-        }
-        catch(Exception exception)
-        {throw new Exception("",exception);}
+            new Uri("http://www.sourceforge.net/projects/clown")
+            )
+          )
+        {Border = new Border(3, Border.StyleEnum.Beveled)};
       }
 
       /*
@@ -106,9 +91,9 @@ namespace org.pdfclown.samples.cli
         int fileAttachmentPageIndex = page.Index;
         string fileAttachmentName = "attachedSamplePDF";
         string fileName = System.IO.Path.GetFileName(filePath);
-        annotations::FileAttachment attachment = new annotations::FileAttachment(
+        new FileAttachment(
           page,
-          new Rectangle(0, -20, 10, 10),
+          new RectangleF(0, -20, 10, 10),
           "File attachment annotation",
           FileSpecification.Get(
             EmbeddedFile.Get(
@@ -117,9 +102,11 @@ namespace org.pdfclown.samples.cli
               ),
             fileName
             )
-          );
-        attachment.Name = fileAttachmentName;
-        attachment.IconType = annotations::FileAttachment.IconTypeEnum.PaperClip;
+          )
+        {
+          Name = fileAttachmentName,
+          IconType = FileAttachment.IconTypeEnum.PaperClip
+        };
 
         blockComposer.Begin(new RectangleF(30,170,200,50),XAlignmentEnum.Left,YAlignmentEnum.Middle);
         composer.SetFont(font,12);
@@ -134,9 +121,9 @@ namespace org.pdfclown.samples.cli
           NOTE: This statement instructs the PDF viewer to navigate to the page 2 of a PDF file
           attached inside the current document as described by the FileAttachment annotation on page 1 of the current document.
         */
-        annotations::Link link = new annotations::Link(
+        new Link(
           page,
-          new Rectangle(240,170,100,50),
+          new RectangleF(240,170,100,50),
           "Link annotation",
           new GoToEmbedded(
             document,
@@ -154,13 +141,8 @@ namespace org.pdfclown.samples.cli
               null
               ) // The destination must be within the target document.
             )
-          );
-        link.Border = new annotations::Border(
-          document,
-          1,
-          annotations::Border.StyleEnum.Dashed,
-          new LineDash(new double[]{8,5,2,5})
-          );
+          )
+        {Border = new Border(1, new LineDash(new double[]{8, 5, 2, 5}))};
       }
 
       /*
@@ -176,37 +158,32 @@ namespace org.pdfclown.samples.cli
         blockComposer.ShowText("\n\nClick on the text links to go either to the project's SourceForge.net repository or to the project's home page.");
         blockComposer.End();
 
-        try
-        {
-          composer.BeginLocalState();
-          composer.SetFont(font,10);
-          composer.SetFillColor(DeviceRGBColor.Get(System.Drawing.Color.Blue));
-          composer.ShowText(
-            "PDF Clown Project's repository at SourceForge.net",
-            new PointF(240,265),
-            XAlignmentEnum.Left,
-            YAlignmentEnum.Middle,
-            0,
-            new GoToURI(
-              document,
-              new Uri("http://www.sourceforge.net/projects/clown")
-              )
-            );
-          composer.ShowText(
-            "PDF Clown Project's home page",
-            new PointF(240,285),
-            XAlignmentEnum.Left,
-            YAlignmentEnum.Bottom,
-            -90,
-            new GoToURI(
-              document,
-              new Uri("http://www.pdfclown.org")
-              )
-            );
-          composer.End();
-        }
-        catch
-        {}
+        composer.BeginLocalState();
+        composer.SetFont(font,10);
+        composer.SetFillColor(DeviceRGBColor.Get(System.Drawing.Color.Blue));
+        composer.ShowText(
+          "PDF Clown Project's repository at SourceForge.net",
+          new PointF(240,265),
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Middle,
+          0,
+          new GoToURI(
+            document,
+            new Uri("http://www.sourceforge.net/projects/clown")
+            )
+          );
+        composer.ShowText(
+          "PDF Clown Project's home page",
+          new PointF(240,285),
+          XAlignmentEnum.Left,
+          YAlignmentEnum.Bottom,
+          -90,
+          new GoToURI(
+            document,
+            new Uri("http://www.pdfclown.org")
+            )
+          );
+        composer.End();
       }
 
       composer.Flush();

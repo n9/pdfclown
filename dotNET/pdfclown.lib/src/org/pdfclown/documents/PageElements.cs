@@ -1,5 +1,5 @@
 /*
-  Copyright 2012-2013 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -51,6 +51,13 @@ namespace org.pdfclown.documents
       PdfDirectObject baseObject,
       Page page
       ) : base(baseObject)
+    {this.page = page;}
+
+    internal PageElements(
+      IWrapper<TItem> itemWrapper,
+      PdfDirectObject baseObject,
+      Page page
+    ) : base(itemWrapper, baseObject)
     {this.page = page;}
     #endregion
 

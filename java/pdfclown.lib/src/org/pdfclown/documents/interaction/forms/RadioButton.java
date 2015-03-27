@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,7 +28,6 @@ package org.pdfclown.documents.interaction.forms;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.documents.interaction.annotations.DualWidget;
 import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -39,7 +38,7 @@ import org.pdfclown.util.EnumUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF12)
 public final class RadioButton
@@ -50,10 +49,15 @@ public final class RadioButton
   // <constructors>
   /**
     Creates a new radiobutton within the given document context.
+    
+    @param name
+    @param widgets
+      Dual-state widgets representing the available options.
+    @param value
   */
   public RadioButton(
     String name,
-    DualWidget[] widgets,
+    Widget[] widgets,
     String value
     )
   {
@@ -111,16 +115,16 @@ public final class RadioButton
       NOTE: The parent field's V entry holds a name object corresponding to the appearance state of
       whichever child field is currently in the on state; the default value for this entry is Off.
     */
-    PdfName selectedWidgetName = new PdfName((String)value);
+    PdfName selectedValue = new PdfName((String)value);
     boolean selected = false;
     // Selecting the current appearance state for each widget...
     for(Widget widget : getWidgets())
     {
       PdfName currentState;
-      if(((DualWidget)widget).getWidgetName().equals(value)) // Selected state.
+      if(widget.getValue().equals(value)) // Selected state.
       {
         selected = true;
-        currentState = selectedWidgetName;
+        currentState = selectedValue;
       }
       else // Unselected state.
       {currentState = PdfName.Off;}
@@ -128,7 +132,7 @@ public final class RadioButton
       widget.getBaseDataObject().put(PdfName.AS,currentState);
     }
     // Select the current widget!
-    getBaseDataObject().put(PdfName.V, selected ? selectedWidgetName : null);
+    getBaseDataObject().put(PdfName.V, selected ? selectedValue : null);
   }
   // </public>
   // </interface>

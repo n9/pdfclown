@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,7 +29,7 @@ package org.pdfclown.tokens;
   Cross-reference table entry [PDF:1.6:3.4.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 11/30/12
+  @version 0.1.2.1, 03/21/15
 */
 public final class XRefEntry
   implements Cloneable
@@ -67,6 +67,10 @@ public final class XRefEntry
     Undefined offset.
   */
   public static final int UndefinedOffset = -1;
+  /**
+    Undefined object stream number.
+  */
+  public static final int UndefinedStreamNumber = -1;
   // </fields>
   // </static>
 
@@ -90,7 +94,7 @@ public final class XRefEntry
     int number,
     int generation
     )
-  {this(number, generation, -1, UsageEnum.InUse);}
+  {this(number, generation, UndefinedOffset, UsageEnum.InUse);}
 
   /**
     Instantiates an original ordinary (uncompressed) object entry.
@@ -107,7 +111,7 @@ public final class XRefEntry
     int offset,
     UsageEnum usage
     )
-  {this(number, generation, offset, usage, -1);}
+  {this(number, generation, offset, usage, UndefinedStreamNumber);}
 
   /**
     Instantiates a compressed object entry.
@@ -167,7 +171,7 @@ public final class XRefEntry
     Gets the object number of the object stream in which this object is stored [PDF:1.6:3.4.7],
     in case it is a {@link UsageEnum#InUseCompressed compressed} one.
 
-    @return <code>-1</code> in case this is {@link UsageEnum#InUse not a compressed}-object entry.
+    @return {@link #UndefinedStreamNumber} in case this is {@link UsageEnum#InUse not a compressed}-object entry.
   */
   public int getStreamNumber(
     )

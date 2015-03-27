@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,11 +40,11 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF12)
 public final class Sound
-  extends Annotation
+  extends Markup<Sound>
 {
   // <class>
   // <classes>
@@ -53,9 +53,6 @@ public final class Sound
   */
   public enum IconTypeEnum
   {
-    // <class>
-    // <static>
-    // <fields>
     /**
       Speaker.
     */
@@ -64,10 +61,7 @@ public final class Sound
       Microphone.
     */
     Microphone(PdfName.Mic);
-    // </fields>
 
-    // <interface>
-    // <public>
     /**
       Gets the highlighting mode corresponding to the given value.
     */
@@ -82,34 +76,26 @@ public final class Sound
       }
       return null;
     }
-    // </public>
-    // </interface>
-    // </static>
 
-    // <dynamic>
-    // <fields>
     private final PdfName code;
-    // </fields>
 
-    // <constructors>
     private IconTypeEnum(
       PdfName code
       )
     {this.code = code;}
-    // </constructors>
 
-    // <interface>
-    // <public>
     public PdfName getCode(
       )
     {return code;}
-    // </public>
-    // </interface>
-    // </dynamic>
-    // </class>
   }
   // </classes>
 
+  // <static>
+  // <fields>
+  private static final IconTypeEnum DefaultIconType = IconTypeEnum.Speaker;
+  // </fields>
+  // </static>
+  
   // <dynamic>
   // <constructors>
   public Sound(
@@ -138,16 +124,6 @@ public final class Sound
   {return (Sound)super.clone(context);}
 
   /**
-    Gets the icon to be used in displaying the annotation.
-  */
-  public IconTypeEnum getIconType(
-    )
-  {
-    PdfName nameObject = (PdfName)getBaseDataObject().get(PdfName.Name);
-    return nameObject != null ? IconTypeEnum.get(nameObject) : IconTypeEnum.Speaker;
-  }
-
-  /**
     Gets the sound to be played.
   */
   public org.pdfclown.documents.multimedia.Sound getContent(
@@ -159,12 +135,14 @@ public final class Sound
   }
 
   /**
-    @see #getIconType()
+    Gets the icon to be used in displaying the annotation.
   */
-  public void setIconType(
-    IconTypeEnum value
+  public IconTypeEnum getIconType(
     )
-  {getBaseDataObject().put(PdfName.Name, value.getCode());}
+  {
+    PdfName nameObject = (PdfName)getBaseDataObject().get(PdfName.Name);
+    return nameObject != null ? IconTypeEnum.get(nameObject) : DefaultIconType;
+  }
 
   /**
     @see #getContent()
@@ -176,7 +154,46 @@ public final class Sound
     if(value == null)
       throw new IllegalArgumentException("Content MUST be defined.");
 
-    getBaseDataObject().put(PdfName.Sound,value.getBaseObject());
+    getBaseDataObject().put(PdfName.Sound, value.getBaseObject());
+  }
+
+  /**
+    @see #getIconType()
+  */
+  public void setIconType(
+    IconTypeEnum value
+    )
+  {getBaseDataObject().put(PdfName.Name, value != null && value != DefaultIconType ? value.getCode() : null);}
+  
+  /**
+    Popups not supported.
+  */
+  @Override
+  public void setPopup(
+    Popup value
+    ) throws UnsupportedOperationException
+  {throw new UnsupportedOperationException();}
+
+  /**
+    @see #setContent(org.pdfclown.documents.multimedia.Sound)
+  */
+  public Sound withContent(
+    org.pdfclown.documents.multimedia.Sound value
+    )
+  {
+    setContent(value);
+    return self();
+  }
+
+  /**
+    @see #setIconType(IconTypeEnum)
+  */
+  public Sound withIconType(
+    IconTypeEnum value
+    )
+  {
+    setIconType(value);
+    return self();
   }
   // </public>
   // </interface>

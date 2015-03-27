@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it):
@@ -186,7 +186,7 @@ namespace org.pdfclown.documents.contents.composition
     private bool hyphenation;
     private char hyphenationCharacter = '-';
     private LineAlignmentEnum lineAlignment = LineAlignmentEnum.BaseLine;
-    private Length lineSpace = new Length(0, Length.UnitModeEnum.Relative);
+    private Length lineSpace = new Length(.2, Length.UnitModeEnum.Relative);
     private XAlignmentEnum xAlignment;
     private YAlignmentEnum yAlignment;
 
@@ -697,7 +697,7 @@ namespace org.pdfclown.documents.contents.composition
       if(rowY > 0)
       {
         ContentScanner.GraphicsState state = baseComposer.State;
-        rowY += lineSpace.GetValue(state.Font.GetLineHeight(state.FontSize));
+        rowY += lineSpace.GetValue(state.Font != null ? state.Font.GetLineHeight(state.FontSize) : 0);
       }
       currentRow = new Row(
         (ContentPlaceholder)baseComposer.Add(new ContentPlaceholder()),

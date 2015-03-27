@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -141,10 +141,7 @@ namespace org.pdfclown.documents.interchange.metadata
       PdfName key,
       object value
       )
-    {
-      OnChange(key);
-      BaseDataObject.Add(key, PdfSimpleObject<object>.Get(value));
-    }
+    {BaseDataObject.Add(key, PdfSimpleObject<object>.Get(value));}
 
     public bool ContainsKey(
       PdfName key
@@ -160,10 +157,7 @@ namespace org.pdfclown.documents.interchange.metadata
     public bool Remove(
       PdfName key
       )
-    {
-      OnChange(key);
-      return BaseDataObject.Remove(key);
-    }
+    {return BaseDataObject.Remove(key);}
 
     public object this[
       PdfName key
@@ -172,10 +166,7 @@ namespace org.pdfclown.documents.interchange.metadata
       get
       {return PdfSimpleObject<object>.GetValue(BaseDataObject[key]);}
       set
-      {
-        OnChange(key);
-        BaseDataObject[key] = PdfSimpleObject<object>.Get(value);
-      }
+      {BaseDataObject[key] = PdfSimpleObject<object>.Get(value);}
     }
 
     public bool TryGetValue(
@@ -213,10 +204,7 @@ namespace org.pdfclown.documents.interchange.metadata
 
     public void Clear(
       )
-    {
-      BaseDataObject.Clear();
-      ModificationDate = DateTime.Now;
-    }
+    {BaseDataObject.Clear();}
 
     bool ICollection<KeyValuePair<PdfName,object>>.Contains(
       KeyValuePair<PdfName,object> entry
@@ -267,17 +255,6 @@ namespace org.pdfclown.documents.interchange.metadata
     #endregion
     #endregion
     #endregion
-    #endregion
-
-    #region private
-    //TODO: Listen to baseDataObject's onChange notification?
-    private void OnChange(
-      PdfName key
-      )
-    {
-      if(!BaseDataObject.Updated && !PdfName.ModDate.Equals(key))
-      {ModificationDate = DateTime.Now;}
-    }
     #endregion
     #endregion
     #endregion

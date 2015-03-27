@@ -90,7 +90,7 @@ namespace org.pdfclown.samples.cli
           highlightQuads.Add(Quad.Get(textBox.Value));
         }
         // Highlight the text pattern match!
-        new TextMarkup(page, null, TextMarkup.MarkupTypeEnum.Highlight, highlightQuads);
+        new TextMarkup(page, highlightQuads, null, TextMarkup.MarkupTypeEnum.Highlight);
       }
 
       public void Reset(

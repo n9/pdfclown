@@ -157,6 +157,10 @@ namespace org.pdfclown.objects
       )
     {return baseObject.GetHashCode();}
 
+    public override string ToString(
+      )
+    {return String.Format("{0} {{1}}", GetType().Name, BaseObject is PdfReference ? (PdfObject)BaseObject.DataContainer : BaseObject);}
+
     #region IPdfObjectWrapper
     public virtual PdfDirectObject BaseObject
     {
@@ -180,7 +184,7 @@ namespace org.pdfclown.objects
         </list>
       </param>
     */
-    protected void CheckCompatibility(
+    internal void CheckCompatibility(
       object feature
       )
     {
@@ -331,7 +335,7 @@ namespace org.pdfclown.objects
 
     /**
       <summary>Instantiates a wrapper from the specified base object.</summary>
-      <param name="baseObject">PDF object backing this wrapper. MUST be a <see cref="PdfReference"/>
+      <param name="baseObject">PDF object backing this wrapper. It MUST be a <see cref="PdfReference"/>
       every time available.</param>
     */
     protected PdfObjectWrapper(
@@ -350,7 +354,7 @@ namespace org.pdfclown.objects
     protected PdfObjectWrapper(
       Document context,
       TDataObject baseDataObject
-      ) : this(context.File, baseDataObject)
+      ) : this(context != null ? context.File : null, baseDataObject)
     {}
 
     /**
@@ -364,7 +368,7 @@ namespace org.pdfclown.objects
     protected PdfObjectWrapper(
       File context,
       TDataObject baseDataObject
-      ) : this(context.Register(baseDataObject))
+      ) : this(context != null ? context.Register(baseDataObject) : (PdfDirectObject)(PdfDataObject)baseDataObject)
     {}
     #endregion
 

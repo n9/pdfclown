@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,7 +25,9 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.documents;
+using org.pdfclown.documents.contents.colorSpaces;
 using org.pdfclown.objects;
+using org.pdfclown.util.math.geom;
 
 using System;
 using System.Collections.Generic;
@@ -38,17 +40,20 @@ namespace org.pdfclown.documents.interaction.annotations
   */
   [PDF(VersionEnum.PDF13)]
   public sealed class Scribble
-    : Annotation
+    : Markup
   {
     #region dynamic
     #region constructors
     public Scribble(
       Page page,
-      RectangleF box,
+      IList<IList<PointF>> paths,
       string text,
-      IList<IList<PointF>> paths
-      ) : base(page, PdfName.Ink, box, text)
-    {Paths = paths;}
+      DeviceColor color
+      ) : base(page, PdfName.Ink, new RectangleF(), text)
+    {
+      Paths = paths;
+      Color = color;
+    }
 
     internal Scribble(
       PdfDirectObject baseObject
@@ -100,17 +105,22 @@ namespace org.pdfclown.documents.interaction.annotations
       {
         PdfArray pathsObject = new PdfArray();
         double pageHeight = Page.Box.Height;
+        RectangleF? box = null;
         foreach(IList<PointF> path in value)
         {
           PdfArray pathObject = new PdfArray();
           foreach(PointF point in path)
           {
+            if(!box.HasValue)
+            {box = new RectangleF(point.X, point.Y, 0, 0);}
+            else
+            {box.Value.Add(point);}
             pathObject.Add(PdfReal.Get(point.X)); // x.
-            pathObject.Add(PdfReal.Get(pageHeight-point.Y)); // y.
+            pathObject.Add(PdfReal.Get(pageHeight - point.Y)); // y.
           }
           pathsObject.Add(pathObject);
         }
-
+        Box = box.Value;
         BaseDataObject[PdfName.InkList] = pathsObject;
       }
     }

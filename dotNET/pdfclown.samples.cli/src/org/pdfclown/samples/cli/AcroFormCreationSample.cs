@@ -89,9 +89,7 @@ namespace org.pdfclown.samples.cli
           page,
           new RectangleF(150, 50, 136, 36)
           );
-        WidgetActions fieldWidgetActions = new WidgetActions(fieldWidget);
-        fieldWidget.Actions = fieldWidgetActions;
-        fieldWidgetActions.OnActivate = new JavaScript(
+        fieldWidget.Actions.OnActivate = new JavaScript(
           document,
           "app.alert(\"Radio button currently selected: '\" + this.getField(\"myRadio\").value + \"'.\",3,0,\"Activation event\");"
           );
@@ -167,19 +165,19 @@ namespace org.pdfclown.samples.cli
           /*
             NOTE: A radio button field typically combines multiple alternative widgets.
           */
-          new DualWidget[]
+          new Widget[]
           {
-            new DualWidget(
+            new Widget(
               page,
               new RectangleF(150, 150, 36, 36),
               "first"
               ),
-            new DualWidget(
+            new Widget(
               page,
               new RectangleF(200, 150, 36, 36),
               "second"
               ),
-            new DualWidget(
+            new Widget(
               page,
               new RectangleF(250, 150, 36, 36),
               "third"

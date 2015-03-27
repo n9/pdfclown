@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -26,12 +26,15 @@
 package org.pdfclown.documents.interaction.annotations;
 
 import java.awt.geom.Rectangle2D;
+import java.util.Date;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
+import org.pdfclown.documents.contents.colorSpaces.DeviceColor;
 import org.pdfclown.objects.PdfBoolean;
+import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 
@@ -43,14 +46,18 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF13)
 public final class Popup
-  extends Annotation
+  extends Annotation<Popup>
 {
   // <class>
   // <dynamic>
+  // <fields>
+  private Markup<?> markup;
+  // </fields>
+  
   // <constructors>
   public Popup(
     Page page,
@@ -73,6 +80,28 @@ public final class Popup
     )
   {return (Popup)super.clone(context);}
 
+  @Override
+  public DeviceColor getColor(
+    )
+  {return getMarkup() != null ? markup.getColor() : super.getColor();}
+
+  /**
+    Gets the markup associated with this annotation.
+  */
+  public Markup<?> getMarkup(
+    )
+  {return markup != null ? markup : (markup = (Markup<?>)Annotation.wrap(getBaseDataObject().get(PdfName.Parent)));}
+  
+  @Override
+  public Date getModificationDate(
+    )
+  {return getMarkup() != null ? markup.getModificationDate() : super.getModificationDate();}
+
+  @Override
+  public String getText(
+    )
+  {return getMarkup() != null ? markup.getText() : super.getText();}
+  
   /**
     Gets whether the annotation should initially be displayed open.
   */
@@ -84,14 +113,29 @@ public final class Popup
       ? openObject.getValue()
       : false;
   }
-
-  /**
-    Gets the parent annotation.
-  */
-  public Annotation getParent(
+  
+  @Override
+  public void setColor(
+    DeviceColor value
     )
-  {return Annotation.wrap(getBaseDataObject().get(PdfName.Parent));}
-
+  {
+    if(getMarkup() != null)
+    {markup.setColor(value);}
+    else
+    {super.setColor(value);}
+  }
+  
+  @Override
+  public void setModificationDate(
+    Date value
+    )
+  {
+    if(getMarkup() != null)
+    {markup.setModificationDate(value);}
+    else
+    {super.setModificationDate(value);}
+  }
+  
   /**
     @see #isOpen()
   */
@@ -99,16 +143,49 @@ public final class Popup
     boolean value
     )
   {getBaseDataObject().put(PdfName.Open, PdfBoolean.get(value));}
+  
+  @Override
+  public void setText(
+    String value
+    )
+  {
+    if(getMarkup() != null)
+    {markup.setText(value);}
+    else
+    {super.setText(value);}
+  }
 
   /**
-    @see #getParent()
+    @see #setOpen(boolean)
   */
-  public void setParent(
-    Annotation value
+  public Popup withOpen(
+    boolean value
     )
-  {getBaseDataObject().put(PdfName.Parent,value.getBaseObject());}
+  {
+    setOpen(value);
+    return self();
+  }
   // </public>
-  // </interface>
+
+  // <internal>
+  /**
+    @see #getMarkup()
+  */
+  void setMarkup(
+    Markup<?> value
+    )
+  {
+    PdfDictionary baseDataObject = getBaseDataObject();
+    baseDataObject.put(PdfName.Parent, value.getBaseObject());
+    /*
+      NOTE: The markup annotation's properties override those of this pop-up annotation.
+    */
+    baseDataObject.remove(PdfName.Contents);
+    baseDataObject.remove(PdfName.M);
+    baseDataObject.remove(PdfName.C);
+  }
+  // </internal>
+ // </interface>
   // </dynamic>
   // </class>
 }

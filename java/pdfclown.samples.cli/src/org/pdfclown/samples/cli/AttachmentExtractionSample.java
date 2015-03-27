@@ -48,7 +48,7 @@ public class AttachmentExtractionSample
       // 2.2. File attachments (page level).
       for(Page page : document.getPages())
       {
-        for(Annotation annotation : page.getAnnotations())
+        for(Annotation<?> annotation : page.getAnnotations())
         {
           if(annotation instanceof FileAttachment)
           {evaluateDataFile(((FileAttachment)annotation).getDataFile());}

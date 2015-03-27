@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.pdfclown.documents.Document;
-import org.pdfclown.documents.interaction.annotations.DualWidget;
 import org.pdfclown.documents.interaction.forms.ChoiceField;
 import org.pdfclown.documents.interaction.forms.Field;
 import org.pdfclown.documents.interaction.forms.Form;
@@ -16,7 +15,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 11/30/12
+  @version 0.1.2.1, 03/21/15
 */
 public class AcroFormFillingSample
   extends Sample
@@ -62,7 +61,7 @@ public class AcroFormFillingSample
           {
             String value;
             if(field instanceof RadioButton)
-            {value = ((DualWidget)field.getWidgets().get(0)).getWidgetName();} // Selects the first widget in the group.
+            {value = field.getWidgets().get(0).getValue();} // Selects the first widget in the group.
             else if(field instanceof ChoiceField)
             {value = ((ChoiceField)field).getItems().get(0).getValue();} // Selects the first item in the list.
             else

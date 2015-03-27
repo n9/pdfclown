@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,7 +42,7 @@ import org.pdfclown.util.ConvertUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.1, 11/01/11
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF10)
 public final class PaintPath
@@ -117,7 +117,7 @@ public final class PaintPath
       state.getLineCap().toAwt(),
       state.getLineJoin().toAwt(),
       (float)state.getMiterLimit(),
-      dashArray != null && dashArray.length > 0 ? ConvertUtils.toFloatArray(dashArray) : null,
+      dashArray.length > 0 ? ConvertUtils.toFloatArray(dashArray) : null,
       (float)lineDash.getDashPhase()
       );
   }

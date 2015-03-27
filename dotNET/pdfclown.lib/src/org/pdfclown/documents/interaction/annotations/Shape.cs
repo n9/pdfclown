@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,7 +38,7 @@ namespace org.pdfclown.documents.interaction.annotations
   */
   [PDF(VersionEnum.PDF13)]
   public abstract class Shape
-    : Annotation
+    : Markup
   {
     #region dynamic
     #region constructors
@@ -59,6 +59,18 @@ namespace org.pdfclown.documents.interaction.annotations
     #region interface
     #region public
     /**
+      <summary>Gets/Sets the border effect.</summary>
+    */
+    [PDF(VersionEnum.PDF15)]
+    public BorderEffect BorderEffect
+    {
+      get
+      {return new BorderEffect(BaseDataObject.Get<PdfDictionary>(PdfName.BE));}
+      set
+      {BaseDataObject[PdfName.BE] = PdfObjectWrapper.GetBaseObject(value);}
+    }
+
+    /**
       <summary>Gets/Sets the color with which to fill the interior of the annotation's shape.</summary>
     */
     public DeviceRGBColor FillColor
@@ -76,7 +88,7 @@ namespace org.pdfclown.documents.interaction.annotations
           : null;
       }
       set
-      {BaseDataObject[PdfName.IC] = (PdfDirectObject)value.BaseDataObject;}
+      {BaseDataObject[PdfName.IC] = PdfObjectWrapper.GetBaseObject(value);}
     }
     #endregion
     #endregion

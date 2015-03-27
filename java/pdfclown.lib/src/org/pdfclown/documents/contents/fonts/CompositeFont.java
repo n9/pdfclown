@@ -58,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 03/12/15
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF12)
 public abstract class CompositeFont
@@ -551,9 +551,9 @@ public abstract class CompositeFont
       fontDescriptor.put(
         PdfName.Ascent,
         PdfReal.get(
-          metrics.ascender == 0
-            ? metrics.sTypoAscender * metrics.unitNorm
-            : metrics.ascender * metrics.unitNorm
+          metrics.sTypoAscender == 0
+            ? metrics.ascender * metrics.unitNorm
+            : (metrics.sTypoLineGap == 0 ? metrics.sCapHeight : metrics.sTypoAscender) * metrics.unitNorm
           )
         );
 
@@ -561,16 +561,10 @@ public abstract class CompositeFont
       fontDescriptor.put(
         PdfName.Descent,
         PdfReal.get(
-          metrics.descender == 0
-            ? metrics.sTypoDescender * metrics.unitNorm
-            : metrics.descender * metrics.unitNorm
+          metrics.sTypoDescender == 0
+            ? metrics.descender * metrics.unitNorm
+            : metrics.sTypoDescender * metrics.unitNorm
           )
-        );
-
-      // Leading.
-      fontDescriptor.put(
-        PdfName.Leading,
-        PdfReal.get(metrics.sTypoLineGap * metrics.unitNorm)
         );
 
       // CapHeight.

@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,22 +38,22 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF12)
 public final class WidgetActions
-  extends AnnotationActions
+  extends AnnotationActions<WidgetActions>
 {
   // <class>
   // <dynamic>
   // <constructors>
   public WidgetActions(
-    Annotation parent
+    Annotation<?> parent
     )
   {super(parent);}
 
   WidgetActions(
-    Annotation parent,
+    Annotation<?> parent,
     PdfDirectObject baseObject
     )
   {super(parent, baseObject);}
@@ -96,6 +96,28 @@ public final class WidgetActions
     Action value
     )
   {getBaseDataObject().put(PdfName.Fo, value.getBaseObject());}
+
+  /**
+    @see #setOnBlur(Action)
+  */
+  public WidgetActions withOnBlur(
+    Action value
+    )
+  {
+    setOnBlur(value);
+    return self();
+  }
+  
+  /**
+    @see #setOnFocus(Action)
+  */
+  public WidgetActions withOnFocus(
+    Action value
+    )
+  {
+    setOnFocus(value);
+    return self();
+  }
   // </public>
   // </interface>
   // </dynamic>

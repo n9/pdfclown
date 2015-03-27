@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -45,7 +45,7 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 03/21/15
 */
 @PDF(VersionEnum.PDF12)
 public final class Names
@@ -99,6 +99,14 @@ public final class Names
   {return new NamedJavaScripts(getBaseDataObject().get(PdfName.JavaScript, PdfDictionary.class, false));}
 
   /**
+    Gets the named pages.
+  */
+  @PDF(VersionEnum.PDF13)
+  public NamedPages getPages(
+    )
+  {return new NamedPages(getBaseDataObject().get(PdfName.Pages, PdfDictionary.class, false));}
+
+  /**
     Gets the named renditions.
   */
   @PDF(VersionEnum.PDF15)
@@ -131,6 +139,14 @@ public final class Names
   {getBaseDataObject().put(PdfName.JavaScript, value.getBaseObject());}
 
   /**
+    @see #getPages()
+  */
+  public void setPages(
+    NamedPages value
+    )
+  {getBaseDataObject().put(PdfName.Pages, value.getBaseObject());}
+
+  /**
     @see #getRenditions()
   */
   public void setRenditions(
@@ -151,6 +167,8 @@ public final class Names
       return (NameTree<T>)getEmbeddedFiles();
     else if(JavaScript.class.isAssignableFrom(type))
       return (NameTree<T>)getJavaScripts();
+    else if(Page.class.isAssignableFrom(type))
+      return (NameTree<T>)getPages();
     else if(Rendition.class.isAssignableFrom(type))
       return (NameTree<T>)getRenditions();
     else

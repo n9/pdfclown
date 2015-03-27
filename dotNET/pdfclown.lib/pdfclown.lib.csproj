@@ -199,20 +199,16 @@
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\AppearanceCharacteristics.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\AppearanceStates.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\Border.cs" />
-    <Compile Include="src\org\pdfclown\documents\interaction\annotations\CalloutNote.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\Caret.cs" />
-    <Compile Include="src\org\pdfclown\documents\interaction\annotations\DualWidget.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\Ellipse.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\FileAttachment.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\Line.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\Link.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\namespace.cs" />
-    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Note.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\Polygon.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\Polyline.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\Popup.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\Rectangle.cs" />
-    <Compile Include="src\org\pdfclown\documents\interaction\annotations\RubberStamp.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\Scribble.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\Shape.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\TextMarkup.cs" />
@@ -461,6 +457,19 @@
     <Compile Include="src\org\pdfclown\util\IPredicate.cs" />
     <Compile Include="src\org\pdfclown\tools\FormFlattener.cs" />
     <Compile Include="src\org\pdfclown\util\parsers\PostScriptParseException.cs" />
+    <Compile Include="src\org\pdfclown\documents\NamedPages.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\CommonAnnotationActions.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\BorderEffect.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\StaticNote.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\StickyNote.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Markup.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\GenericAnnotation.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\LineEndStyleEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\Stamp.cs" />
+    <Compile Include="src\org\pdfclown\util\math\geom\Extension.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\styles\namespace.cs" />
+    <Compile Include="src\org\pdfclown\util\io\IOUtils.cs" />
+    <Compile Include="src\org\pdfclown\documents\interaction\annotations\styles\StampAppearanceBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />
@@ -564,5 +573,6 @@
     <Folder Include="src\org\pdfclown\documents\contents\layers\" />
     <Folder Include="src\org\pdfclown\util\metadata\" />
     <Folder Include="src\org\pdfclown\documents\interchange\access\" />
+    <Folder Include="src\org\pdfclown\documents\interaction\annotations\styles\" />
   </ItemGroup>
 </Project>
