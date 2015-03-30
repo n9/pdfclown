@@ -29,12 +29,9 @@ import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.Date;
 import java.util.Random;
 
-import org.pdfclown.PDF;
 import org.pdfclown.Version;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.Buffer;
@@ -44,7 +41,6 @@ import org.pdfclown.bytes.IOutputStream;
 import org.pdfclown.bytes.OutputStream;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interchange.metadata.Information;
-import org.pdfclown.files.File.Configuration.XRefModeEnum;
 import org.pdfclown.objects.Cloner;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
@@ -56,110 +52,19 @@ import org.pdfclown.tokens.Reader.FileInfo;
 import org.pdfclown.tokens.Writer;
 import org.pdfclown.tokens.XRefEntry;
 import org.pdfclown.util.NotImplementedException;
-import org.pdfclown.util.StringUtils;
 
 /**
   PDF file representation.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2.1, 03/21/15
+  @version 0.1.2.1, 03/30/15
 */
 public final class File
   implements Closeable
 {
   // <class>
   // <classes>
-  /**
-    File configuration.
-
-    @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-    @since 0.1.1
-  */
-  public static final class Configuration
-  {
-    /**
-      Cross-reference mode [PDF:1.6:3.4].
-    */
-    public enum XRefModeEnum
-    {
-      /**
-        Cross-reference table [PDF:1.6:3.4.3].
-      */
-      @PDF(VersionEnum.PDF10)
-      Plain,
-      /**
-        Cross-reference stream [PDF:1.6:3.4.7].
-      */
-      @PDF(VersionEnum.PDF15)
-      Compressed
-    }
-
-    private DecimalFormat realFormat;
-    private XRefModeEnum xrefMode = XRefModeEnum.Plain;
-
-    private final File file;
-
-    Configuration(
-      File file
-      )
-    {this.file = file;}
-
-    /**
-      Gets the file associated with this configuration.
-    */
-    public File getFile(
-      )
-    {return file;}
-
-    /**
-      Gets the format applied to real number serialization.
-    */
-    public DecimalFormat getRealFormat(
-      )
-    {
-      if(realFormat == null)
-      {setRealFormat(5);}
-      return realFormat;
-    }
-    
-    /**
-      Gets the document's cross-reference mode.
-    */
-    public XRefModeEnum getXrefMode(
-      )
-    {return xrefMode;}
-
-    /**
-      @see #getRealFormat()
-    */
-    public void setRealFormat(
-      DecimalFormat value
-      )
-    {realFormat = value;}
-
-    /**
-      @see #getRealFormat()
-      @param decimalPlacesCount Number of digits in decimal places.
-    */
-    public void setRealFormat(
-      int decimalPlacesCount
-      )
-    {
-      DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-      symbols.setDecimalSeparator('.');
-      setRealFormat(new DecimalFormat("0." + StringUtils.repeat("#", decimalPlacesCount), symbols));
-    }
-    
-    /**
-      @see #getXrefMode()
-    */
-    public void setXrefMode(
-      XRefModeEnum value
-      )
-    {file.getDocument().checkCompatibility(xrefMode = value);}
-  }
-
   private static final class ImplicitContainer
     extends PdfIndirectObject
   {
@@ -179,7 +84,7 @@ public final class File
 
   // <dynamic>
   // <fields>
-  private final Configuration configuration = new Configuration(this);
+  private final FileConfiguration configuration = new FileConfiguration(this);
   private final Document document;
   private final int hashCode = hashCodeGenerator.nextInt();
   private final IndirectObjects indirectObjects;
@@ -242,7 +147,7 @@ public final class File
 
     indirectObjects = new IndirectObjects(this, info.getXrefEntries());
     document = new Document(trailer.get(PdfName.Root));
-    getConfiguration().setXrefMode(PdfName.XRef.equals(trailer.get(PdfName.Type)) ? XRefModeEnum.Compressed : XRefModeEnum.Plain);
+    getConfiguration().setXRefMode(PdfName.XRef.equals(trailer.get(PdfName.Type)) ? XRefModeEnum.Compressed : XRefModeEnum.Plain);
   }
   // </constructors>
 
@@ -263,7 +168,7 @@ public final class File
   /**
     Gets the file configuration.
   */
-  public Configuration getConfiguration(
+  public FileConfiguration getConfiguration(
     )
   {return configuration;}
 

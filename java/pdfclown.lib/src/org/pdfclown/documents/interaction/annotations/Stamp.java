@@ -33,8 +33,8 @@ import java.awt.geom.Rectangle2D;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
+import org.pdfclown.documents.DocumentConfiguration;
 import org.pdfclown.documents.Document;
-import org.pdfclown.documents.Document.Configuration;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.objects.PdfDirectObject;
@@ -51,7 +51,7 @@ import org.pdfclown.util.math.geom.GeomUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2.1, 03/21/15
+  @version 0.1.2.1, 03/30/15
 */
 @PDF(VersionEnum.PDF13)
 public final class Stamp
@@ -293,7 +293,7 @@ public final class Stamp
 
   /**
     <p>To ensure predictable rendering of the {@link StandardTypeEnum standard stamp types} across the 
-    systems, {@link Configuration#getStampPath()} must be defined so as to embed the corresponding 
+    systems, {@link DocumentConfiguration#getStampPath()} must be defined so as to embed the corresponding 
     templates.</p>
     
     @see #getTypeName()

@@ -45,83 +45,6 @@ namespace org.pdfclown.files
     : IDisposable
   {
     #region types
-    /**
-      <summary>File configuration.</summary>
-    */
-    public sealed class ConfigurationImpl
-    {
-      /**
-        <summary>Cross-reference mode [PDF:1.6:3.4].</summary>
-      */
-      public enum XRefModeEnum
-      {
-        /**
-          <summary>Cross-reference table [PDF:1.6:3.4.3].</summary>
-        */
-        [PDF(VersionEnum.PDF10)]
-        Plain,
-        /**
-          <summary>Cross-reference stream [PDF:1.6:3.4.7].</summary>
-        */
-        [PDF(VersionEnum.PDF15)]
-        Compressed
-      }
-
-      private string realFormat;
-      private XRefModeEnum xrefMode = XRefModeEnum.Plain;
-
-      private readonly File file;
-
-      internal ConfigurationImpl(
-        File file
-        )
-      {this.file = file;}
-
-      /**
-        <summary>Gets the file associated with this configuration.</summary>
-      */
-      public File File
-      {
-        get
-        {return file;}
-      }
-
-      /**
-        <summary>Gets/Sets the format applied to real number serialization.</summary>
-      */
-      public string RealFormat
-      {
-        get
-        {
-          if(realFormat == null)
-          {SetRealFormat(5);}
-          return realFormat;
-        }
-        set
-        {realFormat = value;}
-      }
-
-      /**
-        <param name="decimalPlacesCount">Number of digits in decimal places.</param>
-        <seealso cref="RealFormat"/>
-      */
-      public void SetRealFormat(
-        int decimalPlacesCount
-        )
-      {realFormat = "0." + new string('#', decimalPlacesCount);}
-
-      /**
-        <summary>Gets the document's cross-reference mode.</summary>
-      */
-      public XRefModeEnum XrefMode
-      {
-        get
-        {return xrefMode;}
-        set
-        {file.Document.CheckCompatibility(xrefMode = value);}
-      }
-    }
-
     private sealed class ImplicitContainer
       : PdfIndirectObject
     {
@@ -141,7 +64,7 @@ namespace org.pdfclown.files
 
     #region dynamic
     #region fields
-    private ConfigurationImpl configuration;
+    private FileConfiguration configuration;
     private readonly Document document;
     private readonly int hashCode = hashCodeGenerator.Next();
     private readonly IndirectObjects indirectObjects;
@@ -205,9 +128,9 @@ namespace org.pdfclown.files
 
         indirectObjects = new IndirectObjects(this, info.XrefEntries);
         document = new Document(trailer[PdfName.Root]);
-        Configuration.XrefMode = (PdfName.XRef.Equals(trailer[PdfName.Type])
-          ? ConfigurationImpl.XRefModeEnum.Compressed
-          : ConfigurationImpl.XRefModeEnum.Plain);
+        Configuration.XRefMode = (PdfName.XRef.Equals(trailer[PdfName.Type])
+          ? XRefModeEnum.Compressed
+          : XRefModeEnum.Plain);
       }
       catch(Exception)
       {
@@ -242,7 +165,7 @@ namespace org.pdfclown.files
     /**
       <summary>Gets the file configuration.</summary>
     */
-    public ConfigurationImpl Configuration
+    public FileConfiguration Configuration
     {
       get
       {return configuration;}
@@ -463,7 +386,7 @@ namespace org.pdfclown.files
 
     private void Initialize(
       )
-    {configuration = new ConfigurationImpl(this);}
+    {configuration = new FileConfiguration(this);}
 
     private PdfDictionary PrepareTrailer(
       PdfDictionary trailer

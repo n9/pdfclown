@@ -36,7 +36,7 @@ import org.pdfclown.objects.PdfName;
   PDF file writer.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/21/15
+  @version 0.1.2.1, 03/30/15
 */
 public abstract class Writer
 {
@@ -63,7 +63,7 @@ public abstract class Writer
     )
   {
     // Which cross-reference table mode?
-    switch(file.getConfiguration().getXrefMode())
+    switch(file.getConfiguration().getXRefMode())
     {
       case Plain:
         return new PlainWriter(file, stream);

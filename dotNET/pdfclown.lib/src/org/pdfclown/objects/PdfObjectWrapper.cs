@@ -191,8 +191,8 @@ namespace org.pdfclown.objects
       /*
         TODO: Caching!
       */
-      Document.ConfigurationImpl.CompatibilityModeEnum compatibilityMode = Document.Configuration.CompatibilityMode;
-      if(compatibilityMode == Document.ConfigurationImpl.CompatibilityModeEnum.Passthrough) // No check required.
+      var compatibilityMode = Document.Configuration.CompatibilityMode;
+      if(compatibilityMode == CompatibilityModeEnum.Passthrough) // No check required.
         return;
 
       if(feature is Enum)
@@ -255,11 +255,11 @@ namespace org.pdfclown.objects
       // The feature version is NOT compatible: how to solve the conflict?
       switch(compatibilityMode)
       {
-        case Document.ConfigurationImpl.CompatibilityModeEnum.Loose: // Accepts the feature version.
+        case CompatibilityModeEnum.Loose: // Accepts the feature version.
           // Synchronize the document version!
           Document.Version = featureVersion;
           break;
-        case  Document.ConfigurationImpl.CompatibilityModeEnum.Strict: // Refuses the feature version.
+        case CompatibilityModeEnum.Strict: // Refuses the feature version.
           // Throw a violation to the document version!
           throw new Exception("Incompatible feature (version " + featureVersion + " was required against document version " + Document.Version);
         default:

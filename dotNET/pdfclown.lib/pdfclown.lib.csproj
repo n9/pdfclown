@@ -470,6 +470,10 @@
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\styles\namespace.cs" />
     <Compile Include="src\org\pdfclown\util\io\IOUtils.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\annotations\styles\StampAppearanceBuilder.cs" />
+    <Compile Include="src\org\pdfclown\documents\CompatibilityModeEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\DocumentConfiguration.cs" />
+    <Compile Include="src\org\pdfclown\files\FileConfiguration.cs" />
+    <Compile Include="src\org\pdfclown\files\XRefModeEnum.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />
