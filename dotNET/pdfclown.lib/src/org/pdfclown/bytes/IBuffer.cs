@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -107,6 +107,12 @@ namespace org.pdfclown.bytes
     {
       get;
     }
+
+    /**
+      <summary>Clears the buffer of any data.</summary>
+    */
+    void Clear(
+      );
 
     /**
       <summary>Gets a clone of the buffer.</summary>

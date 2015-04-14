@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -39,7 +39,7 @@ import org.pdfclown.util.parsers.ParseException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.2.1, 04/08/15
 */
 final class OpenFontParser
 {
@@ -103,14 +103,8 @@ final class OpenFontParser
   */
   enum OutlineFormatEnum
   {
-    /**
-      TrueType format outlines.
-    */
     TrueType,
-    /**
-      Compact Font Format outlines.
-    */
-    CFF;
+    PostScript;
   }
   // </classes>
 
@@ -122,6 +116,8 @@ final class OpenFontParser
   private static final int PlatformID_Unicode = 0;
   private static final int PlatformID_Macintosh = 1;
   private static final int PlatformID_Microsoft = 3;
+
+  private static final String TableName_CFF = "CFF ";
   // </fields>
 
   // <interface>
@@ -136,42 +132,23 @@ final class OpenFontParser
     long position = fontData.getPosition();
     fontData.setPosition(0);
     try
-    {getOutlineFormat(fontData.readInt());}
-    catch(UnsupportedOperationException e)
-    {return false;}
+    {
+      switch(fontData.readInt())
+      {
+        case(0x00010000): // TrueType (standard/Windows).
+        case(0x74727565): // TrueType (legacy/Apple).
+        case(0x4F54544F): // CFF (Type 1).
+          return true;
+        default:
+          return false;
+      }
+    }
     catch(EOFException e)
     {throw new RuntimeException(e);}
     finally
     {fontData.setPosition(position);}
-    return true;
   }
   // </public>
-
-  // <private>
-  /**
-    Gets the outline format corresponding to the specified version code.
-
-    @param versionCode OFF version.
-
-    @throws UnsupportedOperationException If <code>versionCode</code> is unknown.
-  */
-  private static OutlineFormatEnum getOutlineFormat(
-    int versionCode
-    ) throws UnsupportedOperationException
-  {
-    // Which font file format ('sfnt') version?
-    switch(versionCode)
-    {
-      case(0x00010000): // TrueType (standard/Windows).
-      case(0x74727565): // TrueType (legacy/Apple).
-        return OutlineFormatEnum.TrueType;
-      case(0x4F54544F): // CFF (Type 1).
-        return OutlineFormatEnum.CFF;
-      default:
-        throw new UnsupportedOperationException("Unknown OpenFont format version.");
-    }
-  }
-  // </private>
   // </interface>
   // </static>
 
@@ -719,10 +696,7 @@ final class OpenFontParser
     ) throws EOFException, UnsupportedEncodingException
   {
     // 1. Offset Table.
-    fontData.seek(0);
-    // Get the outline format!
-    this.outlineFormat = getOutlineFormat(fontData.readInt());
-    // Get the number of tables!
+    fontData.seek(4);
     int tableCount = fontData.readUnsignedShort();
 
     // 2. Table Directory.
@@ -748,6 +722,7 @@ final class OpenFontParser
       // Skip to the next entry!
       fontData.skip(4);
     }
+    outlineFormat = (tableOffsets.containsKey(TableName_CFF) ? OutlineFormatEnum.PostScript : OutlineFormatEnum.TrueType);
   }
 
   /**

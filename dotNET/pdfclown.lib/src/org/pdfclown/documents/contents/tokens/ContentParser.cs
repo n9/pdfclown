@@ -117,7 +117,7 @@ namespace org.pdfclown.documents.contents.tokens
     public Operation ParseOperation(
       )
     {
-      string operator_ = null;
+      string @operator = null;
       List<PdfDirectObject> operands = new List<PdfDirectObject>();
       // Parsing the operation parts...
       do
@@ -125,14 +125,14 @@ namespace org.pdfclown.documents.contents.tokens
         switch(TokenType)
         {
           case TokenTypeEnum.Keyword:
-            operator_ = (string)Token;
+            @operator = (string)Token;
             break;
           default:
             operands.Add((PdfDirectObject)ParsePdfObject());
             break;
         }
-      } while(operator_ == null && MoveNext());
-      return Operation.Get(operator_,operands);
+      } while(@operator == null && MoveNext());
+      return Operation.Get(@operator,operands);
     }
 
     public override PdfDataObject ParsePdfObject(
@@ -142,16 +142,10 @@ namespace org.pdfclown.documents.contents.tokens
       {
         case TokenTypeEnum.Literal:
           if(Token is string)
-            return new PdfString(
-              Encoding.Pdf.Encode((string)Token),
-              PdfString.SerializationModeEnum.Literal
-              );
+            return new PdfByteString(Encoding.Pdf.Encode((string)Token));
           break;
         case TokenTypeEnum.Hex:
-          return new PdfString(
-            (string)Token,
-            PdfString.SerializationModeEnum.Hex
-            );
+          return new PdfByteString((string)Token);
       }
       return base.ParsePdfObject();
     }

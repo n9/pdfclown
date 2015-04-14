@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -64,9 +64,9 @@ namespace org.pdfclown.documents.contents.objects
 
     #region constructors
     private ModifyClipPath(
-      string operator_,
+      string @operator,
       WindModeEnum clipMode
-      ) : base(operator_)
+      ) : base(@operator)
     {this.clipMode = clipMode;}
     #endregion
 

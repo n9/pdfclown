@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,7 +42,7 @@ import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.1, 11/01/11
+  @version 0.1.2.1, 04/08/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class CompositeObject
@@ -122,7 +122,7 @@ public abstract class CompositeObject
   @Override
   public String toString(
     )
-  {return "{" + objects.toString() + "}";}
+  {return "{" + getClass().getSimpleName() + " " + objects.toString() + "}";}
 
   @Override
   public void writeTo(

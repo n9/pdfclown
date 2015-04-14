@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -68,37 +68,37 @@ namespace org.pdfclown.documents.contents.objects
     {}
 
     public SetStrokeColor(
-      string operator_,
+      string @operator,
       IList<PdfDirectObject> operands
-      ) : base(operator_, operands)
+      ) : base(@operator, operands)
     {}
 
     protected SetStrokeColor(
-      string operator_,
+      string @operator,
       Color value
-      ) : base(operator_, new List<PdfDirectObject>(value.Components))
+      ) : base(@operator, new List<PdfDirectObject>(value.Components))
     {}
 
     /**
-      <param name="operator_">Graphics operator.</param>
+      <param name="operator">Graphics operator.</param>
       <param name="name">Name of the color resource entry (see <see cref="Pattern"/>).</param>
      */
     protected SetStrokeColor(
-      string operator_,
+      string @operator,
       PdfName name
-      ) : this(operator_, name, null)
+      ) : this(@operator, name, null)
     {}
 
     /**
-      <param name="operator_">Graphics operator.</param>
+      <param name="operator">Graphics operator.</param>
       <param name="name">Name of the color resource entry (see <see cref="Pattern"/>).</param>
       <param name="underlyingColor">Color used to colorize the pattern.</param>
      */
     protected SetStrokeColor(
-      string operator_,
+      string @operator,
       PdfName name,
       Color underlyingColor
-      ) : base(operator_, new List<PdfDirectObject>())
+      ) : base(@operator, new List<PdfDirectObject>())
     {
       if(underlyingColor != null)
       {

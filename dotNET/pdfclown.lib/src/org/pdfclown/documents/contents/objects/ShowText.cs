@@ -59,20 +59,20 @@ namespace org.pdfclown.documents.contents.objects
     #region dynamic
     #region constructors
     protected ShowText(
-      string operator_
-      ) : base(operator_)
+      string @operator
+      ) : base(@operator)
     {}
 
     protected ShowText(
-      string operator_,
+      string @operator,
       params PdfDirectObject[] operands
-      ) : base(operator_, operands)
+      ) : base(@operator, operands)
     {}
 
     protected ShowText(
-      string operator_,
+      string @operator,
       IList<PdfDirectObject> operands
-      ) : base(operator_, operands)
+      ) : base(@operator, operands)
     {}
     #endregion
 
@@ -107,7 +107,8 @@ namespace org.pdfclown.documents.contents.objects
       Font font = state.Font;
       double fontSize = state.FontSize;
       double scaledFactor = Font.GetScalingFactor(fontSize) * state.Scale;
-      double wordSpace = state.WordSpace * state.Scale;
+      bool wordSpaceSupported = !(font is CompositeFont);
+      double wordSpace = wordSpaceSupported ? state.WordSpace * state.Scale : 0;
       double charSpace = state.CharSpace * state.Scale;
       Matrix ctm = state.Ctm.Clone();
       Matrix tm = state.Tm;
@@ -119,7 +120,8 @@ namespace org.pdfclown.documents.contents.objects
         {
           if(textScanner == null)
           {state.WordSpace = newWordSpace.Value;}
-          wordSpace = newWordSpace.Value * state.Scale;
+          if(wordSpaceSupported)
+          {wordSpace = newWordSpace.Value * state.Scale;}
         }
         double? newCharSpace = showTextToNextLine.CharSpace;
         if(newCharSpace != null)

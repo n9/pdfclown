@@ -56,8 +56,8 @@ import org.pdfclown.documents.contents.objects.SaveGraphicsState;
 import org.pdfclown.documents.contents.objects.Shading;
 import org.pdfclown.documents.contents.objects.Text;
 import org.pdfclown.documents.contents.objects.XObject;
+import org.pdfclown.objects.PdfByteString;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfString;
 import org.pdfclown.tokens.BaseParser;
 import org.pdfclown.tokens.Encoding;
 import org.pdfclown.util.parsers.PostScriptParseException;
@@ -67,7 +67,7 @@ import org.pdfclown.util.parsers.PostScriptParseException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2.1, 03/10/15
+  @version 0.1.2.1, 04/08/15
 */
 public final class ContentParser
   extends BaseParser
@@ -175,16 +175,10 @@ public final class ContentParser
     {
       case Literal:
         if(getToken() instanceof String)
-          return new PdfString(
-            Encoding.Pdf.encode((String)getToken()),
-            PdfString.SerializationModeEnum.Literal
-            );
+          return new PdfByteString(Encoding.Pdf.encode((String)getToken()));
         break;
       case Hex:
-        return new PdfString(
-          (String)getToken(),
-          PdfString.SerializationModeEnum.Hex
-          );
+        return new PdfByteString((String)getToken());
       default:
       {
         /* NOOP */

@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.io.IOException;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
@@ -15,6 +14,7 @@ import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.documents.contents.xObjects.XObject;
 import org.pdfclown.files.File;
+import org.pdfclown.util.io.IOUtils;
 import org.pdfclown.util.math.geom.GeomUtils;
 
 /**
@@ -24,7 +24,7 @@ import org.pdfclown.util.math.geom.GeomUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.5
-  @version 0.1.2, 11/30/12
+  @version 0.1.2.1, 04/08/15
 */
 public class PageToFormSample
   extends Sample
@@ -61,13 +61,7 @@ public class PageToFormSample
     finally
     {
       // 6. Closing the PDF file...
-      if(formFile != null)
-      {
-        try
-        {formFile.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(formFile);
     }
   }
 

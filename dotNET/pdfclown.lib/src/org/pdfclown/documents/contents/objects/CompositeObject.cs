@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -104,7 +104,7 @@ namespace org.pdfclown.documents.contents.objects
 
     public override string ToString(
       )
-    {return "{" + objects.ToString() + "}";}
+    {return "{" + GetType().Name + " " + objects.ToString() + "}";}
 
     public override void WriteTo(
       IOutputStream stream,

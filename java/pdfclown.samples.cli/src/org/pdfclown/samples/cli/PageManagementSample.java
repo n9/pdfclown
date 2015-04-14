@@ -1,7 +1,6 @@
 package org.pdfclown.samples.cli;
 
 import java.awt.geom.Rectangle2D;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +13,7 @@ import org.pdfclown.documents.Pages;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.tools.PageManager;
+import org.pdfclown.util.io.IOUtils;
 import org.pdfclown.util.math.geom.Dimension;
 
 /**
@@ -22,7 +22,7 @@ import org.pdfclown.util.math.geom.Dimension;
   splits of groups of pages.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/01/15
+  @version 0.1.2.1, 04/08/15
 */
 public class PageManagementSample
   extends Sample
@@ -166,13 +166,7 @@ public class PageManagementSample
           finally
           {
             // Closing the source file...
-            if(sourceFile != null)
-            {
-              try
-              {sourceFile.close();}
-              catch(IOException e)
-              {/* NOOP */}
-            }
+            IOUtils.closeQuietly(sourceFile);
           }
         } break;
         case PageMovement:
@@ -249,13 +243,7 @@ public class PageManagementSample
           finally
           {
             // Closing the source file...
-            if(sourceFile != null)
-            {
-              try
-              {sourceFile.close();}
-              catch(IOException e)
-              {/* NOOP */}
-            }
+            IOUtils.closeQuietly(sourceFile);
           }
         } break;
         case DocumentBurst:
@@ -329,13 +317,7 @@ public class PageManagementSample
     finally
     {
       // Closing the main file...
-      if(mainFile != null)
-      {
-        try
-        {mainFile.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(mainFile);
     }
   }
 

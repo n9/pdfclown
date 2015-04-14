@@ -26,7 +26,7 @@ namespace org.pdfclown.samples.cli
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      using(File file = new File(filePath))
+      using(var file = new File(filePath))
       {
         Document document = file.Document;
         Page page = document.Pages[1]; // Page 2 (zero-based index).
@@ -42,19 +42,14 @@ namespace org.pdfclown.samples.cli
           );
 
         // 2.2. Remote go-to.
-        try
-        {
-          /*
-            NOTE: This statement instructs the PDF viewer to navigate to the given URI on page 2
-            opening.
-          */
-          page.Actions.OnOpen = new GoToURI(
-            document,
-            new Uri("http://www.sourceforge.net/projects/clown")
-            );
-        }
-        catch(Exception exception)
-        {throw new Exception("Remote goto failed.",exception);}
+        /*
+          NOTE: This statement instructs the PDF viewer to navigate to the given URI on page 2
+          opening.
+        */
+        page.Actions.OnOpen = new GoToURI(
+          document,
+          new Uri("http://www.sourceforge.net/projects/clown")
+          );
 
         // 3. Serialize the PDF file!
         Serialize(file, "Actions", "applying actions", "actions, creation, local goto, remote goto");

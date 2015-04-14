@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
+import org.pdfclown.objects.PdfByteString;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfString;
 
@@ -37,7 +38,7 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 03/22/11
+  @version 0.1.2.1, 04/08/15
 */
 @PDF(VersionEnum.PDF10)
 public final class ShowSimpleText
@@ -58,7 +59,7 @@ public final class ShowSimpleText
   public ShowSimpleText(
     byte[] text
     )
-  {super(Operator, new PdfString(text));}
+  {super(Operator, new PdfByteString(text));}
 
   public ShowSimpleText(
     List<PdfDirectObject> operands
@@ -77,7 +78,7 @@ public final class ShowSimpleText
   public void setText(
     byte[] value
     )
-  {operands.set(0, new PdfString(value));}
+  {operands.set(0, new PdfByteString(value));}
   // </public>
   // </interface>
   // </dynamic>

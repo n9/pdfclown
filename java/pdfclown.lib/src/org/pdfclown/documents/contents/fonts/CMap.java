@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,13 +36,14 @@ import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.util.ByteArray;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   Character map [PDF:1.6:5.6.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/25/11
+  @version 0.1.2.1, 04/08/15
 */
 final class CMap
 {
@@ -114,15 +115,22 @@ final class CMap
     )
   {
     Map<ByteArray,Integer> cmap;
+    InputStream cmapResourceStream = null;
+    BufferedReader cmapStream = null;
+    try
     {
-      InputStream cmapResourceStream = CMap.class.getResourceAsStream("/fonts/cmap/" + name);
+      cmapResourceStream = CMap.class.getResourceAsStream("/fonts/cmap/" + name);
       if(cmapResourceStream == null)
         return null;
 
-      BufferedReader cmapStream = new BufferedReader(
-        new InputStreamReader(cmapResourceStream)
-        );
-      cmap = get(new Buffer(cmapStream));
+      cmap = get(new Buffer(cmapStream = new BufferedReader(new InputStreamReader(cmapResourceStream))));
+      
+      IOUtils.close(cmapStream);
+    }
+    finally
+    {
+      IOUtils.closeQuietly(cmapStream);
+      IOUtils.closeQuietly(cmapResourceStream);
     }
     return cmap;
   }

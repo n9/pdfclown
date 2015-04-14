@@ -23,7 +23,7 @@ namespace org.pdfclown.samples.cli
     {
       // 1. Opening the form source file...
       string filePath = PromptFileChoice("Please select a PDF file to use as form");
-      using(File formFile = new File(filePath))
+      using(var formFile = new File(filePath))
       {
         // 2. Instantiate a new PDF file!
         File file = new File();

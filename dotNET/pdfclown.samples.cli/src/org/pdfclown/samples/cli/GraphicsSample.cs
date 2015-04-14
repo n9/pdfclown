@@ -705,7 +705,7 @@ namespace org.pdfclown.samples.cli
             0
             );
 
-          composer.SetFont(sampleFont, 10);
+          composer.SetFont(sampleFont, 12);
           for(int index = 0; index < 2; index++)
           {
             int frameX;
@@ -731,7 +731,7 @@ namespace org.pdfclown.samples.cli
               );
             blockComposer.Begin(frame,xAlignment,yAlignment);
             blockComposer.ShowText(
-              "Demonstrating how to constrain text inside a page area using PDF Clown. See the other available code samples (such as TypesettingSample) to discover more functionality details."
+              "Demonstrating how to constrain text inside a page area. See the other code samples for more usage tips."
               );
             blockComposer.End();
 

@@ -1,19 +1,18 @@
 package org.pdfclown.samples.cli;
 
-import java.io.IOException;
-
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.layers.ILayerNode;
 import org.pdfclown.documents.contents.layers.LayerDefinition;
 import org.pdfclown.documents.contents.layers.Layers;
 import org.pdfclown.files.File;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   This sample demonstrates how to parse existing layers.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 09/24/12
+  @version 0.1.2.1, 04/08/15
 */
 public class LayerParsingSample
   extends Sample
@@ -50,13 +49,7 @@ public class LayerParsingSample
     finally
     {
       // 4. Closing the PDF file...
-      if(file != null)
-      {
-        try
-        {file.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(file);
     }
   }
 

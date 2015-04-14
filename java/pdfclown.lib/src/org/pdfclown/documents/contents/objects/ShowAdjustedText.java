@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -34,8 +34,9 @@ import java.util.List;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.objects.PdfArray;
+import org.pdfclown.objects.PdfByteString;
 import org.pdfclown.objects.PdfDirectObject;
-import org.pdfclown.objects.PdfReal;
+import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfString;
 
@@ -45,7 +46,7 @@ import org.pdfclown.objects.PdfString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 02/04/12
+  @version 0.1.2.1, 04/08/15
 */
 @PDF(VersionEnum.PDF10)
 public final class ShowAdjustedText
@@ -66,16 +67,16 @@ public final class ShowAdjustedText
       If it is a number (glyph adjustment), the operator adjusts the next glyph position by that amount.
   */
   public ShowAdjustedText(
-    List<Object> value,
-    int reserved
+    List<Object> value
     )
   {
-    super(Operator);
+    super(Operator, (PdfDirectObject)new PdfArray());
     setValue(value);
   }
 
-  public ShowAdjustedText(
-    List<PdfDirectObject> operands
+  ShowAdjustedText(
+    List<PdfDirectObject> operands,
+    int reserved
     )
   {super(Operator,operands);}
   // </constructors>
@@ -125,16 +126,16 @@ public final class ShowAdjustedText
     List<Object> value
     )
   {
-    PdfArray elements = new PdfArray();
-    operands.set(0,elements);
+    PdfArray elements = (PdfArray)operands.get(0);
+    elements.clear();
     boolean textItemExpected = true;
     for(Object valueItem : value)
     {
       PdfDirectObject element;
       if(textItemExpected)
-      {element = new PdfString((byte[])valueItem);}
+      {element = new PdfByteString((byte[])valueItem);}
       else
-      {element = PdfReal.get((Double)valueItem);}
+      {element = PdfInteger.get(((Number)valueItem).intValue());}
       elements.add(element);
 
       textItemExpected = !textItemExpected;

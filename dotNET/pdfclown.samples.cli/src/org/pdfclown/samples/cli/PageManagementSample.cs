@@ -40,7 +40,7 @@ namespace org.pdfclown.samples.cli
 
       // Opening the PDF file...
       string mainFilePath = PromptFileChoice("Please select a PDF file");
-      using(File mainFile = new File(mainFilePath))
+      using(var mainFile = new File(mainFilePath))
       {
         Document mainDocument = mainFile.Document;
         Pages mainPages = mainDocument.Pages;
@@ -102,7 +102,7 @@ namespace org.pdfclown.samples.cli
           {
             // Opening the source file...
             string sourceFilePath = PromptFileChoice("Select the source PDF file");
-            using(File sourceFile = new File(sourceFilePath))
+            using(var sourceFile = new File(sourceFilePath))
             {
               // Source page collection.
               Pages sourcePages = sourceFile.Document.Pages;
@@ -183,7 +183,7 @@ namespace org.pdfclown.samples.cli
           {
             // Opening the source file...
             string sourceFilePath = PromptFileChoice("Select the source PDF file");
-            using(File sourceFile = new File(sourceFilePath))
+            using(var sourceFile = new File(sourceFilePath))
             {
               // Append the chosen source document to the main document!
               new PageManager(mainDocument).Add(sourceFile.Document);

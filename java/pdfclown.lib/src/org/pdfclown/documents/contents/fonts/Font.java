@@ -49,6 +49,8 @@ import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfStream;
+import org.pdfclown.tokens.DecodeException;
+import org.pdfclown.tokens.EncodeException;
 import org.pdfclown.util.BiMap;
 import org.pdfclown.util.ByteArray;
 import org.pdfclown.util.NotImplementedException;
@@ -57,7 +59,7 @@ import org.pdfclown.util.NotImplementedException;
   Abstract font [PDF:1.6:5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/21/15
+  @version 0.1.2.1, 04/08/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Font
@@ -153,6 +155,7 @@ public abstract class Font
 
   // <static>
   // <fields>
+  private static final int UndefinedDefaultCode = Integer.MIN_VALUE;
   private static final int UndefinedWidth = Integer.MIN_VALUE;
   // </fields>
 
@@ -324,6 +327,10 @@ public abstract class Font
   */
   private int charCodeMaxLength = 0;
   /**
+    Default Unicode for missing characters.
+  */
+  private int defaultCode = UndefinedDefaultCode;
+  /**
     Default glyph width.
   */
   private int defaultWidth = UndefinedWidth;
@@ -371,7 +378,7 @@ public abstract class Font
   */
   public final String decode(
     byte[] code
-    )
+    ) throws DecodeException
   {
     StringBuilder textBuilder = new StringBuilder();
     {
@@ -382,13 +389,13 @@ public abstract class Font
         codeBufferIndex++
         )
       {codeBuffers[codeBufferIndex] = new byte[codeBufferIndex];}
-      int position = 0;
+      int index = 0;
       int codeLength = code.length;
       int codeBufferSize = 1;
-      while(position < codeLength)
+      while(index < codeLength)
       {
         byte[] codeBuffer = codeBuffers[codeBufferSize];
-        System.arraycopy(code,position,codeBuffer,0,codeBufferSize);
+        System.arraycopy(code, index, codeBuffer, 0, codeBufferSize);
         Integer textChar = codes.get(new ByteArray(codeBuffer));
         if(textChar == null)
         {
@@ -397,16 +404,25 @@ public abstract class Font
             codeBufferSize++;
             continue;
           }
-          /*
-            NOTE: In case no valid code entry is found, a default space is resiliantely
-            applied instead of throwing an exception.
-            This is potentially risky as failing to determine the actual code length
-            may result in a "code shifting" which could affect following characters.
-           */
-          textChar = (int)' ';
+          else // Missing character.
+          {
+            switch(getDocument().getConfiguration().getEncodingFallback())
+            {
+              case Exclusion:
+                break;
+              case Substitution:
+                textChar = defaultCode;
+                break;
+              case Exception:
+                throw new DecodeException(code, index);
+              default:
+                throw new NotImplementedException();
+            }
+          }
         }
-        textBuilder.append((char)(int)textChar);
-        position += codeBufferSize;
+        if(textChar != null)
+        {textBuilder.append((char)(int)textChar);}
+        index += codeBufferSize;
         codeBufferSize = 1;
       }
     }
@@ -421,7 +437,7 @@ public abstract class Font
   */
   public final byte[] encode(
     String text
-    )
+    ) throws EncodeException
   {
     ByteArrayOutputStream encodedStream = new ByteArrayOutputStream();
     try
@@ -432,7 +448,24 @@ public abstract class Font
         if(textCode < 32) // NOTE: Control characters are ignored [FIX:7].
           continue;
         
-        byte[] charCode = codes.getKey(textCode).data;
+        ByteArray code = codes.getKey(textCode);
+        if(code == null) // Missing glyph.
+        {
+          switch(getDocument().getConfiguration().getEncodingFallback())
+          {
+            case Exclusion:
+              continue;
+            case Substitution:
+              code = codes.getKey(defaultCode);
+              break;
+            case Exception:
+              throw new EncodeException(text, index);
+            default:
+              throw new NotImplementedException();
+          }
+        }
+        
+        byte[] charCode = code.data;
         encodedStream.write(charCode);
         usedCodes.add(textCode);
       }
@@ -474,6 +507,20 @@ public abstract class Font
     )
   {return getAscent() * getScalingFactor(size);}
 
+  /**
+    Gets the Unicode code-points supported by this font.
+  */
+  public Set<Integer> getCodePoints(
+    )
+  {return glyphIndexes.keySet();}
+  
+  /**
+    Gets the Unicode codepoint used to substitute missing characters.
+  */
+  public int getDefaultCode(
+    )
+  {return defaultCode;}
+  
   /**
     Gets the unscaled vertical offset from the baseline to the descender line (descent).
     The value is a negative number.
@@ -587,7 +634,7 @@ public abstract class Font
   public final double getKernedWidth(
     String text,
     double size
-    )
+    ) throws EncodeException
   {return (getWidth(text) + getKerning(text)) * getScalingFactor(size);}
 
   /**
@@ -682,11 +729,23 @@ public abstract class Font
   */
   public int getWidth(
     char textChar
-    )
+    ) throws EncodeException
   {
     Integer glyphIndex = glyphIndexes.get((int)textChar);
     if(glyphIndex == null)
-      return textChar == ' ' ? getAverageWidth() : 0;
+    {
+      switch(getDocument().getConfiguration().getEncodingFallback())
+      {
+        case Exclusion:
+          return 0;
+        case Substitution:
+          return getDefaultWidth();
+        case Exception:
+          throw new EncodeException(textChar);
+        default:
+          throw new NotImplementedException();
+      }
+    }
 
     Integer glyphWidth = glyphWidths.get(glyphIndex);
     return glyphWidth != null ? glyphWidth : getDefaultWidth();
@@ -701,7 +760,7 @@ public abstract class Font
   public final double getWidth(
     char textChar,
     double size
-    )
+    ) throws EncodeException
   {return getWidth(textChar) * getScalingFactor(size);}
 
   /**
@@ -711,7 +770,7 @@ public abstract class Font
   */
   public int getWidth(
     String text
-    )
+    ) throws EncodeException
   {
     int width = 0;
     for(int index = 0, length = text.length(); index < length; index++)
@@ -728,7 +787,7 @@ public abstract class Font
   public final double getWidth(
     String text,
     double size
-    )
+    ) throws EncodeException
   {return getWidth(text) * getScalingFactor(size);}
 
   @Override
@@ -742,6 +801,21 @@ public abstract class Font
   public boolean isSymbolic(
     )
   {return symbolic;}
+  
+  /**
+    @see #getDefaultCode()
+    @throws EncodeException
+      If the value is not mapped in the font's encoding.
+  */
+  public void setDefaultCode(
+    int value
+    ) throws EncodeException
+  {
+    if(!glyphIndexes.containsKey(value))
+      throw new EncodeException((char)value);
+    
+    defaultCode = value;
+  }
   // </public>
 
   // <protected>
@@ -805,6 +879,17 @@ public abstract class Font
     {
       if(charCode.data.length > charCodeMaxLength)
       {charCodeMaxLength = charCode.data.length;}
+    }
+    // Missing character substitute.
+    if(defaultCode == UndefinedDefaultCode)
+    {
+      Set<Integer> codePoints = getCodePoints();
+      if(codePoints.contains((int)'?'))
+      {setDefaultCode('?');}
+      else if(codePoints.contains((int)' '))
+      {setDefaultCode(' ');}
+      else
+      {setDefaultCode(codePoints.iterator().next());}
     }
   }
 

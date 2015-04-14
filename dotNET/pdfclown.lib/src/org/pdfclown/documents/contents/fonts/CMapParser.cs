@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,10 +47,15 @@ namespace org.pdfclown.documents.contents.fonts
   {
     #region static
     #region fields
-    private static readonly string BeginBaseFontCharOperator = "beginbfchar";
-    private static readonly string BeginBaseFontRangeOperator = "beginbfrange";
-    private static readonly string BeginCIDCharOperator = "begincidchar";
-    private static readonly string BeginCIDRangeOperator = "begincidrange";
+    internal static readonly string BeginBaseFontCharOperator = "beginbfchar";
+    internal static readonly string BeginBaseFontRangeOperator = "beginbfrange";
+    internal static readonly string BeginCIDCharOperator = "begincidchar";
+    internal static readonly string BeginCIDRangeOperator = "begincidrange";
+    internal static readonly string EndBaseFontCharOperator = "endbfchar";
+    internal static readonly string EndBaseFontRangeOperator = "endbfrange";
+    internal static readonly string EndCIDCharOperator = "endcidchar";
+    internal static readonly string EndCIDRangeOperator = "endcidrange";
+    internal static readonly string UseCMapOperator = "usecmap";
     #endregion
     #endregion
 
@@ -78,26 +83,22 @@ namespace org.pdfclown.documents.contents.fonts
       Stream.Position = 0;
       IDictionary<ByteArray,int> codes = new Dictionary<ByteArray,int>();
       {
-        int itemCount = 0;
+        IList<object> operands = new List<object>();
         while(MoveNext())
         {
           switch(TokenType)
           {
             case TokenTypeEnum.Keyword:
             {
-              string operator_ = (string)Token;
-              if(operator_.Equals(BeginBaseFontCharOperator)
-                || operator_.Equals(BeginCIDCharOperator))
+              string @operator = (string)Token;
+              if(@operator.Equals(BeginBaseFontCharOperator)
+                || @operator.Equals(BeginCIDCharOperator))
               {
                 /*
                   NOTE: The first element on each line is the input code of the template font;
                   the second element is the code or name of the character.
                 */
-                for(
-                  int itemIndex = 0;
-                  itemIndex < itemCount;
-                  itemIndex++
-                  )
+                for(int itemIndex = 0, itemCount = (int)operands[0]; itemIndex < itemCount; itemIndex++)
                 {
                   MoveNext();
                   ByteArray inputCode = new ByteArray(ParseInputCode());
@@ -105,19 +106,15 @@ namespace org.pdfclown.documents.contents.fonts
                   codes[inputCode] = ParseUnicode();
                 }
               }
-              else if(operator_.Equals(BeginBaseFontRangeOperator)
-                || operator_.Equals(BeginCIDRangeOperator))
+              else if(@operator.Equals(BeginBaseFontRangeOperator)
+                || @operator.Equals(BeginCIDRangeOperator))
               {
                 /*
                   NOTE: The first and second elements in each line are the beginning and
                   ending valid input codes for the template font; the third element is
                   the beginning character code for the range.
                 */
-                for(
-                  int itemIndex = 0;
-                  itemIndex < itemCount;
-                  itemIndex++
-                  )
+                for(int itemIndex = 0, itemCount = (int)operands[0]; itemIndex < itemCount; itemIndex++)
                 {
                   // 1. Beginning input code.
                   MoveNext();
@@ -159,11 +156,29 @@ namespace org.pdfclown.documents.contents.fonts
                   }
                 }
               }
+              else if(@operator.Equals(UseCMapOperator))
+              {codes = CMap.Get((string)operands[0]);}
+              operands.Clear();
               break;
             }
-            case TokenTypeEnum.Integer:
+            case TokenTypeEnum.ArrayBegin:
+            case TokenTypeEnum.DictionaryBegin:
             {
-              itemCount = (int)Token;
+              // Skip.
+              while(MoveNext())
+              {
+                if(TokenType == TokenTypeEnum.ArrayEnd
+                  || TokenType == TokenTypeEnum.DictionaryEnd)
+                  break;
+              }
+              break;
+            }
+            case TokenTypeEnum.Comment:
+              // Skip.
+              break;
+            default:
+            {
+              operands.Add(Token);
               break;
             }
           }

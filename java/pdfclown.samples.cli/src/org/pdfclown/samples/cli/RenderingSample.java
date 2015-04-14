@@ -11,6 +11,7 @@ import org.pdfclown.documents.Page;
 import org.pdfclown.documents.Pages;
 import org.pdfclown.files.File;
 import org.pdfclown.tools.Renderer;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   This sample demonstrates <b>how to render a PDF page as a raster image</b>.
@@ -19,7 +20,7 @@ import org.pdfclown.tools.Renderer;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.2, 09/24/12
+  @version 0.1.2.1, 04/08/15
 */
 public class RenderingSample
   extends Sample
@@ -58,13 +59,7 @@ public class RenderingSample
     finally
     {
       // 4. Closing the PDF file...
-      if(file != null)
-      {
-        try
-        {file.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(file);
     }
   }
 }

@@ -1,6 +1,5 @@
 package org.pdfclown.samples.cli;
 
-import java.io.IOException;
 import java.util.Map;
 
 import org.pdfclown.bytes.IBuffer;
@@ -13,12 +12,13 @@ import org.pdfclown.documents.interaction.annotations.Annotation;
 import org.pdfclown.documents.interaction.annotations.FileAttachment;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfString;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   This sample demonstrates how to extract attachments from a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 01/02/13
+  @version 0.1.2.1, 04/08/15
 */
 public class AttachmentExtractionSample
   extends Sample
@@ -58,13 +58,7 @@ public class AttachmentExtractionSample
     finally
     {
       // 3. Closing the PDF file...
-      if(file != null)
-      {
-        try
-        {file.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(file);
     }
   }
 

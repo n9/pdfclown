@@ -2,9 +2,12 @@ using org.pdfclown.documents;
 using org.pdfclown.documents.contents.composition;
 using org.pdfclown.documents.contents.fonts;
 using org.pdfclown.files;
+using org.pdfclown.tokens;
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace org.pdfclown.samples.cli
 {
@@ -42,6 +45,13 @@ namespace org.pdfclown.samples.cli
       document.Pages.Add(page);
       SizeF pageSize = page.Size;
 
+      /*
+        NOTE: Default fallback behavior on text encoding mismatch is substitution with default
+        character; in this case, we want to force an exception to be thrown so we can explicitly
+        handle the issue.
+      */
+      document.Configuration.EncodingFallback = EncodingFallbackEnum.Exception;
+
       PrimitiveComposer composer = new PrimitiveComposer(page);
 
       int x = Margin, y = Margin;
@@ -67,35 +77,11 @@ namespace org.pdfclown.samples.cli
               || fontFamily == StandardType1Font.FamilyEnum.ZapfDingbats))
               break;
 
-          bool bold, italic;
-          switch(styleIndex)
-          {
-            case 0: // Regular.
-              bold = false;
-              italic = false;
-              break;
-            case 1: // Bold.
-              bold = true;
-              italic = false;
-              break;
-            case 2: // Italic.
-              bold = false;
-              italic = true;
-              break;
-            case 3: // Bold italic.
-              bold = true;
-              italic = true;
-              break;
-            default:
-              throw new Exception("styleIndex " + styleIndex + " not supported.");
-          }
+          bool bold = (styleIndex & 1) > 0;
+          bool italic = (styleIndex & 2) > 0;
+
           // Define the font used to show its character set!
-          font = new StandardType1Font(
-            document,
-            fontFamily,
-            bold,
-            italic
-            );
+          font = new StandardType1Font(document, fontFamily, bold, italic);
 
           if(y > pageSize.Height - Margin)
           {
@@ -105,14 +91,15 @@ namespace org.pdfclown.samples.cli
             document.Pages.Add(page);
             pageSize = page.Size;
             composer = new PrimitiveComposer(page);
-            x = Margin; y = Margin;
+            x = Margin;
+            y = Margin;
           }
 
           if(styleIndex == 0)
           {
             composer.DrawLine(
-              new PointF(x,y),
-              new PointF(pageSize.Width - Margin,y)
+              new PointF(x, y),
+              new PointF(pageSize.Width - Margin, y)
               );
             composer.Stroke();
             y += 5;
@@ -124,14 +111,14 @@ namespace org.pdfclown.samples.cli
             );
           composer.ShowText(
             fontFamily.ToString() + (bold ? " bold" : "") + (italic ? " italic" : ""),
-            new PointF(x,y)
+            new PointF(x, y)
             );
 
           y += 40;
           // Set the font used to show its character set!
           composer.SetFont(font,FontBaseSize);
           // Iterating through the font characters...
-          for(int charCode = 32; charCode < 256; charCode++)
+          foreach(int charCode in font.CodePoints.OrderBy(codePoint => codePoint))
           {
             if(y > pageSize.Height - Margin)
             {
@@ -141,7 +128,8 @@ namespace org.pdfclown.samples.cli
               document.Pages.Add(page);
               pageSize = page.Size;
               composer = new PrimitiveComposer(page);
-              x = Margin; y = Margin;
+              x = Margin;
+              y = Margin;
 
               composer.SetFont(titleFont,FontBaseSize);
               composer.ShowText(
@@ -157,20 +145,28 @@ namespace org.pdfclown.samples.cli
 
             try
             {
-              // Show the current character (using the current standard Type 1 font)!
+              // Show the character!
               composer.ShowText(
-                new String(new char[]{(char)charCode}),
-                new PointF(x,y)
+                new String((char)charCode, 1),
+                new PointF(x, y)
                 );
               x += FontBaseSize;
               if(x > pageSize.Width - Margin)
               {x = Margin; y += 30;}
             }
-            catch
-            { /* Ignore */ }
+            catch(EncodeException)
+            {
+              /*
+                NOOP -- NOTE: document.Configuration.EncodingFallback allows to customize the
+                behavior in case of missing character: we can alternatively catch an exception, have
+                the character substituted by a default one (typically '?' symbol) or have the
+                character silently excluded.
+              */
+            }
           }
 
-          x = Margin; y += Margin;
+          x = Margin;
+          y += Margin;
         }
       }
       composer.Flush();

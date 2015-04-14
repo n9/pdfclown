@@ -28,7 +28,7 @@ namespace org.pdfclown.samples.cli
       {
         // 1.1. Opening the PDF file...
         string filePath = PromptFileChoice("Please select a PDF file");
-        using(files::File file = new files::File(filePath))
+        using(var file = new files::File(filePath))
         {
           Document document = file.Document;
           /*
@@ -67,7 +67,7 @@ namespace org.pdfclown.samples.cli
       // 2. Reimporting the externalized streams...
       {
         // 2.1. Opening the PDF file...
-        using(files::File file = new files::File(externalizedFilePath))
+        using(var file = new files::File(externalizedFilePath))
         {
           // 2.2. Iterating through the indirect objects to internalize streams...
           foreach(PdfIndirectObject indirectObject in file.IndirectObjects)

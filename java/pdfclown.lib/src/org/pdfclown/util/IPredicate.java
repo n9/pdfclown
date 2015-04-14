@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,11 +29,12 @@ package org.pdfclown.util;
   Predicate interface.
   
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 04/08/15
 */
 public interface IPredicate
+  extends IFunction<Object,Boolean>
 {
-  boolean evaluate(
+  Boolean apply(
     Object object
     );
 }

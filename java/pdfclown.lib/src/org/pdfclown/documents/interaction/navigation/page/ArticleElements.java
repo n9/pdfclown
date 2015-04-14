@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,7 +47,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 04/08/15
 */
 @PDF(VersionEnum.PDF11)
 public class ArticleElements
@@ -73,7 +73,7 @@ public class ArticleElements
     protected int index = -1;
 
     @Override
-    public boolean evaluate(
+    public Boolean apply(
       Object object
       )
     {
@@ -94,11 +94,11 @@ public class ArticleElements
     {this.beadIndex = beadIndex;}
 
     @Override
-    public boolean evaluate(
+    public Boolean apply(
       Object object
       )
     {
-      super.evaluate(object);
+      super.apply(object);
       if(index == beadIndex)
       {
         bead = (PdfDictionary)object;
@@ -123,11 +123,11 @@ public class ArticleElements
     {this.searchedBead = searchedBead;}
 
     @Override
-    public boolean evaluate(
+    public Boolean apply(
       Object object
       )
     {
-      super.evaluate(object);
+      super.apply(object);
       return object.equals(searchedBead);
     }
 
@@ -142,7 +142,7 @@ public class ArticleElements
     public List<ArticleElement> elements = new ArrayList<ArticleElement>();
 
     @Override
-    public boolean evaluate(
+    public Boolean apply(
       Object object
       )
     {
@@ -438,7 +438,7 @@ public class ArticleElements
     PdfDictionary bead = firstBead;
     while(bead != null)
     {
-      if(predicate.evaluate(bead))
+      if(predicate.apply(bead))
         break;
 
       bead = (PdfDictionary)bead.resolve(PdfName.N);

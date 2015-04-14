@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,7 +33,7 @@ import java.awt.geom.Rectangle2D;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.2.1, 04/08/15
 */
 public final class TextChar
 {
@@ -63,6 +63,11 @@ public final class TextChar
 
   // <interface>
   // <public>
+  public boolean contains(
+    char value
+    )
+  {return this.value == value;}
+  
   public Rectangle2D getBox(
     )
   {return box;}

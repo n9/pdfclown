@@ -46,47 +46,20 @@ namespace org.pdfclown.documents.contents.composition
     </summary>
   */
   /*
-    TODO: Manage all the graphics parameters (especially
-    those text-related, like horizontal scaling etc.) using ContentScanner -- see PDF:1.6:5.2-3!!!
+    NOTE: BlockComposer is going to become deprecated as soon as DocumentComposer fully supports its
+    functionality. Until DocumentComposer's content styles are available, BlockComposer is the only
+    way to intertwine block-level formatting with custom low-level operations like graphics
+    parameters settings (e.g. text color mixing).
   */
   public sealed class BlockComposer
   {
     #region types
-    private sealed class ContentPlaceholder
-      : Operation
-    {
-      public List<ContentObject> objects = new List<ContentObject>();
-
-      public ContentPlaceholder(
-        ) : base(null)
-      {}
-
-      public List<ContentObject> Objects
-      {
-        get
-        {return objects;}
-      }
-
-      public override void WriteTo(
-        IOutputStream stream,
-        Document context
-        )
-      {
-        foreach(ContentObject obj in objects)
-        {obj.WriteTo(stream, context);}
-      }
-    }
-
     private sealed class Row
     {
       /**
         <summary>Row base line.</summary>
       */
       public double BaseLine;
-      /**
-        <summary>Row's graphics objects container.</summary>
-      */
-      public ContentPlaceholder Container;
       public double Height;
       /**
         <summary>Row's objects.</summary>
@@ -97,19 +70,16 @@ namespace org.pdfclown.documents.contents.composition
       */
       public int SpaceCount = 0;
       public double Width;
+      public SetWordSpace WordSpaceAdjustment;
       /**
         <summary>Vertical location relative to the block frame.</summary>
       */
       public double Y;
 
       internal Row(
-        ContentPlaceholder container,
         double y
         )
-      {
-        this.Container = container;
-        this.Y = y;
-      }
+      {Y = y;}
     }
 
     private sealed class RowObject
@@ -128,11 +98,13 @@ namespace org.pdfclown.documents.contents.composition
         <summary>Graphics objects container associated to this object.</summary>
       */
       public ContainerObject Container;
+      public double FontSize;
       public double Height;
       /**
         <summary>Line alignment (can be either LineAlignmentEnum or Double).</summary>
       */
       public object LineAlignment;
+      public double Scale;
       public int SpaceCount;
       public TypeEnum Type;
       public double Width;
@@ -144,7 +116,9 @@ namespace org.pdfclown.documents.contents.composition
         double width,
         int spaceCount,
         object lineAlignment,
-        double baseLine
+        double baseLine,
+        double fontSize,
+        double scale
         )
       {
         Type = type;
@@ -154,6 +128,8 @@ namespace org.pdfclown.documents.contents.composition
         SpaceCount = spaceCount;
         LineAlignment = lineAlignment;
         BaseLine = baseLine;
+        FontSize = fontSize;
+        Scale = scale;
       }
     }
     #endregion
@@ -254,8 +230,6 @@ namespace org.pdfclown.documents.contents.composition
         frame.Width,
         0
         );
-
-      BeginRow();
     }
 
     /**
@@ -288,6 +262,8 @@ namespace org.pdfclown.documents.contents.composition
 
       // Close the block local state!
       baseComposer.End();
+
+      container = null;
     }
 
     /**
@@ -360,12 +336,9 @@ namespace org.pdfclown.documents.contents.composition
     /**
       <summary>Ends current paragraph.</summary>
     */
-    public void ShowBreak(
+    public bool ShowBreak(
       )
-    {
-      EndRow(true);
-      BeginRow();
-    }
+    {return ShowBreak(null, null);}
 
     /**
       <summary>Ends current paragraph, specifying the offset of the next one.</summary>
@@ -373,29 +346,20 @@ namespace org.pdfclown.documents.contents.composition
       and margin.</remarks>
       <param name="offset">Relative location of the next paragraph.</param>
     */
-    public void ShowBreak(
+    public bool ShowBreak(
       SizeF offset
       )
-    {
-      ShowBreak();
-
-      currentRow.Y += offset.Height;
-      currentRow.Width = offset.Width;
-    }
+    {return ShowBreak(offset, null);}
 
     /**
       <summary>Ends current paragraph, specifying the alignment of the next one.</summary>
       <remarks>This functionality allows higher-level features such as paragraph indentation and margin.</remarks>
       <param name="xAlignment">Horizontal alignment.</param>
     */
-    public void ShowBreak(
+    public bool ShowBreak(
       XAlignmentEnum xAlignment
       )
-    {
-      ShowBreak();
-
-      this.xAlignment = xAlignment;
-    }
+    {return ShowBreak(null, xAlignment);}
 
     /**
       <summary>Ends current paragraph, specifying the offset and alignment of the next one.</summary>
@@ -403,14 +367,26 @@ namespace org.pdfclown.documents.contents.composition
       <param name="offset">Relative location of the next paragraph.</param>
       <param name="xAlignment">Horizontal alignment.</param>
     */
-    public void ShowBreak(
-      SizeF offset,
-      XAlignmentEnum xAlignment
+    public bool ShowBreak(
+      SizeF? offset,
+      XAlignmentEnum? xAlignment
       )
     {
-      ShowBreak(offset);
+      // End previous row!
+      if(!EnsureRow(false))
+        return false;
 
-      this.xAlignment = xAlignment;
+      if(xAlignment.HasValue)
+      {this.xAlignment = xAlignment.Value;}
+
+      BeginRow();
+
+      if(offset.HasValue)
+      {
+        currentRow.Y += offset.Value.Height;
+        currentRow.Width = offset.Value.Width;
+      }
+      return true;
     }
 
     /**
@@ -441,8 +417,8 @@ namespace org.pdfclown.documents.contents.composition
       object lineAlignment
       )
     {
-      if(currentRow == null
-        || text == null)
+      if(text == null
+        || !EnsureRow(true))
         return 0;
 
       ContentScanner.GraphicsState state = baseComposer.State;
@@ -511,7 +487,9 @@ namespace org.pdfclown.documents.contents.composition
               textChunkWidth,
               CountOccurrence(' ',textChunk),
               lineAlignment,
-              baseLine
+              baseLine,
+              state.FontSize,
+              state.Scale
               );
             baseComposer.ShowText(textChunk, textChunkLocation);
             baseComposer.End();  // Closes the row object's local state.
@@ -550,7 +528,7 @@ namespace org.pdfclown.documents.contents.composition
         && lineAlignment.Equals(LineAlignmentEnum.BaseLine))
       {lastFontSize = fontSize;}
 
-      return index;
+      return textFitter.EndIndex > -1 ? index : 0;
     }
 
     /**
@@ -585,8 +563,8 @@ namespace org.pdfclown.documents.contents.composition
       object lineAlignment
       )
     {
-      if(currentRow == null
-        || xObject == null)
+      if(xObject == null
+        || !EnsureRow(true))
         return false;
 
       if(!size.HasValue)
@@ -616,7 +594,9 @@ namespace org.pdfclown.documents.contents.composition
               size.Value.Width,
               0,
               lineAlignment,
-              size.Value.Height
+              size.Value.Height,
+              0,
+              0
               );
             baseComposer.ShowXObject(xObject, location, size);
             baseComposer.End(); // Closes the row object's local state.
@@ -693,16 +673,23 @@ namespace org.pdfclown.documents.contents.composition
     {
       rowEnded = false;
 
+      ContentScanner.GraphicsState state = baseComposer.State;
+
       double rowY = boundBox.Height;
       if(rowY > 0)
+      {rowY += lineSpace.GetValue(state.Font != null ? state.Font.GetLineHeight(state.FontSize) : 0);}
+      currentRow = new Row(rowY);
+      if(xAlignment == XAlignmentEnum.Justify)
       {
-        ContentScanner.GraphicsState state = baseComposer.State;
-        rowY += lineSpace.GetValue(state.Font != null ? state.Font.GetLineHeight(state.FontSize) : 0);
+        /*
+          TODO: This temporary hack forces PrimitiveComposer.showText() to insert word space
+          adjustments in case of justified text; when the row ends, it has to be updated with the
+          actual adjustment value.
+        */
+        currentRow.WordSpaceAdjustment = baseComposer.Add(new SetWordSpace(.001));
       }
-      currentRow = new Row(
-        (ContentPlaceholder)baseComposer.Add(new ContentPlaceholder()),
-        rowY
-        );
+      else if(state.WordSpace != 0)
+      {baseComposer.SetWordSpace(0);}
     }
 
     private int CountOccurrence(
@@ -738,11 +725,10 @@ namespace org.pdfclown.documents.contents.composition
 
       rowEnded = true;
 
-      double[] objectXOffsets = new double[currentRow.Objects.Count]; // Horizontal object displacements.
+      List<RowObject> objects = currentRow.Objects;
+      double[] objectXOffsets = new double[objects.Count]; // Horizontal object displacements.
       double wordSpace = 0; // Exceeding space among words.
       double rowXOffset = 0; // Horizontal row offset.
-
-      List<RowObject> objects = currentRow.Objects;
 
       // Horizontal alignment.
       XAlignmentEnum xAlignment = this.xAlignment;
@@ -757,7 +743,6 @@ namespace org.pdfclown.documents.contents.composition
           rowXOffset = (frame.Width - currentRow.Width) / 2;
           break;
         case XAlignmentEnum.Justify:
-          // Are there NO spaces?
           if(currentRow.SpaceCount == 0
             || broken) // NO spaces.
           {
@@ -778,16 +763,15 @@ namespace org.pdfclown.documents.contents.composition
               )
             {
               /*
-                NOTE: The offset represents the horizontal justification gap inserted
-                at the left side of each object.
+                NOTE: The offset represents the horizontal justification gap inserted at the left
+                side of each object.
               */
               objectXOffsets[index] = objectXOffsets[index - 1] + objects[index - 1].SpaceCount * wordSpace;
             }
           }
+          currentRow.WordSpaceAdjustment.Value = wordSpace;
           break;
       }
-
-      SetWordSpace wordSpaceOperation = new SetWordSpace(wordSpace);
 
       // Vertical alignment and translation.
       for(
@@ -836,8 +820,6 @@ namespace org.pdfclown.documents.contents.composition
         }
 
         IList<ContentObject> containedGraphics = obj.Container.Objects;
-        // Word spacing.
-        containedGraphics.Insert(0,wordSpaceOperation);
         // Translation.
         containedGraphics.Insert(
           0,
@@ -847,6 +829,24 @@ namespace org.pdfclown.documents.contents.composition
             objectYOffset // Vertical alignment.
             )
           );
+        // Word spacing.
+        if(obj.Type == RowObject.TypeEnum.Text)
+        {
+          /*
+            TODO: This temporary hack adjusts the word spacing in case of composite font.
+            When DocumentComposer replaces BlockComposer, all the graphical properties of contents
+            will be declared as styles and their composition will occur as a single pass without such
+            ugly tweakings.
+          */
+          ShowText showTextOperation = (ShowText)((Text)((LocalGraphicsState)containedGraphics[1]).Objects[1]).Objects[1];
+          if(showTextOperation is ShowAdjustedText)
+          {
+            PdfInteger wordSpaceObject = PdfInteger.Get((int)Math.Round(-wordSpace * 1000 * obj.Scale / obj.FontSize));
+            PdfArray textParams = (PdfArray)showTextOperation.Operands[0];
+            for(int textParamIndex = 1, textParamsLength = textParams.Count; textParamIndex < textParamsLength; textParamIndex += 2)
+            {textParams[textParamIndex] = wordSpaceObject;}
+          }
+        }
       }
 
       // Update the actual block height!
@@ -871,6 +871,23 @@ namespace org.pdfclown.documents.contents.composition
 
       // Discard the current row!
       currentRow = null;
+    }
+
+    private bool EnsureRow(
+      bool open
+      )
+    {
+      if(container == null)
+        return false;
+
+      if(open == (currentRow == null))
+      {
+        if(currentRow == null)
+        {BeginRow();}
+        else
+        {EndRow(true);}
+      }
+      return true;
     }
 
     private object ResolveLineAlignment(

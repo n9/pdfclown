@@ -474,6 +474,12 @@
     <Compile Include="src\org\pdfclown\documents\DocumentConfiguration.cs" />
     <Compile Include="src\org\pdfclown\files\FileConfiguration.cs" />
     <Compile Include="src\org\pdfclown\files\XRefModeEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\EncodingFallbackEnum.cs" />
+    <Compile Include="src\org\pdfclown\util\math\MathUtils.cs" />
+    <Compile Include="src\org\pdfclown\objects\PdfByteString.cs" />
+    <Compile Include="src\org\pdfclown\tokens\DecodeException.cs" />
+    <Compile Include="src\org\pdfclown\tokens\EncodeException.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\CMapBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />

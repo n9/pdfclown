@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -62,7 +62,7 @@ namespace org.pdfclown.documents.contents.objects
       byte[] text
       ) : base(
         SimpleOperatorKeyword,
-        new PdfString(text)
+        new PdfByteString(text)
         )
     {}
 
@@ -79,15 +79,15 @@ namespace org.pdfclown.documents.contents.objects
         SpaceOperatorKeyword,
         PdfReal.Get(wordSpace),
         PdfReal.Get(charSpace),
-        new PdfString(text)
+        new PdfByteString(text)
         )
     {}
 
     public ShowTextToNextLine(
-      string operator_,
+      string @operator,
       IList<PdfDirectObject> operands
       ) : base(
-        operator_,
+        @operator,
         operands
         )
     {}
@@ -102,7 +102,7 @@ namespace org.pdfclown.documents.contents.objects
     {
       get
       {
-        if(operator_.Equals(SimpleOperatorKeyword))
+        if(@operator.Equals(SimpleOperatorKeyword))
           return null;
         else
           return ((IPdfNumber)operands[1]).RawValue;
@@ -119,14 +119,14 @@ namespace org.pdfclown.documents.contents.objects
       get
       {
         return ((PdfString)operands[
-          operator_.Equals(SimpleOperatorKeyword) ? 0 : 2
+          @operator.Equals(SimpleOperatorKeyword) ? 0 : 2
           ]).RawValue;
       }
       set
       {
         operands[
-          operator_.Equals(SimpleOperatorKeyword) ? 0 : 2
-          ] = new PdfString(value);
+          @operator.Equals(SimpleOperatorKeyword) ? 0 : 2
+          ] = new PdfByteString(value);
       }
     }
 
@@ -137,7 +137,7 @@ namespace org.pdfclown.documents.contents.objects
     {
       get
       {
-        if(operator_.Equals(SimpleOperatorKeyword))
+        if(@operator.Equals(SimpleOperatorKeyword))
           return null;
         else
           return ((IPdfNumber)operands[0]).RawValue;
@@ -154,9 +154,9 @@ namespace org.pdfclown.documents.contents.objects
     private void EnsureSpaceOperation(
       )
     {
-      if(operator_.Equals(SimpleOperatorKeyword))
+      if(@operator.Equals(SimpleOperatorKeyword))
       {
-        operator_ = SpaceOperatorKeyword;
+        @operator = SpaceOperatorKeyword;
         operands.Insert(0,PdfReal.Get(0));
         operands.Insert(1,PdfReal.Get(0));
       }

@@ -75,6 +75,16 @@ namespace org.pdfclown.util.math.geom
       path.AddRectangle(rectangle);
       return path;
     }
+
+    public static PointF Transform(
+      this Matrix matrix,
+      PointF point
+      )
+    {
+      var points = new PointF[]{point};
+      matrix.TransformPoints(points);
+      return points[0];
+    }
   }
 }
 

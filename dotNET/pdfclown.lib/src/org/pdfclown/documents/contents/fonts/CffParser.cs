@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -90,15 +90,15 @@ namespace org.pdfclown.documents.contents.fonts
 
           if(b0 >= 0 && b0 <= 21) // Operator.
           {
-            int operator_ = b0;
+            int @operator = b0;
             if(b0 == 12) // 2-byte operator.
-            {operator_ = operator_ << 8 + stream.ReadByte();}
+            {@operator = @operator << 8 + stream.ReadByte();}
 
             /*
               NOTE: In order to resiliently support unknown operators on parsing, parsed operators
               are not directly mapped to OperatorEnum.
             */
-            entries[operator_] = operands;
+            entries[@operator] = operands;
             operands = null;
           }
           else // Operand.
@@ -271,18 +271,18 @@ namespace org.pdfclown.documents.contents.fonts
       {return ((IEnumerable<KeyValuePair<int,IList<object>>>)this).GetEnumerator();}
 
       public object Get(
-        OperatorEnum operator_,
+        OperatorEnum @operator,
         int operandIndex
         )
-      {return Get(operator_, operandIndex, null);}
+      {return Get(@operator, operandIndex, null);}
 
       public object Get(
-        OperatorEnum operator_,
+        OperatorEnum @operator,
         int operandIndex,
         int? defaultValue
         )
       {
-        IList<object> operands = this[(int)operator_];
+        IList<object> operands = this[(int)@operator];
         return operands != null ? operands[operandIndex] : defaultValue;
       }
     }
@@ -437,53 +437,27 @@ namespace org.pdfclown.documents.contents.fonts
       foreach(StandardCharsetEnum charset in Enum.GetValues(typeof(StandardCharsetEnum)))
       {
         IDictionary<int,int> charsetMap = new Dictionary<int,int>();
+        using(StreamReader stream = new StreamReader(
+          Assembly.GetExecutingAssembly().GetManifestResourceStream("fonts.cff." + charset.ToString() + "Charset")
+          ))
         {
-          StreamReader stream = null;
-          try
+          String line;
+          while((line = stream.ReadLine()) != null)
           {
-            // Open the resource!
-            stream = new StreamReader(
-              Assembly.GetExecutingAssembly().GetManifestResourceStream("fonts.cff." + charset.ToString() + "Charset")
-              );
-            // Parsing the resource...
-            String line;
-            while((line = stream.ReadLine()) != null)
-            {
-              string[] lineItems = line.Split(',');
-              charsetMap[Int32.Parse(lineItems[0])] = GlyphMapping.NameToCode(lineItems[1]).Value;
-            }
-          }
-          catch(Exception e)
-          {throw e;}
-          finally
-          {
-            if(stream != null)
-            {stream.Close();}
+            string[] lineItems = line.Split(',');
+            charsetMap[Int32.Parse(lineItems[0])] = GlyphMapping.NameToCode(lineItems[1]).Value;
           }
         }
       }
 
       StandardStrings = new List<string>();
+      using(StreamReader stream = new StreamReader(
+        Assembly.GetExecutingAssembly().GetManifestResourceStream("fonts.cff.StandardStrings")
+        ))
       {
-        StreamReader stream = null;
-        try
-        {
-          // Open the resource!
-          stream = new StreamReader(
-            Assembly.GetExecutingAssembly().GetManifestResourceStream("fonts.cff.StandardStrings")
-            );
-          // Parsing the resource...
-          string line;
-          while((line = stream.ReadLine()) != null)
-          {StandardStrings.Add(line);}
-        }
-        catch(Exception e)
-        {throw e;}
-        finally
-        {
-          if(stream != null)
-          {stream.Close();}
-        }
+        string line;
+        while((line = stream.ReadLine()) != null)
+        {StandardStrings.Add(line);}
       }
     }
     #endregion
@@ -556,12 +530,6 @@ namespace org.pdfclown.documents.contents.fonts
   //      int encodingOffset = topDict.get(Dict.OperatorEnum.Encoding, 0, 0).intValue();
         //TODO: encoding
 
-        #pragma warning disable 0219
-        int charstringType = (int)topDict.Get(Dict.OperatorEnum.CharstringType, 0, 2);
-        #pragma warning restore 0219
-        int charStringsOffset = (int)topDict.Get(Dict.OperatorEnum.CharStrings, 0);
-        Index charStringsIndex = Index.Parse(fontData, charStringsOffset);
-
         int charsetOffset = (int)topDict.Get(Dict.OperatorEnum.Charset, 0, 0);
         StandardCharsetEnum? charset = GetStandardCharset(charsetOffset);
         if(charset.HasValue)
@@ -571,6 +539,10 @@ namespace org.pdfclown.documents.contents.fonts
         else
         {
           glyphIndexes = new Dictionary<int,int>();
+
+          int charStringsOffset = (int)topDict.Get(Dict.OperatorEnum.CharStrings, 0);
+          Index charStringsIndex = Index.Parse(fontData, charStringsOffset);
+
           fontData.Position = charsetOffset;
           int charsetFormat = fontData.ReadByte();
           for (int index = 1, count = charStringsIndex.Count; index <= count;)

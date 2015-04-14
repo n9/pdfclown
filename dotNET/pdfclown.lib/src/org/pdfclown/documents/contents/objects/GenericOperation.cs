@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,20 +41,20 @@ namespace org.pdfclown.documents.contents.objects
     #region dynamic
     #region constructors
     public GenericOperation(
-      string operator_
-      ) : base(operator_)
+      string @operator
+      ) : base(@operator)
     {}
 
     public GenericOperation(
-      string operator_,
+      string @operator,
       PdfDirectObject operand
-      ) : base(operator_,operand)
+      ) : base(@operator,operand)
     {}
 
     public GenericOperation(
-      string operator_,
+      string @operator,
       IList<PdfDirectObject> operands
-      ) : base(operator_,operands)
+      ) : base(@operator,operands)
     {}
     #endregion
     #endregion

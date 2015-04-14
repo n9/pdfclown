@@ -36,7 +36,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2.1, 03/21/15
+  @version 0.1.2.1, 04/08/15
 */
 public class GraphicsSample
   extends Sample
@@ -737,7 +737,7 @@ public class GraphicsSample
           0
           );
 
-        composer.setFont(sampleFont, 10);
+        composer.setFont(sampleFont, 12);
         for(int index = 0; index < 2; index++)
         {
           int frameX;
@@ -763,7 +763,7 @@ public class GraphicsSample
             );
           blockComposer.begin(frame,xAlignment,yAlignment);
           blockComposer.showText(
-            "Demonstrating how to constrain text inside a page area using PDF Clown. See the other available code samples (such as TypesettingSample) to discover more functionality details."
+            "Demonstrating how to constrain text inside a page area. See the other code samples for more usage tips."
             );
           blockComposer.end();
 

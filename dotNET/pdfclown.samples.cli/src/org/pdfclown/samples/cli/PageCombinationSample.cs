@@ -22,7 +22,7 @@ namespace org.pdfclown.samples.cli
     {
       // 1. Instantiate the source PDF file!
       string filePath = PromptFileChoice("Please select a PDF file to use as source");
-      using(File sourceFile = new File(filePath))
+      using(var sourceFile = new File(filePath))
       {
         // 2. Instantiate a new PDF file!
         File file = new File();

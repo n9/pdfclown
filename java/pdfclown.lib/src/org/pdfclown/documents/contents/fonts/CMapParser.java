@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -26,7 +26,9 @@
 package org.pdfclown.documents.contents.fonts;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.pdfclown.bytes.Buffer;
@@ -41,7 +43,7 @@ import org.pdfclown.util.parsers.PostScriptParser;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 04/25/11
+  @version 0.1.2.1, 04/08/15
 */
 final class CMapParser
   extends PostScriptParser
@@ -49,10 +51,15 @@ final class CMapParser
   // <class>
   // <static>
   // <fields>
-  private static final String BeginBaseFontCharOperator = "beginbfchar";
-  private static final String BeginBaseFontRangeOperator = "beginbfrange";
-  private static final String BeginCIDCharOperator = "begincidchar";
-  private static final String BeginCIDRangeOperator = "begincidrange";
+  static final String BeginBaseFontCharOperator = "beginbfchar";
+  static final String BeginBaseFontRangeOperator = "beginbfrange";
+  static final String BeginCIDCharOperator = "begincidchar";
+  static final String BeginCIDRangeOperator = "begincidrange";
+  static final String EndBaseFontCharOperator = "endbfchar";
+  static final String EndBaseFontRangeOperator = "endbfrange";
+  static final String EndCIDCharOperator = "endcidchar";
+  static final String EndCIDRangeOperator = "endcidrange";
+  static final String UseCMapOperator = "usecmap";
    // </fields>
   // </static>
 
@@ -83,9 +90,9 @@ final class CMapParser
     )
   {
     getStream().setPosition(0);
-    Hashtable<ByteArray,Integer> codes = new Hashtable<ByteArray,Integer>();
+    Map<ByteArray,Integer> codes = new Hashtable<ByteArray,Integer>();
     {
-      int itemCount = 0;
+      List<Object> operands = new ArrayList<Object>();
       while(moveNext())
       {
         switch(getTokenType())
@@ -100,11 +107,7 @@ final class CMapParser
                 NOTE: The first element on each line is the input code of the template font;
                 the second element is the code or name of the character.
               */
-              for(
-                int itemIndex = 0;
-                itemIndex < itemCount;
-                itemIndex++
-                )
+              for(int itemIndex = 0, itemCount = (Integer)operands.get(0); itemIndex < itemCount; itemIndex++)
               {
                 moveNext();
                 ByteArray inputCode = new ByteArray(parseInputCode());
@@ -120,11 +123,7 @@ final class CMapParser
                 ending valid input codes for the template font; the third element is
                 the beginning character code for the range.
               */
-              for(
-                int itemIndex = 0;
-                itemIndex < itemCount;
-                itemIndex++
-                )
+              for(int itemIndex = 0, itemCount = (Integer)operands.get(0); itemIndex < itemCount; itemIndex++)
               {
                 // 1. Beginning input code.
                 moveNext();
@@ -166,16 +165,30 @@ final class CMapParser
                 }
               }
             }
+            else if(operator.equals(UseCMapOperator))
+            {codes = CMap.get((String)operands.get(0));}
+            operands.clear();
             break;
           }
-          case Integer:
+          case ArrayBegin:
+          case DictionaryBegin:
           {
-            itemCount = (Integer)getToken();
+            // Skip.
+            while(moveNext())
+            {
+              if(getTokenType() == TokenTypeEnum.ArrayEnd
+                || getTokenType() == TokenTypeEnum.DictionaryEnd)
+                break;
+            }
             break;
           }
+          case Comment:
+            // Skip.
+            break;
           default:
           {
-            /* NOOP */
+            operands.add(getToken());
+            break;
           }
         }
       }

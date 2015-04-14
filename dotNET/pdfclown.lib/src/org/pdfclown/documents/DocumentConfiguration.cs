@@ -44,6 +44,7 @@ namespace org.pdfclown.documents
     #region dynamic
     #region fields
     private CompatibilityModeEnum compatibilityMode = CompatibilityModeEnum.Loose;
+    private EncodingFallbackEnum encodingFallback = EncodingFallbackEnum.Substitution;
     private string stampPath;
 
     private Document document;
@@ -61,7 +62,7 @@ namespace org.pdfclown.documents
     #region interface
     #region public
     /**
-      <summary>Gets the document's version compatibility mode.</summary>
+      <summary>Gets/Sets the document's version compatibility mode.</summary>
     */
     public CompatibilityModeEnum CompatibilityMode
     {
@@ -78,6 +79,17 @@ namespace org.pdfclown.documents
     {
       get
       {return document;}
+    }
+
+    /**
+      <summary>Gets/Sets the encoding behavior in case of missing character mapping.</summary>
+    */
+    public EncodingFallbackEnum EncodingFallback
+    {
+      get
+      {return encodingFallback;}
+      set
+      {encodingFallback = value;}
     }
 
     /**
@@ -167,7 +179,7 @@ namespace org.pdfclown.documents
     }
 
     /**
-      <summary>Gets the path (either Acrobat's standard stamps installation directory or PDF
+      <summary>Gets/Sets the path (either Acrobat's standard stamps installation directory or PDF
       Clown's standard stamps collection (std-stamps.pdf)) where standard stamp templates are
       located.</summary>
       <remarks>In order to ensure consistent and predictable rendering across the systems, the

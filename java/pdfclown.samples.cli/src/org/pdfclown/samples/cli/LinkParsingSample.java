@@ -1,7 +1,6 @@
 package org.pdfclown.samples.cli;
 
 import java.awt.geom.Rectangle2D;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +21,7 @@ import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.tools.TextExtractor;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   This sample demonstrates <b>how to inspect the links of a PDF document</b>, retrieving
@@ -34,7 +34,7 @@ import org.pdfclown.tools.TextExtractor;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 03/21/15
+  @version 0.1.2.1, 04/08/15
 */
 public class LinkParsingSample
   extends Sample
@@ -135,13 +135,7 @@ public class LinkParsingSample
     finally
     {
       // 3. Closing the PDF file...
-      if(file != null)
-      {
-        try
-        {file.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(file);
     }
   }
 

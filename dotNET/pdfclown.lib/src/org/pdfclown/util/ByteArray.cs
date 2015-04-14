@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,12 +35,27 @@ namespace org.pdfclown.util
   /*
     NOTE: This class is useful when applied as key for dictionaries using the default IEqualityComparer.
   */
-  public struct ByteArray
+  public class ByteArray
+    : IComparable<ByteArray>
   {
     public readonly byte[] Data; //TODO: yes, I know it's risky (temporary simplification)...
 
     public ByteArray(byte[] data)
     {Array.Copy(data,this.Data = new byte[data.Length],data.Length);}
+
+    public int CompareTo(
+      ByteArray other
+      )
+    {
+      int comparison = Data.Length - other.Data.Length;
+      if(comparison == 0)
+      {
+        for(int index = 0, length = Data.Length; index < length; index++)
+          if((comparison = Data[index] - other.Data[index]) != 0)
+            break;
+      }
+      return comparison;
+    }
 
     public override bool Equals(
       object obj

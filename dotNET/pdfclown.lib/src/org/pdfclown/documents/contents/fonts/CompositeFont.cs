@@ -34,6 +34,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using drawing = System.Drawing;
+using System.Linq;
 using System.Text;
 
 namespace org.pdfclown.documents.contents.fonts
@@ -58,7 +59,7 @@ namespace org.pdfclown.documents.contents.fonts
       OpenFontParser parser = new OpenFontParser(fontData);
       switch(parser.OutlineFormat)
       {
-        case OpenFontParser.OutlineFormatEnum.CFF:
+        case OpenFontParser.OutlineFormatEnum.PostScript:
           return new Type0Font(context,parser);
         case OpenFontParser.OutlineFormatEnum.TrueType:
           return new Type2Font(context,parser);
@@ -238,14 +239,8 @@ namespace org.pdfclown.documents.contents.fonts
         ); // CIDFont dictionary [PDF:1.6:5.6.3].
       {
         // Subtype.
-        PdfName subType;
-        switch(parser.OutlineFormat)
-        {
-          case OpenFontParser.OutlineFormatEnum.TrueType: subType = PdfName.CIDFontType2; break;
-          case OpenFontParser.OutlineFormatEnum.CFF: subType = PdfName.CIDFontType0; break;
-          default: throw new NotImplementedException();
-        }
-        cidFontDictionary[PdfName.Subtype] = subType;
+        // FIXME: verify proper Type 0 detection.
+        cidFontDictionary[PdfName.Subtype] = PdfName.CIDFontType2;
 
         // BaseFont.
         cidFontDictionary[PdfName.BaseFont] = new PdfName(parser.FontName);
@@ -285,147 +280,159 @@ namespace org.pdfclown.documents.contents.fonts
       PdfDictionary cidFont
       )
     {
-      // CMap [PDF:1.6:5.6.4].
-      bytes::Buffer cmapBuffer = new bytes::Buffer();
-      cmapBuffer.Append(
-        "%!PS-Adobe-3.0 Resource-CMap\n"
-          + "%%DocumentNeededResources: ProcSet (CIDInit)\n"
-          + "%%IncludeResource: ProcSet (CIDInit)\n"
-          + "%%BeginResource: CMap (Adobe-Identity-UCS)\n"
-          + "%%Title: (Adobe-Identity-UCS Adobe Identity 0)\n"
-          + "%%Version: 1\n"
-          + "%%EndComments\n"
-          + "/CIDInit /ProcSet findresource begin\n"
-          + "12 dict begin\n"
-          + "begincmap\n"
-          + "/CIDSystemInfo\n"
-          + "3 dict dup begin\n"
-          + "/Registry (Adobe) def\n"
-          + "/Ordering (Identity) def\n"
-          + "/Supplement 0 def\n"
-          + "end def\n"
-          + "/CMapName /Adobe-Identity-UCS def\n"
-          + "/CMapVersion 1 def\n"
-          + "/CMapType 0 def\n"
-          + "/WMode 0 def\n"
-          + "2 begincodespacerange\n"
-          + "<20> <20>\n"
-          + "<0000> <19FF>\n"
-          + "endcodespacerange\n"
-          + glyphIndexes.Count + " begincidchar\n"
-        );
-      // ToUnicode [PDF:1.6:5.9.2].
-      bytes::Buffer toUnicodeBuffer = new bytes::Buffer();
-      toUnicodeBuffer.Append(
-        "/CIDInit /ProcSet findresource begin\n"
-          + "12 dict begin\n"
-          + "begincmap\n"
-          + "/CIDSystemInfo\n"
-          + "<< /Registry (Adobe)\n"
-          + "/Ordering (UCS)\n"
-          + "/Supplement 0\n"
-          + ">> def\n"
-          + "/CMapName /Adobe-Identity-UCS def\n"
-          + "/CMapVersion 10.001 def\n"
-          + "/CMapType 2 def\n"
-          + "2 begincodespacerange\n"
-          + "<20> <20>\n"
-          + "<0000> <19FF>\n"
-          + "endcodespacerange\n"
-          + glyphIndexes.Count + " beginbfchar\n"
-        );
-      // CIDToGIDMap [PDF:1.6:5.6.3].
-      bytes::Buffer gIdBuffer = new bytes::Buffer();
-      gIdBuffer.Append((byte)0);
-      gIdBuffer.Append((byte)0);
-      int code = 0;
-      codes = new BiDictionary<ByteArray,int>(glyphIndexes.Count);
-      PdfArray widthsObject = new PdfArray(glyphWidths.Count);
-      foreach(KeyValuePair<int,int> glyphIndexEntry in glyphIndexes)
+      /*
+        NOTE: Composite fonts map text shown by content stream strings through a 2-level encoding
+        scheme:
+          character code -> CID (character index) -> GID (glyph index)
+        This works for rendering purposes, but if we want our text data to be intrinsically meaningful,
+        we need a further mapping towards some standard character identification scheme (Unicode):
+          Unicode <- character code -> CID -> GID
+        Such mapping may be provided by a known CID collection or (in case of custom encodings like
+        Identity-H) by an explicit ToUnicode CMap.
+        CID -> GID mapping is typically identity, that is CIDS correspond to GIDS, so we don't bother
+        about that. Our base encoding is Identity-H, that is character codes correspond to CIDs;
+        however, sometimes a font maps multiple Unicode codepoints to the same GID (for example, the
+        hyphen glyph may be associated to the hyphen (\u2010) and minus (\u002D) symbols), breaking
+        the possibility to recover their original Unicode values once represented as character codes
+        in content stream strings. In this case, we are forced to remap the exceeding codes and
+        generate an explicit CMap (TODO: I tried to emit a differential CMap using the usecmap
+        operator in order to import Identity-H as base encoding, but it failed in several engines
+        (including Acrobat, Ghostscript, Poppler, whilst it surprisingly worked with pdf.js), so we
+        have temporarily to stick with full CMaps).
+      */
+
+      // Encoding [PDF:1.7:5.6.1,5.6.4].
+      PdfDirectObject encodingObject = PdfName.IdentityH;
+      SortedDictionary<ByteArray,int> sortedCodes;
       {
-        // Character code (unicode to codepoint) entry.
-        code++;
-        byte[] charCode = (glyphIndexEntry.Key == 32
-          ? new byte[]{32}
-          : new byte[]
+        codes = new BiDictionary<ByteArray,int>(glyphIndexes.Count);
+        int lastRemappedCharCodeValue = 0;
+        IList<int> removedGlyphIndexKeys = null;
+        foreach(KeyValuePair<int,int> glyphIndexEntry in glyphIndexes.ToList())
+        {
+          int glyphIndex = glyphIndexEntry.Value;
+          ByteArray charCode = new ByteArray(new byte[]
             {
-              (byte)((code >> 8) & 0xFF),
-              (byte)(code & 0xFF)
+              (byte)((glyphIndex >> 8) & 0xFF),
+              (byte)(glyphIndex & 0xFF)
             });
-        codes[new ByteArray(charCode)] = glyphIndexEntry.Key;
 
-        // CMap entry.
-        cmapBuffer.Append("<");
-        toUnicodeBuffer.Append("<");
-        for(int charCodeBytesIndex = 0,
-            charCodeBytesLength = charCode.Length;
-          charCodeBytesIndex < charCodeBytesLength;
-          charCodeBytesIndex++
-          )
-        {
-          string hex = ((int)charCode[charCodeBytesIndex]).ToString("X2");
-          cmapBuffer.Append(hex);
-          toUnicodeBuffer.Append(hex);
+          // Checking for multiple Unicode codepoints which map to the same glyph index...
+          /*
+            NOTE: In case the same glyph index maps to multiple Unicode codepoints, we are forced to
+            alter the identity encoding creating distinct cmap entries for the exceeding codepoints.
+          */
+          if(codes.ContainsKey(charCode))
+          {
+            if(glyphIndex == 0) // .notdef glyph already mapped.
+            {
+              if(removedGlyphIndexKeys == null)
+              {removedGlyphIndexKeys = new List<int>();}
+              removedGlyphIndexKeys.Add(glyphIndexEntry.Key);
+              continue;
+            }
+
+            // Assigning the new character code...
+            /*
+              NOTE: As our base encoding is identity, we have to look for a value that doesn't
+              collide with existing glyph indices.
+            */
+            while(glyphIndexes.ContainsValue(++lastRemappedCharCodeValue));
+            charCode.Data[0] = (byte)((lastRemappedCharCodeValue >> 8) & 0xFF);
+            charCode.Data[1] = (byte)(lastRemappedCharCodeValue & 0xFF);
+          }
+          else if(glyphIndex == 0) // .notdef glyph.
+          {DefaultCode = glyphIndexEntry.Key;}
+
+          codes[charCode] = glyphIndexEntry.Key;
         }
-        cmapBuffer.Append("> " + code + "\n");
-        toUnicodeBuffer.Append("> <" + glyphIndexEntry.Key.ToString("X4") + ">\n");
-
-        // CID-to-GID entry.
-        int glyphIndex = glyphIndexEntry.Value;
-        gIdBuffer.Append((byte)((glyphIndex >> 8) & 0xFF));
-        gIdBuffer.Append((byte)(glyphIndex & 0xFF));
-
-        // Width.
-        int width;
-        if(!glyphWidths.TryGetValue(glyphIndex, out width))
-        {width = 0;}
-        else if(width > 1000)
-        {width = 1000;}
-        widthsObject.Add(PdfInteger.Get(width));
+        if(removedGlyphIndexKeys != null)
+        {
+          foreach(int removedGlyphIndexKey in removedGlyphIndexKeys)
+          {glyphIndexes.Remove(removedGlyphIndexKey);}
+        }
+        sortedCodes = new SortedDictionary<ByteArray,int>(codes);
+        if(lastRemappedCharCodeValue > 0) // Custom encoding.
+        {
+          string cmapName = "Custom";
+          bytes::IBuffer cmapBuffer = CMapBuilder.Build(
+            CMapBuilder.EntryTypeEnum.CID,
+            cmapName,
+            sortedCodes,
+            delegate(KeyValuePair<ByteArray,int> codeEntry)
+            {return glyphIndexes[codeEntry.Value];}
+            );
+          encodingObject = File.Register(
+            new PdfStream(
+              new PdfDictionary(
+                new PdfName[]
+                {
+                  PdfName.Type,
+                  PdfName.CMapName,
+                  PdfName.CIDSystemInfo
+                },
+                new PdfDirectObject[]
+                {
+                  PdfName.CMap,
+                  new PdfName(cmapName),
+                  new PdfDictionary(
+                    new PdfName[]
+                    {
+                      PdfName.Registry,
+                      PdfName.Ordering,
+                      PdfName.Supplement
+                    },
+                    new PdfDirectObject[]
+                    {
+                      PdfTextString.Get("Adobe"),
+                      PdfTextString.Get("Identity"),
+                      PdfInteger.Get(0)
+                    }
+                    )
+                }
+                ),
+              cmapBuffer
+              )
+            );
+        }
       }
-      cmapBuffer.Append(
-        "endcidchar\n"
-          + "endcmap\n"
-          + "CMapName currentdict /CMap defineresource pop\n"
-          + "end\n"
-          + "end\n"
-          + "%%EndResource\n"
-          + "%%EOF"
-        );
-      PdfStream cmapStream = new PdfStream(cmapBuffer);
-      PdfDictionary cmapHead = cmapStream.Header;
-      cmapHead[PdfName.Type] = PdfName.CMap;
-      cmapHead[PdfName.CMapName] = new PdfName("Adobe-Identity-UCS");
-      cmapHead[PdfName.CIDSystemInfo] = new PdfDictionary(
-        new PdfName[]
+      font[PdfName.Encoding] = encodingObject; // Character-code-to-CID mapping.
+      cidFont[PdfName.CIDToGIDMap] = PdfName.Identity; // CID-to-glyph-index mapping.
+
+      // ToUnicode [PDF:1.6:5.9.2].
+      PdfDirectObject toUnicodeObject = null;
+      {
+        bytes::IBuffer toUnicodeBuffer = CMapBuilder.Build(
+          CMapBuilder.EntryTypeEnum.BaseFont,
+          null,
+          sortedCodes,
+          delegate(KeyValuePair<ByteArray,int> codeEntry)
+          {return codeEntry.Value;}
+          );
+        toUnicodeObject = File.Register(new PdfStream(toUnicodeBuffer));
+      }
+      font[PdfName.ToUnicode] = toUnicodeObject; // Character-code-to-Unicode mapping.
+
+      // Glyph widths.
+      PdfArray widthsObject = new PdfArray();
+      {
+        int lastGlyphIndex = -10;
+        PdfArray lastGlyphWidthRangeObject = null;
+        foreach(int glyphIndex in glyphIndexes.Values.OrderBy(x => x).ToList())
         {
-          PdfName.Registry,
-          PdfName.Ordering,
-          PdfName.Supplement
-        },
-        new PdfDirectObject[]
-        {
-          new PdfTextString("Adobe"),
-          new PdfTextString("Identity"),
-          PdfInteger.Get(0)
+          int width;
+          if(!glyphWidths.TryGetValue(glyphIndex, out width))
+          {width = 0;}
+          if(glyphIndex - lastGlyphIndex != 1)
+          {
+            widthsObject.Add(PdfInteger.Get(glyphIndex));
+            widthsObject.Add(lastGlyphWidthRangeObject = new PdfArray());
+          }
+          lastGlyphWidthRangeObject.Add(PdfInteger.Get(width));
+          lastGlyphIndex = glyphIndex;
         }
-        ); // Generic predefined CMap (Identity-H/V (Adobe-Identity-0)) [PDF:1.6:5.6.4].
-      font[PdfName.Encoding] = File.Register(cmapStream);
-
-      PdfStream gIdStream = new PdfStream(gIdBuffer);
-      cidFont[PdfName.CIDToGIDMap] = File.Register(gIdStream);
-
-      cidFont[PdfName.W] = new PdfArray(new PdfDirectObject[]{PdfInteger.Get(1),widthsObject});
-
-      toUnicodeBuffer.Append(
-        "endbfchar\n"
-          + "endcmap\n"
-          + "CMapName currentdict /CMap defineresource pop\n"
-          + "end\n"
-          + "end\n"
-        );
-      PdfStream toUnicodeStream = new PdfStream(toUnicodeBuffer);
-      font[PdfName.ToUnicode] = File.Register(toUnicodeStream);
+      }
+      cidFont[PdfName.W] = widthsObject; // Glyph widths.
     }
 
     /**

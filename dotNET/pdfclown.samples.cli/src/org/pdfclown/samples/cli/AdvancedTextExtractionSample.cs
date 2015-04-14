@@ -22,7 +22,7 @@ namespace org.pdfclown.samples.cli
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      using(File file = new File(filePath))
+      using(var file = new File(filePath))
       {
         Document document = file.Document;
   

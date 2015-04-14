@@ -30,6 +30,8 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RectangularShape;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.ContentScanner;
@@ -45,6 +47,7 @@ import org.pdfclown.documents.contents.colorSpaces.Color;
 import org.pdfclown.documents.contents.colorSpaces.DeviceCMYKColorSpace;
 import org.pdfclown.documents.contents.colorSpaces.DeviceGrayColorSpace;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColorSpace;
+import org.pdfclown.documents.contents.fonts.CompositeFont;
 import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.documents.contents.layers.LayerEntity;
 import org.pdfclown.documents.contents.objects.ApplyExtGState;
@@ -79,6 +82,7 @@ import org.pdfclown.documents.contents.objects.SetTextRenderMode;
 import org.pdfclown.documents.contents.objects.SetTextRise;
 import org.pdfclown.documents.contents.objects.SetTextScale;
 import org.pdfclown.documents.contents.objects.SetWordSpace;
+import org.pdfclown.documents.contents.objects.ShowAdjustedText;
 import org.pdfclown.documents.contents.objects.ShowSimpleText;
 import org.pdfclown.documents.contents.objects.Text;
 import org.pdfclown.documents.contents.objects.TranslateTextRelative;
@@ -88,6 +92,7 @@ import org.pdfclown.documents.interaction.actions.Action;
 import org.pdfclown.documents.interaction.annotations.Link;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
+import org.pdfclown.tokens.EncodeException;
 import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.geom.Quad;
 
@@ -101,7 +106,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2.1, 03/21/15
+  @version 0.1.2.1, 04/08/15
 */
 public final class PrimitiveComposer
 {
@@ -134,8 +139,8 @@ public final class PrimitiveComposer
 
     @return The added content object.
   */
-  public ContentObject add(
-    ContentObject object
+  public <T extends ContentObject> T add(
+    T object
     )
   {
     scanner.insert(object);
@@ -675,7 +680,7 @@ public final class PrimitiveComposer
     double angle
     )
   {
-    double rad = angle * Math.PI / 180;
+    double rad = Math.toRadians(angle);
     double cos = Math.cos(rad);
     double sin = Math.sin(rad);
     applyMatrix(cos, sin, -sin, cos, 0, 0);
@@ -919,7 +924,7 @@ public final class PrimitiveComposer
   */
   public Quad showText(
     String value
-    )
+    ) throws EncodeException
   {
     return showText(
       value,
@@ -937,7 +942,7 @@ public final class PrimitiveComposer
   public Link showText(
     String value,
     Action action
-    )
+    ) throws EncodeException
   {
     return showText(
       value,
@@ -956,7 +961,7 @@ public final class PrimitiveComposer
   public Quad showText(
     String value,
     Point2D location
-    )
+    ) throws EncodeException
   {
     return showText(
       value,
@@ -979,7 +984,7 @@ public final class PrimitiveComposer
     String value,
     Point2D location,
     Action action
-    )
+    ) throws EncodeException
   {
     return showText(
       value,
@@ -1007,7 +1012,7 @@ public final class PrimitiveComposer
     XAlignmentEnum xAlignment,
     YAlignmentEnum yAlignment,
     double rotation
-    )
+    ) throws EncodeException
   {
     Quad frame;
     
@@ -1015,7 +1020,7 @@ public final class PrimitiveComposer
     try
     {
       // Anchor point positioning.
-      double rad = rotation * Math.PI / 180.0;
+      double rad = Math.toRadians(rotation);
       double cos = Math.cos(rad);
       double sin = Math.sin(rad);
       applyMatrix(
@@ -1037,7 +1042,14 @@ public final class PrimitiveComposer
       lineHeight += lineSpace;
       double textHeight = lineHeight * textLines.length - lineSpace;
       double ascent = font.getAscent(fontSize);
-      
+      /*
+        NOTE: Word spacing is automatically applied by viewers only in case of single-byte character
+        code 32 [PDF:1.7:5.2.2]. As several bug reports pointed out, mixed-length encodings aren't 
+        properly handled by recent implementations like pdf.js, therefore composite fonts are always
+        treated as multi-byte encodings which require explicit word spacing adjustment.
+      */
+      double wordSpaceAdjust = font instanceof CompositeFont ? -state.getWordSpace() * 1000 * state.getScale() / fontSize : 0;
+
       // Vertical alignment.
       double y;
       switch(yAlignment)
@@ -1090,17 +1102,35 @@ public final class PrimitiveComposer
           translateText(x, y - lineHeight * index);
           
           if(textLine.length() > 0)
-          {add(new ShowSimpleText(font.encode(textLine)));}
+          {
+            if(wordSpaceAdjust == 0 || textLine.indexOf(" ") == -1) // Simple text.
+            {add(new ShowSimpleText(font.encode(textLine)));}
+            else // Adjusted text.
+            {
+              List<Object> textParams = new ArrayList<Object>();
+              for(int spaceIndex = 0, lastSpaceIndex = -1; spaceIndex > -1; lastSpaceIndex = spaceIndex)
+              {
+                spaceIndex = textLine.indexOf(" ", lastSpaceIndex + 1);
+                // Word space adjustment.
+                if(lastSpaceIndex > -1)
+                {textParams.add(wordSpaceAdjust);}
+                // Word.
+                textParams.add(font.encode(textLine.substring(lastSpaceIndex + 1, spaceIndex > -1 ? spaceIndex + 1 : textLine.length())));
+              }
+              add(new ShowAdjustedText(textParams));
+            }
+          }
         }
       }
       finally
       {end();} // Ends the text object.
       
+      AffineTransform textToDeviceMatrix = state.getTextToDeviceMatrix(true);
       frame = new Quad(
-        state.textToDeviceSpace(new Point2D.Double(minX, y + ascent), true),
-        state.textToDeviceSpace(new Point2D.Double(minX + maxLineWidth, y + ascent), true),
-        state.textToDeviceSpace(new Point2D.Double(minX + maxLineWidth, y + ascent - textHeight), true),
-        state.textToDeviceSpace(new Point2D.Double(minX, y + ascent - textHeight), true)
+        textToDeviceMatrix.transform(new Point2D.Double(minX, y + ascent), null),
+        textToDeviceMatrix.transform(new Point2D.Double(minX + maxLineWidth, y + ascent), null),
+        textToDeviceMatrix.transform(new Point2D.Double(minX + maxLineWidth, y + ascent - textHeight), null),
+        textToDeviceMatrix.transform(new Point2D.Double(minX, y + ascent - textHeight), null)
         );
     }
     finally
@@ -1127,7 +1157,7 @@ public final class PrimitiveComposer
     YAlignmentEnum yAlignment,
     double rotation,
     Action action
-    )
+    ) throws EncodeException
   {
     IContentContext contentContext = scanner.getContentContext();
     if(!(contentContext instanceof Page))
@@ -1594,7 +1624,7 @@ public final class PrimitiveComposer
     double angle
     )
   {
-    double rad = angle * Math.PI / 180;
+    double rad = Math.toRadians(angle);
     double cos = Math.cos(rad);
     double sin = Math.sin(rad);
 

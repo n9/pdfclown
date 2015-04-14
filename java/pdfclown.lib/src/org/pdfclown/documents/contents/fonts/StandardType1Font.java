@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,12 +38,13 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.ByteArray;
 import org.pdfclown.util.ConvertUtils;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   Standard Type 1 font [PDF:1.6:5.5.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 04/08/15
 */
 @PDF(VersionEnum.PDF10)
 public final class StandardType1Font
@@ -247,17 +248,9 @@ public final class StandardType1Font
       glyphWidths = parser.glyphWidths;
     }
     catch(Exception e)
-    {throw new RuntimeException("Failed to load '" + fontName + "'.",e);}
+    {throw new RuntimeException(String.format("Failed to load '%s'", fontName), e);}
     finally
-    {
-      try
-      {
-        if(fontMetricsStream != null)
-        {fontMetricsStream.close();}
-      }
-      catch(Exception e)
-      {/* NOOP */}
-    }
+    {IOUtils.closeQuietly(fontMetricsStream);}
   }
   // </private>
   // </interface>

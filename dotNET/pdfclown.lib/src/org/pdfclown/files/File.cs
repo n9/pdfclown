@@ -268,14 +268,8 @@ namespace org.pdfclown.files
       SerializationModeEnum mode
       )
     {
-      FileStream outputStream = new System.IO.FileStream(
-        path,
-        System.IO.FileMode.Create,
-        System.IO.FileAccess.Write
-        );
-      Save(new bytes.Stream(outputStream), mode);
-      outputStream.Flush();
-      outputStream.Close();
+      using(var outputStream = new System.IO.FileStream(path, FileMode.Create, FileAccess.Write))
+      {Save(new bytes.Stream(outputStream), mode);}
     }
 
     /**

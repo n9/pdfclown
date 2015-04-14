@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,6 +35,10 @@ namespace org.pdfclown.documents.contents.composition
   */
   public sealed class TextFitter
   {
+    #region static
+    private static readonly Regex FitPattern = new Regex(@"(\s*)(\S*)", RegexOptions.Compiled);
+    #endregion
+
     #region dynamic
     #region fields
     private readonly Font font;
@@ -110,8 +114,7 @@ namespace org.pdfclown.documents.contents.composition
 
       // Fitting the text within the available width...
       {
-        Regex pattern = new Regex(@"(\s*)(\S*)");
-        Match match = pattern.Match(text,beginIndex);
+        Match match = FitPattern.Match(text, beginIndex);
         while(match.Success)
         {
           // Scanning for the presence of a line break...

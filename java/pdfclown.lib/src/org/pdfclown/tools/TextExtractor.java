@@ -51,7 +51,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 03/12/15
+  @version 0.1.2.1, 04/08/15
 */
 public final class TextExtractor
 {
@@ -135,6 +135,11 @@ public final class TextExtractor
     public List<TextChar> getTextChars(
       )
     {return textChars;}
+    
+    @Override
+    public String toString(
+      )
+    {return getText();}
     // </public>
     // </interface>
     // </dynamic>
@@ -683,10 +688,7 @@ public final class TextExtractor
       // Add a new text string in case of new line!
       if(textString != null
         && !textString.textChars.isEmpty()
-        && !TextStringPositionComparator.isOnTheSameLine(
-          textString.getBox(),
-          rawTextString.getBox()
-          ))
+        && !TextStringPositionComparator.isOnTheSameLine(textString.getBox(), rawTextString.getBox()))
       {
         if(dehyphenated
           && previousTextChar.getValue() == '-') // Hyphened word.
@@ -719,7 +721,7 @@ public final class TextExtractor
       {textStrings.add(textString = new TextString());}
 
       textStyle = rawTextString.getStyle();
-      double spaceWidth = textStyle.getFont().getWidth(' ', textStyle.getFontSize()) * textStyle.getScaleX() * .5;
+      double spaceWidth = textStyle.getWidth(' ') * .5;
       for(TextChar textChar : rawTextString.getTextChars())
       {
         if(previousTextChar != null)
@@ -730,26 +732,30 @@ public final class TextExtractor
             in order to allow the user to distinguish between original contents
             and augmented ones.
           */
-          double characterSpace = textChar.getBox().getX() - previousTextChar.getBox().getMaxX();
-          if(characterSpace > spaceWidth)
+          if(!textChar.contains(' ') 
+            && !previousTextChar.contains(' '))
           {
-            // Add synthesized space character!
-            textString.textChars.add(
-              previousTextChar = new TextChar(
-                ' ',
-                new Rectangle2D.Double(
-                  previousTextChar.getBox().getMaxX(),
-                  textChar.getBox().getY(),
-                  characterSpace,
-                  textChar.getBox().getHeight()
-                  ),
-                textStyle,
-                true
-                )
-              );
+            double charSpace = textChar.getBox().getX() - previousTextChar.getBox().getMaxX();
+            if(charSpace > spaceWidth)
+            {
+              // Add synthesized space character!
+              textString.textChars.add(
+                previousTextChar = new TextChar(
+                  ' ',
+                  new Rectangle2D.Double(
+                    previousTextChar.getBox().getMaxX(),
+                    textChar.getBox().getY(),
+                    charSpace,
+                    textChar.getBox().getHeight()
+                    ),
+                  textStyle,
+                  true
+                  )
+                );
+            }
           }
-          if(dehyphenating
-            && previousTextChar.getValue() == ' ')
+          else if(dehyphenating
+            && previousTextChar.contains(' '))
           {
             textStrings.add(textString = new TextString());
             dehyphenating = false;

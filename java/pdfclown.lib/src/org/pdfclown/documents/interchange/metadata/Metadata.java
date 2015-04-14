@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -27,15 +27,11 @@ package org.pdfclown.documents.interchange.metadata;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -49,14 +45,14 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfStream;
-import org.xml.sax.SAXException;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   Metadata stream [PDF:1.6:10.2.2].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 04/08/15
 */
 @PDF(VersionEnum.PDF14)
 public final class Metadata
@@ -109,36 +105,22 @@ public final class Metadata
   {
     org.w3c.dom.Document content;
     {
-      // 1. Instantiate the document deserializer!
-      DocumentBuilder contentDeserializer;
+      InputStream contentStream = null;
       try
-      {contentDeserializer = DocumentBuilderFactory.newInstance().newDocumentBuilder();}
-      catch(ParserConfigurationException e)
-      {throw new RuntimeException(e);}
-
-      // 2. Get the document contents!
-      IBuffer contentBody = getBaseDataObject().getBody();
-      if(contentBody.getLength() > 0)
       {
-        InputStream contentStream = new ByteArrayInputStream(contentBody.toByteArray());
-
-        // 3. Parse the document contents!
-        try
-        {content = contentDeserializer.parse(contentStream);}
-        catch(SAXException e)
-        {throw new RuntimeException("XML parsing failed.", e);}
-        catch(IOException e)
-        {throw new RuntimeException("XML reading failed.", e);}
-        finally
+        IBuffer contentBody = getBaseDataObject().getBody();
+        if(contentBody.getLength() > 0)
         {
-          try
-          {contentStream.close();}
-          catch(IOException e)
-          {throw new RuntimeException(e);}
+          DocumentBuilder contentDeserializer = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+          content = contentDeserializer.parse(contentStream = new ByteArrayInputStream(contentBody.toByteArray()));
         }
+        else
+        {content = null;}
       }
-      else
-      {content = null;}
+      catch(Exception e)
+      {throw new RuntimeException(e);}
+      finally
+      {IOUtils.close(contentStream);}
     }
     return content;
   }
@@ -150,28 +132,23 @@ public final class Metadata
     org.w3c.dom.Document value
     )
   {
-    // 1. Instantiate the document serializer!
-    Transformer contentSerializer;
+    ByteArrayOutputStream contentStream = null;
     try
-    {contentSerializer = TransformerFactory.newInstance().newTransformer();}
-    catch(TransformerConfigurationException e)
-    {throw new RuntimeException(e);}
+    {
+      Transformer contentSerializer = TransformerFactory.newInstance().newTransformer();
+      contentSerializer.transform(
+        new DOMSource(value),
+        new StreamResult(contentStream = new ByteArrayOutputStream())
+        );
 
-    // 2. Get the document contents!
-    ByteArrayOutputStream contentStream = new ByteArrayOutputStream();
-    try
-    {contentSerializer.transform(new DOMSource(value), new StreamResult(contentStream));}
-    catch(TransformerException e)
+      IBuffer body = getBaseDataObject().getBody();
+      body.clear();
+      body.write(contentStream.toByteArray());
+    }
+    catch(Exception e)
     {throw new RuntimeException(e);}
-
-    // 3. Store the document contents into the stream body!
-    IBuffer body = getBaseDataObject().getBody();
-    body.setLength(0);
-    body.write(contentStream.toByteArray());
-    try
-    {contentStream.close();}
-    catch(IOException e)
-    {throw new RuntimeException(e);}
+    finally
+    {IOUtils.close(contentStream);}
   }
   // </public>
   // </interface>

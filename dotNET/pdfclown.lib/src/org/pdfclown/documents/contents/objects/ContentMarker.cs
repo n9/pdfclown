@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -54,16 +54,16 @@ namespace org.pdfclown.documents.contents.objects
       if(properties != null)
       {
         operands.Add(properties);
-        operator_ = PropertyListOperator;
+        @operator = PropertyListOperator;
       }
       else
-      {operator_ = SimpleOperator;}
+      {@operator = SimpleOperator;}
     }
 
     protected ContentMarker(
-      string operator_,
+      string @operator,
       IList<PdfDirectObject> operands
-      ) : base(operator_, operands)
+      ) : base(@operator, operands)
     {}
     #endregion
 
@@ -107,7 +107,7 @@ namespace org.pdfclown.documents.contents.objects
       {
         if(value == null)
         {
-          operator_ = SimpleOperator;
+          @operator = SimpleOperator;
           if(operands.Count > 1)
           {operands.RemoveAt(1);}
         }
@@ -121,7 +121,7 @@ namespace org.pdfclown.documents.contents.objects
           else
             throw new ArgumentException("value MUST be a PdfName or a PropertyList.");
 
-          operator_ = PropertyListOperator;
+          @operator = PropertyListOperator;
           if(operands.Count > 1)
           {operands[1] = operand;}
           else

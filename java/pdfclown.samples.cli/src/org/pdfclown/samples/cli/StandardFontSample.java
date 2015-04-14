@@ -3,14 +3,17 @@ package org.pdfclown.samples.cli;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.util.EnumSet;
+import java.util.TreeSet;
 
 import org.pdfclown.documents.Document;
+import org.pdfclown.documents.EncodingFallbackEnum;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.composition.XAlignmentEnum;
 import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
 import org.pdfclown.files.File;
+import org.pdfclown.tokens.EncodeException;
 
 /**
   This sample demonstrates <b>how to use of standard Type 1 fonts</b>, which are the14 built-in fonts
@@ -20,7 +23,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 11/30/12
+  @version 0.1.2.1, 04/08/15
 */
 public class StandardFontSample
   extends Sample
@@ -51,6 +54,13 @@ public class StandardFontSample
     document.getPages().add(page);
     Dimension2D pageSize = page.getSize();
 
+    /*
+      NOTE: Default fallback behavior on text encoding mismatch is substitution with default 
+      character; in this case, we want to force an exception to be thrown so we can explicitly
+      handle the issue.
+    */
+    document.getConfiguration().setEncodingFallback(EncodingFallbackEnum.Exception);
+    
     PrimitiveComposer composer = new PrimitiveComposer(page);
 
     int x = Margin, y = Margin;
@@ -76,35 +86,11 @@ public class StandardFontSample
             || fontFamily == StandardType1Font.FamilyEnum.ZapfDingbats))
             break;
 
-        boolean bold, italic;
-        switch(styleIndex)
-        {
-          case 0: // Regular.
-            bold = false;
-            italic = false;
-            break;
-          case 1: // Bold.
-            bold = true;
-            italic = false;
-            break;
-          case 2: // Italic.
-            bold = false;
-            italic = true;
-            break;
-          case 3: // Bold italic.
-            bold = true;
-            italic = true;
-            break;
-          default:
-            throw new RuntimeException("styleIndex " + styleIndex + " not supported.");
-        }
+        boolean bold = (styleIndex & 1) > 0;
+        boolean italic = (styleIndex & 2) > 0;
+
         // Define the font used to show its character set!
-        font = new StandardType1Font(
-          document,
-          fontFamily,
-          bold,
-          italic
-          );
+        font = new StandardType1Font(document, fontFamily, bold, italic);
 
         if(y > pageSize.getHeight() - Margin)
         {
@@ -114,14 +100,15 @@ public class StandardFontSample
           document.getPages().add(page);
           pageSize = page.getSize();
           composer = new PrimitiveComposer(page);
-          x = Margin; y = Margin;
+          x = Margin;
+          y = Margin;
         }
 
         if(styleIndex == 0)
         {
           composer.drawLine(
-            new Point2D.Double(x,y),
-            new Point2D.Double(pageSize.getWidth() - Margin,y)
+            new Point2D.Double(x, y),
+            new Point2D.Double(pageSize.getWidth() - Margin, y)
             );
           composer.stroke();
           y += 5;
@@ -133,14 +120,14 @@ public class StandardFontSample
           );
         composer.showText(
           fontFamily.name() + (bold ? " bold" : "") + (italic ? " italic" : ""),
-          new Point2D.Double(x,y)
+          new Point2D.Double(x, y)
           );
 
         y += 40;
         // Set the font used to show its character set!
         composer.setFont(font,FontBaseSize);
         // Iterating through the font characters...
-        for(int charCode = 32; charCode < 256; charCode++)
+        for(int charCode : new TreeSet<Integer>(font.getCodePoints()))
         {
           if(y > pageSize.getHeight() - Margin)
           {
@@ -150,7 +137,8 @@ public class StandardFontSample
             document.getPages().add(page);
             pageSize = page.getSize();
             composer = new PrimitiveComposer(page);
-            x = Margin; y = Margin;
+            x = Margin;
+            y = Margin;
 
             composer.setFont(titleFont,FontBaseSize);
             composer.showText(
@@ -166,20 +154,28 @@ public class StandardFontSample
 
           try
           {
-            // Show the current character (using the current standard Type 1 font)!
+            // Show the character!
             composer.showText(
-              new String(new char[]{(char)charCode}),
-              new Point2D.Double(x,y)
+              String.valueOf((char)charCode),
+              new Point2D.Double(x, y)
               );
             x += FontBaseSize;
             if(x > pageSize.getWidth() - Margin)
             {x = Margin; y += 30;}
           }
-          catch(Exception e)
-          { /* Ignore */ }
+          catch(EncodeException e)
+          {
+            /*
+              NOOP -- NOTE: document.getConfiguration().setEncodingFallback() allows to customize
+              the behavior in case of missing character: we can alternatively catch an exception,
+              have the character substituted by a default one (typically '?' symbol) or have the
+              character silently removed.
+            */
+          }
         }
 
-        x = Margin; y += Margin;
+        x = Margin;
+        y += Margin;
       }
     }
     composer.flush();

@@ -307,6 +307,43 @@ namespace org.pdfclown.documents.contents
       }
 
       /**
+        <summary>Gets the text-to-device space transformation matrix [PDF:1.6:5.3.3].</summary>
+        <param name="topDown">Whether the y-axis orientation has to be adjusted to common top-down
+        orientation rather than standard PDF coordinate system (bottom-up).</param>
+      */
+      public Matrix GetTextToDeviceMatrix(
+        bool topDown
+        )
+      {
+        /*
+          NOTE: The text rendering matrix (trm) is obtained from the concatenation of the current
+          transformation matrix (ctm) and the text matrix (tm).
+        */
+        Matrix matrix = GetUserToDeviceMatrix(topDown);
+        matrix.Multiply(tm);
+        return matrix;
+      }
+
+      /**
+        <summary>Gets the user-to-device space transformation matrix [PDF:1.6:4.2.3].</summary>
+        <param name="topDown">Whether the y-axis orientation has to be adjusted to common top-down
+        orientation rather than standard PDF coordinate system (bottom-up).</param>
+      */
+      public Matrix GetUserToDeviceMatrix(
+        bool topDown
+        )
+      {
+        if(topDown)
+        {
+          Matrix matrix = new Matrix(1, 0, 0, -1, 0, scanner.CanvasSize.Height);
+          matrix.Multiply(ctm);
+          return matrix;
+        }
+        else
+          return ctm.Clone();
+      }
+
+      /**
         <summary>Gets/Sets the current leading [PDF:1.6:5.2.4].</summary>
       */
       public double Lead
@@ -437,41 +474,6 @@ namespace org.pdfclown.documents.contents
       }
 
       /**
-        <summary>Resolves the given text-space point to its equivalent device-space one [PDF:1.6:5.3.3],
-        expressed in standard PDF coordinate system (lower-left origin).</summary>
-        <param name="point">Point to transform.</param>
-      */
-      public PointF TextToDeviceSpace(
-        PointF point
-        )
-      {return TextToDeviceSpace(point, false);}
-
-      /**
-        <summary>Resolves the given text-space point to its equivalent device-space one [PDF:1.6:5.3.3].</summary>
-        <param name="point">Point to transform.</param>
-        <param name="topDown">Whether the y-axis orientation has to be adjusted to common top-down orientation
-        rather than standard PDF coordinate system (bottom-up).</param>
-      */
-      public PointF TextToDeviceSpace(
-        PointF point,
-        bool topDown
-        )
-      {
-        /*
-          NOTE: The text rendering matrix (trm) is obtained from the concatenation
-          of the current transformation matrix (ctm) and the text matrix (tm).
-        */
-        Matrix trm = topDown
-          ? new Matrix(1, 0, 0, -1, 0, scanner.CanvasSize.Height)
-          : new Matrix();
-        trm.Multiply(ctm);
-        trm.Multiply(tm);
-        PointF[] points = new PointF[]{point};
-        trm.TransformPoints(points);
-        return points[0];
-      }
-
-      /**
         <summary>Gets/Sets the current text line matrix [PDF:1.6:5.3].</summary>
       */
       public Matrix Tlm
@@ -491,20 +493,6 @@ namespace org.pdfclown.documents.contents
         {return tm;}
         set
         {tm = value;}
-      }
-
-      /**
-        <summary>Resolves the given user-space point to its equivalent device-space one [PDF:1.6:4.2.3],
-        expressed in standard PDF coordinate system (lower-left origin).</summary>
-        <param name="point">Point to transform.</param>
-      */
-      public PointF UserToDeviceSpace(
-        PointF point
-        )
-      {
-        PointF[] points = new PointF[]{point};
-        ctm.TransformPoints(points);
-        return points[0];
       }
 
       /**

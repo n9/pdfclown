@@ -1,7 +1,5 @@
 package org.pdfclown.samples.cli;
 
-import java.io.IOException;
-
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.ContentScanner;
@@ -11,6 +9,7 @@ import org.pdfclown.documents.contents.objects.ContentObject;
 import org.pdfclown.documents.contents.objects.ShowText;
 import org.pdfclown.documents.contents.objects.Text;
 import org.pdfclown.files.File;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   This sample demonstrates the <b>low-level way to extract text</b> from a PDF document.
@@ -20,7 +19,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 09/24/12
+  @version 0.1.2.1, 04/08/15
 */
 public class BasicTextExtractionSample
   extends Sample
@@ -59,13 +58,7 @@ public class BasicTextExtractionSample
     finally
     {
       // 3. Closing the PDF file...
-      if(file != null)
-      {
-        try
-        {file.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(file);
     }
   }
 

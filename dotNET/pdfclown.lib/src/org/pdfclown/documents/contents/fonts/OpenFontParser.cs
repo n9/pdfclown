@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -102,14 +102,8 @@ namespace org.pdfclown.documents.contents.fonts
     */
     public enum OutlineFormatEnum
     {
-      /**
-        <summary>TrueType format outlines.</summary>
-      */
       TrueType,
-      /**
-        <summary>Compact Font Format outlines.</summary>
-      */
-      CFF
+      PostScript
     }
     #endregion
 
@@ -121,6 +115,8 @@ namespace org.pdfclown.documents.contents.fonts
     private const int PlatformID_Unicode = 0;
     private const int PlatformID_Macintosh = 1;
     private const int PlatformID_Microsoft = 3;
+
+    private static readonly string TableName_CFF = "CFF ";
     #endregion
 
     #region interface
@@ -135,36 +131,19 @@ namespace org.pdfclown.documents.contents.fonts
       long position = fontData.Position;
       fontData.Position = 0;
       try
-      {GetOutlineFormat(fontData.ReadInt());}
-      catch(NotSupportedException)
-      {return false;}
+      {
+        switch(fontData.ReadInt())
+        {
+          case(0x00010000): // TrueType (standard/Windows).
+          case(0x74727565): // TrueType (legacy/Apple).
+          case(0x4F54544F): // CFF (Type 1).
+            return true;
+          default:
+            return false;
+        }
+      }
       finally
       {fontData.Position = position;}
-      return true;
-    }
-    #endregion
-
-    #region private
-    /**
-      <summary>Gets the outline format corresponding to the specified version code.</summary>
-      <param name="versionCode">OFF version.</param>
-      <exception cref="NotSupportedException">If versionCode is unknown.</exception>
-    */
-    private static OutlineFormatEnum GetOutlineFormat(
-      int versionCode
-      )
-    {
-      // Which font file format ('sfnt') version?
-      switch(versionCode)
-      {
-        case(0x00010000): // TrueType (standard/Windows).
-        case(0x74727565): // TrueType (legacy/Apple).
-          return OutlineFormatEnum.TrueType;
-        case(0x4F54544F): // CFF (Type 1).
-          return OutlineFormatEnum.CFF;
-        default:
-          throw new NotSupportedException("Unknown OpenFont format version.");
-      }
     }
     #endregion
     #endregion
@@ -691,10 +670,7 @@ namespace org.pdfclown.documents.contents.fonts
       )
     {
       // 1. Offset Table.
-      FontData.Seek(0);
-      // Get the outline format!
-      this.OutlineFormat = GetOutlineFormat(FontData.ReadInt());
-      // Get the number of tables!
+      FontData.Seek(4);
       int tableCount = FontData.ReadUnsignedShort();
 
       // 2. Table Directory.
@@ -720,6 +696,7 @@ namespace org.pdfclown.documents.contents.fonts
         // Skip to the next entry!
         FontData.Skip(4);
       }
+      OutlineFormat = (tableOffsets.ContainsKey(TableName_CFF) ? OutlineFormatEnum.PostScript : OutlineFormatEnum.TrueType);
     }
 
     /**
@@ -852,7 +829,7 @@ namespace org.pdfclown.documents.contents.fonts
     private string ReadUnicodeString(
       int length
       )
-    {return ReadString(length, Charset.UTF16LE);}
+    {return ReadString(length, Charset.UTF16BE);}
     #endregion
     #endregion
     #endregion

@@ -1,7 +1,5 @@
 package org.pdfclown.samples.cli;
 
-import java.io.IOException;
-
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.files.FileSpecification;
@@ -16,12 +14,13 @@ import org.pdfclown.documents.interaction.navigation.document.Bookmarks;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfObjectWrapper;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   This sample demonstrates <b>how to inspect the bookmarks</b> of a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/21/15
+  @version 0.1.2.1, 04/08/15
 */
 public class BookmarksParsingSample
   extends Sample
@@ -57,13 +56,7 @@ public class BookmarksParsingSample
     finally
     {
       // 4. Closing the PDF file...
-      if(file != null)
-      {
-        try
-        {file.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(file);
     }
   }
 

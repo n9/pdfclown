@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -41,7 +41,7 @@ import org.pdfclown.tokens.Chunk;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.2
-  @version 0.1.2, 08/23/12
+  @version 0.1.2.1, 04/08/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Operation
@@ -128,7 +128,7 @@ public abstract class Operation
       || operator.equals(ShowTextToNextLine.SpaceOperator))
       return new ShowTextToNextLine(operator, operands);
     else if(operator.equals(ShowAdjustedText.Operator))
-      return new ShowAdjustedText(operands);
+      return new ShowAdjustedText(operands, 0);
     else if(operator.equals(TranslateTextRelative.SimpleOperator)
       || operator.equals(TranslateTextRelative.LeadOperator))
       return new TranslateTextRelative(operator, operands);

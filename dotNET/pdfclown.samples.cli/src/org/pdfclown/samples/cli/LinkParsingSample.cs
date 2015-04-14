@@ -33,7 +33,7 @@ namespace org.pdfclown.samples.cli
     {
       // 1. Opening the PDF file...
       string filePath = PromptFileChoice("Please select a PDF file");
-      using(files::File file = new files::File(filePath))
+      using(var file = new files::File(filePath))
       {
         Document document = file.Document;
   

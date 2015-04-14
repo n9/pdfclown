@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -114,7 +114,6 @@ namespace org.pdfclown.documents.contents.fonts
       )
     {//TODO: set symbolic = true/false; depending on the actual encoding!!!
       // Encoding.
-      if(this.codes == null)
       {
         IDictionary<ByteArray,int> codes;
         PdfDataObject encodingObject = BaseDataObject.Resolve(PdfName.Encoding);

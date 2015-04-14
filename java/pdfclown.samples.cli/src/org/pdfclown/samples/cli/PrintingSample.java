@@ -1,10 +1,10 @@
 package org.pdfclown.samples.cli;
 
 import java.awt.print.PrinterException;
-import java.io.IOException;
 
 import org.pdfclown.files.File;
 import org.pdfclown.tools.Renderer;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   This sample demonstrates <b>how to print a PDF document</b>.
@@ -13,7 +13,7 @@ import org.pdfclown.tools.Renderer;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.0
-  @version 0.1.2, 09/24/12
+  @version 0.1.2.1, 04/08/15
 */
 public class PrintingSample
   extends Sample
@@ -50,13 +50,7 @@ public class PrintingSample
     finally
     {
       // 3. Closing the PDF file...
-      if(file != null)
-      {
-        try
-        {file.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(file);
     }
   }
 }

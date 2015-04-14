@@ -28,11 +28,13 @@ using org.pdfclown.bytes;
 using org.pdfclown.documents;
 using org.pdfclown.files;
 using org.pdfclown.objects;
+using org.pdfclown.tokens;
 using org.pdfclown.util;
 
 using System;
 using io = System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace org.pdfclown.documents.contents.fonts
@@ -92,6 +94,7 @@ namespace org.pdfclown.documents.contents.fonts
 
     #region static
     #region fields
+    private const int UndefinedDefaultCode = int.MinValue;
     private const int UndefinedWidth = int.MinValue;
     #endregion
 
@@ -255,6 +258,10 @@ namespace org.pdfclown.documents.contents.fonts
     */
     private int charCodeMaxLength = 0;
     /**
+      <summary>Default Unicode for missing characters.</summary>
+    */
+    private int defaultCode = UndefinedDefaultCode;
+    /**
       <summary>Default glyph width.</summary>
     */
     private int defaultWidth = UndefinedWidth;
@@ -300,8 +307,18 @@ namespace org.pdfclown.documents.contents.fonts
     }
 
     /**
+      <summary>Gets the Unicode code-points supported by this font.</summary>
+    */
+    public ICollection<int> CodePoints
+    {
+      get
+      {return glyphIndexes.Keys;}
+    }
+
+    /**
       <summary>Gets the text from the given internal representation.</summary>
       <param name="code">Internal representation to decode.</param>
+      <exception cref="DecodeException"/>
     */
     public string Decode(
       byte[] code
@@ -316,36 +333,62 @@ namespace org.pdfclown.documents.contents.fonts
           codeBufferIndex++
           )
         {codeBuffers[codeBufferIndex] = new byte[codeBufferIndex];}
-        int position = 0;
+        int index = 0;
         int codeLength = code.Length;
         int codeBufferSize = 1;
-        while(position < codeLength)
+        while(index < codeLength)
         {
           byte[] codeBuffer = codeBuffers[codeBufferSize];
-          System.Buffer.BlockCopy(code,position,codeBuffer,0,codeBufferSize);
-          int textChar;
-          if(!codes.TryGetValue(new ByteArray(codeBuffer),out textChar))
+          System.Buffer.BlockCopy(code, index, codeBuffer, 0, codeBufferSize);
+          int textChar = 0;
+          if(!codes.TryGetValue(new ByteArray(codeBuffer), out textChar))
           {
             if(codeBufferSize < charCodeMaxLength)
             {
               codeBufferSize++;
               continue;
             }
-
-            /*
-              NOTE: In case no valid code entry is found, a default space is resiliantely
-              applied instead of throwing an exception.
-              This is potentially risky as failing to determine the actual code length
-              may result in a "code shifting" which could affect following characters.
-            */
-            textChar = (int)' ';
+            else // Missing character.
+            {
+              switch(Document.Configuration.EncodingFallback)
+              {
+                case EncodingFallbackEnum.Exclusion:
+                  textChar = -1;
+                  break;
+                case EncodingFallbackEnum.Substitution:
+                  textChar = defaultCode;
+                  break;
+                case EncodingFallbackEnum.Exception:
+                  throw new DecodeException(code, index);
+                default:
+                  throw new NotImplementedException();
+              }
+            }
           }
-          textBuilder.Append((char)textChar);
-          position += codeBufferSize;
+          if(textChar > -1)
+          {textBuilder.Append((char)textChar);}
+          index += codeBufferSize;
           codeBufferSize = 1;
         }
       }
       return textBuilder.ToString();
+    }
+
+    /**
+      <summary>Gets/Sets the Unicode codepoint used to substitute missing characters.</summary>
+      <exception cref="EncodeException">If the value is not mapped in the font's encoding.</exception>
+    */
+    public int DefaultCode
+    {
+      get
+      {return defaultCode;}
+      set
+      {
+        if(!glyphIndexes.ContainsKey(value))
+          throw new EncodeException((char)value);
+
+        defaultCode = value;
+      }
     }
 
     /**
@@ -368,6 +411,7 @@ namespace org.pdfclown.documents.contents.fonts
     /**
       <summary>Gets the internal representation of the given text.</summary>
       <param name="text">Text to encode.</param>
+      <exception cref="EncodeException"/>
     */
     public byte[] Encode(
       string text
@@ -380,7 +424,24 @@ namespace org.pdfclown.documents.contents.fonts
         if(textCode < 32) // NOTE: Control characters are ignored [FIX:7].
           continue;
 
-        byte[] charCode = codes.GetKey(textCode).Data;
+        ByteArray code = codes.GetKey(textCode);
+        if(code == null) // Missing glyph.
+        {
+          switch(Document.Configuration.EncodingFallback)
+          {
+            case EncodingFallbackEnum.Exclusion:
+              continue;
+            case EncodingFallbackEnum.Substitution:
+              code = codes.GetKey(defaultCode);
+              break;
+            case EncodingFallbackEnum.Exception:
+              throw new EncodeException(text, index);
+            default:
+              throw new NotImplementedException();
+          }
+        }
+
+        byte[] charCode = code.Data;
         encodedStream.Write(charCode, 0, charCode.Length);
         usedCodes.Add(textCode);
       }
@@ -497,6 +558,7 @@ namespace org.pdfclown.documents.contents.fonts
       <summary>Gets the width (kerning inclusive) of the given text, scaled to the given font size.</summary>
       <param name="text">Text whose width has to be calculated.</param>
       <param name="size">Font size.</param>
+      <exception cref="EncodeException"/>
     */
     public double GetKernedWidth(
       string text,
@@ -574,6 +636,7 @@ namespace org.pdfclown.documents.contents.fonts
     /**
       <summary>Gets the unscaled width of the given character.</summary>
       <param name="textChar">Character whose width has to be calculated.</param>
+      <exception cref="EncodeException"/>
     */
     public int GetWidth(
       char textChar
@@ -581,7 +644,19 @@ namespace org.pdfclown.documents.contents.fonts
     {
       int glyphIndex;
       if(!glyphIndexes.TryGetValue((int)textChar, out glyphIndex))
-        return textChar == ' ' ? AverageWidth : 0;
+      {
+        switch(Document.Configuration.EncodingFallback)
+        {
+          case EncodingFallbackEnum.Exclusion:
+            return 0;
+          case EncodingFallbackEnum.Substitution:
+            return DefaultWidth;
+          case EncodingFallbackEnum.Exception:
+            throw new EncodeException(textChar);
+          default:
+            throw new NotImplementedException();
+        }
+      }
 
       int glyphWidth;
       return glyphWidths.TryGetValue(glyphIndex, out glyphWidth) ? glyphWidth : DefaultWidth;
@@ -591,6 +666,7 @@ namespace org.pdfclown.documents.contents.fonts
       <summary>Gets the width of the given character, scaled to the given font size.</summary>
       <param name="textChar">Character whose height has to be calculated.</param>
       <param name="size">Font size.</param>
+      <exception cref="EncodeException"/>
     */
     public double GetWidth(
       char textChar,
@@ -601,6 +677,7 @@ namespace org.pdfclown.documents.contents.fonts
     /**
       <summary>Gets the unscaled width (kerning exclusive) of the given text.</summary>
       <param name="text">Text whose width has to be calculated.</param>
+      <exception cref="EncodeException"/>
     */
     public int GetWidth(
       string text
@@ -617,6 +694,7 @@ namespace org.pdfclown.documents.contents.fonts
       size.</summary>
       <param name="text">Text whose width has to be calculated.</param>
       <param name="size">Font size.</param>
+      <exception cref="EncodeException"/>
     */
     public double GetWidth(
       string text,
@@ -722,6 +800,17 @@ namespace org.pdfclown.documents.contents.fonts
       {
         if(charCode.Data.Length > charCodeMaxLength)
         {charCodeMaxLength = charCode.Data.Length;}
+      }
+      // Missing character substitute.
+      if(defaultCode == UndefinedDefaultCode)
+      {
+        ICollection<int> codePoints = CodePoints;
+        if(codePoints.Contains((int)'?'))
+        {DefaultCode = '?';}
+        else if(codePoints.Contains((int)' '))
+        {DefaultCode = ' ';}
+        else
+        {DefaultCode = codePoints.First();}
       }
     }
 

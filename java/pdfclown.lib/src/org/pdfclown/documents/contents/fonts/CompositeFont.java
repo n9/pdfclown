@@ -29,12 +29,17 @@ import java.awt.geom.Point2D;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.bytes.Buffer;
+import org.pdfclown.bytes.IBuffer;
 import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.documents.Document;
+import org.pdfclown.documents.contents.fonts.CMapBuilder.EntryTypeEnum;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
@@ -49,7 +54,7 @@ import org.pdfclown.objects.Rectangle;
 import org.pdfclown.util.BiMap;
 import org.pdfclown.util.ByteArray;
 import org.pdfclown.util.ConvertUtils;
-import org.pdfclown.util.NotImplementedException;
+import org.pdfclown.util.IFunction;
 
 /**
   Composite font, also called Type 0 font [PDF:1.6:5.6].
@@ -58,7 +63,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 03/21/15
+  @version 0.1.2.1, 04/08/15
 */
 @PDF(VersionEnum.PDF12)
 public abstract class CompositeFont
@@ -66,10 +71,6 @@ public abstract class CompositeFont
 {
   // <class>
   // <static>
-  // <fields>
-  private static final String HexPadding = "0000";
-  // </fields>
-
   // <interface>
   // <public>
   public static CompositeFont get(
@@ -80,7 +81,7 @@ public abstract class CompositeFont
     OpenFontParser parser = new OpenFontParser(fontData);
     switch(parser.outlineFormat)
     {
-      case CFF:
+      case PostScript:
         return new Type0Font(context,parser);
       case TrueType:
         return new Type2Font(context,parser);
@@ -88,17 +89,6 @@ public abstract class CompositeFont
     throw new UnsupportedOperationException("Unknown composite font format.");
   }
   // </public>
-
-  // <private>
-  private static String getHex(
-    int value
-    )
-  {
-    String hex = Integer.toHexString(value);
-
-    return HexPadding.substring(hex.length()) + hex;
-  }
-  // </private>
   // </interface>
   // </static>
 
@@ -280,20 +270,11 @@ public abstract class CompositeFont
       ); // CIDFont dictionary [PDF:1.6:5.6.3].
     {
       // Subtype.
-      PdfName subType;
-      switch(parser.outlineFormat)
-      {
-        case TrueType: subType = PdfName.CIDFontType2; break;
-        case CFF: subType = PdfName.CIDFontType0; break;
-        default: throw new NotImplementedException();
-      }
-      cidFontDictionary.put(PdfName.Subtype,subType);
+      // FIXME: verify proper Type 0 detection.
+      cidFontDictionary.put(PdfName.Subtype, PdfName.CIDFontType2);
 
       // BaseFont.
-      cidFontDictionary.put(
-        PdfName.BaseFont,
-        new PdfName(parser.fontName)
-        );
+      cidFontDictionary.put(PdfName.BaseFont, new PdfName(parser.fontName));
 
       // CIDSystemInfo.
       cidFontDictionary.put(
@@ -339,173 +320,158 @@ public abstract class CompositeFont
     PdfDictionary cidFont
     )
   {
-    // CMap [PDF:1.6:5.6.4].
-    Buffer cmapBuffer = new Buffer();
-    cmapBuffer.append(
-      "%!PS-Adobe-3.0 Resource-CMap\n"
-        + "%%DocumentNeededResources: ProcSet (CIDInit)\n"
-        + "%%IncludeResource: ProcSet (CIDInit)\n"
-        + "%%BeginResource: CMap (Adobe-Identity-UCS)\n"
-        + "%%Title: (Adobe-Identity-UCS Adobe Identity 0)\n"
-        + "%%Version: 1\n"
-        + "%%EndComments\n"
-        + "/CIDInit /ProcSet findresource begin\n"
-        + "12 dict begin\n"
-        + "begincmap\n"
-        + "/CIDSystemInfo\n"
-        + "3 dict dup begin\n"
-        + "/Registry (Adobe) def\n"
-        + "/Ordering (Identity) def\n"
-        + "/Supplement 0 def\n"
-        + "end def\n"
-        + "/CMapName /Adobe-Identity-UCS def\n"
-        + "/CMapVersion 1 def\n"
-        + "/CMapType 0 def\n"
-        + "/WMode 0 def\n"
-        + "2 begincodespacerange\n"
-        + "<20> <20>\n"
-        + "<0000> <19FF>\n"
-        + "endcodespacerange\n"
-        + glyphIndexes.size() + " begincidchar\n"
-      );
-    // ToUnicode [PDF:1.6:5.9.2].
-    Buffer toUnicodeBuffer = new Buffer();
-    toUnicodeBuffer.append(
-      "/CIDInit /ProcSet findresource begin\n"
-        + "12 dict begin\n"
-        + "begincmap\n"
-        + "/CIDSystemInfo\n"
-        + "<< /Registry (Adobe)\n"
-        + "/Ordering (UCS)\n"
-        + "/Supplement 0\n"
-        + ">> def\n"
-        + "/CMapName /Adobe-Identity-UCS def\n"
-        + "/CMapVersion 10.001 def\n"
-        + "/CMapType 2 def\n"
-        + "2 begincodespacerange\n"
-        + "<20> <20>\n"
-        + "<0000> <19FF>\n"
-        + "endcodespacerange\n"
-        + glyphIndexes.size() + " beginbfchar\n"
-      );
-    // CIDToGIDMap [PDF:1.6:5.6.3].
-    Buffer gIdBuffer = new Buffer();
-    gIdBuffer.append((byte)0);
-    gIdBuffer.append((byte)0);
-    int code = 0;
-    codes = new BiMap<ByteArray,Integer>(glyphIndexes.size());
-    PdfArray widthsObject = new PdfArray(glyphWidths.size());
-    for(Map.Entry<Integer,Integer> glyphIndexEntry : glyphIndexes.entrySet())
+    /*
+      NOTE: Composite fonts map text shown by content stream strings through a 2-level encoding 
+      scheme:
+        character code -> CID (character index) -> GID (glyph index)
+      This works for rendering purposes, but if we want our text data to be intrinsically meaningful,
+      we need a further mapping towards some standard character identification scheme (Unicode):
+        Unicode <- character code -> CID -> GID
+      Such mapping may be provided by a known CID collection or (in case of custom encodings like
+      Identity-H) by an explicit ToUnicode CMap.
+      CID -> GID mapping is typically identity, that is CIDS correspond to GIDS, so we don't bother
+      about that. Our base encoding is Identity-H, that is character codes correspond to CIDs; 
+      however, sometimes a font maps multiple Unicode codepoints to the same GID (for example, the 
+      hyphen glyph may be associated to the hyphen (\u2010) and minus (\u002D) symbols), breaking 
+      the possibility to recover their original Unicode values once represented as character codes 
+      in content stream strings. In this case, we are forced to remap the exceeding codes and 
+      generate an explicit CMap (TODO: I tried to emit a differential CMap using the usecmap 
+      operator in order to import Identity-H as base encoding, but it failed in several engines
+      (including Acrobat, Ghostscript, Poppler, whilst it surprisingly worked with pdf.js), so we
+      have temporarily to stick with full CMaps).
+    */
+    
+    // Encoding [PDF:1.7:5.6.1,5.6.4].
+    PdfDirectObject encodingObject = PdfName.IdentityH;
+    SortedMap<ByteArray,Integer> sortedCodes;
     {
-      // Character code (codepoint to unicode) entry.
-      code++;
-      byte[] charCode = (glyphIndexEntry.getKey() == 32
-        ? new byte[]{32}
-        : new byte[]
-          {
-            (byte)((code >> 8) & 0xFF),
-            (byte)(code & 0xFF)
-          });
-      codes.put(new ByteArray(charCode),glyphIndexEntry.getKey());
-
-      // CMap entry.
-      cmapBuffer.append("<");
-      toUnicodeBuffer.append("<");
-      for(int charCodeBytesIndex = 0,
-          charCodeBytesLength = charCode.length;
-        charCodeBytesIndex < charCodeBytesLength;
-        charCodeBytesIndex++
-        )
+      codes = new BiMap<ByteArray,Integer>(glyphIndexes.size());
+      int lastRemappedCharCodeValue = 0;
+      for(Iterator<Map.Entry<Integer,Integer>> glyphIndexIterator = glyphIndexes.entrySet().iterator(); glyphIndexIterator.hasNext();)
       {
-        String hex = Integer.toHexString(charCode[charCodeBytesIndex]);
-        //TODO:improve hex padding!!!
-        if(hex.length() == 1)
-        {hex = "0" + hex;}
-        else
-        {hex = hex.substring(hex.length()-2,hex.length());}
-        cmapBuffer.append(hex);
-        toUnicodeBuffer.append(hex);
-      }
-      cmapBuffer.append("> " + code + "\n");
-      toUnicodeBuffer.append("> <" + getHex(glyphIndexEntry.getKey()) + ">\n");
+        Map.Entry<Integer,Integer> glyphIndexEntry = glyphIndexIterator.next();
+        int glyphIndex = glyphIndexEntry.getValue();
+        ByteArray charCode = new ByteArray(new byte[]
+          {
+            (byte)((glyphIndex >> 8) & 0xFF),
+            (byte)(glyphIndex & 0xFF)
+          });
 
-      // CID-to-GID entry.
-      int glyphIndex = glyphIndexEntry.getValue();
-      gIdBuffer.append((byte)((glyphIndex >> 8) & 0xFF));
-      gIdBuffer.append((byte)(glyphIndex & 0xFF));
-
-      // Width.
-      Integer width = glyphWidths.get(glyphIndex);
-      if(width == null)
-      {width = 0;}
-      else if(width > 1000)
-      {width=1000;}
-      widthsObject.add(PdfInteger.get(width));
-    }
-    cmapBuffer.append(
-      "endcidchar\n"
-        + "endcmap\n"
-        + "CMapName currentdict /CMap defineresource pop\n"
-        + "end\n"
-        + "end\n"
-        + "%%EndResource\n"
-        + "%%EOF"
-      );
-    PdfStream cmapStream = new PdfStream(cmapBuffer);
-    PdfDictionary cmapHead = cmapStream.getHeader();
-    cmapHead.put(
-      PdfName.Type,
-      PdfName.CMap
-      );
-    cmapHead.put(
-      PdfName.CMapName,
-      new PdfName("Adobe-Identity-UCS")
-      );
-    cmapHead.put(
-      PdfName.CIDSystemInfo,
-      new PdfDictionary(
-        new PdfName[]
+        // Checking for multiple Unicode codepoints which map to the same glyph index...
+        /*
+          NOTE: In case the same glyph index maps to multiple Unicode codepoints, we are forced to 
+          alter the identity encoding creating distinct cmap entries for the exceeding codepoints.
+        */
+        if(codes.containsKey(charCode))
         {
-          PdfName.Registry,
-          PdfName.Ordering,
-          PdfName.Supplement
-        },
-        new PdfDirectObject[]
-        {
-          PdfTextString.get("Adobe"),
-          PdfTextString.get("Identity"),
-          PdfInteger.get(0)
+          if(glyphIndex == 0) // .notdef glyph already mapped.
+          {
+            glyphIndexIterator.remove();
+            continue;
+          }
+          
+          // Assigning the new character code...
+          /*
+            NOTE: As our base encoding is identity, we have to look for a value that doesn't
+            collide with existing glyph indices.
+          */
+          while(glyphIndexes.containsValue(++lastRemappedCharCodeValue));
+          charCode.data[0] = (byte)((lastRemappedCharCodeValue >> 8) & 0xFF);
+          charCode.data[1] = (byte)(lastRemappedCharCodeValue & 0xFF);
         }
-        )
-      ); // Generic predefined CMap (Identity-H/V (Adobe-Identity-0)) [PDF:1.6:5.6.4].
-    font.put(
-      PdfName.Encoding,
-      getFile().register(cmapStream)
-      );
+        else if(glyphIndex == 0) // .notdef glyph.
+        {setDefaultCode(glyphIndexEntry.getKey());}
+        
+        codes.put(charCode, glyphIndexEntry.getKey());
+      }
+      sortedCodes = new TreeMap<ByteArray,Integer>(codes);
+      if(lastRemappedCharCodeValue > 0) // Custom encoding.
+      {
+        String cmapName = "Custom";
+        IBuffer cmapBuffer = CMapBuilder.build(
+          EntryTypeEnum.CID,
+          cmapName,
+          sortedCodes,
+          new IFunction<Map.Entry<ByteArray,Integer>,Integer>()
+          {
+            public Integer apply(Map.Entry<ByteArray,Integer> codeEntry)
+            {return glyphIndexes.get(codeEntry.getValue());}
+          }
+          );
+        encodingObject = getFile().register(
+          new PdfStream(
+            new PdfDictionary(
+              new PdfName[]
+              {
+                PdfName.Type,
+                PdfName.CMapName,
+                PdfName.CIDSystemInfo
+              },
+              new PdfDirectObject[]
+              {
+                PdfName.CMap,
+                new PdfName(cmapName),
+                new PdfDictionary(
+                  new PdfName[]
+                  {
+                    PdfName.Registry,
+                    PdfName.Ordering,
+                    PdfName.Supplement
+                  },
+                  new PdfDirectObject[]
+                  {
+                    PdfTextString.get("Adobe"),
+                    PdfTextString.get("Identity"),
+                    PdfInteger.get(0)
+                  }
+                  )
+              }
+              ),
+            cmapBuffer
+            )
+          );
+      }
+    }
+    font.put(PdfName.Encoding, encodingObject); // Character-code-to-CID mapping.
+    cidFont.put(PdfName.CIDToGIDMap, PdfName.Identity); // CID-to-glyph-index mapping.
 
-    PdfStream gIdStream = new PdfStream(gIdBuffer);
-    cidFont.put(
-      PdfName.CIDToGIDMap,
-      getFile().register(gIdStream)
-      );
-
-    cidFont.put(
-      PdfName.W,
-      new PdfArray(new PdfDirectObject[]{PdfInteger.get(1), widthsObject})
-      );
-
-    toUnicodeBuffer.append(
-      "endbfchar\n"
-        + "endcmap\n"
-        + "CMapName currentdict /CMap defineresource pop\n"
-        + "end\n"
-        + "end\n"
-      );
-    PdfStream toUnicodeStream = new PdfStream(toUnicodeBuffer);
-    font.put(
-      PdfName.ToUnicode,
-      getFile().register(toUnicodeStream)
-      );
+    // ToUnicode [PDF:1.6:5.9.2].
+    PdfDirectObject toUnicodeObject = null;
+    {
+      IBuffer toUnicodeBuffer = CMapBuilder.build(
+        EntryTypeEnum.BaseFont,
+        null,
+        sortedCodes,
+        new IFunction<Map.Entry<ByteArray,Integer>,Integer>()
+        {
+          public Integer apply(Map.Entry<ByteArray,Integer> codeEntry)
+          {return codeEntry.getValue();}
+        }
+        );
+      toUnicodeObject = getFile().register(new PdfStream(toUnicodeBuffer));
+    }
+    font.put(PdfName.ToUnicode, toUnicodeObject); // Character-code-to-Unicode mapping.
+  
+    // Glyph widths.
+    PdfArray widthsObject = new PdfArray();
+    {
+      int lastGlyphIndex = -10;
+      PdfArray lastGlyphWidthRangeObject = null;
+      for(Integer glyphIndex : new TreeSet<Integer>(glyphIndexes.values()))
+      {
+        Integer width = glyphWidths.get(glyphIndex);
+        if(width == null)
+        {width = 0;}
+        if(glyphIndex - lastGlyphIndex != 1)
+        {
+          widthsObject.add(PdfInteger.get(glyphIndex));
+          widthsObject.add(lastGlyphWidthRangeObject = new PdfArray());
+        }
+        lastGlyphWidthRangeObject.add(PdfInteger.get(width));
+        lastGlyphIndex = glyphIndex;
+      }
+    }
+    cidFont.put(PdfName.W, widthsObject); // Glyph widths.
   }
 
   /**

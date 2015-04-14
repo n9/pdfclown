@@ -1,5 +1,5 @@
 /*
-  Copyright 2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -62,6 +62,11 @@ namespace org.pdfclown.documents.contents
     #region public
     public RectangleF Box
     {get{return box;}}
+
+    public bool Contains(
+      char value
+      )
+    {return this.value == value;}
 
     public TextStyle Style
     {get{return style;}}

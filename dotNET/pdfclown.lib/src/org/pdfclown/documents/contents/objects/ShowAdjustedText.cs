@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -55,12 +55,12 @@ namespace org.pdfclown.documents.contents.objects
     */
     public ShowAdjustedText(
       IList<object> value
-      ) : base(OperatorKeyword)
+      ) : base(OperatorKeyword, (PdfDirectObject)new PdfArray())
     {Value = value;}
 
-    public ShowAdjustedText(
+    internal ShowAdjustedText(
       IList<PdfDirectObject> operands
-      ) : base(OperatorKeyword,operands)
+      ) : base(OperatorKeyword, operands)
     {}
     #endregion
 
@@ -89,7 +89,7 @@ namespace org.pdfclown.documents.contents.objects
     {
       get
       {
-        IList<object> value = new List<object>();
+        var value = new List<object>();
         foreach(PdfDirectObject element in ((PdfArray)operands[0]))
         {
           //TODO:horrible workaround to the lack of generic covariance...
@@ -112,16 +112,16 @@ namespace org.pdfclown.documents.contents.objects
       }
       set
       {
-        PdfArray elements = new PdfArray();
-        operands[0] = elements;
+        PdfArray elements = (PdfArray)operands[0];
+        elements.Clear();
         bool textItemExpected = true;
         foreach(object valueItem in value)
         {
           PdfDirectObject element;
           if(textItemExpected)
-          {element = new PdfString((byte[])valueItem);}
+          {element = new PdfByteString((byte[])valueItem);}
           else
-          {element = PdfReal.Get((double)valueItem);}
+          {element = PdfInteger.Get(Convert.ToInt32(valueItem));}
           elements.Add(element);
 
           textItemExpected = !textItemExpected;

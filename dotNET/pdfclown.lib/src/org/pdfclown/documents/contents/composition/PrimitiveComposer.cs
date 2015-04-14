@@ -35,6 +35,7 @@ using actions = org.pdfclown.documents.interaction.actions;
 using org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.files;
 using org.pdfclown.objects;
+using org.pdfclown.util.math;
 using org.pdfclown.util.math.geom;
 
 using System;
@@ -82,9 +83,9 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Adds a content object.</summary>
       <returns>The added content object.</returns>
     */
-    public objects::ContentObject Add(
-      objects::ContentObject obj
-      )
+    public T Add<T>(
+      T obj
+      ) where T : objects::ContentObject
     {
       scanner.Insert(obj);
       scanner.MoveNext();
@@ -505,8 +506,8 @@ namespace org.pdfclown.documents.contents.composition
             );
           DrawArc(
             new RectangleF((float)(x2+xArc), (float)(y2+yArc), (float)(radius*2), (float)(radius*2)),
-            (float)((180 / Math.PI) * radians),
-            (float)((180 / Math.PI) * radians2),
+            (float)MathUtils.ToDegrees(radians),
+            (float)MathUtils.ToDegrees(radians2),
             0,
             1,
             false
@@ -608,7 +609,7 @@ namespace org.pdfclown.documents.contents.composition
       double angle
       )
     {
-      double rad = angle * Math.PI / 180;
+      double rad = MathUtils.ToRadians(angle);
       double cos = Math.Cos(rad);
       double sin = Math.Sin(rad);
       ApplyMatrix(cos, sin, -sin, cos, 0, 0);
@@ -837,6 +838,7 @@ namespace org.pdfclown.documents.contents.composition
       <summary>Shows the specified text on the page at the current location [PDF:1.6:5.3.2].</summary>
       <param name="value">Text to show.</param>
       <returns>Bounding box vertices in default user space units.</returns>
+      <exception cref="EncodeException"/>
     */
     public Quad ShowText(
       string value
@@ -854,6 +856,7 @@ namespace org.pdfclown.documents.contents.composition
       <param name="value">Text to show.</param>
       <param name="action">Action to apply when the link is activated.</param>
       <returns>Link.</returns>
+      <exception cref="EncodeException"/>
     */
     public Link ShowText(
       string value,
@@ -873,6 +876,7 @@ namespace org.pdfclown.documents.contents.composition
       <param name="value">Text to show.</param>
       <param name="location">Position at which showing the text.</param>
       <returns>Bounding box vertices in default user space units.</returns>
+      <exception cref="EncodeException"/>
     */
     public Quad ShowText(
       string value,
@@ -895,6 +899,7 @@ namespace org.pdfclown.documents.contents.composition
       <param name="location">Position at which showing the text.</param>
       <param name="action">Action to apply when the link is activated.</param>
       <returns>Link.</returns>
+      <exception cref="EncodeException"/>
     */
     public Link ShowText(
       string value,
@@ -921,6 +926,7 @@ namespace org.pdfclown.documents.contents.composition
       <param name="yAlignment">Vertical alignment.</param>
       <param name="rotation">Rotational counterclockwise angle.</param>
       <returns>Bounding box vertices in default user space units.</returns>
+      <exception cref="EncodeException"/>
     */
     public Quad ShowText(
       string value,
@@ -936,7 +942,7 @@ namespace org.pdfclown.documents.contents.composition
       try
       {
         // Anchor point positioning.
-        double rad = rotation * Math.PI / 180.0;
+        double rad = MathUtils.ToRadians(rotation);
         double cos = Math.Cos(rad);
         double sin = Math.Sin(rad);
         ApplyMatrix(
@@ -958,6 +964,14 @@ namespace org.pdfclown.documents.contents.composition
         lineHeight += lineSpace;
         double textHeight = lineHeight * textLines.Length - lineSpace;
         double ascent = font.GetAscent(fontSize);
+        /*
+          NOTE: Word spacing is automatically applied by viewers only in case of single-byte
+          character code 32 [PDF:1.7:5.2.2]. As several bug reports pointed out, mixed-length
+          encodings aren't properly handled by recent implementations like pdf.js, therefore
+          composite fonts are always treated as multi-byte encodings which require explicit word
+          spacing adjustment.
+        */
+        double wordSpaceAdjust = font is fonts::CompositeFont ? -state.WordSpace * 1000 * state.Scale / fontSize : 0;
 
         // Vertical alignment.
         double y;
@@ -1011,17 +1025,35 @@ namespace org.pdfclown.documents.contents.composition
             TranslateText(x, y - lineHeight * index);
 
             if(textLine.Length > 0)
-            {Add(new objects::ShowSimpleText(font.Encode(textLine)));}
+            {
+              if(wordSpaceAdjust == 0 || textLine.IndexOf(' ') == -1) // Simple text.
+              {Add(new objects::ShowSimpleText(font.Encode(textLine)));}
+              else // Adjusted text.
+              {
+                var textParams = new List<Object>();
+                for(int spaceIndex = 0, lastSpaceIndex = -1; spaceIndex > -1; lastSpaceIndex = spaceIndex)
+                {
+                  spaceIndex = textLine.IndexOf(' ', lastSpaceIndex + 1);
+                  // Word space adjustment.
+                  if(lastSpaceIndex > -1)
+                  {textParams.Add(wordSpaceAdjust);}
+                  // Word.
+                  textParams.Add(font.Encode(textLine.Substring(lastSpaceIndex + 1, (spaceIndex > -1 ? spaceIndex + 1 : textLine.Length) - (lastSpaceIndex + 1))));
+                }
+                Add(new objects::ShowAdjustedText(textParams));
+              }
+            }
           }
         }
         finally
         {End();} // Ends the text object.
 
+        Matrix textToDeviceMatrix = state.GetTextToDeviceMatrix(true);
         frame = new Quad(
-          state.TextToDeviceSpace(new PointF((float)minX, (float)(y + ascent)), true),
-          state.TextToDeviceSpace(new PointF((float)(minX + maxLineWidth), (float)(y + ascent)), true),
-          state.TextToDeviceSpace(new PointF((float)(minX + maxLineWidth), (float)(y + ascent - textHeight)), true),
-          state.TextToDeviceSpace(new PointF((float)minX, (float)(y + ascent - textHeight)), true)
+          textToDeviceMatrix.Transform(new PointF((float)minX, (float)(y + ascent))),
+          textToDeviceMatrix.Transform(new PointF((float)(minX + maxLineWidth), (float)(y + ascent))),
+          textToDeviceMatrix.Transform(new PointF((float)(minX + maxLineWidth), (float)(y + ascent - textHeight))),
+          textToDeviceMatrix.Transform(new PointF((float)minX, (float)(y + ascent - textHeight)))
           );
       }
       finally
@@ -1040,6 +1072,7 @@ namespace org.pdfclown.documents.contents.composition
       <param name="rotation">Rotational counterclockwise angle.</param>
       <param name="action">Action to apply when the link is activated.</param>
       <returns>Link.</returns>
+      <exception cref="EncodeException"/>
     */
     public Link ShowText(
       string value,
@@ -1380,7 +1413,7 @@ namespace org.pdfclown.documents.contents.composition
         (float)(location.Y + radiusY)
         );
 
-      double radians1 = (Math.PI / 180) * startAngle;
+      double radians1 = MathUtils.ToRadians(startAngle);
       PointF point1 = new PointF(
         (float)(center.X + Math.Cos(radians1) * radiusX),
         (float)(center.Y - Math.Sin(radians1) * radiusY)
@@ -1389,7 +1422,7 @@ namespace org.pdfclown.documents.contents.composition
       if(beginPath)
       {StartPath(point1);}
 
-      double endRadians = (Math.PI / 180) * endAngle;
+      double endRadians = MathUtils.ToRadians(endAngle);
       double quadrantRadians = Math.PI / 2;
       double radians2 = Math.Min(
         radians1 + quadrantRadians - radians1 % quadrantRadians,
@@ -1500,7 +1533,7 @@ namespace org.pdfclown.documents.contents.composition
       double angle
       )
     {
-      double rad = angle * Math.PI / 180;
+      double rad = MathUtils.ToRadians(angle);
       double cos = Math.Cos(rad);
       double sin = Math.Sin(rad);
 

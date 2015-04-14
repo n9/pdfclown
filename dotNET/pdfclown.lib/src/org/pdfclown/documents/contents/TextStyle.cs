@@ -86,6 +86,14 @@ namespace org.pdfclown.documents.contents
     public double FontSize
     {get{return fontSize;}}
 
+    /**
+      <exception cref="EncodeException"/>
+    */
+    public double GetWidth(
+      char textChar
+      )
+    {return font.GetWidth(textChar, fontSize) * scaleX / scaleY;}
+
     public TextRenderModeEnum RenderMode
     {get{return renderMode;}}
 

@@ -166,6 +166,10 @@ namespace org.pdfclown.tools
         get
         {return textChars;}
       }
+
+      public override string ToString(
+        )
+      {return Text;}
     }
 
     /**
@@ -653,10 +657,7 @@ namespace org.pdfclown.tools
         // Add a new text string in case of new line!
         if(textString != null
           && textString.TextChars.Count > 0
-          && !TextStringPositionComparer<ITextString>.IsOnTheSameLine(
-            textString.Box.Value,
-            rawTextString.Box.Value
-            ))
+          && !TextStringPositionComparer<ITextString>.IsOnTheSameLine(textString.Box.Value, rawTextString.Box.Value))
         {
           if(dehyphenated
             && previousTextChar.Value == '-') // Hyphened word.
@@ -689,7 +690,7 @@ namespace org.pdfclown.tools
         {textStrings.Add(textString = new TextString());}
 
         textStyle = rawTextString.Style;
-        double spaceWidth = textStyle.Font.GetWidth(' ', textStyle.FontSize) * textStyle.ScaleX * .5;
+        double spaceWidth = textStyle.GetWidth(' ') * .5;
         foreach(TextChar textChar in rawTextString.TextChars)
         {
           if(previousTextChar != null)
@@ -700,26 +701,30 @@ namespace org.pdfclown.tools
               in order to allow the user to distinguish between original contents
               and augmented ones.
             */
-            float characterSpace = textChar.Box.X - previousTextChar.Box.Right;
-            if(characterSpace > spaceWidth)
+            if(!textChar.Contains(' ')
+              && !previousTextChar.Contains(' '))
             {
-              // Add synthesized space character!
-              textString.TextChars.Add(
-                previousTextChar = new TextChar(
-                  ' ',
-                  new RectangleF(
-                    previousTextChar.Box.Right,
-                    textChar.Box.Y,
-                    characterSpace,
-                    textChar.Box.Height
-                    ),
-                  textStyle,
-                  true
-                  )
-                );
+              float charSpace = textChar.Box.X - previousTextChar.Box.Right;
+              if(charSpace > spaceWidth)
+              {
+                // Add synthesized space character!
+                textString.TextChars.Add(
+                  previousTextChar = new TextChar(
+                    ' ',
+                    new RectangleF(
+                      previousTextChar.Box.Right,
+                      textChar.Box.Y,
+                      charSpace,
+                      textChar.Box.Height
+                      ),
+                    textStyle,
+                    true
+                    )
+                  );
+              }
             }
-            if(dehyphenating
-              && previousTextChar.Value == ' ')
+            else if(dehyphenating
+              && previousTextChar.Contains(' '))
             {
               textStrings.Add(textString = new TextString());
               dehyphenating = false;

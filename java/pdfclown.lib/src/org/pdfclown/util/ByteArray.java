@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,17 +32,33 @@ import java.util.Arrays;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.0
+  @version 0.1.2.1, 04/08/15
 */
 /*
   NOTE: This class is useful when applied as map key.
 */
 public final class ByteArray
+  implements Comparable<ByteArray>
 {
   public final byte[] data; //TODO: yes, I know it's risky (temporary simplification)...
 
   public ByteArray(byte[] data)
   {this.data = Arrays.copyOf(data,data.length);}
+
+  @Override
+  public int compareTo(
+    ByteArray other
+    )
+  {
+    int comparison = data.length - other.data.length;
+    if(comparison == 0)
+    {
+      for(int index = 0, length = data.length; index < length; index++)
+        if((comparison = data[index] - other.data[index]) != 0)
+          break;
+    }
+    return comparison;
+  }
 
   @Override
   public boolean equals(

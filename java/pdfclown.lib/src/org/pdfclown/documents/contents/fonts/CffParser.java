@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -43,13 +43,14 @@ import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.tokens.CharsetName;
 import org.pdfclown.util.NotImplementedException;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   CFF file format parser [CFF:1.0].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 02/04/12
+  @version 0.1.2.1, 04/08/15
 */
 final class CffParser
 {
@@ -530,13 +531,11 @@ final class CffParser
         BufferedReader stream = null;
         try
         {
-          // Open the resource!
           stream = new BufferedReader(
             new InputStreamReader(
               CffParser.class.getResourceAsStream("/fonts/cff/" + name() + "Charset")
               )
             );
-          // Parsing the resource...
           String line;
           while((line = stream.readLine()) != null)
           {
@@ -547,15 +546,7 @@ final class CffParser
         catch(IOException e)
         {throw new RuntimeException(e);}
         finally
-        {
-          try
-          {
-            if(stream != null)
-            {stream.close();}
-          }
-          catch(IOException e)
-          {throw new RuntimeException(e);}
-        }
+        {IOUtils.close(stream);}
       }
     }
 
@@ -585,13 +576,11 @@ final class CffParser
       BufferedReader stream = null;
       try
       {
-        // Open the resource!
         stream = new BufferedReader(
           new InputStreamReader(
             CffParser.class.getResourceAsStream("/fonts/cff/StandardStrings")
             )
           );
-        // Parsing the resource...
         String line;
         while((line = stream.readLine()) != null)
         {StandardStrings.add(line);}
@@ -599,15 +588,7 @@ final class CffParser
       catch(IOException e)
       {throw new RuntimeException(e);}
       finally
-      {
-        try
-        {
-          if(stream != null)
-          {stream.close();}
-        }
-        catch(IOException e)
-        {throw new RuntimeException(e);}
-      }
+      {IOUtils.close(stream);}
     }
   }
   // </constructors>
@@ -664,10 +645,6 @@ final class CffParser
 //      int encodingOffset = topDict.get(Dict.OperatorEnum.Encoding, 0, 0).intValue();
       //TODO: encoding
 
-      int charstringType = topDict.get(Dict.OperatorEnum.CharstringType, 0, 2).intValue();
-      int charStringsOffset = topDict.get(Dict.OperatorEnum.CharStrings, 0).intValue();
-      Index charStringsIndex = Index.parse(fontData, charStringsOffset);
-
       int charsetOffset = topDict.get(Dict.OperatorEnum.Charset, 0, 0).intValue();
       StandardCharsetEnum charset = StandardCharsetEnum.get(charsetOffset);
       if(charset != null)
@@ -677,6 +654,10 @@ final class CffParser
       else
       {
         glyphIndexes = new HashMap<Integer,Integer>();
+        
+        int charStringsOffset = topDict.get(Dict.OperatorEnum.CharStrings, 0).intValue();
+        Index charStringsIndex = Index.parse(fontData, charStringsOffset);
+        
         fontData.setPosition(charsetOffset);
         int charsetFormat = fontData.readUnsignedByte();
         for (int index = 1, count = charStringsIndex.size(); index <= count;)

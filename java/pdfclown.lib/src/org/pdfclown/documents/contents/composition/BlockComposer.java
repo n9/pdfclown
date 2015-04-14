@@ -34,8 +34,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pdfclown.bytes.IOutputStream;
-import org.pdfclown.documents.Document;
 import org.pdfclown.documents.contents.ContentScanner;
 import org.pdfclown.documents.contents.composition.Length.UnitModeEnum;
 import org.pdfclown.documents.contents.fonts.Font;
@@ -43,9 +41,13 @@ import org.pdfclown.documents.contents.objects.ContainerObject;
 import org.pdfclown.documents.contents.objects.ContentObject;
 import org.pdfclown.documents.contents.objects.LocalGraphicsState;
 import org.pdfclown.documents.contents.objects.ModifyCTM;
-import org.pdfclown.documents.contents.objects.Operation;
 import org.pdfclown.documents.contents.objects.SetWordSpace;
+import org.pdfclown.documents.contents.objects.ShowAdjustedText;
+import org.pdfclown.documents.contents.objects.ShowText;
+import org.pdfclown.documents.contents.objects.Text;
 import org.pdfclown.documents.contents.xObjects.XObject;
+import org.pdfclown.objects.PdfArray;
+import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.util.NotImplementedException;
 import org.pdfclown.util.math.OperationUtils;
 
@@ -56,52 +58,24 @@ import org.pdfclown.util.math.OperationUtils;
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @author Manuel Guilbault (manuel.guilbault@gmail.com)
   @since 0.0.3
-  @version 0.1.2.1, 03/21/15
+  @version 0.1.2.1, 04/08/15
 */
 /*
-  TODO: Manage all the graphics parameters (especially
-  those text-related, like horizontal scaling etc.) using ContentScanner -- see PDF:1.6:5.2-3!!!
+  NOTE: BlockComposer is going to become deprecated as soon as DocumentComposer fully supports its 
+  functionality. Until DocumentComposer's content styles are available, BlockComposer is the only 
+  way to intertwine block-level formatting with custom low-level operations like graphics parameters
+  settings (e.g. text color mixing).
 */
 public final class BlockComposer
 {
   // <class>
   // <classes>
-  private static final class ContentPlaceholder
-    extends Operation
-  {
-    public List<ContentObject> objects = new ArrayList<ContentObject>();
-
-    public ContentPlaceholder(
-      )
-    {super(null);}
-
-    @SuppressWarnings("unused")
-    public List<ContentObject> getObjects(
-      )
-    {return objects;}
-
-    @Override
-    public void writeTo(
-      IOutputStream stream,
-      Document context
-      )
-    {
-      for(ContentObject object : objects)
-      {object.writeTo(stream, context);}
-    }
-  }
-
   private static final class Row
   {
     /**
       Row base line.
     */
     public double baseLine;
-    /**
-      Row's graphics objects container.
-    */
-    @SuppressWarnings("unused")
-    public ContentPlaceholder container;
     public double height;
     /**
       Row's objects.
@@ -112,19 +86,16 @@ public final class BlockComposer
     */
     public int spaceCount = 0;
     public double width;
+    public SetWordSpace wordSpaceAdjustment;
     /**
       Vertical location relative to the block frame.
     */
     public double y;
 
     Row(
-      ContentPlaceholder container,
       double y
       )
-    {
-      this.container = container;
-      this.y = y;
-    }
+    {this.y = y;}
   }
 
   private static final class RowObject
@@ -143,13 +114,14 @@ public final class BlockComposer
       Graphics objects container associated to this object.
     */
     public ContainerObject container;
+    public double fontSize;
     public double height;
     /**
       Line alignment (can be either LineAlignmentEnum or Double).
     */
     public Object lineAlignment;
+    public double scale;
     public int spaceCount;
-    @SuppressWarnings("unused")
     public TypeEnum type;
     public double width;
 
@@ -160,7 +132,9 @@ public final class BlockComposer
       double width,
       int spaceCount,
       Object lineAlignment,
-      double baseLine
+      double baseLine,
+      double fontSize,
+      double scale
       )
     {
       this.type = type;
@@ -170,6 +144,8 @@ public final class BlockComposer
       this.spaceCount = spaceCount;
       this.lineAlignment = lineAlignment;
       this.baseLine = baseLine;
+      this.fontSize = fontSize;
+      this.scale = scale;
     }
   }
   // </classes>
@@ -262,8 +238,6 @@ public final class BlockComposer
       frame.getWidth(),
       0
       );
-
-    beginRow();
   }
 
   /**
@@ -287,6 +261,8 @@ public final class BlockComposer
 
     // Close the block local state!
     baseComposer.end();
+
+    container = null;
   }
 
   /**
@@ -395,12 +371,9 @@ public final class BlockComposer
   /**
     Ends current paragraph.
   */
-  public void showBreak(
+  public boolean showBreak(
     )
-  {
-    endRow(true);
-    beginRow();
-  }
+  {return showBreak(null, null);}
 
   /**
     Ends current paragraph, specifying the offset of the next one.
@@ -408,15 +381,10 @@ public final class BlockComposer
 
     @param offset Relative location of the next paragraph.
   */
-  public void showBreak(
+  public boolean showBreak(
     Dimension2D offset
     )
-  {
-    showBreak();
-
-    currentRow.y += offset.getHeight();
-    currentRow.width = offset.getWidth();
-  }
+  {return showBreak(offset, null);}
 
   /**
     Ends current paragraph, specifying the alignment of the next one.
@@ -424,14 +392,10 @@ public final class BlockComposer
 
     @param xAlignment Horizontal alignment.
   */
-  public void showBreak(
+  public boolean showBreak(
     XAlignmentEnum xAlignment
     )
-  {
-    showBreak();
-
-    this.xAlignment = xAlignment;
-  }
+  {return showBreak(null, xAlignment);}
 
   /**
     Ends current paragraph, specifying the offset and alignment of the next one.
@@ -440,14 +404,26 @@ public final class BlockComposer
     @param offset Relative location of the next paragraph.
     @param xAlignment Horizontal alignment.
   */
-  public void showBreak(
+  public boolean showBreak(
     Dimension2D offset,
     XAlignmentEnum xAlignment
     )
   {
-    showBreak(offset);
+    // End previous row!
+    if(!ensureRow(false))
+      return false;
 
-    this.xAlignment = xAlignment;
+    if(xAlignment != null)
+    {this.xAlignment = xAlignment;}
+    
+    beginRow();
+    
+    if(offset != null)
+    {
+      currentRow.y += offset.getHeight();
+      currentRow.width = offset.getWidth();
+    }
+    return true;
   }
 
   /**
@@ -477,8 +453,8 @@ public final class BlockComposer
     Object lineAlignment
     )
   {
-    if(currentRow == null
-      || text == null)
+    if(text == null 
+      || !ensureRow(true))
       return 0;
 
     ContentScanner.GraphicsState state = baseComposer.getState();
@@ -548,7 +524,9 @@ textShowing:
             textChunkWidth,
             countOccurrence(' ',textChunk),
             lineAlignment,
-            baseLine
+            baseLine,
+            state.getFontSize(),
+            state.getScale()
             );
           baseComposer.showText(textChunk, textChunkLocation);
           baseComposer.end(); // Closes the row object's local state.
@@ -588,7 +566,7 @@ trailParsing:
       && lineAlignment == LineAlignmentEnum.BaseLine)
     {lastFontSize = fontSize;}
 
-    return index;
+    return textFitter.getEndIndex() > -1 ? index : 0;
   }
 
   /**
@@ -622,8 +600,8 @@ trailParsing:
     Object lineAlignment
     )
   {
-    if(currentRow == null
-      || xObject == null)
+    if(xObject == null
+      || !ensureRow(true))
       return false;
 
     if(size == null)
@@ -653,7 +631,9 @@ trailParsing:
             size.getWidth(),
             0,
             lineAlignment,
-            size.getHeight()
+            size.getHeight(),
+            0,
+            0
             );
           baseComposer.showXObject(xObject, location, size);
           baseComposer.end(); // Closes the row object's local state.
@@ -713,16 +693,23 @@ trailParsing:
   {
     rowEnded = false;
 
+    ContentScanner.GraphicsState state = baseComposer.getState();
+    
     double rowY = boundBox.height;
     if(rowY > 0)
+    {rowY += lineSpace.getValue(state.getFont() != null ? state.getFont().getLineHeight(state.getFontSize()) : 0);}
+    currentRow = new Row(rowY);
+    if(xAlignment == XAlignmentEnum.Justify)
     {
-      ContentScanner.GraphicsState state = baseComposer.getState();
-      rowY += lineSpace.getValue(state.getFont() != null ? state.getFont().getLineHeight(state.getFontSize()) : 0);
+      /*
+        TODO: This temporary hack forces PrimitiveComposer.showText() to insert word space
+        adjustments in case of justified text; when the row ends, it has to be updated with the
+        actual adjustment value.
+      */
+      currentRow.wordSpaceAdjustment = baseComposer.add(new SetWordSpace(.001));
     }
-    currentRow = new Row(
-      (ContentPlaceholder)baseComposer.add(new ContentPlaceholder()),
-      rowY
-      );
+    else if(state.getWordSpace() != 0)
+    {baseComposer.setWordSpace(0);}
   }
 
   private int countOccurrence(
@@ -759,11 +746,10 @@ trailParsing:
 
     rowEnded = true;
 
-    double[] objectXOffsets = new double[currentRow.objects.size()]; // Horizontal object displacements.
+    List<RowObject> objects = currentRow.objects;
+    double[] objectXOffsets = new double[objects.size()]; // Horizontal object displacements.
     double wordSpace = 0; // Exceeding space among words.
     double rowXOffset = 0; // Horizontal row offset.
-
-    List<RowObject> objects = currentRow.objects;
 
     // Horizontal alignment.
     XAlignmentEnum xAlignment = this.xAlignment;
@@ -778,7 +764,6 @@ trailParsing:
         rowXOffset = (frame.getWidth() - currentRow.width) / 2;
         break;
       case Justify:
-        // Are there NO spaces?
         if(currentRow.spaceCount == 0
           || broken) // NO spaces.
         {
@@ -798,16 +783,15 @@ trailParsing:
             )
           {
             /*
-              NOTE: The offset represents the horizontal justification gap inserted
-              at the left side of each object.
+              NOTE: The offset represents the horizontal justification gap inserted at the left side
+              of each object.
             */
             objectXOffsets[index] = objectXOffsets[index - 1] + objects.get(index - 1).spaceCount * wordSpace;
           }
         }
+        currentRow.wordSpaceAdjustment.setValue(wordSpace);
         break;
     }
-
-    SetWordSpace wordSpaceOperation = new SetWordSpace(wordSpace);
 
     // Vertical alignment and translation.
     for(
@@ -856,8 +840,6 @@ trailParsing:
       }
 
       List<ContentObject> containedGraphics = object.container.getObjects();
-      // Word spacing.
-      containedGraphics.add(0,wordSpaceOperation);
       // Translation.
       containedGraphics.add(
         0,
@@ -867,6 +849,24 @@ trailParsing:
           objectYOffset // Vertical alignment.
           )
         );
+      // Word spacing.
+      if(object.type == RowObject.TypeEnum.Text)
+      {
+        /*
+          TODO: This temporary hack adjusts the word spacing in case of composite font.
+          When DocumentComposer replaces BlockComposer, all the graphical properties of contents
+          will be declared as styles and their composition will occur as a single pass without such
+          ugly tweakings.
+        */
+        ShowText showTextOperation = (ShowText)((Text)((LocalGraphicsState)containedGraphics.get(1)).getObjects().get(1)).getObjects().get(1);
+        if(showTextOperation instanceof ShowAdjustedText)
+        {
+          PdfInteger wordSpaceObject = PdfInteger.get((int)Math.round(-wordSpace * 1000 * object.scale / object.fontSize));
+          PdfArray textParams = (PdfArray)showTextOperation.getOperands().get(0);
+          for(int textParamIndex = 1, textParamsLength = textParams.size(); textParamIndex < textParamsLength; textParamIndex += 2)
+          {textParams.set(textParamIndex, wordSpaceObject);}
+        }
+      }
     }
 
     // Update the actual block height!
@@ -891,6 +891,23 @@ trailParsing:
 
     // Discard the current row!
     currentRow = null;
+  }
+
+  private boolean ensureRow(
+    boolean open
+    )
+  {
+    if(container == null)
+      return false;
+
+    if(open == (currentRow == null))
+    {
+      if(currentRow == null)
+      {beginRow();}
+      else
+      {endRow(true);}
+    }
+    return true;
   }
 
   private Object resolveLineAlignment(

@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -50,7 +50,7 @@ namespace org.pdfclown.documents.contents.objects
     */
     public ShowSimpleText(
       byte[] text
-      ) : base(OperatorKeyword, new PdfString(text))
+      ) : base(OperatorKeyword, new PdfByteString(text))
     {}
 
     public ShowSimpleText(
@@ -66,7 +66,7 @@ namespace org.pdfclown.documents.contents.objects
       get
       {return ((PdfString)operands[0]).RawValue;}
       set
-      {operands[0] = new PdfString(value);}
+      {operands[0] = new PdfByteString(value);}
     }
     #endregion
     #endregion

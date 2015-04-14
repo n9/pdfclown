@@ -2,7 +2,6 @@ package org.pdfclown.samples.cli;
 
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
-import java.io.IOException;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
@@ -14,6 +13,7 @@ import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.composition.XAlignmentEnum;
 import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.files.File;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   This sample demonstrates <b>how to combine multiple pages into single bigger pages</b> (for example
@@ -23,7 +23,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 11/30/12
+  @version 0.1.2.1, 04/08/15
 */
 public class PageCombinationSample
   extends Sample
@@ -90,13 +90,7 @@ public class PageCombinationSample
     finally
     {
       // 5. Closing the PDF file...
-      if(sourceFile != null)
-      {
-        try
-        {sourceFile.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(sourceFile);
     }
   }
 }

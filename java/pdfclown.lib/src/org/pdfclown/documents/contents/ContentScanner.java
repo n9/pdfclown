@@ -30,7 +30,6 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,7 +66,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2.1, 03/12/15
+  @version 0.1.2.1, 04/08/15
 */
 public final class ContentScanner
 {
@@ -388,6 +387,26 @@ public final class ContentScanner
     {return strokeColorSpace;}
 
     /**
+      Gets the text-to-device space transformation matrix [PDF:1.6:5.3.3].
+  
+      @param topDown
+        Whether the y-axis orientation has to be adjusted to common top-down orientation rather than
+        standard PDF coordinate system (bottom-up).
+    */
+    public AffineTransform getTextToDeviceMatrix(
+      boolean topDown
+      )
+    {
+      /*
+        NOTE: The text rendering matrix (trm) is obtained from the concatenation of the current 
+        transformation matrix (ctm) and the text matrix (tm).
+      */
+      AffineTransform matrix = getUserToDeviceMatrix(topDown);
+      matrix.concatenate(tm);
+      return matrix;
+    }
+
+    /**
       Gets the current text line matrix [PDF:1.6:5.3].
     */
     public AffineTransform getTlm(
@@ -400,6 +419,27 @@ public final class ContentScanner
     public AffineTransform getTm(
       )
     {return tm;}
+
+    /**
+      Gets the user-to-device space transformation matrix [PDF:1.6:4.2.3].
+  
+      @param topDown
+        Whether the y-axis orientation has to be adjusted to common top-down orientation rather than
+        standard PDF coordinate system (bottom-up).
+    */
+    public AffineTransform getUserToDeviceMatrix(
+      boolean topDown
+      )
+    {
+      if(topDown)
+      {
+        AffineTransform matrix = new AffineTransform(1, 0, 0, -1, 0, scanner.getCanvasSize().getHeight());
+        matrix.concatenate(ctm);
+        return matrix;
+      }
+      else
+        return (AffineTransform)ctm.clone();
+    }
 
     /**
       Gets the current word spacing [PDF:1.6:5.2.2].
@@ -575,52 +615,6 @@ public final class ContentScanner
       double value
       )
     {wordSpace = value;}
-
-    /**
-      Resolves the given text-space point to its equivalent device-space one [PDF:1.6:5.3.3],
-      expressed in standard PDF coordinate system (lower-left origin).
-
-      @param point Point to transform.
-    */
-    public Point2D textToDeviceSpace(
-      Point2D point
-      )
-    {return textToDeviceSpace(point, false);}
-
-    /**
-      Resolves the given text-space point to its equivalent device-space one [PDF:1.6:5.3.3].
-
-      @param point Point to transform.
-      @param topDown Whether the y-axis orientation has to be adjusted to common top-down orientation
-        rather than standard PDF coordinate system (bottom-up).
-    */
-    public Point2D textToDeviceSpace(
-      Point2D point,
-      boolean topDown
-      )
-    {
-      /*
-        NOTE: The text rendering matrix (trm) is obtained from the concatenation
-        of the current transformation matrix (ctm) and the text matrix (tm).
-      */
-      AffineTransform trm = topDown
-        ? new AffineTransform(1, 0, 0, -1, 0, scanner.getCanvasSize().getHeight())
-        : new AffineTransform();
-      trm.concatenate(ctm);
-      trm.concatenate(tm);
-      return trm.transform(point, null);
-    }
-
-    /**
-      Resolves the given user-space point to its equivalent device-space one [PDF:1.6:4.2.3],
-      expressed in standard PDF coordinate system (lower-left origin).
-
-      @param point Point to transform.
-    */
-    public Point2D userToDeviceSpace(
-      Point2D point
-      )
-    {return ctm.transform(point, null);}
     // </public>
 
     // <private>

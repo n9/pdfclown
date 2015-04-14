@@ -1,6 +1,5 @@
 package org.pdfclown.samples.cli;
 
-import java.io.IOException;
 import java.util.Map;
 
 import org.pdfclown.documents.Document;
@@ -9,12 +8,13 @@ import org.pdfclown.documents.interaction.navigation.page.PageLabel;
 import org.pdfclown.documents.interaction.navigation.page.PageLabel.NumberStyleEnum;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfInteger;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   This sample demonstrates <b>how to define, read and modify page labels</b>.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 11/30/12
+  @version 0.1.2.1, 04/08/15
 */
 public class PageLabelSample
   extends Sample
@@ -58,13 +58,7 @@ public class PageLabelSample
       finally
       {
         // 4. Closing the PDF file...
-        if(file != null)
-        {
-          try
-          {file.close();}
-          catch(IOException e)
-          {/* NOOP */}
-        }
+        IOUtils.closeQuietly(file);
       }
     }
 
@@ -91,13 +85,7 @@ public class PageLabelSample
       finally
       {
         // 3. Closing the PDF file...
-        if(file != null)
-        {
-          try
-          {file.close();}
-          catch(IOException e)
-          {/* NOOP */}
-        }
+        IOUtils.closeQuietly(file);
       }
     }
   }

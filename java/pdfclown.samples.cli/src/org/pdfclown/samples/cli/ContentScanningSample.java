@@ -2,7 +2,6 @@ package org.pdfclown.samples.cli;
 
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
-import java.io.IOException;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Page;
@@ -13,6 +12,7 @@ import org.pdfclown.documents.contents.objects.InlineImage;
 import org.pdfclown.documents.contents.xObjects.ImageXObject;
 import org.pdfclown.documents.contents.xObjects.XObject;
 import org.pdfclown.files.File;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   This sample demonstrates <b>how to retrieve the precise position (page and coordinates)
@@ -22,7 +22,7 @@ import org.pdfclown.files.File;
   each single content object within a page.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 1/24/15
+  @version 0.1.2.1, 04/08/15
 */
 public class ContentScanningSample
   extends Sample
@@ -57,13 +57,7 @@ public class ContentScanningSample
     finally
     {
       // 3. Closing the PDF file...
-      if(file != null)
-      {
-        try
-        {file.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(file);
     }
   }
 

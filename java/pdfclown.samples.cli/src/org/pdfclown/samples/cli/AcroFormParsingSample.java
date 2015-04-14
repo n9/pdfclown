@@ -1,7 +1,6 @@
 package org.pdfclown.samples.cli;
 
 import java.awt.geom.Rectangle2D;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,13 +10,14 @@ import org.pdfclown.documents.interaction.annotations.Widget;
 import org.pdfclown.documents.interaction.forms.Field;
 import org.pdfclown.documents.interaction.forms.Form;
 import org.pdfclown.files.File;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   This sample demonstrates <b>how to inspect the AcroForm fields</b> of a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2.1, 1/24/15
+  @version 0.1.2.1, 04/08/15
 */
 public class AcroFormParsingSample
   extends Sample
@@ -87,13 +87,7 @@ public class AcroFormParsingSample
     finally
     {
       // 4. Closing the PDF file...
-      if(file != null)
-      {
-        try
-        {file.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(file);
     }
   }
 }

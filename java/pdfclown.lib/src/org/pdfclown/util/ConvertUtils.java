@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -36,14 +36,14 @@ import java.nio.ByteOrder;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.2.1, 04/08/15
 */
 public final class ConvertUtils
 {
   // <class>
   // <static>
   // <fields>
-  private static final char[] HexDigits = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+  private static final char[] HexDigits = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
   // </fields>
 
   // <interface>
@@ -56,12 +56,7 @@ public final class ConvertUtils
     {
       int dataLength = data.length;
       result = new char[dataLength * 2];
-      for(
-        int dataIndex = 0,
-          resultIndex = 0;
-        dataIndex < dataLength;
-        dataIndex++
-        )
+      for(int dataIndex = 0, resultIndex = 0; dataIndex < dataLength; dataIndex++)
       {
         result[resultIndex++] = HexDigits[(0xF0 & data[dataIndex]) >>> 4];
         result[resultIndex++] = HexDigits[0x0F & data[dataIndex]];
@@ -93,12 +88,7 @@ public final class ConvertUtils
     {
       length = Math.min(length, data.length - index);
       value = 0;
-      for(
-        int i = index,
-          endIndex = index + length;
-        i < endIndex;
-        i++
-        )
+      for(int i = index, endIndex = index + length; i < endIndex; i++)
       {value |= (data[i] & 0xff) << 8 * (byteOrder == ByteOrder.LITTLE_ENDIAN ? i-index : endIndex-i-1);}
     }
     return value;

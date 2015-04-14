@@ -534,6 +534,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName URL = new PdfName("URL");
     public static readonly PdfName Usage = new PdfName("Usage");
     public static readonly PdfName UseAttachments = new PdfName("UseAttachments");
+    public static readonly PdfName UseCMap = new PdfName("UseCMap");
     public static readonly PdfName UseNone = new PdfName("UseNone");
     public static readonly PdfName UseOC = new PdfName("UseOC");
     public static readonly PdfName UseOutlines = new PdfName("UseOutlines");

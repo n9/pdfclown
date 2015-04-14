@@ -1,6 +1,5 @@
 package org.pdfclown.samples.cli;
 
-import java.io.IOException;
 import java.net.URI;
 
 import org.pdfclown.documents.Document;
@@ -9,6 +8,7 @@ import org.pdfclown.documents.interaction.actions.GoToLocal;
 import org.pdfclown.documents.interaction.actions.GoToURI;
 import org.pdfclown.documents.interaction.navigation.document.LocalDestination;
 import org.pdfclown.files.File;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   This sample demonstrates <b>how to apply actions</b> to a PDF document.
@@ -17,7 +17,7 @@ import org.pdfclown.files.File;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 11/30/12
+  @version 0.1.2.1, 04/08/15
 */
 public class ActionSample
   extends Sample
@@ -75,13 +75,7 @@ public class ActionSample
     finally
     {
       // 4. Closing the PDF file...
-      if(file != null)
-      {
-        try
-        {file.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(file);
     }
   }
 }

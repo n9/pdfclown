@@ -134,12 +134,12 @@ namespace org.pdfclown.documents.contents.objects
 
     #region constructors
     private PaintPath(
-      string operator_,
+      string @operator,
       bool closed,
       bool stroked,
       bool filled,
       WindModeEnum? fillMode
-      ) : base(operator_)
+      ) : base(@operator)
     {
       this.closed = closed;
       this.stroked = stroked;

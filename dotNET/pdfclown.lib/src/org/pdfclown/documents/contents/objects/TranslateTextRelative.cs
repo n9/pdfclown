@@ -73,9 +73,9 @@ namespace org.pdfclown.documents.contents.objects
     {}
 
     public TranslateTextRelative(
-      string operator_,
+      string @operator,
       IList<PdfDirectObject> operands
-      ) : base(operator_,operands)
+      ) : base(@operator,operands)
     {}
     #endregion
 
@@ -87,9 +87,9 @@ namespace org.pdfclown.documents.contents.objects
     public bool LeadSet
     {
       get
-      {return operator_.Equals(LeadOperatorKeyword);}
+      {return @operator.Equals(LeadOperatorKeyword);}
       set
-      {operator_ = (value ? LeadOperatorKeyword : SimpleOperatorKeyword);}
+      {@operator = (value ? LeadOperatorKeyword : SimpleOperatorKeyword);}
     }
 
     public double OffsetX

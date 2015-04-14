@@ -1,6 +1,5 @@
 package org.pdfclown.samples.cli;
 
-import java.io.IOException;
 import java.util.Map;
 
 import org.pdfclown.documents.Document;
@@ -11,13 +10,14 @@ import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfString;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   This sample demonstrates <b>how to inspect the object names</b> within a PDF document.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 1/24/15
+  @version 0.1.2.1, 04/08/15
 */
 public class NamesParsingSample extends Sample
 {
@@ -78,13 +78,7 @@ public class NamesParsingSample extends Sample
     finally
     {
       // 3. Closing the PDF file...
-      if(file != null)
-      {
-        try
-        {file.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(file);
     }
   }
 }

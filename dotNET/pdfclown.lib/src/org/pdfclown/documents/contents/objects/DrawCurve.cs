@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -120,9 +120,9 @@ namespace org.pdfclown.documents.contents.objects
     public DrawCurve(
       PointF point,
       PointF control,
-      string operator_
+      string @operator
       ) : base(
-        operator_.Equals(InitialOperatorKeyword) ? InitialOperatorKeyword : FinalOperatorKeyword,
+        @operator.Equals(InitialOperatorKeyword) ? InitialOperatorKeyword : FinalOperatorKeyword,
         new List<PdfDirectObject>(
           new PdfDirectObject[]
           {
@@ -136,9 +136,9 @@ namespace org.pdfclown.documents.contents.objects
     {}
 
     public DrawCurve(
-      string operator_,
+      string @operator,
       IList<PdfDirectObject> operands
-      ) : base(operator_,operands)
+      ) : base(@operator,operands)
     {}
     #endregion
 
@@ -151,7 +151,7 @@ namespace org.pdfclown.documents.contents.objects
     {
       get
       {
-        if(operator_.Equals(FinalOperatorKeyword))
+        if(@operator.Equals(FinalOperatorKeyword))
           return null;
         else
           return new PointF(
@@ -161,9 +161,9 @@ namespace org.pdfclown.documents.contents.objects
       }
       set
       {
-        if(operator_.Equals(FinalOperatorKeyword))
+        if(@operator.Equals(FinalOperatorKeyword))
         {
-          operator_ = FullOperatorKeyword;
+          @operator = FullOperatorKeyword;
           operands.Insert(0,PdfReal.Get(value.Value.X));
           operands.Insert(1,PdfReal.Get(value.Value.Y));
         }
@@ -182,7 +182,7 @@ namespace org.pdfclown.documents.contents.objects
     {
       get
       {
-        if(operator_.Equals(FinalOperatorKeyword))
+        if(@operator.Equals(FinalOperatorKeyword))
           return new PointF(
             ((IPdfNumber)operands[0]).FloatValue,
             ((IPdfNumber)operands[1]).FloatValue
@@ -195,7 +195,7 @@ namespace org.pdfclown.documents.contents.objects
       }
       set
       {
-        if(operator_.Equals(FinalOperatorKeyword))
+        if(@operator.Equals(FinalOperatorKeyword))
         {
           operands[0] = PdfReal.Get(value.Value.X);
           operands[1] = PdfReal.Get(value.Value.Y);
@@ -215,7 +215,7 @@ namespace org.pdfclown.documents.contents.objects
     {
       get
       {
-        if(operator_.Equals(FullOperatorKeyword))
+        if(@operator.Equals(FullOperatorKeyword))
           return new PointF(
             ((IPdfNumber)operands[4]).FloatValue,
             ((IPdfNumber)operands[5]).FloatValue
@@ -228,7 +228,7 @@ namespace org.pdfclown.documents.contents.objects
       }
       set
       {
-        if(operator_.Equals(FullOperatorKeyword))
+        if(@operator.Equals(FullOperatorKeyword))
         {
           operands[4] = PdfReal.Get(value.X);
           operands[5] = PdfReal.Get(value.Y);

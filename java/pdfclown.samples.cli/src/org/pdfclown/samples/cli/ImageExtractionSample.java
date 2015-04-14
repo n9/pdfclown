@@ -1,7 +1,5 @@
 package org.pdfclown.samples.cli;
 
-import java.io.IOException;
-
 import org.pdfclown.bytes.IBuffer;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfDataObject;
@@ -9,6 +7,7 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfStream;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   This sample demonstrates <b>how to extract XObject images</b> from a PDF document.
@@ -17,7 +16,7 @@ import org.pdfclown.objects.PdfStream;
   <p>XObject images other than JPEG aren't currently supported for handling.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 09/24/12
+  @version 0.1.2.1, 04/08/15
 */
 public class ImageExtractionSample
   extends Sample
@@ -73,13 +72,7 @@ public class ImageExtractionSample
     finally
     {
       // 3. Closing the PDF file...
-      if(file != null)
-      {
-        try
-        {file.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(file);
     }
   }
 
@@ -101,12 +94,11 @@ public class ImageExtractionSample
     {throw new RuntimeException(outputFile.getPath() + " file couldn't be created.",e);}
 
     try
-    {
-      outputStream.write(data.toByteArray());
-      outputStream.close();
-    }
+    {outputStream.write(data.toByteArray());}
     catch(Exception e)
     {throw new RuntimeException(outputFile.getPath() + " file writing has failed.",e);}
+    finally
+    {IOUtils.close(outputStream);}
 
     System.out.println("Output: " + outputFile.getPath());
   }

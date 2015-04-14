@@ -37,7 +37,6 @@ import org.pdfclown.PDF;
 import org.pdfclown.Version;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.CompatibilityModeEnum;
-import org.pdfclown.documents.DocumentConfiguration;
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.interchange.metadata.Metadata;
 import org.pdfclown.files.File;
@@ -59,7 +58,7 @@ import org.pdfclown.util.NotImplementedException;
   {@link #getBaseDataObject() baseDataObject} backing this object.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/30/15
+  @version 0.1.2.1, 04/08/15
 */
 public abstract class PdfObjectWrapper<TDataObject extends PdfDataObject>
   implements Cloneable,

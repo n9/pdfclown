@@ -1,6 +1,5 @@
 package org.pdfclown.samples.cli;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +27,7 @@ import org.pdfclown.objects.PdfIndirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReference;
+import org.pdfclown.util.io.IOUtils;
 import org.pdfclown.util.parsers.ParseException;
 
 /**
@@ -37,7 +37,7 @@ import org.pdfclown.util.parsers.ParseException;
   to exploit all the available access functionalities.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/10/15
+  @version 0.1.2.1, 04/08/15
 */
 public class ParsingSample
   extends Sample
@@ -133,13 +133,7 @@ public class ParsingSample
     finally
     {
       // 3. Closing the PDF file...
-      if(file != null)
-      {
-        try
-        {file.close();}
-        catch(IOException e)
-        {/* NOOP */}
-      }
+      IOUtils.closeQuietly(file);
     }
   }
 

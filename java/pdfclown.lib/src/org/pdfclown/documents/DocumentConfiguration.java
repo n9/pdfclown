@@ -27,7 +27,6 @@ package org.pdfclown.documents;
 
 import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,19 +36,21 @@ import org.pdfclown.documents.interaction.annotations.Stamp;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfString;
 import org.pdfclown.util.StringUtils;
+import org.pdfclown.util.io.IOUtils;
 
 /**
   Document configuration.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2.1
-  @version 0.1.2.1, 03/30/15
+  @version 0.1.2.1, 04/08/15
 */
 public final class DocumentConfiguration
 {
   // <dynamic>
   // <fields>
   private CompatibilityModeEnum compatibilityMode = CompatibilityModeEnum.Loose;
+  private EncodingFallbackEnum encodingFallback = EncodingFallbackEnum.Substitution;
   private java.io.File stampPath;
 
   private final Document document;
@@ -79,6 +80,13 @@ public final class DocumentConfiguration
   public Document getDocument(
     )
   {return document;}
+
+  /**
+    Gets the encoding behavior in case of missing character mapping.
+  */
+  public EncodingFallbackEnum getEncodingFallback(
+    )
+  {return encodingFallback;}
 
   /**
     Gets the stamp appearance corresponding to the specified stamp type.
@@ -167,15 +175,7 @@ public final class DocumentConfiguration
       catch(FileNotFoundException e)
       {throw new RuntimeException(e);}
       finally
-      {
-        if(stampFile != null)
-        {
-          try
-          {stampFile.close();}
-          catch(IOException e)
-          {/* NOOP */}
-        }
-      }
+      {IOUtils.closeQuietly(stampFile);}
     }
     return stamp;
   }
@@ -200,6 +200,14 @@ public final class DocumentConfiguration
     CompatibilityModeEnum value
     )
   {compatibilityMode = value;}
+
+  /**
+    @see #getEncodingFallback()
+  */
+  public void setEncodingFallback(
+    EncodingFallbackEnum value
+    )
+  {encodingFallback = value;}
 
   /**
     @see #getStampPath()

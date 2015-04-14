@@ -35,6 +35,7 @@ import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.contents.ContentScanner;
 import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
 import org.pdfclown.documents.contents.IContentContext;
+import org.pdfclown.documents.contents.fonts.CompositeFont;
 import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.objects.PdfDirectObject;
 
@@ -43,7 +44,7 @@ import org.pdfclown.objects.PdfDirectObject;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 03/12/15
+  @version 0.1.2.1, 04/08/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class ShowText
@@ -143,7 +144,8 @@ public abstract class ShowText
     Font font = state.getFont();
     double fontSize = state.getFontSize();
     double scaledFactor = Font.getScalingFactor(fontSize) * state.getScale();
-    double wordSpace = state.getWordSpace() * state.getScale();
+    boolean wordSpaceSupported = !(font instanceof CompositeFont);
+    double wordSpace = wordSpaceSupported ? state.getWordSpace() * state.getScale() : 0;
     double charSpace = state.getCharSpace() * state.getScale();
     AffineTransform ctm = (AffineTransform)state.getCtm().clone();
     AffineTransform tm;
@@ -155,7 +157,8 @@ public abstract class ShowText
       {
         if(textScanner == null)
         {state.setWordSpace(newWordSpace);}
-        wordSpace = newWordSpace * state.getScale();
+        if(wordSpaceSupported)
+        {wordSpace = newWordSpace * state.getScale();}
       }
       Double newCharSpace = showTextToNextLine.getCharSpace();
       if(newCharSpace != null)
