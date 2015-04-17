@@ -28,7 +28,6 @@ package org.pdfclown.documents.contents.fonts;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.EnumSet;
-import java.util.Hashtable;
 import java.util.Map;
 
 import org.pdfclown.PDF;
@@ -37,20 +36,18 @@ import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.ByteArray;
-import org.pdfclown.util.ConvertUtils;
 import org.pdfclown.util.io.IOUtils;
 
 /**
   Standard Type 1 font [PDF:1.6:5.5.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 04/08/15
+  @version 0.1.2.1, 04/16/15
 */
 @PDF(VersionEnum.PDF10)
 public final class StandardType1Font
   extends Type1Font
 {
-  // <class>
   // <classes>
   /**
     Standard Type 1 font families [PDF:1.6:5.5.1].
@@ -130,12 +127,6 @@ public final class StandardType1Font
   // <interface>
   // <public>
   @Override
-  public StandardType1Font clone(
-    Document context
-    )
-  {return (StandardType1Font)super.clone(context);}
-
-  @Override
   public double getAscent(
     )
   {return metrics.ascender;}
@@ -156,25 +147,20 @@ public final class StandardType1Font
 
   // <protected>
   @Override
-  protected Map<ByteArray,Integer> getNativeEncoding(
+  protected Map<ByteArray,Integer> getBaseEncoding(
+    PdfName encodingName
     )
   {
-    if(symbolic) // Symbolic font.
+    if(encodingName == null)
     {
-      Map<ByteArray,Integer> codes = new Hashtable<ByteArray,Integer>();
-      for(Map.Entry<Integer,Integer> glyphIndexEntry : glyphIndexes.entrySet())
-      {
-        codes.put(
-          new ByteArray(new byte[]{ConvertUtils.intToByteArray(glyphIndexEntry.getValue())[3]}),
-          glyphIndexEntry.getKey()
-          );
-      }
-      return codes;
+      /*
+        NOTE: Symbolic standard fonts use custom encodings.
+      */
+      encodingName = (PdfName)getBaseDataObject().get(PdfName.BaseFont);
     }
-    else // Nonsymbolic font.
-      return Encoding.get(PdfName.StandardEncoding).getCodes();
+    return super.getBaseEncoding(encodingName);
   }
-
+  
   @Override
   protected void onLoad(
     )
@@ -255,5 +241,4 @@ public final class StandardType1Font
   // </private>
   // </interface>
   // </dynamic>
-  // </class>
 }

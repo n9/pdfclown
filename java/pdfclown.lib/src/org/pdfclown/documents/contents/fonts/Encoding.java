@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -37,7 +37,7 @@ import org.pdfclown.util.ByteArray;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.1, 11/01/11
+  @version 0.1.2.1, 04/16/15
 */
 // TODO: This hierarchy is going to be superseded by org.pdfclown.tokens.Encoding.
 class Encoding
@@ -54,6 +54,9 @@ class Encoding
     Encodings.put(PdfName.StandardEncoding, new StandardEncoding());
     Encodings.put(PdfName.MacRomanEncoding, new MacRomanEncoding());
     Encodings.put(PdfName.WinAnsiEncoding, new WinAnsiEncoding());
+    Encodings.put(PdfName.Identity, new IdentityEncoding());
+    Encodings.put(PdfName.Symbol, new SymbolEncoding());
+    Encodings.put(PdfName.ZapfDingbats, new ZapfDingbatsEncoding());
   }
   // </constructors>
 
@@ -82,7 +85,13 @@ class Encoding
     int charCode,
     String charName
     )
-  {codes.put(new ByteArray(new byte[]{(byte)charCode}),GlyphMapping.nameToCode(charName));}
+  {put(charCode, GlyphMapping.nameToCode(charName));}
+  
+  protected void put(
+    int charCode,
+    int unicode
+    )
+  {codes.put(new ByteArray(new byte[]{(byte)charCode}), unicode);}
   // </protected>
   // </interface>
   // </dynamic>

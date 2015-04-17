@@ -497,6 +497,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName Supplement = new PdfName("Supplement");
     public static readonly PdfName SW = new PdfName("SW");
     public static readonly PdfName Sy = new PdfName("Sy");
+    public static readonly PdfName Symbol = new PdfName("Symbol");
     public static readonly PdfName T = new PdfName("T");
     public static readonly PdfName Tabs = new PdfName("Tabs");
     public static readonly PdfName Tag = new PdfName("Tag");
@@ -565,6 +566,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName Yes = new PdfName("Yes");
     public static readonly PdfName YStep = new PdfName("YStep");
     public static readonly PdfName Z = new PdfName("Z");
+    public static readonly PdfName ZapfDingbats = new PdfName("ZapfDingbats");
     public static readonly PdfName Zoom = new PdfName("Zoom");
     #pragma warning restore 0108
 

@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2015 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,47 +25,20 @@
 
 package org.pdfclown.documents.contents.fonts;
 
-import org.pdfclown.PDF;
-import org.pdfclown.VersionEnum;
-import org.pdfclown.documents.Document;
-import org.pdfclown.objects.PdfDirectObject;
-
 /**
-  Type 3 font [PDF:1.6:5.5.4].
-
+  Default encoding for symbolic fonts.
+  
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @since 0.0.8
+  @since 0.1.2.1
   @version 0.1.2.1, 04/16/15
 */
-@PDF(VersionEnum.PDF10)
-public final class Type3Font
-  extends SimpleFont
+final class IdentityEncoding
+  extends Encoding
 {
-  // <dynamic>
-  // <constructors>
-  Type3Font(
-    Document context
+  public IdentityEncoding(
     )
-  {super(context);}
-
-  Type3Font(
-    PdfDirectObject baseObject
-    )
-  {super(baseObject);}
-  // </constructors>
-
-  // <interface>
-  // <public>
-  @Override
-  public double getAscent(
-    )
-  {return 0;}
-
-  @Override
-  public double getDescent(
-    )
-  {return 0;}
-  // </public>
-  // </interface>
-  // </dynamic>
+  {
+    for(int index = 1; index < 256; index++)
+    {put(index, index);}
+  }
 }

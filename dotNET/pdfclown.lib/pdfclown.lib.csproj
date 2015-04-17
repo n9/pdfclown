@@ -480,6 +480,9 @@
     <Compile Include="src\org\pdfclown\tokens\DecodeException.cs" />
     <Compile Include="src\org\pdfclown\tokens\EncodeException.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\fonts\CMapBuilder.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\IdentityEncoding.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\SymbolEncoding.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\fonts\ZapfDingbatsEncoding.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />

@@ -25,6 +25,7 @@
 
 package org.pdfclown.documents.contents.fonts;
 
+import java.util.EnumSet;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -32,11 +33,13 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfArray;
+import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
+import org.pdfclown.util.BiMap;
 import org.pdfclown.util.ByteArray;
 
 /**
@@ -44,12 +47,13 @@ import org.pdfclown.util.ByteArray;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 03/12/15
+  @version 0.1.2.1, 04/16/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class SimpleFont
   extends Font
 {
+  // <dynamic>
   // <constructors>
   protected SimpleFont(
     Document context
@@ -62,53 +66,99 @@ public abstract class SimpleFont
   {super(baseObject);}
   // </constructors>
 
+  // <interface>
+  // <protected>
+  protected Map<ByteArray,Integer> getBaseEncoding(
+    PdfName encodingName
+    )
+  {
+    if(encodingName == null) // Default encoding.
+    {
+      if(symbolic) // Built-in encoding.
+        return Encoding.get(PdfName.Identity).getCodes();
+      else // Standard encoding. 
+        return Encoding.get(PdfName.StandardEncoding).getCodes();
+    }
+    else // Predefined encoding.
+      return Encoding.get(encodingName).getCodes();
+  }
+  
   @Override
   protected PdfDictionary getDescriptor(
     )
   {return (PdfDictionary)getBaseDataObject().resolve(PdfName.FontDescriptor);}
 
-  protected abstract void loadEncoding();
-
-  /**
-    Loads the encoding differences into the given collection.
-
-    @param encodingDictionary Encoding dictionary.
-    @param codes Encoding to alter applying differences.
-   */
-  protected void loadEncodingDifferences(
-    PdfDictionary encodingDictionary,
-    Map<ByteArray,Integer> codes
+  protected void loadEncoding(
     )
   {
-    PdfArray differenceObjects = (PdfArray)encodingDictionary.resolve(PdfName.Differences);
-    if(differenceObjects == null)
-      return;
-
-    /*
-      NOTE: Each code is the first index in a sequence of character codes to be changed.
-      The first character name after the code becomes the name corresponding to that code.
-      Subsequent names replace consecutive code indices until the next code appears
-      in the array or the array ends.
-    */
-    byte[] charCodeData = new byte[1];
-    for(PdfDirectObject differenceObject : differenceObjects)
+    // Mapping character codes...
+    PdfDataObject encodingObject = getBaseDataObject().resolve(PdfName.Encoding);
+    EnumSet<FlagsEnum> flags = getFlags();
+    symbolic = (flags.contains(FlagsEnum.Symbolic)
+      || (!flags.contains(FlagsEnum.Nonsymbolic) && encodingObject == null));
+    if(codes == null)
     {
-      if(differenceObject instanceof PdfInteger)
-      {charCodeData[0] = (byte)((((PdfInteger)differenceObject).getValue().intValue()) & 0xFF);} //TODO:verify whether it can be directly cast to byte (.byteValue())!
-      else // NOTE: MUST be PdfName.
+      Map<ByteArray,Integer> codes;
+      if(encodingObject instanceof PdfDictionary) // Derived encoding.
       {
-        ByteArray charCode = new ByteArray(charCodeData);
-        String charName = (String)((PdfName)differenceObject).getValue();
-        if(charName.equals(".notdef"))
-        {codes.remove(charCode);}
-        else
+        PdfDictionary encodingDictionary = (PdfDictionary)encodingObject;
+        
+        // Base encoding.
+        codes = getBaseEncoding((PdfName)encodingDictionary.get(PdfName.BaseEncoding));
+        
+        // Differences.
+        PdfArray differencesObject = (PdfArray)encodingDictionary.resolve(PdfName.Differences);
+        if(differencesObject != null)
         {
-          Integer code = GlyphMapping.nameToCode(charName);
-          codes.put(charCode, code != null ? code : charCodeData[0]);
+          /*
+            NOTE: Each code is the first index in a sequence of character codes to be changed: the 
+            first character name after a code associates that character to that code; subsequent 
+            names replace consecutive code indices until the next code appears in the array.
+          */
+          byte[] charCodeData = new byte[1];
+          for(PdfDirectObject differenceObject : differencesObject)
+          {
+            if(differenceObject instanceof PdfInteger) // Subsequence initial code.
+            {charCodeData[0] = (byte)((((PdfInteger)differenceObject).getValue().intValue()) & 0xFF);} //TODO:verify whether it can be directly cast to byte (.byteValue())!
+            else // Character name.
+            {
+              ByteArray charCode = new ByteArray(charCodeData);
+              String charName = (String)((PdfName)differenceObject).getValue();
+              if(charName.equals(".notdef"))
+              {codes.remove(charCode);}
+              else
+              {
+                Integer code = GlyphMapping.nameToCode(charName);
+                codes.put(charCode, code != null ? code : charCodeData[0]);
+              }
+              charCodeData[0]++;
+            }
+          }
         }
-        charCodeData[0]++;
+      }
+      else // Predefined encoding.
+      {codes = getBaseEncoding((PdfName)encodingObject);}
+      this.codes = new BiMap<ByteArray,Integer>(codes);
+    }
+    // Purging unused character codes...
+    {
+      PdfArray glyphWidthObjects = (PdfArray)getBaseDataObject().resolve(PdfName.Widths);
+      if(glyphWidthObjects != null)
+      {
+        ByteArray charCode = new ByteArray(new byte[]{(byte)((PdfInteger)getBaseDataObject().get(PdfName.FirstChar)).getIntValue()});
+        for(PdfDirectObject glyphWidthObject : glyphWidthObjects)
+        {
+          if(((PdfInteger)glyphWidthObject).getValue() == 0)
+          {codes.remove(charCode);}
+          charCode.data[0]++;
+        }
       }
     }
+
+    // Mapping glyph indices...
+    glyphIndexes = new Hashtable<Integer,Integer>();
+    for(Map.Entry<ByteArray,Integer> code : codes.entrySet())
+    {glyphIndexes.put(code.getValue(), (int)code.getKey().data[0] & 0xFF);}
   }
 
   @Override
@@ -160,4 +210,6 @@ public abstract class SimpleFont
       }
     }
   }
+  // </protected>
+  // </dynamic>
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -50,6 +50,9 @@ namespace org.pdfclown.documents.contents.fonts
       Encodings[PdfName.StandardEncoding] = new StandardEncoding();
       Encodings[PdfName.MacRomanEncoding] = new MacRomanEncoding();
       Encodings[PdfName.WinAnsiEncoding] = new WinAnsiEncoding();
+      Encodings[PdfName.Identity] = new IdentityEncoding();
+      Encodings[PdfName.Symbol] = new SymbolEncoding();
+      Encodings[PdfName.ZapfDingbats] = new ZapfDingbatsEncoding();
     }
     #endregion
 
@@ -78,7 +81,13 @@ namespace org.pdfclown.documents.contents.fonts
       int charCode,
       string charName
       )
-    {codes[new ByteArray(new byte[]{(byte)charCode})] = GlyphMapping.NameToCode(charName).Value;}
+    {Put(charCode, GlyphMapping.NameToCode(charName).Value);}
+
+    protected void Put(
+      int charCode,
+      int unicode
+      )
+    {codes[new ByteArray(new byte[]{(byte)charCode})] = unicode;}
     #endregion
     #endregion
     #endregion

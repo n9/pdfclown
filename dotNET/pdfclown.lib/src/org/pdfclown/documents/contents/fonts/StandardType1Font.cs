@@ -153,22 +153,18 @@ namespace org.pdfclown.documents.contents.fonts
     #endregion
 
     #region protected
-    protected override IDictionary<ByteArray,int> GetNativeEncoding(
+    protected override IDictionary<ByteArray,int> GetBaseEncoding(
+      PdfName encodingName
       )
     {
-      if(symbolic) // Symbolic font.
+      if(encodingName == null)
       {
-        Dictionary<ByteArray,int> codes = new Dictionary<ByteArray,int>();
-        foreach(KeyValuePair<int,int> glyphIndexEntry in glyphIndexes)
-        {
-          codes[
-            new ByteArray(new byte[]{ConvertUtils.IntToByteArray(glyphIndexEntry.Value)[3]})
-            ] = glyphIndexEntry.Key;
-        }
-        return codes;
+        /*
+          NOTE: Symbolic standard fonts use custom encodings.
+        */
+        encodingName = (PdfName)BaseDataObject[PdfName.BaseFont];
       }
-      else // Nonsymbolic font.
-        return Encoding.Get(PdfName.StandardEncoding).GetCodes();
+      return base.GetBaseEncoding(encodingName);
     }
 
     protected override void OnLoad(

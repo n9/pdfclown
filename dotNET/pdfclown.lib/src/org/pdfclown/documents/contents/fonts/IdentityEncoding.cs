@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2015 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,49 +23,19 @@
   this list of conditions.
 */
 
-using org.pdfclown.objects;
-using org.pdfclown.util;
-
-using System;
-using System.Collections.Generic;
-
 namespace org.pdfclown.documents.contents.fonts
 {
   /**
-    <summary>Type 3 font [PDF:1.6:5.5.4].</summary>
+    <summary>Default encoding for symbolic fonts.</summary>
   */
-  [PDF(VersionEnum.PDF10)]
-  public sealed class Type3Font
-    : SimpleFont
+  internal sealed class IdentityEncoding
+    : Encoding
   {
-    #region dynamic
-    #region constructors
-     internal Type3Font(
-       Document context
-       ) : base(context)
-     {}
-
-    internal Type3Font(
-      PdfDirectObject baseObject
-      ) : base(baseObject)
-    {}
-    #endregion
-
-    #region interface
-    #region public
-    public override double Ascent
+    public IdentityEncoding(
+      )
     {
-      get
-      {return 0;}
+      for(int index = 1; index < 256; index++)
+      {Put(index, index);}
     }
-
-    public override double Descent
-    {
-      get
-      {return 0;}
-    }
-    #endregion
-    #endregion
-    #endregion
   }
 }

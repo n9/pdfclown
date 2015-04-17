@@ -815,7 +815,7 @@ namespace org.pdfclown.documents.contents.fonts
     }
 
     /**
-      <summary>Notifies the loading of font information from an existing PDF font structure.</summary>
+      <summary>Notifies font information loading from an existing PDF font structure.</summary>
     */
     protected abstract void OnLoad(
       );

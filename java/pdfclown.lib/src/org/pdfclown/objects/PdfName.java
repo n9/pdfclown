@@ -498,6 +498,7 @@ public final class PdfName
   public static final PdfName Supplement = new PdfName("Supplement");
   public static final PdfName SW = new PdfName("SW");
   public static final PdfName Sy = new PdfName("Sy");
+  public static final PdfName Symbol = new PdfName("Symbol");
   public static final PdfName T = new PdfName("T");
   public static final PdfName Tabs = new PdfName("Tabs");
   public static final PdfName Tag = new PdfName("Tag");
@@ -566,6 +567,7 @@ public final class PdfName
   public static final PdfName Yes = new PdfName("Yes");
   public static final PdfName YStep = new PdfName("YStep");
   public static final PdfName Z = new PdfName("Z");
+  public static final PdfName ZapfDingbats = new PdfName("ZapfDingbats");
   public static final PdfName Zoom = new PdfName("Zoom");
 
   private static final byte[] NamePrefixChunk = org.pdfclown.tokens.Encoding.Pdf.encode(Keyword.NamePrefix);
