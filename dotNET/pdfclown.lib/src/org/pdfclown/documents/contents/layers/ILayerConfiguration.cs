@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -46,29 +46,10 @@ namespace org.pdfclown.documents.contents.layers
     }
 
     /**
-      <summary>Gets the layer structure.</summary>
-    */
-    Layers Layers
-    {
-      get;
-      set;
-    }
-
-    /**
-      <summary>Gets/Sets the list mode specifying which layers should be displayed to the user.
-      </summary>
-    */
-    ListModeEnum ListMode
-    {
-      get;
-      set;
-    }
-
-    /**
       <summary>Gets the groups of layers whose states are intended to follow a radio button paradigm
       (that is exclusive visibility within the same group).</summary>
     */
-    Array<LayerGroup> OptionGroups
+    Array<OptionGroup> OptionGroups
     {
       get;
     }
@@ -77,6 +58,24 @@ namespace org.pdfclown.documents.contents.layers
       <summary>Gets/Sets the configuration name.</summary>
     */
     string Title
+    {
+      get;
+      set;
+    }
+
+    /**
+      <summary>Gets the layer structure displayed to the user.</summary>
+    */
+    UILayers UILayers
+    {
+      get;
+    }
+
+    /**
+      <summary>Gets/Sets the list mode specifying which layers should be displayed to the user.
+      </summary>
+    */
+    UIModeEnum UIMode
     {
       get;
       set;

@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -24,12 +24,15 @@
 */
 
 using org.pdfclown.files;
+using org.pdfclown.documents.interchange.access;
 using org.pdfclown.objects;
+using org.pdfclown.tools;
 using org.pdfclown.util;
 using org.pdfclown.util.math;
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace org.pdfclown.documents.contents.layers
 {
@@ -39,9 +42,24 @@ namespace org.pdfclown.documents.contents.layers
   [PDF(VersionEnum.PDF15)]
   public sealed class Layer
     : LayerEntity,
-      ILayerNode
+      IUILayerNode
   {
     #region types
+    public enum PageElementTypeEnum
+    {
+      HeaderFooter,
+      Foreground,
+      Background,
+      Logo
+    }
+
+    public enum UserTypeEnum
+    {
+      Individual,
+      Title,
+      Organization
+    }
+
     /**
       <summary>Sublayers location within a configuration structure.</summary>
     */
@@ -124,10 +142,7 @@ namespace org.pdfclown.documents.contents.layers
       /*
         NOTE: Every layer MUST be included in the global collection [PDF:1.7:4.10.3].
       */
-      LayerDefinition definition = context.Layer;
-      if(definition == null)
-      {context.Layer = definition = new LayerDefinition(context);}
-      definition.AllLayersObject.Add(BaseObject);
+      context.Layer.Layers.BaseDataObject.Add(BaseObject);
     }
 
     private Layer(
@@ -139,7 +154,7 @@ namespace org.pdfclown.documents.contents.layers
     #region interface
     #region public
     /**
-      <summary>Gets/Sets the name of the type of content controlled by the group.</summary>
+      <summary>Gets/Sets the type of content controlled by this layer.</summary>
     */
     public string ContentType
     {
@@ -161,52 +176,84 @@ namespace org.pdfclown.documents.contents.layers
     }
 
     /**
-      <summary>Gets/Sets whether this layer is visible when the document is saved by a viewer
-      application to a format that does not support optional content.</summary>
+      <summary>Gets the dictionary used by the creating application to store application-specific
+      data associated to this layer.</summary>
     */
-    public bool Exportable
+    public PdfDictionary CreatorInfo
     {
       get
-      {return StateEnumExtension.Get((PdfName)GetUsageEntry(PdfName.Export)[PdfName.ExportState]).IsEnabled();}
-      set
-      {
-        GetUsageEntry(PdfName.Export)[PdfName.ExportState] = StateEnumExtension.Get(value).GetName();
-        DefaultConfiguration.SetUsageApplication(PdfName.Export, PdfName.Export, this, true);
-      }
+      {return GetUsageEntry(PdfName.CreatorInfo);}
     }
 
     /**
-      <summary>Gets/Sets the language (and possibly locale) of the content controlled by this layer.
+      <summary>Deletes this layer, removing also its references from the document (contents included).
       </summary>
     */
-    public string Language
+    public override bool Delete(
+      )
+    {return Delete(false);}
+
+    /**
+      <summary>Deletes this layer, removing also its references from the document.</summary>
+      <param name="preserveContent">Whether its contents are to be excluded from the removal.</param>
+    */
+    public bool Delete(
+      bool preserveContent
+      )
     {
-      get
-      {return (string)PdfSimpleObject<object>.GetValue(GetUsageEntry(PdfName.Language)[PdfName.Lang]);}
-      set
-      {GetUsageEntry(PdfName.Language)[PdfName.Lang] = PdfTextString.Get(value);}
+      if(Document.Layer.Layers.Contains(this))
+      {
+        var layerManager = new LayerManager();
+        layerManager.Remove(preserveContent, this);
+      }
+      return base.Delete();
     }
 
     /**
-      <summary>Gets/Sets the sublayers.</summary>
+      <summary>Gets/Sets whether this layer is visible when the document is saved by a viewer
+      application to a format that does not support layers.</summary>
     */
-    public Layers Layers
+    public bool? Exportable
     {
       get
       {
-        LayersLocation location = FindLayersLocation();
-        return Layers.Wrap(location.ParentLayersObject.Get<PdfArray>(location.Index));
+        var exportableObject = GetUsageEntry(PdfName.Export)[PdfName.ExportState];
+        return exportableObject != null ? StateEnumExtension.Get((PdfName)exportableObject).IsEnabled() : (bool?)null;
       }
       set
       {
-        LayersLocation location = FindLayersLocation();
-        if(location.Index == location.ParentLayersObject.Count)
-        {location.ParentLayersObject.Add(value.BaseObject);} // Appends new sublayers.
-        else if(location.ParentLayersObject.Resolve(location.Index) is PdfArray)
-        {location.ParentLayersObject[location.Index] = value.BaseObject;} // Substitutes old sublayers.
-        else
-        {location.ParentLayersObject.Insert(location.Index, value.BaseObject);} // Inserts new sublayers.
+        GetUsageEntry(PdfName.Export)[PdfName.ExportState] = value.HasValue ? StateEnumExtension.Get(value.Value).GetName() : null;
+        DefaultConfiguration.SetUsageApplication(PdfName.Export, PdfName.Export, this, value.HasValue);
       }
+    }
+
+    /**
+      <summary>Gets/Sets the language of the content controlled by this layer.</summary>
+      <remarks>The layer whose language matches the current system language is visible.</remarks>
+    */
+    public LanguageIdentifier Language
+    {
+      get
+      {return LanguageIdentifier.Wrap(GetUsageEntry(PdfName.Language)[PdfName.Lang]);}
+      set
+      {
+        GetUsageEntry(PdfName.Language)[PdfName.Lang] = PdfObjectWrapper.GetBaseObject(value);
+        DefaultConfiguration.SetUsageApplication(PdfName.View, PdfName.Language, this, value != null);
+        DefaultConfiguration.SetUsageApplication(PdfName.Print, PdfName.Language, this, value != null);
+        DefaultConfiguration.SetUsageApplication(PdfName.Export, PdfName.Language, this, value != null);
+      }
+    }
+
+    /**
+      <summary>Gets/Sets whether a partial match (that is, the language matches but not the locale)
+      with the current system language is enough to keep this layer visible.</summary>
+    */
+    public bool LanguagePreferred
+    {
+      get
+      {return PdfName.ON.Equals(GetUsageEntry(PdfName.Language)[PdfName.Preferred]);}
+      set
+      {GetUsageEntry(PdfName.Language)[PdfName.Preferred] = value ? PdfName.ON : null;}
     }
 
     /**
@@ -225,31 +272,28 @@ namespace org.pdfclown.documents.contents.layers
       }
     }
 
-    public override LayerMembership Membership
+    public override LayerEntity Membership
     {
       get
       {
-        LayerMembership membership;
-        PdfDirectObject membershipObject = BaseDataObject[MembershipName];
-        if(membershipObject == null)
+        LayerEntity membership = LayerMembership.Wrap(BaseDataObject[MembershipName]);
+        if(membership == null)
         {
-          membership = new LayerMembership(Document);
-          membership.VisibilityPolicy = VisibilityPolicyEnum.AllOn; // NOTE: Forces visibility to depend on all the ascendant layers.
-          BaseDataObject[MembershipName] = membershipObject = membership.BaseObject;
-        }
-        else
-        {membership = LayerMembership.Wrap(membershipObject);}
-        if(membership.VisibilityLayers.Count == 0)
-        {
-          membership.VisibilityLayers.Add(this);
-          LayersLocation location = FindLayersLocation();
-          if(location.ParentLayerObject != null)
-          {membership.VisibilityLayers.Add(new Layer(location.ParentLayerObject));}
-          foreach(Object[] level in location.Levels)
+          var location = FindLayersLocation();
+          if(location == null || location.ParentLayerObject == null)
+          {membership = this;}
+          else
           {
-            PdfDirectObject layerObject = (PdfDirectObject)level[2];
-            if(layerObject != null)
-            {membership.VisibilityLayers.Add(new Layer(layerObject));}
+            BaseDataObject[MembershipName] = (membership = new LayerMembership(Document)).BaseObject;
+            membership.VisibilityPolicy = VisibilityPolicyEnum.AllOn; // NOTE: Forces visibility to depend on all the ascendant layers.
+            membership.VisibilityMembers.Add(this);
+            membership.VisibilityMembers.Add(new Layer(location.ParentLayerObject));
+            foreach(Object[] level in location.Levels)
+            {
+              PdfDirectObject layerObject = (PdfDirectObject)level[2];
+              if(layerObject != null)
+              {membership.VisibilityMembers.Add(new Layer(layerObject));}
+            }
           }
         }
         return membership;
@@ -257,58 +301,176 @@ namespace org.pdfclown.documents.contents.layers
     }
 
     /**
+      <summary>Gets/Sets the type of pagination artifact this layer contains.</summary>
+    */
+    public PageElementTypeEnum? PageElementType
+    {
+      get
+      {return PageElementTypeEnumExtension.Get((PdfName)GetUsageEntry(PdfName.PageElement)[PdfName.Subtype]);}
+      set
+      {GetUsageEntry(PdfName.PageElement)[PdfName.Subtype] = value.HasValue ? value.Value.GetName() : null;}
+    }
+
+    /**
+      <summary>Gets the parent layer.</summary>
+    */
+    public Layer Parent
+    {
+      get
+      {
+        var location = FindLayersLocation();
+        return location != null ? Layer.Wrap(location.ParentLayerObject) : null;
+      }
+    }
+
+    /**
       <summary>Gets/Sets whether this layer is visible when the document is printed from a viewer
       application.</summary>
     */
-    public bool Printable
+    public bool? Printable
     {
       get
-      {return StateEnumExtension.Get((PdfName)GetUsageEntry(PdfName.Print)[PdfName.PrintState]).IsEnabled();}
+      {
+        var printableObject = GetUsageEntry(PdfName.Print)[PdfName.PrintState];
+        return printableObject != null ? StateEnumExtension.Get((PdfName)printableObject).IsEnabled() : (bool?)null;
+      }
       set
       {
-        GetUsageEntry(PdfName.Print)[PdfName.PrintState] = StateEnumExtension.Get(value).GetName();
-        DefaultConfiguration.SetUsageApplication(PdfName.Print, PdfName.Print, this, true);
+        GetUsageEntry(PdfName.Print)[PdfName.PrintState] = value.HasValue ? StateEnumExtension.Get(value.Value).GetName() : null;
+        DefaultConfiguration.SetUsageApplication(PdfName.Print, PdfName.Print, this, value.HasValue);
       }
+    }
+
+    /**
+      <summary>Gets/Sets the type of printable content controlled by this layer.</summary>
+    */
+    public string PrintType
+    {
+      get
+      {return (string)PdfSimpleObject<object>.GetValue(GetUsageEntry(PdfName.Print)[PdfName.Subtype]);}
+      set
+      {GetUsageEntry(PdfName.Print)[PdfName.Subtype] = PdfName.Get(value);}
     }
 
     public override string ToString(
       )
-    {return Title;}
+    {return "Layer {\"" + Title + "\" " + BaseObject + "}";}
+
+    /**
+      <summary>Gets/Sets the names of the users for whom this layer is primarily intended.</summary>
+    */
+    public IList<string> Users
+    {
+      get
+      {
+        var users = new List<string>();
+        PdfDirectObject usersObject = GetUsageEntry(PdfName.User)[PdfName.Name];
+        if(usersObject is PdfString)
+        {users.Add(((PdfString)usersObject.Resolve()).StringValue);}
+        else if(usersObject is PdfArray)
+        {
+          foreach(var userObject in (PdfArray)usersObject)
+          {users.Add(((PdfString)userObject.Resolve()).StringValue);}
+        }
+        return users;
+      }
+      set
+      {
+        PdfDirectObject usersObject = null;
+        if(value != null && value.Count > 0)
+        {
+          if(value.Count == 1)
+          {usersObject = new PdfTextString(value[0]);}
+          else
+          {
+            var usersArray = new PdfArray();
+            foreach(var user in value)
+            {usersArray.Add(new PdfTextString(user));}
+            usersObject = usersArray;
+          }
+        }
+        GetUsageEntry(PdfName.User)[PdfName.Name] = usersObject;
+        DefaultConfiguration.SetUsageApplication(PdfName.View, PdfName.User, this, usersObject != null);
+        DefaultConfiguration.SetUsageApplication(PdfName.Print, PdfName.User, this, usersObject != null);
+        DefaultConfiguration.SetUsageApplication(PdfName.Export, PdfName.User, this, usersObject != null);
+      }
+    }
+
+    /**
+      <summary>Gets/Sets the type of the users for whom this layer is primarily intended.</summary>
+    */
+    public UserTypeEnum? UserType
+    {
+      get
+      {return UserTypeEnumExtension.Get((PdfName)GetUsageEntry(PdfName.User)[PdfName.Type]);}
+      set
+      {GetUsageEntry(PdfName.User)[PdfName.Type] = value.HasValue ? value.Value.GetName() : null;}
+    }
 
     /**
       <summary>Gets/Sets whether this layer is visible when the document is opened in a viewer
       application.</summary>
     */
-    public bool Viewable
+    public bool? Viewable
     {
       get
-      {return StateEnumExtension.Get((PdfName)GetUsageEntry(PdfName.View)[PdfName.ViewState]).IsEnabled();}
+      {
+        var viewableObject = GetUsageEntry(PdfName.View)[PdfName.ViewState];
+        return viewableObject != null ? StateEnumExtension.Get((PdfName)viewableObject).IsEnabled() : (bool?)null;
+      }
       set
       {
-        GetUsageEntry(PdfName.View)[PdfName.ViewState] = StateEnumExtension.Get(value).GetName();
-        DefaultConfiguration.SetUsageApplication(PdfName.View, PdfName.View, this, true);
+        GetUsageEntry(PdfName.View)[PdfName.ViewState] = value.HasValue ? StateEnumExtension.Get(value.Value).GetName() : null;
+        DefaultConfiguration.SetUsageApplication(PdfName.View, PdfName.View, this, value.HasValue);
       }
     }
 
-    public override IList<Layer> VisibilityLayers
+    /**
+      <remarks>Default membership's <see cref="LayerMembership.VisibilityExpression">
+      VisibilityExpression</see> is undefined as <see cref="VisibilityMembers"/> is used instead.
+      </remarks>
+    */
+    public override VisibilityExpression VisibilityExpression
     {
       get
-      {return Membership.VisibilityLayers;}
+      {return null;}
+      set
+      {throw new NotSupportedException();}
+    }
+
+    /**
+      <remarks>Default membership's <see cref="LayerMembership.VisibilityMembers">VisibilityMembers
+      </see> collection is immutable as it's expected to represent the hierarchical line of this
+      layer.</remarks>
+    */
+    public override IList<Layer> VisibilityMembers
+    {
+      get
+      {
+        var membership = Membership;
+        return membership == this ? new List<Layer>{this}.AsReadOnly() : new ReadOnlyCollection<Layer>(membership.VisibilityMembers);
+      }
+      set
+      {throw new NotSupportedException();}
     }
 
     public override VisibilityPolicyEnum VisibilityPolicy
     {
       get
-      {return Membership.VisibilityPolicy;}
+      {
+        var membership = Membership;
+        return membership == this ? VisibilityPolicyEnum.AllOn : membership.VisibilityPolicy;
+      }
       set
       {
-        if(!value.Equals(Membership.VisibilityPolicy))
-          throw new NotSupportedException("Single layers cannot manage custom state policies; use LayerMembership instead.");
+        var membership = Membership;
+        if(membership != this)
+        {membership.VisibilityPolicy = value;}
       }
     }
 
     /**
-      <summary>Gets/Sets whether this layer is initially visible.</summary>
+      <summary>Gets/Sets whether this layer is initially visible in any kind of application.</summary>
     */
     public bool Visible
     {
@@ -320,7 +482,9 @@ namespace org.pdfclown.documents.contents.layers
 
     /**
       <summary>Gets/Sets the range of magnifications at which the content in this layer is best
-      viewed.</summary>
+      viewed in a viewer application.</summary>
+      <returns>Zoom interval (minimum included, maximum excluded); valid values range from 0 to
+      <code>double.PositiveInfinity</code>, where 1 corresponds to 100% magnification.</returns>
     */
     public Interval<double> ZoomRange
     {
@@ -348,7 +512,16 @@ namespace org.pdfclown.documents.contents.layers
       }
     }
 
-    #region ILayerNode
+    #region IUILayerNode
+    public UILayers Children
+    {
+      get
+      {
+        var location = FindLayersLocation();
+        return location != null ? UILayers.Wrap(location.ParentLayersObject.Get<PdfArray>(location.Index)) : null;
+      }
+    }
+    
     public string Title
     {
       get
@@ -372,25 +545,7 @@ namespace org.pdfclown.documents.contents.layers
     */
     private LayersLocation FindLayersLocation(
       )
-    {
-      LayersLocation location = FindLayersLocation(DefaultConfiguration);
-      if(location == null)
-      {
-        /*
-          NOTE: In case the layer is outside the default structure, it's appended to the root
-          collection.
-        */
-        /*
-          TODO: anytime a layer is inserted into a collection, the layer tree must be checked to
-          avoid duplicate: in case the layer is already in the tree, it must be moved to the new
-          position along with its sublayers.
-        */
-        Layers rootLayers = DefaultConfiguration.Layers;
-        rootLayers.Add(this);
-        location = new LayersLocation(null, rootLayers.BaseDataObject, rootLayers.Count, new Stack<Object[]>());
-      }
-      return location;
-    }
+    {return FindLayersLocation(DefaultConfiguration);}
 
     /**
       <summary>Finds the location of the sublayers object in the specified configuration; in case no
@@ -407,7 +562,7 @@ namespace org.pdfclown.documents.contents.layers
         through the configuration structure tree.
       */
       PdfDirectObject levelLayerObject = null;
-      PdfArray levelObject = configuration.Layers.BaseDataObject;
+      PdfArray levelObject = configuration.UILayers.BaseDataObject;
       IEnumerator<PdfDirectObject> levelIterator = levelObject.GetEnumerator();
       Stack<object[]> levelIterators = new Stack<object[]>();
       PdfDirectObject thisObject = BaseObject;
@@ -467,6 +622,39 @@ namespace org.pdfclown.documents.contents.layers
     #endregion
   }
 
+  internal static class PageElementTypeEnumExtension
+  {
+    private static readonly BiDictionary<Layer.PageElementTypeEnum,PdfName> codes;
+
+    static PageElementTypeEnumExtension()
+    {
+      codes = new BiDictionary<Layer.PageElementTypeEnum,PdfName>();
+      codes[Layer.PageElementTypeEnum.Background] = PdfName.BG;
+      codes[Layer.PageElementTypeEnum.Foreground] = PdfName.FG;
+      codes[Layer.PageElementTypeEnum.HeaderFooter] = PdfName.HF;
+      codes[Layer.PageElementTypeEnum.Logo] = PdfName.L;
+    }
+
+    public static Layer.PageElementTypeEnum? Get(
+      PdfName name
+      )
+    {
+      if(name == null)
+        return null;
+
+      Layer.PageElementTypeEnum? pageElementType = codes.GetKey(name);
+      if(!pageElementType.HasValue)
+        throw new NotSupportedException("Page element type unknown: " + name);
+
+      return pageElementType;
+    }
+
+    public static PdfName GetName(
+      this Layer.PageElementTypeEnum pageElementType
+      )
+    {return codes[pageElementType];}
+  }
+
   internal static class StateEnumExtension
   {
     private static readonly BiDictionary<Layer.StateEnum,PdfName> codes;
@@ -506,5 +694,37 @@ namespace org.pdfclown.documents.contents.layers
       this Layer.StateEnum state
       )
     {return state == Layer.StateEnum.On;}
+  }
+
+  internal static class UserTypeEnumExtension
+  {
+    private static readonly BiDictionary<Layer.UserTypeEnum,PdfName> codes;
+
+    static UserTypeEnumExtension()
+    {
+      codes = new BiDictionary<Layer.UserTypeEnum,PdfName>();
+      codes[Layer.UserTypeEnum.Individual] = PdfName.Ind;
+      codes[Layer.UserTypeEnum.Organization] = PdfName.Org;
+      codes[Layer.UserTypeEnum.Title] = PdfName.Ttl;
+    }
+
+    public static Layer.UserTypeEnum? Get(
+      PdfName name
+      )
+    {
+      if(name == null)
+        return null;
+
+      Layer.UserTypeEnum? userType = codes.GetKey(name);
+      if(!userType.HasValue)
+        throw new NotSupportedException("User type unknown: " + name);
+
+      return userType;
+    }
+
+    public static PdfName GetName(
+      this Layer.UserTypeEnum userType
+      )
+    {return codes[userType];}
   }
 }

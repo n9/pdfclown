@@ -124,7 +124,7 @@ namespace org.pdfclown.documents.contents.xObjects
       get
       {return (LayerEntity)PropertyList.Wrap(BaseDataObject.Header[PdfName.OC]);}
       set
-      {BaseDataObject.Header[PdfName.OC] = value.BaseObject;}
+      {BaseDataObject.Header[PdfName.OC] = value != null ? value.Membership.BaseObject : null;}
     }
     #endregion
     #endregion

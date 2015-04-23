@@ -411,7 +411,7 @@ namespace org.pdfclown.documents.interaction.annotations
       get
       {return (LayerEntity)PropertyList.Wrap(BaseDataObject[PdfName.OC]);}
       set
-      {BaseDataObject[PdfName.OC] = PdfObjectWrapper.GetBaseObject(value);}
+      {BaseDataObject[PdfName.OC] = value != null ? value.Membership.BaseObject : null;}
     }
     #endregion
     #endregion

@@ -55,6 +55,7 @@ import org.pdfclown.documents.contents.objects.BeginMarkedContent;
 import org.pdfclown.documents.contents.objects.BeginSubpath;
 import org.pdfclown.documents.contents.objects.CloseSubpath;
 import org.pdfclown.documents.contents.objects.CompositeObject;
+import org.pdfclown.documents.contents.objects.ContentMarker;
 import org.pdfclown.documents.contents.objects.ContentObject;
 import org.pdfclown.documents.contents.objects.DrawCurve;
 import org.pdfclown.documents.contents.objects.DrawLine;
@@ -106,7 +107,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2.1, 04/08/15
+  @version 0.1.2.1, 04/20/15
 */
 public final class PrimitiveComposer
 {
@@ -1171,12 +1172,14 @@ public final class PrimitiveComposer
       rotation
       ).getBounds2D();
 
-    return new Link(
+    Link link = new Link(
       (Page)contentContext,
       linkBox,
       null,
       action
       );
+    link.setLayer(getLayer());
+    return link;
   }
 
   /**
@@ -1581,6 +1584,24 @@ public final class PrimitiveComposer
 
       branchWidth *= branchRatio;
     }
+  }
+
+  //TODO: temporary (consolidate stack tracing of marked content blocks!)
+  private LayerEntity getLayer(
+    )
+  {
+    ContentScanner parentLevel = scanner.getParentLevel();
+    while(parentLevel != null)
+    {
+      if(parentLevel.getCurrent() instanceof MarkedContent)
+      {
+        ContentMarker marker = (ContentMarker)((MarkedContent)parentLevel.getCurrent()).getHeader();
+        if(PdfName.OC.equals(marker.getTag()))
+          return (LayerEntity)marker.getProperties(scanner.getContentContext());
+      }
+      parentLevel = parentLevel.getParentLevel();
+    }
+    return null;
   }
 
   private <T extends PdfObjectWrapper<?>> PdfName getResourceName(

@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -35,10 +35,11 @@ namespace org.pdfclown.documents.contents.layers
     <summary>Optional content configuration [PDF:1.7:4.10.3].</summary>
   */
   [PDF(VersionEnum.PDF15)]
-  public class LayerConfiguration
+  public sealed class LayerConfiguration
     : PdfObjectWrapper<PdfDictionary>,
       ILayerConfiguration
   {
+    #region types
     /**
       <summary>Base state used to initialize the states of all the layers in a document when this
       configuration is applied.</summary>
@@ -58,6 +59,18 @@ namespace org.pdfclown.documents.contents.layers
       */
       Unchanged
     }
+    #endregion
+
+    #region static
+    #region interface
+    #region public
+    public static LayerConfiguration Wrap(
+      PdfDirectObject baseObject
+      )
+    {return baseObject != null ? new LayerConfiguration(baseObject) : null;}
+    #endregion
+    #endregion
+    #endregion
 
     #region dynamic
     #region constructors
@@ -83,26 +96,10 @@ namespace org.pdfclown.documents.contents.layers
       {BaseDataObject[PdfName.Creator] = PdfTextString.Get(value);}
     }
 
-    public Layers Layers
+    public Array<OptionGroup> OptionGroups
     {
       get
-      {return Layers.Wrap(BaseDataObject.Get<PdfArray>(PdfName.Order));}
-      set
-      {BaseDataObject[PdfName.Order] = value.BaseObject;}
-    }
-
-    public ListModeEnum ListMode
-    {
-      get
-      {return ListModeEnumExtension.Get((PdfName)BaseDataObject[PdfName.ListMode]);}
-      set
-      {BaseDataObject[PdfName.ListMode] = value.GetName();}
-    }
-
-    public Array<LayerGroup> OptionGroups
-    {
-      get
-      {return Array<LayerGroup>.Wrap<LayerGroup>(BaseDataObject.Get<PdfArray>(PdfName.RBGroups));}
+      {return Array<OptionGroup>.Wrap<OptionGroup>(BaseDataObject.Get<PdfArray>(PdfName.RBGroups));}
     }
 
     public string Title
@@ -111,6 +108,20 @@ namespace org.pdfclown.documents.contents.layers
       {return (string)PdfSimpleObject<object>.GetValue(BaseDataObject[PdfName.Name]);}
       set
       {BaseDataObject[PdfName.Name] = PdfTextString.Get(value);}
+    }
+
+    public UILayers UILayers
+    {
+      get
+      {return UILayers.Wrap(BaseDataObject.Get<PdfArray>(PdfName.Order));}
+    }
+
+    public UIModeEnum UIMode
+    {
+      get
+      {return UIModeEnumExtension.Get((PdfName)BaseDataObject[PdfName.ListMode]);}
+      set
+      {BaseDataObject[PdfName.ListMode] = value.GetName();}
     }
 
     public bool? Visible
@@ -144,7 +155,7 @@ namespace org.pdfclown.documents.contents.layers
 
     /**
       <summary>Sets the usage application for the specified factors.</summary>
-      <param name="event_">Situation in which this usage application should be used. May be
+      <param name="event">Situation in which this usage application should be used. May be
         <see cref="PdfName.View">View</see>, <see cref="PdfName.Print">Print</see> or <see
         cref="PdfName.Export">Export</see>.</param>
       <param name="category">Layer usage entry to consider when managing the states of the layer.
@@ -154,7 +165,7 @@ namespace org.pdfclown.documents.contents.layers
       <param name="retain">Whether this usage application has to be kept or removed.</param>
     */
     internal void SetUsageApplication(
-      PdfName event_,
+      PdfName @event,
       PdfName category,
       Layer layer,
       bool retain
@@ -165,7 +176,7 @@ namespace org.pdfclown.documents.contents.layers
       foreach(PdfDirectObject usage in usages)
       {
         PdfDictionary usageDictionary = (PdfDictionary)usage;
-        if(usageDictionary[PdfName.Event].Equals(event_)
+        if(usageDictionary[PdfName.Event].Equals(@event)
           && ((PdfArray)usageDictionary[PdfName.Category]).Contains(category))
         {
           PdfArray usageLayers = usageDictionary.Resolve<PdfArray>(PdfName.OCGs);
@@ -186,7 +197,7 @@ namespace org.pdfclown.documents.contents.layers
       {
         PdfDictionary usageDictionary = new PdfDictionary();
         {
-          usageDictionary[PdfName.Event] = event_;
+          usageDictionary[PdfName.Event] = @event;
           usageDictionary.Resolve<PdfArray>(PdfName.Category).Add(category);
           usageDictionary.Resolve<PdfArray>(PdfName.OCGs).Add(layer.BaseObject);
         }

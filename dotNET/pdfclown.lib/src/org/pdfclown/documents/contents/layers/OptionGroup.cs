@@ -30,53 +30,36 @@ using System;
 namespace org.pdfclown.documents.contents.layers
 {
   /**
-    <summary>Read-only collection of all the layers existing in the document.</summary>
+    <summary>A collection of mutually-exclusive layers [PDF:1.7:4.10.3].</summary>
   */
   [PDF(VersionEnum.PDF15)]
-  public sealed class Layers
+  public sealed class OptionGroup
     : Array<Layer>
   {
     #region static
     #region interface
     #region public
-    public static Layers Wrap(
+    public static OptionGroup Wrap(
       PdfDirectObject baseObject
       )
-    {return baseObject != null ? new Layers(baseObject) : null;}
+    {return baseObject != null ? new OptionGroup(baseObject) : null;}
     #endregion
     #endregion
     #endregion
 
     #region dynamic
     #region constructors
-    private Layers(
+    public OptionGroup(
+      Document context
+      ) : base(context)
+    {}
+
+    private OptionGroup(
       PdfDirectObject baseObject
       ) : base(baseObject)
     {}
     #endregion
-
-    #region interface
-    #region public
-    public override void Insert(
-      int index,
-      Layer item
-      )
-    {throw new NotSupportedException();}
-
-    public override void RemoveAt(
-      int index
-      )
-    {throw new NotSupportedException();}
-
-    public override Layer this[
-      int index
-      ]
-    {
-      set
-      {throw new NotSupportedException();}
-    }
-    #endregion
-    #endregion
     #endregion
   }
 }
+

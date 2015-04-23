@@ -1095,12 +1095,14 @@ namespace org.pdfclown.documents.contents.composition
         rotation
         ).GetBounds();
 
-      return new Link(
+      var link = new Link(
         (Page)contentContext,
         linkBox,
         null,
         action
-        );
+        )
+      {Layer = GetLayer()};
+      return link;
     }
 
     /**
@@ -1492,6 +1494,24 @@ namespace org.pdfclown.documents.contents.composition
 
         branchWidth *= branchRatio;
       }
+    }
+
+    //TODO: temporary (consolidate stack tracing of marked content blocks!)
+    private LayerEntity GetLayer(
+      )
+    {
+      var parentLevel = scanner.ParentLevel;
+      while(parentLevel != null)
+      {
+        if(parentLevel.Current is objects::MarkedContent)
+        {
+          var marker = (objects::ContentMarker)((objects::MarkedContent)parentLevel.Current).Header;
+          if(PdfName.OC.Equals(marker.Tag))
+            return (LayerEntity)marker.GetProperties(scanner.ContentContext);
+        }
+        parentLevel = parentLevel.ParentLevel;
+      }
+      return null;
     }
 
     private PdfName GetResourceName<T>(

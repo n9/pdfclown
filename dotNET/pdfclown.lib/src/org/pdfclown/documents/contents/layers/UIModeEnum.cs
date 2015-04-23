@@ -1,5 +1,5 @@
 /*
-  Copyright 2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,9 +31,10 @@ using System;
 namespace org.pdfclown.documents.contents.layers
 {
   /**
-    <summary>List mode specifying which layers should be displayed to the user.</summary>
+    <summary>List mode specifying which layers should be displayed to the user [PDF:1.7:4.10.3].
+    </summary>
   */
-  public enum ListModeEnum
+  public enum UIModeEnum
   {
     /**
       <summary>All the layers are displayed.</summary>
@@ -45,25 +46,25 @@ namespace org.pdfclown.documents.contents.layers
     VisiblePages
   }
 
-  internal static class ListModeEnumExtension
+  internal static class UIModeEnumExtension
   {
-    private static readonly BiDictionary<ListModeEnum,PdfName> codes;
+    private static readonly BiDictionary<UIModeEnum,PdfName> codes;
 
-    static ListModeEnumExtension()
+    static UIModeEnumExtension()
     {
-      codes = new BiDictionary<ListModeEnum,PdfName>();
-      codes[ListModeEnum.AllPages] = PdfName.AllPages;
-      codes[ListModeEnum.VisiblePages] = PdfName.VisiblePages;
+      codes = new BiDictionary<UIModeEnum,PdfName>();
+      codes[UIModeEnum.AllPages] = PdfName.AllPages;
+      codes[UIModeEnum.VisiblePages] = PdfName.VisiblePages;
     }
 
-    public static ListModeEnum Get(
+    public static UIModeEnum Get(
       PdfName name
       )
     {
       if(name == null)
-        return ListModeEnum.AllPages;
+        return UIModeEnum.AllPages;
 
-      ListModeEnum? listMode = codes.GetKey(name);
+      UIModeEnum? listMode = codes.GetKey(name);
       if(!listMode.HasValue)
         throw new NotSupportedException("List mode unknown: " + name);
 
@@ -71,7 +72,7 @@ namespace org.pdfclown.documents.contents.layers
     }
 
     public static PdfName GetName(
-      this ListModeEnum listMode
+      this UIModeEnum listMode
       )
     {return codes[listMode];}
   }

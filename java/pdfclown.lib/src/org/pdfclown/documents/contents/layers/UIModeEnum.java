@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,46 +23,51 @@
   this list of conditions.
 */
 
-package org.pdfclown.util;
+package org.pdfclown.documents.contents.layers;
+
+import org.pdfclown.objects.PdfName;
 
 /**
-  String utility.
+  List mode specifying which layers should be displayed to the user [PDF:1.7:4.10.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @since 0.1.1
+  @since 0.1.2.1
   @version 0.1.2.1, 04/20/15
 */
-public final class StringUtils
+public enum UIModeEnum
 {
-  // <static>
-  // <interface>
-  // <public>
-  public static String join(
-    String separator,
-    String ...values
+  /**
+    All the layers are displayed.
+  */
+  AllPages(PdfName.AllPages),
+  /**
+    Only the layers referenced by one or more visible pages are displayed.
+  */
+  VisiblePages(PdfName.VisiblePages);
+
+  public static UIModeEnum valueOf(
+    PdfName name
     )
   {
-    StringBuilder builder = new  StringBuilder();
-    for(String value : values)
+    if(name == null)
+      return UIModeEnum.AllPages;
+
+    for(UIModeEnum value : values())
     {
-      if(builder.length() > 0)
-      {builder.append(separator);}
-      builder.append(value);
+      if(value.getName().equals(name))
+        return value;
     }
-    return builder.toString();
+    throw new UnsupportedOperationException("List mode unknown: " + name);
   }
 
-  public static String repeat(
-    String value,
-    int count
+  private PdfName name;
+
+  private UIModeEnum(
+    PdfName name
     )
-  {
-    StringBuilder builder = new StringBuilder();
-    for(int index = 0; index < count; index++)
-    {builder.append(value);}
-    return builder.toString();
-  }
-  // </public>
-  // </interface>
-  // </static>
+  {this.name = name;}
+
+  public PdfName getName(
+    )
+  {return name;}
 }

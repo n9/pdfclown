@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -40,14 +40,13 @@ import org.pdfclown.objects.PdfObjectWrapper;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 04/20/15
 */
 @PDF(VersionEnum.PDF15)
-public class LayerDefinition
+public final class LayerDefinition
   extends PdfObjectWrapper<PdfDictionary>
   implements ILayerConfiguration
 {
-  // <class>
   // <static>
   // <interface>
   // <public>
@@ -64,18 +63,12 @@ public class LayerDefinition
   public LayerDefinition(
     Document context
     )
-  {
-    super(context, new PdfDictionary());
-    initialize();
-  }
+  {super(context, new PdfDictionary());}
 
   private LayerDefinition(
     PdfDirectObject baseObject
     )
-  {
-    super(baseObject);
-    initialize();
-  }
+  {super(baseObject);}
   // </constructors>
 
   // <interface>
@@ -99,7 +92,14 @@ public class LayerDefinition
   */
   public LayerConfiguration getDefaultConfiguration(
     )
-  {return new LayerConfiguration(getBaseDataObject().get(PdfName.D));}
+  {return LayerConfiguration.wrap(getBaseDataObject().get(PdfName.D, PdfDictionary.class));}
+
+  /**
+    Gets the collection of all the layers existing in the document.
+  */
+  public Layers getLayers(
+    )
+  {return Layers.wrap(getBaseDataObject().get(PdfName.OCGs, PdfArray.class));}
 
   /**
     @see #getAlternateConfigurations()
@@ -124,17 +124,7 @@ public class LayerDefinition
   {return getDefaultConfiguration().getCreator();}
 
   @Override
-  public Layers getLayers(
-    )
-  {return getDefaultConfiguration().getLayers();}
-
-  @Override
-  public ListModeEnum getListMode(
-    )
-  {return getDefaultConfiguration().getListMode();}
-
-  @Override
-  public Array<LayerGroup> getOptionGroups(
+  public Array<OptionGroup> getOptionGroups(
     )
   {return getDefaultConfiguration().getOptionGroups();}
 
@@ -142,6 +132,15 @@ public class LayerDefinition
   public String getTitle(
     )
   {return getDefaultConfiguration().getTitle();}
+
+  public UILayers getUILayers(
+    )
+  {return getDefaultConfiguration().getUILayers();}
+
+  @Override
+  public UIModeEnum getUIMode(
+    )
+  {return getDefaultConfiguration().getUIMode();}
 
   @Override
   public Boolean isVisible(
@@ -155,22 +154,16 @@ public class LayerDefinition
   {getDefaultConfiguration().setCreator(value);}
 
   @Override
-  public void setLayers(
-    Layers value
-    )
-  {getDefaultConfiguration().setLayers(value);}
-
-  @Override
-  public void setListMode(
-    ListModeEnum value
-    )
-  {getDefaultConfiguration().setListMode(value);}
-
-  @Override
   public void setTitle(
     String value
     )
   {getDefaultConfiguration().setTitle(value);}
+
+  @Override
+  public void setUIMode(
+    UIModeEnum value
+    )
+  {getDefaultConfiguration().setUIMode(value);}
 
   @Override
   public void setVisible(
@@ -179,39 +172,6 @@ public class LayerDefinition
   {getDefaultConfiguration().setVisible(value);}
   // </ILayerConfiguration>
   // </public>
-
-  // <internal>
-  /**
-    Gets the collection of all the layer objects in the document.
-  */
-  /*
-   * TODO: manage layer removal from file (unregistration) -- attach a removal listener
-   * to the IndirectObjects collection: anytime a PdfDictionary with Type==PdfName.OCG is removed,
-   * that listener MUST update this collection.
-   * Listener MUST be instantiated when LayerDefinition is associated to the document.
-   */
-  PdfArray getAllLayersObject(
-    )
-  {return (PdfArray)getBaseDataObject().resolve(PdfName.OCGs);}
-  // </internal>
-
-  // <private>
-  private void initialize(
-    )
-  {
-    PdfDictionary baseDataObject = getBaseDataObject();
-    if(baseDataObject.isEmpty())
-    {
-      baseDataObject.setUpdateable(false);
-      baseDataObject.put(PdfName.OCGs, new PdfArray());
-      baseDataObject.put(PdfName.D, new LayerConfiguration(getDocument()).getBaseObject());
-      //TODO: as this is optional, verify whether it can be lazily instantiated later.
-      getDefaultConfiguration().setLayers(new Layers(getDocument()));
-      baseDataObject.setUpdateable(true);
-    }
-  }
-  // </private>
   // </interface>
   // </dynamic>
-  // </class>
 }

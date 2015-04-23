@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -47,44 +47,36 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 04/20/15
 */
 @PDF(VersionEnum.PDF15)
 public final class LayerMembership
   extends LayerEntity
 {
-  // <class>
   // <classes>
   /**
     Layers whose states determine the visibility of content controlled by a membership.
   */
-  private static class VisibilityLayers
+  private static class VisibilityMembers
     extends PdfObjectWrapper<PdfDirectObject>
     implements List<Layer>
   {
-    // <fields>
     private final LayerMembership membership;
-    // </fields>
 
-    // <constructors>
-    private VisibilityLayers(
+    private VisibilityMembers(
       LayerMembership membership
       )
     {
       super(membership.getBaseDataObject().get(PdfName.OCGs));
       this.membership = membership;
     }
-    // </constructors>
 
-    // <interface>
-    // <public>
     @Override
-    public VisibilityLayers clone(
+    public VisibilityMembers clone(
       Document context
       )
-    {return (VisibilityLayers)super.clone(context);}
+    {return (VisibilityMembers)super.clone(context);}
 
-    // <List>
     @Override
     public boolean add(
       Layer item
@@ -321,10 +313,7 @@ public final class LayerMembership
       T[] a
       )
     {throw new NotImplementedException();}
-    // </List>
-    // </public>
 
-    // <private>
     private PdfArray ensureArray(
       )
     {
@@ -339,8 +328,6 @@ public final class LayerMembership
       }
       return (PdfArray)baseDataObject;
     }
-    // </private>
-    // </interface>
   }
   // </classes>
 
@@ -381,19 +368,39 @@ public final class LayerMembership
   {return (LayerMembership)super.clone(context);}
 
   @Override
-  public LayerMembership getMembership(
+  public LayerEntity getMembership(
     )
   {return this;}
 
-  @Override
-  public List<Layer> getVisibilityLayers(
+  public VisibilityExpression getVisibilityExpression(
     )
-  {return new VisibilityLayers(this);}
+  {return VisibilityExpression.wrap(getBaseDataObject().get(PdfName.VE));}
+
+  @Override
+  public List<Layer> getVisibilityMembers(
+    )
+  {return new VisibilityMembers(this);}
 
   @Override
   public VisibilityPolicyEnum getVisibilityPolicy(
     )
   {return VisibilityPolicyEnum.valueOf((PdfName)getBaseDataObject().get(PdfName.P));}
+  
+  public void setVisibilityExpression(
+    VisibilityExpression value
+    )
+  {getBaseDataObject().put(PdfName.VE, PdfObjectWrapper.getBaseObject(value));}
+
+  @Override
+  public void setVisibilityMembers(
+    List<Layer> value
+    )
+  {
+    List<Layer> visibilityMembers = getVisibilityMembers();
+    visibilityMembers.clear();
+    for(Layer layer : value)
+    {visibilityMembers.add(layer);}
+  }
 
   @Override
   public void setVisibilityPolicy(
@@ -403,5 +410,4 @@ public final class LayerMembership
   // </public>
   // </interface>
   // </dynamic>
-  // </class>
 }

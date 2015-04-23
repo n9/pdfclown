@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,16 +25,11 @@
 
 package org.pdfclown.documents.interchange.access;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
-import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfTextString;
-import org.pdfclown.util.StringUtils;
 
 /**
   Language identifier [PDF:1.7:10.8.1][RFC 3066].
@@ -47,13 +42,12 @@ import org.pdfclown.util.StringUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 04/20/15
 */
 @PDF(VersionEnum.PDF14)
 public final class LanguageIdentifier
   extends PdfObjectWrapper<PdfTextString>
 {
-  // <class>
   // <static>
   // <interface>
   // <public>
@@ -79,14 +73,9 @@ public final class LanguageIdentifier
   // <dynamic>
   // <constructors>
   public LanguageIdentifier(
-    String... components
+    String code
     )
-  {this(Arrays.asList(components));}
-
-  public LanguageIdentifier(
-    List<String> components
-    )
-  {setComponents(components);}
+  {super(new PdfTextString(code));}
 
   LanguageIdentifier(
     PdfDirectObject baseObject
@@ -97,44 +86,10 @@ public final class LanguageIdentifier
   // <interface>
   // <public>
   @Override
-  public LanguageIdentifier clone(
-    Document context
+  public String toString(
     )
-  {return (LanguageIdentifier)super.clone(context);}
-
-  /**
-    Gets the identifier components:
-    <ol>
-      <li>the first one is the <b>primary code</b>. It can be any of the following:
-        <ul>
-          <li>a 2-character ISO 639 language code (e.g., <code>en</code> for English);</li>
-          <li>the letter <code>i</code>, designating an IANA-registered identifier;</li>
-          <li>the letter <code>x</code>, for private use;</li>
-        </ul>
-      </li>
-      <li>the second one is the <b>first subcode</b>. It can be any of the following:
-        <ul>
-          <li>a 2-character ISO 3166 country code (e.g., <code>en-US</code>);</li>
-          <li>a 3-to-8-character subcode registered with IANA (e.g., <code>en-cockney</code>)</li>
-          <li>private non-registered subcodes;</li>
-        </ul>
-      </li>
-      <li><b>subcodes beyond the first</b> can be any that have been registered with IANA.</li>
-    </ol>
-  */
-  public List<String> getComponents(
-    )
-  {return Arrays.asList(getBaseDataObject().getValue().split("-"));}
-
-  /**
-    @see #getComponents()
-  */
-  public void setComponents(
-    List<String> value
-    )
-  {setBaseObject(new PdfTextString(StringUtils.join('-', value.toArray(new String[0]))));}
+  {return getBaseDataObject().getValue();}
   // </public>
   // </interface>
   // </dynamic>
-  // </class>
 }

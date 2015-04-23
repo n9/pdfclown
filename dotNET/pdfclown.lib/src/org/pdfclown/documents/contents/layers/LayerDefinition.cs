@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,7 +33,7 @@ namespace org.pdfclown.documents.contents.layers
     <summary>Optional content properties [PDF:1.7:4.10.3].</summary>
   */
   [PDF(VersionEnum.PDF15)]
-  public class LayerDefinition
+  public sealed class LayerDefinition
     : PdfObjectWrapper<PdfDictionary>,
       ILayerConfiguration
   {
@@ -53,12 +53,12 @@ namespace org.pdfclown.documents.contents.layers
     public LayerDefinition(
       Document context
       ) : base(context, new PdfDictionary())
-    {Initialize();}
+    {}
 
     private LayerDefinition(
       PdfDirectObject baseObject
       ) : base(baseObject)
-    {Initialize();}
+    {}
     #endregion
 
     #region interface
@@ -81,9 +81,18 @@ namespace org.pdfclown.documents.contents.layers
     public LayerConfiguration DefaultConfiguration
     {
       get
-      {return new LayerConfiguration(BaseDataObject[PdfName.D]);}
+      {return LayerConfiguration.Wrap(BaseDataObject.Get<PdfDictionary>(PdfName.D));}
       set
       {BaseDataObject[PdfName.D] = value.BaseObject;}
+    }
+
+    /**
+      <summary>Gets the collection of all the layers existing in the document.</summary>
+    */
+    public Layers Layers
+    {
+      get
+      {return Layers.Wrap(BaseDataObject.Get<PdfArray>(PdfName.OCGs));}
     }
 
     #region ILayerConfiguration
@@ -95,23 +104,7 @@ namespace org.pdfclown.documents.contents.layers
       {DefaultConfiguration.Creator = value;}
     }
 
-    public Layers Layers
-    {
-      get
-      {return DefaultConfiguration.Layers;}
-      set
-      {DefaultConfiguration.Layers = value;}
-    }
-
-    public ListModeEnum ListMode
-    {
-      get
-      {return DefaultConfiguration.ListMode;}
-      set
-      {DefaultConfiguration.ListMode = value;}
-    }
-
-    public Array<LayerGroup> OptionGroups
+    public Array<OptionGroup> OptionGroups
     {
       get
       {return DefaultConfiguration.OptionGroups;}
@@ -125,6 +118,20 @@ namespace org.pdfclown.documents.contents.layers
       {DefaultConfiguration.Title = value;}
     }
 
+    public UILayers UILayers
+    {
+      get
+      {return DefaultConfiguration.UILayers;}
+    }
+
+    public UIModeEnum UIMode
+    {
+      get
+      {return DefaultConfiguration.UIMode;}
+      set
+      {DefaultConfiguration.UIMode = value;}
+    }
+
     public bool? Visible
     {
       get
@@ -133,40 +140,6 @@ namespace org.pdfclown.documents.contents.layers
       {DefaultConfiguration.Visible = value;}
     }
     #endregion
-    #endregion
-
-    #region internal
-    /**
-      <summary>Gets the collection of all the layer objects in the document.</summary>
-    */
-    /*
-     * TODO: manage layer removal from file (unregistration) -- attach a removal listener
-     * to the IndirectObjects collection: anytime a PdfDictionary with Type==PdfName.OCG is removed,
-     * that listener MUST update this collection.
-     * Listener MUST be instantiated when LayerDefinition is associated to the document.
-     */
-    internal PdfArray AllLayersObject
-    {
-      get
-      {return (PdfArray)BaseDataObject.Resolve(PdfName.OCGs);}
-    }
-    #endregion
-
-    #region private
-    private void Initialize(
-      )
-    {
-      PdfDictionary baseDataObject = BaseDataObject;
-      if(baseDataObject.Count == 0)
-      {
-        baseDataObject.Updateable = false;
-        baseDataObject[PdfName.OCGs] = new PdfArray();
-        baseDataObject[PdfName.D] = new LayerConfiguration(Document).BaseObject;
-        //TODO: as this is optional, verify whether it can be lazily instantiated later.
-        DefaultConfiguration.Layers = new Layers(Document);
-        baseDataObject.Updateable = true;
-      }
-    }
     #endregion
     #endregion
     #endregion

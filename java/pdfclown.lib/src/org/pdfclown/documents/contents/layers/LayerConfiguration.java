@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,13 +42,14 @@ import org.pdfclown.objects.PdfTextString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 04/20/15
 */
 @PDF(VersionEnum.PDF15)
-public class LayerConfiguration
+public final class LayerConfiguration
   extends PdfObjectWrapper<PdfDictionary>
   implements ILayerConfiguration
 {
+  // <classes>
   /**
     Base state used to initialize the states of all the layers in a document when this configuration
     is applied.
@@ -115,8 +116,19 @@ public class LayerConfiguration
       )
     {return enabled;}
   }
+  // </classes>
 
-  // <class>
+  // <static>
+  // <interface>
+  // <public>
+  public static LayerConfiguration wrap(
+    PdfDirectObject baseObject
+    )
+  {return baseObject != null ? new LayerConfiguration(baseObject) : null;}
+  // </public>
+  // </interface>
+  // </static>
+  
   // <dynamic>
   // <constructors>
   public LayerConfiguration(
@@ -145,24 +157,24 @@ public class LayerConfiguration
   {return (String)PdfSimpleObject.getValue(getBaseDataObject().get(PdfName.Creator));}
 
   @Override
-  public Layers getLayers(
+  public Array<OptionGroup> getOptionGroups(
     )
-  {return Layers.wrap(getBaseDataObject().get(PdfName.Order, PdfArray.class));}
-
-  @Override
-  public ListModeEnum getListMode(
-    )
-  {return ListModeEnum.valueOf((PdfName)getBaseDataObject().get(PdfName.ListMode));}
-
-  @Override
-  public Array<LayerGroup> getOptionGroups(
-    )
-  {return Array.wrap(LayerGroup.class, getBaseDataObject().get(PdfName.RBGroups, PdfArray.class));}
+  {return Array.wrap(OptionGroup.class, getBaseDataObject().get(PdfName.RBGroups, PdfArray.class));}
 
   @Override
   public String getTitle(
     )
   {return (String)PdfSimpleObject.getValue(getBaseDataObject().get(PdfName.Name));}
+
+  @Override
+  public UILayers getUILayers(
+    )
+  {return UILayers.wrap(getBaseDataObject().get(PdfName.Order, PdfArray.class));}
+
+  @Override
+  public UIModeEnum getUIMode(
+    )
+  {return UIModeEnum.valueOf((PdfName)getBaseDataObject().get(PdfName.ListMode));}
 
   @Override
   public Boolean isVisible(
@@ -176,22 +188,16 @@ public class LayerConfiguration
   {getBaseDataObject().put(PdfName.Creator, PdfTextString.get(value));}
 
   @Override
-  public void setLayers(
-    Layers value
-    )
-  {getBaseDataObject().put(PdfName.Order, value.getBaseObject());}
-
-  @Override
-  public void setListMode(
-    ListModeEnum value
-    )
-  {getBaseDataObject().put(PdfName.ListMode, value.getName());}
-
-  @Override
   public void setTitle(
     String value
     )
   {getBaseDataObject().put(PdfName.Name, PdfTextString.get(value));}
+
+  @Override
+  public void setUIMode(
+    UIModeEnum value
+    )
+  {getBaseDataObject().put(PdfName.ListMode, value.getName());}
 
   @Override
   public void setVisible(
@@ -323,5 +329,4 @@ public class LayerConfiguration
   // </private>
   // </interface>
   // </dynamic>
-  // </class>
 }

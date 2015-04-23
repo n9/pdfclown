@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -28,50 +28,95 @@ package org.pdfclown.documents.contents.layers;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
-import org.pdfclown.objects.Array;
+import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDirectObject;
+import org.pdfclown.objects.PdfString;
+import org.pdfclown.objects.PdfTextString;
 
 /**
-  A generic collection of layers.
+  UI collection of related layers [PDF:1.7:4.10.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @since 0.1.1
-  @version 0.1.2, 12/21/12
+  @since 0.1.2.1
+  @version 0.1.2.1, 04/20/15
 */
 @PDF(VersionEnum.PDF15)
-public final class LayerGroup
-  extends Array<Layer>
+public final class LayerCollection
+  extends UILayers
+  implements IUILayerNode
 {
-  // <class>
   // <static>
   // <interface>
   // <public>
-  public static LayerGroup wrap(
+  public static LayerCollection wrap(
     PdfDirectObject baseObject
     )
-  {return baseObject != null ? new LayerGroup(baseObject) : null;}
+  {return baseObject != null ? new LayerCollection(baseObject) : null;}
   // </public>
   // </interface>
   // </static>
 
   // <dynamic>
   // <constructors>
-  public LayerGroup(
-    Document context
+  public LayerCollection(
+    Document context,
+    String title
     )
-  {super(context, Layer.class);}
+  {
+    super(context);
+    setTitle(title);
+  }
 
-  private LayerGroup(
+  private LayerCollection(
     PdfDirectObject baseObject
     )
-  {super(Layer.class, baseObject);}
+  {super(baseObject);}
   // </constructors>
 
+  // <interface>
+  // <public>
   @Override
-  public LayerGroup clone(
-    Document context
+  public String toString(
     )
-  {return (LayerGroup)super.clone(context);}
+  {return getTitle();}
+
+  // <IUILayerNode>
+  @Override
+  public UILayers getChildren(
+    )
+  {return this;}
+
+  @Override
+  public String getTitle(
+    )
+  {
+    if(getBaseDataObject().isEmpty())
+      return null;
+
+    PdfDirectObject firstObject = getBaseDataObject().get(0);
+    return firstObject instanceof PdfString ? ((PdfString)firstObject).getStringValue() : null;
+  }
+
+  @Override
+  public void setTitle(
+    String value
+    )
+  {
+    PdfTextString titleObject = PdfTextString.get(value);
+    PdfArray baseDataObject = getBaseDataObject();
+    PdfDirectObject firstObject = (baseDataObject.isEmpty() ? null : baseDataObject.get(0));
+    if(firstObject instanceof PdfString)
+    {
+      if(titleObject != null)
+      {baseDataObject.set(0, titleObject);}
+      else
+      {baseDataObject.remove(0);}
+    }
+    else if(titleObject != null)
+    {baseDataObject.add(0, titleObject);}
+  }
+  // </IUILayerNode>
+  // </public>
+  // </interface>
   // </dynamic>
-  // </class>
 }

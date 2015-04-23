@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -87,35 +87,44 @@ namespace org.pdfclown.documents.contents.layers
     #region interface
     #region public
     /**
-      <summary>Gets the default membership.</summary>
-      <remarks>This collection corresponds to the hierarchical relation between this layer entity
-      and its ascendants.</remarks>
+      <summary>Gets the default membership, corresponding to the hierarchical relation between this
+      layer entity and its ascendants; top-level layers return themselves.</summary>
     */
-    public virtual LayerMembership Membership
+    public abstract LayerEntity Membership
     {
-      get
-      {return null;}
+      get;
+    }
+
+    /**
+      <summary>Gets the visibility expression.</summary>
+      <remarks><see cref="VisibilityExpression"/> should be preferred to <see cref="VisibilityPolicy"/>
+      and <see cref="VisibilityMembers"/> as a more advanced alternative. However, for compatibility
+      purposes, PDF creators should also provide the latters to approximate the behavior in older
+      consumer software.</remarks>
+    */
+    public abstract VisibilityExpression VisibilityExpression
+    {
+      get;
+      set;
     }
 
     /**
       <summary>Gets the layers whose states determine the visibility of content controlled by this
       entity.</summary>
     */
-    public virtual IList<Layer> VisibilityLayers
+    public abstract IList<Layer> VisibilityMembers
     {
-      get
-      {return null;}
+      get;
+      set;
     }
 
     /**
       <summary>Gets/Sets the visibility policy of this entity.</summary>
     */
-    public virtual VisibilityPolicyEnum VisibilityPolicy
+    public abstract VisibilityPolicyEnum VisibilityPolicy
     {
-      get
-      {return VisibilityPolicyEnum.AllOn;}
-      set
-      {}
+      get;
+      set;
     }
     #endregion
     #endregion

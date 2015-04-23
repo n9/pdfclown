@@ -380,18 +380,15 @@
     <Compile Include="src\org\pdfclown\util\parsers\ParseException.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\layers\ILayerable.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\layers\ILayerConfiguration.cs" />
-    <Compile Include="src\org\pdfclown\documents\contents\layers\ILayerNode.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\layers\Layer.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\layers\LayerConfiguration.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\layers\LayerDefinition.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\layers\LayerEntity.cs" />
-    <Compile Include="src\org\pdfclown\documents\contents\layers\LayerGroup.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\layers\LayerMembership.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\layers\Layers.cs" />
     <Compile Include="src\org\pdfclown\objects\Array.cs" />
     <Compile Include="src\org\pdfclown\objects\IPdfObjectWrapper.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\actions\SetLayerState.cs" />
-    <Compile Include="src\org\pdfclown\documents\contents\layers\ListModeEnum.cs" />
     <Compile Include="src\org\pdfclown\documents\interaction\JustificationEnum.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\layers\namespace.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\fonts\CffParser.cs" />
@@ -483,6 +480,14 @@
     <Compile Include="src\org\pdfclown\documents\contents\fonts\IdentityEncoding.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\fonts\SymbolEncoding.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\fonts\ZapfDingbatsEncoding.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\LayerCollection.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\OptionGroup.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\UIModeEnum.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\UILayers.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\IUILayerNode.cs" />
+    <Compile Include="src\org\pdfclown\tools\LayerManager.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\VisibilityExpression.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\objects\ContentPlaceholder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />

@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -38,12 +38,11 @@ import org.pdfclown.objects.PdfName;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 04/20/15
 */
 public abstract class LayerEntity
   extends PropertyList
 {
-  // <class>
   // <classes>
   /**
     Membership visibility policy [PDF:1.7:4.10.1].
@@ -121,37 +120,55 @@ public abstract class LayerEntity
   // <interface>
   // <public>
   /**
-    Gets the default membership.
-    This collection corresponds to the hierarchical relation between this layer entity and its
-    ascendants.
+    Gets the default membership, corresponding to the hierarchical relation between this layer 
+    entity and its ascendants; top-level layers return themselves.
   */
-  public LayerMembership getMembership(
-    )
-  {return null;}
+  public abstract LayerEntity getMembership(
+    );
+
+  /**
+    Gets the visibility expression.
+    <p>{@link #getVisibilityExpression() VisibilityExpression} should be preferred to {@link 
+    #getVisibilityPolicy() VisibilityPolicy} and {@link #getVisibilityMembers() VisibilityMembers} 
+    as a more advanced alternative. However, for compatibility purposes, PDF creators should also 
+    provide the latters to approximate the behavior in older consumer software.</p>
+  */
+  public abstract VisibilityExpression getVisibilityExpression(
+    );
 
   /**
     Gets the layers whose states determine the visibility of content controlled by this entity.
   */
-  public List<Layer> getVisibilityLayers(
-    )
-  {return null;}
+  public abstract List<Layer> getVisibilityMembers(
+    );
 
   /**
     Gets the visibility policy of this entity.
   */
-  public VisibilityPolicyEnum getVisibilityPolicy(
-    )
-  {return VisibilityPolicyEnum.AllOn;}
+  public abstract VisibilityPolicyEnum getVisibilityPolicy(
+    );
+
+  /**
+    @see #getVisibilityExpression()
+  */
+  public abstract void setVisibilityExpression(
+    VisibilityExpression value
+    );
+
+  /**
+    @see #getVisibilityMembers()
+  */
+  public abstract void setVisibilityMembers(
+    List<Layer> value
+    );
 
   /**
     @see #getVisibilityPolicy()
   */
-  public void setVisibilityPolicy(
+  public abstract void setVisibilityPolicy(
     VisibilityPolicyEnum value
-    )
-  {}
+    );
   // </public>
   // </interface>
   // </dynamic>
-  // </class>
 }

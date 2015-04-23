@@ -333,6 +333,15 @@ namespace org.pdfclown.files
     {indirectObjects.RemoveAt(reference.ObjectNumber);}
 
     /**
+      <summary>Gets whether the initial state of this file has been modified.</summary>
+    */
+    public bool Updated
+    {
+      get
+      {return indirectObjects.ModifiedObjects.Count > 0;}
+    }
+
+    /**
       <summary>Gets the file header version [PDF:1.6:3.4.1].</summary>
       <remarks>This property represents just the original file version; to get the actual version,
       use the <see cref="org.pdfclown.documents.Document.Version">Document.Version</see> method.

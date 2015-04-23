@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -133,9 +133,13 @@ namespace org.pdfclown.documents.interaction.actions
       private LayerStates baseStates;
 
       public LayerState(
-        StateModeEnum mode
+        StateModeEnum mode,
+        params Layer[] layers
         ) : this(mode, new LayersImpl(), null)
-      {}
+      {
+        foreach(var layer in layers)
+        {this.layers.Add(layer);}
+      }
 
       internal LayerState(
         StateModeEnum mode,
@@ -484,8 +488,25 @@ namespace org.pdfclown.documents.interaction.actions
     */
     public SetLayerState(
       Document context
+      ) : this(context, (LayerState)null)
+    {}
+
+    /**
+      <summary>Creates a new action within the given document context.</summary>
+    */
+    public SetLayerState(
+      Document context,
+      params LayerState[] states
       ) : base(context, PdfName.SetOCGState)
-    {States = new LayerStates();}
+    {
+      States = new LayerStates();
+      if(states != null && states.Length > 0)
+      {
+        var layerStates = States;
+        foreach(var state in states)
+        {layerStates.Add(state);}
+      }
+    }
 
     internal SetLayerState(
       PdfDirectObject baseObject

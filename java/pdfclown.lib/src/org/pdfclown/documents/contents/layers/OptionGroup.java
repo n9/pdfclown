@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,61 +25,45 @@
 
 package org.pdfclown.documents.contents.layers;
 
-import org.pdfclown.objects.IPdfObjectWrapper;
-import org.pdfclown.objects.PdfArray;
-import org.pdfclown.objects.PdfDataObject;
-import org.pdfclown.objects.PdfDictionary;
+import org.pdfclown.PDF;
+import org.pdfclown.VersionEnum;
+import org.pdfclown.documents.Document;
+import org.pdfclown.objects.Array;
 import org.pdfclown.objects.PdfDirectObject;
 
 /**
-  Object that can be inserted into a hierarchical layer structure.
+  A collection of mutually-exclusive layers [PDF:1.7:4.10.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 04/20/15
 */
-public interface ILayerNode
-  extends IPdfObjectWrapper
+@PDF(VersionEnum.PDF15)
+public final class OptionGroup
+  extends Array<Layer>
 {
-  /**
-    Gets the sublayers.
-  */
-  Layers getLayers(
-    );
-
-  /**
-    Gets the text label.
-  */
-  String getTitle(
-    );
-
-  /**
-    @see #getTitle()
-  */
-  void setTitle(
-    String value
-    );
-}
-
-final class LayerNode
-{
-  public static ILayerNode wrap(
+  // <static>
+  // <interface>
+  // <public>
+  public static OptionGroup wrap(
     PdfDirectObject baseObject
     )
-  {
-    if(baseObject == null)
-      return null;
+  {return baseObject != null ? new OptionGroup(baseObject) : null;}
+  // </public>
+  // </interface>
+  // </static>
 
-    PdfDataObject baseDataObject = baseObject.resolve();
-    if(baseDataObject instanceof PdfDictionary)
-      return Layer.wrap(baseObject);
-    else if(baseDataObject instanceof PdfArray)
-      return Layers.wrap(baseObject);
-    else
-      throw new IllegalArgumentException(baseDataObject.getClass().getSimpleName() + " is NOT a valid layer node.");
-  }
-
-  private LayerNode(
+  // <dynamic>
+  // <constructors>
+  public OptionGroup(
+    Document context
     )
-  {}
+  {super(context, Layer.class);}
+
+  private OptionGroup(
+    PdfDirectObject baseObject
+    )
+  {super(Layer.class, baseObject);}
+  // </constructors>
+  // </dynamic>
 }

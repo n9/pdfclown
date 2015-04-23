@@ -71,7 +71,6 @@
     <Compile Include="src\org\pdfclown\samples\cli\RenderingSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\TextHighlightSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\LayerCreationSample.cs" />
-    <Compile Include="src\org\pdfclown\samples\cli\LayerParsingSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\AcroFormFillingSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\PageCombinationSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\StreamExternalizationSample.cs" />
@@ -79,6 +78,7 @@
     <Compile Include="src\org\pdfclown\samples\cli\VideoEmbeddingSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\AttachmentExtractionSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\AcroFormFlatteningSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\LayerEditingSample.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PDFClownCLISamples.exe.config">

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2012-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -75,14 +75,9 @@ namespace org.pdfclown.documents.interchange.access
     #region dynamic
     #region constructors
     public LanguageIdentifier(
-      params string[] components
-      ) : this(new List<string>(components))
+      string code
+      ) : base(new PdfTextString(code))
     {}
-
-    public LanguageIdentifier(
-      IList<string> components
-      )
-    {Components = components;}
 
     internal LanguageIdentifier(
       PdfDirectObject baseObject
@@ -92,34 +87,9 @@ namespace org.pdfclown.documents.interchange.access
 
     #region interface
     #region public
-    /**
-      <summary>Gets the identifier components:
-        <list type="number">
-          <item>the first one is the primary code. It can be any of the following:
-            <list type="bullet">
-              <item>a 2-character ISO 639 language code (e.g., <code>en</code> for English);</item>
-              <item>the letter <code>i</code>, designating an IANA-registered identifier;</item>
-              <item>the letter <code>x</code>, for private use;</item>
-            </list>
-          </item>
-          <item>the second one is the first subcode. It can be any of the following:
-            <list type="bullet">
-              <item>a 2-character ISO 3166 country code (e.g., <code>en-US</code>);</item>
-              <item>a 3-to-8-character subcode registered with IANA (e.g., <code>en-cockney</code>)</item>
-              <item>private non-registered subcodes;</item>
-            </list>
-          </item>
-          <item>subcodes beyond the first can be any that have been registered with IANA.</item>
-        </list>
-      </summary>
-    */
-    public IList<string> Components
-    {
-      get
-      {return new List<string>(BaseDataObject.StringValue.Split('-'));}
-      set
-      {BaseObject = new PdfTextString(String.Join("-", value));}
-    }
+    public override string ToString(
+      )
+    {return BaseDataObject.StringValue;}
     #endregion
     #endregion
     #endregion

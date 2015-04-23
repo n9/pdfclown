@@ -54,14 +54,13 @@ import org.pdfclown.util.EnumUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2.1, 03/21/15
+  @version 0.1.2.1, 04/20/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Annotation<T extends Annotation<T>>
   extends PdfObjectWrapper<PdfDictionary>
   implements ILayerable
 {
-  // <class>
   // <classes>
   /**
     Annotation flags [PDF:1.6:8.4.2].
@@ -683,7 +682,7 @@ public abstract class Annotation<T extends Annotation<T>>
   public void setLayer(
     LayerEntity value
     )
-  {getBaseDataObject().put(PdfName.OC, PdfObjectWrapper.getBaseObject(value));}
+  {getBaseDataObject().put(PdfName.OC, value != null ? value.getMembership().getBaseObject() : null);}
   // </ILayerable>
   // </public>
 
@@ -706,5 +705,4 @@ public abstract class Annotation<T extends Annotation<T>>
   // </private>
   // </interface>
   // </dynamic>
-  // </class>
 }

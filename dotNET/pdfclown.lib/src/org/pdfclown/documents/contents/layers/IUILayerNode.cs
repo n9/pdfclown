@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,6 +23,7 @@
   this list of conditions.
 */
 
+using org.pdfclown.files;
 using org.pdfclown.objects;
 
 using System;
@@ -30,36 +31,49 @@ using System;
 namespace org.pdfclown.documents.contents.layers
 {
   /**
-    <summary>A generic collection of layers.</summary>
+    <summary>Object that can be part of a hierarchical layer structure.</summary>
   */
-  [PDF(VersionEnum.PDF15)]
-  public sealed class LayerGroup
-    : Array<Layer>
+  public interface IUILayerNode
+    : IPdfObjectWrapper
   {
-    #region static
-    #region interface
-    #region public
-    public static LayerGroup Wrap(
+    /**
+      <summary>Gets the sublayers.</summary>
+    */
+    UILayers Children
+    {
+      get;
+    }
+
+    /**
+      <summary>Gets/Sets the text label.</summary>
+    */
+    string Title
+    {
+      get;
+      set;
+    }
+  }
+
+  internal sealed class UILayerNode
+  {
+    public static IUILayerNode Wrap(
       PdfDirectObject baseObject
       )
-    {return baseObject != null ? new LayerGroup(baseObject) : null;}
-    #endregion
-    #endregion
-    #endregion
+    {
+      if(baseObject == null)
+        return null;
 
-    #region dynamic
-    #region constructors
-    public LayerGroup(
-      Document context
-      ) : base(context)
-    {}
+      PdfDataObject baseDataObject = baseObject.Resolve();
+      if(baseDataObject is PdfDictionary)
+        return Layer.Wrap(baseObject);
+      else if(baseDataObject is PdfArray)
+        return LayerCollection.Wrap(baseObject);
+      else
+        throw new ArgumentException(baseDataObject.GetType().Name + " is NOT a valid layer node.");
+    }
 
-    private LayerGroup(
-      PdfDirectObject baseObject
-      ) : base(baseObject)
+    private UILayerNode(
+      )
     {}
-    #endregion
-    #endregion
   }
 }
-

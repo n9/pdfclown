@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,9 @@
 
 package org.pdfclown.documents.contents.layers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
@@ -32,6 +35,7 @@ import java.util.Stack;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
+import org.pdfclown.documents.interchange.access.LanguageIdentifier;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
@@ -39,9 +43,12 @@ import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
 import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfObject;
+import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.PdfSimpleObject;
+import org.pdfclown.objects.PdfString;
 import org.pdfclown.objects.PdfTextString;
+import org.pdfclown.tools.LayerManager;
 import org.pdfclown.util.math.Interval;
 
 /**
@@ -49,13 +56,80 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 04/20/15
 */
 @PDF(VersionEnum.PDF15)
 public final class Layer
   extends LayerEntity
-  implements ILayerNode
+  implements IUILayerNode
 {
+  public enum PageElementTypeEnum
+  {
+    HeaderFooter(PdfName.HF),
+    Foreground(PdfName.FG),
+    Background(PdfName.BG),
+    Logo(PdfName.L);
+    
+    public static PageElementTypeEnum valueOf(
+      PdfName name
+      )
+    {
+      if(name == null)
+        return null;
+
+      for(PageElementTypeEnum value : values())
+      {
+        if(value.getName().equals(name))
+          return value;
+      }
+      throw new UnsupportedOperationException("Page element type unknown: " + name);
+    }
+
+    private PdfName name;
+
+    private PageElementTypeEnum(
+      PdfName name
+      )
+    {this.name = name;}
+
+    public PdfName getName(
+      )
+    {return name;}
+  }
+
+  public enum UserTypeEnum
+  {
+    Individual(PdfName.Ind),
+    Title(PdfName.Ttl),
+    Organization(PdfName.Org);
+
+    public static UserTypeEnum valueOf(
+      PdfName name
+      )
+    {
+      if(name == null)
+        return null;
+
+      for(UserTypeEnum value : values())
+      {
+        if(value.getName().equals(name))
+          return value;
+      }
+      throw new UnsupportedOperationException("User type unknown: " + name);
+    }
+
+    private PdfName name;
+
+    private UserTypeEnum(
+      PdfName name
+      )
+    {this.name = name;}
+
+    public PdfName getName(
+      )
+    {return name;}
+  }
+
   /**
     Sublayers location within a configuration structure.
   */
@@ -189,10 +263,7 @@ public final class Layer
     /*
       NOTE: Every layer MUST be included in the global collection [PDF:1.7:4.10.3].
     */
-    LayerDefinition definition = context.getLayer();
-    if(definition == null)
-    {context.setLayer(definition = new LayerDefinition(context));}
-    definition.getAllLayersObject().add(getBaseObject());
+    context.getLayer().getLayers().getBaseDataObject().add(getBaseObject());
   }
 
   private Layer(
@@ -210,7 +281,33 @@ public final class Layer
   {return (Layer)super.clone(context);}
 
   /**
-    Gets the name of the type of content controlled by the group.
+    Deletes this layer, removing also its references from the document (contents included).
+  */
+  @Override
+  public boolean delete(
+    )
+  {return delete(false);}
+
+  /**
+    Deletes this layer, removing also its references from the document.
+    
+    @param preserveContent
+      Whether its contents are to be excluded from the removal.
+  */
+  public boolean delete(
+    boolean preserveContent
+    )
+  {
+    if(getDocument().getLayer().getLayers().contains(this))
+    {
+      LayerManager layerManager = new LayerManager();
+      layerManager.remove(preserveContent, this);
+    }
+    return super.delete();
+  }
+
+  /**
+    Gets the name of the type of content controlled by this layer.
   */
   public String getContentType(
     )
@@ -224,65 +321,140 @@ public final class Layer
   {return (String)PdfSimpleObject.getValue(getUsageEntry(PdfName.CreatorInfo).get(PdfName.Creator));}
 
   /**
-    Gets the language (and possibly locale) of the content controlled by this layer.
+    Gets the dictionary used by the creating application to store application-specific data 
+    associated to this layer.
   */
-  public String getLanguage(
+  public PdfDictionary getCreatorInfo(
     )
-  {return (String)PdfSimpleObject.getValue(getUsageEntry(PdfName.Language).get(PdfName.Lang));}
+  {return getUsageEntry(PdfName.CreatorInfo);}
 
   /**
-    Gets the sublayers.
+    Gets the language of the content controlled by this layer.
+    <p>The layer whose language matches the current system language is visible.</p>
   */
-  @Override
-  public Layers getLayers(
+  public LanguageIdentifier getLanguage(
     )
-  {
-    LayersLocation location = findLayersLocation();
-    return Layers.wrap(location.parentLayersObject.get(location.index, PdfArray.class));
-  }
+  {return LanguageIdentifier.wrap(getUsageEntry(PdfName.Language).get(PdfName.Lang));}
+
+  /**
+    Gets whether a partial match (that is, the language matches but not the locale) with the current
+    system language is enough to keep this layer visible.
+  */
+  public boolean getLanguagePreferred(
+    )
+  {return PdfName.ON.equals(getUsageEntry(PdfName.Language).get(PdfName.Preferred));}
 
   @Override
-  public LayerMembership getMembership(
+  public LayerEntity getMembership(
     )
   {
-    LayerMembership membership;
-    PdfDirectObject membershipObject = getBaseDataObject().get(MembershipName);
-    if(membershipObject == null)
+    LayerEntity membership = LayerMembership.wrap(getBaseDataObject().get(MembershipName));
+    if(membership == null)
     {
-      membership = new LayerMembership(getDocument());
-      membership.setVisibilityPolicy(VisibilityPolicyEnum.AllOn); // NOTE: Forces visibility to depend on all the ascendant layers.
-      getBaseDataObject().put(MembershipName, membershipObject = membership.getBaseObject());
-    }
-    else
-    {membership = LayerMembership.wrap(membershipObject);}
-    if(membership.getVisibilityLayers().isEmpty())
-    {
-      membership.getVisibilityLayers().add(this);
       LayersLocation location = findLayersLocation();
-      if(location.parentLayerObject != null)
-      {membership.getVisibilityLayers().add(new Layer(location.parentLayerObject));}
-      for(Object[] level : location.levels)
+      if(location == null || location.parentLayerObject == null)
+      {membership = this;}
+      else
       {
-        PdfDirectObject layerObject = (PdfDirectObject)level[2];
-        if(layerObject != null)
-        {membership.getVisibilityLayers().add(new Layer(layerObject));}
+        getBaseDataObject().put(MembershipName, (membership = new LayerMembership(getDocument())).getBaseObject());
+        membership.setVisibilityPolicy(VisibilityPolicyEnum.AllOn); // NOTE: Forces visibility to depend on all the ascendant layers.
+        membership.getVisibilityMembers().add(this);
+        membership.getVisibilityMembers().add(new Layer(location.parentLayerObject));
+        for(Object[] level : location.levels)
+        {
+          PdfDirectObject layerObject = (PdfDirectObject)level[2];
+          if(layerObject != null)
+          {membership.getVisibilityMembers().add(new Layer(layerObject));}
+        }
       }
     }
     return membership;
   }
 
-  @Override
-  public List<Layer> getVisibilityLayers(
+  /**
+    Gets the type of pagination artifact this layer contains.
+  */
+  public PageElementTypeEnum getPageElementType(
     )
-  {return getMembership().getVisibilityLayers();}
+  {return PageElementTypeEnum.valueOf((PdfName)getUsageEntry(PdfName.PageElement).get(PdfName.Subtype));}
+
+  /**
+    Gets the parent layer.
+  */
+  public Layer getParent(
+    )
+  {
+    LayersLocation location = findLayersLocation();
+    return location != null ? Layer.wrap(location.parentLayerObject) : null;
+  }
+
+  /**
+    Gets the type of printable content controlled by this layer.
+  */
+  public String getPrintType(
+    )
+  {return (String)PdfSimpleObject.getValue(getUsageEntry(PdfName.Print).get(PdfName.Subtype));}
+
+  /**
+    Gets the names of the users for whom this layer is primarily intended.
+  */
+  public List<String> getUsers(
+    )
+  {
+    List<String> users = new ArrayList<String>();
+    PdfDirectObject usersObject = getUsageEntry(PdfName.User).get(PdfName.Name);
+    if(usersObject instanceof PdfString)
+    {users.add(((PdfString)usersObject.resolve()).getStringValue());}
+    else if(usersObject instanceof PdfArray)
+    {
+      for(PdfDirectObject userObject : (PdfArray)usersObject)
+      {users.add(((PdfString)userObject.resolve()).getStringValue());}
+    }
+    return users;
+  }
+
+  /**
+    Gets the type of the users for whom this layer is primarily intended.
+  */
+  public UserTypeEnum getUserType(
+    )
+  {return UserTypeEnum.valueOf((PdfName)getUsageEntry(PdfName.User).get(PdfName.Type));}
+
+  /**
+    Default membership's {@link LayerMembership#getVisibilityExpression() VisibilityExpression} is 
+    undefined as {@link #getVisibilityMembers()} is used instead.
+  */
+  @Override
+  public VisibilityExpression getVisibilityExpression(
+    )
+  {return null;}
+  
+  /**
+    Default membership's {@link LayerMembership#getVisibilityMembers() VisibilityMembers} collection
+    is immutable as it's expected to represent the hierarchical line of this layer.
+  */
+  @Override
+  public List<Layer> getVisibilityMembers(
+    )
+  {
+    LayerEntity membership = getMembership();
+    return Collections.unmodifiableList(membership == this ? Arrays.asList(this) : membership.getVisibilityMembers());
+  }
 
   @Override
   public VisibilityPolicyEnum getVisibilityPolicy(
     )
-  {return getMembership().getVisibilityPolicy();}
+  {
+    LayerEntity membership = getMembership();
+    return membership == this ? VisibilityPolicyEnum.AllOn : membership.getVisibilityPolicy();
+  }
 
   /**
-    Gets the range of magnifications at which the content in this layer is best viewed.
+    Gets the range of magnifications at which the content in this layer is best viewed in a viewer 
+    application.
+    
+    @return Zoom interval (minimum included, maximum excluded); valid values range from 0 to {@code
+    Double.POSITIVE_INFINITY}, where 1 corresponds to 100% magnification.
   */
   public Interval<Double> getZoomRange(
     )
@@ -298,11 +470,14 @@ public final class Layer
 
   /**
     Gets whether this layer is visible when the document is saved by a viewer application to a
-    format that does not support optional content.
+    format that does not support layers.
   */
-  public boolean isExportable(
+  public Boolean isExportable(
     )
-  {return StateEnum.valueOf((PdfName)getUsageEntry(PdfName.Export).get(PdfName.ExportState)).isEnabled();}
+  {
+    PdfDirectObject exportableObject = getUsageEntry(PdfName.Export).get(PdfName.ExportState);
+    return exportableObject != null ? StateEnum.valueOf((PdfName)exportableObject).isEnabled() : null;
+  }
 
   /**
     Gets whether the default visibility of this layer cannot be changed through the user interface
@@ -315,19 +490,25 @@ public final class Layer
   /**
     Gets whether this layer is visible when the document is printed from a viewer application.
   */
-  public boolean isPrintable(
+  public Boolean isPrintable(
     )
-  {return StateEnum.valueOf((PdfName)getUsageEntry(PdfName.Print).get(PdfName.PrintState)).isEnabled();}
+  {
+    PdfDirectObject printableObject = getUsageEntry(PdfName.Print).get(PdfName.PrintState);
+    return printableObject != null ? StateEnum.valueOf((PdfName)printableObject).isEnabled() : null;
+  }
 
   /**
     Gets whether this layer is visible when the document is opened in a viewer application.
   */
-  public boolean isViewable(
+  public Boolean isViewable(
     )
-  {return StateEnum.valueOf((PdfName)getUsageEntry(PdfName.View).get(PdfName.ViewState)).isEnabled();}
+  {
+    PdfDirectObject viewableObject = getUsageEntry(PdfName.View).get(PdfName.ViewState);
+    return viewableObject != null ? StateEnum.valueOf((PdfName)viewableObject).isEnabled() : null;
+  }
 
   /**
-    Gets whether this layer is initially visible.
+    Gets whether this layer is initially visible in any kind of application.
   */
   public boolean isVisible(
     )
@@ -353,36 +534,33 @@ public final class Layer
     @see #isExportable()
   */
   public void setExportable(
-    boolean value
+    Boolean value
     )
   {
-    getUsageEntry(PdfName.Export).put(PdfName.ExportState, StateEnum.valueOf(value).getName());
-    getDefaultConfiguration().setUsageApplication(PdfName.Export, PdfName.Export, this, true);
+    getUsageEntry(PdfName.Export).put(PdfName.ExportState, value != null ? StateEnum.valueOf(value).getName() : null);
+    getDefaultConfiguration().setUsageApplication(PdfName.Export, PdfName.Export, this, value != null);
   }
 
   /**
     @see #getLanguage()
   */
   public void setLanguage(
-    String value
-    )
-  {getUsageEntry(PdfName.Language).put(PdfName.Lang, PdfTextString.get(value));}
-
-  /**
-    @see #getLayers()
-  */
-  public void setLayers(
-    Layers value
+    LanguageIdentifier value
     )
   {
-    LayersLocation location = findLayersLocation();
-    if(location.index == location.parentLayersObject.size())
-    {location.parentLayersObject.add(value.getBaseObject());} // Appends new sublayers.
-    else if(location.parentLayersObject.resolve(location.index) instanceof PdfArray)
-    {location.parentLayersObject.set(location.index, value.getBaseObject());} // Substitutes old sublayers.
-    else
-    {location.parentLayersObject.add(location.index, value.getBaseObject());} // Inserts new sublayers.
+    getUsageEntry(PdfName.Language).put(PdfName.Lang, PdfObjectWrapper.getBaseObject(value));
+    getDefaultConfiguration().setUsageApplication(PdfName.View, PdfName.Language, this, value != null);
+    getDefaultConfiguration().setUsageApplication(PdfName.Print, PdfName.Language, this, value != null);
+    getDefaultConfiguration().setUsageApplication(PdfName.Export, PdfName.Language, this, value != null);
   }
+  
+  /**
+    @see #getLanguagePreferred()
+  */
+  public void setLanguagePreferred(
+    boolean value
+    )
+  {getUsageEntry(PdfName.Language).put(PdfName.Preferred, value ? PdfName.ON : null);}
 
   /**
     @see #isLocked()
@@ -397,34 +575,103 @@ public final class Layer
   }
 
   /**
+    @see #getPageElementType()
+  */
+  public void setPageElementType(
+    PageElementTypeEnum value
+    )
+  {getUsageEntry(PdfName.PageElement).put(PdfName.Subtype, value != null ? value.getName() : null);}
+
+  /**
     @see #isPrintable()
   */
   public void setPrintable(
-    boolean value
+    Boolean value
     )
   {
-    getUsageEntry(PdfName.Print).put(PdfName.PrintState, StateEnum.valueOf(value).getName());
-    getDefaultConfiguration().setUsageApplication(PdfName.Print, PdfName.Print, this, true);
+    getUsageEntry(PdfName.Print).put(PdfName.PrintState, value != null ? StateEnum.valueOf(value).getName() : null);
+    getDefaultConfiguration().setUsageApplication(PdfName.Print, PdfName.Print, this, value != null);
   }
+
+  /**
+    @see #getPrintType()
+  */
+  public void setPrintType(
+    String value
+    )
+  {getUsageEntry(PdfName.Print).put(PdfName.Subtype, PdfName.get(value));}
+
+  /**
+    @see #getUsers()
+  */
+  public void setUsers(
+    List<String> value
+    )
+  {
+    PdfDirectObject usersObject = null;
+    if(value != null && !value.isEmpty())
+    {
+      if(value.size() == 1)
+      {usersObject = new PdfTextString(value.get(0));}
+      else
+      {
+        PdfArray usersArray = new PdfArray();
+        for(String user : value)
+        {usersArray.add(new PdfTextString(user));}
+        usersObject = usersArray;
+      }
+    }
+    getUsageEntry(PdfName.User).put(PdfName.Name, usersObject);
+    getDefaultConfiguration().setUsageApplication(PdfName.View, PdfName.User, this, usersObject != null);
+    getDefaultConfiguration().setUsageApplication(PdfName.Print, PdfName.User, this, usersObject != null);
+    getDefaultConfiguration().setUsageApplication(PdfName.Export, PdfName.User, this, usersObject != null);
+  }
+  
+  /**
+    @see #getUserType()
+  */
+  public void setUserType(
+    UserTypeEnum value
+    )
+  {getUsageEntry(PdfName.User).put(PdfName.Type, value != null ? value.getName() : null);}
 
   /**
     @see #isViewable()
   */
   public void setViewable(
-    boolean value
+    Boolean value
     )
   {
-    getUsageEntry(PdfName.View).put(PdfName.ViewState, StateEnum.valueOf(value).getName());
-    getDefaultConfiguration().setUsageApplication(PdfName.View, PdfName.View, this, true);
+    getUsageEntry(PdfName.View).put(PdfName.ViewState, value != null ? StateEnum.valueOf(value).getName() : null);
+    getDefaultConfiguration().setUsageApplication(PdfName.View, PdfName.View, this, value != null);
   }
+  
+  /**
+    @see #getVisibilityExpression()
+  */
+  @Override
+  public void setVisibilityExpression(
+    VisibilityExpression value
+    )
+  {throw new UnsupportedOperationException();}
+
+  /**
+    @see #getVisibilityMembers()
+  */
+  @Override
+  public void setVisibilityMembers(
+    List<Layer> value
+    )
+  {throw new UnsupportedOperationException();}
 
   @Override
   public void setVisibilityPolicy(
     VisibilityPolicyEnum value
     )
   {
-    if(!value.equals(getMembership().getVisibilityPolicy()))
-      throw new UnsupportedOperationException("Single layers cannot manage custom state policies; use LayerMembership instead.");
+    LayerEntity membership = getMembership();
+    if(membership != this)
+    {membership.setVisibilityPolicy(value);}
   }
 
   /**
@@ -453,9 +700,17 @@ public final class Layer
   @Override
   public String toString(
     )
-  {return getTitle();}
+  {return "Layer {\"" + getTitle() + "\" " + getBaseObject() + "}";}
 
-  // <ILayerNode>
+  // <IUILayerNode>
+  @Override
+  public UILayers getChildren(
+    )
+  {
+    LayersLocation location = findLayersLocation();
+    return location != null ? UILayers.wrap(location.parentLayersObject.get(location.index, PdfArray.class)) : null;
+  }
+  
   @Override
   public String getTitle(
     )
@@ -466,7 +721,7 @@ public final class Layer
     String value
     )
   {getBaseDataObject().put(PdfName.Name, new PdfTextString(value));}
-  // </ILayerNode>
+  // </IUILayerNode>
   // </public>
 
   // <private>
@@ -476,26 +731,8 @@ public final class Layer
   */
   private LayersLocation findLayersLocation(
     )
-  {
-    LayersLocation location = findLayersLocation(getDefaultConfiguration());
-    if(location == null)
-    {
-      /*
-        NOTE: In case the layer is outside the default structure, it's appended to the root
-        collection.
-      */
-      /*
-        TODO: anytime a layer is inserted into a collection, the layer tree must be checked to
-        avoid duplicate: in case the layer is already in the tree, it must be moved to the new
-        position along with its sublayers.
-      */
-      Layers rootLayers = getDefaultConfiguration().getLayers();
-      rootLayers.add(this);
-      location = new LayersLocation(null, rootLayers.getBaseDataObject(), rootLayers.size(), new Stack<Object[]>());
-    }
-    return location;
-  }
-
+  {return findLayersLocation(getDefaultConfiguration());}
+  
   /**
     Finds the location of the sublayers object in the specified configuration; in case no sublayers
     object is associated to this object, its virtual position is indicated.
@@ -513,7 +750,7 @@ public final class Layer
       through the configuration structure tree.
     */
     PdfDirectObject levelLayerObject = null;
-    PdfArray levelObject = configuration.getLayers().getBaseDataObject();
+    PdfArray levelObject = configuration.getUILayers().getBaseDataObject();
     Iterator<PdfDirectObject> levelIterator = levelObject.iterator();
     Stack<Object[]> levelIterators = new Stack<Object[]>();
     PdfDirectObject thisObject = getBaseObject();

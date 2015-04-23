@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -42,24 +42,17 @@ namespace org.pdfclown.documents.contents.layers
     /**
       <summary>Layers whose states determine the visibility of content controlled by a membership.</summary>
     */
-    private class VisibilityLayersImpl
+    private class VisibilityMembersImpl
       : PdfObjectWrapper<PdfDirectObject>,
         IList<Layer>
     {
-      #region fields
       private LayerMembership membership;
-      #endregion
 
-      #region constructors
-      internal VisibilityLayersImpl(
+      internal VisibilityMembersImpl(
         LayerMembership membership
         ) : base(membership.BaseDataObject[PdfName.OCGs])
       {this.membership = membership;}
-      #endregion
 
-      #region interface
-      #region public
-      #region IList<Layer>
       public int IndexOf(
         Layer item
         )
@@ -107,7 +100,6 @@ namespace org.pdfclown.documents.contents.layers
         {EnsureArray()[index] = value.BaseObject;}
       }
 
-      #region ICollection<Page>
       public void Add(
         Layer item
         )
@@ -161,7 +153,6 @@ namespace org.pdfclown.documents.contents.layers
         )
       {return EnsureArray().Remove(item.BaseObject);}
 
-      #region IEnumerable<Layer>
       public IEnumerator<Layer> GetEnumerator(
         )
       {
@@ -169,17 +160,10 @@ namespace org.pdfclown.documents.contents.layers
         {yield return this[index];}
       }
 
-      #region IEnumerable
       IEnumerator IEnumerable.GetEnumerator(
         )
       {return this.GetEnumerator();}
-      #endregion
-      #endregion
-      #endregion
-      #endregion
-      #endregion
 
-      #region private
       private PdfArray EnsureArray(
         )
       {
@@ -194,8 +178,6 @@ namespace org.pdfclown.documents.contents.layers
         }
         return (PdfArray)baseDataObject;
       }
-      #endregion
-      #endregion
     }
     #endregion
 
@@ -229,16 +211,31 @@ namespace org.pdfclown.documents.contents.layers
 
     #region interface
     #region public
-    public override LayerMembership Membership
+    public override LayerEntity Membership
     {
       get
       {return this;}
     }
 
-    public override IList<Layer> VisibilityLayers
+    public override VisibilityExpression VisibilityExpression
     {
       get
-      {return new VisibilityLayersImpl(this);}
+      {return VisibilityExpression.Wrap(BaseDataObject[PdfName.VE]);}
+      set
+      {BaseDataObject[PdfName.VE] = PdfObjectWrapper.GetBaseObject(value);}
+    }
+
+    public override IList<Layer> VisibilityMembers
+    {
+      get
+      {return new VisibilityMembersImpl(this);}
+      set
+      {
+        var visibilityMembers = this.VisibilityMembers;
+        visibilityMembers.Clear();
+        foreach(var layer in value)
+        {visibilityMembers.Add(layer);}
+      }
     }
 
     public override VisibilityPolicyEnum VisibilityPolicy

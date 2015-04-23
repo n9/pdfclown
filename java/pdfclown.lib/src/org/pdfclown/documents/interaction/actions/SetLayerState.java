@@ -1,5 +1,5 @@
 /*
-  Copyright 2008-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2008-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -46,13 +46,12 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.7
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 04/20/15
 */
 @PDF(VersionEnum.PDF15)
 public final class SetLayerState
   extends Action
 {
-  // <class>
   // <classes>
   public enum StateModeEnum
   {
@@ -246,9 +245,15 @@ public final class SetLayerState
     private LayerStates baseStates;
 
     public LayerState(
-      StateModeEnum mode
+      StateModeEnum mode,
+      Layer... layers
       )
-    {this(mode, new Layers(), null);}
+    {
+      this(mode, new Layers(), null);
+      
+      for(Layer layer : layers)
+      {this.layers.add(layer);}
+    }
 
     LayerState(
       StateModeEnum mode,
@@ -685,9 +690,25 @@ public final class SetLayerState
   public SetLayerState(
     Document context
     )
+  {this(context, (LayerState)null);}
+
+  /**
+    Creates a new action within the given document context.
+  */
+  public SetLayerState(
+    Document context,
+    LayerState... states
+    )
   {
     super(context, PdfName.SetOCGState);
+    
     setStates(new LayerStates());
+    if(states != null && states.length > 0)
+    {
+      LayerStates layerStates = getStates();
+      for(LayerState state : states)
+      {layerStates.add(state);}
+    }
   }
 
   SetLayerState(
@@ -715,5 +736,4 @@ public final class SetLayerState
   // </public>
   // </interface>
   // </dynamic>
-  // </class>
 }

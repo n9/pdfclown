@@ -44,14 +44,13 @@ import org.pdfclown.objects.PdfStream;
   from the content stream in which it is used [PDF:1.6:4.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 1/25/15
+  @version 0.1.2.1, 04/20/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class XObject
   extends PdfObjectWrapper<PdfStream>
   implements ILayerable
 {
-  // <class>
   // <static>
   // <interface>
   // <public>
@@ -149,10 +148,9 @@ public abstract class XObject
   public void setLayer(
     LayerEntity value
     )
-  {getBaseDataObject().getHeader().put(PdfName.OC, value.getBaseObject());}
+  {getBaseDataObject().getHeader().put(PdfName.OC, value != null ? value.getMembership().getBaseObject() : null);}
   // </ILayerable>
   // </public>
   // </interface>
   // </dynamic>
-  // </class>
 }

@@ -160,7 +160,7 @@ public final class DocumentConfiguration
               throw new UnsupportedOperationException("Unknown stamp type");
           }
           stampFile = new File(new java.io.File(stampPath, stampFileName));
-          PdfString stampPageName = new PdfString(type.getCode().getValue() + "=" + StringUtils.join(' ', type.getCode().getValue().substring(2).split("(?=\\p{Upper})")));
+          PdfString stampPageName = new PdfString(type.getCode().getValue() + "=" + StringUtils.join(" ", type.getCode().getValue().substring(2).split("(?=\\p{Upper})")));
           Page stampPage = stampFile.getDocument().resolveName(Page.class, stampPageName);
           importedStamps.put(type, stamp = stampPage.toXObject(getDocument()));
           stamp.setBox(stampPage.getArtBox());

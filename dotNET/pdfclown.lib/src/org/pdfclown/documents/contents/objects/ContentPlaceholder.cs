@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,57 +23,31 @@
   this list of conditions.
 */
 
-using org.pdfclown.files;
-using org.pdfclown.objects;
-
 using System;
+using System.Collections.Generic;
 
-namespace org.pdfclown.documents.contents.layers
+namespace org.pdfclown.documents.contents.objects
 {
   /**
-    <summary>Object that can be inserted into a hierarchical layer structure.</summary>
+    <summary>Anonymous container.</summary>
+    <remarks>Having no side effects either running or persisting, this container is useful to group
+    content objects without perturbing the content stream's graphics state.</remarks>
   */
-  public interface ILayerNode
-    : IPdfObjectWrapper
+  public class ContentPlaceholder
+    : ContainerObject
   {
-    /**
-      <summary>Gets the sublayers.</summary>
-    */
-    Layers Layers
-    {
-      get;
-    }
-
-    /**
-      <summary>Gets/Sets the text label.</summary>
-    */
-    string Title
-    {
-      get;
-      set;
-    }
-  }
-
-  internal sealed class LayerNode
-  {
-    public static ILayerNode Wrap(
-      PdfDirectObject baseObject
-      )
-    {
-      if(baseObject == null)
-        return null;
-
-      PdfDataObject baseDataObject = baseObject.Resolve();
-      if(baseDataObject is PdfDictionary)
-        return Layer.Wrap(baseObject);
-      else if(baseDataObject is PdfArray)
-        return Layers.Wrap(baseObject);
-      else
-        throw new ArgumentException(baseDataObject.GetType().Name + " is NOT a valid layer node.");
-    }
-
-    private LayerNode(
+    #region dynamic
+    #region constructors
+    public ContentPlaceholder(
       )
     {}
+
+    public ContentPlaceholder(
+      IList<ContentObject> objects
+      ) : base(objects)
+    {}
+    #endregion
+    #endregion
   }
 }
+

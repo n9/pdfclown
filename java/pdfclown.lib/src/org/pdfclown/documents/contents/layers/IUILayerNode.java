@@ -1,5 +1,5 @@
 /*
-  Copyright 2011-2015 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,62 +25,32 @@
 
 package org.pdfclown.documents.contents.layers;
 
-import org.pdfclown.objects.Array;
 import org.pdfclown.objects.IPdfObjectWrapper;
+import org.pdfclown.objects.PdfArray;
+import org.pdfclown.objects.PdfDataObject;
+import org.pdfclown.objects.PdfDictionary;
+import org.pdfclown.objects.PdfDirectObject;
 
 /**
-  Optional content configuration interface [PDF:1.7:4.10.3].
+  Object that can be part of a hierarchical layer structure.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @since 0.1.1
+  @since 0.1.2.1
   @version 0.1.2.1, 04/20/15
 */
-public interface ILayerConfiguration
+public interface IUILayerNode
   extends IPdfObjectWrapper
 {
   /**
-    Gets the name of the application or feature that created this configuration.
+    Gets the sublayers.
   */
-  String getCreator(
+  UILayers getChildren(
     );
 
   /**
-    Gets the groups of layers whose states are intended to follow a radio button paradigm (that is
-    exclusive visibility within the same group).
-  */
-  Array<OptionGroup> getOptionGroups(
-    );
-
-  /**
-    Gets the configuration name.
+    Gets the text label.
   */
   String getTitle(
-    );
-
-  /**
-    Gets the layer structure displayed to the user.
-  */
-  UILayers getUILayers(
-    );
-
-  /**
-    Gets the list mode specifying which layers should be displayed to the user.
-  */
-  UIModeEnum getUIMode(
-    );
-
-  /**
-    Gets whether all the layers in the document are initialized to be visible when this configuration
-    is applied.
-  */
-  Boolean isVisible(
-    );
-
-  /**
-    @see #getCreator()
-  */
-  void setCreator(
-    String value
     );
 
   /**
@@ -89,18 +59,27 @@ public interface ILayerConfiguration
   void setTitle(
     String value
     );
+}
 
-  /**
-    @see #getUIMode()
-  */
-  void setUIMode(
-    UIModeEnum value
-    );
+final class UILayerNode
+{
+  public static IUILayerNode wrap(
+    PdfDirectObject baseObject
+    )
+  {
+    if(baseObject == null)
+      return null;
 
-  /**
-    @see #isVisible()
-  */
-  void setVisible(
-    Boolean value
-    );
+    PdfDataObject baseDataObject = baseObject.resolve();
+    if(baseDataObject instanceof PdfDictionary)
+      return Layer.wrap(baseObject);
+    else if(baseDataObject instanceof PdfArray)
+      return LayerCollection.wrap(baseObject);
+    else
+      throw new IllegalArgumentException(baseDataObject.getClass().getSimpleName() + " is NOT a valid layer node.");
+  }
+
+  private UILayerNode(
+    )
+  {}
 }
