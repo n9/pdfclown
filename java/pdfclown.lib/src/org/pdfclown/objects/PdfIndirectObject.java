@@ -38,7 +38,7 @@ import org.pdfclown.tokens.XRefEntry.UsageEnum;
   PDF indirect object [PDF:1.6:3.2.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/21/15
+  @version 0.1.2.1, 04/23/15
 */
 public class PdfIndirectObject
   extends PdfObject
@@ -164,6 +164,7 @@ public class PdfIndirectObject
     )
   {
     return !isCompressed()
+      && isInUse()
       && !(getDataObject() instanceof PdfStream
         || dataObject instanceof PdfInteger)
       && getReference().getGenerationNumber() == 0;

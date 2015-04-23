@@ -151,6 +151,7 @@ namespace org.pdfclown.objects
       )
     {
       return !IsCompressed()
+        && IsInUse()
         && !(DataObject is PdfStream
           || dataObject is PdfInteger)
         && Reference.GenerationNumber == 0;
