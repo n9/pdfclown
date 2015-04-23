@@ -42,7 +42,7 @@ import org.pdfclown.util.io.IOUtils;
   Standard Type 1 font [PDF:1.6:5.5.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 04/16/15
+  @version 0.1.2.1, 04/23/15
 */
 @PDF(VersionEnum.PDF10)
 public final class StandardType1Font
@@ -151,7 +151,7 @@ public final class StandardType1Font
     PdfName encodingName
     )
   {
-    if(encodingName == null)
+    if(encodingName == null && isSymbolic())
     {
       /*
         NOTE: Symbolic standard fonts use custom encodings.

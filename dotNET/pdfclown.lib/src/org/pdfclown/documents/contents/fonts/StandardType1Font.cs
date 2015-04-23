@@ -157,7 +157,7 @@ namespace org.pdfclown.documents.contents.fonts
       PdfName encodingName
       )
     {
-      if(encodingName == null)
+      if(encodingName == null && Symbolic)
       {
         /*
           NOTE: Symbolic standard fonts use custom encodings.

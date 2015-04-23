@@ -148,7 +148,7 @@ namespace org.pdfclown.documents.contents.fonts
         IList<KeyValuePair<ByteArray,int>> cidChars = new List<KeyValuePair<ByteArray,int>>();
         IList<KeyValuePair<ByteArray,int>[]> cidRanges = new List<KeyValuePair<ByteArray,int>[]>();
         {
-          KeyValuePair<ByteArray,int>? lastCodeEntry;
+          KeyValuePair<ByteArray,int>? lastCodeEntry = null;
           KeyValuePair<ByteArray,int>[] lastCodeRange = null;
           foreach(KeyValuePair<ByteArray,int> codeEntry in codes)
           {

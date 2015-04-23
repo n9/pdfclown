@@ -159,7 +159,7 @@ namespace org.pdfclown.objects
 
     public override string ToString(
       )
-    {return String.Format("{0} {{1}}", GetType().Name, BaseObject is PdfReference ? (PdfObject)BaseObject.DataContainer : BaseObject);}
+    {return String.Format("{0} {{{1}}}", GetType().Name, BaseObject is PdfReference ? (PdfObject)BaseObject.DataContainer : BaseObject);}
 
     #region IPdfObjectWrapper
     public virtual PdfDirectObject BaseObject
