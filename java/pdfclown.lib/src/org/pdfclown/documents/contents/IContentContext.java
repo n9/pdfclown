@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,14 +29,17 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 
+import org.pdfclown.documents.interchange.metadata.IAppDataHolder;
+
 /**
   Content stream context.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.1, 11/14/11
+  @version 0.1.2.1, 04/24/15
 */
 public interface IContentContext
-  extends IContentEntity
+  extends IAppDataHolder,
+    IContentEntity
 {
   /**
     Gets the bounding box associated with this content context either explicitly

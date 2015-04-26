@@ -103,6 +103,11 @@ namespace org.pdfclown.bytes
       System.IO.Stream data
       ) : this((int)data.Length)
     {Append(data);}
+
+    public Buffer(
+      string data
+      ) : this()
+    {Append(data);}
     #endregion
 
     #region interface

@@ -27,6 +27,7 @@ using org.pdfclown.documents;
 using org.pdfclown.documents.contents;
 using org.pdfclown.documents.contents.composition;
 using org.pdfclown.documents.contents.objects;
+using org.pdfclown.documents.interchange.metadata;
 using org.pdfclown.files;
 using org.pdfclown.objects;
 
@@ -200,6 +201,39 @@ namespace org.pdfclown.documents.contents.xObjects
       get
       {return RotationEnum.Downward;}
     }
+
+    #region IAppDataHolder
+    public AppDataCollection AppData
+    {
+      get
+      {return AppDataCollection.Wrap(BaseDataObject.Header.Get<PdfDictionary>(PdfName.PieceInfo), this);}
+    }
+
+    public AppData GetAppData(
+      PdfName appName
+      )
+    {return AppData.Ensure(appName);}
+
+    public DateTime? ModificationDate
+    {
+      get
+      {return (DateTime?)PdfSimpleObject<object>.GetValue(BaseDataObject.Header[PdfName.LastModified]);}
+    }
+
+    public void Touch(
+      PdfName appName
+      )
+    {Touch(appName, DateTime.Now);}
+
+    public void Touch(
+      PdfName appName,
+      DateTime modificationDate
+      )
+    {
+      GetAppData(appName).ModificationDate = modificationDate;
+      BaseDataObject.Header[PdfName.LastModified] = new PdfDate(modificationDate);
+    }
+    #endregion
 
     #region IContentEntity
     public ContentObject ToInlineObject(

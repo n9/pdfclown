@@ -29,6 +29,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Date;
 
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
@@ -40,7 +41,10 @@ import org.pdfclown.documents.contents.Resources;
 import org.pdfclown.documents.contents.RotationEnum;
 import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.objects.ContentObject;
+import org.pdfclown.documents.interchange.metadata.AppData;
+import org.pdfclown.documents.interchange.metadata.AppDataCollection;
 import org.pdfclown.objects.PdfArray;
+import org.pdfclown.objects.PdfDate;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -48,6 +52,7 @@ import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfObject;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReal;
+import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.objects.Rectangle;
 import org.pdfclown.util.NotImplementedException;
@@ -57,14 +62,13 @@ import org.pdfclown.util.math.geom.Dimension;
   Form external object [PDF:1.6:4.9].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/21/15
+  @version 0.1.2.1, 04/24/15
 */
 @PDF(VersionEnum.PDF10)
 public final class FormXObject
   extends XObject
   implements IContentContext
 {
-  // <class>
   // <static>
   // <interface>
   // <public>
@@ -254,6 +258,40 @@ public final class FormXObject
     scanner.render(context,size);
   }
 
+  // <IAppDataHolder>
+  @Override
+  public AppDataCollection getAppData(
+    )
+  {return AppDataCollection.wrap(getBaseDataObject().getHeader().get(PdfName.PieceInfo, PdfDictionary.class), this);}
+
+  @Override
+  public AppData getAppData(
+    PdfName appName
+    )
+  {return getAppData().ensure(appName);}
+  
+  @Override
+  public Date getModificationDate(
+    )
+  {return (Date)PdfSimpleObject.getValue(getBaseDataObject().getHeader().get(PdfName.LastModified));}
+
+  @Override
+  public void touch(
+    PdfName appName
+    )
+  {touch(appName, new Date());}
+
+  @Override
+  public void touch(
+    PdfName appName,
+    Date modificationDate
+    )
+  {
+    getAppData(appName).setModificationDate(modificationDate);
+    getBaseDataObject().getHeader().put(PdfName.LastModified, new PdfDate(modificationDate));
+  }
+  // </IAppDataHolder>
+
   // <IContentEntity>
   @Override
   public ContentObject toInlineObject(
@@ -271,5 +309,4 @@ public final class FormXObject
   // </public>
   // </interface>
   // </dynamic>
-  // </class>
 }

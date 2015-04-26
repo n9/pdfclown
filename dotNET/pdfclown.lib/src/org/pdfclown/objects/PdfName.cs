@@ -307,6 +307,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName Language = new PdfName("Language");
     public static readonly PdfName Last = new PdfName("Last");
     public static readonly PdfName LastChar = new PdfName("LastChar");
+    public static readonly PdfName LastModified = new PdfName("LastModified");
     public static readonly PdfName LastPage = new PdfName("LastPage");
     public static readonly PdfName Launch = new PdfName("Launch");
     public static readonly PdfName LC = new PdfName("LC");
@@ -415,6 +416,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName PDFDocEncoding = new PdfName("PdfDocEncoding");
     public static readonly PdfName PI = new PdfName("PI");
     public static readonly PdfName PID = new PdfName("PID");
+    public static readonly PdfName PieceInfo = new PdfName("PieceInfo");
     public static readonly PdfName PL = new PdfName("PL");
     public static readonly PdfName PO = new PdfName("PO");
     public static readonly PdfName Polygon = new PdfName("Polygon");
@@ -426,6 +428,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName PrevPage = new PdfName("PrevPage");
     public static readonly PdfName Print = new PdfName("Print");
     public static readonly PdfName PrintState = new PdfName("PrintState");
+    public static readonly PdfName Private = new PdfName("Private");
     public static readonly PdfName Producer = new PdfName("Producer");
     public static readonly PdfName Properties = new PdfName("Properties");
     public static readonly PdfName Push = new PdfName("Push");

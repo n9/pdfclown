@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -59,15 +59,28 @@ namespace org.pdfclown.objects
     #endregion
 
     #region constructors
+    /**
+      <summary>Creates a new empty dictionary object with the default initial capacity.</summary>
+    */
     public PdfDictionary(
       )
     {entries = new Dictionary<PdfName,PdfDirectObject>();}
 
+    /**
+      <summary>Creates a new empty dictionary object with the specified initial capacity.</summary>
+      <param name="capacity">Initial capacity.</param>
+    */
     public PdfDictionary(
       int capacity
       )
     {entries = new Dictionary<PdfName,PdfDirectObject>(capacity);}
 
+    /**
+      <summary>Creates a new dictionary object with the specified entries.</summary>
+      <param name="keys">Entry keys to add to this dictionary.</param>
+      <param name="values">Entry values to add to this dictionary; their position and number must
+      match the <code>keys</code> argument.</param>
+    */
     public PdfDictionary(
       PdfName[] keys,
       PdfDirectObject[] values
@@ -83,6 +96,25 @@ namespace org.pdfclown.objects
       Updateable = true;
     }
 
+    /**
+      <summary>Creates a new dictionary object with the specified entries.</summary>
+      <param name="objects">Sequence of key/value-paired objects (where key is a <see
+      cref="PdfName"/> and value is a <see cref="PdfDirectObject"/>).</param>
+    */
+    public PdfDictionary(
+      params PdfDirectObject[] objects
+      ) : this(objects.Length / 2)
+    {
+      Updateable = false;
+      for(int index = 0; index < objects.Length;)
+      {this[(PdfName)objects[index++]] = objects[index++];}
+      Updateable = true;
+    }
+
+    /**
+      <summary>Creates a new dictionary object with the specified entries.</summary>
+      <param name="entries">Map whose entries have to be added to this dictionary.</param>
+    */
     public PdfDictionary(
       IDictionary<PdfName,PdfDirectObject> entries
       ) : this(entries.Count)

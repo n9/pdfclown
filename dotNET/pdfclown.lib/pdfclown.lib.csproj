@@ -488,6 +488,9 @@
     <Compile Include="src\org\pdfclown\tools\LayerManager.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\layers\VisibilityExpression.cs" />
     <Compile Include="src\org\pdfclown\documents\contents\objects\ContentPlaceholder.cs" />
+    <Compile Include="src\org\pdfclown\documents\interchange\metadata\IAppDataHolder.cs" />
+    <Compile Include="src\org\pdfclown\documents\interchange\metadata\AppData.cs" />
+    <Compile Include="src\org\pdfclown\documents\interchange\metadata\AppDataCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />

@@ -36,7 +36,7 @@ import org.pdfclown.tokens.Keyword;
   PDF name object [PDF:1.6:3.2.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 04/20/15
+  @version 0.1.2.1, 04/24/15
 */
 public final class PdfName
   extends PdfSimpleObject<String>
@@ -307,6 +307,7 @@ public final class PdfName
   public static final PdfName Language = new PdfName("Language");
   public static final PdfName Last = new PdfName("Last");
   public static final PdfName LastChar = new PdfName("LastChar");
+  public static final PdfName LastModified = new PdfName("LastModified");
   public static final PdfName LastPage = new PdfName("LastPage");
   public static final PdfName Launch = new PdfName("Launch");
   public static final PdfName LC = new PdfName("LC");
@@ -415,6 +416,7 @@ public final class PdfName
   public static final PdfName PDFDocEncoding = new PdfName("PdfDocEncoding");
   public static final PdfName PI = new PdfName("PI");
   public static final PdfName PID = new PdfName("PID");
+  public static final PdfName PieceInfo = new PdfName("PieceInfo");
   public static final PdfName PL = new PdfName("PL");
   public static final PdfName PO = new PdfName("PO");
   public static final PdfName Polygon = new PdfName("Polygon");
@@ -426,6 +428,7 @@ public final class PdfName
   public static final PdfName PrevPage = new PdfName("PrevPage");
   public static final PdfName Print = new PdfName("Print");
   public static final PdfName PrintState = new PdfName("PrintState");
+  public static final PdfName Private = new PdfName("Private");
   public static final PdfName Producer = new PdfName("Producer");
   public static final PdfName Properties = new PdfName("Properties");
   public static final PdfName Push = new PdfName("Push");

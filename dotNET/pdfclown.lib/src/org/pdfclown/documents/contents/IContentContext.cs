@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -23,6 +23,7 @@
   this list of conditions.
 */
 
+using org.pdfclown.documents.interchange.metadata;
 using org.pdfclown.objects;
 
 using System.Drawing;
@@ -33,7 +34,8 @@ namespace org.pdfclown.documents.contents
     <summary>Content stream context.</summary>
   */
   public interface IContentContext
-    : IContentEntity
+    : IAppDataHolder,
+      IContentEntity
   {
     /**
       <summary>Gets the bounding box associated with this content context either explicitly

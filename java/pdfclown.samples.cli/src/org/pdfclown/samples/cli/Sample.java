@@ -23,7 +23,7 @@ import org.pdfclown.files.SerializationModeEnum;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 11/30/12
+  @version 0.1.2.1, 04/24/15
 */
 public abstract class Sample
 {
@@ -437,8 +437,7 @@ public abstract class Sample
 
     // Document metadata.
     Information info = document.getInformation();
-    info.clear();
-    info.setAuthor("Stefano Chizzolini");
+    info.setAuthor("Stefano");
     info.setCreationDate(new Date());
     info.setCreator(getClass().getName());
     info.setTitle("PDF Clown - " + title + " sample");

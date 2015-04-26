@@ -79,6 +79,7 @@
     <Compile Include="src\org\pdfclown\samples\cli\AttachmentExtractionSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\AcroFormFlatteningSample.cs" />
     <Compile Include="src\org\pdfclown\samples\cli\LayerEditingSample.cs" />
+    <Compile Include="src\org\pdfclown\samples\cli\AppDataCreationSample.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PDFClownCLISamples.exe.config">

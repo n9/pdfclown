@@ -384,8 +384,7 @@ namespace org.pdfclown.samples.cli
 
       // Document metadata.
       Information info = document.Information;
-      info.Clear();
-      info.Author = "Stefano Chizzolini";
+      info.Author = "Stefano";
       info.CreationDate = DateTime.Now;
       info.Creator = GetType().FullName;
       info.Title = "PDF Clown - " + title + " sample";

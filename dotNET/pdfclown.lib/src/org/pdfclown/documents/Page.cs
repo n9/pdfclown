@@ -30,6 +30,7 @@ using org.pdfclown.documents.contents.composition;
 using org.pdfclown.documents.contents.objects;
 using xObjects = org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.documents.interaction.navigation.page;
+using org.pdfclown.documents.interchange.metadata;
 using org.pdfclown.files;
 using org.pdfclown.objects;
 
@@ -516,6 +517,39 @@ namespace org.pdfclown.documents
       set
       {BaseDataObject[PdfName.Rotate] = PdfInteger.Get((int)value);}
     }
+
+    #region IAppDataHolder
+    public AppDataCollection AppData
+    {
+      get
+      {return AppDataCollection.Wrap(BaseDataObject.Get<PdfDictionary>(PdfName.PieceInfo), this);}
+    }
+
+    public AppData GetAppData(
+      PdfName appName
+      )
+    {return AppData.Ensure(appName);}
+
+    public DateTime? ModificationDate
+    {
+      get
+      {return (DateTime)PdfSimpleObject<object>.GetValue(BaseDataObject[PdfName.LastModified]);}
+    }
+
+    public void Touch(
+      PdfName appName
+      )
+    {Touch(appName, DateTime.Now);}
+
+    public void Touch(
+      PdfName appName,
+      DateTime modificationDate
+      )
+    {
+      GetAppData(appName).ModificationDate = modificationDate;
+      BaseDataObject[PdfName.LastModified] = new PdfDate(modificationDate);
+    }
+    #endregion
 
     #region IContentEntity
     public ContentObject ToInlineObject(

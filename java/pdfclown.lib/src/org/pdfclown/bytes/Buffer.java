@@ -42,7 +42,7 @@ import org.pdfclown.util.ConvertUtils;
   Byte buffer.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 04/08/15
+  @version 0.1.2.1, 04/24/15
 */
 public final class Buffer
   implements IBuffer
@@ -149,6 +149,14 @@ public final class Buffer
     this.data = data;
     this.length = data.length;
     this.byteOrder = byteOrder;
+  }
+  
+  public Buffer(
+    String data
+    )
+  {
+    this();
+    append(data);
   }
   // </constructors>
 

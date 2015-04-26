@@ -33,6 +33,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,8 +49,12 @@ import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.objects.ContentObject;
 import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.documents.interaction.navigation.page.Transition;
+import org.pdfclown.documents.interchange.metadata.AppData;
+import org.pdfclown.documents.interchange.metadata.AppDataCollection;
+import org.pdfclown.documents.interchange.metadata.IAppDataHolder;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
+import org.pdfclown.objects.PdfDate;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
@@ -58,6 +63,7 @@ import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfObjectWrapper;
 import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.PdfReference;
+import org.pdfclown.objects.PdfSimpleObject;
 import org.pdfclown.objects.PdfStream;
 import org.pdfclown.objects.Rectangle;
 import org.pdfclown.util.NotImplementedException;
@@ -68,7 +74,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2.1, 03/21/15
+  @version 0.1.2.1, 04/24/15
 */
 @PDF(VersionEnum.PDF10)
 public final class Page
@@ -81,7 +87,6 @@ public final class Page
     of the explicit representation of a page. They are retrieved every time
     clients call.
   */
-  // <class>
   // <classes>
   /**
     Annotations tab order [PDF:1.6:3.6.2].
@@ -604,6 +609,40 @@ public final class Page
     scanner.render(context,size);
   }
 
+  // <IAppDataHolder>
+  @Override
+  public AppDataCollection getAppData(
+    )
+  {return AppDataCollection.wrap(getBaseDataObject().get(PdfName.PieceInfo, PdfDictionary.class), this);}
+
+  @Override
+  public AppData getAppData(
+    PdfName appName
+    )
+  {return getAppData().ensure(appName);}
+  
+  @Override
+  public Date getModificationDate(
+    )
+  {return (Date)PdfSimpleObject.getValue(getBaseDataObject().get(PdfName.LastModified));}
+
+  @Override
+  public void touch(
+    PdfName appName
+    )
+  {touch(appName, new Date());}
+
+  @Override
+  public void touch(
+    PdfName appName,
+    Date modificationDate
+    )
+  {
+    getAppData(appName).setModificationDate(modificationDate);
+    getBaseDataObject().put(PdfName.LastModified, new PdfDate(modificationDate));
+  }
+  // </IAppDataHolder>
+
   // <IContentEntity>
   @Override
   public ContentObject toInlineObject(
@@ -673,5 +712,4 @@ public final class Page
   // </private>
   // </interface>
   // </dynamic>
-  // </class>
 }

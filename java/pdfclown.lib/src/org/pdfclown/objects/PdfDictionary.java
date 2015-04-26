@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -44,7 +44,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 04/24/15
 */
 public final class PdfDictionary
   extends PdfDirectObject
@@ -69,15 +69,33 @@ public final class PdfDictionary
   // </fields>
 
   // <constructors>
+  /**
+    Creates a new empty dictionary object with the default initial capacity.
+  */
   public PdfDictionary(
     )
   {entries = new HashMap<PdfName,PdfDirectObject>();}
 
+  /**
+    Creates a new empty dictionary object with the specified initial capacity.
+    
+    @param capacity
+      Initial capacity.
+  */
   public PdfDictionary(
     int capacity
     )
   {entries = new HashMap<PdfName,PdfDirectObject>(capacity);}
 
+  /**
+    Creates a new dictionary object with the specified entries.
+    
+    @param keys
+      Entry keys to add to this dictionary.
+    @param values
+      Entry values to add to this dictionary; their position and number must match the {@code keys}
+      argument.
+  */
   public PdfDictionary(
     PdfName[] keys,
     PdfDirectObject[] values
@@ -95,6 +113,31 @@ public final class PdfDictionary
     setUpdateable(true);
   }
 
+  /**
+    Creates a new dictionary object with the specified entries.
+    
+    @param objects
+      Sequence of key/value-paired objects (where key is a {@link PdfName} and value is a {@link 
+      PdfDirectObject}).
+  */
+  public PdfDictionary(
+    PdfDirectObject... objects
+    )
+  {
+    this(objects.length / 2);
+
+    setUpdateable(false);
+    for(int index = 0; index < objects.length;)
+    {put((PdfName)objects[index++], objects[index++]);}
+    setUpdateable(true);
+  }
+  
+  /**
+    Creates a new dictionary object with the specified entries.
+    
+    @param entries
+      Map whose entries have to be added to this dictionary.
+  */
   public PdfDictionary(
     Map<PdfName,PdfDirectObject> entries
     )

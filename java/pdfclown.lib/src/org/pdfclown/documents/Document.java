@@ -33,6 +33,7 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import org.pdfclown.PDF;
 import org.pdfclown.Version;
@@ -43,6 +44,9 @@ import org.pdfclown.documents.interaction.forms.Form;
 import org.pdfclown.documents.interaction.navigation.document.Bookmarks;
 import org.pdfclown.documents.interaction.navigation.document.Destination;
 import org.pdfclown.documents.interaction.viewer.ViewerPreferences;
+import org.pdfclown.documents.interchange.metadata.AppData;
+import org.pdfclown.documents.interchange.metadata.AppDataCollection;
+import org.pdfclown.documents.interchange.metadata.IAppDataHolder;
 import org.pdfclown.documents.interchange.metadata.Information;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfArray;
@@ -61,14 +65,14 @@ import org.pdfclown.util.NotImplementedException;
   PDF document [PDF:1.6:3.6.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 03/30/15
+  @version 0.1.2.1, 04/24/15
 */
 @PDF(VersionEnum.PDF10)
 public final class Document
   extends PdfObjectWrapper<PdfDictionary>
-  implements Pageable
+  implements IAppDataHolder,
+    Pageable
 {
-  // <class>
   // <classes>
   /**
     Page layout to be used when the document is opened [PDF:1.6:3.6.1].
@@ -644,6 +648,40 @@ public final class Document
     )
   {getBaseDataObject().put(PdfName.ViewerPreferences, PdfObjectWrapper.getBaseObject(value));}
 
+  // <IAppDataHolder>
+  @Override
+  public AppDataCollection getAppData(
+    )
+  {return AppDataCollection.wrap(getBaseDataObject().get(PdfName.PieceInfo, PdfDictionary.class), this);}
+
+  @Override
+  public AppData getAppData(
+    PdfName appName
+    )
+  {return getAppData().ensure(appName);}
+  
+  @Override
+  public Date getModificationDate(
+    )
+  {return getInformation().getModificationDate();}
+
+  @Override
+  public void touch(
+    PdfName appName
+    )
+  {touch(appName, new Date());}
+
+  @Override
+  public void touch(
+    PdfName appName,
+    Date modificationDate
+    )
+  {
+    getAppData(appName).setModificationDate(modificationDate);
+    getInformation().setModificationDate(modificationDate);
+  }
+  // </IAppDataHolder>
+
   // <Pageable>
   @Override
   public int getNumberOfPages(
@@ -692,5 +730,4 @@ public final class Document
   // </private>
   // </interface>
   // </dynamic>
-  // </class>
 }
