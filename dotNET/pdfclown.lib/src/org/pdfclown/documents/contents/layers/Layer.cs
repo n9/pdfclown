@@ -33,6 +33,7 @@ using org.pdfclown.util.math;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace org.pdfclown.documents.contents.layers
 {
@@ -224,6 +225,62 @@ namespace org.pdfclown.documents.contents.layers
       {
         GetUsageEntry(PdfName.Export)[PdfName.ExportState] = value.HasValue ? StateEnumExtension.Get(value.Value).GetName() : null;
         DefaultConfiguration.SetUsageApplication(PdfName.Export, PdfName.Export, this, value.HasValue);
+      }
+    }
+
+    /**
+      <summary>Gets/Sets the intended uses of this layer.</summary>
+      <remarks>For example, many document design applications, such as CAD packages, offer layering
+      features for collecting groups of graphics together and selectively hiding or viewing them for
+      the convenience of the author. However, this layering may be different than would be useful to
+      consumers of the document; therefore, it is possible to specify different intents for layers
+      within a single document: a given application may decide to use only layers that are of a
+      specific intent.</remarks>
+      <returns>Intent collection (it comprises <see cref="IntentEnum"/> names but, for compatibility
+      with future versions, unrecognized names are allowed). To apply any subsequent change, it has
+      to be assigned back.</returns>
+      <seealso cref="IntentEnum"/>
+    */
+    public ISet<PdfName> Intents
+    {
+      get
+      {
+        ISet<PdfName> intents = new HashSet<PdfName>();
+        PdfDataObject intentObject = BaseDataObject.Resolve(PdfName.Intent);
+        if(intentObject != null)
+        {
+          if(intentObject is PdfArray) // Multiple intents.
+          {
+            foreach(PdfDirectObject intentItem in (PdfArray)intentObject)
+            {intents.Add((PdfName)intentItem);}
+          }
+          else // Single intent.
+          {intents.Add((PdfName)intentObject);}
+        }
+        else
+        {intents.Add(IntentEnum.View.Name());}
+        return intents;
+      }
+      set
+      {
+        PdfDirectObject intentObject = null;
+        if(value != null
+          && value.Count > 0)
+        {
+          if(value.Count == 1) // Single intent.
+          {
+            intentObject = value.First();
+            if(intentObject.Equals(IntentEnum.View.Name())) // Default.
+            {intentObject = null;}
+          }
+          else // Multiple intents.
+          {
+            PdfArray intentArray = new PdfArray();
+            foreach(PdfName valueItem in value)
+            {intentArray.Add(valueItem);}
+          }
+        }
+        BaseDataObject[PdfName.Intent] = intentObject;
       }
     }
 

@@ -9,6 +9,7 @@ using org.pdfclown.documents.interaction.actions;
 using org.pdfclown.documents.interaction.annotations;
 using org.pdfclown.documents.interchange.access;
 using files = org.pdfclown.files;
+using org.pdfclown.objects;
 using org.pdfclown.util.math;
 
 using System;
@@ -110,19 +111,34 @@ namespace org.pdfclown.samples.cli
         simpleLayer1 = new Layer(document, "Simple layer 1");
         simpleLayerCollection.Add(simpleLayer1);
 
-        var simpleLayer2 = new Layer(document, "Simple layer 2");
+        var simpleLayer2 = new Layer(document, "Simple layer 2 (Design)");
+        /*
+          NOTE: Intent limits layer use in determining visibility to specific use contexts. In this
+          case, we want to mark content as intended to represent a document designer's structural
+          organization of artwork, hence it's outside the interactive use by document consumers.
+        */
+        simpleLayer2.Intents = new HashSet<PdfName>{IntentEnum.Design.Name()};
         simpleLayerCollection.Add(simpleLayer2);
 
-        blockComposer.Begin(new RectangleF(50, 125, 200, 50), XAlignmentEnum.Left, YAlignmentEnum.Middle);
+        var simpleLayer3 = new Layer(document, "Simple layer 3");
+        simpleLayerCollection.Add(simpleLayer3);
+
+        blockComposer.Begin(new RectangleF(50, 125, 200, 75), XAlignmentEnum.Left, YAlignmentEnum.Middle);
 
         composer.BeginLayer(simpleLayer1);
         blockComposer.ShowText(simpleLayer1.Title);
         composer.End();
 
-        blockComposer.ShowBreak(new SizeF(0, 15));
+        blockComposer.ShowBreak(new SizeF(0, 10));
 
         composer.BeginLayer(simpleLayer2);
         blockComposer.ShowText(simpleLayer2.Title);
+        composer.End();
+
+        blockComposer.ShowBreak(new SizeF(0, 10));
+
+        composer.BeginLayer(simpleLayer3);
+        blockComposer.ShowText(simpleLayer3.Title);
         composer.End();
 
         blockComposer.End();
@@ -150,19 +166,19 @@ namespace org.pdfclown.samples.cli
         var optionGroup = new OptionGroup(document){radioLayer1, radioLayer2, radioLayer3};
         layerDefinition.OptionGroups.Add(optionGroup);
 
-        blockComposer.Begin(new RectangleF(50, 185, 200, 75), XAlignmentEnum.Left, YAlignmentEnum.Middle);
+        blockComposer.Begin(new RectangleF(50, 200, 200, 75), XAlignmentEnum.Left, YAlignmentEnum.Middle);
 
         composer.BeginLayer(radioLayer1);
         blockComposer.ShowText(radioLayer1.Title);
         composer.End();
 
-        blockComposer.ShowBreak(new SizeF(0, 15));
+        blockComposer.ShowBreak(new SizeF(0, 10));
 
         composer.BeginLayer(radioLayer2);
         blockComposer.ShowText(radioLayer2.Title);
         composer.End();
 
-        blockComposer.ShowBreak(new SizeF(0, 15));
+        blockComposer.ShowBreak(new SizeF(0, 10));
 
         composer.BeginLayer(radioLayer3);
         blockComposer.ShowText(radioLayer3.Title);
@@ -203,7 +219,7 @@ namespace org.pdfclown.samples.cli
         composer.BeginLayer(zoomRestrictedLayer);
         new TextMarkup(
           page,
-          composer.ShowText(zoomRestrictedLayer.Title + ": this text is only visible if zoom between 75% and 125%", new PointF(50, 270)),
+          composer.ShowText(zoomRestrictedLayer.Title + ": this text is only visible if zoom between 75% and 125%", new PointF(50, 290)),
           "This is a highlight annotation visible only if zoom is between 75% and 125%",
           TextMarkup.MarkupTypeEnum.Highlight
           )

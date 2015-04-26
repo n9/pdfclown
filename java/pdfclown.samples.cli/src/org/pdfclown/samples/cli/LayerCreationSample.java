@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
+import java.util.HashSet;
 
 import org.pdfclown.documents.Document;
 import org.pdfclown.documents.Document.PageModeEnum;
@@ -17,6 +18,7 @@ import org.pdfclown.documents.contents.composition.XAlignmentEnum;
 import org.pdfclown.documents.contents.composition.YAlignmentEnum;
 import org.pdfclown.documents.contents.entities.Image;
 import org.pdfclown.documents.contents.fonts.StandardType1Font;
+import org.pdfclown.documents.contents.layers.IntentEnum;
 import org.pdfclown.documents.contents.layers.Layer;
 import org.pdfclown.documents.contents.layers.LayerCollection;
 import org.pdfclown.documents.contents.layers.LayerDefinition;
@@ -29,6 +31,7 @@ import org.pdfclown.documents.interaction.actions.SetLayerState;
 import org.pdfclown.documents.interaction.annotations.TextMarkup;
 import org.pdfclown.documents.interchange.access.LanguageIdentifier;
 import org.pdfclown.files.File;
+import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.StringUtils;
 import org.pdfclown.util.math.Interval;
 
@@ -37,7 +40,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2.1, 04/20/15
+  @version 0.1.2.1, 04/26/15
 */
 public class LayerCreationSample
   extends Sample
@@ -125,20 +128,35 @@ public class LayerCreationSample
 
       simpleLayer1 = new Layer(document, "Simple layer 1");
       simpleLayerCollection.add(simpleLayer1);
-
-      Layer simpleLayer2 = new Layer(document, "Simple layer 2");
+      
+      Layer simpleLayer2 = new Layer(document, "Simple layer 2 (Design)");
+      /*
+        NOTE: Intent limits layer use in determining visibility to specific use contexts. In this 
+        case, we want to mark content as intended to represent a document designer's structural 
+        organization of artwork, hence it's outside the interactive use by document consumers.
+      */
+      simpleLayer2.setIntents(new HashSet<PdfName>(Arrays.asList(IntentEnum.Design.getName())));
       simpleLayerCollection.add(simpleLayer2);
 
-      blockComposer.begin(new Rectangle(50, 125, 200, 50), XAlignmentEnum.Left, YAlignmentEnum.Middle);
+      Layer simpleLayer3 = new Layer(document, "Simple layer 3");
+      simpleLayerCollection.add(simpleLayer3);
+
+      blockComposer.begin(new Rectangle(50, 125, 200, 75), XAlignmentEnum.Left, YAlignmentEnum.Middle);
 
       composer.beginLayer(simpleLayer1);
       blockComposer.showText(simpleLayer1.getTitle());
       composer.end();
 
-      blockComposer.showBreak(new Dimension(0, 15));
+      blockComposer.showBreak(new Dimension(0, 10));
 
       composer.beginLayer(simpleLayer2);
       blockComposer.showText(simpleLayer2.getTitle());
+      composer.end();
+
+      blockComposer.showBreak(new Dimension(0, 10));
+
+      composer.beginLayer(simpleLayer3);
+      blockComposer.showText(simpleLayer3.getTitle());
       composer.end();
 
       blockComposer.end();
@@ -169,19 +187,19 @@ public class LayerCreationSample
       optionGroup.add(radioLayer3);
       layerDefinition.getOptionGroups().add(optionGroup);
 
-      blockComposer.begin(new Rectangle(50, 185, 200, 75), XAlignmentEnum.Left, YAlignmentEnum.Middle);
+      blockComposer.begin(new Rectangle(50, 200, 200, 75), XAlignmentEnum.Left, YAlignmentEnum.Middle);
 
       composer.beginLayer(radioLayer1);
       blockComposer.showText(radioLayer1.getTitle());
       composer.end();
 
-      blockComposer.showBreak(new Dimension(0, 15));
+      blockComposer.showBreak(new Dimension(0, 10));
 
       composer.beginLayer(radioLayer2);
       blockComposer.showText(radioLayer2.getTitle());
       composer.end();
 
-      blockComposer.showBreak(new Dimension(0, 15));
+      blockComposer.showBreak(new Dimension(0, 10));
 
       composer.beginLayer(radioLayer3);
       blockComposer.showText(radioLayer3.getTitle());
@@ -222,7 +240,7 @@ public class LayerCreationSample
       composer.beginLayer(zoomRestrictedLayer);
       TextMarkup textMarkup = new TextMarkup(
         page,
-        composer.showText(zoomRestrictedLayer.getTitle() + ": this text is only visible if zoom between 75% and 125%", new Point(50, 270)),
+        composer.showText(zoomRestrictedLayer.getTitle() + ": this text is only visible if zoom between 75% and 125%", new Point(50, 290)),
         "This is a highlight annotation visible only if zoom is between 75% and 125%",
         TextMarkup.MarkupTypeEnum.Highlight
         );

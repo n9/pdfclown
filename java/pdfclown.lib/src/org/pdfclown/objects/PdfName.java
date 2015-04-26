@@ -36,7 +36,7 @@ import org.pdfclown.tokens.Keyword;
   PDF name object [PDF:1.6:3.2.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 04/24/15
+  @version 0.1.2.1, 04/26/15
 */
 public final class PdfName
   extends PdfSimpleObject<String>
@@ -167,6 +167,7 @@ public final class PdfName
   public static final PdfName Desc = new PdfName("Desc");
   public static final PdfName DescendantFonts = new PdfName("DescendantFonts");
   public static final PdfName Descent = new PdfName("Descent");
+  public static final PdfName Design = new PdfName("Design");
   public static final PdfName Dest = new PdfName("Dest");
   public static final PdfName Dests = new PdfName("Dests");
   public static final PdfName DeviceCMYK = new PdfName("DeviceCMYK");
@@ -289,6 +290,7 @@ public final class PdfName
   public static final PdfName Ink = new PdfName("Ink");
   public static final PdfName InkList = new PdfName("InkList");
   public static final PdfName Insert = new PdfName("Insert");
+  public static final PdfName Intent = new PdfName("Intent");
   public static final PdfName IT = new PdfName("IT");
   public static final PdfName ItalicAngle = new PdfName("ItalicAngle");
   public static final PdfName IX = new PdfName("IX");

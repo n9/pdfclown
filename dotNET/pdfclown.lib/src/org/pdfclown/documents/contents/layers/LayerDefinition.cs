@@ -26,6 +26,7 @@
 using org.pdfclown.objects;
 
 using System;
+using System.Collections.Generic;
 
 namespace org.pdfclown.documents.contents.layers
 {
@@ -102,6 +103,14 @@ namespace org.pdfclown.documents.contents.layers
       {return DefaultConfiguration.Creator;}
       set
       {DefaultConfiguration.Creator = value;}
+    }
+
+    public ISet<PdfName> Intents
+    {
+      get
+      {return DefaultConfiguration.Intents;}
+      set
+      {DefaultConfiguration.Intents = value;}
     }
 
     public Array<OptionGroup> OptionGroups

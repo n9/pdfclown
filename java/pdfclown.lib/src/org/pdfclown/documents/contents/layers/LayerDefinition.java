@@ -25,6 +25,8 @@
 
 package org.pdfclown.documents.contents.layers;
 
+import java.util.Set;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
@@ -40,7 +42,7 @@ import org.pdfclown.objects.PdfObjectWrapper;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2.1, 04/20/15
+  @version 0.1.2.1, 04/26/15
 */
 @PDF(VersionEnum.PDF15)
 public final class LayerDefinition
@@ -124,6 +126,11 @@ public final class LayerDefinition
   {return getDefaultConfiguration().getCreator();}
 
   @Override
+  public Set<PdfName> getIntents(
+    )
+  {return getDefaultConfiguration().getIntents();}
+  
+  @Override
   public Array<OptionGroup> getOptionGroups(
     )
   {return getDefaultConfiguration().getOptionGroups();}
@@ -153,6 +160,12 @@ public final class LayerDefinition
     )
   {getDefaultConfiguration().setCreator(value);}
 
+  @Override
+  public void setIntents(
+    Set<PdfName> value
+    )
+  {getDefaultConfiguration().setIntents(value);}
+  
   @Override
   public void setTitle(
     String value

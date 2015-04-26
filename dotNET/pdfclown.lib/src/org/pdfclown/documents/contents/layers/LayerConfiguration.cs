@@ -28,6 +28,8 @@ using org.pdfclown.objects;
 using org.pdfclown.util;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace org.pdfclown.documents.contents.layers
 {
@@ -94,6 +96,49 @@ namespace org.pdfclown.documents.contents.layers
       {return (string)PdfSimpleObject<object>.GetValue(BaseDataObject[PdfName.Creator]);}
       set
       {BaseDataObject[PdfName.Creator] = PdfTextString.Get(value);}
+    }
+
+    public ISet<PdfName> Intents
+    {
+      get
+      {
+        ISet<PdfName> intents = new HashSet<PdfName>();
+        PdfDataObject intentObject = BaseDataObject.Resolve(PdfName.Intent);
+        if(intentObject != null)
+        {
+          if(intentObject is PdfArray) // Multiple intents.
+          {
+            foreach(PdfDirectObject intentItem in (PdfArray)intentObject)
+            {intents.Add((PdfName)intentItem);}
+          }
+          else // Single intent.
+          {intents.Add((PdfName)intentObject);}
+        }
+        else
+        {intents.Add(IntentEnum.View.Name());}
+        return intents;
+      }
+      set
+      {
+        PdfDirectObject intentObject = null;
+        if(value != null
+          && value.Count > 0)
+        {
+          if(value.Count == 1) // Single intent.
+          {
+            intentObject = value.First();
+            if(intentObject.Equals(IntentEnum.View.Name())) // Default.
+            {intentObject = null;}
+          }
+          else // Multiple intents.
+          {
+            PdfArray intentArray = new PdfArray();
+            foreach(PdfName valueItem in value)
+            {intentArray.Add(valueItem);}
+          }
+        }
+        BaseDataObject[PdfName.Intent] = intentObject;
+      }
     }
 
     public Array<OptionGroup> OptionGroups

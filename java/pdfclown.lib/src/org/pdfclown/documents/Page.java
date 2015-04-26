@@ -51,7 +51,6 @@ import org.pdfclown.documents.contents.xObjects.FormXObject;
 import org.pdfclown.documents.interaction.navigation.page.Transition;
 import org.pdfclown.documents.interchange.metadata.AppData;
 import org.pdfclown.documents.interchange.metadata.AppDataCollection;
-import org.pdfclown.documents.interchange.metadata.IAppDataHolder;
 import org.pdfclown.objects.PdfArray;
 import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDate;
@@ -74,7 +73,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2.1, 04/24/15
+  @version 0.1.2.1, 04/26/15
 */
 @PDF(VersionEnum.PDF10)
 public final class Page

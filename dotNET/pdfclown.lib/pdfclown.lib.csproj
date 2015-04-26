@@ -491,6 +491,7 @@
     <Compile Include="src\org\pdfclown\documents\interchange\metadata\IAppDataHolder.cs" />
     <Compile Include="src\org\pdfclown\documents\interchange\metadata\AppData.cs" />
     <Compile Include="src\org\pdfclown\documents\interchange\metadata\AppDataCollection.cs" />
+    <Compile Include="src\org\pdfclown\documents\contents\layers\IntentEnum.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />

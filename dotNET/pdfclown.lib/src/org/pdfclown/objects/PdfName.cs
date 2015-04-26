@@ -167,6 +167,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName Desc = new PdfName("Desc");
     public static readonly PdfName DescendantFonts = new PdfName("DescendantFonts");
     public static readonly PdfName Descent = new PdfName("Descent");
+    public static readonly PdfName Design = new PdfName("Design");
     public static readonly PdfName Dest = new PdfName("Dest");
     public static readonly PdfName Dests = new PdfName("Dests");
     public static readonly PdfName DeviceCMYK = new PdfName("DeviceCMYK");
@@ -289,6 +290,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName Ink = new PdfName("Ink");
     public static readonly PdfName InkList = new PdfName("InkList");
     public static readonly PdfName Insert = new PdfName("Insert");
+    public static readonly PdfName Intent = new PdfName("Intent");
     public static readonly PdfName IT = new PdfName("IT");
     public static readonly PdfName ItalicAngle = new PdfName("ItalicAngle");
     public static readonly PdfName IX = new PdfName("IX");

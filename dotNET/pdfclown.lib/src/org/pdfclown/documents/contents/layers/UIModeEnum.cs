@@ -64,16 +64,16 @@ namespace org.pdfclown.documents.contents.layers
       if(name == null)
         return UIModeEnum.AllPages;
 
-      UIModeEnum? listMode = codes.GetKey(name);
-      if(!listMode.HasValue)
-        throw new NotSupportedException("List mode unknown: " + name);
+      UIModeEnum? uiMode = codes.GetKey(name);
+      if(!uiMode.HasValue)
+        throw new NotSupportedException("UI mode unknown: " + name);
 
-      return listMode.Value;
+      return uiMode.Value;
     }
 
     public static PdfName GetName(
-      this UIModeEnum listMode
+      this UIModeEnum uiMode
       )
-    {return codes[listMode];}
+    {return codes[uiMode];}
   }
 }

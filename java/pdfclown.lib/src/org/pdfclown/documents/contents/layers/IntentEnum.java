@@ -28,41 +28,45 @@ package org.pdfclown.documents.contents.layers;
 import org.pdfclown.objects.PdfName;
 
 /**
-  List mode specifying which layers should be displayed to the user [PDF:1.7:4.10.3].
-
+  Intended use of layers [PDF:1.7:4.10.1].
+  
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2.1
-  @version 0.1.2.1, 04/20/15
+  @version 0.1.2.1, 04/26/15
 */
-public enum UIModeEnum
+public enum IntentEnum
 {
   /**
-    All the layers are displayed.
+    Intended for interactive use by document consumers.
   */
-  AllPages(PdfName.AllPages),
+  View(PdfName.View),
   /**
-    Only the layers referenced by one or more visible pages are displayed.
+    Intended to represent a document designer's structural organization of artwork.
   */
-  VisiblePages(PdfName.VisiblePages);
+  Design(PdfName.Design),
+  /**
+    Set of all intents (valid for {@link ILayerConfiguration#getIntents()} only).
+  */
+  All(PdfName.All);
 
-  public static UIModeEnum valueOf(
+  public static IntentEnum valueOf(
     PdfName name
     )
   {
     if(name == null)
-      return UIModeEnum.AllPages;
+      return View;
 
-    for(UIModeEnum value : values())
+    for(IntentEnum value : values())
     {
       if(value.getName().equals(name))
         return value;
     }
-    throw new UnsupportedOperationException("UI mode unknown: " + name);
+    throw new UnsupportedOperationException("Intent unknown: " + name);
   }
 
-  private PdfName name;
+  PdfName name;
 
-  private UIModeEnum(
+  private IntentEnum(
     PdfName name
     )
   {this.name = name;}

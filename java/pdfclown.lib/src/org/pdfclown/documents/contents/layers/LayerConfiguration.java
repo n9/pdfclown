@@ -25,11 +25,15 @@
 
 package org.pdfclown.documents.contents.layers;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.Array;
 import org.pdfclown.objects.PdfArray;
+import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfName;
@@ -42,7 +46,7 @@ import org.pdfclown.objects.PdfTextString;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2.1, 04/20/15
+  @version 0.1.2.1, 04/26/15
 */
 @PDF(VersionEnum.PDF15)
 public final class LayerConfiguration
@@ -157,6 +161,27 @@ public final class LayerConfiguration
   {return (String)PdfSimpleObject.getValue(getBaseDataObject().get(PdfName.Creator));}
 
   @Override
+  public Set<PdfName> getIntents(
+    )
+  {
+    Set<PdfName> intents = new HashSet<PdfName>();
+    PdfDataObject intentObject = getBaseDataObject().resolve(PdfName.Intent);
+    if(intentObject != null)
+    {
+      if(intentObject instanceof PdfArray) // Multiple intents.
+      {
+        for(PdfDirectObject intentItem : (PdfArray)intentObject)
+        {intents.add((PdfName)intentItem);}
+      }
+      else // Single intent.
+      {intents.add((PdfName)intentObject);}
+    }
+    else
+    {intents.add(IntentEnum.View.name);}
+    return intents;
+  }
+
+  @Override
   public Array<OptionGroup> getOptionGroups(
     )
   {return Array.wrap(OptionGroup.class, getBaseDataObject().get(PdfName.RBGroups, PdfArray.class));}
@@ -187,6 +212,31 @@ public final class LayerConfiguration
     )
   {getBaseDataObject().put(PdfName.Creator, PdfTextString.get(value));}
 
+  @Override
+  public void setIntents(
+    Set<PdfName> value
+    )
+  {
+    PdfDirectObject intentObject = null;
+    if(value != null 
+      && !value.isEmpty())
+    {
+      if(value.size() == 1) // Single intent.
+      {
+        intentObject = value.iterator().next();
+        if(intentObject.equals(IntentEnum.View.name)) // Default.
+        {intentObject = null;}
+      }
+      else // Multiple intents.
+      {
+        PdfArray intentArray = new PdfArray();
+        for(PdfName valueItem : value)
+        {intentArray.add(valueItem);}
+      }
+    }
+    getBaseDataObject().put(PdfName.Intent, intentObject);
+  }
+  
   @Override
   public void setTitle(
     String value

@@ -25,15 +25,18 @@
 
 package org.pdfclown.documents.contents.layers;
 
+import java.util.Set;
+
 import org.pdfclown.objects.Array;
 import org.pdfclown.objects.IPdfObjectWrapper;
+import org.pdfclown.objects.PdfName;
 
 /**
   Optional content configuration interface [PDF:1.7:4.10.3].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2.1, 04/20/15
+  @version 0.1.2.1, 04/26/15
 */
 public interface ILayerConfiguration
   extends IPdfObjectWrapper
@@ -42,6 +45,23 @@ public interface ILayerConfiguration
     Gets the name of the application or feature that created this configuration.
   */
   String getCreator(
+    );
+
+  /**
+    Gets the intended uses of this configuration.
+    <p>If one or more of a {@link Layer#getIntents() layer's intents} are contained in this 
+    configuration's intents, the layer is used in determining visibility; otherwise, the layer has 
+    no effect on visibility.</p>
+    <p>If this configuration's intents are empty, no layers are used in determining visibility; 
+    therefore, all content is considered visible.</p>
+
+    @return
+      Intent collection (it comprises {@link IntentEnum} names but, for compatibility with future 
+      versions, unrecognized names are allowed). To apply any subsequent change, it has to be 
+      assigned back through {@link #setIntents(Set)}.
+    @see IntentEnum
+  */
+  Set<PdfName> getIntents(
     );
 
   /**
@@ -83,6 +103,13 @@ public interface ILayerConfiguration
     String value
     );
 
+  /**
+    @see #getIntents()
+  */
+  void setIntents(
+    Set<PdfName> value
+    );
+  
   /**
     @see #getTitle()
   */

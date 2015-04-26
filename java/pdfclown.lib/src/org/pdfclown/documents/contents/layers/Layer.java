@@ -28,8 +28,10 @@ package org.pdfclown.documents.contents.layers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import org.pdfclown.PDF;
@@ -56,7 +58,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2.1, 04/20/15
+  @version 0.1.2.1, 04/26/15
 */
 @PDF(VersionEnum.PDF15)
 public final class Layer
@@ -329,6 +331,41 @@ public final class Layer
   {return getUsageEntry(PdfName.CreatorInfo);}
 
   /**
+    Gets the intended uses of this layer.
+    <p>For example, many document design applications, such as CAD packages, offer layering features
+    for collecting groups of graphics together and selectively hiding or viewing them for the 
+    convenience of the author. However, this layering may be different than would be useful to 
+    consumers of the document; therefore, it is possible to specify different intents for layers
+    within a single document: a given application may decide to use only layers that are of a 
+    specific intent.</p>
+
+    @return
+      Intent collection (it comprises {@link IntentEnum} names but, for compatibility with future 
+      versions, unrecognized names are allowed). To apply any subsequent change, it has to be 
+      assigned back through {@link #setIntents(Set)}.
+    @see IntentEnum
+  */
+  public Set<PdfName> getIntents(
+    )
+  {
+    Set<PdfName> intents = new HashSet<PdfName>();
+    PdfDataObject intentObject = getBaseDataObject().resolve(PdfName.Intent);
+    if(intentObject != null)
+    {
+      if(intentObject instanceof PdfArray) // Multiple intents.
+      {
+        for(PdfDirectObject intentItem : (PdfArray)intentObject)
+        {intents.add((PdfName)intentItem);}
+      }
+      else // Single intent.
+      {intents.add((PdfName)intentObject);}
+    }
+    else
+    {intents.add(IntentEnum.View.name);}
+    return intents;
+  }
+  
+  /**
     Gets the language of the content controlled by this layer.
     <p>The layer whose language matches the current system language is visible.</p>
   */
@@ -539,6 +576,33 @@ public final class Layer
   {
     getUsageEntry(PdfName.Export).put(PdfName.ExportState, value != null ? StateEnum.valueOf(value).getName() : null);
     getDefaultConfiguration().setUsageApplication(PdfName.Export, PdfName.Export, this, value != null);
+  }
+  
+  /**
+    @see #getIntents()
+  */
+  public void setIntents(
+    Set<PdfName> value
+    )
+  {
+    PdfDirectObject intentObject = null;
+    if(value != null 
+      && !value.isEmpty())
+    {
+      if(value.size() == 1) // Single intent.
+      {
+        intentObject = value.iterator().next();
+        if(intentObject.equals(IntentEnum.View.name)) // Default.
+        {intentObject = null;}
+      }
+      else // Multiple intents.
+      {
+        PdfArray intentArray = new PdfArray();
+        for(PdfName valueItem : value)
+        {intentArray.add(valueItem);}
+      }
+    }
+    getBaseDataObject().put(PdfName.Intent, intentObject);
   }
 
   /**
