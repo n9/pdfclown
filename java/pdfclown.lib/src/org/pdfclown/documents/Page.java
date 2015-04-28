@@ -73,7 +73,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.0
-  @version 0.1.2.1, 04/26/15
+  @version 0.1.2.1, 04/28/15
 */
 @PDF(VersionEnum.PDF10)
 public final class Page
@@ -596,7 +596,7 @@ public final class Page
   @Override
   public RotationEnum getRotation(
     )
-  {return RotationEnum.valueOf((PdfInteger)getInheritableAttribute(PdfName.Rotate));}
+  {return RotationEnum.valueOf((PdfNumber<?>)getInheritableAttribute(PdfName.Rotate));}
 
   @Override
   public void render(

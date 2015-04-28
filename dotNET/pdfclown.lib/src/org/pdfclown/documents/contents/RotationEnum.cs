@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2010-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -59,13 +59,13 @@ namespace org.pdfclown.documents.contents
       <summary>Gets the direction corresponding to the given value.</summary>
     */
     public static RotationEnum Get(
-      PdfInteger value
+      IPdfNumber value
       )
     {
       if(value == null)
         return RotationEnum.Downward;
 
-      int normalizedValue = (int)(Math.Round(value.RawValue / 90d) % 4) * 90;
+      int normalizedValue = (int)(Math.Round(value.DoubleValue / 90) % 4) * 90;
       if(normalizedValue < 0)
       {normalizedValue += 360 * (int)Math.Ceiling(-normalizedValue / 360d);}
       return (RotationEnum)normalizedValue;

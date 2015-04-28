@@ -513,7 +513,7 @@ namespace org.pdfclown.documents
     public RotationEnum Rotation
     {
       get
-      {return RotationEnumExtension.Get((PdfInteger)GetInheritableAttribute(PdfName.Rotate));}
+      {return RotationEnumExtension.Get((IPdfNumber)GetInheritableAttribute(PdfName.Rotate));}
       set
       {BaseDataObject[PdfName.Rotate] = PdfInteger.Get((int)value);}
     }

@@ -110,8 +110,8 @@ namespace org.pdfclown.samples.cli
       Console.WriteLine(" ID: " + ((PdfReference)page.BaseObject).Id);
       PdfDictionary pageDictionary = page.BaseDataObject;
       Console.WriteLine(" Dictionary entries:");
-      foreach(PdfName key in pageDictionary.Keys)
-      {Console.WriteLine("  " + key.Value);}
+      foreach(KeyValuePair<PdfName,PdfDirectObject> entry in pageDictionary)
+      {Console.WriteLine("  " + entry.Key.Value + " = " + entry.Value);}
 
       // 2. Showing page contents information...
       Contents contents = page.Contents;
