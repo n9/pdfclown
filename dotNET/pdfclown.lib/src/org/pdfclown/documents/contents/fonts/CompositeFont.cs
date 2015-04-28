@@ -187,13 +187,13 @@ namespace org.pdfclown.documents.contents.fonts
             {
               int cID = startCID;
               foreach(PdfDirectObject glyphWidthObject in (PdfArray)glyphWidthObject2)
-              {glyphWidths[cID++] = ((PdfInteger)glyphWidthObject).RawValue;}
+              {glyphWidths[cID++] = ((IPdfNumber)glyphWidthObject).IntValue;}
             }
             else // Format 2: startCID endCID glyphWidth.
             {
               int endCID = ((PdfInteger)glyphWidthObject2).RawValue;
               iterator.MoveNext();
-              int glyphWidth = ((PdfInteger)iterator.Current).RawValue;
+              int glyphWidth = ((IPdfNumber)iterator.Current).IntValue;
               for(int cID = startCID; cID <= endCID; cID++)
               {glyphWidths[cID] = glyphWidth;}
             }

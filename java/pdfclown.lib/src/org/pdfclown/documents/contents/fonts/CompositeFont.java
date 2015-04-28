@@ -46,6 +46,7 @@ import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
 import org.pdfclown.objects.PdfName;
+import org.pdfclown.objects.PdfNumber;
 import org.pdfclown.objects.PdfReal;
 import org.pdfclown.objects.PdfReference;
 import org.pdfclown.objects.PdfStream;
@@ -63,7 +64,7 @@ import org.pdfclown.util.IFunction;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 04/08/15
+  @version 0.1.2.1, 04/28/15
 */
 @PDF(VersionEnum.PDF12)
 public abstract class CompositeFont
@@ -219,12 +220,12 @@ public abstract class CompositeFont
           {
             int cID = startCID;
             for(PdfDirectObject glyphWidthObject : (PdfArray)glyphWidthObject2)
-            {glyphWidths.put(cID++,((PdfInteger)glyphWidthObject).getRawValue());}
+            {glyphWidths.put(cID++,((PdfNumber<?>)glyphWidthObject).getIntValue());}
           }
           else // Format 2: startCID endCID glyphWidth.
           {
             int endCID = ((PdfInteger)glyphWidthObject2).getRawValue();
-            int glyphWidth = ((PdfInteger)iterator.next()).getRawValue();
+            int glyphWidth = ((PdfNumber<?>)iterator.next()).getIntValue();
             for(int cID = startCID; cID <= endCID; cID++)
             {glyphWidths.put(cID,glyphWidth);}
           }
