@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,7 @@
 
 using org.pdfclown;
 using org.pdfclown.documents;
+using org.pdfclown.documents.contents.colorSpaces;
 using org.pdfclown.objects;
 
 using System;
@@ -90,10 +91,10 @@ namespace org.pdfclown.documents.contents.xObjects
     /**
       <summary>Gets the color space in which samples are specified.</summary>
     */
-    public string ColorSpace
+    public ColorSpace ColorSpace
     {
       get
-      {return ((PdfName)BaseDataObject.Header[PdfName.ColorSpace]).RawValue;}
+      {return ColorSpace.Wrap(BaseDataObject.Header[PdfName.ColorSpace]);}
     }
 
     public override Matrix Matrix

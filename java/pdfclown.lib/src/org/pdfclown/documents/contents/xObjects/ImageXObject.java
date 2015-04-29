@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -32,6 +32,7 @@ import java.awt.geom.Dimension2D;
 import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.Document;
+import org.pdfclown.documents.contents.colorSpaces.ColorSpace;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
@@ -42,7 +43,7 @@ import org.pdfclown.objects.PdfStream;
   Image external object [PDF:1.6:4.8.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 04/29/15
 */
 @PDF(VersionEnum.PDF10)
 public final class ImageXObject
@@ -106,9 +107,9 @@ public final class ImageXObject
   /**
     Gets the color space in which samples are specified.
   */
-  public String getColorSpace(
+  public ColorSpace<?> getColorSpace(
     )
-  {return ((PdfName)getBaseDataObject().getHeader().get(PdfName.ColorSpace)).getRawValue();}
+  {return ColorSpace.wrap(getBaseDataObject().getHeader().get(PdfName.ColorSpace));}
 
   @Override
   public AffineTransform getMatrix(
