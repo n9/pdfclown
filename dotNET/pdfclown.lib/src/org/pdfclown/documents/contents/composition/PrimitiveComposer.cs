@@ -303,7 +303,7 @@ namespace org.pdfclown.documents.contents.composition
       PointF endControl
       )
     {
-      double contextHeight = scanner.ContentContext.Box.Height;
+      double contextHeight = scanner.ContextSize.Height;
       Add(
         new objects::DrawCurve(
           endPoint.X,
@@ -359,7 +359,7 @@ namespace org.pdfclown.documents.contents.composition
       Add(
         new objects::DrawLine(
           endPoint.X,
-          scanner.ContentContext.Box.Height - endPoint.Y
+          scanner.ContextSize.Height - endPoint.Y
           )
         );
     }
@@ -444,7 +444,7 @@ namespace org.pdfclown.documents.contents.composition
         Add(
           new objects::DrawRectangle(
             location.X,
-            scanner.ContentContext.Box.Height - location.Y - location.Height,
+            scanner.ContextSize.Height - location.Y - location.Height,
             location.Width,
             location.Height
             )
@@ -630,14 +630,14 @@ namespace org.pdfclown.documents.contents.composition
       // Center to the new origin!
       Translate(
         origin.X,
-        scanner.ContentContext.Box.Height - origin.Y
+        scanner.ContextSize.Height - origin.Y
         );
       // Rotate on the new origin!
       Rotate(angle);
       // Restore the standard vertical coordinates system!
       Translate(
         0,
-        -scanner.ContentContext.Box.Height
+        -scanner.ContextSize.Height
         );
     }
 
@@ -951,7 +951,7 @@ namespace org.pdfclown.documents.contents.composition
           -sin,
           cos,
           location.X,
-          scanner.ContentContext.Box.Height - location.Y
+          scanner.ContextSize.Height - location.Y
           );
 
         string[] textLines = value.Split('\n');
@@ -1271,7 +1271,7 @@ namespace org.pdfclown.documents.contents.composition
       {
         Translate(
           location.X,
-          scanner.ContentContext.Box.Height - location.Y
+          scanner.ContextSize.Height - location.Y
           );
         if(rotation != 0)
         {Rotate(rotation);}
@@ -1330,7 +1330,7 @@ namespace org.pdfclown.documents.contents.composition
       Add(
         new objects::BeginSubpath(
           startPoint.X,
-          scanner.ContentContext.Box.Height - startPoint.Y
+          scanner.ContextSize.Height - startPoint.Y
           )
         );
     }

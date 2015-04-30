@@ -107,7 +107,7 @@ import org.pdfclown.util.math.geom.Quad;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2.1, 04/20/15
+  @version 0.1.2.1, 04/30/15
 */
 public final class PrimitiveComposer
 {
@@ -369,7 +369,7 @@ public final class PrimitiveComposer
     Point2D endControl
     )
   {
-    double contextHeight = scanner.getContentContext().getBox().getHeight();
+    double contextHeight = scanner.getContextSize().getHeight();
     add(
       new DrawCurve(
         endPoint.getX(),
@@ -428,7 +428,7 @@ public final class PrimitiveComposer
     add(
       new DrawLine(
         endPoint.getX(),
-        scanner.getContentContext().getBox().getHeight() - endPoint.getY()
+        scanner.getContextSize().getHeight() - endPoint.getY()
         )
       );
   }
@@ -518,7 +518,7 @@ public final class PrimitiveComposer
       add(
         new DrawRectangle(
           location.getX(),
-          scanner.getContentContext().getBox().getHeight() - location.getY() - location.getHeight(),
+          scanner.getContextSize().getHeight() - location.getY() - location.getHeight(),
           location.getWidth(),
           location.getHeight()
           )
@@ -702,14 +702,14 @@ public final class PrimitiveComposer
     // Center to the new origin!
     translate(
       origin.getX(),
-      scanner.getContentContext().getBox().getHeight() - origin.getY()
+      scanner.getContextSize().getHeight() - origin.getY()
       );
     // Rotate on the new origin!
     rotate(angle);
     // Restore the standard vertical coordinates system!
     translate(
       0,
-      -scanner.getContentContext().getBox().getHeight()
+      -scanner.getContextSize().getHeight()
       );
   }
 
@@ -1030,7 +1030,7 @@ public final class PrimitiveComposer
         -sin,
         cos,
         location.getX(),
-        scanner.getContentContext().getBox().getHeight() - location.getY()
+        scanner.getContextSize().getHeight() - location.getY()
         );
 
       String[] textLines = value.split("\n");
@@ -1356,7 +1356,7 @@ public final class PrimitiveComposer
     {
       translate(
         location.getX(),
-        scanner.getContentContext().getBox().getHeight() - location.getY()
+        scanner.getContextSize().getHeight() - location.getY()
         );
       if(rotation != 0)
       {rotate(rotation);}
@@ -1417,7 +1417,7 @@ public final class PrimitiveComposer
     add(
       new BeginSubpath(
         startPoint.getX(),
-        scanner.getContentContext().getBox().getHeight() - startPoint.getY()
+        scanner.getContextSize().getHeight() - startPoint.getY()
         )
       );
   }

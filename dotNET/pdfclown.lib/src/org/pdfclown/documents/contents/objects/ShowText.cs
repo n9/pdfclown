@@ -102,8 +102,7 @@ namespace org.pdfclown.documents.contents.objects
         TODO: support to vertical writing mode.
       */
 
-      IContentContext context = state.Scanner.ContentContext;
-      double contextHeight = context.Box.Height;
+      double contextHeight = state.Scanner.ContextSize.Height;
       Font font = state.Font;
       double fontSize = state.FontSize;
       double scaledFactor = Font.GetScalingFactor(fontSize) * state.Scale;

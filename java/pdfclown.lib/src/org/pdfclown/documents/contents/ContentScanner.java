@@ -66,7 +66,7 @@ import org.pdfclown.util.math.geom.Dimension;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2.1, 04/08/15
+  @version 0.1.2.1, 04/30/15
 */
 public final class ContentScanner
 {
@@ -739,7 +739,7 @@ public final class ContentScanner
       AffineTransform ctm = scanner.getState().getCtm();
       this.box = new Rectangle2D.Double(
         ctm.getTranslateX(),
-        scanner.getContentContext().getBox().getHeight() - ctm.getTranslateY(),
+        scanner.getContextSize().getHeight() - ctm.getTranslateY(),
         ctm.getScaleX(),
         Math.abs(ctm.getScaleY())
         );
@@ -941,16 +941,15 @@ public final class ContentScanner
     {
       super((XObject)scanner.getCurrent());
 
-      IContentContext context = scanner.getContentContext();
       AffineTransform ctm = scanner.getState().getCtm();
       this.box = new Rectangle2D.Double(
         ctm.getTranslateX(),
-        context.getBox().getHeight() - ctm.getTranslateY(),
+        scanner.getContextSize().getHeight() - ctm.getTranslateY(),
         ctm.getScaleX(),
         Math.abs(ctm.getScaleY())
         );
       this.name = getBaseDataObject().getName();
-      this.xObject = getBaseDataObject().getResource(context);
+      this.xObject = getBaseDataObject().getResource(scanner.getContentContext());
     }
 
     /**
@@ -1010,10 +1009,17 @@ public final class ContentScanner
     Rendering object.
   */
   private Shape renderObject;
+
   /**
-    Device-space size of the rendering canvas.
+    Size of the graphics canvas.
+    <p>According to the current processing (whether it is device-independent scanning or device-based
+    rendering), it may be expressed, respectively, in user-space units or in device-space units.</p>
   */
-  private Dimension2D renderSize;
+  private Dimension2D canvasSize;
+  /**
+    Device-independent size of the graphics canvas.
+  */
+  private Dimension2D contextSize;
 
   /**
     Scan listeners.
@@ -1034,6 +1040,8 @@ public final class ContentScanner
     this.parentLevel = null;
     this.objects = this.contents = contents;
 
+    canvasSize = contextSize = Dimension.get(contents.getContentContext().getBox());
+    
     moveStart();
   }
 
@@ -1060,6 +1068,8 @@ public final class ContentScanner
   {
     this.parentLevel = parentLevel;
     this.objects = this.contents = formXObject.getContents();
+    
+    canvasSize = contextSize = parentLevel.contextSize;
 
     addListener(new IListener()
       {
@@ -1091,6 +1101,8 @@ public final class ContentScanner
     this.contents = parentLevel.contents;
     this.objects = ((CompositeObject)parentLevel.getCurrent()).getObjects();
 
+    canvasSize = contextSize = parentLevel.contextSize;
+    
     moveStart();
   }
   // </constructors>
@@ -1109,16 +1121,12 @@ public final class ContentScanner
 
   /**
     Gets the size of the current imageable area.
-    <p>It can be either the <i>user-space area</i> (dry scanning)
-    or the <i>device-space area</i> (wet scanning).</p>
+    <p>It can be either the <i>user-space area</i> (dry scanning) or the <i>device-space area</i> 
+    (wet scanning).</p>
   */
   public Dimension2D getCanvasSize(
     )
-  {
-    return renderSize == null
-      ? Dimension.get(getContentContext().getBox()) // Device-independent (user-space) area.
-      : renderSize; // Device-dependent (device-space) area.
-  }
+  {return canvasSize;}
 
   /**
     Gets the current child scan level.
@@ -1143,6 +1151,13 @@ public final class ContentScanner
   public Contents getContents(
     )
   {return contents;}
+
+  /**
+    Gets the size of the current imageable area in user-space units.
+  */
+  public Dimension2D getContextSize(
+    )
+  {return contextSize;}
 
   /**
     Gets the current content object.
@@ -1450,7 +1465,7 @@ public final class ContentScanner
     try
     {
       this.renderContext = renderContext;
-      this.renderSize = renderSize;
+      this.canvasSize = renderSize;
       this.renderObject = renderObject;
 
       // Scan this level for rendering!
@@ -1460,7 +1475,7 @@ public final class ContentScanner
     finally
     {
       this.renderContext = null;
-      this.renderSize = null;
+      this.canvasSize = contextSize;
       this.renderObject = null;
     }
   }

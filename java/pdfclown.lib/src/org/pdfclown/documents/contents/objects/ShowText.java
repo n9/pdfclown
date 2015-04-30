@@ -34,7 +34,6 @@ import org.pdfclown.PDF;
 import org.pdfclown.VersionEnum;
 import org.pdfclown.documents.contents.ContentScanner;
 import org.pdfclown.documents.contents.ContentScanner.GraphicsState;
-import org.pdfclown.documents.contents.IContentContext;
 import org.pdfclown.documents.contents.fonts.CompositeFont;
 import org.pdfclown.documents.contents.fonts.Font;
 import org.pdfclown.objects.PdfDirectObject;
@@ -44,7 +43,7 @@ import org.pdfclown.objects.PdfDirectObject;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 04/08/15
+  @version 0.1.2.1, 04/30/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class ShowText
@@ -139,8 +138,7 @@ public abstract class ShowText
       TODO: support to vertical writing mode.
     */
 
-    IContentContext context = state.getScanner().getContentContext();
-    double contextHeight = context.getBox().getHeight();
+    double contextHeight = state.getScanner().getContextSize().getHeight();
     Font font = state.getFont();
     double fontSize = state.getFontSize();
     double scaledFactor = Font.getScalingFactor(fontSize) * state.getScale();

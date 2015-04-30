@@ -639,7 +639,7 @@ namespace org.pdfclown.documents.contents
         Matrix ctm = scanner.State.Ctm;
         this.box = new RectangleF(
           ctm.Elements[4],
-          scanner.ContentContext.Box.Height - ctm.Elements[5],
+          scanner.ContextSize.Height - ctm.Elements[5],
           ctm.Elements[0],
           Math.Abs(ctm.Elements[3])
           );
@@ -842,16 +842,15 @@ namespace org.pdfclown.documents.contents
         ContentScanner scanner
         ) : base((XObject)scanner.Current)
       {
-        IContentContext context = scanner.ContentContext;
         Matrix ctm = scanner.State.Ctm;
         this.box = new RectangleF(
           ctm.Elements[4],
-          context.Box.Height - ctm.Elements[5],
+          scanner.ContextSize.Height - ctm.Elements[5],
           ctm.Elements[0],
           Math.Abs(ctm.Elements[3])
           );
         this.name = BaseDataObject.Name;
-        this.xObject = BaseDataObject.GetResource(context);
+        this.xObject = BaseDataObject.GetResource(scanner.ContentContext);
       }
 
       /**
@@ -909,10 +908,18 @@ namespace org.pdfclown.documents.contents
       Rendering object.
     */
     private GraphicsPath renderObject;
+
     /**
-      Device-space size of the rendering canvas.
+      <summary>Size of the graphics canvas.</summary>
+      <remarks>According to the current processing (whether it is device-independent scanning or
+      device-based rendering), it may be expressed, respectively, in user-space units or in
+      device-space units.</remarks>
     */
-    private SizeF? renderSize;
+    private SizeF canvasSize;
+    /**
+      <summary>Device-independent size of the graphics canvas.</summary>
+    */
+    private SizeF contextSize;
     #endregion
 
     #region constructors
@@ -926,6 +933,8 @@ namespace org.pdfclown.documents.contents
     {
       this.parentLevel = null;
       this.objects = this.contents = contents;
+
+      canvasSize = contextSize = contents.ContentContext.Box.Size;
 
       MoveStart();
     }
@@ -952,6 +961,8 @@ namespace org.pdfclown.documents.contents
       this.parentLevel = parentLevel;
       this.objects = this.contents = formXObject.Contents;
 
+      canvasSize = contextSize = parentLevel.contextSize;
+
       OnStart += delegate(
         ContentScanner scanner
         )
@@ -977,6 +988,8 @@ namespace org.pdfclown.documents.contents
       this.contents = parentLevel.contents;
       this.objects = ((CompositeObject)parentLevel.Current).Objects;
 
+      canvasSize = contextSize = parentLevel.contextSize;
+
       MoveStart();
     }
     #endregion
@@ -985,36 +998,49 @@ namespace org.pdfclown.documents.contents
     #region public
     /**
       <summary>Gets the size of the current imageable area.</summary>
-      <remarks>It can be either the user-space area (dry scanning)
-      or the device-space area (wet scanning).</remarks>
+      <remarks>It can be either the user-space area (dry scanning) or the device-space area (wet
+      scanning).</remarks>
     */
     public SizeF CanvasSize
     {
       get
-      {
-        return renderSize.HasValue
-          ? renderSize.Value // Device-dependent (device-space) area.
-          : ContentContext.Box.Size; // Device-independent (user-space) area.
-      }
+      {return canvasSize;}
     }
 
     /**
       <summary>Gets the current child scan level.</summary>
     */
     public ContentScanner ChildLevel
-    {get{return childLevel;}}
+    {
+      get
+      {return childLevel;}
+    }
 
     /**
       <summary>Gets the content context associated to the content objects collection.</summary>
     */
     public IContentContext ContentContext
-    {get{return contents.ContentContext;}}
+    {
+      get{return contents.ContentContext;}
+    }
 
     /**
       <summary>Gets the content objects collection this scanner is inspecting.</summary>
     */
     public Contents Contents
-    {get{return contents;}}
+    {
+      get
+      {return contents;}
+    }
+
+    /**
+      <summary>Gets the size of the current imageable area in user-space units.</summary>
+    */
+    public SizeF ContextSize
+    {
+      get
+      {return contextSize;}
+    }
 
     /**
       <summary>Gets/Sets the current content object.</summary>
@@ -1039,13 +1065,19 @@ namespace org.pdfclown.documents.contents
       <summary>Gets the current content object's information.</summary>
     */
     public GraphicsObjectWrapper CurrentWrapper
-    {get{return GraphicsObjectWrapper.Get(this);}}
+    {
+      get
+      {return GraphicsObjectWrapper.Get(this);}
+    }
 
     /**
       <summary>Gets the current position.</summary>
     */
     public int Index
-    {get{return index;}}
+    {
+      get
+      {return index;}
+    }
 
     /**
       <summary>Inserts a content object at the current position.</summary>
@@ -1247,7 +1279,7 @@ namespace org.pdfclown.documents.contents
       try
       {
         this.renderContext = renderContext;
-        this.renderSize = renderSize;
+        this.canvasSize = renderSize;
         this.renderObject = renderObject;
 
         // Scan this level for rendering!
@@ -1257,7 +1289,7 @@ namespace org.pdfclown.documents.contents
       finally
       {
         this.renderContext = null;
-        this.renderSize = null;
+        this.canvasSize = contextSize;
         this.renderObject = null;
       }
     }

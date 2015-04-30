@@ -79,8 +79,7 @@ namespace org.pdfclown.documents.contents.fonts
       // Mapping character codes...
       PdfDataObject encodingObject = BaseDataObject.Resolve(PdfName.Encoding);
       FlagsEnum flags = Flags;
-      symbolic = ((flags & FlagsEnum.Symbolic) != 0
-        || ((flags & FlagsEnum.Nonsymbolic) == 0 && encodingObject == null));
+      symbolic = (flags & FlagsEnum.Symbolic) != 0;
       if(this.codes == null)
       {
         IDictionary<ByteArray,int> codes;

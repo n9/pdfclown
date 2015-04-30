@@ -12,6 +12,7 @@ import org.pdfclown.documents.contents.composition.PrimitiveComposer;
 import org.pdfclown.documents.contents.objects.ContainerObject;
 import org.pdfclown.documents.contents.objects.ContentObject;
 import org.pdfclown.documents.contents.objects.Text;
+import org.pdfclown.documents.contents.objects.XObject;
 import org.pdfclown.files.File;
 import org.pdfclown.tools.PageStamper;
 
@@ -22,7 +23,7 @@ import org.pdfclown.tools.PageStamper;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 03/21/15
+  @version 0.1.2.1, 04/30/15
 */
 public class TextInfoExtractionSample
   extends Sample
@@ -128,10 +129,21 @@ public class TextInfoExtractionSample
           composer.end();
         }
       }
+      else if(content instanceof XObject)
+      {
+        // Scan the external level!
+        extract(
+          ((XObject)content).getScanner(level),
+          composer
+          );
+      }
       else if(content instanceof ContainerObject)
       {
         // Scan the inner level!
-        extract(level.getChildLevel(),composer);
+        extract(
+          level.getChildLevel(),
+          composer
+          );
       }
     }
   }
