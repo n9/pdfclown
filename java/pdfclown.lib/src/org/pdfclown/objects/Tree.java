@@ -43,7 +43,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.2
-  @version 0.1.2.1, 1/26/15
+  @version 0.1.2.1, 05/01/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Tree<
@@ -116,30 +116,54 @@ public abstract class Tree<
       else
         throw new RuntimeException("Malformed tree node.");
 
-      PdfArray children = (PdfArray)node.resolve(childrenTypeName);
-      return new Children(node, children, childrenTypeName);
+      return new Children(node, childrenTypeName);
     }
 
-    /** Children's collection */
-    public final PdfArray items;
-    /** Node's children info. */
-    public final Info info;
-    /** Parent node. */
-    public final PdfDictionary parent;
-    /** Node's children type. */
-    public final PdfName typeName;
+    private Info info;
+    private PdfArray items;
+    private PdfDictionary parent;
+    private PdfName typeName;
 
     private Children(
       PdfDictionary parent,
-      PdfArray items,
       PdfName typeName
       )
     {
       this.parent = parent;
-      this.items = items;
-      this.typeName = typeName;
-      this.info = Info.get(typeName);
+      setTypeName(typeName);
     }
+    
+    /**
+      Gets the node's children info.
+    */
+    @SuppressWarnings("unused")
+    public Info getInfo(
+      )
+    {return info;}
+    
+    /**
+      Gets the node's children collection.
+    */
+    @SuppressWarnings("unused")
+    public PdfArray getItems(
+      )
+    {return items;}
+    
+    /**
+      Gets the node.
+    */
+    @SuppressWarnings("unused")
+    public PdfDictionary getParent(
+      )
+    {return parent;}
+    
+    /**
+      Gets the node's children type.
+    */
+    @SuppressWarnings("unused")
+    public PdfName getTypeName(
+      )
+    {return typeName;}
 
     /**
       Gets whether the collection size has reached its maximum.
@@ -176,6 +200,15 @@ public abstract class Tree<
     public boolean isValid(
       )
     {return !(isUndersized() || isOversized());}
+    
+    public void setTypeName(
+      PdfName value
+      )
+    {
+      typeName = value;
+      items = (PdfArray)parent.resolve(typeName);
+      info = Info.get(typeName);
+    }
   }
 
   /**
@@ -577,8 +610,19 @@ public abstract class Tree<
                 }
                 if(nodeChildren.items.size() == 1)
                 {
-                  // Collapsing root...
+                  // Collapsing node...
+                  // Remove the lonely intermediate node from the parent!
                   nodeChildren.items.remove(0);
+                  if(node == getBaseDataObject()) // Root node [FIX:50].
+                  {
+                    /*
+                      NOTE: In case of root collapse, Kids entry must be converted to key-value-pairs
+                      entry, as no more intermediate nodes are available.
+                    */
+                    node.put(pairsKey, node.remove(PdfName.Kids));
+                    nodeChildren.setTypeName(pairsKey);
+                  }
+                  // Populate the parent with the lonely intermediate node's children!
                   for(int index = kidChildren.items.size(); index-- > 0;)
                   {nodeChildren.items.add(kidChildren.items.remove(0));}
                   kid.delete();

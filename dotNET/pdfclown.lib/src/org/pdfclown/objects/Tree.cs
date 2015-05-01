@@ -103,29 +103,30 @@ namespace org.pdfclown.objects
         else
           throw new Exception("Malformed tree node.");
 
-        PdfArray children = (PdfArray)node.Resolve(childrenTypeName);
-        return new Children(node, children, childrenTypeName);
+        return new Children(node, childrenTypeName);
       }
 
-      /** Children's collection */
-      public readonly PdfArray Items;
-      /** Node's children info. */
-      public readonly InfoImpl Info;
-      /** Parent node. */
-      public readonly PdfDictionary Parent;
-      /** Node's children type. */
-      public readonly PdfName TypeName;
+      private InfoImpl info;
+      private PdfArray items;
+      private PdfDictionary parent;
+      private PdfName typeName;
 
       private Children(
         PdfDictionary parent,
-        PdfArray items,
         PdfName typeName
         )
       {
-        Parent = parent;
-        Items = items;
+        this.parent = parent;
         TypeName = typeName;
-        Info = InfoImpl.Get(typeName);
+      }
+
+      /**
+        <summary>Gets the node's children info.</summary>
+      */
+      public InfoImpl Info
+      {
+        get
+        {return info;}
       }
 
       /**
@@ -162,6 +163,39 @@ namespace org.pdfclown.objects
       public bool IsValid(
         )
       {return !(IsUndersized() || IsOversized());}
+
+      /**
+        <summary>Gets the node's children collection.</summary>
+      */
+      public PdfArray Items
+      {
+        get
+        {return items;}
+      }
+
+      /**
+        <summary>Gets the node.</summary>
+      */
+      public PdfDictionary Parent
+      {
+        get
+        {return parent;}
+      }
+
+      /**
+        <summary>Gets/Sets the node's children type.</summary>
+      */
+      public PdfName TypeName
+      {
+        get
+        {return typeName;}
+        set
+        {
+          typeName = value;
+          items = (PdfArray)parent.Resolve(typeName);
+          info = InfoImpl.Get(typeName);
+        }
+      }
     }
 
     private class Enumerator
@@ -619,13 +653,25 @@ namespace org.pdfclown.objects
                   }
                   if(nodeChildren.Items.Count == 1)
                   {
-                    // Collapsing root...
+                    // Collapsing node...
+                    // Remove the lonely intermediate node from the parent!
                     nodeChildren.Items.RemoveAt(0);
+                    if(node == BaseDataObject) // Root node [FIX:50].
+                    {
+                      /*
+                        NOTE: In case of root collapse, Kids entry must be converted to
+                        key-value-pairs entry, as no more intermediate nodes are available.
+                      */
+                      node[pairsKey] = node[PdfName.Kids];
+                      node.Remove(PdfName.Kids);
+                      nodeChildren.TypeName = pairsKey;
+                    }
+                    // Populate the parent with the lonely intermediate node's children!
                     for(int index = kidChildren.Items.Count; index-- > 0;)
                     {
-                      int itemIndex = 0;
-                      PdfDirectObject item = kidChildren.Items[itemIndex];
-                      kidChildren.Items.RemoveAt(itemIndex);
+                      const int RemovedItemIndex = 0;
+                      PdfDirectObject item = kidChildren.Items[RemovedItemIndex];
+                      kidChildren.Items.RemoveAt(RemovedItemIndex);
                       nodeChildren.Items.Add(item);
                     }
                     kid.Delete();
