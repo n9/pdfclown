@@ -78,6 +78,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName AnyOff = new PdfName("AnyOff");
     public static readonly PdfName AnyOn = new PdfName("AnyOn");
     public static readonly PdfName AP = new PdfName("AP");
+    public static readonly PdfName AppDefault = new PdfName("AppDefault");
     public static readonly PdfName Approved = new PdfName("Approved");
     public static readonly PdfName ArtBox = new PdfName("ArtBox");
     public static readonly PdfName AS = new PdfName("AS");
@@ -188,6 +189,9 @@ namespace org.pdfclown.objects
     public static readonly PdfName DR = new PdfName("DR");
     public static readonly PdfName Draft = new PdfName("Draft");
     public static readonly PdfName DS = new PdfName("DS");
+    public static readonly PdfName Duplex = new PdfName("Duplex");
+    public static readonly PdfName DuplexFlipLongEdge = new PdfName("DuplexFlipLongEdge");
+    public static readonly PdfName DuplexFlipShortEdge = new PdfName("DuplexFlipShortEdge");
     public static readonly PdfName Dur = new PdfName("Dur");
     public static readonly PdfName DV = new PdfName("DV");
     public static readonly PdfName DW = new PdfName("DW");
@@ -368,12 +372,14 @@ namespace org.pdfclown.objects
     public static readonly PdfName NextPage = new PdfName("NextPage");
     public static readonly PdfName NM = new PdfName("NM");
     public static readonly PdfName None = new PdfName("None");
+    public static readonly PdfName NonFullScreenPageMode = new PdfName("NonFullScreenPageMode");
     public static readonly PdfName Normal = new PdfName("Normal");
     public static readonly PdfName Not = new PdfName("Not");
     public static readonly PdfName NotApproved = new PdfName("NotApproved");
     public static readonly PdfName Note = new PdfName("Note");
     public static readonly PdfName NotForPublicRelease = new PdfName("NotForPublicRelease");
     public static readonly PdfName NU = new PdfName("NU");
+    public static readonly PdfName NumCopies = new PdfName("NumCopies");
     public static readonly PdfName Nums = new PdfName("Nums");
     public static readonly PdfName O = new PdfName("O");
     public static readonly PdfName ObjStm = new PdfName("ObjStm");
@@ -417,6 +423,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName PC = new PdfName("PC");
     public static readonly PdfName PDFDocEncoding = new PdfName("PdfDocEncoding");
     public static readonly PdfName PI = new PdfName("PI");
+    public static readonly PdfName PickTrayByPDFSize = new PdfName("PickTrayByPDFSize");
     public static readonly PdfName PID = new PdfName("PID");
     public static readonly PdfName PieceInfo = new PdfName("PieceInfo");
     public static readonly PdfName PL = new PdfName("PL");
@@ -429,6 +436,8 @@ namespace org.pdfclown.objects
     public static readonly PdfName Prev = new PdfName("Prev");
     public static readonly PdfName PrevPage = new PdfName("PrevPage");
     public static readonly PdfName Print = new PdfName("Print");
+    public static readonly PdfName PrintPageRange = new PdfName("PrintPageRange");
+    public static readonly PdfName PrintScaling = new PdfName("PrintScaling");
     public static readonly PdfName PrintState = new PdfName("PrintState");
     public static readonly PdfName Private = new PdfName("Private");
     public static readonly PdfName Producer = new PdfName("Producer");
@@ -484,6 +493,7 @@ namespace org.pdfclown.objects
     public static readonly PdfName SHSignHere = new PdfName("SHSignHere");
     public static readonly PdfName SHWitness = new PdfName("SHWitness");
     public static readonly PdfName Sig = new PdfName("Sig");
+    public static readonly PdfName Simplex = new PdfName("Simplex");
     public static readonly PdfName SinglePage = new PdfName("SinglePage");
     public static readonly PdfName Size = new PdfName("Size");
     public static readonly PdfName Slash = new PdfName("Slash");

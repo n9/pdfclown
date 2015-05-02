@@ -7,6 +7,7 @@ using org.pdfclown.documents.contents.layers;
 using org.pdfclown.documents.contents.xObjects;
 using org.pdfclown.documents.interaction.actions;
 using org.pdfclown.documents.interaction.annotations;
+using org.pdfclown.documents.interaction.viewer;
 using org.pdfclown.documents.interchange.access;
 using files = org.pdfclown.files;
 using org.pdfclown.objects;
@@ -59,7 +60,7 @@ namespace org.pdfclown.samples.cli
 
       // Initialize the document layer configuration!
       LayerDefinition layerDefinition = document.Layer;
-      document.PageMode = Document.PageModeEnum.Layers; // Shows the layers tab on document opening.
+      document.ViewerPreferences.PageMode = ViewerPreferences.PageModeEnum.Layers; // Shows the layers tab on document opening.
 
       // Get the root collection of the layers displayed to the user!
       UILayers uiLayers = layerDefinition.UILayers;

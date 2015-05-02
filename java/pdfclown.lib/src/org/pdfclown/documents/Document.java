@@ -65,7 +65,7 @@ import org.pdfclown.util.NotImplementedException;
   PDF document [PDF:1.6:3.6.1].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 04/24/15
+  @version 0.1.2.1, 05/02/15
 */
 @PDF(VersionEnum.PDF10)
 public final class Document
@@ -73,126 +73,6 @@ public final class Document
   implements IAppDataHolder,
     Pageable
 {
-  // <classes>
-  /**
-    Page layout to be used when the document is opened [PDF:1.6:3.6.1].
-  */
-  public enum PageLayoutEnum
-  {
-    /**
-      Displays one page at a time.
-    */
-    SinglePage(PdfName.SinglePage),
-    /**
-      Displays the pages in one column.
-    */
-    OneColumn(PdfName.OneColumn),
-    /**
-      Displays the pages in two columns, with odd-numbered pages on the left.
-    */
-    TwoColumnLeft(PdfName.TwoColumnLeft),
-    /**
-      Displays the pages in two columns, with odd-numbered pages on the right.
-    */
-    TwoColumnRight(PdfName.TwoColumnRight),
-    /**
-      Displays the pages two at a time, with odd-numbered pages on the left.
-    */
-    @PDF(VersionEnum.PDF15)
-    TwoPageLeft(PdfName.TwoPageLeft),
-    /**
-      Displays the pages two at a time, with odd-numbered pages on the right.
-    */
-    @PDF(VersionEnum.PDF15)
-    TwoPageRight(PdfName.TwoPageRight);
-
-    public static PageLayoutEnum valueOf(
-      PdfName name
-      )
-    {
-      if(name == null)
-        return PageLayoutEnum.SinglePage;
-
-      for(PageLayoutEnum value : values())
-      {
-        if(value.getName().equals(name))
-          return value;
-      }
-      throw new UnsupportedOperationException("Page layout unknown: " + name);
-    }
-
-    private PdfName name;
-
-    private PageLayoutEnum(
-      PdfName name
-      )
-    {this.name = name;}
-
-    public PdfName getName(
-      )
-    {return name;}
-  }
-
-  /**
-    Page mode specifying how the document should be displayed when opened [PDF:1.6:3.6.1].
-  */
-  public enum PageModeEnum
-  {
-    /**
-      Neither document outline nor thumbnail images visible.
-    */
-    Simple(PdfName.UseNone),
-    /**
-      Document outline visible.
-    */
-    Bookmarks(PdfName.UseOutlines),
-    /**
-      Thumbnail images visible.
-    */
-    Thumbnails(PdfName.UseThumbs),
-    /**
-      Full-screen mode, with no menu bar, window controls, or any other window visible.
-    */
-    FullScreen(PdfName.FullScreen),
-    /**
-      Optional content group panel visible.
-    */
-    @PDF(VersionEnum.PDF15)
-    Layers(PdfName.UseOC),
-    /**
-      Attachments panel visible.
-    */
-    @PDF(VersionEnum.PDF16)
-    Attachments(PdfName.UseAttachments);
-
-    public static PageModeEnum valueOf(
-      PdfName name
-      )
-    {
-      if(name == null)
-        return PageModeEnum.Simple;
-
-      for(PageModeEnum value : values())
-      {
-        if(value.getName().equals(name))
-          return value;
-      }
-      throw new UnsupportedOperationException("Page mode unknown: " + name);
-    }
-
-    private PdfName name;
-
-    private PageModeEnum(
-      PdfName name
-      )
-    {this.name = name;}
-
-    public PdfName getName(
-      )
-    {return name;}
-  }
-  // </classes>
-
   // <static>
   // <interface>
   // <public>
@@ -361,20 +241,6 @@ public final class Document
   public PageLabels getPageLabels(
     )
   {return new PageLabels(getBaseDataObject().get(PdfName.PageLabels, PdfDictionary.class));}
-
-  /**
-    Gets the page layout to be used when the document is opened.
-  */
-  public PageLayoutEnum getPageLayout(
-    )
-  {return PageLayoutEnum.valueOf((PdfName)getBaseDataObject().get(PdfName.PageLayout));}
-
-  /**
-    Gets the page mode, that is how the document should be displayed when is opened.
-  */
-  public PageModeEnum getPageMode(
-    )
-  {return PageModeEnum.valueOf((PdfName)getBaseDataObject().get(PdfName.PageMode));}
 
   /**
     Gets the page collection.
@@ -580,22 +446,6 @@ public final class Document
     checkCompatibility("pageLabels");
     getBaseDataObject().put(PdfName.PageLabels, PdfObjectWrapper.getBaseObject(value));
   }
-
-  /**
-    @see #getPageLayout()
-  */
-  public void setPageLayout(
-    PageLayoutEnum value
-    )
-  {getBaseDataObject().put(PdfName.PageLayout, value.getName());}
-
-  /**
-    @see #getPageMode()
-  */
-  public void setPageMode(
-    PageModeEnum value
-    )
-  {getBaseDataObject().put(PdfName.PageMode, value.getName());}
 
   /**
     @see #getPages()

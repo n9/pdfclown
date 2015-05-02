@@ -23,7 +23,7 @@ import org.pdfclown.files.SerializationModeEnum;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 04/24/15
+  @version 0.1.2.1, 05/02/15
 */
 public abstract class Sample
 {
@@ -431,9 +431,8 @@ public abstract class Sample
       return;
 
     // Viewer preferences.
-    ViewerPreferences view = new ViewerPreferences(document); // Instantiates viewer preferences inside the document context.
-    document.setViewerPreferences(view); // Assigns the viewer preferences object to the viewer preferences function.
-    view.setDisplayDocTitle(true);
+    ViewerPreferences viewerPreferences = document.getViewerPreferences();
+    viewerPreferences.setDocTitleDisplayed(true);
 
     // Document metadata.
     Information info = document.getInformation();

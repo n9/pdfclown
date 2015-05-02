@@ -10,6 +10,7 @@ using org.pdfclown.documents.interaction;
 using actions = org.pdfclown.documents.interaction.actions;
 using org.pdfclown.documents.interaction.navigation.document;
 using org.pdfclown.documents.interaction.navigation.page;
+using org.pdfclown.documents.interaction.viewer;
 using org.pdfclown.documents.interchange.metadata;
 using files = org.pdfclown.files;
 
@@ -68,7 +69,6 @@ namespace org.pdfclown.samples.cli
     {
       Pages pages = document.Pages;
       Bookmarks bookmarks = document.Bookmarks;
-      document.PageMode = Document.PageModeEnum.Bookmarks;
       Page page = pages[0];
       Bookmark rootBookmark = new Bookmark(
         document,
@@ -123,6 +123,8 @@ namespace org.pdfclown.samples.cli
           );
       bookmark.Flags = Bookmark.FlagsEnum.Bold | Bookmark.FlagsEnum.Italic;
       bookmark.Color = new colorSpaces::DeviceRGBColor(.5, .5, 1);
+      
+      document.ViewerPreferences.PageMode = ViewerPreferences.PageModeEnum.Bookmarks;
     }
 
     private void BuildFreeSoftwareDefinitionPages(

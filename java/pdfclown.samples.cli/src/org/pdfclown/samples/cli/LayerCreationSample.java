@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import org.pdfclown.documents.Document;
-import org.pdfclown.documents.Document.PageModeEnum;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor;
 import org.pdfclown.documents.contents.composition.BlockComposer;
@@ -29,6 +28,7 @@ import org.pdfclown.documents.contents.layers.VisibilityExpression;
 import org.pdfclown.documents.contents.xObjects.XObject;
 import org.pdfclown.documents.interaction.actions.SetLayerState;
 import org.pdfclown.documents.interaction.annotations.TextMarkup;
+import org.pdfclown.documents.interaction.viewer.ViewerPreferences.PageModeEnum;
 import org.pdfclown.documents.interchange.access.LanguageIdentifier;
 import org.pdfclown.files.File;
 import org.pdfclown.objects.PdfName;
@@ -40,7 +40,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2.1, 04/26/15
+  @version 0.1.2.1, 05/02/15
 */
 public class LayerCreationSample
   extends Sample
@@ -77,7 +77,7 @@ public class LayerCreationSample
 
     // Initialize the document layer configuration!
     LayerDefinition layerDefinition = document.getLayer();
-    document.setPageMode(PageModeEnum.Layers); // Shows the layers tab on document opening.
+    document.getViewerPreferences().setPageMode(PageModeEnum.Layers); // Shows the layers tab on document opening.
 
     // Get the root collection of the layers displayed to the user!
     UILayers uiLayers = layerDefinition.getUILayers();

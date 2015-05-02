@@ -51,76 +51,6 @@ namespace org.pdfclown.documents
     : PdfObjectWrapper<PdfDictionary>,
       IAppDataHolder
   {
-    #region types
-    /**
-      <summary>Page layout to be used when the document is opened [PDF:1.6:3.6.1].</summary>
-    */
-    public enum PageLayoutEnum
-    {
-      /**
-        <summary>Displays one page at a time.</summary>
-      */
-      SinglePage,
-      /**
-        <summary>Displays the pages in one column.</summary>
-      */
-      OneColumn,
-      /**
-        <summary>Displays the pages in two columns, with odd-numbered pages on the left.</summary>
-      */
-      TwoColumnLeft,
-      /**
-        <summary>Displays the pages in two columns, with odd-numbered pages on the right.</summary>
-      */
-      TwoColumnRight,
-      /**
-        <summary>Displays the pages two at a time, with odd-numbered pages on the left.</summary>
-      */
-      [PDF(VersionEnum.PDF15)]
-      TwoPageLeft,
-      /**
-        <summary>Displays the pages two at a time, with odd-numbered pages on the right.</summary>
-      */
-      [PDF(VersionEnum.PDF15)]
-      TwoPageRight
-    };
-
-    /**
-      <summary>Page mode specifying how the document should be displayed when opened [PDF:1.6:3.6.1].
-      </summary>
-    */
-    public enum PageModeEnum
-    {
-      /**
-        <summary>Neither document outline nor thumbnail images visible.</summary>
-      */
-      Simple,
-      /**
-        <summary>Document outline visible.</summary>
-      */
-      Bookmarks,
-      /**
-        <summary>Thumbnail images visible.</summary>
-      */
-      Thumbnails,
-      /**
-        <summary>Full-screen mode, with no menu bar, window controls, or any other window visible.
-        </summary>
-      */
-      FullScreen,
-      /**
-        <summary>Optional content group panel visible.</summary>
-      */
-      [PDF(VersionEnum.PDF15)]
-      Layers,
-      /**
-        <summary>Attachments panel visible.</summary>
-      */
-      [PDF(VersionEnum.PDF16)]
-      Attachments
-    };
-    #endregion
-
     #region static
     #region interface
     #region public
@@ -364,28 +294,6 @@ namespace org.pdfclown.documents
     }
 
     /**
-      <summary>Gets/Sets the page layout to be used when the document is opened.</summary>
-    */
-    public PageLayoutEnum PageLayout
-    {
-      get
-      {return PageLayoutEnumExtension.Get((PdfName)BaseDataObject[PdfName.PageLayout]);}
-      set
-      {BaseDataObject[PdfName.PageLayout] = value.GetName();}
-    }
-
-    /**
-      <summary>Gets/Sets the page mode, that is how the document should be displayed when is opened.</summary>
-    */
-    public PageModeEnum PageMode
-    {
-      get
-      {return PageModeEnumExtension.Get((PdfName)BaseDataObject[PdfName.PageMode]);}
-      set
-      {BaseDataObject[PdfName.PageMode] = value.GetName();}
-    }
-
-    /**
       <summary>Gets/Sets the page collection.</summary>
     */
     public Pages Pages
@@ -544,75 +452,5 @@ namespace org.pdfclown.documents
     #endregion
     #endregion
     #endregion
-  }
-
-  internal static class PageLayoutEnumExtension
-  {
-    private static readonly BiDictionary<Document.PageLayoutEnum,PdfName> codes;
-
-    static PageLayoutEnumExtension()
-    {
-      codes = new BiDictionary<Document.PageLayoutEnum,PdfName>();
-      codes[Document.PageLayoutEnum.SinglePage] = PdfName.SinglePage;
-      codes[Document.PageLayoutEnum.OneColumn] = PdfName.OneColumn;
-      codes[Document.PageLayoutEnum.TwoColumnLeft] = PdfName.TwoColumnLeft;
-      codes[Document.PageLayoutEnum.TwoColumnRight] = PdfName.TwoColumnRight;
-      codes[Document.PageLayoutEnum.TwoPageLeft] = PdfName.TwoPageLeft;
-      codes[Document.PageLayoutEnum.TwoPageRight] = PdfName.TwoPageRight;
-    }
-
-    public static Document.PageLayoutEnum Get(
-      PdfName name
-      )
-    {
-      if(name == null)
-        return Document.PageLayoutEnum.SinglePage;
-
-      Document.PageLayoutEnum? pageLayout = codes.GetKey(name);
-      if(!pageLayout.HasValue)
-        throw new NotSupportedException("Page layout unknown: " + name);
-
-      return pageLayout.Value;
-    }
-
-    public static PdfName GetName(
-      this Document.PageLayoutEnum pageLayout
-      )
-    {return codes[pageLayout];}
-  }
-
-  internal static class PageModeEnumExtension
-  {
-    private static readonly BiDictionary<Document.PageModeEnum,PdfName> codes;
-
-    static PageModeEnumExtension()
-    {
-      codes = new BiDictionary<Document.PageModeEnum,PdfName>();
-      codes[Document.PageModeEnum.Simple] = PdfName.UseNone;
-      codes[Document.PageModeEnum.Bookmarks] = PdfName.UseOutlines;
-      codes[Document.PageModeEnum.Thumbnails] = PdfName.UseThumbs;
-      codes[Document.PageModeEnum.FullScreen] = PdfName.FullScreen;
-      codes[Document.PageModeEnum.Layers] = PdfName.UseOC;
-      codes[Document.PageModeEnum.Attachments] = PdfName.UseAttachments;
-    }
-
-    public static Document.PageModeEnum Get(
-      PdfName name
-      )
-    {
-      if(name == null)
-        return Document.PageModeEnum.Simple;
-
-      Document.PageModeEnum? pageMode = codes.GetKey(name);
-      if(!pageMode.HasValue)
-        throw new NotSupportedException("Page mode unknown: " + name);
-
-      return pageMode.Value;
-    }
-
-    public static PdfName GetName(
-      this Document.PageModeEnum pageMode
-      )
-    {return codes[pageMode];}
   }
 }

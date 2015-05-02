@@ -378,9 +378,8 @@ namespace org.pdfclown.samples.cli
         return;
 
       // Viewer preferences.
-      ViewerPreferences view = new ViewerPreferences(document); // Instantiates viewer preferences inside the document context.
-      document.ViewerPreferences = view; // Assigns the viewer preferences object to the viewer preferences function.
-      view.DisplayDocTitle = true;
+      var view = document.ViewerPreferences;
+      view.DocTitleDisplayed = true;
 
       // Document metadata.
       Information info = document.Information;

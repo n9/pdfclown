@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.EnumSet;
 
 import org.pdfclown.documents.Document;
-import org.pdfclown.documents.Document.PageModeEnum;
 import org.pdfclown.documents.Page;
 import org.pdfclown.documents.PageFormat;
 import org.pdfclown.documents.Pages;
@@ -33,6 +32,7 @@ import org.pdfclown.documents.interaction.navigation.document.LocalDestination;
 import org.pdfclown.documents.interaction.navigation.page.Article;
 import org.pdfclown.documents.interaction.navigation.page.ArticleElement;
 import org.pdfclown.documents.interaction.navigation.page.ArticleElements;
+import org.pdfclown.documents.interaction.viewer.ViewerPreferences.PageModeEnum;
 import org.pdfclown.documents.interchange.metadata.Information;
 import org.pdfclown.files.File;
 import org.pdfclown.util.math.geom.Dimension;
@@ -51,7 +51,7 @@ import org.pdfclown.util.math.geom.Dimension;
   content flow composition), to be made available in the next releases.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2, 12/28/12
+  @version 0.1.2.1, 05/02/15
 */
 public class ComplexTypesettingSample
   extends Sample
@@ -89,7 +89,6 @@ public class ComplexTypesettingSample
   {
     Pages pages = document.getPages();
     Bookmarks bookmarks = document.getBookmarks();
-    document.setPageMode(PageModeEnum.Bookmarks);
     Page page = pages.get(0);
     Bookmark rootBookmark = new Bookmark(
       document,
@@ -149,6 +148,8 @@ public class ComplexTypesettingSample
     }
     catch(URISyntaxException e)
     {/* NOOP */}
+    
+    document.getViewerPreferences().setPageMode(PageModeEnum.Bookmarks);
   }
 
   private void buildFreeSoftwareDefinitionPages(

@@ -36,7 +36,7 @@ import org.pdfclown.tokens.Keyword;
   PDF name object [PDF:1.6:3.2.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 04/26/15
+  @version 0.1.2.1, 05/02/15
 */
 public final class PdfName
   extends PdfSimpleObject<String>
@@ -78,6 +78,7 @@ public final class PdfName
   public static final PdfName AnyOff = new PdfName("AnyOff");
   public static final PdfName AnyOn = new PdfName("AnyOn");
   public static final PdfName AP = new PdfName("AP");
+  public static final PdfName AppDefault = new PdfName("AppDefault");
   public static final PdfName Approved = new PdfName("Approved");
   public static final PdfName ArtBox = new PdfName("ArtBox");
   public static final PdfName AS = new PdfName("AS");
@@ -188,6 +189,9 @@ public final class PdfName
   public static final PdfName DR = new PdfName("DR");
   public static final PdfName Draft = new PdfName("Draft");
   public static final PdfName DS = new PdfName("DS");
+  public static final PdfName Duplex = new PdfName("Duplex");
+  public static final PdfName DuplexFlipLongEdge = new PdfName("DuplexFlipLongEdge");
+  public static final PdfName DuplexFlipShortEdge = new PdfName("DuplexFlipShortEdge");
   public static final PdfName Dur = new PdfName("Dur");
   public static final PdfName DV = new PdfName("DV");
   public static final PdfName DW = new PdfName("DW");
@@ -368,12 +372,14 @@ public final class PdfName
   public static final PdfName NextPage = new PdfName("NextPage");
   public static final PdfName NM = new PdfName("NM");
   public static final PdfName None = new PdfName("None");
+  public static final PdfName NonFullScreenPageMode = new PdfName("NonFullScreenPageMode");
   public static final PdfName Normal = new PdfName("Normal");
   public static final PdfName Not = new PdfName("Not");
   public static final PdfName NotApproved = new PdfName("NotApproved");
   public static final PdfName Note = new PdfName("Note");
   public static final PdfName NotForPublicRelease = new PdfName("NotForPublicRelease");
   public static final PdfName NU = new PdfName("NU");
+  public static final PdfName NumCopies = new PdfName("NumCopies");
   public static final PdfName Nums = new PdfName("Nums");
   public static final PdfName O = new PdfName("O");
   public static final PdfName ObjStm = new PdfName("ObjStm");
@@ -417,6 +423,7 @@ public final class PdfName
   public static final PdfName PC = new PdfName("PC");
   public static final PdfName PDFDocEncoding = new PdfName("PdfDocEncoding");
   public static final PdfName PI = new PdfName("PI");
+  public static final PdfName PickTrayByPDFSize = new PdfName("PickTrayByPDFSize");
   public static final PdfName PID = new PdfName("PID");
   public static final PdfName PieceInfo = new PdfName("PieceInfo");
   public static final PdfName PL = new PdfName("PL");
@@ -429,6 +436,8 @@ public final class PdfName
   public static final PdfName Prev = new PdfName("Prev");
   public static final PdfName PrevPage = new PdfName("PrevPage");
   public static final PdfName Print = new PdfName("Print");
+  public static final PdfName PrintPageRange = new PdfName("PrintPageRange");
+  public static final PdfName PrintScaling = new PdfName("PrintScaling");
   public static final PdfName PrintState = new PdfName("PrintState");
   public static final PdfName Private = new PdfName("Private");
   public static final PdfName Producer = new PdfName("Producer");
@@ -484,6 +493,7 @@ public final class PdfName
   public static final PdfName SHSignHere = new PdfName("SHSignHere");
   public static final PdfName SHWitness = new PdfName("SHWitness");
   public static final PdfName Sig = new PdfName("Sig");
+  public static final PdfName Simplex = new PdfName("Simplex");
   public static final PdfName SinglePage = new PdfName("SinglePage");
   public static final PdfName Size = new PdfName("Size");
   public static final PdfName Slash = new PdfName("Slash");
