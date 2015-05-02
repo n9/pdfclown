@@ -56,6 +56,7 @@ public final class ViewerPreferences
   /**
     Predominant reading order for text [PDF:1.7:8.1].
   */
+  @PDF(VersionEnum.PDF13)
   public enum DirectionEnum
   {
     /**
@@ -103,6 +104,7 @@ public final class ViewerPreferences
   /**
     Page layout to be used when the document is opened [PDF:1.7:3.6.1].
   */
+  @PDF(VersionEnum.PDF10)
   public enum PageLayoutEnum
   {
     /**
@@ -168,6 +170,7 @@ public final class ViewerPreferences
   /**
     Page mode specifying how the document should be displayed when opened [PDF:1.7:3.6.1].
   */
+  @PDF(VersionEnum.PDF10)
   public enum PageModeEnum
   {
     /**
@@ -233,6 +236,7 @@ public final class ViewerPreferences
   /**
     Paper handling option to use when printing the file from the print dialog [PDF:1.7:8.1].
   */
+  @PDF(VersionEnum.PDF17)
   public enum PaperModeEnum
   {
     /**

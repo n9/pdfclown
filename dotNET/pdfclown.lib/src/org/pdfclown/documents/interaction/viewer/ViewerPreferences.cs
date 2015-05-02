@@ -45,6 +45,7 @@ namespace org.pdfclown.documents.interaction.viewer
     /**
       <summary>Predominant reading order for text [PDF:1.7:8.1].</summary>
     */
+    [PDF(VersionEnum.PDF13)]
     public enum DirectionEnum
     {
       /**
@@ -61,6 +62,7 @@ namespace org.pdfclown.documents.interaction.viewer
     /**
       <summary>Page layout to be used when the document is opened [PDF:1.7:3.6.1].</summary>
     */
+    [PDF(VersionEnum.PDF10)]
     public enum PageLayoutEnum
     {
       /**
@@ -95,6 +97,7 @@ namespace org.pdfclown.documents.interaction.viewer
       <summary>Page mode specifying how the document should be displayed when opened [PDF:1.7:3.6.1].
       </summary>
     */
+    [PDF(VersionEnum.PDF10)]
     public enum PageModeEnum
     {
       /**
@@ -130,6 +133,7 @@ namespace org.pdfclown.documents.interaction.viewer
       <summary>Paper handling option to use when printing the file from the print dialog
       [PDF:1.7:8.1].</summary>
     */
+    [PDF(VersionEnum.PDF17)]
     public enum PaperModeEnum
     {
       /**
