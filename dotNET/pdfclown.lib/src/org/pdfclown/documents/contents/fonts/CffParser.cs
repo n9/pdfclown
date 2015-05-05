@@ -25,6 +25,7 @@
 
 using org.pdfclown.bytes;
 using org.pdfclown.tokens;
+using org.pdfclown.util;
 
 using System;
 using System.Collections;
@@ -154,12 +155,7 @@ namespace org.pdfclown.documents.contents.fonts
                   }
                 }
               } while(!ended);
-              operands.Add(
-                Double.Parse(
-                  operandBuilder.ToString(),
-                  NumberStyles.Float
-                  )
-                );
+              operands.Add(ConvertUtils.ParseDoubleInvariant(operandBuilder.ToString()));
             }
             else if (b0 >= 32 && b0 <= 246) // 1-byte integer.
             {operands.Add(b0 - 139);}

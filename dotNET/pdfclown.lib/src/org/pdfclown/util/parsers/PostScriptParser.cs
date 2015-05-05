@@ -58,10 +58,6 @@ namespace org.pdfclown.util.parsers
     #endregion
 
     #region static
-    #region fields
-    private static readonly NumberFormatInfo StandardNumberFormatInfo = NumberFormatInfo.InvariantInfo;
-    #endregion
-
     #region interface
     #region private
     private static int GetHex(
@@ -441,7 +437,7 @@ namespace org.pdfclown.util.parsers
               case Keyword.False:
               case Keyword.True: // Boolean.
                 tokenType = TokenTypeEnum.Boolean;
-                token =  bool.Parse((string)token);
+                token = Boolean.Parse((string)token);
                 break;
               case Keyword.Null: // Null.
                 tokenType = TokenTypeEnum.Null;
@@ -456,18 +452,10 @@ namespace org.pdfclown.util.parsers
             token = buffer.ToString();
             break;
           case TokenTypeEnum.Integer:
-            token = Int32.Parse(
-              buffer.ToString(),
-              NumberStyles.Integer,
-              StandardNumberFormatInfo
-              );
+            token = ConvertUtils.ParseIntInvariant(buffer.ToString());
             break;
           case TokenTypeEnum.Real:
-            token = Double.Parse(
-              buffer.ToString(),
-              NumberStyles.Float,
-              StandardNumberFormatInfo
-              );
+            token = ConvertUtils.ParseDoubleInvariant(buffer.ToString());
             break;
         }
       }

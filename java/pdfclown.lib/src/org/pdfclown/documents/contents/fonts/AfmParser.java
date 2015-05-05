@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2, 12/30/11
+  @version 0.1.2.1, 05/05/15
 */
 final class AfmParser
 {
@@ -51,23 +51,23 @@ final class AfmParser
     /**
       Whether the encoding is custom (symbolic font).
     */
-    public boolean isCustomEncoding;
+    public int ascender;
+    public int capHeight;
+    public int descender;
     public String fontName;
-    public String weight;
-    public float italicAngle;
+    public boolean isCustomEncoding;
     public boolean isFixedPitch;
-    public short xMin;
-    public short yMin;
-    public short xMax;
-    public short yMax;
-    public short underlinePosition;
-    public short underlineThickness;
-    public short capHeight;
-    public short xHeight;
-    public short ascender;
-    public short descender;
-    public short stemH;
-    public short stemV;
+    public float italicAngle;
+    public int stemH;
+    public int stemV;
+    public int underlinePosition;
+    public int underlineThickness;
+    public String weight;
+    public int xHeight;
+    public int xMax;
+    public int xMin;
+    public int yMax;
+    public int yMin;
   }
   // </classes>
 
@@ -113,7 +113,7 @@ final class AfmParser
   }
 
   /**
-    Loads the font header [AFM:4.1:3,4,4.1,4.2].
+    Loads the font header [AFM:4.1:3,4.1-4.4].
 
     @throws IOException
   */
@@ -129,40 +129,40 @@ final class AfmParser
         continue;
 
       String key = lineMatcher.group(1);
-      if(key.equals("FontName"))
-      {metrics.fontName = lineMatcher.group(2);}
-      else if (key.equals("Weight"))
-      {metrics.weight = lineMatcher.group(2);}
-      else if (key.equals("ItalicAngle"))
-      {metrics.italicAngle = Float.valueOf(lineMatcher.group(2));}
-      else if (key.equals("IsFixedPitch"))
-      {metrics.isFixedPitch = lineMatcher.group(2).equals("true");}
+      if (key.equals("Ascender"))
+      {metrics.ascender = (int)Float.parseFloat(lineMatcher.group(2));}
+      else if (key.equals("CapHeight"))
+      {metrics.capHeight = (int)Float.parseFloat(lineMatcher.group(2));}
+      else if (key.equals("Descender"))
+      {metrics.descender = (int)Float.parseFloat(lineMatcher.group(2));}
+      else if (key.equals("EncodingScheme"))
+      {metrics.isCustomEncoding = lineMatcher.group(2).equals("FontSpecific");}
       else if (key.equals("FontBBox"))
       {
         String[] coordinates = lineMatcher.group(2).split("\\s+");
-        metrics.xMin = Short.valueOf(coordinates[0]);
-        metrics.yMin = Short.valueOf(coordinates[1]);
-        metrics.xMax = Short.valueOf(coordinates[2]);
-        metrics.yMax = Short.valueOf(coordinates[3]);
+        metrics.xMin = (int)Float.parseFloat(coordinates[0]);
+        metrics.yMin = (int)Float.parseFloat(coordinates[1]);
+        metrics.xMax = (int)Float.parseFloat(coordinates[2]);
+        metrics.yMax = (int)Float.parseFloat(coordinates[3]);
       }
-      else if (key.equals("UnderlinePosition"))
-      {metrics.underlinePosition = Short.valueOf(lineMatcher.group(2));}
-      else if (key.equals("UnderlineThickness"))
-      {metrics.underlineThickness = Short.valueOf(lineMatcher.group(2));}
-      else if (key.equals("EncodingScheme"))
-      {metrics.isCustomEncoding = lineMatcher.group(2).equals("FontSpecific");}
-      else if (key.equals("CapHeight"))
-      {metrics.capHeight = Short.valueOf(lineMatcher.group(2));}
-      else if (key.equals("XHeight"))
-      {metrics.xHeight = Short.valueOf(lineMatcher.group(2));}
-      else if (key.equals("Ascender"))
-      {metrics.ascender = Short.valueOf(lineMatcher.group(2));}
-      else if (key.equals("Descender"))
-      {metrics.descender = Short.valueOf(lineMatcher.group(2));}
+      else if(key.equals("FontName"))
+      {metrics.fontName = lineMatcher.group(2);}
+      else if (key.equals("IsFixedPitch"))
+      {metrics.isFixedPitch = Boolean.parseBoolean(lineMatcher.group(2));}
+      else if (key.equals("ItalicAngle"))
+      {metrics.italicAngle = Float.parseFloat(lineMatcher.group(2));}
       else if (key.equals("StdHW"))
-      {metrics.stemH = Short.valueOf(lineMatcher.group(2));}
+      {metrics.stemH = (int)Float.parseFloat(lineMatcher.group(2));}
       else if (key.equals("StdVW"))
-      {metrics.stemV = Short.valueOf(lineMatcher.group(2));}
+      {metrics.stemV = (int)Float.parseFloat(lineMatcher.group(2));}
+      else if (key.equals("UnderlinePosition"))
+      {metrics.underlinePosition = (int)Float.parseFloat(lineMatcher.group(2));}
+      else if (key.equals("UnderlineThickness"))
+      {metrics.underlineThickness = (int)Float.parseFloat(lineMatcher.group(2));}
+      else if (key.equals("Weight"))
+      {metrics.weight = lineMatcher.group(2);}
+      else if (key.equals("XHeight"))
+      {metrics.xHeight = (int)Float.parseFloat(lineMatcher.group(2));}
       else if (key.equals("StartCharMetrics"))
       {break;}
     }
@@ -197,8 +197,8 @@ final class AfmParser
         continue;
       }
 
-      int charCode = Integer.valueOf(lineMatcher.group(1));
-      int width = Integer.valueOf(lineMatcher.group(2));
+      int charCode = Integer.parseInt(lineMatcher.group(1));
+      int width = (int)Float.parseFloat(lineMatcher.group(2));
       String charName = lineMatcher.group(3);
       if(charCode < 0)
       {
@@ -250,7 +250,7 @@ final class AfmParser
       int code1 = GlyphMapping.nameToCode(lineMatcher.group(1));
       int code2 = GlyphMapping.nameToCode(lineMatcher.group(2));
       int pair = code1 << 16 + code2;
-      int value = Integer.valueOf(lineMatcher.group(3));
+      int value = (int)Float.parseFloat(lineMatcher.group(3));
 
       glyphKernings.put(pair,value);
     }

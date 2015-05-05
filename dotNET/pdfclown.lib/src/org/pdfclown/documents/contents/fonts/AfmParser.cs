@@ -1,5 +1,5 @@
 /*
-  Copyright 2009-2011 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2009-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -24,6 +24,7 @@
 */
 
 using org.pdfclown.bytes;
+using org.pdfclown.util;
 
 using System;
 using System.Collections.Generic;
@@ -43,23 +44,23 @@ namespace org.pdfclown.documents.contents.fonts
     */
     public sealed class FontMetrics
     {
-      public bool IsCustomEncoding;
+      public int Ascender;
+      public int CapHeight;
+      public int Descender;
       public string FontName;
-      public string Weight;
-      public float ItalicAngle;
+      public bool IsCustomEncoding;
       public bool IsFixedPitch;
-      public short XMin;
-      public short YMin;
-      public short XMax;
-      public short YMax;
-      public short UnderlinePosition;
-      public short UnderlineThickness;
-      public short CapHeight;
-      public short XHeight;
-      public short Ascender;
-      public short Descender;
-      public short StemH;
-      public short StemV;
+      public float ItalicAngle;
+      public int UnderlinePosition;
+      public int UnderlineThickness;
+      public int StemH;
+      public int StemV;
+      public string Weight;
+      public int XHeight;
+      public int XMax;
+      public int XMin;
+      public int YMax;
+      public int YMin;
     }
     #endregion
 
@@ -97,7 +98,7 @@ namespace org.pdfclown.documents.contents.fonts
     }
 
     /**
-      <summary>Loads the font header [AFM:4.1:3,4,4.1,4.2].</summary>
+      <summary>Loads the font header [AFM:4.1:3,4.1-4.4].</summary>
     */
     private void LoadFontHeader(
       )
@@ -113,47 +114,43 @@ namespace org.pdfclown.documents.contents.fonts
         Match lineMatch = lineMatches[0];
 
         string key = lineMatch.Groups[1].Value;
-        switch(key)
+        if(key.Equals("Ascender"))
+        {Metrics.Ascender = ConvertUtils.ParseAsIntInvariant(lineMatch.Groups[2].Value);}
+        else if(key.Equals("CapHeight"))
+        {Metrics.CapHeight = ConvertUtils.ParseAsIntInvariant(lineMatch.Groups[2].Value);}
+        else if(key.Equals("Descender"))
+        {Metrics.Descender = ConvertUtils.ParseAsIntInvariant(lineMatch.Groups[2].Value);}
+        else if(key.Equals("EncodingScheme"))
+        {Metrics.IsCustomEncoding = lineMatch.Groups[2].Value.Equals("FontSpecific");}
+        else if(key.Equals("FontBBox"))
         {
-          case "FontName":
-            Metrics.FontName = lineMatch.Groups[2].Value; break;
-          case "Weight":
-            Metrics.Weight = lineMatch.Groups[2].Value; break;
-          case "ItalicAngle":
-            Metrics.ItalicAngle = Single.Parse(lineMatch.Groups[2].Value); break;
-          case "IsFixedPitch":
-            Metrics.IsFixedPitch = lineMatch.Groups[2].Value.Equals("true"); break;
-          case "FontBBox":
-            {
-              string[] coordinates = Regex.Split(lineMatch.Groups[2].Value,"\\s+");
-              Metrics.XMin = Int16.Parse(coordinates[0]);
-              Metrics.YMin = Int16.Parse(coordinates[1]);
-              Metrics.XMax = Int16.Parse(coordinates[2]);
-              Metrics.YMax = Int16.Parse(coordinates[3]);
-            } break;
-          case "UnderlinePosition":
-            Metrics.UnderlinePosition = Int16.Parse(lineMatch.Groups[2].Value); break;
-          case "UnderlineThickness":
-            Metrics.UnderlineThickness = Int16.Parse(lineMatch.Groups[2].Value); break;
-          case "EncodingScheme":
-            Metrics.IsCustomEncoding = lineMatch.Groups[2].Value.Equals("FontSpecific"); break;
-          case "CapHeight":
-            Metrics.CapHeight = Int16.Parse(lineMatch.Groups[2].Value); break;
-          case "XHeight":
-            Metrics.XHeight = Int16.Parse(lineMatch.Groups[2].Value); break;
-          case "Ascender":
-            Metrics.Ascender = Int16.Parse(lineMatch.Groups[2].Value); break;
-          case "Descender":
-            Metrics.Descender = Int16.Parse(lineMatch.Groups[2].Value); break;
-          case "StdHW":
-            Metrics.StemH = Int16.Parse(lineMatch.Groups[2].Value); break;
-          case "StdVW":
-            Metrics.StemV = Int16.Parse(lineMatch.Groups[2].Value); break;
-          case "StartCharMetrics":
-            goto endParsing;
+          string[] coordinates = Regex.Split(lineMatch.Groups[2].Value,"\\s+");
+          Metrics.XMin = ConvertUtils.ParseAsIntInvariant(coordinates[0]);
+          Metrics.YMin = ConvertUtils.ParseAsIntInvariant(coordinates[1]);
+          Metrics.XMax = ConvertUtils.ParseAsIntInvariant(coordinates[2]);
+          Metrics.YMax = ConvertUtils.ParseAsIntInvariant(coordinates[3]);
         }
+        else if(key.Equals("FontName"))
+        {Metrics.FontName = lineMatch.Groups[2].Value;}
+        else if(key.Equals("IsFixedPitch"))
+        {Metrics.IsFixedPitch = Boolean.Parse(lineMatch.Groups[2].Value);}
+        else if(key.Equals("ItalicAngle"))
+        {Metrics.ItalicAngle = ConvertUtils.ParseFloatInvariant(lineMatch.Groups[2].Value);}
+        else if(key.Equals("StdHW"))
+        {Metrics.StemH = ConvertUtils.ParseAsIntInvariant(lineMatch.Groups[2].Value);}
+        else if(key.Equals("StdVW"))
+        {Metrics.StemV = ConvertUtils.ParseAsIntInvariant(lineMatch.Groups[2].Value);}
+        else if(key.Equals("UnderlinePosition"))
+        {Metrics.UnderlinePosition = ConvertUtils.ParseAsIntInvariant(lineMatch.Groups[2].Value);}
+        else if(key.Equals("UnderlineThickness"))
+        {Metrics.UnderlineThickness = ConvertUtils.ParseAsIntInvariant(lineMatch.Groups[2].Value);}
+        else if(key.Equals("Weight"))
+        {Metrics.Weight = lineMatch.Groups[2].Value;}
+        else if(key.Equals("XHeight"))
+        {Metrics.XHeight = ConvertUtils.ParseAsIntInvariant(lineMatch.Groups[2].Value);}
+        else if(key.Equals("StartCharMetrics"))
+          break;
       }
-endParsing:
       if(Metrics.Ascender == 0)
       {Metrics.Ascender = Metrics.YMax;}
       if(Metrics.Descender == 0)
@@ -185,8 +182,8 @@ endParsing:
 
         Match lineMatch = lineMatches[0];
 
-        int charCode = Int32.Parse(lineMatch.Groups[1].Value);
-        int width = Int32.Parse(lineMatch.Groups[2].Value);
+        int charCode = ConvertUtils.ParseIntInvariant(lineMatch.Groups[1].Value);
+        int width = ConvertUtils.ParseAsIntInvariant(lineMatch.Groups[2].Value);
         string charName = lineMatch.Groups[3].Value;
         if(charCode < 0)
         {
@@ -239,7 +236,7 @@ endParsing:
         int code1 = GlyphMapping.NameToCode(lineMatch.Groups[1].Value).Value;
         int code2 = GlyphMapping.NameToCode(lineMatch.Groups[2].Value).Value;
         int pair = code1 << 16 + code2;
-        int value = Int32.Parse(lineMatch.Groups[3].Value);
+        int value = ConvertUtils.ParseAsIntInvariant(lineMatch.Groups[3].Value);
 
         GlyphKernings[pair] = value;
       }

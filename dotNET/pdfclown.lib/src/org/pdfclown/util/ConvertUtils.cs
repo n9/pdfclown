@@ -26,6 +26,7 @@
 using org.pdfclown.util.io;
 
 using System;
+using System.Globalization;
 using System.Text;
 
 namespace org.pdfclown.util
@@ -132,6 +133,26 @@ namespace org.pdfclown.util
       {result[index] = (byte)(data >> 8 * (byteOrder == ByteOrderEnum.LittleEndian ? index : length-index-1));}
       return result;
     }
+
+    public static int ParseAsIntInvariant(
+      string value
+      )
+    {return (int)ParseFloatInvariant(value);}
+
+    public static double ParseDoubleInvariant(
+      string value
+      )
+    {return Double.Parse(value, NumberStyles.Float, NumberFormatInfo.InvariantInfo);}
+
+    public static float ParseFloatInvariant(
+      string value
+      )
+    {return Single.Parse(value, NumberStyles.Float, NumberFormatInfo.InvariantInfo);}
+
+    public static int ParseIntInvariant(
+      string value
+      )
+    {return Int32.Parse(value, NumberStyles.Integer, NumberFormatInfo.InvariantInfo);}
 
     public static float[] ToFloatArray(
       double[] array
