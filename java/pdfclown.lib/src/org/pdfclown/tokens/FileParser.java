@@ -43,7 +43,7 @@ import org.pdfclown.util.parsers.PostScriptParseException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2.1, 03/10/15
+  @version 0.1.2.1, 05/21/15
 */
 public final class FileParser
   extends BaseParser
@@ -273,20 +273,30 @@ public final class FileParser
   public long retrieveXRefOffset(
     )
   {
+    // [FIX:69] 'startxref' keyword not found (file was corrupted by alien data in the tail).
     IInputStream stream = getStream();
     long streamLength = stream.getLength();
+    long position = streamLength;
     int chunkSize = (int)Math.min(streamLength, EOFMarkerChunkSize);
+    int index = -1;
+    while(index < 0 && position > 0)
+    {
+      /*
+        NOTE: This condition prevents the keyword from being split by the chunk boundary.
+      */
+      if(position < streamLength)
+      {position += Keyword.StartXRef.length();}
+      position -= chunkSize;
+      if(position < 0)
+      {position = 0;}
+      stream.seek(position);
 
-    // Move back before 'startxref' keyword!
-    long position = streamLength - chunkSize;
-    stream.seek(position);
-
-    // Get 'startxref' keyword position!
-    int index;
-    try
-    {index = stream.readString(chunkSize).lastIndexOf(Keyword.StartXRef);}
-    catch(EOFException e)
-    {throw new PostScriptParseException(e);}
+      // Get 'startxref' keyword position!
+      try
+      {index = stream.readString(chunkSize).lastIndexOf(Keyword.StartXRef);}
+      catch(EOFException e)
+      {throw new PostScriptParseException(e);}
+    }
     if(index < 0)
       throw new PostScriptParseException("'" + Keyword.StartXRef + "' keyword not found.", this);
 

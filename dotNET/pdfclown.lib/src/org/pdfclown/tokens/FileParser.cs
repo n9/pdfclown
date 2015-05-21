@@ -232,23 +232,34 @@ namespace org.pdfclown.tokens
     public long RetrieveXRefOffset(
       )
     {
+      // [FIX:69] 'startxref' keyword not found (file was corrupted by alien data in the tail).
       IInputStream stream = Stream;
       long streamLength = stream.Length;
+      long position = streamLength;
       int chunkSize = (int)Math.Min(streamLength, EOFMarkerChunkSize);
+      int index = -1;
+      while(index < 0 && position > 0)
+      {
+        /*
+          NOTE: This condition prevents the keyword from being split by the chunk boundary.
+        */
+        if(position < streamLength)
+        {position += Keyword.StartXRef.Length;}
+        position -= chunkSize;
+        if(position < 0)
+        {position = 0;}
+        stream.Seek(position);
 
-      // Move back before 'startxref' keyword!
-      long position = streamLength - chunkSize;
-      stream.Seek(position);
-
-      // Get 'startxref' keyword position!
-      int index = stream.ReadString(chunkSize).LastIndexOf(Keyword.StartXRef);
+        // Get 'startxref' keyword position!
+        index = stream.ReadString(chunkSize).LastIndexOf(Keyword.StartXRef);
+      }
       if(index < 0)
         throw new PostScriptParseException("'" + Keyword.StartXRef + "' keyword not found.", this);
 
-      // Go past the startxref keyword!
+      // Go past the 'startxref' keyword!
       stream.Seek(position + index); MoveNext();
 
-      // Go to the xref offset!
+      // Get the xref offset!
       MoveNext();
       if(TokenType != TokenTypeEnum.Integer)
         throw new PostScriptParseException("'" + Keyword.StartXRef + "' value invalid.", this);
