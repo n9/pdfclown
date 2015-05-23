@@ -32,6 +32,7 @@ using org.pdfclown.util.parsers;
 
 using System;
 using System.Collections.Generic;
+using sysIO = System.IO;
 
 namespace org.pdfclown.documents.contents.tokens
 {
@@ -172,29 +173,65 @@ namespace org.pdfclown.documents.contents.tokens
 
       InlineImageBody body;
       {
-        // [FIX:51] Wrong 'EI' token handling on inline image parsing.
+        // [FIX:51,74] Wrong 'EI' token handling on inline image parsing.
         bytes::IInputStream stream = Stream;
-        bytes::Buffer data = new bytes::Buffer();
         stream.ReadByte(); // Should be the whitespace following the 'ID' token.
-        byte prevByte = 0;
-        bool prevReady = false;
+        bytes::Buffer data = new bytes::Buffer();
+        var endChunkBuffer = new sysIO::MemoryStream(3);
+        int endChunkIndex = -1;
         while(true)
         {
           int curByte = stream.ReadByte();
           if(curByte == -1)
-            throw new PostScriptParseException("Unexpected EOF (no 'EI' token found to close inline image data stream).");
+            throw new PostScriptParseException("No 'EI' token found to close inline image data stream.");
 
-          if(prevReady)
+          if(endChunkIndex == -1)
           {
-            if(prevByte == 'E' && curByte == 'I')
-              break;
-
-            data.Append(prevByte);
+            if(IsWhitespace(curByte))
+            {
+              /*
+                NOTE: Whitespace characters may announce the beginning of the end image operator.
+              */
+              endChunkBuffer.WriteByte((byte)curByte);
+              endChunkIndex++;
+            }
+            else
+            {data.Append((byte)curByte);}
           }
+          else if(endChunkIndex == 0 && IsWhitespace(curByte))
+          {
+            /*
+              NOTE: Only the last whitespace character may announce the beginning of the end image
+              operator.
+            */
+            data.Append(endChunkBuffer.ToArray());
+            endChunkBuffer.SetLength(0);
+            endChunkBuffer.WriteByte((byte)curByte);
+          }
+          else if((endChunkIndex == 0 && curByte == 'E')
+            || (endChunkIndex == 1 && curByte == 'I'))
+          {
+            /*
+              NOTE: End image operator characters.
+            */
+            endChunkBuffer.WriteByte((byte)curByte);
+            endChunkIndex++;
+          }
+          else if(endChunkIndex == 2 && IsWhitespace(curByte))
+            /*
+              NOTE: The whitespace character after the end image operator completes the pattern.
+            */
+            break;
           else
-          {prevReady = true;}
-
-          prevByte = (byte)curByte;
+          {
+            if(endChunkIndex > -1)
+            {
+              data.Append(endChunkBuffer.ToArray());
+              endChunkBuffer.SetLength(0);
+              endChunkIndex = -1;
+            }
+            data.Append((byte)curByte);
+          }
         }
         body = new InlineImageBody(data);
       }

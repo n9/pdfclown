@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -29,11 +29,17 @@ package org.pdfclown.bytes;
   Output stream interface.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.2.1, 05/22/15
 */
 public interface IOutputStream
   extends IStream
 {
+  /**
+    Clears the buffer of any data.
+  */
+  void clear(
+    );
+  
   /**
     Writes a byte array into the stream.
 

@@ -213,6 +213,10 @@ namespace org.pdfclown.bytes
     #endregion
 
     #region IOutputStream
+    public void Clear(
+      )
+    {stream.SetLength(0);}
+
     public void Write(
       byte[] data
       )
@@ -237,7 +241,7 @@ namespace org.pdfclown.bytes
       // TODO:IMPL bufferize!!!
       byte[] baseData = new byte[data.Length];
       // Force the source pointer to the BOF (as we must copy the entire content)!
-      data.Position = 0;
+      data.Seek(0);
       // Read source content!
       data.Read(baseData, 0, baseData.Length);
       // Write target content!

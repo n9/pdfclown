@@ -344,7 +344,7 @@ namespace org.pdfclown.tokens
         IBuffer body = Body;
 
         // Delete the old entries!
-        body.SetLength(0);
+        body.Clear();
 
         // Add the new entries!
         body.Append(indexBuffer);

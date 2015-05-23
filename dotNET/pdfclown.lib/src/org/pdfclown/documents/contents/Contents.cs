@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -33,6 +33,8 @@ using org.pdfclown.util.io;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace org.pdfclown.documents.contents
 {
@@ -57,8 +59,17 @@ namespace org.pdfclown.documents.contents
     {
       private readonly PdfDataObject baseDataObject;
 
+      /**
+        Current stream base position (cumulative size of preceding streams).
+      */
       private long basePosition;
+      /**
+        Current stream.
+      */
       private bytes::IInputStream stream;
+      /**
+        Current stream index.
+      */
       private int streamIndex = -1;
 
       public ContentStream(
@@ -101,30 +112,37 @@ namespace org.pdfclown.documents.contents
       {
         get
         {return basePosition + stream.Position;}
-        set
-        {Seek(value);}
       }
 
       public void Read(
         byte[] data
         )
-      {throw new NotImplementedException();}
+      {Read(data, 0, data.Length);}
 
       public void Read(
         byte[] data,
         int offset,
         int length
         )
-      {throw new NotImplementedException();}
+      {
+        while(length > 0)
+        {
+          EnsureStream();
+          int readLength = Math.Min(length, (int)(stream.Length - stream.Position));
+          stream.Read(data, offset, readLength);
+          offset += readLength;
+          length -= readLength;
+        }
+      }
 
       public int ReadByte(
         )
       {
-        if((stream == null
-          || stream.Position >= stream.Length)
-          && !MoveNextStream())
-          return -1; //TODO:harmonize with other Read*() method EOF exceptions!!!
-
+        //TODO:harmonize with other Read*() method EOF exceptions!!!
+        try
+        {EnsureStream();}
+        catch(EndOfStreamException)
+        {return -1;}
         return stream.ReadByte();
       }
 
@@ -152,7 +170,17 @@ namespace org.pdfclown.documents.contents
       public string ReadString(
         int length
         )
-      {throw new NotImplementedException();}
+      {
+        StringBuilder builder = new StringBuilder();
+        while(length > 0)
+        {
+          EnsureStream();
+          int readLength = Math.Min(length, (int)(stream.Length - stream.Position));
+          builder.Append(stream.ReadString(readLength));
+          length -= readLength;
+        }
+        return builder.ToString();
+      }
 
       public ushort ReadUnsignedShort(
         )
@@ -162,17 +190,17 @@ namespace org.pdfclown.documents.contents
         long position
         )
       {
+        if(position < 0)
+          throw new ArgumentException("Negative positions cannot be sought.");
+
         while(true)
         {
           if(position < basePosition) //Before current stream.
-          {
-            if(!MovePreviousStream())
-              throw new ArgumentException("Lower than acceptable.","position");
-          }
+          {MovePreviousStream();}
           else if(position > basePosition + stream.Length) // After current stream.
           {
             if(!MoveNextStream())
-              throw new ArgumentException("Higher than acceptable.","position");
+              throw new EndOfStreamException();
           }
           else // At current stream.
           {
@@ -185,35 +213,24 @@ namespace org.pdfclown.documents.contents
       public void Skip(
         long offset
         )
-      {
-        while(true)
-        {
-          long position = stream.Position + offset;
-          if(position < 0) //Before current stream.
-          {
-            offset += stream.Position;
-            if(!MovePreviousStream())
-              throw new ArgumentException("Lower than acceptable.","offset");
-  
-            stream.Position = stream.Length;
-          }
-          else if(position > stream.Length) // After current stream.
-          {
-            offset -= (stream.Length - stream.Position);
-            if(!MoveNextStream())
-              throw new ArgumentException("Higher than acceptable.","offset");
-          }
-          else // At current stream.
-          {
-            stream.Seek(position);
-            break;
-          }
-        }
-      }
+      {Seek(Position + offset);}
 
       public byte[] ToByteArray(
         )
       {throw new NotImplementedException();}
+
+      /**
+        <summary>Ensures stream availability, moving to the next stream in case the current one has
+        run out of data.</summary>
+      */
+      private void EnsureStream(
+        )
+      {
+        if((stream == null
+            || stream.Position >= stream.Length)
+          && !MoveNextStream())
+            throw new EndOfStreamException();
+      }
 
       private bool MoveNextStream(
         )
@@ -256,7 +273,7 @@ namespace org.pdfclown.documents.contents
         if(stream == null)
           return false;
   
-        stream.Position = 0;
+        stream.Seek(0);
         return true;
       }
   
@@ -371,7 +388,7 @@ namespace org.pdfclown.documents.contents
       // Get the stream buffer!
       bytes::IBuffer buffer = stream.Body;
       // Delete old contents from the stream buffer!
-      buffer.SetLength(0);
+      buffer.Clear();
       // Serializing the new contents into the stream buffer...
       Document context = Document;
       foreach(ContentObject item in items)

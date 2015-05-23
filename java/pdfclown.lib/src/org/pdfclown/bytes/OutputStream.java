@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -25,6 +25,7 @@
 
 package org.pdfclown.bytes;
 
+import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 
@@ -34,7 +35,7 @@ import org.pdfclown.tokens.Encoding;
   Output stream default implementation.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.2.1, 05/22/15
 */
 public final class OutputStream
   implements IOutputStream
@@ -57,6 +58,16 @@ public final class OutputStream
   // <interface>
   // <public>
   // <IOutputStream>
+  @Override
+  public void clear(
+    ) throws UnsupportedOperationException
+  {
+    if(stream instanceof ByteArrayOutputStream)
+    {((ByteArrayOutputStream)stream).reset();}
+    else
+      throw new UnsupportedOperationException();
+  }
+  
   @Override
   public void write(
     byte[] data

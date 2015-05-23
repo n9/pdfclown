@@ -59,7 +59,7 @@ import org.pdfclown.util.NotImplementedException;
   Abstract font [PDF:1.6:5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 04/16/15
+  @version 0.1.2.1, 05/22/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Font
@@ -398,7 +398,8 @@ public abstract class Font
         Integer textChar = codes.get(new ByteArray(codeBuffer));
         if(textChar == null)
         {
-          if(codeBufferSize < charCodeMaxLength)
+          if(codeBufferSize < charCodeMaxLength
+            && codeBufferSize < codeLength - index)
           {
             codeBufferSize++;
             continue;

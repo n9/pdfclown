@@ -26,6 +26,7 @@
 
 package org.pdfclown.documents.contents.tokens;
 
+import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +68,7 @@ import org.pdfclown.util.parsers.PostScriptParseException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2.1, 04/08/15
+  @version 0.1.2.1, 05/22/15
 */
 public final class ContentParser
   extends BaseParser
@@ -203,35 +204,69 @@ public final class ContentParser
     }
 
     InlineImageBody body;
+    try
     {
-      // [FIX:51] Wrong 'EI' token handling on inline image parsing.
+      // [FIX:51,74] Wrong 'EI' token handling on inline image parsing.
       IInputStream stream = getStream();
+      stream.readByte(); // Should be the whitespace following the 'ID' token.
       Buffer data = new Buffer();
-      try
+      ByteArrayOutputStream endChunkBuffer = new ByteArrayOutputStream(3);
+      int endChunkIndex = -1;
+      while(true)
       {
-        stream.readByte(); // Should be the whitespace following the 'ID' token.
-        byte prevByte = 0;
-        boolean prevReady = false;
-        while(true)
+        byte curByte = stream.readByte();
+        if(endChunkIndex == -1)
         {
-          byte curByte = stream.readByte();
-          if(prevReady)
+          if(isWhitespace(curByte))
           {
-            if(prevByte == 'E' && curByte == 'I')
-              break;
-
-            data.append(prevByte);
+            /*
+              NOTE: Whitespace characters may announce the beginning of the end image operator.
+            */
+            endChunkBuffer.write(curByte);
+            endChunkIndex++;
           }
           else
-          {prevReady = true;}
-
-          prevByte = curByte;
+          {data.append(curByte);}
+        }
+        else if(endChunkIndex == 0 && isWhitespace(curByte))
+        {
+          /*
+            NOTE: Only the last whitespace character may announce the beginning of the end image 
+            operator.
+          */
+          data.append(endChunkBuffer.toByteArray());
+          endChunkBuffer.reset();
+          endChunkBuffer.write(curByte);
+        }
+        else if((endChunkIndex == 0 && curByte == 'E')
+          || (endChunkIndex == 1 && curByte == 'I'))
+        {
+          /*
+            NOTE: End image operator characters.
+          */
+          endChunkBuffer.write(curByte);
+          endChunkIndex++;
+        }
+        else if(endChunkIndex == 2 && isWhitespace(curByte))
+          /*
+            NOTE: The whitespace character after the end image operator completes the pattern.
+          */
+          break;
+        else
+        {
+          if(endChunkIndex > -1)
+          {
+            data.append(endChunkBuffer.toByteArray());
+            endChunkBuffer.reset();
+            endChunkIndex = -1;
+          }
+          data.append(curByte);
         }
       }
-      catch(EOFException e)
-      {throw new PostScriptParseException("Unexpected EOF (no 'EI' token found to close inline image data stream).", e);}
       body = new InlineImageBody(data);
     }
+    catch(EOFException e)
+    {throw new PostScriptParseException("No 'EI' token found to close inline image data stream.", e);}
 
     return new InlineImage(header, body);
   }

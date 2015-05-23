@@ -343,7 +343,8 @@ namespace org.pdfclown.documents.contents.fonts
           int textChar = 0;
           if(!codes.TryGetValue(new ByteArray(codeBuffer), out textChar))
           {
-            if(codeBufferSize < charCodeMaxLength)
+            if(codeBufferSize < charCodeMaxLength
+              && codeBufferSize < codeLength - index)
             {
               codeBufferSize++;
               continue;

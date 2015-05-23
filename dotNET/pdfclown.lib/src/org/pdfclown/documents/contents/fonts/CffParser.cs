@@ -315,7 +315,7 @@ namespace org.pdfclown.documents.contents.fonts
         int offset
         )
       {
-        stream.Position = offset;
+        stream.Seek(offset);
         return Parse(stream);
       }
 
@@ -539,7 +539,7 @@ namespace org.pdfclown.documents.contents.fonts
           int charStringsOffset = (int)topDict.Get(Dict.OperatorEnum.CharStrings, 0);
           Index charStringsIndex = Index.Parse(fontData, charStringsOffset);
 
-          fontData.Position = charsetOffset;
+          fontData.Seek(charsetOffset);
           int charsetFormat = fontData.ReadByte();
           for (int index = 1, count = charStringsIndex.Count; index <= count;)
           {

@@ -166,7 +166,7 @@ namespace org.pdfclown.objects
         if(dataFile != null)
         {
           Updateable = false;
-          body.SetLength(0);
+          body.Clear();
           body.Write(dataFile.GetInputStream());
           body.Dirty = false;
           Updateable = true;
@@ -303,7 +303,7 @@ namespace org.pdfclown.objects
         else // Case A/C (substitute local/old file with new file).
         {
           // Dismiss local/old file data!
-          body.SetLength(0);
+          body.Clear();
           // Dismiss local/old file settings!
           Filter = null;
           Parameters = null;
@@ -326,7 +326,7 @@ namespace org.pdfclown.objects
           else // Case F (empty local).
           {
             // Dismiss old file data!
-            body.SetLength(0);
+            body.Clear();
             // Dismiss old file settings!
             Filter = null;
             Parameters = null;

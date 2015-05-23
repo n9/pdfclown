@@ -50,7 +50,7 @@ import org.pdfclown.util.io.IOUtils;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2.1, 04/08/15
+  @version 0.1.2.1, 05/22/15
 */
 final class CffParser
 {
@@ -321,7 +321,7 @@ final class CffParser
       int offset
       ) throws EOFException
     {
-      stream.setPosition(offset);
+      stream.seek(offset);
       return parse(stream);
     }
 
@@ -658,7 +658,7 @@ final class CffParser
         int charStringsOffset = topDict.get(Dict.OperatorEnum.CharStrings, 0).intValue();
         Index charStringsIndex = Index.parse(fontData, charStringsOffset);
         
-        fontData.setPosition(charsetOffset);
+        fontData.seek(charsetOffset);
         int charsetFormat = fontData.readUnsignedByte();
         for (int index = 1, count = charStringsIndex.size(); index <= count;)
         {

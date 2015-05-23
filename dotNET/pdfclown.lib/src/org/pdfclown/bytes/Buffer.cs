@@ -169,10 +169,6 @@ namespace org.pdfclown.bytes
       {return data.Length;}
     }
 
-    public void Clear(
-      )
-    {SetLength(0);}
-
     public IBuffer Clone(
       )
     {
@@ -330,15 +326,6 @@ namespace org.pdfclown.bytes
     {
       get
       {return position;}
-      set
-      {
-        if(value < 0)
-        {value = 0;}
-        else if(value > data.Length)
-        {value = data.Length;}
-
-        position = (int)value;
-      }
     }
 
     public void Read(
@@ -436,14 +423,21 @@ namespace org.pdfclown.bytes
     }
 
     public void Seek(
-      long offset
+      long position
       )
-    {Position = offset;}
+    {
+      if(position < 0)
+      {position = 0;}
+      else if(position > data.Length)
+      {position = data.Length;}
+
+      this.position = (int)position;
+    }
 
     public void Skip(
       long offset
       )
-    {Position = position + offset;}
+    {Seek(position + offset);}
 
     #region IDataWrapper
     public byte[] ToByteArray(
@@ -472,6 +466,10 @@ namespace org.pdfclown.bytes
     #endregion
 
     #region IOutputStream
+    public void Clear(
+      )
+    {SetLength(0);}
+
     public void Write(
       byte[] data
       )

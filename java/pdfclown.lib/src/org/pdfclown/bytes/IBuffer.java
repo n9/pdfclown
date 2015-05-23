@@ -30,10 +30,9 @@ import org.pdfclown.objects.PdfDictionary;
 
 /**
   Buffer interface.
-  <p>Its pivotal concept is the array index.</p>
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 04/08/15
+  @version 0.1.2.1, 05/22/15
 */
 public interface IBuffer
   extends IInputStream,
@@ -115,12 +114,6 @@ public interface IBuffer
   */
   IBuffer append(
     IInputStream data
-    );
-
-  /**
-    Clears the buffer of any data.
-  */
-  void clear(
     );
 
   /**

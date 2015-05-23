@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,11 +31,10 @@ import java.nio.ByteOrder;
 import org.pdfclown.util.IDataWrapper;
 
 /**
-  Input stream.
-  <p>Its pivotal concept is the access pointer.</p>
+  Input stream interface.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.2.1, 05/22/15
 */
 public interface IInputStream
   extends IStream,
@@ -151,7 +150,7 @@ public interface IInputStream
   */
   void seek(
     long position
-    );
+    ) throws EOFException;
 
   /**
     Sets the byte order.
@@ -161,16 +160,9 @@ public interface IInputStream
     );
 
   /**
-    Sets the pointer position.
-  */
-  void setPosition(
-    long value
-    );
-
-  /**
     Sets the pointer relative position.
   */
   void skip(
     long offset
-    );
+    ) throws EOFException;
 }

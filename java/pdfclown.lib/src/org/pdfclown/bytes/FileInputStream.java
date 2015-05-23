@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -37,7 +37,7 @@ import org.pdfclown.util.ConvertUtils;
   File stream.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.0
+  @version 0.1.2.1, 05/22/15
 */
 public final class FileInputStream
   implements IInputStream
@@ -226,17 +226,6 @@ public final class FileInputStream
     ByteOrder value
     )
   {/* TODO */}
-
-  @Override
-  public void setPosition(
-    long value
-    )
-  {
-    try
-    {file.seek(value);}
-    catch(IOException e)
-    {throw new RuntimeException(e);}
-  }
 
   @Override
   public void skip(

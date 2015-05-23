@@ -1,5 +1,5 @@
 /*
-  Copyright 2006-2010 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2006-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -31,10 +31,7 @@ using System;
 namespace org.pdfclown.bytes
 {
   /**
-    <summary>
-      <para>Input stream.</para>
-      <para>Its pivotal concept is the access pointer.</para>
-    </summary>
+    <summary>Input stream interface.</summary>
   */
   public interface IInputStream
     : IStream,
@@ -56,12 +53,11 @@ namespace org.pdfclown.bytes
       );
 
     /**
-      <summary>Gets/Sets the pointer position.</summary>
+      <summary>Gets the pointer position.</summary>
     */
     long Position
     {
       get;
-      set;
     }
 
     /**

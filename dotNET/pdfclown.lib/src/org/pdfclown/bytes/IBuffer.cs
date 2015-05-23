@@ -31,11 +31,7 @@ using System;
 namespace org.pdfclown.bytes
 {
   /**
-    <summary>
-      <para>Buffer.</para>
-      <para>Its pivotal concept is the array index.</para>
-    </summary>
-    <returns>This buffer.</returns>
+    <summary>Buffer interface.</summary>
   */
   public interface IBuffer
     : IInputStream,
@@ -107,12 +103,6 @@ namespace org.pdfclown.bytes
     {
       get;
     }
-
-    /**
-      <summary>Clears the buffer of any data.</summary>
-    */
-    void Clear(
-      );
 
     /**
       <summary>Gets a clone of the buffer.</summary>

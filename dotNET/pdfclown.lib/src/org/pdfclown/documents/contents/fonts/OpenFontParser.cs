@@ -129,7 +129,7 @@ namespace org.pdfclown.documents.contents.fonts
       )
     {
       long position = fontData.Position;
-      fontData.Position = 0;
+      fontData.Seek(0);
       try
       {
         switch(fontData.ReadInt())
@@ -143,7 +143,7 @@ namespace org.pdfclown.documents.contents.fonts
         }
       }
       finally
-      {fontData.Position = position;}
+      {fontData.Seek(position);}
     }
     #endregion
     #endregion

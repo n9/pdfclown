@@ -59,8 +59,8 @@ namespace org.pdfclown.util.parsers
 
     #region static
     #region interface
-    #region private
-    private static int GetHex(
+    #region protected
+    protected static int GetHex(
       int c
       )
     {
@@ -77,7 +77,7 @@ namespace org.pdfclown.util.parsers
     /**
       <summary>Evaluate whether a character is a delimiter.</summary>
     */
-    private static bool IsDelimiter(
+    protected static bool IsDelimiter(
       int c
       )
     {
@@ -94,7 +94,7 @@ namespace org.pdfclown.util.parsers
     /**
       <summary>Evaluate whether a character is an EOL marker.</summary>
     */
-    private static bool IsEOL(
+    protected static bool IsEOL(
       int c
       )
     {return (c == 10 || c == 13);}
@@ -102,7 +102,7 @@ namespace org.pdfclown.util.parsers
     /**
       <summary>Evaluate whether a character is a white-space.</summary>
     */
-    private static bool IsWhitespace(
+    protected static bool IsWhitespace(
       int c
       )
     {return c == 32 || IsEOL(c) || c == 0 || c == 9 || c == 12;}
@@ -269,7 +269,7 @@ namespace org.pdfclown.util.parsers
         {
           c = stream.ReadByte();
           if(c == -1)
-            throw new PostScriptParseException("Unexpected EOF (isolated opening angle-bracket character).");
+            throw new PostScriptParseException("Isolated opening angle-bracket character.");
           // Is it a dictionary (2nd angle bracket)?
           if(c == Symbol.OpenAngleBracket)
           {
@@ -288,14 +288,14 @@ namespace org.pdfclown.util.parsers
 
             c = stream.ReadByte();
             if(c == -1)
-              throw new PostScriptParseException("Unexpected EOF (malformed hex string).");
+              throw new PostScriptParseException("Malformed hex string.");
           }
         } break;
         case Symbol.CloseAngleBracket: // Dictionary (end).
         {
           c = stream.ReadByte();
           if(c == -1)
-            throw new PostScriptParseException("Unexpected EOF (malformed dictionary).");
+            throw new PostScriptParseException("Malformed dictionary.");
           else if(c != Symbol.CloseAngleBracket)
             throw new PostScriptParseException("Malformed dictionary.", this);
 
@@ -391,7 +391,7 @@ namespace org.pdfclown.util.parsers
             buffer.Append((char)c);
           }
           if(c == -1)
-            throw new PostScriptParseException("Unexpected EOF (malformed literal string).");
+            throw new PostScriptParseException("Malformed literal string.");
         } break;
         case Symbol.Percent: // Comment.
         {

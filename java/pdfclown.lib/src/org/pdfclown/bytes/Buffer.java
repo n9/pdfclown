@@ -42,7 +42,7 @@ import org.pdfclown.util.ConvertUtils;
   Byte buffer.
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 04/24/15
+  @version 0.1.2.1, 05/22/15
 */
 public final class Buffer
   implements IBuffer
@@ -491,7 +491,7 @@ public final class Buffer
   @Override
   public String readString(
     int length
-    )
+    ) throws EOFException
   {
     String data = Encoding.Pdf.decode(this.data, position, length);
     position += length;
@@ -527,8 +527,15 @@ public final class Buffer
   @Override
   public void seek(
     long position
-    )
-  {setPosition(position);}
+    ) throws EOFException
+  {
+    if(position < 0)
+    {position = 0;}
+    else if(position > data.length)
+    {position = data.length;}
+
+    this.position = (int)position;
+  }
 
   @Override
   public void setByteOrder(
@@ -537,23 +544,10 @@ public final class Buffer
   {byteOrder = value;}
 
   @Override
-  public void setPosition(
-    long value
-    )
-  {
-    if(value < 0)
-    {value = 0;}
-    else if(value > data.length)
-    {value = data.length;}
-
-    position = (int)value;
-  }
-
-  @Override
   public void skip(
     long offset
-    )
-  {setPosition(position + offset);}
+    ) throws EOFException
+  {seek(position + offset);}
 
   // <IDataWrapper>
   @Override

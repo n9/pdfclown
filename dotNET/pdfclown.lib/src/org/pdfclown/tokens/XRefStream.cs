@@ -365,7 +365,7 @@ namespace org.pdfclown.tokens
                 }
               }
               catch(Exception e)
-              {throw new ParseException("Unexpected EOF (malformed cross-reference stream object).",e);}
+              {throw new ParseException("Malformed cross-reference stream object.", e);}
             }
           }
         }

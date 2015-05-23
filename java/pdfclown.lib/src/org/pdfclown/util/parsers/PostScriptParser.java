@@ -39,7 +39,7 @@ import org.pdfclown.tokens.Symbol;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2.1, 03/10/15
+  @version 0.1.2.1, 05/22/15
 */
 public class PostScriptParser
   implements Closeable
@@ -304,7 +304,7 @@ public class PostScriptParser
         try
         {c = stream.readUnsignedByte();}
         catch(EOFException e)
-        {throw new PostScriptParseException("Unexpected EOF (isolated opening angle-bracket character).", e);}
+        {throw new PostScriptParseException("Isolated opening angle-bracket character.", e);}
         // Is it a dictionary (2nd angle bracket)?
         if(c == Symbol.OpenAngleBracket)
         {
@@ -327,14 +327,14 @@ public class PostScriptParser
           }
         }
         catch(EOFException e)
-        {throw new PostScriptParseException("Unexpected EOF (malformed hex string).", e);}
+        {throw new PostScriptParseException("Malformed hex string.", e);}
       } break;
       case Symbol.CloseAngleBracket: // Dictionary (end).
       {
         try
         {c = stream.readUnsignedByte();}
         catch(EOFException e)
-        {throw new PostScriptParseException("Unexpected EOF (malformed dictionary).", e);}
+        {throw new PostScriptParseException("Malformed dictionary.", e);}
         if(c != Symbol.CloseAngleBracket)
           throw new PostScriptParseException("Malformed dictionary.", this);
 
@@ -427,7 +427,7 @@ public class PostScriptParser
           }
         }
         catch(EOFException e)
-        {throw new PostScriptParseException("Unexpected EOF (malformed literal string).", e);}
+        {throw new PostScriptParseException("Malformed literal string.", e);}
       } break;
       case Symbol.Percent: // Comment.
       {
@@ -513,7 +513,12 @@ public class PostScriptParser
   public void seek(
     long position
     )
-  {stream.seek(position);}
+  {
+    try
+    {stream.seek(position);}
+    catch(EOFException e)
+    {throw new RuntimeException(e);}
+  }
 
   /**
     Moves the pointer to the given relative byte position.
@@ -521,7 +526,12 @@ public class PostScriptParser
   public void skip(
     long offset
     )
-  {stream.skip(offset);}
+  {
+    try
+    {stream.skip(offset);}
+    catch(EOFException e)
+    {throw new RuntimeException(e);}
+  }
 
   /**
     Moves the pointer after the next end-of-line character sequence (that is just before the non-EOL
@@ -545,11 +555,11 @@ public class PostScriptParser
         else if(found) // After EOL.
           break;
       }
+      stream.skip(-1); // Moves back to the first non-EOL character position (ready to read the next token).
+      return true;
     }
     catch(EOFException e)
     {return false;}
-    stream.skip(-1); // Moves back to the first non-EOL character position (ready to read the next token).
-    return true;
   }
 
   /**
@@ -567,11 +577,11 @@ public class PostScriptParser
       int c;
       do
       {c = stream.readUnsignedByte();} while(isWhitespace(c)); // Keeps going till there's a whitespace character.
+      stream.skip(-1); // Moves back to the first non-whitespace character position (ready to read the next token).
+      return true;
     }
     catch(EOFException e)
     {return false;}
-    stream.skip(-1); // Moves back to the first non-whitespace character position (ready to read the next token).
-    return true;
   }
 
   // <Closeable>

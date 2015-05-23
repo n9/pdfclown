@@ -1,5 +1,5 @@
 /*
-  Copyright 2007-2012 Stefano Chizzolini. http://www.pdfclown.org
+  Copyright 2007-2015 Stefano Chizzolini. http://www.pdfclown.org
 
   Contributors:
     * Stefano Chizzolini (original code developer, http://www.stefanochizzolini.it)
@@ -57,7 +57,7 @@ import org.pdfclown.util.NotImplementedException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.4
-  @version 0.1.2, 12/21/12
+  @version 0.1.2.1, 05/22/15
 */
 @PDF(VersionEnum.PDF10)
 public final class Contents
@@ -74,8 +74,17 @@ public final class Contents
   {
     private final PdfDataObject baseDataObject;
 
+    /**
+      Current stream base position (cumulative size of preceding streams).
+    */
     private long basePosition;
+    /**
+      Current stream.
+    */
     private IInputStream stream;
+    /**
+      Current stream index.
+    */
     private int streamIndex = -1;
 
     public ContentStream(
@@ -85,6 +94,16 @@ public final class Contents
       this.baseDataObject = baseDataObject;
       moveNextStream();
     }
+
+    @Override
+    public void close(
+      ) throws IOException
+    {/* NOOP */}
+
+    @Override
+    public ByteOrder getByteOrder(
+      )
+    {return stream.getByteOrder();}
 
     @Override
     public long getLength(
@@ -102,16 +121,6 @@ public final class Contents
     }
 
     @Override
-    public void close(
-      ) throws IOException
-    {/* NOOP */}
-
-    @Override
-    public ByteOrder getByteOrder(
-      )
-    {return stream.getByteOrder();}
-
-    @Override
     public long getPosition(
       )
     {return basePosition + stream.getPosition();}
@@ -120,7 +129,7 @@ public final class Contents
     public void read(
       byte[] data
       ) throws EOFException
-    {throw new NotImplementedException();}
+    {read(data, 0, data.length);}
 
     @Override
     public void read(
@@ -128,17 +137,22 @@ public final class Contents
       int offset,
       int length
       ) throws EOFException
-    {throw new NotImplementedException();}
+    {
+      while(length > 0)
+      {
+        ensureStream();
+        int readLength = Math.min(length, (int)(stream.getLength() - stream.getPosition()));
+        stream.read(data, offset, readLength);
+        offset += readLength;
+        length -= readLength;
+      }
+    }
 
     @Override
     public byte readByte(
       ) throws EOFException
     {
-      if((stream == null
-        || stream.getPosition() >= stream.getLength())
-        && !moveNextStream())
-          throw new EOFException();
-
+      ensureStream();
       return stream.readByte();
     }
 
@@ -162,22 +176,28 @@ public final class Contents
     public short readShort(
       ) throws EOFException
     {throw new NotImplementedException();}
-
+    
     @Override
     public String readString(
       int length
       ) throws EOFException
-    {throw new NotImplementedException();}
+    {
+      StringBuilder builder = new StringBuilder();
+      while(length > 0)
+      {
+        ensureStream();
+        int readLength = Math.min(length, (int)(stream.getLength() - stream.getPosition()));
+        builder.append(stream.readString(readLength));
+        length -= readLength;
+      }
+      return builder.toString();
+    }
 
     @Override
     public int readUnsignedByte(
       ) throws EOFException
     {
-      if((stream == null
-        || stream.getPosition() >= stream.getLength())
-        && !moveNextStream())
-          throw new EOFException();
-
+      ensureStream();
       return stream.readUnsignedByte();
     }
 
@@ -189,19 +209,19 @@ public final class Contents
     @Override
     public void seek(
       long position
-      )
+      ) throws EOFException
     {
+      if(position < 0)
+        throw new IllegalArgumentException("Negative positions cannot be sought.");
+      
       while(true)
       {
         if(position < basePosition) //Before current stream.
-        {
-          if(!movePreviousStream())
-            throw new IllegalArgumentException("The 'position' argument is lower than acceptable.");
-        }
+        {movePreviousStream();}
         else if(position > basePosition + stream.getLength()) // After current stream.
         {
           if(!moveNextStream())
-            throw new IllegalArgumentException("The 'position' argument is higher than acceptable.");
+            throw new EOFException();
         }
         else // At current stream.
         {
@@ -218,45 +238,28 @@ public final class Contents
     {throw new UnsupportedOperationException();}
 
     @Override
-    public void setPosition(
-      long value
-      )
-    {seek(value);}
-
-    @Override
     public void skip(
       long offset
-      )
-    {
-      while(true)
-      {
-        long position = stream.getPosition() + offset;
-        if(position < 0) //Before current stream.
-        {
-          offset += stream.getPosition();
-          if(!movePreviousStream())
-            throw new IllegalArgumentException("The 'offset' argument is lower than acceptable.");
-
-          stream.setPosition(stream.getLength());
-        }
-        else if(position > stream.getLength()) // After current stream.
-        {
-          offset -= (stream.getLength() - stream.getPosition());
-          if(!moveNextStream())
-            throw new IllegalArgumentException("The 'offset' argument is higher than acceptable.");
-        }
-        else // At current stream.
-        {
-          stream.seek(position);
-          break;
-        }
-      }
-    }
+      ) throws EOFException
+    {seek(getPosition() + offset);}
 
     @Override
     public byte[] toByteArray(
       )
     {throw new NotImplementedException();}
+
+    /**
+      Ensures stream availability, moving to the next stream in case the current one has run out of 
+      data.
+    */
+    private void ensureStream(
+      ) throws EOFException
+    {
+      if((stream == null 
+          || stream.getPosition() >= stream.getLength())
+        && !moveNextStream())
+          throw new EOFException();
+    }
 
     private boolean moveNextStream(
       )
@@ -299,7 +302,10 @@ public final class Contents
       if(stream == null)
         return false;
 
-      stream.setPosition(0);
+      try
+      {stream.seek(0);}
+      catch(EOFException e)
+      {throw new RuntimeException(e);}
       return true;
     }
 
@@ -418,7 +424,7 @@ public final class Contents
     // Get the stream buffer!
     IBuffer buffer = stream.getBody();
     // Delete old contents from the stream buffer!
-    buffer.setLength(0);
+    buffer.clear();
     // Serializing the new contents into the stream buffer...
     Document context = getDocument();
     for(ContentObject item : items)

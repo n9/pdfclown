@@ -45,7 +45,7 @@ import org.pdfclown.tokens.Symbol;
   PDF stream object [PDF:1.6:3.2.7].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 02/19/15
+  @version 0.1.2.1, 05/22/15
 */
 public class PdfStream
   extends PdfDataObject
@@ -173,7 +173,7 @@ public class PdfStream
       if(dataFile != null)
       {
         setUpdateable(false);
-        body.setLength(0);
+        body.clear();
         body.write(dataFile.getInputStream());
         body.setDirty(false);
         setUpdateable(true);
@@ -307,7 +307,7 @@ public class PdfStream
       else // Case A/C (substitute local/old file with new file).
       {
         // Dismiss local/old file data!
-        body.setLength(0);
+        body.clear();
         // Dismiss local/old file settings!
         setFilter(null);
         setParameters(null);
@@ -330,7 +330,7 @@ public class PdfStream
         else // Case F (empty local).
         {
           // Dismiss old file data!
-          body.setLength(0);
+          body.clear();
           // Dismiss old file settings!
           setFilter(null);
           setParameters(null);

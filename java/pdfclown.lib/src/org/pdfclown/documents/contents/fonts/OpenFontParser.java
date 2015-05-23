@@ -39,7 +39,7 @@ import org.pdfclown.util.parsers.ParseException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 04/08/15
+  @version 0.1.2.1, 05/22/15
 */
 final class OpenFontParser
 {
@@ -130,9 +130,9 @@ final class OpenFontParser
     )
   {
     long position = fontData.getPosition();
-    fontData.setPosition(0);
     try
     {
+      fontData.seek(0);
       switch(fontData.readInt())
       {
         case(0x00010000): // TrueType (standard/Windows).
@@ -146,7 +146,12 @@ final class OpenFontParser
     catch(EOFException e)
     {throw new RuntimeException(e);}
     finally
-    {fontData.setPosition(position);}
+    {
+      try
+      {fontData.seek(position);}
+      catch(EOFException e)
+      {throw new RuntimeException(e);}
+    }
   }
   // </public>
   // </interface>

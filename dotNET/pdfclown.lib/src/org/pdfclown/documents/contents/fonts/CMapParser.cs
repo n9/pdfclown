@@ -80,7 +80,7 @@ namespace org.pdfclown.documents.contents.fonts
     public IDictionary<ByteArray,int> Parse(
       )
     {
-      Stream.Position = 0;
+      Stream.Seek(0);
       IDictionary<ByteArray,int> codes = new Dictionary<ByteArray,int>();
       {
         IList<object> operands = new List<object>();

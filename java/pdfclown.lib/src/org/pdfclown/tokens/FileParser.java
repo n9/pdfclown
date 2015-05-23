@@ -43,7 +43,7 @@ import org.pdfclown.util.parsers.PostScriptParseException;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.1.1
-  @version 0.1.2.1, 05/21/15
+  @version 0.1.2.1, 05/22/15
 */
 public final class FileParser
   extends BaseParser
@@ -136,7 +136,10 @@ public final class FileParser
           if(!(getToken() instanceof Reference))
           {
             // Rollback!
-            stream.seek(baseOffset);
+            try
+            {stream.seek(baseOffset);}
+            catch(EOFException e)
+            {throw new RuntimeException(e);}
             setToken(objectNumber);
             setTokenType(TokenTypeEnum.Integer);
           }
@@ -172,54 +175,57 @@ public final class FileParser
     PdfDataObject pdfObject = super.parsePdfObject();
     if(pdfObject instanceof PdfDictionary)
     {
-      IInputStream stream = getStream();
-      int oldOffset = (int)stream.getPosition();
-      moveNext();
-      // Is this dictionary the header of a stream object [PDF:1.6:3.2.7]?
-      if(getTokenType() == TokenTypeEnum.Keyword
-        && getToken().equals(Keyword.BeginStream)) // Stream.
+      try
       {
-        PdfDictionary streamHeader = (PdfDictionary)pdfObject;
-
-        // Keep track of current position!
-        /*
-          NOTE: Indirect reference resolution is an outbound call which affects the stream pointer position,
-          so we need to recover our current position after it returns.
-        */
-        long position = stream.getPosition();
-        // Get the stream length!
-        int length = ((PdfInteger)streamHeader.resolve(PdfName.Length)).getValue();
-        // Move to the stream data beginning!
-        stream.seek(position); skipEOL();
-
-        // Copy the stream data to the instance!
-        byte[] data = new byte[length];
-        try
-        {stream.read(data);}
-        catch(EOFException e)
-        {throw new PostScriptParseException("Unexpected EOF (malformed stream object).", e);}
-
-        moveNext(); // Postcondition (last token should be 'endstream' keyword).
-
-        Object streamType = streamHeader.get(PdfName.Type);
-        if(PdfName.ObjStm.equals(streamType)) // Object stream [PDF:1.6:3.4.6].
-          return new ObjectStream(
-            streamHeader,
-            new Buffer(data)
-            );
-        else if(PdfName.XRef.equals(streamType)) // Cross-reference stream [PDF:1.6:3.4.7].
-          return new XRefStream(
-            streamHeader,
-            new Buffer(data)
-            );
-        else // Generic stream.
-          return new PdfStream(
-            streamHeader,
-            new Buffer(data)
-            );
+        IInputStream stream = getStream();
+        long oldOffset = stream.getPosition();
+        moveNext();
+        // Is this dictionary the header of a stream object [PDF:1.6:3.2.7]?
+        if(getTokenType() == TokenTypeEnum.Keyword
+          && getToken().equals(Keyword.BeginStream)) // Stream.
+        {
+          PdfDictionary streamHeader = (PdfDictionary)pdfObject;
+  
+          // Keep track of current position!
+          /*
+            NOTE: Indirect reference resolution is an outbound call which affects the stream pointer
+            position, so we need to recover our current position after it returns.
+          */
+          long position = stream.getPosition();
+          // Get the stream length!
+          int length = ((PdfInteger)streamHeader.resolve(PdfName.Length)).getValue();
+          // Move to the stream data beginning!
+          stream.seek(position);
+          skipEOL();
+  
+          // Copy the stream data to the instance!
+          byte[] data = new byte[length];
+          stream.read(data);
+  
+          moveNext(); // Postcondition (last token should be 'endstream' keyword).
+  
+          Object streamType = streamHeader.get(PdfName.Type);
+          if(PdfName.ObjStm.equals(streamType)) // Object stream [PDF:1.6:3.4.6].
+            return new ObjectStream(
+              streamHeader,
+              new Buffer(data)
+              );
+          else if(PdfName.XRef.equals(streamType)) // Cross-reference stream [PDF:1.6:3.4.7].
+            return new XRefStream(
+              streamHeader,
+              new Buffer(data)
+              );
+          else // Generic stream.
+            return new PdfStream(
+              streamHeader,
+              new Buffer(data)
+              );
+        }
+        else // Stand-alone dictionary.
+        {stream.seek(oldOffset);} // Restores postcondition (last token should be the dictionary end).
       }
-      else // Stand-alone dictionary.
-      {stream.seek(oldOffset);} // Restores postcondition (last token should be the dictionary end).
+      catch(EOFException e)
+      {throw new PostScriptParseException("Malformed stream object", e);}
     }
     return pdfObject;
   }
@@ -254,17 +260,18 @@ public final class FileParser
   public String retrieveVersion(
     )
   {
-    IInputStream stream = getStream();
-    stream.seek(0);
-    String header;
     try
-    {header = stream.readString(10);}
+    {
+      IInputStream stream = getStream();
+      stream.seek(0);
+      String header = stream.readString(10);
+      if(!header.startsWith(Keyword.BOF))
+        throw new PostScriptParseException("PDF header not found.", this);
+  
+      return header.substring(Keyword.BOF.length(),Keyword.BOF.length() + 3);
+    }
     catch(EOFException e)
-    {throw new PostScriptParseException(e);}
-    if(!header.startsWith(Keyword.BOF))
-      throw new PostScriptParseException("PDF header not found.", this);
-
-    return header.substring(Keyword.BOF.length(),Keyword.BOF.length() + 3);
+    {throw new RuntimeException(e);}
   }
 
   /**
@@ -273,42 +280,44 @@ public final class FileParser
   public long retrieveXRefOffset(
     )
   {
-    // [FIX:69] 'startxref' keyword not found (file was corrupted by alien data in the tail).
-    IInputStream stream = getStream();
-    long streamLength = stream.getLength();
-    long position = streamLength;
-    int chunkSize = (int)Math.min(streamLength, EOFMarkerChunkSize);
-    int index = -1;
-    while(index < 0 && position > 0)
+    try
     {
-      /*
-        NOTE: This condition prevents the keyword from being split by the chunk boundary.
-      */
-      if(position < streamLength)
-      {position += Keyword.StartXRef.length();}
-      position -= chunkSize;
-      if(position < 0)
-      {position = 0;}
-      stream.seek(position);
-
-      // Get 'startxref' keyword position!
-      try
-      {index = stream.readString(chunkSize).lastIndexOf(Keyword.StartXRef);}
-      catch(EOFException e)
-      {throw new PostScriptParseException(e);}
+      // [FIX:69] 'startxref' keyword not found (file was corrupted by alien data in the tail).
+      IInputStream stream = getStream();
+      long streamLength = stream.getLength();
+      long position = streamLength;
+      int chunkSize = (int)Math.min(streamLength, EOFMarkerChunkSize);
+      int index = -1;
+      while(index < 0 && position > 0)
+      {
+        /*
+          NOTE: This condition prevents the keyword from being split by the chunk boundary.
+        */
+        if(position < streamLength)
+        {position += Keyword.StartXRef.length();}
+        position -= chunkSize;
+        if(position < 0)
+        {position = 0;}
+        stream.seek(position);
+  
+        // Get 'startxref' keyword position!
+        index = stream.readString(chunkSize).lastIndexOf(Keyword.StartXRef);
+      }
+      if(index < 0)
+        throw new PostScriptParseException("'" + Keyword.StartXRef + "' keyword not found.", this);
+  
+      // Go past the 'startxref' keyword!
+      stream.seek(position + index); moveNext();
+  
+      // Get the xref offset!
+      moveNext();
+      if(getTokenType() != TokenTypeEnum.Integer)
+        throw new PostScriptParseException("'" + Keyword.StartXRef + "' value invalid.", this);
+  
+      return (Integer)getToken();
     }
-    if(index < 0)
-      throw new PostScriptParseException("'" + Keyword.StartXRef + "' keyword not found.", this);
-
-    // Go past the 'startxref' keyword!
-    stream.seek(position + index); moveNext();
-
-    // Get the xref offset!
-    moveNext();
-    if(getTokenType() != TokenTypeEnum.Integer)
-      throw new PostScriptParseException("'" + Keyword.StartXRef + "' value invalid.", this);
-
-    return (Integer)getToken();
+    catch(EOFException e)
+    {throw new RuntimeException(e);}
   }
   // </public>
   // </interface>

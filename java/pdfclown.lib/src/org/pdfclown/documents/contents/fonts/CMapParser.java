@@ -25,6 +25,7 @@
 
 package org.pdfclown.documents.contents.fonts;
 
+import java.io.EOFException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -43,7 +44,7 @@ import org.pdfclown.util.parsers.PostScriptParser;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 04/08/15
+  @version 0.1.2.1, 05/22/15
 */
 final class CMapParser
   extends PostScriptParser
@@ -89,7 +90,10 @@ final class CMapParser
   public Map<ByteArray,Integer> parse(
     )
   {
-    getStream().setPosition(0);
+    try
+    {getStream().seek(0);}
+    catch(EOFException e)
+    {throw new RuntimeException(e);}
     Map<ByteArray,Integer> codes = new Hashtable<ByteArray,Integer>();
     {
       List<Object> operands = new ArrayList<Object>();
