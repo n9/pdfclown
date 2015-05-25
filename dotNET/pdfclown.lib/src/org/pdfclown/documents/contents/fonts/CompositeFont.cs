@@ -93,10 +93,15 @@ namespace org.pdfclown.documents.contents.fonts
       <summary>Gets the CIDFont dictionary that is the descendant of this composite font.</summary>
     */
     protected PdfDictionary CIDFontDictionary
-    {get{return (PdfDictionary)((PdfArray)BaseDataObject.Resolve(PdfName.DescendantFonts)).Resolve(0);}}
+    {
+      get
+      {return (PdfDictionary)((PdfArray)BaseDataObject.Resolve(PdfName.DescendantFonts)).Resolve(0);}
+    }
 
-    protected override PdfDictionary Descriptor
-    {get{return (PdfDictionary)CIDFontDictionary.Resolve(PdfName.FontDescriptor);}}
+    protected override PdfDataObject GetDescriptorValue(
+      PdfName key
+      )
+    {return ((PdfDictionary)CIDFontDictionary.Resolve(PdfName.FontDescriptor)).Resolve(key);}
 
     protected void LoadEncoding(
       )

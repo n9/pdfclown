@@ -41,6 +41,7 @@ import org.pdfclown.bytes.FileInputStream;
 import org.pdfclown.bytes.IInputStream;
 import org.pdfclown.documents.Document;
 import org.pdfclown.objects.PdfArray;
+import org.pdfclown.objects.PdfDataObject;
 import org.pdfclown.objects.PdfDictionary;
 import org.pdfclown.objects.PdfDirectObject;
 import org.pdfclown.objects.PdfInteger;
@@ -59,7 +60,7 @@ import org.pdfclown.util.NotImplementedException;
   Abstract font [PDF:1.6:5.4].
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
-  @version 0.1.2.1, 05/22/15
+  @version 0.1.2.1, 05/25/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class Font
@@ -493,7 +494,10 @@ public abstract class Font
   */
   public double getAscent(
     )
-  {return ((PdfNumber<?>)getDescriptor().get(PdfName.Ascent)).getDoubleValue();}
+  {
+    PdfNumber<?> ascentObject = (PdfNumber<?>)getDescriptorValue(PdfName.Ascent);
+    return ascentObject != null ? ascentObject.getDoubleValue() : 750;
+  }
 
   /**
     Gets the vertical offset from the baseline to the ascender line (ascent),
@@ -532,8 +536,8 @@ public abstract class Font
       NOTE: Sometimes font descriptors specify positive descent, therefore normalization is required
       [FIX:27].
     */
-    double descent = ((PdfNumber<?>)getDescriptor().get(PdfName.Descent)).getDoubleValue();
-    return descent <= 0 ? descent : -descent;
+    PdfNumber<?> descentObject = (PdfNumber<?>)getDescriptorValue(PdfName.Descent);
+    return -Math.abs(descentObject != null ? descentObject.getDoubleValue() : 250);
   }
 
   /**
@@ -553,11 +557,8 @@ public abstract class Font
   public EnumSet<FlagsEnum> getFlags(
     )
   {
-    PdfInteger flagsObject = (PdfInteger)getDescriptor().resolve(PdfName.Flags);
-    if(flagsObject == null)
-      return EnumSet.noneOf(FlagsEnum.class);
-
-    return FlagsEnum.toEnumSet(flagsObject.getRawValue());
+    PdfInteger flagsObject = (PdfInteger)getDescriptorValue(PdfName.Flags);
+    return flagsObject != null ? FlagsEnum.toEnumSet(flagsObject.getRawValue()) : EnumSet.noneOf(FlagsEnum.class);
   }
 
   private double textHeight = -1; // TODO: temporary until glyph bounding boxes are implemented.
@@ -827,11 +828,11 @@ public abstract class Font
   {
     if(averageWidth == UndefinedWidth)
     {
-      averageWidth = 0;
       if(glyphWidths.isEmpty())
-      {averageWidth = getDefaultWidth();}
+      {averageWidth = 1000;}
       else
       {
+        averageWidth = 0;
         for(Integer glyphWidth : glyphWidths.values())
         {averageWidth += glyphWidth;}
         averageWidth /= glyphWidths.size();
@@ -852,9 +853,10 @@ public abstract class Font
   }
   
   /**
-    Gets the font descriptor.
+    Gets the specified font descriptor entry value.
   */
-  protected abstract PdfDictionary getDescriptor(
+  protected abstract PdfDataObject getDescriptorValue(
+    PdfName key
     );
 
   /**

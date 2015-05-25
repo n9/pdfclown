@@ -52,10 +52,12 @@ namespace org.pdfclown.documents.contents.fonts
 
     #region interface
     #region protected
-    protected override PdfDictionary Descriptor
+    protected override PdfDataObject GetDescriptorValue(
+      PdfName key
+      )
     {
-      get
-      {return (PdfDictionary)BaseDataObject.Resolve(PdfName.FontDescriptor);}
+      PdfDictionary fontDescriptor = (PdfDictionary)BaseDataObject.Resolve(PdfName.FontDescriptor);
+      return fontDescriptor != null ? fontDescriptor.Resolve(key) : null;
     }
 
     protected virtual IDictionary<ByteArray,int> GetBaseEncoding(
@@ -176,16 +178,12 @@ namespace org.pdfclown.documents.contents.fonts
       }
       // Default glyph width.
       {
-        PdfDictionary descriptor = Descriptor;
-        if(descriptor != null)
-        {
-          IPdfNumber widthObject = (IPdfNumber)descriptor[PdfName.AvgWidth];
-          if(widthObject != null)
-          {AverageWidth = widthObject.IntValue;}
-          widthObject = (IPdfNumber)descriptor[PdfName.MissingWidth];
-          if(widthObject != null)
-          {DefaultWidth = widthObject.IntValue;}
-        }
+        IPdfNumber widthObject = (IPdfNumber)GetDescriptorValue(PdfName.AvgWidth);
+        if(widthObject != null)
+        {AverageWidth = widthObject.IntValue;}
+        widthObject = (IPdfNumber)GetDescriptorValue(PdfName.MissingWidth);
+        if(widthObject != null)
+        {DefaultWidth = widthObject.IntValue;}
       }
     }
     #endregion

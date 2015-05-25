@@ -64,7 +64,7 @@ import org.pdfclown.util.IFunction;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 04/28/15
+  @version 0.1.2.1, 05/25/15
 */
 @PDF(VersionEnum.PDF12)
 public abstract class CompositeFont
@@ -127,9 +127,10 @@ public abstract class CompositeFont
   {return (PdfDictionary)((PdfArray)getBaseDataObject().resolve(PdfName.DescendantFonts)).resolve(0);}
 
   @Override
-  protected PdfDictionary getDescriptor(
+  protected PdfDataObject getDescriptorValue(
+    PdfName key
     )
-  {return (PdfDictionary)getCIDFontDictionary().resolve(PdfName.FontDescriptor);}
+  {return ((PdfDictionary)getCIDFontDictionary().resolve(PdfName.FontDescriptor)).resolve(key);}
 
   protected void loadEncoding(
     )

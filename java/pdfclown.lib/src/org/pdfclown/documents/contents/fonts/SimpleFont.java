@@ -47,7 +47,7 @@ import org.pdfclown.util.ByteArray;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 04/30/15
+  @version 0.1.2.1, 05/25/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class SimpleFont
@@ -84,9 +84,13 @@ public abstract class SimpleFont
   }
   
   @Override
-  protected PdfDictionary getDescriptor(
+  protected PdfDataObject getDescriptorValue(
+    PdfName key
     )
-  {return (PdfDictionary)getBaseDataObject().resolve(PdfName.FontDescriptor);}
+  {
+    PdfDictionary fontDescriptor = (PdfDictionary)getBaseDataObject().resolve(PdfName.FontDescriptor);
+    return fontDescriptor != null ? fontDescriptor.resolve(key) : null;
+  }
 
   protected void loadEncoding(
     )
@@ -197,16 +201,12 @@ public abstract class SimpleFont
     }
     // Default glyph width.
     {
-      PdfDictionary descriptor = getDescriptor();
-      if(descriptor != null)
-      {
-        PdfNumber<?> widthObject = (PdfNumber<?>)descriptor.get(PdfName.AvgWidth);
-        if(widthObject != null)
-        {setAverageWidth(widthObject.getIntValue());}
-        widthObject = (PdfNumber<?>)descriptor.get(PdfName.MissingWidth);
-        if(widthObject != null)
-        {setDefaultWidth(widthObject.getIntValue());}
-      }
+      PdfNumber<?> widthObject = (PdfNumber<?>)getDescriptorValue(PdfName.AvgWidth);
+      if(widthObject != null)
+      {setAverageWidth(widthObject.getIntValue());}
+      widthObject = (PdfNumber<?>)getDescriptorValue(PdfName.MissingWidth);
+      if(widthObject != null)
+      {setDefaultWidth(widthObject.getIntValue());}
     }
   }
   // </protected>

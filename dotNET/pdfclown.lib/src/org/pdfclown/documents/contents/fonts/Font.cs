@@ -303,7 +303,10 @@ namespace org.pdfclown.documents.contents.fonts
     public virtual double Ascent
     {
       get
-      {return ((IPdfNumber)Descriptor[PdfName.Ascent]).RawValue;}
+      {
+        IPdfNumber ascentObject = (IPdfNumber)GetDescriptorValue(PdfName.Ascent);
+        return ascentObject != null ? ascentObject.DoubleValue : 750;
+      }
     }
 
     /**
@@ -404,8 +407,8 @@ namespace org.pdfclown.documents.contents.fonts
           NOTE: Sometimes font descriptors specify positive descent, therefore normalization is
           required [FIX:27].
         */
-        double descent = ((IPdfNumber)Descriptor[PdfName.Descent]).DoubleValue;
-        return descent <= 0 ? descent : -descent;
+        IPdfNumber descentObject = (IPdfNumber)GetDescriptorValue(PdfName.Descent);
+        return -Math.Abs(descentObject != null ? descentObject.DoubleValue : 250);
       }
     }
 
@@ -466,11 +469,8 @@ namespace org.pdfclown.documents.contents.fonts
     {
       get
       {
-        PdfInteger flagsObject = (PdfInteger)Descriptor.Resolve(PdfName.Flags);
-        if(flagsObject == null)
-          return (FlagsEnum)Enum.ToObject(typeof(FlagsEnum),null);
-
-        return (FlagsEnum)Enum.ToObject(typeof(FlagsEnum),flagsObject.RawValue);
+        PdfInteger flagsObject = (PdfInteger)GetDescriptorValue(PdfName.Flags);
+        return flagsObject != null ? (FlagsEnum)Enum.ToObject(typeof(FlagsEnum),flagsObject.RawValue) : 0; //(FlagsEnum)Enum.ToObject(typeof(FlagsEnum), null);
       }
     }
 
@@ -741,11 +741,11 @@ namespace org.pdfclown.documents.contents.fonts
       {
         if(averageWidth == UndefinedWidth)
         {
-          averageWidth = 0;
           if(glyphWidths.Count == 0)
-          {averageWidth = DefaultWidth;}
+          {averageWidth = 1000;}
           else
           {
+            averageWidth = 0;
             foreach(int glyphWidth in glyphWidths.Values)
             {averageWidth += glyphWidth;}
             averageWidth /= glyphWidths.Count;
@@ -773,12 +773,11 @@ namespace org.pdfclown.documents.contents.fonts
     }
 
     /**
-      <summary>Gets the font descriptor.</summary>
+      <summary>Gets the specified font descriptor entry value.</summary>
     */
-    protected abstract PdfDictionary Descriptor
-    {
-      get;
-    }
+    protected abstract PdfDataObject GetDescriptorValue(
+      PdfName key
+      );
 
     /**
       <summary>Loads font information from existing PDF font structure.</summary>
