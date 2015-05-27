@@ -51,7 +51,7 @@ import org.pdfclown.util.math.Interval;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 04/08/15
+  @version 0.1.2.1, 05/27/15
 */
 public final class TextExtractor
 {
@@ -633,9 +633,11 @@ public final class TextExtractor
       if(content instanceof Text)
       {
         // Collect the text strings!
-        extractedTextStrings.addAll(
-          ((ContentScanner.TextWrapper)level.getCurrentWrapper()).getTextStrings()
-          );
+        for(ContentScanner.TextStringWrapper textString : ((ContentScanner.TextWrapper)level.getCurrentWrapper()).getTextStrings())
+        {
+          if(!textString.getTextChars().isEmpty())
+          {extractedTextStrings.add(textString);}
+        }
       }
       else if(content instanceof XObject)
       {

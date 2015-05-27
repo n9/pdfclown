@@ -606,7 +606,10 @@ namespace org.pdfclown.tools
         {
           // Collect the text strings!
           foreach(ContentScanner.TextStringWrapper textString in ((ContentScanner.TextWrapper)level.CurrentWrapper).TextStrings)
-          {extractedTextStrings.Add(textString);}
+          {
+            if(textString.TextChars.Count > 0)
+            {extractedTextStrings.Add(textString);}
+          }
         }
         else if(content is XObject)
         {
