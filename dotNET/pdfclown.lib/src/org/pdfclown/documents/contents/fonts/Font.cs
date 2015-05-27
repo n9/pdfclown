@@ -470,7 +470,7 @@ namespace org.pdfclown.documents.contents.fonts
       get
       {
         PdfInteger flagsObject = (PdfInteger)GetDescriptorValue(PdfName.Flags);
-        return flagsObject != null ? (FlagsEnum)Enum.ToObject(typeof(FlagsEnum),flagsObject.RawValue) : 0; //(FlagsEnum)Enum.ToObject(typeof(FlagsEnum), null);
+        return flagsObject != null ? (FlagsEnum)Enum.ToObject(typeof(FlagsEnum),flagsObject.RawValue) : 0;
       }
     }
 
