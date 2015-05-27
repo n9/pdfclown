@@ -33,6 +33,7 @@ using org.pdfclown.util.parsers;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using io = System.IO;
 using System.Text;
@@ -47,15 +48,14 @@ namespace org.pdfclown.documents.contents.fonts
   {
     #region static
     #region fields
-    internal static readonly string BeginBaseFontCharOperator = "beginbfchar";
-    internal static readonly string BeginBaseFontRangeOperator = "beginbfrange";
-    internal static readonly string BeginCIDCharOperator = "begincidchar";
-    internal static readonly string BeginCIDRangeOperator = "begincidrange";
-    internal static readonly string EndBaseFontCharOperator = "endbfchar";
-    internal static readonly string EndBaseFontRangeOperator = "endbfrange";
-    internal static readonly string EndCIDCharOperator = "endcidchar";
-    internal static readonly string EndCIDRangeOperator = "endcidrange";
-    internal static readonly string UseCMapOperator = "usecmap";
+    private static readonly string BeginBaseFontCharOperator = "beginbfchar";
+    private static readonly string BeginBaseFontRangeOperator = "beginbfrange";
+    private static readonly string BeginCIDCharOperator = "begincidchar";
+    private static readonly string BeginCIDRangeOperator = "begincidrange";
+    private static readonly string DefOperator = "def";
+    private static readonly string UseCMapOperator = "usecmap";
+
+    private static readonly string CMapName = PdfName.CMapName.StringValue;
     #endregion
     #endregion
 
@@ -84,6 +84,7 @@ namespace org.pdfclown.documents.contents.fonts
       IDictionary<ByteArray,int> codes = new Dictionary<ByteArray,int>();
       {
         IList<object> operands = new List<object>();
+        string cmapName = null;
         while(MoveNext())
         {
           switch(TokenType)
@@ -103,7 +104,13 @@ namespace org.pdfclown.documents.contents.fonts
                   MoveNext();
                   ByteArray inputCode = new ByteArray(ParseInputCode());
                   MoveNext();
-                  codes[inputCode] = ParseUnicode();
+                  // FIXME: Unicode character sequences (such as ligatures) have not been supported yet [BUG:72].
+                  try
+                  {
+                    codes[inputCode] = ParseUnicode();
+                  }
+                  catch(OverflowException)
+                  {Debug.WriteLine(String.Format("WARN: Unable to process Unicode sequence from {0} CMap: {1}", cmapName, Token));}
                 }
               }
               else if(@operator.Equals(BeginBaseFontRangeOperator)
@@ -132,7 +139,13 @@ namespace org.pdfclown.documents.contents.fonts
                       while(MoveNext()
                         && TokenType != TokenTypeEnum.ArrayEnd)
                       {
-                        codes[new ByteArray(inputCode)] = ParseUnicode();
+                        // FIXME: Unicode character sequences (such as ligatures) have not been supported yet [BUG:72].
+                        try
+                        {
+                          codes[new ByteArray(inputCode)] = ParseUnicode();
+                        }
+                        catch(OverflowException)
+                        {Debug.WriteLine(String.Format("WARN: Unable to process Unicode sequence from {0} CMap: {1}", cmapName, Token));}
                         OperationUtils.Increment(inputCode);
                       }
                       break;
@@ -158,6 +171,11 @@ namespace org.pdfclown.documents.contents.fonts
               }
               else if(@operator.Equals(UseCMapOperator))
               {codes = CMap.Get((string)operands[0]);}
+              else if(@operator.Equals(DefOperator) && operands.Count != 0)
+              {
+                if(CMapName.Equals(operands[0]))
+                {cmapName = (string)operands[1];}
+              }
               operands.Clear();
               break;
             }

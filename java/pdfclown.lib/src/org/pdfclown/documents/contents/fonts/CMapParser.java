@@ -31,9 +31,11 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.pdfclown.bytes.Buffer;
 import org.pdfclown.bytes.IInputStream;
+import org.pdfclown.objects.PdfName;
 import org.pdfclown.util.ByteArray;
 import org.pdfclown.util.ConvertUtils;
 import org.pdfclown.util.math.OperationUtils;
@@ -44,7 +46,7 @@ import org.pdfclown.util.parsers.PostScriptParser;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 05/22/15
+  @version 0.1.2.1, 05/27/15
 */
 final class CMapParser
   extends PostScriptParser
@@ -52,15 +54,16 @@ final class CMapParser
   // <class>
   // <static>
   // <fields>
-  static final String BeginBaseFontCharOperator = "beginbfchar";
-  static final String BeginBaseFontRangeOperator = "beginbfrange";
-  static final String BeginCIDCharOperator = "begincidchar";
-  static final String BeginCIDRangeOperator = "begincidrange";
-  static final String EndBaseFontCharOperator = "endbfchar";
-  static final String EndBaseFontRangeOperator = "endbfrange";
-  static final String EndCIDCharOperator = "endcidchar";
-  static final String EndCIDRangeOperator = "endcidrange";
-  static final String UseCMapOperator = "usecmap";
+  private static final String BeginBaseFontCharOperator = "beginbfchar";
+  private static final String BeginBaseFontRangeOperator = "beginbfrange";
+  private static final String BeginCIDCharOperator = "begincidchar";
+  private static final String BeginCIDRangeOperator = "begincidrange";
+  private static final String DefOperator = "def";
+  private static final String UseCMapOperator = "usecmap";
+  
+  private static final String CMapName = PdfName.CMapName.getValue();
+  
+  private static final Logger Log = Logger.getLogger(CMapParser.class.getName());
    // </fields>
   // </static>
 
@@ -97,6 +100,7 @@ final class CMapParser
     Map<ByteArray,Integer> codes = new Hashtable<ByteArray,Integer>();
     {
       List<Object> operands = new ArrayList<Object>();
+      String cmapName = null;
       while(moveNext())
       {
         switch(getTokenType())
@@ -116,7 +120,16 @@ final class CMapParser
                 moveNext();
                 ByteArray inputCode = new ByteArray(parseInputCode());
                 moveNext();
-                codes.put(inputCode, parseUnicode());
+                // FIXME: Unicode character sequences (such as ligatures) have not been supported yet [BUG:72].
+                try
+                {
+                  codes.put(inputCode, parseUnicode());
+                }
+                catch(NumberFormatException e)
+                {
+                  //TODO: Next version must switch to proper logging (SLF4J)
+                  Log.warning(String.format("Unable to process Unicode sequence from %s CMap: %s", cmapName, getToken()));
+                }
               }
             }
             else if(operator.equals(BeginBaseFontRangeOperator)
@@ -145,7 +158,16 @@ final class CMapParser
                     while(moveNext()
                       && getTokenType() != TokenTypeEnum.ArrayEnd)
                     {
-                      codes.put(new ByteArray(inputCode), parseUnicode());
+                      // FIXME: Unicode character sequences (such as ligatures) have not been supported yet [BUG:72].
+                      try
+                      {
+                        codes.put(new ByteArray(inputCode), parseUnicode());
+                      }
+                      catch(NumberFormatException e)
+                      {
+                        //TODO: Next version must switch to proper logging (SLF4J)
+                        Log.warning(String.format("Unable to process Unicode sequence from %s CMap: %s", cmapName, getToken()));
+                      }
                       OperationUtils.increment(inputCode);
                     }
                     break;
@@ -171,6 +193,11 @@ final class CMapParser
             }
             else if(operator.equals(UseCMapOperator))
             {codes = CMap.get((String)operands.get(0));}
+            else if(operator.equals(DefOperator) && !operands.isEmpty())
+            {
+              if(CMapName.equals(operands.get(0)))
+              {cmapName = (String)operands.get(1);}
+            }
             operands.clear();
             break;
           }
