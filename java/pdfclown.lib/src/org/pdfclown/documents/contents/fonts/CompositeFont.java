@@ -64,7 +64,7 @@ import org.pdfclown.util.IFunction;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 05/25/15
+  @version 0.1.2.1, 11/26/15
 */
 @PDF(VersionEnum.PDF12)
 public abstract class CompositeFont
@@ -235,7 +235,7 @@ public abstract class CompositeFont
     }
     // Default glyph width.
     {
-      PdfInteger defaultWidthObject = (PdfInteger)getBaseDataObject().get(PdfName.DW);
+      PdfNumber<?> defaultWidthObject = (PdfNumber<?>)getBaseDataObject().get(PdfName.DW);
       if(defaultWidthObject != null)
       {setDefaultWidth(defaultWidthObject.getIntValue());}
     }

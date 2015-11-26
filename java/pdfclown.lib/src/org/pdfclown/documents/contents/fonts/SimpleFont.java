@@ -47,7 +47,7 @@ import org.pdfclown.util.ByteArray;
 
   @author Stefano Chizzolini (http://www.stefanochizzolini.it)
   @since 0.0.8
-  @version 0.1.2.1, 05/25/15
+  @version 0.1.2.1, 11/26/15
 */
 @PDF(VersionEnum.PDF10)
 public abstract class SimpleFont
@@ -122,7 +122,7 @@ public abstract class SimpleFont
           for(PdfDirectObject differenceObject : differencesObject)
           {
             if(differenceObject instanceof PdfInteger) // Subsequence initial code.
-            {charCodeData[0] = (byte)((((PdfInteger)differenceObject).getValue().intValue()) & 0xFF);} //TODO:verify whether it can be directly cast to byte (.byteValue())!
+            {charCodeData[0] = (byte)((((PdfInteger)differenceObject).getIntValue()) & 0xFF);} //TODO:verify whether it can be directly cast to byte (.byteValue())!
             else // Character name.
             {
               ByteArray charCode = new ByteArray(charCodeData);
@@ -151,7 +151,7 @@ public abstract class SimpleFont
         ByteArray charCode = new ByteArray(new byte[]{(byte)((PdfInteger)getBaseDataObject().get(PdfName.FirstChar)).getIntValue()});
         for(PdfDirectObject glyphWidthObject : glyphWidthObjects)
         {
-          if(((PdfInteger)glyphWidthObject).getValue() == 0)
+          if(((PdfNumber<?>)glyphWidthObject).getIntValue() == 0)
           {codes.remove(charCode);}
           charCode.data[0]++;
         }

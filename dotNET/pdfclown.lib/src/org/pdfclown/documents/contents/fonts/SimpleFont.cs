@@ -134,7 +134,7 @@ namespace org.pdfclown.documents.contents.fonts
           ByteArray charCode = new ByteArray(new byte[]{(byte)((PdfInteger)BaseDataObject[PdfName.FirstChar]).IntValue});
           foreach(PdfDirectObject glyphWidthObject in glyphWidthObjects)
           {
-            if(((PdfInteger)glyphWidthObject).IntValue == 0)
+            if(((IPdfNumber)glyphWidthObject).IntValue == 0)
             {codes.Remove(charCode);}
             charCode.Data[0]++;
           }
